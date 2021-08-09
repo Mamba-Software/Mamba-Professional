@@ -18,7 +18,7 @@ class _LoginDemoState extends State<Login> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(top: 80.0),
+              padding: EdgeInsets.only(top: 100.0),
               child: Container(
                   width: 200,
                   height: 150,
@@ -85,7 +85,7 @@ class _LoginDemoState extends State<Login> {
               ),
             ),
             Padding(
-                padding: EdgeInsets.only(left: 0, right: 0, top: 16.0, bottom: 0),
+                padding: EdgeInsets.only(left: 0, right: 0, top: 16.0, bottom: 16),
                 child: Text('Nuevo usuario? Crea tu cuenta',
                     style: TextStyle(color: Colors.white, fontSize: 17),
                 )
