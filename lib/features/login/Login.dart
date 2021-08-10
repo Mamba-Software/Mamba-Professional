@@ -10,7 +10,6 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   static const backgroundColor = Color(0xFFF4AD1F);
-  //static const backgroundColor = Color(0xFF200758);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,7 +78,7 @@ class _LoginState extends State<Login> {
               child: TextButton(
                 onPressed: () {
                   Navigator.push(
-                      context, MaterialPageRoute(builder: (_) => HomePage()));
+                      context, CupertinoPageRoute(builder: (_) => HomePage()));
                 },
                 child: Text(
                   'Login',
@@ -92,7 +91,7 @@ class _LoginState extends State<Login> {
                 child: TextButton(
                   onPressed: () {
                     Navigator.push(
-                      context, MaterialPageRoute(builder: (_) => Register()));
+                      context, CupertinoPageRoute(builder: (_) => Register()));
                   },
                   child: Text(
                     'Nuevo usuario? Crea tu cuenta',
