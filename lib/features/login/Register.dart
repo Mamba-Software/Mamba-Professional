@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'HomePage.dart';
+import 'package:mamba_castelldefels/data/AuthService.dart';
+import 'package:provider/provider.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -8,6 +9,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   static const backgroundColor = Color(0xFFF4AD1F);
+  // Switch Trainer Client
   bool isTrainer = false;
   Color textColorClient = Colors.white;
   Color textColorTrainer = Color(0xFF200758);
@@ -32,6 +34,69 @@ class _RegisterState extends State<Register> {
       });
     }
   }
+  // Create New User
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController1 = TextEditingController();
+  TextEditingController passwordController2 = TextEditingController();
+  TextStyle nameStyle = TextStyle(color: Color(0xFF200758));
+  TextStyle emailStyle = TextStyle(color: Color(0xFF200758));
+  TextStyle password1Style = TextStyle(color: Color(0xFF200758));
+  TextStyle password2Style = TextStyle(color: Color(0xFF200758));
+  // Verification New User
+  void fieldsNormalColors(){
+    setState(() {
+      nameStyle = TextStyle(color: Color(0xFF200758));
+      emailStyle = TextStyle(color: Color(0xFF200758));
+      password1Style = TextStyle(color: Color(0xFF200758));
+      password2Style = TextStyle(color: Color(0xFF200758));
+    });
+  }
+  bool isFieldEmpty() {
+    bool aux = false;
+    if(nameController.text == "") {
+      aux = true;
+      setState(() {
+        nameStyle = TextStyle(color: Colors.red);
+      });
+    }
+    if(emailController.text == "") {
+      aux = true;
+      setState(() {
+        emailStyle = TextStyle(color: Colors.red);
+      });
+    }
+    if(passwordController1.text == "") {
+      aux = true;
+      setState(() {
+        password1Style = TextStyle(color: Colors.red);
+      });
+    }
+    if(passwordController2.text == "") {
+      aux = true;
+      setState(() {
+        password2Style = TextStyle(color: Colors.red);
+      });
+    }
+    return aux;
+  }
+  bool isPasswordDiferent(String s1, String s2) {
+    print("isPasswordDiferent:");
+    if(s1 == s2) {
+      print("NO");
+      return false;
+    }
+    setState(() {
+      password1Style = TextStyle(color: Colors.red);
+      password2Style = TextStyle(color: Colors.red);
+    });
+    passwordController1.clear();
+    passwordController2.clear();
+    print("YES");
+    return true;
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,6 +144,7 @@ class _RegisterState extends State<Register> {
                 Padding(
                     padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
                     child: TextField(
+                      controller: nameController,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xFF200758), width: 2.5),
@@ -88,15 +154,15 @@ class _RegisterState extends State<Register> {
                           borderSide: BorderSide(color: Color(0xFF200758), width: 2.5),
                           borderRadius: BorderRadius.circular(13.0),
                         ),
-                        labelText: 'Nombre Completo',
-                        labelStyle: TextStyle(color: Color(0xFF200758)),
+                        labelText: 'Nombre completo',
+                        labelStyle: nameStyle,
                       ),
                     )
                 ),
                 Padding(
                     padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
                     child: TextField(
-                      obscureText: true,
+                      controller: emailController,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xFF200758), width: 2.5),
@@ -107,13 +173,14 @@ class _RegisterState extends State<Register> {
                           borderRadius: BorderRadius.circular(13.0),
                         ),
                         labelText: 'Email',
-                        labelStyle: TextStyle(color: Color(0xFF200758)),
+                        labelStyle: emailStyle,
                       ),
                     )
                 ),
                 Padding(
                     padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
                     child: TextField(
+                      controller: passwordController1,
                       obscureText: true,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -125,13 +192,14 @@ class _RegisterState extends State<Register> {
                           borderRadius: BorderRadius.circular(13.0),
                         ),
                         labelText: 'Contraseña',
-                        labelStyle: TextStyle(color: Color(0xFF200758)),
+                        labelStyle: password1Style,
                       ),
                     )
                 ),
                 Padding(
                     padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 16.0),
                     child: TextField(
+                      controller: passwordController2,
                       obscureText: true,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -143,10 +211,10 @@ class _RegisterState extends State<Register> {
                           borderRadius: BorderRadius.circular(13.0),
                         ),
                         labelText: 'Repite tu contraseña',
-                        labelStyle: TextStyle(color: Color(0xFF200758)),
+                        labelStyle: password2Style
                       ),
-                    )
-                ),
+                    ),
+                  ),
                 Container(
                   height: 50,
                   width: 250,
@@ -154,8 +222,15 @@ class _RegisterState extends State<Register> {
                       color: Color(0xFF200758), borderRadius: BorderRadius.circular(20)),
                   child: TextButton(
                     onPressed: () {
-                      Navigator.push(
-                          context, MaterialPageRoute(builder: (_) => HomePage()));
+                      if (isFieldEmpty() == false) {
+                        fieldsNormalColors();
+                        if (isPasswordDiferent(passwordController1.text.trim(),passwordController2.text.trim())) {
+                          context.read<AuthenticationService>().signUp(
+                            email: emailController.text.trim(),
+                            password: passwordController1.text.trim(),
+                          );
+                        }
+                      }
                     },
                     child: Text(
                       'Registrate',

@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/data/AuthService.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("HOME"),
+            TextButton(
+              onPressed: () {
+                context.read<AuthenticationService>().signOut();
+              },
+              child: Text("Sign out"),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

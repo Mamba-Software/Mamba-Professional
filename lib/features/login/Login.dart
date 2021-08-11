@@ -1,15 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'HomePage.dart';
+import 'package:mamba_castelldefels/data/AuthService.dart';
+import 'package:provider/provider.dart';
 import 'Register.dart';
 
-class Login extends StatefulWidget {
-  @override
-  _LoginState createState() => _LoginState();
-}
-
-class _LoginState extends State<Login> {
+class Login extends StatelessWidget {
   static const backgroundColor = Color(0xFFF4AD1F);
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +24,7 @@ class _LoginState extends State<Login> {
               Padding(
                   padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
                   child: TextField(
+                    controller: emailController,
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFF200758), width: 2.5),
@@ -44,6 +43,7 @@ class _LoginState extends State<Login> {
                   padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
                   child: TextField(
                     obscureText: true,
+                    controller: passwordController,
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFF200758), width: 2.5),
@@ -75,8 +75,11 @@ class _LoginState extends State<Login> {
                 ),
                 child: TextButton(
                   onPressed: () {
-                    Navigator.push(
-                        context, CupertinoPageRoute(builder: (_) => HomePage()));
+                    context.read<AuthenticationService>().signIn(
+                      email: emailController.text.trim(),
+                      password: passwordController.text.trim(),
+                    );
+                    //Navigator.push(context, CupertinoPageRoute(builder: (_) => HomePage()));
                   },
                   child: Text(
                     'Login',
@@ -99,7 +102,7 @@ class _LoginState extends State<Login> {
               ),
             ],
           ),
-          ),
+        ),
       ),
     );
   }
