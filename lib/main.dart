@@ -1,7 +1,6 @@
 // Plugins
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/models/Usuario.dart';
 import 'package:provider/provider.dart';
 
@@ -30,16 +29,4 @@ class Mamba extends StatelessWidget {
     );
   }
 }
-/* Depending LogIn/HomePage if you are authenticated or not.
-class AuthenticationWrapper extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final firebaseUser = context.watch<User>();
-    if (firebaseUser != null) {
-      return HomePage();
-    }
-    return Login();
-  }
-}
-*/
 

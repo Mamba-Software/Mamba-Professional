@@ -1,9 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/data/AuthService.dart';
-import 'package:provider/provider.dart';
-import '../Home/HomePage.dart';
+import 'package:mamba_castelldefels/globals/constants.dart';
 
 class Register extends StatefulWidget {
   final Function toggleView;
@@ -15,7 +13,6 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final AuthenticationService _authenticationService = AuthenticationService();
-  String error = '';
   static const backgroundColor = Color(0xFFF4AD1F);
   // Switch Trainer Client
   bool isTrainer = false;
@@ -42,68 +39,13 @@ class _RegisterState extends State<Register> {
       });
     }
   }
-  // Create New User
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController1 = TextEditingController();
-  TextEditingController passwordController2 = TextEditingController();
-  TextStyle nameStyle = TextStyle(color: Color(0xFF200758));
-  TextStyle emailStyle = TextStyle(color: Color(0xFF200758));
-  TextStyle password1Style = TextStyle(color: Color(0xFF200758));
-  TextStyle password2Style = TextStyle(color: Color(0xFF200758));
-  // Verification New User
-  void fieldsNormalColors(){
-    setState(() {
-      nameStyle = TextStyle(color: Color(0xFF200758));
-      emailStyle = TextStyle(color: Color(0xFF200758));
-      password1Style = TextStyle(color: Color(0xFF200758));
-      password2Style = TextStyle(color: Color(0xFF200758));
-    });
-  }
-  bool isFieldEmpty() {
-    bool aux = false;
-    if(nameController.text == "") {
-      aux = true;
-      setState(() {
-        nameStyle = TextStyle(color: Colors.red);
-      });
-    }
-    if(emailController.text == "") {
-      aux = true;
-      setState(() {
-        emailStyle = TextStyle(color: Colors.red);
-      });
-    }
-    if(passwordController1.text == "") {
-      aux = true;
-      setState(() {
-        password1Style = TextStyle(color: Colors.red);
-      });
-    }
-    if(passwordController2.text == "") {
-      aux = true;
-      setState(() {
-        password2Style = TextStyle(color: Colors.red);
-      });
-    }
-    return aux;
-  }
-  bool isPasswordDiferent(String s1, String s2) {
-    print("isPasswordDiferent:");
-    if(s1 == s2) {
-      print("NO");
-      return false;
-    }
-    setState(() {
-      password1Style = TextStyle(color: Colors.red);
-      password2Style = TextStyle(color: Colors.red);
-    });
-    passwordController1.clear();
-    passwordController2.clear();
-    print("YES");
-    return true;
-
-  }
+  // FormVariables
+  final _formKey = GlobalKey<FormState>();
+  String error = '';
+  String name = '';
+  String email = '';
+  String password1 = '';
+  String password2 = '';
 
   @override
   Widget build(BuildContext context) {
@@ -111,155 +53,137 @@ class _RegisterState extends State<Register> {
         backgroundColor: backgroundColor,
         body: Center(
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                    width: 180,
-                    height: 135,
-                    child: Image.asset('assets/images/mamba-logo.jpg')),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                      child: Text(
-                        'Cliente',
-                        style: TextStyle(color: textColorClient, fontSize: 22, fontWeight: fontWeightClient),
-                      ),
-                    ),
-                    Container(
-                      child: Transform.scale( scale: 2.0,
-                        child: new Switch(
-                          onChanged: toggleSwitch,
-                          value: isTrainer,
-                          activeColor: Color(0xFF200758),
-                          activeTrackColor: Color(0x8F190763),
-                          inactiveThumbColor: Color(0xFF200758),
-                          inactiveTrackColor: Color(0xA6190763),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                      padding: EdgeInsets.only(top: 16.0),
+                      width: 180,
+                      height: 135,
+                      child: Image.asset('assets/images/mamba-logo.jpg')),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                        child: Text(
+                          'Cliente',
+                          style: TextStyle(color: textColorClient, fontSize: 22, fontWeight: fontWeightClient),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                      child: Text(
-                        'Entrenador',
-                        style: TextStyle(color: textColorTrainer, fontSize: 22, fontWeight: fontWeightTrainer),
+                      Container(
+                        child: Transform.scale( scale: 2.0,
+                          child: new Switch(
+                            onChanged: toggleSwitch,
+                            value: isTrainer,
+                            activeColor: Color(0xFF200758),
+                            activeTrackColor: Color(0x8F190763),
+                            inactiveThumbColor: Color(0xFF200758),
+                            inactiveTrackColor: Color(0xA6190763),
+                          ),
+                        ),
                       ),
-                    )
-                  ],
-                ),
-                Padding(
-                    padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
-                    child: TextField(
-                      controller: nameController,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF200758), width: 2.5),
-                          borderRadius: BorderRadius.circular(13.0),
+                      Padding(
+                        padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                        child: Text(
+                          'Entrenador',
+                          style: TextStyle(color: textColorTrainer, fontSize: 22, fontWeight: fontWeightTrainer),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF200758), width: 2.5),
-                          borderRadius: BorderRadius.circular(13.0),
-                        ),
-                        labelText: 'Nombre completo',
-                        labelStyle: nameStyle,
-                      ),
-                    )
-                ),
-                Padding(
-                    padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
-                    child: TextField(
-                      controller: emailController,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF200758), width: 2.5),
-                          borderRadius: BorderRadius.circular(13.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF200758), width: 2.5),
-                          borderRadius: BorderRadius.circular(13.0),
-                        ),
-                        labelText: 'Email',
-                        labelStyle: emailStyle,
-                      ),
-                    )
-                ),
-                Padding(
-                    padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
-                    child: TextField(
-                      controller: passwordController1,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF200758), width: 2.5),
-                          borderRadius: BorderRadius.circular(13.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF200758), width: 2.5),
-                          borderRadius: BorderRadius.circular(13.0),
-                        ),
-                        labelText: 'Contraseña',
-                        labelStyle: password1Style,
-                      ),
-                    )
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 16.0),
-                  child: TextField(
-                    controller: passwordController2,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF200758), width: 2.5),
-                          borderRadius: BorderRadius.circular(13.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF200758), width: 2.5),
-                          borderRadius: BorderRadius.circular(13.0),
-                        ),
-                        labelText: 'Repite tu contraseña',
-                        labelStyle: password2Style
-                    ),
+                      )
+                    ],
                   ),
-                ),
-                Container(
-                  height: 50,
-                  width: 250,
-                  decoration: BoxDecoration(
-                      color: Color(0xFF200758), borderRadius: BorderRadius.circular(20)),
-                  child: TextButton(
-                    onPressed: () async {
-                      dynamic result = await _authenticationService.signUp(
-                          email: emailController.text.trim(),
-                          password: passwordController1.text.trim()
-                      );
-                      if (result == null) {
-                        setState(() {
-                          error = 'Please supply a valid email';
-                        });
-                      }
-                    },
-                    child: Text(
-                      'Registrate',
-                      style: TextStyle(color: Colors.white, fontSize: 25),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 16.0),
-                  child: TextButton(
-                      onPressed: () {
-                        widget.toggleView();
-                      },
-                      child: Text(
-                        'Tienes una cuenta? Inicia sesión',
-                        style: TextStyle(color: Colors.white, fontSize: 17),
+                  Padding(
+                      padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
+                      child: TextFormField(
+                        validator: (val) => val!.isEmpty ? 'Escribe tu nombre' : null,
+                        onChanged: (val) {
+                          setState(() => name = val);
+                        },
+                        decoration: textFromInputDecoration.copyWith(labelText: 'Nombre completo')
                       )
                   ),
-                ),
-              ],
+                  Padding(
+                      padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
+                      child: TextFormField(
+                        validator: (val) => val!.isEmpty ? 'Escribe tu email' : null,
+                        onChanged: (val) {
+                          setState(() => email = val);
+                        },
+                        decoration: textFromInputDecoration.copyWith(labelText: 'Email')
+                      )
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
+                      child: TextFormField(
+                        validator: (val) => val!.length < 6 ? 'Introduza una contraseña con 6 caracteres o más' : null,
+                        onChanged: (val) {
+                          setState(() => password1 = val);
+                        },
+                        obscureText: true,
+                        decoration: textFromInputDecoration.copyWith(labelText: 'Contraseña')
+                      )
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 16.0),
+                    child: TextFormField(
+                      validator: (val) => val == password1 ? 'Contraseñas no coinciden' : null,
+                      onChanged: (val) {
+                        setState(() => password2 = val);
+                      },
+                      obscureText: true,
+                        decoration: textFromInputDecoration.copyWith(labelText: 'Repite tu contraseña')
+                    ),
+                  ),
+                  Container(
+                    height: 50,
+                    width: 250,
+                    decoration: BoxDecoration(
+                        color: Color(0xFF200758), borderRadius: BorderRadius.circular(20)),
+                    child: TextButton(
+                      onPressed: () async {
+                        if(_formKey.currentState!.validate()){
+                          dynamic result = await _authenticationService.signUp(
+                              email: email,
+                              password: password1
+                          );
+                          if (result == null) {
+                            setState(() {
+                              error = 'Porfavor introduce un email válido.';
+                            });
+                          }
+                        }
+                      },
+                      child: Text(
+                        'Registrate',
+                        style: TextStyle(color: Colors.white, fontSize: 25),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 16.0),
+                    child: TextButton(
+                        onPressed: () {
+                          widget.toggleView();
+                        },
+                        child: Text(
+                          'Tienes una cuenta? Inicia sesión',
+                          style: TextStyle(color: Colors.white, fontSize: 17),
+                        )
+                    ),
+                  ),
+                 Center(
+                    child: Text(
+                      error,
+                      style: TextStyle(color: Colors.red, fontSize: 17, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
             ),
+          ),
+
           ),
         ),
     );
