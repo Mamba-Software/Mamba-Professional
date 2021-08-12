@@ -109,7 +109,13 @@ class _LoginState extends State<Login> {
                       )
                   ),
                 ),
-
+                Center(
+                  child: Text(
+                    error,
+                    style: TextStyle(color: Colors.red, fontSize: 17, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ],
             ),
           ),
