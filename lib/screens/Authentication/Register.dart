@@ -1,13 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/data/AuthService.dart';
 import 'package:provider/provider.dart';
+import '../Home/HomePage.dart';
 
 class Register extends StatefulWidget {
+  final Function toggleView;
+  Register({ required this.toggleView });
+
   @override
   _RegisterState createState() => _RegisterState();
 }
 
 class _RegisterState extends State<Register> {
+  final AuthenticationService _authenticationService = AuthenticationService();
+  String error = '';
   static const backgroundColor = Color(0xFFF4AD1F);
   // Switch Trainer Client
   bool isTrainer = false;
@@ -107,9 +115,9 @@ class _RegisterState extends State<Register> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                width: 180,
-                height: 135,
-                child: Image.asset('assets/images/mamba-logo.jpg')),
+                    width: 180,
+                    height: 135,
+                    child: Image.asset('assets/images/mamba-logo.jpg')),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -197,11 +205,11 @@ class _RegisterState extends State<Register> {
                     )
                 ),
                 Padding(
-                    padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 16.0),
-                    child: TextField(
-                      controller: passwordController2,
-                      obscureText: true,
-                      decoration: InputDecoration(
+                  padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 16.0),
+                  child: TextField(
+                    controller: passwordController2,
+                    obscureText: true,
+                    decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xFF200758), width: 2.5),
                           borderRadius: BorderRadius.circular(13.0),
@@ -212,30 +220,42 @@ class _RegisterState extends State<Register> {
                         ),
                         labelText: 'Repite tu contraseña',
                         labelStyle: password2Style
-                      ),
                     ),
                   ),
+                ),
                 Container(
                   height: 50,
                   width: 250,
                   decoration: BoxDecoration(
                       color: Color(0xFF200758), borderRadius: BorderRadius.circular(20)),
                   child: TextButton(
-                    onPressed: () {
-                      if (isFieldEmpty() == false) {
-                        fieldsNormalColors();
-                        if (isPasswordDiferent(passwordController1.text.trim(),passwordController2.text.trim())) {
-                          context.read<AuthenticationService>().signUp(
-                            email: emailController.text.trim(),
-                            password: passwordController1.text.trim(),
-                          );
-                        }
+                    onPressed: () async {
+                      dynamic result = await _authenticationService.signUp(
+                          email: emailController.text.trim(),
+                          password: passwordController1.text.trim()
+                      );
+                      if (result == null) {
+                        setState(() {
+                          error = 'Please supply a valid email';
+                        });
                       }
                     },
                     child: Text(
                       'Registrate',
                       style: TextStyle(color: Colors.white, fontSize: 25),
                     ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 16.0),
+                  child: TextButton(
+                      onPressed: () {
+                        widget.toggleView();
+                      },
+                      child: Text(
+                        'Tienes una cuenta? Inicia sesión',
+                        style: TextStyle(color: Colors.white, fontSize: 17),
+                      )
                   ),
                 ),
               ],

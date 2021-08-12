@@ -2,14 +2,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mamba_castelldefels/models/Usuario.dart';
 import 'package:provider/provider.dart';
 
 // Data Services
 import 'data/AuthService.dart';
 
 // Screens
-import 'features/login/HomePage.dart';
-import 'features/login/Login.dart';
+import 'package:mamba_castelldefels/screens/AuthenticationWrapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,15 +20,9 @@ void main() async {
 class Mamba extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<AuthenticationService>(
-          create: (_) => AuthenticationService(FirebaseAuth.instance),
-        ),
-        StreamProvider(
-          create: (context) => context.read<AuthenticationService>().authStateChanges,
-        )
-      ],
+    return StreamProvider<Usuario>.value(
+      // Valor es el nostre stream de usuaris
+      value: AuthenticationService().usuario,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: AuthenticationWrapper(),
@@ -36,7 +30,7 @@ class Mamba extends StatelessWidget {
     );
   }
 }
-// Depending LogIn/HomePage if you are authenticated or not.
+/* Depending LogIn/HomePage if you are authenticated or not.
 class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -47,4 +41,5 @@ class AuthenticationWrapper extends StatelessWidget {
     return Login();
   }
 }
+*/
 

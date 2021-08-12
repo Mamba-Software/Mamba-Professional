@@ -4,7 +4,19 @@ import 'package:mamba_castelldefels/data/AuthService.dart';
 import 'package:provider/provider.dart';
 import 'Register.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
+
+  final Function toggleView;
+  Login({ required this.toggleView });
+
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  final AuthenticationService _authenticationService = AuthenticationService();
+  String error = '';
+
   static const backgroundColor = Color(0xFFF4AD1F);
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -74,12 +86,16 @@ class Login extends StatelessWidget {
                     color: Color(0xFF200758), borderRadius: BorderRadius.circular(20)
                 ),
                 child: TextButton(
-                  onPressed: () {
-                    context.read<AuthenticationService>().signIn(
+                  onPressed: () async {
+                    dynamic result = await _authenticationService.signIn(
                       email: emailController.text.trim(),
-                      password: passwordController.text.trim(),
+                      password: passwordController.text.trim()
                     );
-                    //Navigator.push(context, CupertinoPageRoute(builder: (_) => HomePage()));
+                    if (result == null) {
+                      setState(() {
+                        error = 'Please supply a valid email';
+                      });
+                    }
                   },
                   child: Text(
                     'Login',
@@ -91,8 +107,7 @@ class Login extends StatelessWidget {
                 padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 16.0),
                 child: TextButton(
                     onPressed: () {
-                      Navigator.push(
-                          context, CupertinoPageRoute(builder: (_) => Register()));
+                      widget.toggleView();
                     },
                     child: Text(
                       'Nuevo usuario? Crea tu cuenta',
