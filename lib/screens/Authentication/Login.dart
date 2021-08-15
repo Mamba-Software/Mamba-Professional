@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/data/AuthService.dart';
-import 'package:mamba_castelldefels/globals/constants.dart';
+import 'package:mamba_castelldefels/globals/Constants.dart';
+import 'package:mamba_castelldefels/globals/Loading.dart';
 
 class Login extends StatefulWidget {
 
@@ -17,6 +18,7 @@ class _LoginState extends State<Login> {
   final AuthenticationService _authenticationService = AuthenticationService();
   // Global Constant
   static const backgroundColor = Color(0xFFF4AD1F);
+  bool loading = false;
   // FormVariables
   final _formKey = GlobalKey<FormState>();
   String email = '';
@@ -25,7 +27,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return loading ? Loading() :Scaffold(
       backgroundColor: backgroundColor,
       body: Center(
         child: SingleChildScrollView(
@@ -51,7 +53,7 @@ class _LoginState extends State<Login> {
                 Padding(
                     padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
                     child: TextFormField(
-                      validator: (val) => val!.length < 6 ? 'Introduza una contraseña con 6 caracteres o más' : null,
+                      validator: (val) => val!.length < 6 ? 'Introduzca una contraseña con 6 caracteres o más' : null,
                       onChanged: (val) {
                         setState(() => password = val);
                       },
@@ -78,6 +80,7 @@ class _LoginState extends State<Login> {
                     onPressed: () async {
                       if(_formKey.currentState!.validate()){
                         setState(() {
+                          loading = true;
                           error = '';
                         });
                         dynamic result = await _authenticationService.signIn(
@@ -87,6 +90,7 @@ class _LoginState extends State<Login> {
                         if (result == null) {
                           setState(() {
                             error = 'No encontramos este usuario.\n Porfavor prueba otra vez';
+                            loading = false;
                           });
                         }
                       }
