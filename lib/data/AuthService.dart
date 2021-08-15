@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/models/Usuario.dart';
 
+import 'Database.dart';
+
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
@@ -25,10 +27,15 @@ class AuthenticationService {
     }
   }
 
-  Future signUp({required String email, required String password}) async {
+  Future signUp({required String email, required String password, required String name, required bool isTrainer, }) async {
     try {
       UserCredential result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
       User user = result.user;
+      if (isTrainer) {
+        await DatabaseService(uid: user.uid).updateTrainerData(name,email);
+      } else {
+        await DatabaseService(uid: user.uid).updateClientData(name,email);
+      }
       return _usuarioFromFirebaseUser(user);
     } on FirebaseAuthException catch (e) {
       print(e.toString());

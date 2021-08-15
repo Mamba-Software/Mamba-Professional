@@ -130,11 +130,11 @@ class _RegisterState extends State<Register> {
                   Padding(
                     padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 16.0),
                     child: TextFormField(
-                      validator: (val) => val == password1 ? 'Contraseñas no coinciden' : null,
-                      onChanged: (val) {
-                        setState(() => password2 = val);
-                      },
-                      obscureText: true,
+                        validator: (val) => val == password1 ? null : 'Contraseñas no coinciden',
+                        onChanged: (val) {
+                          setState(() => password2 = val);
+                        },
+                        obscureText: true,
                         decoration: textFromInputDecoration.copyWith(labelText: 'Repite tu contraseña')
                     ),
                   ),
@@ -151,7 +151,9 @@ class _RegisterState extends State<Register> {
                           });
                           dynamic result = await _authenticationService.signUp(
                               email: email,
-                              password: password1
+                              password: password1,
+                              name: name,
+                              isTrainer: isTrainer,
                           );
                           if (result == null) {
                             setState(() {
