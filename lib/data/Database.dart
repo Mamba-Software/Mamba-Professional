@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/models/Client.dart';
+import 'package:mamba_castelldefels/models/Trainer.dart';
 
 class DatabaseService {
 
@@ -24,7 +25,7 @@ class DatabaseService {
     });
   }
 
-  // brew list from snapshot
+  // Client list from snapshot
   List<Client> _clientListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc){
       return Client(
@@ -39,10 +40,18 @@ class DatabaseService {
     return clientsCollection.snapshots().map(_clientListFromSnapshot);
   }
 
-
+  // Trainer list from snapshot
+  List<Trainer> _trainerListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc){
+      return Trainer(
+        name: doc.get("name") ?? '',
+        email: doc.get("email") ?? 0,
+      );
+    }).toList();
+  }
 
   // Get Trainers Stream
-  Stream<QuerySnapshot> get trainer {
-    return trainersCollection.snapshots();
+  Stream<List<Trainer>> get trainers {
+    return trainersCollection.snapshots().map(_trainerListFromSnapshot);
   }
 }
