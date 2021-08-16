@@ -1,4 +1,7 @@
+// Flutter Libs
 import 'package:flutter/material.dart';
+// Internal App Tools
+import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/models/Trainer.dart';
 
 class TrainerTile extends StatelessWidget {
@@ -17,7 +20,7 @@ class TrainerTile extends StatelessWidget {
             radius: 25.0,
             backgroundColor: Color(0x80F4AD1F),
           ),
-          title: Text(trainer.name),
+          title: Text(trainer.name, style: purpleTextStyle),
           subtitle: Text('Has ${trainer.email} as its email'),
         ),
       ),

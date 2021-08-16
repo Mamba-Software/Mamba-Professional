@@ -11,7 +11,6 @@ class TrainerList extends StatefulWidget {
 class _TrainerListState extends State<TrainerList> {
   @override
   Widget build(BuildContext context) {
-
     final trainers = Provider.of<List<Trainer>>(context);
     if (trainers != null) {
       return ListView.builder(

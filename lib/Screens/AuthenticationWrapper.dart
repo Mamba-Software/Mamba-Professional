@@ -1,9 +1,10 @@
-import 'package:mamba_castelldefels/data/AuthService.dart';
+// Flutter Libs
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+// Internal App Tools
 import 'package:mamba_castelldefels/models/Usuario.dart';
 import 'package:mamba_castelldefels/screens/Authentication/Authenticate.dart';
 import 'package:mamba_castelldefels/screens/Home/HomePage.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AuthenticationWrapper extends StatelessWidget {
   @override

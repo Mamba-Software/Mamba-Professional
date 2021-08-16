@@ -1,7 +1,11 @@
+// Flutter Libs
 import 'package:flutter/material.dart';
+// Internal App Resources
 import 'package:mamba_castelldefels/screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/screens/Authentication/Register.dart';
 
+// Authentiaction Widget
+// Depending on Boolean it shows Login / Register
 class Authenticate extends StatefulWidget {
   @override
   _AuthenticateState createState() => _AuthenticateState();

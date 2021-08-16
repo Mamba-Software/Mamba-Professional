@@ -1,4 +1,6 @@
+// Flutter Libs
 import 'package:cloud_firestore/cloud_firestore.dart';
+// Internal App Tools
 import 'package:mamba_castelldefels/models/Client.dart';
 import 'package:mamba_castelldefels/models/Trainer.dart';
 

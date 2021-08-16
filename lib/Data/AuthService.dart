@@ -1,6 +1,7 @@
+// Flutter Libs
 import 'package:firebase_auth/firebase_auth.dart';
+// Internal App Tools
 import 'package:mamba_castelldefels/models/Usuario.dart';
-
 import 'Database.dart';
 
 class AuthenticationService {
@@ -16,6 +17,7 @@ class AuthenticationService {
     return _firebaseAuth.authStateChanges().map(_usuarioFromFirebaseUser);
   }
 
+  // Signin method using Firebase
   Future signIn({required String email, required String password}) async {
     try {
       UserCredential result = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
@@ -27,6 +29,7 @@ class AuthenticationService {
     }
   }
 
+  // Signup method using Firebase
   Future signUp({required String email, required String password, required String name, required bool isTrainer, }) async {
     try {
       UserCredential result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
@@ -43,6 +46,7 @@ class AuthenticationService {
     }
   }
 
+  // Signout method using Firebase
   Future signOut() async {
     try {
       return await _firebaseAuth.signOut();

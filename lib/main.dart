@@ -23,6 +23,7 @@ class Mamba extends StatelessWidget {
       // Valor es el nostre stream de usuaris
       value: AuthenticationService().usuario,
       child: MaterialApp(
+        theme: ThemeData(fontFamily: 'Raleway'),
         debugShowCheckedModeBanner: false,
         home: AuthenticationWrapper(),
       ),

@@ -1,3 +1,4 @@
+// Class Model for a Trainer
 class Trainer {
 
   final String name;

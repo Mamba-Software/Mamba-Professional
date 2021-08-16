@@ -1,4 +1,7 @@
+// Flutter Libs
 import 'package:flutter/material.dart';
+// Internal App Tools
+import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/models/Client.dart';
 
 class ClientTile extends StatelessWidget {
@@ -17,7 +20,7 @@ class ClientTile extends StatelessWidget {
             radius: 25.0,
             backgroundColor: Color(0x80F4AD1F),
           ),
-          title: Text(client.name),
+          title: Text(client.name, style: purpleTextStyle),
           subtitle: Text('Has ${client.email} as its email'),
         ),
       ),

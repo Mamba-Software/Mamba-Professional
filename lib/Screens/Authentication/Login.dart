@@ -1,9 +1,13 @@
+// Flutter Libs
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/data/AuthService.dart';
-import 'package:mamba_castelldefels/globals/Constants.dart';
-import 'package:mamba_castelldefels/globals/Loading.dart';
+// Internal App Resources
+import 'package:mamba_castelldefels/Globals/Globals.dart';
+import 'package:mamba_castelldefels/Globals/Loading.dart';
+// Authentication Service
+import 'package:mamba_castelldefels/Data/AuthService.dart';
 
+// Login Widget
 class Login extends StatefulWidget {
 
   final Function toggleView;
@@ -16,8 +20,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   // Authentication Service
   final AuthenticationService _authenticationService = AuthenticationService();
-  // Global Constant
-  static const backgroundColor = Color(0xFFF4AD1F);
+  // Loading Screen Boolean
   bool loading = false;
   // FormVariables
   final _formKey = GlobalKey<FormState>();
@@ -28,7 +31,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return loading ? Loading() :Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: yellowColor,
       body: Center(
         child: SingleChildScrollView(
           child: Form(
@@ -37,11 +40,12 @@ class _LoginState extends State<Login> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                    width: 180,
-                    height: 135,
-                    child: Image.asset('assets/images/mamba-logo.jpg')),
+                    padding: EdgeInsets.only(top: 16.0),
+                    width: 200,
+                    height: 100,
+                    child: Image.asset(logo_extended)),
                 Padding(
-                    padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
+                    padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 13.0, bottom: 0.0),
                     child: TextFormField(
                       validator: (val) => val!.isEmpty ? 'Escribe tu email' : null,
                       onChanged: (val) {
@@ -67,14 +71,14 @@ class _LoginState extends State<Login> {
                   },
                   child: Text(
                     'Has olvidado tu contraseña?',
-                    style: TextStyle(color: Colors.white, fontSize: 17),
+                    style: whiteTextStyle,
                   ),
                 ),
                 Container(
                   height: 50,
                   width: 250,
                   decoration: BoxDecoration(
-                      color: Color(0xFF200758), borderRadius: BorderRadius.circular(20)
+                      color: purpleColor, borderRadius: BorderRadius.circular(20)
                   ),
                   child: TextButton(
                     onPressed: () async {
@@ -97,7 +101,7 @@ class _LoginState extends State<Login> {
                     },
                     child: Text(
                       'Login',
-                      style: TextStyle(color: Colors.white, fontSize: 25),
+                      style: whiteTextStyle.copyWith(fontSize: 28),
                     ),
                   ),
                 ),
@@ -109,14 +113,14 @@ class _LoginState extends State<Login> {
                       },
                       child: Text(
                         'Nuevo usuario? Crea tu cuenta',
-                        style: TextStyle(color: Colors.white, fontSize: 17),
+                        style: whiteTextStyle,
                       )
                   ),
                 ),
                 Center(
                   child: Text(
                     error,
-                    style: TextStyle(color: Colors.red, fontSize: 17, fontWeight: FontWeight.bold),
+                    style: redTextStyle.copyWith(fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                 ),

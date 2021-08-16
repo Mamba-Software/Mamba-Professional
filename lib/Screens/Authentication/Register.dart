@@ -1,9 +1,13 @@
+// Flutter Libs
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/data/AuthService.dart';
-import 'package:mamba_castelldefels/globals/Constants.dart';
-import 'package:mamba_castelldefels/globals/Loading.dart';
+// Internal App Resources
+import 'package:mamba_castelldefels/Globals/Globals.dart';
+import 'package:mamba_castelldefels/Globals/Loading.dart';
+// Authentication Service
+import 'package:mamba_castelldefels/Data/AuthService.dart';
 
+// Register Widget
 class Register extends StatefulWidget {
   final Function toggleView;
   Register({ required this.toggleView });
@@ -13,30 +17,31 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  // Authentication Service
   final AuthenticationService _authenticationService = AuthenticationService();
-  static const backgroundColor = Color(0xFFF4AD1F);
+  // Loading Screen Boolean
   bool loading = false;
   // Switch Trainer Client
   bool isTrainer = false;
-  Color textColorClient = Colors.white;
-  Color textColorTrainer = Color(0xFF200758);
+  Color textColorClient = whiteColor;
+  Color textColorTrainer = purpleColor;
   FontWeight fontWeightClient = FontWeight.bold;
   FontWeight fontWeightTrainer = FontWeight.normal;
   void toggleSwitch(bool value) {
     if(isTrainer == false) {
       setState(() {
         isTrainer = true;
-        textColorTrainer = Colors.white;
+        textColorTrainer = whiteColor;
         fontWeightTrainer = FontWeight.bold;
-        textColorClient = Color(0xFF200758);
+        textColorClient = purpleColor;
         fontWeightClient = FontWeight.normal;
       });
     } else {
       setState(() {
         isTrainer = false;
-        textColorClient = Colors.white;
+        textColorClient = whiteColor;
         fontWeightClient = FontWeight.bold;
-        textColorTrainer = Color(0xFF200758);
+        textColorTrainer = purpleColor;
         fontWeightTrainer = FontWeight.normal;
       });
     }
@@ -52,7 +57,7 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return loading ? Loading() :Scaffold(
-        backgroundColor: backgroundColor,
+        backgroundColor: yellowColor,
         body: Center(
           child: SingleChildScrollView(
             child: Form(
@@ -62,9 +67,9 @@ class _RegisterState extends State<Register> {
                 children: <Widget>[
                   Container(
                       padding: EdgeInsets.only(top: 16.0),
-                      width: 180,
-                      height: 135,
-                      child: Image.asset('assets/images/mamba-logo.jpg')),
+                      width: 200,
+                      height: 100,
+                      child: Image.asset(logo_extended)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -80,10 +85,10 @@ class _RegisterState extends State<Register> {
                           child: new Switch(
                             onChanged: toggleSwitch,
                             value: isTrainer,
-                            activeColor: Color(0xFF200758),
-                            activeTrackColor: Color(0x8F190763),
-                            inactiveThumbColor: Color(0xFF200758),
-                            inactiveTrackColor: Color(0xA6190763),
+                            activeColor: purpleColor,
+                            activeTrackColor: purpleLightColor,
+                            inactiveThumbColor: purpleColor,
+                            inactiveTrackColor: purpleLightColor,
                           ),
                         ),
                       ),
@@ -142,7 +147,7 @@ class _RegisterState extends State<Register> {
                     height: 50,
                     width: 250,
                     decoration: BoxDecoration(
-                        color: Color(0xFF200758), borderRadius: BorderRadius.circular(20)),
+                        color: purpleColor, borderRadius: BorderRadius.circular(20)),
                     child: TextButton(
                       onPressed: () async {
                         if(_formKey.currentState!.validate()){
@@ -165,7 +170,7 @@ class _RegisterState extends State<Register> {
                       },
                       child: Text(
                         'Registrate',
-                        style: TextStyle(color: Colors.white, fontSize: 25),
+                        style: whiteTextStyle.copyWith(fontSize: 28),
                       ),
                     ),
                   ),
@@ -177,14 +182,14 @@ class _RegisterState extends State<Register> {
                         },
                         child: Text(
                           'Tienes una cuenta? Inicia sesión',
-                          style: TextStyle(color: Colors.white, fontSize: 17),
+                          style: whiteTextStyle,
                         )
                     ),
                   ),
                  Center(
                     child: Text(
                       error,
-                      style: TextStyle(color: Colors.red, fontSize: 17, fontWeight: FontWeight.bold),
+                      style: redTextStyle.copyWith(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                   ),

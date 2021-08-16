@@ -1,3 +1,4 @@
+// Class Model for a Client
 class Client {
 
   final String name;

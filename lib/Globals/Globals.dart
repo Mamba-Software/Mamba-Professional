@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+
+// Main Variables
+final logo_extended = "assets/images/ExtendedWhite.png";
+final logo_simple = "assets/images/SimpleWhite.png";
+
+// Styles
+const yellowColor = Color(0xFFF4AD1F);
+const purpleColor = Color(0xFF200758);
+const purpleLightColor = Color(0x8F190763);
+const whiteColor = Colors.white;
+const redColor = Colors.red;
+
+// Text Style
+const purpleTextStyle = TextStyle(color: purpleColor, fontSize: 18);
+const whiteTextStyle = TextStyle(color: whiteColor, fontSize: 18);
+const redTextStyle = TextStyle(color: redColor, fontSize: 20);
+
+// Text Input Decoration
+final textFromInputDecoration = InputDecoration(
+    labelStyle: purpleTextStyle,
+    enabledBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: purpleColor, width: 2.5),
+      borderRadius: BorderRadius.circular(13.0),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: purpleColor, width: 2.5),
+      borderRadius: BorderRadius.circular(13.0),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: redColor, width: 2.5),
+      borderRadius: BorderRadius.circular(13.0),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: redColor, width: 2.5),
+      borderRadius: BorderRadius.circular(13.0),
+    ),
+  );
