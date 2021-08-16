@@ -36,7 +36,9 @@ class _HomePageState extends State<HomePage> {
         ],
         child: Scaffold(
           appBar: AppBar(
-            title: Text('MAMBA'),
+            title: Container(
+                height: 30,
+                child: Image.asset(logo_extended)),
             backgroundColor: yellowColor,
             elevation: 0.0,
             actions: <Widget>[

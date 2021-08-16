@@ -19,9 +19,9 @@ class Loading extends StatelessWidget {
                 width: 200,
                 height: 60,
                 child: Image.asset(logo_simple)),
-            SpinKitWave(
+            SpinKitThreeBounce(
               color: whiteColor,
-              size: 80.0,
+              size: 40.0
             ),
           ],
         ),

@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mamba.castelldefels.mamba_castelldefels">
    <application
-        android:label="mamba_castelldefels"
-        android:icon="@mipmap/ic_launcher">
+        android:label="MAMBA"
+        android:icon="@mipmap/icon_launcher">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
