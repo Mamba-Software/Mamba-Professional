@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 // Internal App Tools
 import 'package:mamba_castelldefels/models/Usuario.dart';
 import 'package:mamba_castelldefels/screens/Authentication/Authenticate.dart';
-import 'package:mamba_castelldefels/screens/Home/HomePage.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/HomePage.dart';
 
 class AuthenticationWrapper extends StatelessWidget {
   @override
