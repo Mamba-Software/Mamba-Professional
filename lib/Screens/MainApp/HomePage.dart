@@ -67,7 +67,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          body: navBarTabs[_currentIndex],
+          body: SingleChildScrollView(
+              child: navBarTabs[_currentIndex]
+          ),
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _currentIndex,
             type: BottomNavigationBarType.shifting,
@@ -105,40 +107,3 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-/*
-TextButton.icon(
-                icon: Icon(Icons.person, color: whiteColor),
-                label: Text(
-                  'Cerrar Sesión',
-                  style: whiteTextStyle.copyWith(fontSize: 17.0),
-                ),
-                onPressed: () async {
-                  setState(() {
-                    loading = true;
-                  });
-                  await _authenticationService.signOut();
-                },
-              ),
-
-Column(
-mainAxisAlignment: MainAxisAlignment.start,
-children: <Widget>[
-Padding(
-padding: EdgeInsets.only(top: 16.0),
-child: Text(
-'Entrenadores',
-style: purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
-),
-),
-TrainerList(),
-Padding(
-padding: EdgeInsets.only(top: 16.0),
-child: Text(
-'Clientes',
-style: purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
-),
-),
-ClientList()
-],
-),
-*/

@@ -1,7 +1,9 @@
+// Flutter Libs
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/models/Client.dart';
-import 'package:mamba_castelldefels/screens/Home/ClientTile.dart';
 import 'package:provider/provider.dart';
+// Internal App Tools
+import 'package:mamba_castelldefels/models/Client.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/ClientTile.dart';
 
 class ClientList extends StatefulWidget {
   @override

@@ -1,6 +1,9 @@
 // Flutter Libs
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
+// Internal App Tools
+import 'ClientList.dart';
+import 'TrainerList.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -12,6 +15,35 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text("HOME",style: purpleTextStyle.copyWith(fontSize: 30, fontWeight: FontWeight.bold)));
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(top: 16.0),
+          child: Text(
+            'Entrenadores',
+            style: purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+          ),
+        ),
+        TrainerList(),
+        Padding(
+          padding: EdgeInsets.only(top: 16.0),
+          child: Text(
+            'Clientes',
+            style: purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+          ),
+        ),
+        ClientList(),
+      ],
+    );
   }
 }
+
+/*
+Container(
+      height: MediaQuery.of(context).size.height,
+        child: Expanded(
+          child:
+        ),
+    );
+ */
