@@ -19,9 +19,10 @@ void main() async {
 class Mamba extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<Usuario>.value(
+    return StreamProvider<Usuario?>.value(
       // Valor es el nostre stream de usuaris
       value: AuthenticationService().usuario,
+      initialData: null,
       child: MaterialApp(
         theme: ThemeData(fontFamily: 'Raleway'),
         debugShowCheckedModeBanner: false,

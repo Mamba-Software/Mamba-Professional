@@ -15,16 +15,12 @@ class _ClientListState extends State<ClientList> {
   Widget build(BuildContext context) {
 
     final clients = Provider.of<List<Client>>(context);
-    if (clients != null) {
-      return ListView.builder(
-        shrinkWrap: true,
-        itemCount: clients.length,
-        itemBuilder: (context, index) {
-          return ClientTile(client: clients[index]);
-        },
-      );
-    } else {
-      return ListView();
-    }
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: clients.length,
+      itemBuilder: (context, index) {
+        return ClientTile(client: clients[index]);
+      },
+    );
   }
 }

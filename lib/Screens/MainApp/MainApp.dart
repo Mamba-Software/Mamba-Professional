@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // // Authentication Service
-import 'package:mamba_castelldefels/data/AuthService.dart';
+//import 'package:mamba_castelldefels/data/AuthService.dart';
 // Database Service
 import 'package:mamba_castelldefels/data/Database.dart';
 // Internal App Tools
@@ -24,7 +24,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // Authentication Service
-  final AuthenticationService _authenticationService = AuthenticationService();
+  //final AuthenticationService _authenticationService = AuthenticationService();
   // Loading Screen Boolean
   bool loading = false;
   // Index of Bottom Navigation Bar
@@ -40,8 +40,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return loading ? Loading() :MultiProvider(
         providers: [
-          StreamProvider<List<Client>>.value(value: DatabaseService(uid:'').clients),
-          StreamProvider<List<Trainer>>.value(value: DatabaseService(uid:'').trainers),
+          StreamProvider<List<Client>>.value(value: DatabaseService(uid:'').clients, initialData: [],),
+          StreamProvider<List<Trainer>>.value(value: DatabaseService(uid:'').trainers, initialData: [],),
         ],
         child: Scaffold(
           appBar: AppBar(

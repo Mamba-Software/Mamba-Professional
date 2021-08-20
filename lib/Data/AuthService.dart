@@ -8,7 +8,7 @@ class AuthenticationService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   // Create User Object based on FireBase User.
-  Usuario? _usuarioFromFirebaseUser(User user) {
+  Usuario? _usuarioFromFirebaseUser(User? user) {
     return user != null ? Usuario(uid: user.uid) : null;
   }
 
@@ -21,8 +21,8 @@ class AuthenticationService {
   Future signIn({required String email, required String password}) async {
     try {
       UserCredential result = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
-      User user = result.user;
-      return _usuarioFromFirebaseUser(user);
+      User? user = result.user;
+      return _usuarioFromFirebaseUser(user!);
     } on FirebaseAuthException catch (e) {
       print(e.toString());
       return null;
@@ -33,11 +33,11 @@ class AuthenticationService {
   Future signUp({required String email, required String password, required String name, required bool isTrainer, }) async {
     try {
       UserCredential result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
-      User user = result.user;
+      User? user = result.user;
       if (isTrainer) {
-        await DatabaseService(uid: user.uid).updateTrainerData(name,email);
+        await DatabaseService(uid: user!.uid).updateTrainerData(name,email);
       } else {
-        await DatabaseService(uid: user.uid).updateClientData(name,email);
+        await DatabaseService(uid: user!.uid).updateClientData(name,email);
       }
       return _usuarioFromFirebaseUser(user);
     } on FirebaseAuthException catch (e) {

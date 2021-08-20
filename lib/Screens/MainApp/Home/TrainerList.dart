@@ -15,16 +15,12 @@ class _TrainerListState extends State<TrainerList> {
   @override
   Widget build(BuildContext context) {
     final trainers = Provider.of<List<Trainer>>(context);
-    if (trainers != null) {
-      return ListView.builder(
-        shrinkWrap: true,
-        itemCount: trainers.length,
-        itemBuilder: (context, index) {
-          return TrainerTile(trainer: trainers[index]);
-        },
-      );
-    } else {
-      return ListView();
-    }
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: trainers.length,
+      itemBuilder: (context, index) {
+        return TrainerTile(trainer: trainers[index]);
+      },
+    );
   }
 }

@@ -9,7 +9,7 @@ import 'package:mamba_castelldefels/Screens/MainApp/MainApp.dart';
 class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final usuario = Provider.of<Usuario>(context);
+    final usuario = Provider.of<Usuario?>(context);
     // return either the Home or Authenticate widget
     if (usuario == null) {
       return Authenticate();
