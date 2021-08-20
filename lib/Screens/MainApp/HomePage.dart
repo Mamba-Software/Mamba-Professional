@@ -52,19 +52,6 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: yellowColor,
             elevation: 0.0,
             actions: <Widget>[
-              TextButton.icon(
-                icon: Icon(Icons.person, color: whiteColor),
-                label: Text(
-                  'Cerrar Sesión',
-                  style: whiteTextStyle.copyWith(fontSize: 17.0),
-                ),
-                onPressed: () async {
-                  setState(() {
-                    loading = true;
-                  });
-                  await _authenticationService.signOut();
-                },
-              ),
             ],
           ),
           body: SingleChildScrollView(
