@@ -54,9 +54,7 @@ class _HomePageState extends State<HomePage> {
             actions: <Widget>[
             ],
           ),
-          body: SingleChildScrollView(
-              child: navBarTabs[_currentIndex]
-          ),
+          body: navBarTabs[_currentIndex],
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _currentIndex,
             type: BottomNavigationBarType.shifting,

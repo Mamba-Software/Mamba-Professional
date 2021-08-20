@@ -33,7 +33,9 @@ class _HomeState extends State<Home> {
             style: purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
-        ClientList(),
+        Expanded(
+            child: ClientList()
+        ),
       ],
     );
   }
