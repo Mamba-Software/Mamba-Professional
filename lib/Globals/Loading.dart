@@ -18,7 +18,7 @@ class Loading extends StatelessWidget {
                 padding: EdgeInsets.only(bottom: 10.0),
                 width: 200,
                 height: 60,
-                child: Image.asset(logo_simple)),
+                child: Image.asset(logoSimple)),
             SpinKitThreeBounce(
               color: whiteColor,
               size: 40.0

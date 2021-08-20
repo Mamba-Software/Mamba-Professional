@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
             title: Container(
                 height: 30,
                 alignment: Alignment.center,
-                child: Image.asset(logo_extended)),
+                child: Image.asset(logoExtended)),
             backgroundColor: yellowColor,
             elevation: 0.0,
             actions: <Widget>[

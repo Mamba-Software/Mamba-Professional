@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 // Main Variables
-final logo_extended = "assets/images/ExtendedWhite.png";
-final logo_simple = "assets/images/SimpleWhite.png";
+final logoExtended = "assets/images/ExtendedWhite.png";
+final logoSimple = "assets/images/SimpleWhite.png";
 
 // Styles
 const yellowColor = Color(0xFFF4AD1F);

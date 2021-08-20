@@ -69,7 +69,7 @@ class _RegisterState extends State<Register> {
                       padding: EdgeInsets.only(top: 16.0),
                       width: 200,
                       height: 100,
-                      child: Image.asset(logo_extended)),
+                      child: Image.asset(logoExtended)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[

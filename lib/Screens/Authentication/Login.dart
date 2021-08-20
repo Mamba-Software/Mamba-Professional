@@ -43,7 +43,7 @@ class _LoginState extends State<Login> {
                     padding: EdgeInsets.only(top: 16.0),
                     width: 200,
                     height: 100,
-                    child: Image.asset(logo_extended)),
+                    child: Image.asset(logoExtended)),
                 Padding(
                     padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 13.0, bottom: 0.0),
                     child: TextFormField(
