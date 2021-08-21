@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 final logoExtended = "assets/images/ExtendedWhite.png";
 final logoSimple = "assets/images/SimpleWhite.png";
 
+// User
+String userUID = "";
+bool userIsTrainer = false;
+
 // Styles
 const yellowColor = Color(0xFFF4AD1F);
 const purpleColor = Color(0xFF200758);

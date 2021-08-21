@@ -1,19 +1,26 @@
 // Flutter Libs
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mamba_castelldefels/Models/FirebaseUser.dart';
 // Internal App Tools
-import 'package:mamba_castelldefels/models/Usuario.dart';
+import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'Database.dart';
+import 'package:mamba_castelldefels/Globals/Globals.dart';
 
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   // Create User Object based on FireBase User.
-  Usuario? _usuarioFromFirebaseUser(User? user) {
-    return user != null ? Usuario(uid: user.uid) : null;
+  FirebaseUser? _usuarioFromFirebaseUser(User? user) {
+    if (user != null) {
+      userUID = user.uid;
+      return FirebaseUser(uid: user.uid);
+    } else {
+      return null;
+    }
   }
 
   // Stream of Users based on our User model.
-  Stream<Usuario?> get usuario {
+  Stream<FirebaseUser?> get usuarioFirebase {
     return _firebaseAuth.authStateChanges().map(_usuarioFromFirebaseUser);
   }
 
@@ -35,9 +42,11 @@ class AuthenticationService {
       UserCredential result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
       User? user = result.user;
       if (isTrainer) {
-        await DatabaseService(uid: user!.uid).updateTrainerData(name,email);
+        await DatabaseService(uid: user!.uid).updateUsersData(user.uid,true,true);
+        await DatabaseService(uid: user.uid).updateTrainerData(name,email);
       } else {
-        await DatabaseService(uid: user!.uid).updateClientData(name,email);
+        await DatabaseService(uid: user!.uid).updateUsersData(user.uid,false,true);
+        await DatabaseService(uid: user.uid).updateClientData(name,email);
       }
       return _usuarioFromFirebaseUser(user);
     } on FirebaseAuthException catch (e) {

@@ -7,13 +7,13 @@ import 'package:provider/provider.dart';
 // Database Service
 import 'package:mamba_castelldefels/data/Database.dart';
 // Internal App Tools
-import 'package:mamba_castelldefels/models/Client.dart';
-import 'package:mamba_castelldefels/models/Trainer.dart';
+import 'package:mamba_castelldefels/Models/Client.dart';
+import 'package:mamba_castelldefels/Models/Trainer.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Loading.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Chat/Chat.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Home.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Perfil/Perfil.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/Chat.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Trainers/Home.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/Perfil.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -40,8 +40,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return loading ? Loading() :MultiProvider(
         providers: [
-          StreamProvider<List<Client>>.value(value: DatabaseService(uid:'').clients, initialData: [],),
-          StreamProvider<List<Trainer>>.value(value: DatabaseService(uid:'').trainers, initialData: [],),
+          StreamProvider<List<Client>>.value(value: DatabaseService(uid:userUID).clients, initialData: [],),
+          StreamProvider<List<Trainer>>.value(value: DatabaseService(uid:userUID).trainers, initialData: [],),
         ],
         child: Scaffold(
           appBar: AppBar(

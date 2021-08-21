@@ -2,6 +2,9 @@
 class Usuario {
 
   final String uid;
-  Usuario({ required this.uid });
+  final bool isTrainer;
+  final bool isFirst;
+
+  Usuario({ required this.uid, required this.isTrainer, required this.isFirst });
 
 }

@@ -1,20 +1,19 @@
 // Flutter Libs
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Data/Database.dart';
+import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:provider/provider.dart';
 // Internal App Tools
-import 'package:mamba_castelldefels/models/Usuario.dart';
-import 'package:mamba_castelldefels/screens/Authentication/Authenticate.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MainApp.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/Authenticate.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/FirstTimeWrapper.dart';
+import 'package:mamba_castelldefels/Models/FirebaseUser.dart';
 
 class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final usuario = Provider.of<Usuario?>(context);
-    // return either the Home or Authenticate widget
-    if (usuario == null) {
-      return Authenticate();
-    } else {
-      return HomePage();
-    }
+    final firebaseUser = Provider.of<FirebaseUser?>(context);
+    return StreamProvider<Usuario>.value(value: DatabaseService(uid: '').singleUser, initialData: Usuario(uid: "uid", isTrainer: false, isFirst: true),
+      child: firebaseUser == null ? Authenticate() : FirstTimeWrapper(),
+    );
   }
 }
