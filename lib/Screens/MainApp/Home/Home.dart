@@ -11,8 +11,9 @@ import 'package:mamba_castelldefels/Models/Client.dart';
 import 'package:mamba_castelldefels/Models/Trainer.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Loading.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/CercaDeTi/CercaDeTi.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/TuMarca/TuMarca.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/Chat.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Trainers/Home.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/Perfil.dart';
 
 class HomePage extends StatefulWidget {
@@ -31,13 +32,17 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 1;
   // Navigation Bar Tabs
   final navBarTabs= [
-    Perfil(),
-    Home(),
+    CercaDeTi(),
+    TuMarca(),
     Chat(),
+    Perfil(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    if(userIsTrainer){
+
+    }
     return loading ? Loading() :MultiProvider(
         providers: [
           StreamProvider<List<Client>>.value(value: DatabaseService().clients, initialData: [],),
@@ -61,18 +66,23 @@ class _HomePageState extends State<HomePage> {
             iconSize: 32,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                icon: Icon(Icons.person, color: whiteColor,),
-                label: 'Perfil',
+                icon: Icon(Icons.explore_outlined, color: whiteColor,),
+                label: 'Cerca de ti',
                 backgroundColor: yellowColor,
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.home, color: whiteColor,),
-                label: 'Home',
+                icon: Icon(Icons.fitness_center_rounded, color: whiteColor,),
+                label: 'Tu Marca',
                 backgroundColor: yellowColor,
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.chat, color: whiteColor,),
                 label: 'Chat',
+                backgroundColor: yellowColor,
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.account_circle_outlined, color: whiteColor,),
+                label: 'Perfil',
                 backgroundColor: yellowColor,
               ),
             ],

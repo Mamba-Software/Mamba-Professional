@@ -2,17 +2,17 @@
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 // Internal App Tools
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Trainers/ClientList.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Trainers/TrainerList.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/CercaDeTi/TrainerList.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/CercaDeTi/ClientList.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class CercaDeTi extends StatefulWidget {
+  const CercaDeTi({Key? key}) : super(key: key);
 
   @override
-  _HomeState createState() => _HomeState();
+  _CercaDeTiState createState() => _CercaDeTiState();
 }
 
-class _HomeState extends State<Home> {
+class _CercaDeTiState extends State<CercaDeTi> {
   @override
   Widget build(BuildContext context) {
     return Column(

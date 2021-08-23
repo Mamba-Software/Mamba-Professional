@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // App Internal Tools
 import 'package:mamba_castelldefels/Models/Trainer.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Trainers/TrainerTile.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/CercaDeTi/TrainerTile.dart';
 
 
 class TrainerList extends StatefulWidget {

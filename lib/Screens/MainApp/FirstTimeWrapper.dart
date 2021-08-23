@@ -7,7 +7,7 @@ import 'package:mamba_castelldefels/Globals/Loading.dart';
 import 'package:mamba_castelldefels/Models/Trainer.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/FirstTime/FirstTime.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Home.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Models/Client.dart';
 
