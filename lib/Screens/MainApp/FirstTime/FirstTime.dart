@@ -12,17 +12,21 @@ import 'package:mamba_castelldefels/Screens/MainApp/FirstTime/FirstClient.dart';
 // First Time Widget
 // Depending on Boolean it shows First Time Trainer / Client
 class FirstTime extends StatelessWidget {
-  var widget;
   @override
   Widget build(BuildContext context) {
-    late var usuario = Provider.of<Usuario>(context);
-    userIsTrainer = usuario.isTrainer;
-    widget = Loading();
-    if (userIsTrainer) {
-      widget =  FirstTrainer();
-    } else {
-      widget =  FirstClient();
-    }
-    return widget;
+    return FutureBuilder<Usuario?>(
+      future: Provider.of<Future<Usuario?>>(context),
+      builder: (context, snapshot) {
+        // Items are not available and you need to handle this situation, simple solution is to show a progress indicator
+        if (!snapshot.hasData) {
+          return Loading();
+        }
+        if(snapshot.requireData!.isTrainer) {
+          return FirstTrainer();
+        } else {
+          return FirstClient();
+        }
+      }
+    );
   }
 }

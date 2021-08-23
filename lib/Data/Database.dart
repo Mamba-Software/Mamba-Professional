@@ -39,22 +39,28 @@ class DatabaseService {
 
   // USERS
   // User From Snapshot
-  Usuario _userFromSnapshot(QuerySnapshot snapshot) {
+  Future<Usuario> _userFromSnapshot(QuerySnapshot snapshot) {
     if (snapshot.docs.length != 0) {
       for (var i = 0; i < snapshot.docs.length; i++) {
         if (snapshot.docs[i].id == userUID) {
-          return Usuario(
-            uid: snapshot.docs[i].get("uid"),
-            isTrainer: snapshot.docs[i].get("isTrainer"),
-            isFirst: snapshot.docs[i].get("isFirst"),
+          Future<Usuario> future = Future(() =>
+              Usuario(
+                uid: snapshot.docs[i].get("uid"),
+                isTrainer: snapshot.docs[i].get("isTrainer"),
+                isFirst: snapshot.docs[i].get("isFirst"),
+              )
           );
+          return future;
         }
       }
     }
-    return Usuario(uid: "uid", isTrainer: false, isFirst: true);
+    Future<Usuario> future = Future(() =>
+        Usuario(uid: "uid", isTrainer: false, isFirst: true)
+    );
+    return future;
   }
   // Get User Stream
-  Stream<Usuario> get singleUser {
+  Stream<Future<Usuario>> get singleUser {
     return usersCollection.snapshots().map(_userFromSnapshot);
   }
 

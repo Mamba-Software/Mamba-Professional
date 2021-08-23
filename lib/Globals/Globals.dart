@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Models/Client.dart';
+import 'package:mamba_castelldefels/Models/Trainer.dart';
 
 // Main Variables
 final logoExtended = "assets/images/ExtendedWhite.png";
@@ -7,6 +9,9 @@ final logoSimple = "assets/images/SimpleWhite.png";
 // User
 String userUID = "";
 bool userIsTrainer = false;
+// User Models
+Client currentClient = new Client(name: "name", email: "email");
+Trainer currentTrainer = new Trainer(name: "name", email: "email");
 
 // Styles
 const yellowColor = Color(0xFFF4AD1F);

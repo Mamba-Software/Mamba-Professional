@@ -9,17 +9,25 @@ import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
 class FirstTimeWrapper extends StatelessWidget {
-  var widget;
   @override
   Widget build(BuildContext context) {
-    late var usuario = Provider.of<Usuario>(context);
-    userIsTrainer = usuario.isTrainer;
-    widget = Loading();
-    if (usuario.isFirst) {
-      widget =  FirstTime();
-    } else {
-      widget =  HomePage();
-    }
-    return widget;
+    return FutureBuilder<Usuario?>(
+      future: Provider.of<Future<Usuario?>>(context),
+      builder: (context, snapshot) {
+        print("hasData");
+        print(!snapshot.hasData);
+        // Items are not available and you need to handle this situation, simple solution is to show a progress indicator
+        if (!snapshot.hasData) {
+          return Loading();
+        }
+        print("isFirst");
+        print(snapshot.requireData!.isFirst);
+        if (snapshot.requireData!.isFirst) {
+          return FirstTime();
+        } else {
+          return HomePage();
+        }
+      }
+    );
   }
 }
