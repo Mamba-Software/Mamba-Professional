@@ -40,9 +40,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if(userIsTrainer){
-
-    }
     return loading ? Loading() :MultiProvider(
         providers: [
           StreamProvider<List<Client>>.value(value: DatabaseService().clients, initialData: [],),

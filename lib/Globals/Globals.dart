@@ -4,7 +4,10 @@ import 'package:mamba_castelldefels/Models/Trainer.dart';
 
 // Main Variables
 final logoExtended = "assets/images/ExtendedWhite.png";
+final logoExtendedYellow = "assets/images/ExtendedYellow.png";
 final logoSimple = "assets/images/SimpleWhite.png";
+final logoSimpleYellow = "assets/images/SimpleYellow.png";
+final fotoPerfil = "assets/images/as.png";
 
 // User
 String userUID = "";
