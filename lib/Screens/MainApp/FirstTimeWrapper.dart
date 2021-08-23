@@ -15,10 +15,7 @@ class FirstTimeWrapper extends StatelessWidget {
       future: Provider.of<Future<Usuario?>>(context),
       builder: (context, snapshot) {
         // Items are not available and you need to handle this situation, simple solution is to show a progress indicator
-        if (!snapshot.hasData) {
-          return Loading();
-        }
-        if (!(snapshot.requireData!.uid == userUID)) {
+        if (!snapshot.hasData || !(snapshot.requireData!.uid == userUID) ) {
           return Loading();
         }
         if (snapshot.requireData!.isFirst) {
