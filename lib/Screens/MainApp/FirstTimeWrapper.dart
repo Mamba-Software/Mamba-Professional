@@ -17,11 +17,9 @@ class FirstTimeWrapper extends StatelessWidget {
         // Items are not available and you need to handle this situation, simple solution is to show a progress indicator
         if (!snapshot.hasData) {
           return Loading();
-        } else {
-          print("USER");
-          print(snapshot.requireData!.uid);
-          print(snapshot.requireData!.isFirst);
-          print(snapshot.requireData!.isTrainer);
+        }
+        if (!(snapshot.requireData!.uid == userUID)) {
+          return Loading();
         }
         if (snapshot.requireData!.isFirst) {
           return FirstTime();
