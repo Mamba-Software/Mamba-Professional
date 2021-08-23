@@ -39,7 +39,7 @@ class DatabaseService {
 
   // USERS
   // User From Snapshot
-  Future<Usuario> _userFromSnapshot(QuerySnapshot snapshot) {
+  Future<Usuario?> _userFromSnapshot(QuerySnapshot snapshot) {
     if (snapshot.docs.length != 0) {
       for (var i = 0; i < snapshot.docs.length; i++) {
         if (snapshot.docs[i].id == userUID) {
@@ -54,13 +54,11 @@ class DatabaseService {
         }
       }
     }
-    Future<Usuario> future = Future(() =>
-        Usuario(uid: "uid", isTrainer: false, isFirst: true)
-    );
-    return future;
+    return Future(() => null);
   }
+
   // Get User Stream
-  Stream<Future<Usuario>> get singleUser {
+  Stream<Future<Usuario?>> get singleUser {
     return usersCollection.snapshots().map(_userFromSnapshot);
   }
 
