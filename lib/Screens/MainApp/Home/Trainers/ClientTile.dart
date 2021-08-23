@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 // Internal App Tools
 import 'package:mamba_castelldefels/Globals/Globals.dart';
-import 'package:mamba_castelldefels/models/Client.dart';
+import 'package:mamba_castelldefels/Models/Client.dart';
 
 class ClientTile extends StatelessWidget {
 

@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 // Internal App Tools
-import 'ClientList.dart';
-import 'TrainerList.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Trainers/ClientList.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Trainers/TrainerList.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);

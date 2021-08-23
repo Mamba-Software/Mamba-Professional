@@ -16,7 +16,7 @@ class _FirstClientState extends State<FirstClient> {
   final AuthenticationService _authenticationService = AuthenticationService();
   final DatabaseService _databaseService = DatabaseService(uid: userUID);
   // Loading Screen Boolean
-  bool loading = false;
+  late bool loading = false;
   @override
   Widget build(BuildContext context) {
     return loading ? Loading() : Scaffold(
@@ -33,7 +33,7 @@ class _FirstClientState extends State<FirstClient> {
                     child: Image.asset(logoExtended)),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text("FIRST TIME TRAINER", style: purpleTextStyle.copyWith(fontSize: 20, fontWeight:FontWeight.bold )),
+                  child: Text("FIRST TIME CLIENT", style: purpleTextStyle.copyWith(fontSize: 20, fontWeight:FontWeight.bold )),
                 ),
                 TextButton(
                   onPressed: () async {

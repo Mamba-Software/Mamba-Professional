@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 // Internal App Tools
 import 'package:mamba_castelldefels/Globals/Globals.dart';
-import 'package:mamba_castelldefels/models/Trainer.dart';
+import 'package:mamba_castelldefels/Models/Trainer.dart';
 
 class TrainerTile extends StatelessWidget {
 

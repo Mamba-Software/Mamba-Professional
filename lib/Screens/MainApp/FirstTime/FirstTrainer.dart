@@ -16,7 +16,7 @@ class _FirstTrainerState extends State<FirstTrainer> {
   final AuthenticationService _authenticationService = AuthenticationService();
   final DatabaseService _databaseService = DatabaseService(uid: userUID);
   // Loading Screen Boolean
-  bool loading = false;
+  late bool loading = false;
   @override
   Widget build(BuildContext context) {
     return loading ? Loading() : Scaffold(
