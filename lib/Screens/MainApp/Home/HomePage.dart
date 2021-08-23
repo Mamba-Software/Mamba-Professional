@@ -40,8 +40,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return loading ? Loading() :MultiProvider(
         providers: [
-          StreamProvider<List<Client>>.value(value: DatabaseService(uid:userUID).clients, initialData: [],),
-          StreamProvider<List<Trainer>>.value(value: DatabaseService(uid:userUID).trainers, initialData: [],),
+          StreamProvider<List<Client>>.value(value: DatabaseService().clients, initialData: [],),
+          StreamProvider<List<Trainer>>.value(value: DatabaseService().trainers, initialData: [],),
         ],
         child: Scaffold(
           appBar: AppBar(
@@ -85,7 +85,6 @@ class _HomePageState extends State<HomePage> {
             selectedLabelStyle: whiteTextStyle.copyWith(fontSize: 15),
             unselectedItemColor: whiteColor,
             unselectedLabelStyle: whiteTextStyle.copyWith(fontSize: 15),
-
           ),
         )
     );

@@ -42,11 +42,11 @@ class AuthenticationService {
       UserCredential result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
       User? user = result.user;
       if (isTrainer) {
-        await DatabaseService(uid: user!.uid).updateUsersData(user.uid,true,true);
-        await DatabaseService(uid: user.uid).updateTrainerData(name,email);
+        await DatabaseService().updateUsersData(user!.uid,true,true);
+        await DatabaseService().updateTrainerData(user.uid,name,email);
       } else {
-        await DatabaseService(uid: user!.uid).updateUsersData(user.uid,false,true);
-        await DatabaseService(uid: user.uid).updateClientData(name,email);
+        await DatabaseService().updateUsersData(user!.uid,false,true);
+        await DatabaseService().updateClientData(user.uid,name,email);
       }
       return _usuarioFromFirebaseUser(user);
     } on FirebaseAuthException catch (e) {

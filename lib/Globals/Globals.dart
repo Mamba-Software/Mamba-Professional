@@ -10,8 +10,8 @@ final logoSimple = "assets/images/SimpleWhite.png";
 String userUID = "";
 bool userIsTrainer = false;
 // User Models
-Client currentClient = new Client(name: "name", email: "email");
-Trainer currentTrainer = new Trainer(name: "name", email: "email");
+Client currentClient = new Client( uid: 'uid', name: "name", email: "email");
+Trainer currentTrainer = new Trainer( uid: 'uid', name: "name", email: "email");
 
 // Styles
 const yellowColor = Color(0xFFF4AD1F);
