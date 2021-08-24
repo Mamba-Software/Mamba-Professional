@@ -43,7 +43,7 @@ class _FirstTrainerState extends State<FirstTrainer> {
                     child: Image.asset(logoExtended)),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text("¡ Benvenido ${currentTrainer.name} !", style: purpleTextStyle.copyWith(fontSize: 23, fontWeight:FontWeight.bold)),
+                  child: Text("¡ Bienvenido ${currentTrainer.name} !", style: purpleTextStyle.copyWith(fontSize: 23, fontWeight:FontWeight.bold)),
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0, bottom: 4.0),
