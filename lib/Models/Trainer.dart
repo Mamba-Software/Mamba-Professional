@@ -2,9 +2,9 @@
 class Trainer {
 
   String uid;
-  String name;
-  String email;
+  String? name;
+  String? email;
 
-  Trainer({required this.uid, required this.name, required this.email});
+  Trainer({required this.uid, this.name, this.email});
 
 }

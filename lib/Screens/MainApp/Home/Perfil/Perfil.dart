@@ -24,11 +24,11 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     if (userIsTrainer) {
-      nombreCompleto = currentTrainer.name;
-      email = currentTrainer.email;
+      nombreCompleto = currentTrainer.name!;
+      email = currentTrainer.email!;
     } else {
-      nombreCompleto = currentClient.name;
-      email = currentClient.email;
+      nombreCompleto = currentClient.name!;
+      email = currentClient.email!;
     }
 
     return Container(

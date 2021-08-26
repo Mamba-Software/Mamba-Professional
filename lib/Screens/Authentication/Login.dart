@@ -6,6 +6,8 @@ import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Loading.dart';
 // Authentication Service
 import 'package:mamba_castelldefels/Data/AuthService.dart';
+import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
+import 'package:provider/provider.dart';
 
 // Login Widget
 class Login extends StatefulWidget {
@@ -18,8 +20,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  // Authentication Service
-  final AuthenticationService _authenticationService = AuthenticationService();
   // Loading Screen Boolean
   bool loading = false;
   // FormVariables
@@ -56,6 +56,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<AuthenticationProvider>(context);
     return WillPopScope(
         onWillPop: _onBackPressed,
       child: loading ? Loading() :Scaffold(
@@ -111,20 +112,18 @@ class _LoginState extends State<Login> {
                     child: TextButton(
                       onPressed: () async {
                         if(_formKey.currentState!.validate()){
-                          setState(() {
+                          /*setState(() {
                             loading = true;
                             error = '';
                           });
-                          dynamic result = await _authenticationService.signIn(
-                              email: email,
-                              password: password
-                          );
-                          if (result == null) {
+                           */
+                          bool result = await user.signIn(email,password);
+                          /*if (result) {
                             setState(() {
                               error = 'No encontramos este usuario.\n Porfavor prueba otra vez';
                               loading = false;
                             });
-                          }
+                          }*/
                         }
                       },
                       child: Text(

@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/AuthService.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
+import 'package:mamba_castelldefels/Providers/UserProvider.dart';
+import 'package:provider/provider.dart';
 
 class TuMarca extends StatefulWidget {
   const TuMarca({Key? key}) : super(key: key);

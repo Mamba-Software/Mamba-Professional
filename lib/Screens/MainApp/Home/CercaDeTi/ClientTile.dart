@@ -20,8 +20,8 @@ class ClientTile extends StatelessWidget {
             radius: 25.0,
             backgroundColor: Color(0x80F4AD1F),
           ),
-          title: Text(client.name, style: purpleTextStyle),
-          subtitle: Text('Has ${client.email} as its email'),
+          title: Text(client.name!, style: purpleTextStyle),
+          subtitle: Text('Has ${client.email!} as its email'),
         ),
       ),
     );

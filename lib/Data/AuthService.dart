@@ -12,7 +12,6 @@ class AuthenticationService {
   // Create User Object based on FireBase User.
   FirebaseUser? _usuarioFromFirebaseUser(User? user) {
     if (user != null) {
-      userUID = user.uid;
       return FirebaseUser(uid: user.uid);
     } else {
       return null;

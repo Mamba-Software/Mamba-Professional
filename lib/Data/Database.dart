@@ -11,9 +11,9 @@ class DatabaseService {
   DatabaseService();
 
   // Collection reference
-  final CollectionReference usersCollection = FirebaseFirestore.instance.collection('Users');
-  final CollectionReference clientsCollection = FirebaseFirestore.instance.collection('Clients');
-  final CollectionReference trainersCollection = FirebaseFirestore.instance.collection('Trainers');
+  final usersCollection = FirebaseFirestore.instance.collection('Users');
+  final clientsCollection = FirebaseFirestore.instance.collection('Clients');
+  final trainersCollection = FirebaseFirestore.instance.collection('Trainers');
 
   // UPDATES
   Future<void> updateUsersData(String uid, bool isTrainer, bool isFirst) async {
@@ -40,54 +40,30 @@ class DatabaseService {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // USERS
   // User From Snapshot
-  Future<Usuario?> userFromSnapshot(QuerySnapshot snapshot) {
-    if (snapshot.docs.length != 0) {
-      for (var i = 0; i < snapshot.docs.length; i++) {
-        if (snapshot.docs[i].id == userUID) {
-          Future<Usuario> future = Future(() =>
-              Usuario(
-                uid: snapshot.docs[i].get("uid"),
-                isTrainer: snapshot.docs[i].get("isTrainer"),
-                isFirst: snapshot.docs[i].get("isFirst"),
-              )
-          );
-          return future;
-        }
-      }
+  Future<Usuario> getUser (String uid) async {
+    Usuario user = new Usuario(uid: uid);
+    var docSnapshot = await usersCollection.doc(uid).get();
+    if (docSnapshot.exists) {
+      Map<String, dynamic>? data = docSnapshot.data();
+      user = Usuario(uid: data?['uid'], isTrainer: data?['isTrainer'], isFirst: data?['isFirst']);
     }
-    return Future(() => null);
+    return user;
   }
-  // Get User Stream
-  Stream<Future<Usuario?>> get singleUser {
-    return usersCollection.snapshots().map(userFromSnapshot);
-  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // CLIENT
-  // Get Single Client
   // Client From Snapshot
-  Client clientFromSnapshot(QuerySnapshot snapshot) {
-    if (snapshot.docs.length != 0) {
-      for (var i = 0; i < snapshot.docs.length; i++) {
-        if (snapshot.docs[i].id == userUID) {
-          print("clientFromSnapshot");
-          print(snapshot.docs[i].data().toString());
-          return Client(
-            uid: snapshot.docs[i].get("uid"),
-            name: snapshot.docs[i].get("name"),
-            email: snapshot.docs[i].get("email"),
-          );
-        }
-      }
+  Future<Client> getClient (String uid) async {
+    Client client = new Client(uid: uid);
+    var docSnapshot = await clientsCollection.doc(uid).get();
+    if (docSnapshot.exists) {
+      Map<String, dynamic>? data = docSnapshot.data();
+      client = Client(uid: data?['uid'], name: data?['name'], email: data?['email']);
     }
-    return currentClient;
-  }
-  // Get Client Stream
-  Stream<Client> get singleClient {
-    return clientsCollection.snapshots().map(clientFromSnapshot);
+    return client;
   }
 
-
-  // Client list from snapshot
+  // Client List from snapshot
   List<Client> _clientListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc){
       return Client(
@@ -104,31 +80,18 @@ class DatabaseService {
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // TRAINER
-  // Get Single Client
-  // User From Snapshot
-  Trainer trainerFromSnapshot(QuerySnapshot snapshot) {
-    if (snapshot.docs.length != 0) {
-      for (var i = 0; i < snapshot.docs.length; i++) {
-        if (snapshot.docs[i].id == userUID) {
-          print("trainerFromSnapshot");
-          print(snapshot.docs[i].data().toString());
-          return Trainer(
-            uid: snapshot.docs[i].get("uid"),
-            name: snapshot.docs[i].get("name"),
-            email: snapshot.docs[i].get("email"),
-          );
-        }
-      }
+  // Trainer From Snapshot
+  Future<Trainer> getTrainer (String uid) async {
+    Trainer trainer = new Trainer(uid: uid);
+    var docSnapshot = await trainersCollection.doc(uid).get();
+    if (docSnapshot.exists) {
+      Map<String, dynamic>? data = docSnapshot.data();
+      trainer = Trainer(uid: data?['uid'], name: data?['name'], email: data?['email']);
     }
-    return currentTrainer;
-  }
-  // Get Trainer Stream
-  Stream<Trainer> get singleTrainer {
-    return trainersCollection.snapshots().map(trainerFromSnapshot);
+    return trainer;
   }
 
-
-  // Trainer list from snapshot
+  // Trainer List from snapshot
   List<Trainer> _trainerListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc){
       return Trainer(

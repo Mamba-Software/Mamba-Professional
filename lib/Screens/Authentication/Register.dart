@@ -6,6 +6,8 @@ import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Loading.dart';
 // Authentication Service
 import 'package:mamba_castelldefels/Data/AuthService.dart';
+import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
+import 'package:provider/provider.dart';
 
 // Register Widget
 class Register extends StatefulWidget {
@@ -61,6 +63,7 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<AuthenticationProvider>(context);
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: loading ? Loading() :Scaffold(
@@ -161,13 +164,8 @@ class _RegisterState extends State<Register> {
                             setState(() {
                               loading = true;
                             });
-                            dynamic result = await _authenticationService.signUp(
-                                email: email,
-                                password: password1,
-                                name: name,
-                                isTrainer: isTrainer,
-                            );
-                            if (result == null) {
+                            bool result = await user.signUp(email,password1,name,isTrainer);
+                            if (result) {
                               setState(() {
                                 error = 'Porfavor introduce un email válido.';
                                 loading = false;

@@ -4,6 +4,7 @@ import 'package:mamba_castelldefels/Data/Database.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Loading.dart';
 import 'package:mamba_castelldefels/Models/Trainer.dart';
+import 'package:mamba_castelldefels/Providers/TrainerProvider.dart';
 import 'package:provider/provider.dart';
 
 class FirstTrainer extends StatefulWidget {
@@ -27,6 +28,7 @@ class _FirstTrainerState extends State<FirstTrainer> {
 
   @override
   Widget build(BuildContext context) {
+    final trainer = Provider.of<TrainerProvider>(context).trainer;
     return loading ? Loading() : Scaffold(
       backgroundColor: yellowColor,
       body: Center(
@@ -43,7 +45,7 @@ class _FirstTrainerState extends State<FirstTrainer> {
                     child: Image.asset(logoExtended)),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text("¡ Bienvenido ${currentTrainer.name} !", style: purpleTextStyle.copyWith(fontSize: 23, fontWeight:FontWeight.bold)),
+                  child: Text("¡ Bienvenido ${trainer.name} !", style: purpleTextStyle.copyWith(fontSize: 23, fontWeight:FontWeight.bold)),
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0, bottom: 4.0),
@@ -65,7 +67,7 @@ class _FirstTrainerState extends State<FirstTrainer> {
                           setState(() {
                             loading = true;
                           });
-                          await _databaseService.updateUsersData(userUID, userIsTrainer, false);
+                          await _databaseService.updateUsersData(trainer.uid, true, false);
                         },
                       ),
                     ),
@@ -117,7 +119,7 @@ class _FirstTrainerState extends State<FirstTrainer> {
                           setState(() {
                             loading = true;
                           });
-                          await _databaseService.updateUsersData(userUID, userIsTrainer, false);
+                          await _databaseService.updateUsersData(trainer.uid, true, false);
                         },
                       ),
                     ),

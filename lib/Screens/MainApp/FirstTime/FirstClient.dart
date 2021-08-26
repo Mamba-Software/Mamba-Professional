@@ -3,6 +3,9 @@ import 'package:mamba_castelldefels/Data/AuthService.dart';
 import 'package:mamba_castelldefels/Data/Database.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Loading.dart';
+import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
+import 'package:mamba_castelldefels/Providers/UserProvider.dart';
+import 'package:provider/provider.dart';
 
 class FirstClient extends StatefulWidget {
   const FirstClient({Key? key}) : super(key: key);
@@ -13,7 +16,6 @@ class FirstClient extends StatefulWidget {
 
 class _FirstClientState extends State<FirstClient> {
   // Authentication Service
-  final AuthenticationService _authenticationService = AuthenticationService();
   final DatabaseService _databaseService = DatabaseService();
   // Loading Screen Boolean
   late bool loading = false;
@@ -24,6 +26,7 @@ class _FirstClientState extends State<FirstClient> {
   String key = "";
   @override
   Widget build(BuildContext context) {
+    final client = Provider.of<ClientProvider>(context).client;
     return loading ? Loading() : Scaffold(
       backgroundColor: yellowColor,
       body: Center(
@@ -40,7 +43,7 @@ class _FirstClientState extends State<FirstClient> {
                       child: Image.asset(logoExtended)),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Text("¡ Bienvenido ${currentClient.name} !",
+                    child: Text("¡ Bienvenido ${client.name} !",
                       style: purpleTextStyle.copyWith(fontSize: 23, fontWeight:FontWeight.bold),
                       textAlign: TextAlign.center,),
                   ),
@@ -78,7 +81,7 @@ class _FirstClientState extends State<FirstClient> {
                             setState(() {
                               loading = true;
                             });
-                            await _databaseService.updateUsersData(userUID, userIsTrainer, false);
+                            await _databaseService.updateUsersData(client.uid, false, false);
                           },
                         ),
                       ),
@@ -117,7 +120,7 @@ class _FirstClientState extends State<FirstClient> {
                             setState(() {
                               loading = true;
                             });
-                            await _databaseService.updateUsersData(userUID, userIsTrainer, false);
+                            await _databaseService.updateUsersData(client.uid, false, false);
                           },
                         ),
                       ),

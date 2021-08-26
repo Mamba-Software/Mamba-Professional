@@ -20,7 +20,7 @@ class TrainerTile extends StatelessWidget {
             radius: 25.0,
             backgroundColor: Color(0x80F4AD1F),
           ),
-          title: Text(trainer.name, style: purpleTextStyle),
+          title: Text(trainer.name!, style: purpleTextStyle),
           subtitle: Text('Has ${trainer.email} as its email'),
         ),
       ),
