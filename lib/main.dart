@@ -57,6 +57,7 @@ class AuthenticationWrapper extends StatelessWidget {
           case Status.Uninitialized:
             return Loading();
           case Status.Unauthenticated:
+            Provider.of<UserProvider>(context).resetUser();
             return Authenticate();
           case Status.Authenticating:
             return Loading();
