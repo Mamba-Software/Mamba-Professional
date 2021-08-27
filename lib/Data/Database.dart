@@ -63,6 +63,30 @@ class DatabaseService {
     return client;
   }
 
+  // User From Snapshot
+  Future<Usuario?> _userFromSnapshot(QuerySnapshot snapshot) {
+    if (snapshot.docs.length != 0) {
+      for (var i = 0; i < snapshot.docs.length; i++) {
+        if (snapshot.docs[i].id == userUID) {
+          Future<Usuario> future = Future(() =>
+              Usuario(
+                uid: snapshot.docs[i].get("uid"),
+                isTrainer: snapshot.docs[i].get("isTrainer"),
+                isFirst: snapshot.docs[i].get("isFirst"),
+              )
+          );
+          return future;
+        }
+      }
+    }
+    return Future(() => null);
+  }
+
+  // Get User Stream
+  Stream<Future<Usuario?>> get singleUser {
+    return usersCollection.snapshots().map(_userFromSnapshot);
+  }
+
   // Client List from snapshot
   List<Client> _clientListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc){

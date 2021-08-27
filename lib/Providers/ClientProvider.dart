@@ -24,4 +24,13 @@ class ClientProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> getStreamClientFirebase(String uid) async {
+    try {
+      _client = (_databaseService.singleUser) as Client;
+      notifyListeners();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 }

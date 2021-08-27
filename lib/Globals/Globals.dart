@@ -12,9 +12,7 @@ final fotoPerfil = "assets/images/as.png";
 // User
 String userUID = "";
 bool userIsTrainer = false;
-// User Models
-Client currentClient = new Client( uid: 'uid', name: "name", email: "email");
-Trainer currentTrainer = new Trainer( uid: 'uid', name: "name", email: "email");
+var currentUser;
 
 // Styles
 const yellowColor = Color(0xFFF4AD1F);

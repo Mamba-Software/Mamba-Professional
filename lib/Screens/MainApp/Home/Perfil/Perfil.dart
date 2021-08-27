@@ -12,7 +12,7 @@ class Perfil extends StatefulWidget {
   _PerfilState createState() => _PerfilState();
 }
 
-class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
+class _PerfilState extends State<Perfil> {
   // Form Status
   bool _status = true;
   final FocusNode myFocusNode = FocusNode();
@@ -23,14 +23,8 @@ class _PerfilState extends State<Perfil> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    if (userIsTrainer) {
-      nombreCompleto = currentTrainer.name!;
-      email = currentTrainer.email!;
-    } else {
-      nombreCompleto = currentClient.name!;
-      email = currentClient.email!;
-    }
-
+    nombreCompleto = currentUser.name;
+    email = currentUser.email;
     return Container(
           color: Colors.white,
           child: new ListView(

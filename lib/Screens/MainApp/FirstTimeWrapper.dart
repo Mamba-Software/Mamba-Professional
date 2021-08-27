@@ -1,5 +1,6 @@
 // Flutter Libs
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Loading.dart';
 import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
 import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
@@ -49,6 +50,7 @@ class FirstTime extends StatelessWidget {
                     case LoaderC.YES:
                       return Loading();
                     case LoaderC.NO:
+                      userIsTrainer = false;
                       return FirstClient();
                   }
                 });
@@ -62,6 +64,7 @@ class FirstTime extends StatelessWidget {
                     case LoaderT.YES:
                       return Loading();
                     case LoaderT.NO:
+                      userIsTrainer = true;
                       return FirstTrainer();
                   }
                 });

@@ -1,6 +1,10 @@
 // Flutter Libs
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
+import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
+import 'package:mamba_castelldefels/Providers/TrainerProvider.dart';
+import 'package:mamba_castelldefels/Providers/UserProvider.dart';
 import 'package:provider/provider.dart';
 // // Authentication Service
 //import 'package:mamba_castelldefels/data/AuthService.dart';
@@ -24,8 +28,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // Authentication Service
-  //final AuthenticationService _authenticationService = AuthenticationService();
+  // Variable Models
+  Client? _client;
+  Trainer? _trainer;
   // Loading Screen Boolean
   bool loading = false;
   // Index of Bottom Navigation Bar
@@ -40,6 +45,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    userUID = Provider.of<UserProvider>(context).usuario.uid;
+    userIsTrainer = Provider.of<UserProvider>(context).usuario.isTrainer!;
+    if(userIsTrainer) {
+      Provider.of<TrainerProvider>(context).getTrainerFirebase(userUID);
+      currentUser = Provider.of<TrainerProvider>(context).trainer;
+    } else {
+      Provider.of<ClientProvider>(context).getClientFirebase(userUID);
+      currentUser = Provider.of<ClientProvider>(context).client;
+    }
     return loading ? Loading() :MultiProvider(
         providers: [
           StreamProvider<List<Client>>.value(value: DatabaseService().clients, initialData: [],),
