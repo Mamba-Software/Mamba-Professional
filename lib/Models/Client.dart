@@ -10,4 +10,12 @@ class Client {
 
   Client({required this.uid, this.name,  this.email});
 
+  toJson() {
+    return {
+      "uid": uid,
+      "name": name,
+      "email": email,
+    };
+  }
+
 }

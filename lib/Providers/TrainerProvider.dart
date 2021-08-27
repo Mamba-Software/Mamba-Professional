@@ -24,4 +24,13 @@ class TrainerProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> updateTrainerFirebase(Trainer trainer) async {
+    try {
+      _databaseService.updateTrainerData(trainer.uid, trainer.name!, trainer.email!);
+      this.getTrainerFirebase(trainer.uid);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 }

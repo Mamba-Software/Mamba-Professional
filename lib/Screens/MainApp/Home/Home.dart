@@ -5,6 +5,7 @@ import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
 import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
 import 'package:mamba_castelldefels/Providers/TrainerProvider.dart';
 import 'package:mamba_castelldefels/Providers/UserProvider.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/Perfil.dart';
 import 'package:provider/provider.dart';
 // // Authentication Service
 //import 'package:mamba_castelldefels/data/AuthService.dart';
@@ -18,7 +19,7 @@ import 'package:mamba_castelldefels/Globals/Loading.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/CercaDeTi/CercaDeTi.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/TuMarca/TuMarca.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/Chat.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/Perfil.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilClient.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -28,13 +29,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // Variable Models
-  Client? _client;
-  Trainer? _trainer;
-  // Loading Screen Boolean
-  bool loading = false;
   // Index of Bottom Navigation Bar
-  int _currentIndex = 1;
+  int _currentIndex = 3;
   // Navigation Bar Tabs
   final navBarTabs= [
     CercaDeTi(),
@@ -54,7 +50,7 @@ class _HomePageState extends State<HomePage> {
       Provider.of<ClientProvider>(context).getClientFirebase(userUID);
       currentUser = Provider.of<ClientProvider>(context).client;
     }
-    return loading ? Loading() :MultiProvider(
+    return (currentUser.name == null) ? Loading() :MultiProvider(
         providers: [
           StreamProvider<List<Client>>.value(value: DatabaseService().clients, initialData: [],),
           StreamProvider<List<Trainer>>.value(value: DatabaseService().trainers, initialData: [],),

@@ -112,18 +112,17 @@ class _LoginState extends State<Login> {
                     child: TextButton(
                       onPressed: () async {
                         if(_formKey.currentState!.validate()){
-                          /*setState(() {
+                          setState(() {
                             loading = true;
                             error = '';
                           });
-                           */
                           bool result = await user.signIn(email,password);
-                          /*if (result) {
+                          if (result) {
                             setState(() {
                               error = 'No encontramos este usuario.\n Porfavor prueba otra vez';
                               loading = false;
                             });
-                          }*/
+                          }
                         }
                       },
                       child: Text(
