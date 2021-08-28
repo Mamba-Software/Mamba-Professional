@@ -1,6 +1,7 @@
 // Plugins
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Loading.dart';
 import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
 import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
@@ -53,6 +54,8 @@ class AuthenticationWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AuthenticationProvider>(
       builder: (context, AuthenticationProvider user, _) {
+        screenHeight = MediaQuery.of(context).size.height;
+        screenWidth = MediaQuery.of(context).size.width;
         switch (user.status) {
           case Status.Uninitialized:
             return Loading();

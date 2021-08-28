@@ -27,27 +27,28 @@ class _PerfilClientState extends State<PerfilClient> {
   @override
   Widget build(BuildContext context) {
     //Provider.of<UserProvider>(context).usuario.isTrainer!;
-    return Container(
-          color: Colors.white,
-          child: new ListView(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  new Container(
-                    padding: EdgeInsets.all(15.0),
-                    color: Colors.white,
-                    child: new Column(
-                      children: <Widget>[
-                        new Stack(
-                          fit: StackFit.loose,
+    return SingleChildScrollView(
+          child: Column(
+            children: [
+              new Container(
+                height: screenHeight*0.5,
+                //padding: EdgeInsets.only(top: 25.0, bottom: 25.0, right: 25.0, left: 25.0),
+                  child: new Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        height: screenHeight*0.5,
+                        child: new Stack(
+                          alignment: Alignment.center,
+                          fit: StackFit.expand,
                           children: <Widget>[
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Container(
-                                  width: 140.0,
-                                  height: 140.0,
+                                  width: screenHeight*0.23,
+                                  height: screenHeight*0.23,
                                   decoration: new BoxDecoration(
                                     shape: BoxShape.circle,
                                     image: new DecorationImage(
@@ -57,13 +58,16 @@ class _PerfilClientState extends State<PerfilClient> {
                                   )),
                               ],
                             ),
-                            Padding(
-                                padding: EdgeInsets.only(top: 90.0, right: 100.0),
+                            Positioned(
+                                top: 150,
+                                bottom: 0,
+                                left: 0,
+                                right: 100,
                                 child: new Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     new CircleAvatar(
-                                      backgroundColor: Colors.red,
+                                      backgroundColor: yellowColor,
                                       radius: 20.0,
                                       child: new Icon(
                                         Icons.camera_alt,
@@ -72,11 +76,265 @@ class _PerfilClientState extends State<PerfilClient> {
                                     )
                                   ],
                                 )),
+                            // Logos Flotants
+                            // Perfil Adalt Esquerra
+                            Positioned(
+                                top: 0,
+                                bottom: 250,
+                                left: 0,
+                                right: 230,
+                                child: new Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    SizedBox.fromSize(
+                                      size: Size(80, 80), // button width and height
+                                      child: ClipOval(
+                                        child: Material(
+                                          color: yellowColor, // button color
+                                          child: InkWell(
+                                            splashColor: Colors.white, // splash color
+                                            onTap: () {
+                                              setState(() {
+                                                !_status ? _status = true : _status = false;
+                                              });
+                                            }, // button pressed
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.face,
+                                                  color: Colors.white,
+                                                  size: 35.0,
+                                                ), // icon
+                                                Text("Datos", style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )),
+                            // Contraseña Adalt Dreta
+                            Positioned(
+                                top: 0,
+                                bottom: 250,
+                                left: 230,
+                                right: 0,
+                                child: new Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    SizedBox.fromSize(
+                                      size: Size(80, 80), // button width and height
+                                      child: ClipOval(
+                                        child: Material(
+                                          color: yellowColor, // button color
+                                          child: InkWell(
+                                            splashColor: Colors.white, // splash color
+                                            onTap: () {
+                                              setState(() {
+                                                !_status ? _status = true : _status = false;
+                                              });
+                                            }, // button pressed
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.lock_outline,
+                                                  color: Colors.white,
+                                                  size: 35.0,
+                                                ), // icon
+                                                Text("Privacidad", style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )),
+                            // Entrenos Mig Esquerra
+                            Positioned(
+                                top: 0,
+                                bottom: 0,
+                                left: 0,
+                                right: 300,
+                                child: new Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    SizedBox.fromSize(
+                                      size: Size(80, 80), // button width and height
+                                      child: ClipOval(
+                                        child: Material(
+                                          color: yellowColor, // button color
+                                          child: InkWell(
+                                            splashColor: Colors.white, // splash color
+                                            onTap: () {
+                                              setState(() {
+                                                !_status ? _status = true : _status = false;
+                                              });
+                                            }, // button pressed
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.directions_run_outlined,
+                                                  color: Colors.white,
+                                                  size: 35.0,
+                                                ), // icon
+                                                Text("Entrenos", style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )),
+                            // Analisis Mig Dreta
+                            Positioned(
+                                top: 0,
+                                bottom: 0,
+                                left: 300,
+                                right: 0,
+                                child: new Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    SizedBox.fromSize(
+                                      size: Size(80, 80), // button width and height
+                                      child: ClipOval(
+                                        child: Material(
+                                          color: yellowColor, // button color
+                                          child: InkWell(
+                                            splashColor: Colors.white, // splash color
+                                            onTap: () {
+                                              setState(() {
+                                                !_status ? _status = true : _status = false;
+                                              });
+                                            }, // button pressed
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.leaderboard_outlined,
+                                                  color: Colors.white,
+                                                  size: 35.0,
+                                                ), // icon
+                                                Text("Análisis", style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )),
+                            // Feedback Abaix Esquerra
+                            Positioned(
+                                top: 250,
+                                bottom: 0,
+                                left: 0,
+                                right: 230,
+                                child: new Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    SizedBox.fromSize(
+                                      size: Size(80, 80), // button width and height
+                                      child: ClipOval(
+                                        child: Material(
+                                          color: yellowColor, // button color
+                                          child: InkWell(
+                                            splashColor: Colors.white, // splash color
+                                            onTap: () {
+                                              setState(() {
+                                                !_status ? _status = true : _status = false;
+                                              });
+                                            }, // button pressed
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.help_outline,
+                                                  color: Colors.white,
+                                                  size: 35.0,
+                                                ), // icon
+                                                Text("Feedback", style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )),
+                            // Bug Abaix Dreta
+                            Positioned(
+                                top: 250,
+                                bottom: 0,
+                                left: 230,
+                                right: 0,
+                                child: new Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    SizedBox.fromSize(
+                                      size: Size(80, 80), // button width and height
+                                      child: ClipOval(
+                                        child: Material(
+                                          color: yellowColor, // button color
+                                          child: InkWell(
+                                            splashColor: Colors.white, // splash color
+                                            onTap: () {
+                                              setState(() {
+                                                !_status ? _status = true : _status = false;
+                                              });
+                                            }, // button pressed
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.report_problem_outlined,
+                                                  color: Colors.white,
+                                                  size: 35.0,
+                                                ), // icon
+                                                Text("Errores", style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )),
+
                         ]),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  new Container(
+              ),
+              new Container(
+                //padding: EdgeInsets.only(top: 25.0, bottom: 25.0, right: 25.0, left: 25.0),
+                child: new Column(
+                  children: [
+                    Text("${currentUser.name}", style: purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
+                    Padding(
+                      padding: const EdgeInsets.only(top:10.0, bottom: 10.0),
+                      child: Container(
+                        width: screenWidth*0.9,
+                        height: screenHeight* 0.21,
+                        color: yellowColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+  }
+
+  /*
+
+  Container(
                     color: whiteColor,
                     child: Padding(
                       padding: EdgeInsets.only(bottom: 8.0),
@@ -164,7 +422,17 @@ class _PerfilClientState extends State<PerfilClient> {
                       ),
                     ),
                   ),
-                  new Container(
+   */
+
+  @override
+  void dispose() {
+    // Clean up the controller when the Widget is disposed
+    myFocusNode.dispose();
+    super.dispose();
+  }
+
+  /* Informacion Personal Form
+  new Container(
                     color: whiteColor,
                     child: Padding(
                       padding: EdgeInsets.only(bottom: 25.0),
@@ -278,19 +546,8 @@ class _PerfilClientState extends State<PerfilClient> {
                       ),
                     ),
                   )
-                ],
-              ),
-            ],
-          ),
-        );
-  }
+   */
 
-  @override
-  void dispose() {
-    // Clean up the controller when the Widget is disposed
-    myFocusNode.dispose();
-    super.dispose();
-  }
 
   Widget _getActionButtons() {
     return Padding(

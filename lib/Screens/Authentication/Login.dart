@@ -26,7 +26,9 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
-  String error = '';
+  // Error Control
+  String errorText = '';
+  bool error = false;
 
   Future<bool> _onBackPressed() async {
     return (await showDialog(
@@ -114,12 +116,15 @@ class _LoginState extends State<Login> {
                         if(_formKey.currentState!.validate()){
                           setState(() {
                             loading = true;
-                            error = '';
+                            error = false;
                           });
                           bool result = await user.signIn(email,password);
-                          if (result) {
+                          if (!result) {
+                            // Aqui arriba pero el set state no es fa pq el widget ja ha cambiat a Loading() i despres ha tornat a Authenticate()
+                            // Solucio, es podria possar un count al constructor per saber si s'ha intentat autenticar o no.
                             setState(() {
-                              error = 'No encontramos este usuario.\n Porfavor prueba otra vez';
+                              error = true;
+                              errorText = 'No encontramos este usuario.\n Porfavor prueba otra vez';
                               loading = false;
                             });
                           }
@@ -143,13 +148,13 @@ class _LoginState extends State<Login> {
                         )
                     ),
                   ),
-                  Center(
+                  error ? Center(
                     child: Text(
-                      error,
+                      errorText,
                       style: redTextStyle.copyWith(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
-                  ),
+                  ) : new Container()
                 ],
               ),
             ),

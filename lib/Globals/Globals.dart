@@ -14,6 +14,10 @@ String userUID = "";
 bool userIsTrainer = false;
 var currentUser;
 
+// Screen
+var screenWidth;
+var screenHeight;
+
 // Styles
 const yellowColor = Color(0xFFF4AD1F);
 const purpleColor = Color(0xFF200758);
