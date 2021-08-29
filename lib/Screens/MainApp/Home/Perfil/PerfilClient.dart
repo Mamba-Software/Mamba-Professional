@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
 import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/TusDatos.dart';
 import 'package:provider/provider.dart';
 
 class PerfilClient extends StatefulWidget {
@@ -16,66 +17,60 @@ class PerfilClient extends StatefulWidget {
 
 class _PerfilClientState extends State<PerfilClient> {
   // List Bool Status
-  bool _status = true;
   List<bool> _statusButtons =  [false, false, false, false, false, false];
   final FocusNode myFocusNode = FocusNode();
-  // Form Values
-  final _formKey = GlobalKey<FormState>();
-  String nombreCompletoTemp = "";
-  String emailTemp = "";
-  final nombreCompletoController = TextEditingController(text: currentUser.name);
-  final emailController = TextEditingController(text: currentUser.email);
 
   @override
   Widget build(BuildContext context) {
     final _authProvider = Provider.of<AuthenticationProvider>(context);
     void _showPerfiClientModals(int _buttonIndex) {
-      showModalBottomSheet(context: context, builder: (context) {
-        switch (_buttonIndex) {
-          case 0:
-            return Container(
-              height: screenHeight*0.5,
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-              child: Text('Tus Datos', style: purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24),),
-            );
-          case 1:
-            return Container(
-              height: screenHeight*0.3,
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-              child: Text('Privacidad'),
-            );
-          case 2:
-            return Container(
-              height: screenHeight*0.3,
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-              child: Text('Historial de Sesiones'),
-            );
-          case 3:
-            return Container(
-              height: screenHeight*0.3,
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-              child: Text('Análisis y Seguimiento'),
-            );
-          case 4:
-            return Container(
-              height: screenHeight*0.3,
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-              child: Text('FeedBack'),
-            );
-          case 5:
-            return Container(
-              height: screenHeight*0.3,
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-              child: Text('Reporta un error'),
-            );
-          default:
-            return Container(
-              height: screenHeight*0.3,
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-              child: Text('No ha Trobat'),
-            );
-        }
-      }).whenComplete(() => _statusButtons[_buttonIndex] = !_statusButtons[_buttonIndex]);
+      showModalBottomSheet(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+          isScrollControlled: true,
+          context: context,
+          builder: (context) {
+            switch (_buttonIndex) {
+              case 0:
+                return TusDatos();
+              case 1:
+                return Container(
+                  height: screenHeight*0.3,
+                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
+                  child: Text('Privacidad'),
+                );
+              case 2:
+                return Container(
+                  height: screenHeight*0.3,
+                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
+                  child: Text('Historial de Sesiones'),
+                );
+              case 3:
+                return Container(
+                  height: screenHeight*0.3,
+                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
+                  child: Text('Análisis y Seguimiento'),
+                );
+              case 4:
+                return Container(
+                  height: screenHeight*0.3,
+                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
+                  child: Text('FeedBack'),
+                );
+              case 5:
+                return Container(
+                  height: screenHeight*0.3,
+                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
+                  child: Text('Reporta un error'),
+                );
+              default:
+                return Container(
+                  height: screenHeight*0.3,
+                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
+                  child: Text('No ha Trobat'),
+                );
+            }
+         }).whenComplete(() => _statusButtons[_buttonIndex] = !_statusButtons[_buttonIndex]);
     }
 
     return SingleChildScrollView(
@@ -427,183 +422,5 @@ class _PerfilClientState extends State<PerfilClient> {
     // Clean up the controller when the Widget is disposed
     myFocusNode.dispose();
     super.dispose();
-  }
-
-  /* Informacion Personal Form
-  new Container(
-                    color: whiteColor,
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: 25.0),
-                      child: Form(
-                        key: _formKey,
-                        child: new Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                                padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 10.0),
-                                child: new Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    new Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        new Text(
-                                          'Información Personal',
-                                          style: purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )),
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    left: 25.0, right: 25.0, top: 25.0),
-                                child: new Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    new Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        new Text(
-                                          'Nombre Completo',
-                                          style: purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )),
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    left: 25.0, right: 25.0, top: 2.0),
-                                child: new Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    new Flexible(
-                                      child: new TextFormField(
-                                        controller: nombreCompletoController,
-                                        validator: (val) => val!.isEmpty ? 'Escribe tu nombre completo' : null,
-                                        onChanged: (val) {
-                                          setState(() => nombreCompletoTemp = val);
-                                        },
-                                        decoration: const InputDecoration(
-                                          hintText: "Nombre Completo",
-                                        ),
-                                        enabled: !_status,
-                                        autofocus: !_status,
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    left: 25.0, right: 25.0, top: 25.0),
-                                child: new Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    new Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        new Text(
-                                          'Email',
-                                          style: purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )),
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    left: 25.0, right: 25.0, top: 2.0),
-                                child: new Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    new Flexible(
-                                      child: new TextFormField(
-                                        controller: emailController,
-                                        validator: (val) => val!.isEmpty ? 'Escribe tu email' : null,
-                                        onChanged: (val) {
-                                          setState(() => emailTemp = val);
-                                        },
-                                        decoration: const InputDecoration(
-                                          hintText: "Email",
-                                        ),
-                                        enabled: !_status,
-                                        autofocus: !_status,
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                            !_status ? _getActionButtons() : new Container(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-   */
-
-  Widget _getActionButtons() {
-    return Padding(
-      padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
-      child: new Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: 10.0),
-              child: Container(
-                  child: new ElevatedButton(
-                    child: new Text("Guardar", style: whiteTextStyle,),
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.green,
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(20.0)),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        if(_formKey.currentState!.validate()){
-                          if (!nombreCompletoTemp.isEmpty) currentUser.name = nombreCompletoTemp;
-                          if (!emailTemp.isEmpty) currentUser.email = emailTemp;
-                          Provider.of<ClientProvider>(context, listen: false).updateClientFirebase(currentUser);
-                          _status = true;
-                          FocusScope.of(context).requestFocus(new FocusNode());
-                        }
-                      });
-                    },
-                  )),
-            ),
-            flex: 2,
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: 10.0),
-              child: Container(
-                  child: new ElevatedButton(
-                    child: new Text("Cancelar", style: whiteTextStyle,),
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.red,
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(20.0)),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        nombreCompletoController.text = currentUser.name;
-                        emailController.text = currentUser.email;
-                        _status = true;
-                        FocusScope.of(context).requestFocus(new FocusNode());
-                      });
-                    },
-                  )),
-            ),
-            flex: 2,
-          ),
-        ],
-      ),
-    );
   }
 }
