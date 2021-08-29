@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Models/Trainer.dart';
+import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
 import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
 import 'package:mamba_castelldefels/Providers/TrainerProvider.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilClient.dart';

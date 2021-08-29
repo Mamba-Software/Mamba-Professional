@@ -20,6 +20,7 @@ var screenHeight;
 
 // Styles
 const yellowColor = Color(0xFFF4AD1F);
+const yellowColorTrans = Color(0x66F4AD1F);
 const purpleColor = Color(0xFF200758);
 const purpleLightColor = Color(0x8F190763);
 const whiteColor = Colors.white;
