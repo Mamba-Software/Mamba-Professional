@@ -50,7 +50,8 @@ class _RegisterState extends State<Register> {
   }
   // FormVariables
   final _formKey = GlobalKey<FormState>();
-  String error = '';
+  bool error = false;
+  String errorText = '';
   String name = '';
   String email = '';
   String password1 = '';
@@ -80,36 +81,9 @@ class _RegisterState extends State<Register> {
                         width: 200,
                         height: 100,
                         child: Image.asset(logoExtended)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                          child: Text(
-                            'Cliente',
-                            style: TextStyle(color: textColorClient, fontSize: 22, fontWeight: fontWeightClient),
-                          ),
-                        ),
-                        Container(
-                          child: Transform.scale( scale: 2.0,
-                            child: new Switch(
-                              onChanged: toggleSwitch,
-                              value: isTrainer,
-                              activeColor: purpleColor,
-                              activeTrackColor: purpleLightColor,
-                              inactiveThumbColor: purpleColor,
-                              inactiveTrackColor: purpleLightColor,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                          child: Text(
-                            'Entrenador',
-                            style: TextStyle(color: textColorTrainer, fontSize: 22, fontWeight: fontWeightTrainer),
-                          ),
-                        )
-                      ],
+                    Padding(
+                        padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
+                        child: Example()
                     ),
                     Padding(
                         padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
@@ -118,7 +92,15 @@ class _RegisterState extends State<Register> {
                           onChanged: (val) {
                             setState(() => name = val);
                           },
-                          decoration: textFromInputDecoration.copyWith(labelText: 'Nombre completo')
+                          decoration: textFromInputDecoration.copyWith(labelText: 'Nombre completo',
+                              prefixIcon:  Padding(
+                                padding: EdgeInsets.all(0.0),
+                                child: Icon(
+                                  Icons.badge_outlined,
+                                  color: purpleColor,
+                                ), // icon is 48px widget.
+                              )
+                          )
                         )
                     ),
                     Padding(
@@ -128,7 +110,15 @@ class _RegisterState extends State<Register> {
                           onChanged: (val) {
                             setState(() => email = val);
                           },
-                          decoration: textFromInputDecoration.copyWith(labelText: 'Email')
+                          decoration: textFromInputDecoration.copyWith(labelText: 'Email',
+                              prefixIcon:  Padding(
+                                padding: EdgeInsets.all(0.0),
+                                child: Icon(
+                                  Icons.email_outlined,
+                                  color: purpleColor,
+                                ), // icon is 48px widget.
+                              )
+                          )
                         )
                     ),
                     Padding(
@@ -139,7 +129,15 @@ class _RegisterState extends State<Register> {
                             setState(() => password1 = val);
                           },
                           obscureText: true,
-                          decoration: textFromInputDecoration.copyWith(labelText: 'Contraseña')
+                          decoration: textFromInputDecoration.copyWith(labelText: 'Contraseña',
+                              prefixIcon:  Padding(
+                                padding: EdgeInsets.all(0.0),
+                                child: Icon(
+                                  Icons.vpn_key_outlined,
+                                  color: purpleColor,
+                                ), // icon is 48px widget.
+                              )
+                          )
                         )
                     ),
                     Padding(
@@ -150,7 +148,49 @@ class _RegisterState extends State<Register> {
                             setState(() => password2 = val);
                           },
                           obscureText: true,
-                          decoration: textFromInputDecoration.copyWith(labelText: 'Repite tu contraseña')
+                          decoration: textFromInputDecoration.copyWith(labelText: 'Repite tu contraseña',
+                              prefixIcon:  Padding(
+                                padding: EdgeInsets.all(0.0),
+                                child: Icon(
+                                  Icons.vpn_key_outlined,
+                                  color: purpleColor,
+                                ), // icon is 48px widget.
+                              )
+                          )
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                            child: Text(
+                              'Cliente',
+                              style: TextStyle(color: textColorClient, fontSize: 22, fontWeight: fontWeightClient),
+                            ),
+                          ),
+                          Container(
+                            child: Transform.scale( scale: 2.0,
+                              child: new Switch(
+                                onChanged: toggleSwitch,
+                                value: isTrainer,
+                                activeColor: purpleColor,
+                                activeTrackColor: purpleLightColor,
+                                inactiveThumbColor: purpleColor,
+                                inactiveTrackColor: purpleLightColor,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                            child: Text(
+                              'Entrenador',
+                              style: TextStyle(color: textColorTrainer, fontSize: 22, fontWeight: fontWeightTrainer),
+                            ),
+                          )
+                        ],
                       ),
                     ),
                     Container(
@@ -167,7 +207,8 @@ class _RegisterState extends State<Register> {
                             bool result = await user.signUp(email,password1,name,isTrainer);
                             if (result) {
                               setState(() {
-                                error = 'Porfavor introduce un email válido.';
+                                error = true;
+                                errorText = 'Porfavor introduce un email válido.';
                                 loading = false;
                               });
                             }
@@ -191,19 +232,64 @@ class _RegisterState extends State<Register> {
                           )
                       ),
                     ),
-                   Center(
+                    error ? Center(
                       child: Text(
-                        error,
+                        errorText,
                         style: redTextStyle.copyWith(fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
-                    ),
+                    ) : new Container()
                   ],
               ),
             ),
 
             ),
           ),
+      ),
+    );
+  }
+}
+
+class Example extends StatefulWidget {
+  @override
+  _ExampleState createState() => _ExampleState();
+}
+
+class _ExampleState extends State<Example> {
+  int? _selected = null;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _icon(0, text: "Male", icon: Icons.male_outlined),
+        _icon(1, text: "Female", icon: Icons.female_outlined),
+        _icon(2, text: "Others", icon: Icons.transgender_outlined),
+      ],
+    );
+  }
+
+  Widget _icon(int index, {required String text, required IconData icon}) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: InkResponse(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              color: _selected == index ? Colors.white : null,
+            ),
+            Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize:22, color: _selected == index ? Colors.white : null)),
+          ],
+        ),
+        onTap: () => setState(
+              () {
+            _selected = index;
+          },
+        ),
       ),
     );
   }

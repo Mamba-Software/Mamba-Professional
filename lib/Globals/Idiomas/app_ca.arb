@@ -1,0 +1,12 @@
+{
+  "language": "Català",
+  "email": "Email",
+  "emailError": "Escriu el teu email",
+  "password": "Contrasenya",
+  "passwordError": "Introdueix una contrasenya amb 6 caràcters o més",
+  "forgotPassword": "Has oblidat la teva contrasenya?",
+  "login": "Inicia Sessió",
+  "loginError": "No trobem aquest usuari.\n Torneu a provar si us plau",
+  "newUser": "No estàs registrat? Crea un compte",
+  "hello": "Hello {username}"
+}

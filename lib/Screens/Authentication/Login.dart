@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Loading.dart';
 // Authentication Service
-import 'package:mamba_castelldefels/Data/AuthService.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -78,22 +78,39 @@ class _LoginState extends State<Login> {
                   Padding(
                       padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 13.0, bottom: 0.0),
                       child: TextFormField(
-                        validator: (val) => val!.isEmpty ? 'Escribe tu email' : null,
+                        validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
                         onChanged: (val) {
                           setState(() => email = val);
                         },
-                        decoration: textFromInputDecoration.copyWith(labelText: 'Email')
+                        decoration: textFromInputDecoration.copyWith(
+                          labelText: AppLocalizations.of(context)!.email,
+                          prefixIcon:  Padding(
+                            padding: EdgeInsets.all(0.0),
+                            child: Icon(
+                              Icons.email_outlined,
+                              color: purpleColor,
+                            ), // icon is 48px widget.
+                          )
+                        )
                       )
                   ),
                   Padding(
                       padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
                       child: TextFormField(
-                        validator: (val) => val!.length < 6 ? 'Introduzca una contraseña con 6 caracteres o más' : null,
+                        validator: (val) => val!.length < 6 ? AppLocalizations.of(context)!.passwordError : null,
                         onChanged: (val) {
                           setState(() => password = val);
                         },
                         obscureText: true,
-                          decoration: textFromInputDecoration.copyWith(labelText: 'Contraseña')
+                          decoration: textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
+                              prefixIcon:  Padding(
+                                padding: EdgeInsets.all(0.0),
+                                child: Icon(
+                                  Icons.vpn_key_outlined,
+                                  color: purpleColor,
+                                ), // icon is 48px widget.
+                              )
+                          )
                       )
                   ),
                   TextButton(
@@ -101,7 +118,7 @@ class _LoginState extends State<Login> {
                       //TODO: FORGOT PASSWORD SCREEN GOES HERE
                     },
                     child: Text(
-                      'Has olvidado tu contraseña?',
+                      AppLocalizations.of(context)!.forgotPassword,
                       style: whiteTextStyle,
                     ),
                   ),
@@ -124,14 +141,14 @@ class _LoginState extends State<Login> {
                             // Solucio, es podria possar un count al constructor per saber si s'ha intentat autenticar o no.
                             setState(() {
                               error = true;
-                              errorText = 'No encontramos este usuario.\n Porfavor prueba otra vez';
+                              errorText = AppLocalizations.of(context)!.loginError;
                               loading = false;
                             });
                           }
                         }
                       },
                       child: Text(
-                        'Login',
+                        AppLocalizations.of(context)!.login,
                         style: whiteTextStyle.copyWith(fontSize: 28),
                       ),
                     ),
@@ -143,7 +160,7 @@ class _LoginState extends State<Login> {
                           widget.toggleView();
                         },
                         child: Text(
-                          'Nuevo usuario? Crea tu cuenta',
+                          AppLocalizations.of(context)!.newUser,
                           style: whiteTextStyle,
                         )
                     ),

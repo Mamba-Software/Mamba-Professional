@@ -2,17 +2,18 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
+import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Loading.dart';
 import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
 import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
+import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Providers/TrainerProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Authenticate.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/FirstTimeWrapper.dart';
 import 'package:provider/provider.dart';
-
 import 'Providers/UserProvider.dart';
-
-
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,11 +42,24 @@ void main() async {
 class Mamba extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        theme: ThemeData(fontFamily: 'Raleway'),
-        debugShowCheckedModeBanner: false,
-        home: AuthenticationWrapper(),
-    );
+    return ChangeNotifierProvider(
+      create: (context) => LanguageProvider(),
+      builder: (context, child) {
+        final languageProvider = Provider.of<LanguageProvider>(context);
+        return MaterialApp(
+          theme: ThemeData(fontFamily: 'Raleway'),
+          debugShowCheckedModeBanner: false,
+          locale: languageProvider.idioma,
+          supportedLocales: Idiomas.all,
+          localizationsDelegates: [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          home: AuthenticationWrapper(),
+        );
+      });
   }
 }
 

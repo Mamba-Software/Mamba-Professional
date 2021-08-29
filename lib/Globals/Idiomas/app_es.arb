@@ -1,0 +1,48 @@
+{
+  "language": "Español",
+  "@language":{
+    "description": "Lenguaje de la App"
+  },
+
+  "email": "Email",
+  "@email":{
+    "description": "Email Text"
+  },
+  "emailError": "Escribe tu email",
+  "@emailError":{
+    "description": "Email Error Text"
+  },
+  "password": "Contraseña",
+  "@password":{
+    "description": "Contraseña Text "
+  },
+  "passwordError": "Introduzca una contraseña con 6 caracteres o más",
+  "@passwordError":{
+    "description": "Contraseña Error Text "
+  },
+  "forgotPassword": "¿Has olvidado tu contraseña?",
+  "@forgotPassword":{
+    "description": "Contraseña Text "
+  },
+  "login": "Inicia Sesión",
+  "@login":{
+    "description": "LogIn Text "
+  },
+  "loginError": "No encontramos este usuario.\n Porfavor prueba otra vez",
+  "@loginError":{
+    "description": "LogIn Error Text "
+  },
+  "newUser": "¿No estás registrado? Crea tu cuenta",
+  "@newUser":{
+    "description": "LogIn Text "
+  },
+  "hello": "Hello {username}",
+  "@hello": {
+    "description": "A welcome message",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  }
+}
