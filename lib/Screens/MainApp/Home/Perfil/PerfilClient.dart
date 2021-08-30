@@ -397,7 +397,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       ),
                     ),
                     Container(
-                      height: 40,
+                      height: 50,
                       width: 250,
                       decoration: BoxDecoration(
                           color: purpleColor, borderRadius: BorderRadius.circular(20)
@@ -408,7 +408,7 @@ class _PerfilClientState extends State<PerfilClient> {
                         },
                         child: Text(
                           AppLocalizations.of(context)!.closeSession,
-                          style: whiteTextStyle.copyWith(fontSize: 17.0),
+                          style: whiteTextStyle,
                         ),
                       ),
                     ),

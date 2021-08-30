@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TusDatos extends StatefulWidget {
   const TusDatos({Key? key}) : super(key: key);
@@ -18,11 +19,13 @@ class _TusDatosState extends State<TusDatos> {
   String emailTemp = "";
   final nombreCompletoController = TextEditingController(text: currentUser.name);
   final emailController = TextEditingController(text: currentUser.email);
+  // Gender Widget value
+  int? genderTemp = null;
+  final _genderKey = GlobalKey<_GenderWidgetState>();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      //height: screenHeight+100,
       padding: MediaQuery.of(context).viewInsets,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
@@ -38,7 +41,7 @@ class _TusDatosState extends State<TusDatos> {
                   icon: Icon(Icons.arrow_back, color: purpleColor),
                   onPressed: () => {Navigator.of(context).pop()},
                 ),
-                Text('Información', style: purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+                Text(AppLocalizations.of(context)!.info, style: purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
                 !_editStatus ? IconButton(
                     icon: Icon(Icons.edit, color: purpleColor),
                     onPressed: () => {
@@ -54,6 +57,7 @@ class _TusDatosState extends State<TusDatos> {
                           if(_formKey.currentState!.validate()){
                             if (!nombreCompletoTemp.isEmpty) currentUser.name = nombreCompletoTemp;
                             if (!emailTemp.isEmpty) currentUser.email = emailTemp;
+                            if (!(genderTemp == null)) currentUser.gender = genderTemp;
                             Provider.of<ClientProvider>(context, listen: false).updateClientFirebase(currentUser);
                             _editStatus = !_editStatus;
                             FocusScope.of(context).requestFocus(new FocusNode());
@@ -70,6 +74,7 @@ class _TusDatosState extends State<TusDatos> {
                         setState(() {
                           nombreCompletoController.text = currentUser.name;
                           emailController.text = currentUser.email;
+                          _genderKey.currentState!.resetGender();
                           _editStatus = !_editStatus;
                           FocusScope.of(context).requestFocus(new FocusNode());
                         })
@@ -99,7 +104,7 @@ class _TusDatosState extends State<TusDatos> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
                                   new Text(
-                                    'Nombre Completo',
+                                    AppLocalizations.of(context)!.nameCompleto,
                                     style: purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                                   ),
                                 ],
@@ -115,12 +120,12 @@ class _TusDatosState extends State<TusDatos> {
                               new Flexible(
                                 child: new TextFormField(
                                   controller: nombreCompletoController,
-                                  validator: (val) => val!.isEmpty ? 'Escribe tu nombre completo' : null,
+                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
                                   onChanged: (val) {
                                     setState(() => nombreCompletoTemp = val);
                                   },
-                                  decoration: const InputDecoration(
-                                    hintText: "Nombre Completo",
+                                  decoration: InputDecoration(
+                                    hintText: AppLocalizations.of(context)!.nameCompleto,
                                   ),
                                   enabled: _editStatus,
                                   autofocus: _editStatus,
@@ -139,7 +144,7 @@ class _TusDatosState extends State<TusDatos> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
                                   new Text(
-                                    'Email',
+                                    AppLocalizations.of(context)!.email,
                                     style: purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                                   ),
                                 ],
@@ -155,12 +160,12 @@ class _TusDatosState extends State<TusDatos> {
                               new Flexible(
                                 child: new TextFormField(
                                   controller: emailController,
-                                  validator: (val) => val!.isEmpty ? 'Escribe tu email' : null,
+                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
                                   onChanged: (val) {
                                     setState(() => emailTemp = val);
                                   },
-                                  decoration: const InputDecoration(
-                                    hintText: "Email",
+                                  decoration: InputDecoration(
+                                    hintText: AppLocalizations.of(context)!.email,
                                   ),
                                   enabled: _editStatus,
                                   autofocus: _editStatus,
@@ -168,6 +173,17 @@ class _TusDatosState extends State<TusDatos> {
                               ),
                             ],
                           )),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 8.0),
+                          child: GenderWidget(
+                            key: _genderKey,
+                            editStatus: (_editStatus),
+                            selectedGenderChanged: (gender) {
+                              genderTemp = gender;
+                            },
+                          )
+                      ),
                     ],
                   ),
                 ),
@@ -180,63 +196,70 @@ class _TusDatosState extends State<TusDatos> {
   }
 }
 
-/*
-   */
 
-// !_editStatus ? _getActionButtons() : new Container(),
 
-Widget _getActionButtons() {
-  return Padding(
-    padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
-    child: new Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(right: 10.0),
-            child: Container(
-                child: new ElevatedButton(
-                  child: new Text("Guardar", style: whiteTextStyle,),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.green,
-                    shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(20.0)),
-                  ),
-                  onPressed: () {
-                    /*setState(() {
-                      if(_formKey.currentState!.validate()){
-                        if (!nombreCompletoTemp.isEmpty) currentUser.name = nombreCompletoTemp;
-                        if (!emailTemp.isEmpty) currentUser.email = emailTemp;
-                        Provider.of<ClientProvider>(context, listen: false).updateClientFirebase(currentUser);
-                        _status = true;
-                        FocusScope.of(context).requestFocus(new FocusNode());
-                      }
-                    });
-                     */
-                  },
-                )),
-          ),
-          flex: 2,
-        ),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(left: 10.0),
-            child: Container(
-                child: new ElevatedButton(
-                  child: new Text("Cancelar", style: whiteTextStyle,),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.red,
-                    shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(20.0)),
-                  ),
-                  onPressed: () {
-                  },
-                )),
-          ),
-          flex: 2,
-        ),
-      ],
-    ),
-  );
+class GenderWidget extends StatefulWidget {
+  final ValueChanged<int> selectedGenderChanged;
+  final bool editStatus;
+  //final Function resetGender;
+  GenderWidget({required Key key, required this.selectedGenderChanged, required this.editStatus}) : super(key: key);
+
+  @override
+  _GenderWidgetState createState() => _GenderWidgetState();
 }
+
+class _GenderWidgetState extends State<GenderWidget> {
+  int gender = currentUser.gender;
+
+  @override
+  resetGender() => gender = currentUser.gender;
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _icon(0, text: AppLocalizations.of(context)!.male, icon: Icons.male_outlined),
+        _icon(1, text: AppLocalizations.of(context)!.female, icon: Icons.female_outlined),
+        _icon(2, text: AppLocalizations.of(context)!.transgender, icon: Icons.transgender_outlined),
+      ],
+    );
+  }
+  Widget _icon(int index, {required String text, required IconData icon}) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox.fromSize(
+        size: Size(85, 85), // button width and height
+        child: ClipOval(
+          child: Material(
+            color: gender == index ? purpleColorTrans : null, // button color
+            child: InkWell(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      icon,
+                      size: 38,
+                      color: purpleColor,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: purpleColor)),
+                    ),
+                  ],
+                ),
+                onTap: widget.editStatus ? () => {
+                  setState(() {
+                    gender = index;
+                    widget.selectedGenderChanged(gender);
+                  }),
+                } : null,
+            ),
+          ),
+        ),
+      )
+    );
+  }
+
+}
+
+
