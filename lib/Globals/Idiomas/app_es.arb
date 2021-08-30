@@ -95,6 +95,10 @@
   "@registerError":{
     "description": "Regístrate Error Text "
   },
+  "registerGenderError": "Porfavor selecciona tu género",
+  "@registerGenderError":{
+    "description": "Regístrate Gender Error Text "
+  },
   "hello": "Hello {username}",
   "@hello": {
     "description": "A welcome message",

@@ -242,17 +242,26 @@ class _RegisterState extends State<Register> {
                           color: purpleColor, borderRadius: BorderRadius.circular(20)),
                       child: TextButton(
                         onPressed: () async {
-                          if(_formKey.currentState!.validate()){
+                          if(gender == null) {
                             setState(() {
-                              loading = true;
+                              error = true;
+                              errorText = AppLocalizations.of(context)!.registerGenderError;
                             });
-                            bool result = await user.signUp(email,password1,name,gender!,isTrainer);
-                            if (result) {
+                          }
+                          else {
+                            if(_formKey.currentState!.validate()){
                               setState(() {
-                                error = true;
-                                errorText = AppLocalizations.of(context)!.registerError;
-                                loading = false;
+                                error = false;
+                                loading = true;
                               });
+                              bool result = await user.signUp(email,password1,name,gender!,isTrainer);
+                              if (result) {
+                                setState(() {
+                                  error = true;
+                                  errorText = AppLocalizations.of(context)!.registerError;
+                                  loading = false;
+                                });
+                              }
                             }
                           }
                         },
@@ -263,7 +272,7 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 16.0),
+                      padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 8.0),
                       child: TextButton(
                           onPressed: () {
                             widget.toggleView();
@@ -274,11 +283,14 @@ class _RegisterState extends State<Register> {
                           )
                       ),
                     ),
-                    error ? Center(
-                      child: Text(
-                        errorText,
-                        style: redTextStyle.copyWith(fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
+                    error ? Padding(
+                      padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 8.0),
+                      child: Center(
+                        child: Text(
+                          errorText,
+                          style: redTextStyle.copyWith(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ) : new Container()
                   ],

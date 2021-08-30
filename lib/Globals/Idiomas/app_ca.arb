@@ -23,6 +23,7 @@
   "nameCompletoError": "Escriu el teu nom",
   "register": "Registrat",
   "registerError": "Introdueix un email vàlid si us plau",
+  "registerGenderError": "Selecciona el teu gènere si us plau",
 
   "hello": "Hello {username}"
 }
