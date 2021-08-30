@@ -38,7 +38,7 @@ class _TusDatosState extends State<TusDatos> {
                   icon: Icon(Icons.arrow_back, color: purpleColor),
                   onPressed: () => {Navigator.of(context).pop()},
                 ),
-                Text('Tus Datos', style: purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+                Text('Información', style: purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
                 !_editStatus ? IconButton(
                     icon: Icon(Icons.edit, color: purpleColor),
                     onPressed: () => {

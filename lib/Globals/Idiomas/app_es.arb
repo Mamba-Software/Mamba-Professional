@@ -99,13 +99,78 @@
   "@registerGenderError":{
     "description": "Regístrate Gender Error Text "
   },
-  "hello": "Hello {username}",
-  "@hello": {
-    "description": "A welcome message",
+  "wellcome": "¡Hola {username}!",
+  "@wellcome": {
+    "description": "Wellcome message",
     "placeholders": {
       "username": {
         "type": "String"
       }
     }
+  },
+  "alreadyCreatedClient": "¿Formas parte de una marca de entreno personal?",
+  "@alreadyCreatedClient":{
+    "description": "Cliente forma parte de una marca Text"
+  },
+  "perfectClient": "!Perfecto!",
+  "@perfectClient":{
+    "description": "Cliente forma parte de una marca SÍ Text"
+  },
+  "codigo": "Introduzca su código",
+  "@codigo":{
+    "description": "Cliente forma parte de una marca SÍ Text"
+  },
+  "letsGo": "Vamos!",
+  "@letsGo":{
+    "description": "Lets Go Text"
+  },
+  "alreadyCreatedTrainer": "¿Quieres crear tu marca personal desde cero?",
+  "@alreadyCreatedTrainer":{
+    "description": "Trainer forma parte de una marca Text"
+  },
+  "alreadyCreatedTrainerFirm": "¿Formas parte de una marca ya creada?",
+  "@alreadyCreatedTrainerFirm":{
+    "description": "Trainer forma parte de una marca ya creada Text"
+  },
+  "info": "Información",
+  "@info":{
+    "description": "Información Text"
+  },
+  "settings": "Ajustes",
+  "@settings":{
+    "description": "Ajustes Text"
+  },
+  "sessions": "Sesiones",
+  "@sessions":{
+    "description": "Sesiones Text"
+  },
+  "stats": "Análisis",
+  "@stats":{
+    "description": "Análisis Text"
+  },
+  "feedback": "Feedback",
+  "@feedback":{
+    "description": "Feedback Text"
+  },
+  "reporting": "Errores",
+  "@reporting":{
+    "description": "Errores Text"
+  },
+  "memberSince": "Miembro desde {dateJoined}",
+  "@memberSince": {
+    "description": "Member Since message",
+    "placeholders": {
+      "dateJoined": {
+        "type": "String"
+      }
+    }
+  },
+  "clientOf": "Cliente de ",
+  "@clientOf": {
+    "description": "Member Since message"
+  },
+  "closeSession": "Cerrar sesión",
+  "@closeSession":{
+    "description": "Cerrar sesión Text"
   }
 }

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/AuthService.dart';
 import 'package:mamba_castelldefels/Data/Database.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Loading.dart';
 import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
-import 'package:mamba_castelldefels/Providers/UserProvider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 class FirstClient extends StatefulWidget {
@@ -43,13 +42,13 @@ class _FirstClientState extends State<FirstClient> {
                       child: Image.asset(logoExtended)),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Text("¡ Bienvenido ${client.name} !",
+                    child: Text(AppLocalizations.of(context)!.wellcome(client.name!),
                       style: purpleTextStyle.copyWith(fontSize: 23, fontWeight:FontWeight.bold),
                       textAlign: TextAlign.center,),
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0, bottom: 4.0),
-                    child: Text("¿Formas parte de una marca de entreno personal?",
+                    child: Text(AppLocalizations.of(context)!.alreadyCreatedClient,
                       style: purpleTextStyle,
                       textAlign: TextAlign.center,
                     ),
@@ -60,7 +59,7 @@ class _FirstClientState extends State<FirstClient> {
                       Padding(
                         padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 24.0),
                         child: FloatingActionButton(
-                          child: Text("Sí", style: whiteTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
+                          child: Text(AppLocalizations.of(context)!.yes, style: whiteTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
                           backgroundColor: Colors.green,
                           foregroundColor: Colors.white,
                           onPressed: () {
@@ -74,7 +73,7 @@ class _FirstClientState extends State<FirstClient> {
                       Padding(
                         padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 24.0),
                         child: FloatingActionButton(
-                          child: Text("No", style: whiteTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
+                          child: Text(AppLocalizations.of(context)!.no, style: whiteTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
                           backgroundColor: Colors.red,
                           foregroundColor: Colors.white,
                           onPressed: () async {
@@ -92,7 +91,7 @@ class _FirstClientState extends State<FirstClient> {
                     children: <Widget>[
                       Padding(
                         padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 8.0),
-                        child: Text("! Perfecto !",
+                        child: Text(AppLocalizations.of(context)!.perfectClient,
                           style: purpleTextStyle,
                           textAlign: TextAlign.center,
                         ),
@@ -100,18 +99,18 @@ class _FirstClientState extends State<FirstClient> {
                       Padding(
                         padding: EdgeInsets.only(left: 45.0, right: 45.0, top: 4.0, bottom: 0),
                         child: TextFormField(
-                            validator: (val) => val!.isEmpty ? 'Introduzca su código' : null,
+                            validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.codigo : null,
                             onChanged: (val) {
                               setState(() => key = val);
                             },
-                            decoration: textFromInputDecoration.copyWith(labelText: 'Introduzca su código')
+                            decoration: textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.codigo)
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: FloatingActionButton.extended(
                           icon: Icon(Icons.qr_code),
-                          label: Text("Vamos", style: purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
+                          label: Text(AppLocalizations.of(context)!.letsGo, style: purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
                           backgroundColor: whiteColor,
                           foregroundColor: purpleColor,
                           onPressed: () async {

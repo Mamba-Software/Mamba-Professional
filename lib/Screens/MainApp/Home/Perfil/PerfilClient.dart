@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 // Internal Apop Tools
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
-import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/TusDatos.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +19,8 @@ class _PerfilClientState extends State<PerfilClient> {
   // List Bool Status
   List<bool> _statusButtons =  [false, false, false, false, false, false];
   final FocusNode myFocusNode = FocusNode();
+  // Size of Icons
+  final _iconSize = Size(85, 85);
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +137,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       SizedBox.fromSize(
-                                        size: Size(80, 80), // button width and height
+                                        size: _iconSize, // button width and height
                                         child: ClipOval(
                                           child: Material(
                                             color: !_statusButtons[0] ? yellowColor : yellowColorTrans, // button color
@@ -156,7 +158,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                                     color: Colors.white,
                                                     size: 35.0,
                                                   ), // icon
-                                                  Text("Datos", style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
+                                                  Text(AppLocalizations.of(context)!.info, style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
                                                 ],
                                               ),
                                             ),
@@ -175,7 +177,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       SizedBox.fromSize(
-                                        size: Size(80, 80), // button width and height
+                                        size: _iconSize, // button width and height
                                         child: ClipOval(
                                           child: Material(
                                             color: yellowColor, // button color
@@ -191,11 +193,11 @@ class _PerfilClientState extends State<PerfilClient> {
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: <Widget>[
                                                   Icon(
-                                                    Icons.lock_outline,
+                                                    Icons.settings,
                                                     color: Colors.white,
                                                     size: 35.0,
                                                   ), // icon
-                                                  Text("Privacidad", style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
+                                                  Text(AppLocalizations.of(context)!.settings, style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
                                                 ],
                                               ),
                                             ),
@@ -214,7 +216,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       SizedBox.fromSize(
-                                        size: Size(80, 80), // button width and height
+                                        size: _iconSize, // button width and height
                                         child: ClipOval(
                                           child: Material(
                                             color: yellowColor, // button color
@@ -234,7 +236,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                                     color: Colors.white,
                                                     size: 35.0,
                                                   ), // icon
-                                                  Text("Sesiones", style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
+                                                  Text(AppLocalizations.of(context)!.sessions, style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
                                                 ],
                                               ),
                                             ),
@@ -253,7 +255,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       SizedBox.fromSize(
-                                        size: Size(80, 80), // button width and height
+                                        size: _iconSize, // button width and height
                                         child: ClipOval(
                                           child: Material(
                                             color: yellowColor, // button color
@@ -273,7 +275,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                                     color: Colors.white,
                                                     size: 35.0,
                                                   ), // icon
-                                                  Text("Análisis", style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
+                                                  Text(AppLocalizations.of(context)!.stats, style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
                                                 ],
                                               ),
                                             ),
@@ -292,7 +294,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       SizedBox.fromSize(
-                                        size: Size(80, 80), // button width and height
+                                        size: _iconSize, // button width and height
                                         child: ClipOval(
                                           child: Material(
                                             color: yellowColor, // button color
@@ -312,7 +314,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                                     color: Colors.white,
                                                     size: 35.0,
                                                   ), // icon
-                                                  Text("Feedback", style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
+                                                  Text(AppLocalizations.of(context)!.feedback, style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
                                                 ],
                                               ),
                                             ),
@@ -331,7 +333,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       SizedBox.fromSize(
-                                        size: Size(80, 80), // button width and height
+                                        size: _iconSize, // button width and height
                                         child: ClipOval(
                                           child: Material(
                                             color: yellowColor, // button color
@@ -351,7 +353,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                                     color: Colors.white,
                                                     size: 35.0,
                                                   ), // icon
-                                                  Text("Errores", style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
+                                                  Text(AppLocalizations.of(context)!.reporting, style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
                                                 ],
                                               ),
                                             ),
@@ -377,8 +379,7 @@ class _PerfilClientState extends State<PerfilClient> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text("Miembro desde:", style: purpleTextStyle),
-                          Text(" 29/08/2021", style: purpleTextStyle.copyWith(fontStyle: FontStyle.italic),),
+                          Text(AppLocalizations.of(context)!.memberSince(currentUser.dateJoined), style: purpleTextStyle.copyWith(fontSize: 16, fontStyle: FontStyle.italic),),
                         ],
                       ),
                     ),
@@ -388,8 +389,8 @@ class _PerfilClientState extends State<PerfilClient> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text("Cliente de: ", style: purpleTextStyle),
-                          Text("Roldan Coach", style: purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                          Text(AppLocalizations.of(context)!.clientOf, style: purpleTextStyle.copyWith(fontSize: 16,)),
+                          Text("Roldan Coach", style: purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
                         ],
                       ),
                     ),
@@ -404,7 +405,7 @@ class _PerfilClientState extends State<PerfilClient> {
                           await _authProvider.signOut();
                         },
                         child: Text(
-                          'Cerrar Sesión',
+                          AppLocalizations.of(context)!.closeSession,
                           style: whiteTextStyle.copyWith(fontSize: 17.0),
                         ),
                       ),
