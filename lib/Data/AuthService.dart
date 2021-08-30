@@ -42,10 +42,10 @@ class AuthenticationService {
       User? user = result.user;
       if (isTrainer) {
         await DatabaseService().updateUsersData(user!.uid,true,true);
-        await DatabaseService().updateTrainerData(user.uid,name,email);
+        //await DatabaseService().updateTrainerData(user.uid,name,email);
       } else {
         await DatabaseService().updateUsersData(user!.uid,false,true);
-        await DatabaseService().updateClientData(user.uid,name,email);
+        //await DatabaseService().updateClientData(user.uid,name,email);
       }
       return _usuarioFromFirebaseUser(user);
     } on FirebaseAuthException catch (e) {

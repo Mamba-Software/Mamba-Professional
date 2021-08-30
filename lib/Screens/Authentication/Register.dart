@@ -62,6 +62,13 @@ class _RegisterState extends State<Register> {
   Future<bool> _onBackPressed() async {
     return widget.toggleView() ?? false;
   }
+  // Gender Widget value
+  int? gender;
+  void updateGender(int newGender) {
+    setState(() {
+      gender = newGender;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +91,11 @@ class _RegisterState extends State<Register> {
                         child: Image.asset(logoExtended)),
                     Padding(
                         padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
-                        child: Example()
+                        child: GenderWidget(
+                            selectedGenderChanged: (gender) {
+                              updateGender(gender);
+                            }
+                        ),
                     ),
                     Padding(
                         padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
@@ -235,7 +246,7 @@ class _RegisterState extends State<Register> {
                             setState(() {
                               loading = true;
                             });
-                            bool result = await user.signUp(email,password1,name,isTrainer);
+                            bool result = await user.signUp(email,password1,name,gender!,isTrainer);
                             if (result) {
                               setState(() {
                                 error = true;
@@ -281,13 +292,16 @@ class _RegisterState extends State<Register> {
   }
 }
 
-class Example extends StatefulWidget {
+class GenderWidget extends StatefulWidget {
+  final ValueChanged<int> selectedGenderChanged;
+  GenderWidget({required this.selectedGenderChanged});
+
   @override
-  _ExampleState createState() => _ExampleState();
+  _GenderWidgetState createState() => _GenderWidgetState();
 }
 
-class _ExampleState extends State<Example> {
-  int? _selected = null;
+class _GenderWidgetState extends State<GenderWidget> {
+  int? gender;
 
   @override
   Widget build(BuildContext context) {
@@ -311,16 +325,17 @@ class _ExampleState extends State<Example> {
           children: [
             Icon(
               icon,
-              color: _selected == index ? Colors.white : purpleColor,
+              color: gender == index ? Colors.white : purpleColor,
             ),
-            Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize:22, color: _selected == index ? Colors.white : purpleColor)),
+            Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize:22, color: gender == index ? Colors.white : purpleColor)),
           ],
         ),
-        onTap: () => setState(
-              () {
-            _selected = index;
-          },
-        ),
+        onTap: () => {
+          setState(() {
+            gender = index;
+            widget.selectedGenderChanged(gender!);
+          }),
+        }
       ),
     );
   }

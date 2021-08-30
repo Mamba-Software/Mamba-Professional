@@ -31,17 +31,17 @@ class AuthenticationProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> signUp(String email, String password, String name, bool isTrainer) async {
+  Future<bool> signUp(String email, String password, String name, int gender, bool isTrainer) async {
     try {
       _status = Status.Authenticating;
       notifyListeners();
       await _auth.createUserWithEmailAndPassword(email: email, password: password);
       if (isTrainer) {
         await DatabaseService().updateUsersData(_user!.uid,true,true);
-        await DatabaseService().updateTrainerData(_user!.uid,name,email);
+        await DatabaseService().updateTrainerData(_user!.uid,name,email,gender,true);
       } else {
         await DatabaseService().updateUsersData(_user!.uid,false,true);
-        await DatabaseService().updateClientData(_user!.uid,name,email);
+        await DatabaseService().updateClientData(_user!.uid,name,email,gender,true);
       }
       return true;
     } catch (e) {

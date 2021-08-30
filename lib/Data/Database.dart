@@ -1,5 +1,6 @@
 // Flutter Libs
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 // Internal App Tools
 import 'package:mamba_castelldefels/Models/Client.dart';
 import 'package:mamba_castelldefels/Models/Trainer.dart';
@@ -23,19 +24,48 @@ class DatabaseService {
       'isFirst': isFirst,
     });
   }
-  Future<void> updateClientData(String uid, String name, String email) async {
-    return await clientsCollection.doc(uid).set({
-      'uid': uid,
-      'name': name,
-      'email': email,
-    });
+  Future<void> updateClientData(String uid, String name, String email, int gender, bool? dateJoined) async {
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final String formatted = formatter.format(now);
+    if (dateJoined!) {
+      return await clientsCollection.doc(uid).set({
+        'uid': uid,
+        'name': name,
+        'email': email,
+        'gender': gender,
+        'dateJoined': formatted
+      });
+    } else {
+      return await clientsCollection.doc(uid).set({
+        'uid': uid,
+        'name': name,
+        'email': email,
+        'gender': gender,
+      });
+    }
+
   }
-  Future<void> updateTrainerData(String uid, String name, String email) async {
-    return await trainersCollection.doc(uid).set({
-      'uid': uid,
-      'name': name,
-      'email': email,
-    });
+  Future<void> updateTrainerData(String uid, String name, String email, int gender, bool? dateJoined) async {
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final String formatted = formatter.format(now);
+    if (dateJoined!) {
+      return await trainersCollection.doc(uid).set({
+        'uid': uid,
+        'name': name,
+        'email': email,
+        'gender': gender,
+        'dateJoined': formatted
+      });
+    } else {
+      return await trainersCollection.doc(uid).set({
+        'uid': uid,
+        'name': name,
+        'email': email,
+        'gender': gender
+      });
+    }
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // USERS
@@ -58,33 +88,9 @@ class DatabaseService {
     var docSnapshot = await clientsCollection.doc(uid).get();
     if (docSnapshot.exists) {
       Map<String, dynamic>? data = docSnapshot.data();
-      client = Client(uid: data?['uid'], name: data?['name'], email: data?['email']);
+      client = Client(uid: data?['uid'], name: data?['name'], email: data?['email'], gender: data?['gender'], dateJoined: data?['dateJoined']);
     }
     return client;
-  }
-
-  // User From Snapshot
-  Future<Usuario?> _userFromSnapshot(QuerySnapshot snapshot) {
-    if (snapshot.docs.length != 0) {
-      for (var i = 0; i < snapshot.docs.length; i++) {
-        if (snapshot.docs[i].id == userUID) {
-          Future<Usuario> future = Future(() =>
-              Usuario(
-                uid: snapshot.docs[i].get("uid"),
-                isTrainer: snapshot.docs[i].get("isTrainer"),
-                isFirst: snapshot.docs[i].get("isFirst"),
-              )
-          );
-          return future;
-        }
-      }
-    }
-    return Future(() => null);
-  }
-
-  // Get User Stream
-  Stream<Future<Usuario?>> get singleUser {
-    return usersCollection.snapshots().map(_userFromSnapshot);
   }
 
   // Client List from snapshot
@@ -94,6 +100,8 @@ class DatabaseService {
         uid: doc.get("uid") ?? '',
         name: doc.get("name") ?? '',
         email: doc.get("email") ?? '',
+        gender: doc.get("gender") ?? '',
+        dateJoined: doc.get("dateJoined") ?? '',
       );
     }).toList();
   }
@@ -110,7 +118,7 @@ class DatabaseService {
     var docSnapshot = await trainersCollection.doc(uid).get();
     if (docSnapshot.exists) {
       Map<String, dynamic>? data = docSnapshot.data();
-      trainer = Trainer(uid: data?['uid'], name: data?['name'], email: data?['email']);
+      trainer = Trainer(uid: data?['uid'], name: data?['name'], email: data?['email'], gender: data?['gender'], dateJoined: data?['dateJoined']);
     }
     return trainer;
   }
@@ -122,6 +130,8 @@ class DatabaseService {
         uid: doc.get("uid") ?? '',
         name: doc.get("name") ?? '',
         email: doc.get("email") ?? '',
+        gender: doc.get("gender") ?? '',
+        dateJoined: doc.get("dateJoined") ?? '',
       );
     }).toList();
   }

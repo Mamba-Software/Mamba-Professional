@@ -27,7 +27,7 @@ class TrainerProvider extends ChangeNotifier {
 
   Future<void> updateTrainerFirebase(Trainer trainer) async {
     try {
-      _databaseService.updateTrainerData(trainer.uid, trainer.name!, trainer.email!);
+      _databaseService.updateTrainerData(trainer.uid, trainer.name!, trainer.email!, trainer.gender!, false);
       this.getTrainerFirebase(trainer.uid);
     } catch (e) {
       print(e.toString());

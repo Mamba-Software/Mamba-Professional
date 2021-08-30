@@ -27,7 +27,7 @@ class ClientProvider extends ChangeNotifier {
 
   Future<void> updateClientFirebase(Client client) async {
     try {
-      _databaseService.updateClientData(client.uid, client.name!, client.email!);
+      _databaseService.updateClientData(client.uid, client.name!, client.email!, client.gender!, false);
       this.getClientFirebase(client.uid);
     } catch (e) {
       print(e.toString());
