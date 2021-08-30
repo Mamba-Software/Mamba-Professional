@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Globals/Loading.dart';
 import 'package:mamba_castelldefels/Data/AuthService.dart';
 import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // Register Widget
 class Register extends StatefulWidget {
@@ -88,11 +89,11 @@ class _RegisterState extends State<Register> {
                     Padding(
                         padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
                         child: TextFormField(
-                          validator: (val) => val!.isEmpty ? 'Escribe tu nombre' : null,
+                          validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError  : null,
                           onChanged: (val) {
                             setState(() => name = val);
                           },
-                          decoration: textFromInputDecoration.copyWith(labelText: 'Nombre completo',
+                          decoration: textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.nameCompleto,
                               prefixIcon:  Padding(
                                 padding: EdgeInsets.all(0.0),
                                 child: Icon(
@@ -106,11 +107,11 @@ class _RegisterState extends State<Register> {
                     Padding(
                         padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
                         child: TextFormField(
-                          validator: (val) => val!.isEmpty ? 'Escribe tu email' : null,
+                          validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
                           onChanged: (val) {
                             setState(() => email = val);
                           },
-                          decoration: textFromInputDecoration.copyWith(labelText: 'Email',
+                          decoration: textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.email,
                               prefixIcon:  Padding(
                                 padding: EdgeInsets.all(0.0),
                                 child: Icon(
@@ -124,12 +125,12 @@ class _RegisterState extends State<Register> {
                     Padding(
                         padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
                         child: TextFormField(
-                          validator: (val) => val!.length < 6 ? 'Introduzca una contraseña con 6 caracteres o más' : null,
+                          validator: (val) => val!.length < 6 ? AppLocalizations.of(context)!.passwordError : null,
                           onChanged: (val) {
                             setState(() => password1 = val);
                           },
                           obscureText: true,
-                          decoration: textFromInputDecoration.copyWith(labelText: 'Contraseña',
+                          decoration: textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
                               prefixIcon:  Padding(
                                 padding: EdgeInsets.all(0.0),
                                 child: Icon(
@@ -143,12 +144,12 @@ class _RegisterState extends State<Register> {
                     Padding(
                       padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 16.0),
                       child: TextFormField(
-                          validator: (val) => val == password1 ? null : 'Contraseñas no coinciden',
+                          validator: (val) => val == password1 ? null : AppLocalizations.of(context)!.passwordNotSameError,
                           onChanged: (val) {
                             setState(() => password2 = val);
                           },
                           obscureText: true,
-                          decoration: textFromInputDecoration.copyWith(labelText: 'Repite tu contraseña',
+                          decoration: textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.passworRepeat,
                               prefixIcon:  Padding(
                                 padding: EdgeInsets.all(0.0),
                                 child: Icon(
@@ -167,7 +168,7 @@ class _RegisterState extends State<Register> {
                           Padding(
                             padding: EdgeInsets.only(left: 20.0, right: 20.0),
                             child: Text(
-                              'Cliente',
+                              AppLocalizations.of(context)!.client,
                               style: TextStyle(color: textColorClient, fontSize: 22, fontWeight: fontWeightClient),
                             ),
                           ),
@@ -186,7 +187,7 @@ class _RegisterState extends State<Register> {
                           Padding(
                             padding: EdgeInsets.only(left: 20.0, right: 20.0),
                             child: Text(
-                              'Entrenador',
+                              AppLocalizations.of(context)!.trainer,
                               style: TextStyle(color: textColorTrainer, fontSize: 22, fontWeight: fontWeightTrainer),
                             ),
                           )
@@ -208,14 +209,14 @@ class _RegisterState extends State<Register> {
                             if (result) {
                               setState(() {
                                 error = true;
-                                errorText = 'Porfavor introduce un email válido.';
+                                errorText = AppLocalizations.of(context)!.registerError;
                                 loading = false;
                               });
                             }
                           }
                         },
                         child: Text(
-                          'Registrate',
+                          AppLocalizations.of(context)!.register,
                           style: whiteTextStyle.copyWith(fontSize: 28),
                         ),
                       ),
@@ -227,7 +228,7 @@ class _RegisterState extends State<Register> {
                             widget.toggleView();
                           },
                           child: Text(
-                            'Tienes una cuenta? Inicia sesión',
+                            AppLocalizations.of(context)!.alreadyUser,
                             style: whiteTextStyle,
                           )
                       ),
@@ -264,9 +265,9 @@ class _ExampleState extends State<Example> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _icon(0, text: "Male", icon: Icons.male_outlined),
-        _icon(1, text: "Female", icon: Icons.female_outlined),
-        _icon(2, text: "Others", icon: Icons.transgender_outlined),
+        _icon(0, text: AppLocalizations.of(context)!.male, icon: Icons.male_outlined),
+        _icon(1, text: AppLocalizations.of(context)!.female, icon: Icons.female_outlined),
+        _icon(2, text: AppLocalizations.of(context)!.transgender, icon: Icons.transgender_outlined),
       ],
     );
   }
@@ -280,9 +281,9 @@ class _ExampleState extends State<Example> {
           children: [
             Icon(
               icon,
-              color: _selected == index ? Colors.white : null,
+              color: _selected == index ? Colors.white : purpleColor,
             ),
-            Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize:22, color: _selected == index ? Colors.white : null)),
+            Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize:22, color: _selected == index ? Colors.white : purpleColor)),
           ],
         ),
         onTap: () => setState(

@@ -77,7 +77,7 @@ class _PerfilClientState extends State<PerfilClient> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(0.0),
                 child: new Container(
                   height: screenHeight*0.5,
                   //padding: EdgeInsets.only(top: 25.0, bottom: 25.0, right: 25.0, left: 25.0),

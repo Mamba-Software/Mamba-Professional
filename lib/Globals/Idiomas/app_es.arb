@@ -3,7 +3,26 @@
   "@language":{
     "description": "Lenguaje de la App"
   },
-
+  "yes": "Sí",
+  "@yes":{
+    "description": "Sí Text"
+  },
+  "no": "No",
+  "@no":{
+    "description": "No Text"
+  },
+  "logOut": "¿Quieres salir de Mamba?",
+  "@logOut":{
+    "description": "logOut Text"
+  },
+  "client": "Cliente",
+  "@client":{
+    "description": "Cliente Text"
+  },
+  "trainer": "Entrenador",
+  "@trainer":{
+    "description": "Entrenador Text"
+  },
   "email": "Email",
   "@email":{
     "description": "Email Text"
@@ -20,6 +39,14 @@
   "@passwordError":{
     "description": "Contraseña Error Text "
   },
+  "passworRepeat": "Repite tu contraseña",
+  "@passworRepeat":{
+    "description": "Contraseña Repeat Text "
+  },
+  "passwordNotSameError": "Contraseñas no coinciden",
+  "@passwordNotSameError":{
+    "description": "Contraseña Error Text "
+  },
   "forgotPassword": "¿Has olvidado tu contraseña?",
   "@forgotPassword":{
     "description": "Contraseña Text "
@@ -34,7 +61,39 @@
   },
   "newUser": "¿No estás registrado? Crea tu cuenta",
   "@newUser":{
+    "description": "New User Text "
+  },
+  "alreadyUser": "¿Tienes una cuenta? Inicia sesión",
+  "@alreadyUser":{
+    "description": "Already user Text "
+  },
+  "male": "Hombre",
+  "@male":{
+    "description": "Hombre Text "
+  },
+  "female": "Mujer",
+  "@female":{
+    "description": "Mujer Text "
+  },
+  "transgender": "Otros",
+  "@transgender":{
+    "description": "Otros Text "
+  },
+  "nameCompleto": "Nombre completo",
+  "@nameCompleto":{
+    "description": "Nombre Completo Text "
+  },
+  "nameCompletoError": "Escribe tu nombre",
+  "@nameCompletoError":{
     "description": "LogIn Text "
+  },
+  "register": "Regístrate",
+  "@register":{
+    "description": "Regístrate Text "
+  },
+  "registerError": "Porfavor introduce un email válido",
+  "@registerError":{
+    "description": "Regístrate Error Text "
   },
   "hello": "Hello {username}",
   "@hello": {

@@ -1,12 +1,28 @@
 {
   "language": "Català",
+  "yes": "Sí",
+  "no": "No",
+  "logOut": "Vols sortir de Mamba?",
+  "client": "Client",
+  "trainer": "Entrenador",
   "email": "Email",
   "emailError": "Escriu el teu email",
   "password": "Contrasenya",
   "passwordError": "Introdueix una contrasenya amb 6 caràcters o més",
+  "passworRepeat": "Repeteix la contrasenya",
+  "passwordNotSameError": "Les contrasenyes no coincideixen",
   "forgotPassword": "Has oblidat la teva contrasenya?",
   "login": "Inicia Sessió",
   "loginError": "No trobem aquest usuari.\n Torneu a provar si us plau",
   "newUser": "No estàs registrat? Crea un compte",
+  "alreadyUser": "Tens un compte? Inicia Sessió",
+  "male": "Home",
+  "female": "Dona",
+  "transgender": "Altres",
+  "nameCompleto": "Nom complet",
+  "nameCompletoError": "Escriu el teu nom",
+  "register": "Registrat",
+  "registerError": "Introdueix un email vàlid si us plau",
+
   "hello": "Hello {username}"
 }

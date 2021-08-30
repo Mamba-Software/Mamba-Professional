@@ -34,18 +34,18 @@ class _LoginState extends State<Login> {
     return (await showDialog(
       context: context,
       builder: (context) => new AlertDialog(
-        title: Center(child: Text('¿Quieres salir de Mamba?', style: redTextStyle)),
+        title: Center(child: Text(AppLocalizations.of(context)!.logOut, style: redTextStyle)),
         content: Row (
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextButton(
-                child: Text('No', style: purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),),
+                child: Text(AppLocalizations.of(context)!.no, style: purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),),
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
               ), // button 1
               TextButton(
-                child: Text('Sí', style: purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),),
+                child: Text(AppLocalizations.of(context)!.yes, style: purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),),
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
@@ -144,6 +144,7 @@ class _LoginState extends State<Login> {
                               errorText = AppLocalizations.of(context)!.loginError;
                               loading = false;
                             });
+
                           }
                         }
                       },

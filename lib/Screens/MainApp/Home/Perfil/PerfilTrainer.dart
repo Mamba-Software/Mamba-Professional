@@ -70,11 +70,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
               child: Text('Reporta un error'),
             );
           default:
-            return Container(
-              height: screenHeight*0.3,
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-              child: Text('No ha Trobat'),
-            );
+            return Container();
         }
       }).whenComplete(() => _statusButtons[_buttonIndex] = !_statusButtons[_buttonIndex]);
     }
@@ -83,7 +79,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(0.0),
             child: new Container(
               height: screenHeight*0.5,
               //padding: EdgeInsets.only(top: 25.0, bottom: 25.0, right: 25.0, left: 25.0),
