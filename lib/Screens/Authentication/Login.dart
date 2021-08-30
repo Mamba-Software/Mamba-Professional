@@ -22,6 +22,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   // Loading Screen Boolean
   bool loading = false;
+  // Password Visible
+  bool _passwordVisible = false;
   // FormVariables
   final _formKey = GlobalKey<FormState>();
   String email = '';
@@ -101,8 +103,23 @@ class _LoginState extends State<Login> {
                         onChanged: (val) {
                           setState(() => password = val);
                         },
-                        obscureText: true,
+                        obscureText: !_passwordVisible,
                           decoration: textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
+                              suffixIcon: Padding(
+                                  padding: EdgeInsets.all(0.0),
+                                  child: IconButton(
+                                    icon: Icon(
+                                    // Based on passwordVisible state choose the icon
+                                    _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                    color: purpleColor
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _passwordVisible = !_passwordVisible;
+                                      });
+                                    }
+                                  )
+                              ),
                               prefixIcon:  Padding(
                                 padding: EdgeInsets.all(0.0),
                                 child: Icon(

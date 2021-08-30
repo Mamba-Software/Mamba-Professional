@@ -20,10 +20,10 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  // Authentication Service
-  final AuthenticationService _authenticationService = AuthenticationService();
   // Loading Screen Boolean
   bool loading = false;
+  // Password Visible
+  bool _passwordVisible = false;
   // Switch Trainer Client
   bool isTrainer = false;
   Color textColorClient = whiteColor;
@@ -129,8 +129,23 @@ class _RegisterState extends State<Register> {
                           onChanged: (val) {
                             setState(() => password1 = val);
                           },
-                          obscureText: true,
+                          obscureText: !_passwordVisible,
                           decoration: textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
+                              suffixIcon: Padding(
+                                  padding: EdgeInsets.all(0.0),
+                                  child: IconButton(
+                                      icon: Icon(
+                                        // Based on passwordVisible state choose the icon
+                                          _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                          color: purpleColor
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _passwordVisible = !_passwordVisible;
+                                        });
+                                      }
+                                  )
+                              ),
                               prefixIcon:  Padding(
                                 padding: EdgeInsets.all(0.0),
                                 child: Icon(
@@ -148,8 +163,23 @@ class _RegisterState extends State<Register> {
                           onChanged: (val) {
                             setState(() => password2 = val);
                           },
-                          obscureText: true,
+                          obscureText: !_passwordVisible,
                           decoration: textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.passworRepeat,
+                              suffixIcon: Padding(
+                                  padding: EdgeInsets.all(0.0),
+                                  child: IconButton(
+                                      icon: Icon(
+                                        // Based on passwordVisible state choose the icon
+                                          _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                          color: purpleColor
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _passwordVisible = !_passwordVisible;
+                                        });
+                                      }
+                                  )
+                              ),
                               prefixIcon:  Padding(
                                 padding: EdgeInsets.all(0.0),
                                 child: Icon(
