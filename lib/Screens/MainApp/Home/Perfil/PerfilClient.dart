@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Providers/UserProvider.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/TusDatos.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +26,7 @@ class _PerfilClientState extends State<PerfilClient> {
   @override
   Widget build(BuildContext context) {
     final _authProvider = Provider.of<AuthenticationProvider>(context);
+    final userFirebase = Provider.of<UserProvider>(context).usuario;
     void _showPerfiClientModals(int _buttonIndex) {
       showModalBottomSheet(
           shape: RoundedRectangleBorder(
@@ -379,7 +381,7 @@ class _PerfilClientState extends State<PerfilClient> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(AppLocalizations.of(context)!.memberSince(currentUser.dateJoined), style: purpleTextStyle.copyWith(fontSize: 16, fontStyle: FontStyle.italic),),
+                          Text(AppLocalizations.of(context)!.memberSince(userFirebase.dateJoined!), style: purpleTextStyle.copyWith(fontSize: 16)),
                         ],
                       ),
                     ),

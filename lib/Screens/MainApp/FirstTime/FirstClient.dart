@@ -80,7 +80,8 @@ class _FirstClientState extends State<FirstClient> {
                             setState(() {
                               loading = true;
                             });
-                            await _databaseService.updateUsersData(client.uid, false, false);
+                            String defIdioma = Localizations.localeOf(context).languageCode;
+                            await _databaseService.updateUsersData(client.uid, false, false, defIdioma);
                           },
                         ),
                       ),
@@ -119,7 +120,8 @@ class _FirstClientState extends State<FirstClient> {
                             setState(() {
                               loading = true;
                             });
-                            await _databaseService.updateUsersData(client.uid, false, false);
+                            String defIdioma = Localizations.localeOf(context).languageCode;
+                            await _databaseService.updateUsersData(client.uid, false, false, defIdioma);
                           },
                         ),
                       ),

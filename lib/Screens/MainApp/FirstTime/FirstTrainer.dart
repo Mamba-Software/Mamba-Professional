@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/AuthService.dart';
 import 'package:mamba_castelldefels/Data/Database.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Loading.dart';
@@ -15,8 +14,6 @@ class FirstTrainer extends StatefulWidget {
 }
 
 class _FirstTrainerState extends State<FirstTrainer> {
-  // Authentication Service
-  final AuthenticationService _authenticationService = AuthenticationService();
   final DatabaseService _databaseService = DatabaseService();
   // Loading Screen Boolean
   bool loading = false;
@@ -67,7 +64,8 @@ class _FirstTrainerState extends State<FirstTrainer> {
                           setState(() {
                             loading = true;
                           });
-                          await _databaseService.updateUsersData(trainer.uid, true, false);
+                          String defIdioma = Localizations.localeOf(context).languageCode;
+                          await _databaseService.updateUsersData(trainer.uid, true, false, defIdioma);
                         },
                       ),
                     ),
@@ -119,7 +117,8 @@ class _FirstTrainerState extends State<FirstTrainer> {
                           setState(() {
                             loading = true;
                           });
-                          await _databaseService.updateUsersData(trainer.uid, true, false);
+                          String defIdioma = Localizations.localeOf(context).languageCode;
+                          await _databaseService.updateUsersData(trainer.uid, true, false, defIdioma);
                         },
                       ),
                     ),

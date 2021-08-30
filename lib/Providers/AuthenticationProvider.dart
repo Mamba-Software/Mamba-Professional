@@ -31,20 +31,21 @@ class AuthenticationProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> signUp(String email, String password, String name, int gender, bool isTrainer) async {
+  Future<bool> signUp(String email, String password, String name, int gender, String idioma, bool isTrainer) async {
     try {
       _status = Status.Authenticating;
       notifyListeners();
       await _auth.createUserWithEmailAndPassword(email: email, password: password);
       if (isTrainer) {
-        await DatabaseService().updateUsersData(_user!.uid,true,true);
-        await DatabaseService().updateTrainerData(_user!.uid,name,email,gender,true);
+        await DatabaseService().updateUsersData(_user!.uid,true,true,idioma);
+        await DatabaseService().updateTrainerData(_user!.uid,name,email,gender);
       } else {
-        await DatabaseService().updateUsersData(_user!.uid,false,true);
-        await DatabaseService().updateClientData(_user!.uid,name,email,gender,true);
+        await DatabaseService().updateUsersData(_user!.uid,false,true,idioma);
+        await DatabaseService().updateClientData(_user!.uid,name,email,gender);
       }
       return true;
     } catch (e) {
+      print(e.toString());
       _status = Status.Unauthenticated;
       notifyListeners();
       return false;

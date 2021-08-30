@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Loading.dart';
 // Authentication Service
-import 'package:mamba_castelldefels/Data/AuthService.dart';
 import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
+import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -247,15 +247,15 @@ class _RegisterState extends State<Register> {
                               error = true;
                               errorText = AppLocalizations.of(context)!.registerGenderError;
                             });
-                          }
-                          else {
+                          } else {
+                            String defIdioma = Localizations.localeOf(context).languageCode;
                             if(_formKey.currentState!.validate()){
                               setState(() {
                                 error = false;
                                 loading = true;
                               });
-                              bool result = await user.signUp(email,password1,name,gender!,isTrainer);
-                              if (result) {
+                              bool result = await user.signUp(email,password1,name,gender!,defIdioma,isTrainer);
+                              if (!result) {
                                 setState(() {
                                   error = true;
                                   errorText = AppLocalizations.of(context)!.registerError;
