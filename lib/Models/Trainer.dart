@@ -6,8 +6,9 @@ class Trainer {
   String? email;
   int? gender;
   String? dateJoined;
+  String? dateOfBirth;
 
-  Trainer({required this.uid, this.name,  this.email, this.gender, this.dateJoined });
+  Trainer({required this.uid, this.name,  this.email, this.gender, this.dateJoined, this.dateOfBirth });
 
   toJson() {
     return {
@@ -16,6 +17,7 @@ class Trainer {
       "email": email,
       "gender": gender,
       "dateJoined": dateJoined,
+      "dateOfBirth": dateOfBirth,
     };
   }
 

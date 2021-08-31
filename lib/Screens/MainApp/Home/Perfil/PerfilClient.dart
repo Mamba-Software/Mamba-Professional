@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
 import 'package:mamba_castelldefels/Providers/UserProvider.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/TusDatos.dart';
 import 'package:provider/provider.dart';
@@ -74,7 +75,9 @@ class _PerfilClientState extends State<PerfilClient> {
                   child: Text('No ha Trobat'),
                 );
             }
-         }).whenComplete(() => _statusButtons[_buttonIndex] = !_statusButtons[_buttonIndex]);
+         }).whenComplete(() =>
+          _statusButtons[_buttonIndex] = !_statusButtons[_buttonIndex]
+        );
     }
 
     return SingleChildScrollView(

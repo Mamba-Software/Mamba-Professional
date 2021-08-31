@@ -30,20 +30,22 @@ class DatabaseService {
       'dateJoined': formatted,
     });
   }
-  Future<void> updateClientData(String uid, String name, String email, int gender) async {
+  Future<void> updateClientData(String uid, String name, String email, int gender, [String? dateOfBirth]) async {
     return await clientsCollection.doc(uid).set({
       'uid': uid,
       'name': name,
       'email': email,
       'gender': gender,
+      'dateOfBirth': dateOfBirth,
     });
   }
-  Future<void> updateTrainerData(String uid, String name, String email, int gender) async {
+  Future<void> updateTrainerData(String uid, String name, String email, int gender, [String? dateOfBirth]) async {
     return await trainersCollection.doc(uid).set({
       'uid': uid,
       'name': name,
       'email': email,
-      'gender': gender
+      'gender': gender,
+      'dateOfBirth': dateOfBirth
     });
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,7 +69,12 @@ class DatabaseService {
     var docSnapshot = await clientsCollection.doc(uid).get();
     if (docSnapshot.exists) {
       Map<String, dynamic>? data = docSnapshot.data();
-      client = Client(uid: data?['uid'], name: data?['name'], email: data?['email'], gender: data?['gender']);
+      client = Client(
+          uid: data?['uid'],
+          name: data?['name'],
+          email: data?['email'],
+          gender: data?['gender'],
+          dateOfBirth: data?['dateOfBirth']);
     }
     return client;
   }
@@ -96,7 +103,12 @@ class DatabaseService {
     var docSnapshot = await trainersCollection.doc(uid).get();
     if (docSnapshot.exists) {
       Map<String, dynamic>? data = docSnapshot.data();
-      trainer = Trainer(uid: data?['uid'], name: data?['name'], email: data?['email'], gender: data?['gender']);
+      trainer = Trainer(
+        uid: data?['uid'],
+        name: data?['name'],
+        email: data?['email'],
+        gender: data?['gender'],
+        dateOfBirth: data?['dateOfBirth'], );
     }
     return trainer;
   }

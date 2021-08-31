@@ -39,5 +39,8 @@
   "reporting": "Errors",
   "memberSince": "Membre des {dateJoined}",
   "clientOf": "Client de ",
-  "closeSession": "Tancar sessió"
+  "closeSession": "Tancar sessió",
+  "dateOfBirth": "Data de Naixement",
+  "noDateOfBirth": "No introduïda",
+  "selectDateOfBirth": "Selecciona la teva data de naixement"
 }

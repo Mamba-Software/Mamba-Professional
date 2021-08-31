@@ -172,5 +172,17 @@
   "closeSession": "Cerrar sesión",
   "@closeSession":{
     "description": "Cerrar sesión Text"
+  },
+  "dateOfBirth": "Fecha de nacimiento",
+  "@dateOfBirth":{
+    "description": "Fecha de nacimiento Text"
+  },
+  "noDateOfBirth": "No introducida",
+  "@noDateOfBirth":{
+    "description": "No Fecha de Nacimiento Text"
+  },
+  "selectDateOfBirth": "Selecciona tu fecha de nacimiento",
+  "@selectDateOfBirth":{
+    "description": "Fecha de Nacimiento Text"
   }
 }

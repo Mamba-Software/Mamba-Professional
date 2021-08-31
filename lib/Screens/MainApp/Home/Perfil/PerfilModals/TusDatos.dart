@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
 import 'package:provider/provider.dart';
@@ -22,9 +24,37 @@ class _TusDatosState extends State<TusDatos> {
   // Gender Widget value
   int? genderTemp = null;
   final _genderKey = GlobalKey<_GenderWidgetState>();
+  // Reverse String
+  String reverseStringUsingSplit(String input) {
+    var chars = input.split('');
+    return chars.reversed.join();
+  }
+  // Date of Birth
+  DateTime selectedDate = currentUser.dateOfBirth == null ?
+    DateTime.now()
+      :
+    DateFormat('dd-MM-yyyy').parse(currentUser.dateOfBirth);
 
   @override
   Widget build(BuildContext context) {
+    Future<void> _selectDate(BuildContext context) async {
+      final DateTime? picked = await showDatePicker(
+          context: context,
+          initialDate: selectedDate,
+          firstDate: DateTime(1960),
+          lastDate: DateTime(2101));
+      if (picked != null && picked != selectedDate)
+        setState(() {
+          selectedDate = picked;
+        });
+    }
+
+    String dateToString(DateTime date) {
+      final DateFormat formatter = DateFormat('dd-MM-yyyy');
+      final String formatted = formatter.format(date);
+      return formatted;
+    }
+
     return Container(
       padding: MediaQuery.of(context).viewInsets,
       child: Padding(
@@ -58,6 +88,7 @@ class _TusDatosState extends State<TusDatos> {
                             if (!nombreCompletoTemp.isEmpty) currentUser.name = nombreCompletoTemp;
                             if (!emailTemp.isEmpty) currentUser.email = emailTemp;
                             if (!(genderTemp == null)) currentUser.gender = genderTemp;
+                            if (!(dateToString(selectedDate) == dateToString(DateTime.now()))) currentUser.dateOfBirth = dateToString(selectedDate);
                             Provider.of<ClientProvider>(context, listen: false).updateClientFirebase(currentUser);
                             _editStatus = !_editStatus;
                             FocusScope.of(context).requestFocus(new FocusNode());
@@ -75,6 +106,7 @@ class _TusDatosState extends State<TusDatos> {
                           nombreCompletoController.text = currentUser.name;
                           emailController.text = currentUser.email;
                           _genderKey.currentState!.resetGender();
+                          selectedDate = currentUser.dateOfBirth == null ? DateTime.now() : DateFormat('dd-MM-yyyy').parse(currentUser.dateOfBirth);
                           _editStatus = !_editStatus;
                           FocusScope.of(context).requestFocus(new FocusNode());
                         })
@@ -175,7 +207,7 @@ class _TusDatosState extends State<TusDatos> {
                           )),
                       Padding(
                           padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 8.0),
+                              left: 25.0, right: 25.0, top: 10.0),
                           child: GenderWidget(
                             key: _genderKey,
                             editStatus: (_editStatus),
@@ -184,6 +216,71 @@ class _TusDatosState extends State<TusDatos> {
                             },
                           )
                       ),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 12.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              new Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  new Text(
+                                    AppLocalizations.of(context)!.dateOfBirth,
+                                    style: purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 8.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              new Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  if (dateToString(selectedDate) != dateToString(DateTime.now()))
+                                    _editStatus == false ? Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 14.5),
+                                    child: Text(
+                                        dateToString(selectedDate),
+                                        style: purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87)
+                                    )) : TextButton(
+                                      style: TextButton.styleFrom(
+                                        padding: EdgeInsets.zero,
+                                      ),
+                                      onPressed: () => _selectDate(context),
+                                      child: Text(
+                                        dateToString(selectedDate),
+                                        style: purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87, fontStyle: FontStyle.italic, decoration: TextDecoration.underline),
+                                      ),
+                                  ) else (
+                                    _editStatus == false ?  Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 14.5),
+                                      child: Text(
+                                            AppLocalizations.of(context)!.noDateOfBirth,
+                                            style: purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87)
+                                      ),
+                                    ) : TextButton(
+                                      style: TextButton.styleFrom(
+                                          padding: EdgeInsets.zero,
+                                      ),
+                                      onPressed: () => _selectDate(context),
+                                      child: Text(
+                                        AppLocalizations.of(context)!.selectDateOfBirth,
+                                        style: purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87, fontStyle: FontStyle.italic, decoration: TextDecoration.underline),
+                                      ),
+                                    )
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )),
                     ],
                   ),
                 ),
@@ -228,7 +325,7 @@ class _GenderWidgetState extends State<GenderWidget> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizedBox.fromSize(
-        size: Size(85, 85), // button width and height
+        size: Size(80, 80), // button width and height
         child: ClipOval(
           child: Material(
             color: gender == index ? purpleColorTrans : null, // button color
@@ -261,5 +358,7 @@ class _GenderWidgetState extends State<GenderWidget> {
   }
 
 }
+
+
 
 
