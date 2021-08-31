@@ -5,10 +5,11 @@ class Trainer {
   String? name;
   String? email;
   int? gender;
+  bool? isPrivate;
   String? dateJoined;
   String? dateOfBirth;
 
-  Trainer({required this.uid, this.name,  this.email, this.gender, this.dateJoined, this.dateOfBirth });
+  Trainer({required this.uid, this.name,  this.email, this.gender, this.isPrivate, this.dateJoined, this.dateOfBirth });
 
   toJson() {
     return {
@@ -16,6 +17,7 @@ class Trainer {
       "name": name,
       "email": email,
       "gender": gender,
+      "isPrivate": isPrivate,
       "dateJoined": dateJoined,
       "dateOfBirth": dateOfBirth,
     };

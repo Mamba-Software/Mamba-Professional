@@ -276,21 +276,32 @@ class _TusDatosState extends State<TusDatos> {
                                             AppLocalizations.of(context)!.noDateOfBirth,
                                             style: purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87)
                                       ),
-                                    ) : TextButton(
-                                      style: TextButton.styleFrom(
-                                          padding: EdgeInsets.zero,
-                                      ),
-                                      onPressed: () => _selectDate(context),
-                                      child: Text(
-                                        AppLocalizations.of(context)!.selectDateOfBirth,
-                                        style: purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87, decoration: TextDecoration.underline),
-                                      ),
-                                    )
+                                    ) : Theme(
+                                          data: ThemeData(fontFamily: 'Raleway').copyWith(
+                                            colorScheme: ColorScheme.light().copyWith(
+                                              primary: Colors.amber,
+                                            ),
+                                          ),
+                                          child: new Builder(
+                                            builder: (context) => new
+                                              TextButton(
+                                              style: TextButton.styleFrom(
+                                                padding: EdgeInsets.zero,
+                                              ),
+                                              onPressed: () => _selectDate(context),
+                                              child: Text(
+                                                AppLocalizations.of(context)!.selectDateOfBirth,
+                                                style: purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87, decoration: TextDecoration.underline),
+                                              ),
+                                            )
+                                          )
+                                        )
                                   ),
                                 ],
                               ),
                             ],
-                          )),
+                          )
+                      ),
                     ],
                   ),
                 ),

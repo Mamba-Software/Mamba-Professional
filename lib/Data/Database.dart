@@ -30,22 +30,24 @@ class DatabaseService {
       'dateJoined': formatted,
     });
   }
-  Future<void> updateClientData(String uid, String name, String email, int gender, [String? dateOfBirth]) async {
+  Future<void> updateClientData(String uid, String name, String email, int gender, bool isPrivate, [String? dateOfBirth]) async {
     return await clientsCollection.doc(uid).set({
       'uid': uid,
       'name': name,
       'email': email,
       'gender': gender,
+      'isPrivate': isPrivate,
       'dateOfBirth': dateOfBirth,
     });
   }
-  Future<void> updateTrainerData(String uid, String name, String email, int gender, [String? dateOfBirth]) async {
+  Future<void> updateTrainerData(String uid, String name, String email, int gender, bool isPrivate, [String? dateOfBirth]) async {
     return await trainersCollection.doc(uid).set({
       'uid': uid,
       'name': name,
       'email': email,
       'gender': gender,
-      'dateOfBirth': dateOfBirth
+      'isPrivate': isPrivate,
+      'dateOfBirth': dateOfBirth,
     });
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,7 +58,13 @@ class DatabaseService {
     var docSnapshot = await usersCollection.doc(uid).get();
     if (docSnapshot.exists) {
       Map<String, dynamic>? data = docSnapshot.data();
-      user = Usuario(uid: data?['uid'], isTrainer: data?['isTrainer'], isFirst: data?['isFirst'], idioma: data?['idioma'], dateJoined: data?['dateJoined']);
+      user = Usuario(
+          uid: data?['uid'],
+          isTrainer: data?['isTrainer'],
+          isFirst: data?['isFirst'],
+          idioma: data?['idioma'],
+          dateJoined: data?['dateJoined']
+      );
     }
     return user;
   }
@@ -74,6 +82,7 @@ class DatabaseService {
           name: data?['name'],
           email: data?['email'],
           gender: data?['gender'],
+          isPrivate: data?['isPrivate'],
           dateOfBirth: data?['dateOfBirth']);
     }
     return client;
@@ -108,6 +117,7 @@ class DatabaseService {
         name: data?['name'],
         email: data?['email'],
         gender: data?['gender'],
+        isPrivate: data?['isPrivate'],
         dateOfBirth: data?['dateOfBirth'], );
     }
     return trainer;

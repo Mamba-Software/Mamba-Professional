@@ -6,12 +6,13 @@ class Client {
   String? name;
   String? email;
   int? gender;
+  bool? isPrivate;
   String? dateJoined;
   String? dateOfBirth;
 
   // Optional Parameters
 
-  Client({required this.uid, this.name,  this.email, this.gender, this.dateJoined, this.dateOfBirth });
+  Client({required this.uid, this.name,  this.email, this.gender, this.isPrivate, this.dateJoined, this.dateOfBirth });
 
   toJson() {
     return {
@@ -19,6 +20,7 @@ class Client {
       "name": name,
       "email": email,
       "gender": gender,
+      "isPrivate": isPrivate,
       "dateJoined": dateJoined,
       "dateOfBirth": dateOfBirth,
     };

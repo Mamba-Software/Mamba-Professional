@@ -1,5 +1,5 @@
 {
-  "language": "Català",
+  "language": "Idioma",
   "yes": "Sí",
   "no": "No",
   "logOut": "Vols sortir de Mamba?",
@@ -8,6 +8,8 @@
   "email": "Email",
   "emailError": "Escriu el teu email",
   "password": "Contrasenya",
+  "newPassword": "Nova contrasenya",
+  "changePassword": "Canvia la teva contraseña",
   "passwordError": "Introdueix una contrasenya amb 6 caràcters o més",
   "passworRepeat": "Repeteix la contrasenya",
   "passwordNotSameError": "Les contrasenyes no coincideixen",
@@ -42,5 +44,8 @@
   "closeSession": "Tancar sessió",
   "dateOfBirth": "Data de Naixement",
   "noDateOfBirth": "No introduïda",
-  "selectDateOfBirth": "Selecciona la teva data de naixement"
+  "selectDateOfBirth": "Selecciona la teva data de naixement",
+  "typeProfile": "Tipus de perfil",
+  "typeProfilePrivate": "Privat",
+  "typeProfilePublic": "Públic"
 }

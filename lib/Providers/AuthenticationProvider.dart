@@ -38,10 +38,10 @@ class AuthenticationProvider with ChangeNotifier {
       await _auth.createUserWithEmailAndPassword(email: email, password: password);
       if (isTrainer) {
         await DatabaseService().updateUsersData(_user!.uid,true,true,idioma);
-        await DatabaseService().updateTrainerData(_user!.uid,name,email,gender);
+        await DatabaseService().updateTrainerData(_user!.uid,name,email,gender,true);
       } else {
         await DatabaseService().updateUsersData(_user!.uid,false,true,idioma);
-        await DatabaseService().updateClientData(_user!.uid,name,email,gender);
+        await DatabaseService().updateClientData(_user!.uid,name,email,gender,true);
       }
       return true;
     } catch (e) {

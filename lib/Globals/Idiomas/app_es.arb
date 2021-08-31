@@ -1,5 +1,5 @@
 {
-  "language": "Español",
+  "language": "Idioma",
   "@language":{
     "description": "Lenguaje de la App"
   },
@@ -34,6 +34,14 @@
   "password": "Contraseña",
   "@password":{
     "description": "Contraseña Text "
+  },
+  "newPassword": "Nueva contraseña",
+  "@newPassword":{
+    "description": "Contraseña Text "
+  },
+  "changePassword": "Cambia tu contraseña",
+  "@changePassword":{
+    "description": "changePassword Text"
   },
   "passwordError": "Introduzca una contraseña con 6 caracteres o más",
   "@passwordError":{
@@ -184,5 +192,18 @@
   "selectDateOfBirth": "Selecciona tu fecha de nacimiento",
   "@selectDateOfBirth":{
     "description": "Fecha de Nacimiento Text"
+  },
+  "typeProfile": "Tipo de perfil",
+  "@typeProfile":{
+    "description": "typeProfile Text"
+  },
+  "typeProfilePrivate": "Privado",
+  "@typeProfilePrivate":{
+    "description": "typeProfile Text"
+  },
+  "typeProfilePublic": "Público",
+  "@typeProfilePublic":{
+    "description": "typeProfile Text"
   }
+
 }

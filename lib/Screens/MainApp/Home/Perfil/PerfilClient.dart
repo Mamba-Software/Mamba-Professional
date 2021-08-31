@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
 import 'package:mamba_castelldefels/Providers/UserProvider.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/Settings.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/TusDatos.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +23,7 @@ class _PerfilClientState extends State<PerfilClient> {
   List<bool> _statusButtons =  [false, false, false, false, false, false];
   final FocusNode myFocusNode = FocusNode();
   // Size of Icons
-  final _iconSize = Size(85, 85);
+  final _iconSize = Size(70, 70);
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +40,7 @@ class _PerfilClientState extends State<PerfilClient> {
               case 0:
                 return TusDatos();
               case 1:
-                return Container(
-                  height: screenHeight*0.3,
-                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-                  child: Text('Privacidad'),
-                );
+                return Settings();
               case 2:
                 return Container(
                   height: screenHeight*0.3,
@@ -155,21 +152,11 @@ class _PerfilClientState extends State<PerfilClient> {
                                                 });
                                                 //_showSettingsPanel();
                                               }, // button pressed
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.face,
-                                                    color: Colors.white,
-                                                    size: 35.0,
-                                                  ), // icon
-                                                  Text(AppLocalizations.of(context)!.info, style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
-                                                ],
+                                              child: Icon( Icons.face, color: Colors.white, size: 35.0,), // icon
                                               ),
                                             ),
                                           ),
                                         ),
-                                      )
                                     ],
                                   )),
                               // Contraseña Adalt Dreta
@@ -194,21 +181,12 @@ class _PerfilClientState extends State<PerfilClient> {
                                                   _showPerfiClientModals(1);
                                                 });
                                               }, // button pressed
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.settings,
-                                                    color: Colors.white,
-                                                    size: 35.0,
-                                                  ), // icon
-                                                  Text(AppLocalizations.of(context)!.settings, style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
-                                                ],
+                                              child: Icon(Icons.settings, color: Colors.white, size: 35.0,), // icon
                                               ),
                                             ),
                                           ),
                                         ),
-                                      )
+
                                     ],
                                   )),
                               // Entrenos Mig Esquerra
@@ -233,21 +211,11 @@ class _PerfilClientState extends State<PerfilClient> {
                                                   _showPerfiClientModals(2);
                                                 });
                                               }, // button pressed
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.event_note,
-                                                    color: Colors.white,
-                                                    size: 35.0,
-                                                  ), // icon
-                                                  Text(AppLocalizations.of(context)!.sessions, style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
-                                                ],
+                                              child: Icon(Icons.event_note, color: Colors.white, size: 35.0,), // icon
                                               ),
                                             ),
                                           ),
                                         ),
-                                      )
                                     ],
                                   )),
                               // Analisis Mig Dreta
@@ -272,21 +240,15 @@ class _PerfilClientState extends State<PerfilClient> {
                                                   _showPerfiClientModals(3);
                                                 });
                                               }, // button pressed
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Icon(
+                                              child: Icon(
                                                     Icons.leaderboard_outlined,
                                                     color: Colors.white,
                                                     size: 35.0,
                                                   ), // icon
-                                                  Text(AppLocalizations.of(context)!.stats, style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
-                                                ],
                                               ),
                                             ),
                                           ),
                                         ),
-                                      )
                                     ],
                                   )),
                               // Feedback Abaix Esquerra
@@ -311,21 +273,11 @@ class _PerfilClientState extends State<PerfilClient> {
                                                   _showPerfiClientModals(4);
                                                 });
                                               }, // button pressed
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.help_outline,
-                                                    color: Colors.white,
-                                                    size: 35.0,
-                                                  ), // icon
-                                                  Text(AppLocalizations.of(context)!.feedback, style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
-                                                ],
+                                              child: Icon(Icons.help_outline, color: Colors.white, size: 35.0,), // icon
                                               ),
                                             ),
                                           ),
                                         ),
-                                      )
                                     ],
                                   )),
                               // Bug Abaix Dreta
@@ -350,21 +302,15 @@ class _PerfilClientState extends State<PerfilClient> {
                                                   _showPerfiClientModals(5);
                                                 });
                                               }, // button pressed
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Icon(
+                                              child: Icon(
                                                     Icons.report_problem_outlined,
                                                     color: Colors.white,
                                                     size: 35.0,
                                                   ), // icon
-                                                  Text(AppLocalizations.of(context)!.reporting, style: whiteTextStyle.copyWith(fontSize: 12, fontWeight: FontWeight.bold),), // text
-                                                ],
                                               ),
                                             ),
                                           ),
                                         ),
-                                      )
                                     ],
                                   )),
                           ]),
