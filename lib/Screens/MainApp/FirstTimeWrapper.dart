@@ -4,6 +4,7 @@ import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Loading.dart';
 import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
 import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
+import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Providers/TrainerProvider.dart';
 import 'package:mamba_castelldefels/Providers/UserProvider.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,9 @@ class FirstTimeWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<AuthenticationProvider>(context);
+    Future.delayed(Duration.zero, () async {
+      Provider.of<LanguageProvider>(context, listen: false).setLocale(Localizations.localeOf(context));
+    });
     return Consumer<UserProvider>(
         builder: (context, UserProvider userProvider, _) {
           userProvider.getUsuarioFirebase(user.user!.uid);

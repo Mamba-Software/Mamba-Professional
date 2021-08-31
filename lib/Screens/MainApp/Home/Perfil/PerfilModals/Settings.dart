@@ -25,6 +25,8 @@ class _SettingsState extends State<Settings> {
   // Type of Profile Widget value
   bool? _isPrivate = null;
   final _typeProfileKey = GlobalKey<_ProfileTypeWidgetState>();
+  // Idioma Original
+  var idioma;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -207,7 +209,9 @@ class _SettingsState extends State<Settings> {
                       Padding(
                           padding: EdgeInsets.only(
                               left: 25.0, right: 25.0, top: 12.0),
-                          child: LanguagePickerWidget()
+                          child: LanguagePickerWidget(
+                            editStatus: (_editStatus)
+                          )
                       ),
                     ],
                   ),
@@ -250,7 +254,7 @@ class _ProfileTypeWidgetState extends State<ProfileTypeWidget> {
     return Padding(
         padding: const EdgeInsets.all(8.0),
         child: SizedBox.fromSize(
-          size: Size(80, 80), // button width and height
+          size: Size(85, 85), // button width and height
           child: ClipOval(
             child: Material(
               color: isPrivate == index ? purpleColorTrans : null, // button color
@@ -283,36 +287,73 @@ class _ProfileTypeWidgetState extends State<ProfileTypeWidget> {
   }
 }
 
-class LanguagePickerWidget extends StatelessWidget {
-  final List<String> entries = <String>['A', 'B', 'C'];
-  final List<int> colorCodes = <int>[600, 500, 100];
+class LanguagePickerWidget extends StatefulWidget {
+  final bool editStatus;
+  const LanguagePickerWidget({Key? key, required this.editStatus}) : super(key: key);
+
+  @override
+  _LanguagePickerWidgetState createState() => _LanguagePickerWidgetState();
+}
+
+class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
+  Locale? _locale;
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<LanguageProvider>(context);
-    final locale = provider.idioma ?? Locale('en');
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    _locale = languageProvider.idioma;
     final allLocales = Idiomas.all;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 0.0, horizontal: 5.0),
+          height: 80,
+          child: ListView.builder(
+            shrinkWrap: true,
+            scrollDirection:  Axis.horizontal,
+            itemCount: allLocales.length,
+            itemBuilder: (context, index) {
+              return _iconLocale(allLocales[index], context);
+            },
+          ),
+        ),
+      ],
+    );
+  }
 
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      shrinkWrap: true,
-      itemCount: allLocales.length,
-      itemBuilder: (context, index) {
-        final idioma = allLocales[index];
-        final flag = Idiomas.getFlag(idioma.languageCode);
-        return Container(
-          height: 50,
-          child: Center(
-            child: Text(
-              flag,
-              style: TextStyle(fontSize: 32),
+  Widget _iconLocale(Locale locale, BuildContext context ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      child: SizedBox.fromSize(
+          size: Size(85, 85), // button width and height
+          child: ClipOval(
+            child: Material(
+              color: _locale == locale ? purpleColorTrans : null, // button color
+              child: InkWell(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(locale.languageCode.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: purpleColor)),
+                    ),
+                  ],
+                ),
+                onTap: widget.editStatus ? () => {
+                  setState(() {
+                    _locale = locale;
+                    Provider.of<LanguageProvider>(context, listen: false).setLocale(_locale!);
+                    //widget.selectedProfileTypeChanged(isPrivate);
+                  }),
+                } : null,
+              ),
             ),
           ),
-        );
-      },
+      ),
     );
   }
 }
-
 
 
