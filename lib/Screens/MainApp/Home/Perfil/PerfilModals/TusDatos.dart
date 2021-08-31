@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
@@ -41,8 +42,9 @@ class _TusDatosState extends State<TusDatos> {
       final DateTime? picked = await showDatePicker(
           context: context,
           initialDate: selectedDate,
-          firstDate: DateTime(1960),
-          lastDate: DateTime(2101));
+          firstDate: DateTime(DateTime.now().year - 60),
+          lastDate: DateTime(DateTime.now().year + 1),
+          initialEntryMode: DatePickerEntryMode.input);
       if (picked != null && picked != selectedDate)
         setState(() {
           selectedDate = picked;
@@ -91,7 +93,7 @@ class _TusDatosState extends State<TusDatos> {
                             if (!(dateToString(selectedDate) == dateToString(DateTime.now()))) currentUser.dateOfBirth = dateToString(selectedDate);
                             Provider.of<ClientProvider>(context, listen: false).updateClientFirebase(currentUser);
                             _editStatus = !_editStatus;
-                            FocusScope.of(context).requestFocus(new FocusNode());
+                            //FocusScope.of(context).requestFocus(new FocusNode());
                           }
                         })
                       },
@@ -108,7 +110,7 @@ class _TusDatosState extends State<TusDatos> {
                           _genderKey.currentState!.resetGender();
                           selectedDate = currentUser.dateOfBirth == null ? DateTime.now() : DateFormat('dd-MM-yyyy').parse(currentUser.dateOfBirth);
                           _editStatus = !_editStatus;
-                          FocusScope.of(context).requestFocus(new FocusNode());
+                          //FocusScope.of(context).requestFocus(new FocusNode());
                         })
                       },
                     )
@@ -160,7 +162,6 @@ class _TusDatosState extends State<TusDatos> {
                                     hintText: AppLocalizations.of(context)!.nameCompleto,
                                   ),
                                   enabled: _editStatus,
-                                  autofocus: _editStatus,
                                 ),
                               ),
                             ],
@@ -200,7 +201,6 @@ class _TusDatosState extends State<TusDatos> {
                                     hintText: AppLocalizations.of(context)!.email,
                                   ),
                                   enabled: _editStatus,
-                                  autofocus: _editStatus,
                                 ),
                               ),
                             ],
@@ -250,16 +250,26 @@ class _TusDatosState extends State<TusDatos> {
                                     child: Text(
                                         dateToString(selectedDate),
                                         style: purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87)
-                                    )) : TextButton(
-                                      style: TextButton.styleFrom(
-                                        padding: EdgeInsets.zero,
-                                      ),
-                                      onPressed: () => _selectDate(context),
-                                      child: Text(
-                                        dateToString(selectedDate),
-                                        style: purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87, fontStyle: FontStyle.italic, decoration: TextDecoration.underline),
-                                      ),
-                                  ) else (
+                                    )) : new Theme(
+                                          data: ThemeData(fontFamily: 'Raleway').copyWith(
+                                            colorScheme: ColorScheme.light().copyWith(
+                                              primary: Colors.amber,
+                                            ),
+                                          ),
+                                          child: new Builder(
+                                              builder: (context) => new
+                                                TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    padding: EdgeInsets.zero,
+                                                  ),
+                                                  onPressed: () => _selectDate(context),
+                                                  child: Text(
+                                                    dateToString(selectedDate),
+                                                    style: purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87, fontStyle: FontStyle.italic, decoration: TextDecoration.underline),
+                                                  ),
+                                                )
+                                          )
+                                    ) else (
                                     _editStatus == false ?  Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 14.5),
                                       child: Text(
