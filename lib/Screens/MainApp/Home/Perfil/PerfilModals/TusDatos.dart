@@ -265,7 +265,7 @@ class _TusDatosState extends State<TusDatos> {
                                                   onPressed: () => _selectDate(context),
                                                   child: Text(
                                                     dateToString(selectedDate),
-                                                    style: purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87, fontStyle: FontStyle.italic, decoration: TextDecoration.underline),
+                                                    style: purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87, decoration: TextDecoration.underline),
                                                   ),
                                                 )
                                           )
@@ -283,7 +283,7 @@ class _TusDatosState extends State<TusDatos> {
                                       onPressed: () => _selectDate(context),
                                       child: Text(
                                         AppLocalizations.of(context)!.selectDateOfBirth,
-                                        style: purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87, fontStyle: FontStyle.italic, decoration: TextDecoration.underline),
+                                        style: purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87, decoration: TextDecoration.underline),
                                       ),
                                     )
                                   ),
