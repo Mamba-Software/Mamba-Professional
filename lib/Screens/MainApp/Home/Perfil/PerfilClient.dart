@@ -7,9 +7,12 @@ import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
 import 'package:mamba_castelldefels/Providers/UserProvider.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/FeedBack.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/Settings.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/TusDatos.dart';
 import 'package:provider/provider.dart';
+
+import 'PerfilModals/ReportBug.dart';
 
 class PerfilClient extends StatefulWidget {
   const PerfilClient({Key? key}) : super(key: key);
@@ -23,7 +26,8 @@ class _PerfilClientState extends State<PerfilClient> {
   List<bool> _statusButtons =  [false, false, false, false, false, false];
   final FocusNode myFocusNode = FocusNode();
   // Size of Icons
-  final _iconSize = Size(70, 70);
+  final _globusSize = Size(75, 75);
+  final _iconSize = 45.0;
 
   @override
   Widget build(BuildContext context) {
@@ -42,35 +46,11 @@ class _PerfilClientState extends State<PerfilClient> {
               case 1:
                 return Settings();
               case 2:
-                return Container(
-                  height: screenHeight*0.3,
-                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-                  child: Text('Historial de Sesiones'),
-                );
+                return FeedBack();
               case 3:
-                return Container(
-                  height: screenHeight*0.3,
-                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-                  child: Text('Análisis y Seguimiento'),
-                );
-              case 4:
-                return Container(
-                  height: screenHeight*0.3,
-                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-                  child: Text('FeedBack'),
-                );
-              case 5:
-                return Container(
-                  height: screenHeight*0.3,
-                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-                  child: Text('Reporta un error'),
-                );
+                return ReportBug();
               default:
-                return Container(
-                  height: screenHeight*0.3,
-                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-                  child: Text('No ha Trobat'),
-                );
+                return Container();
             }
          }).whenComplete(() =>
           _statusButtons[_buttonIndex] = !_statusButtons[_buttonIndex]
@@ -111,10 +91,10 @@ class _PerfilClientState extends State<PerfilClient> {
                                 ],
                               ),
                               Positioned(
-                                  top: 150,
+                                  top: screenHeight*0.20,
                                   bottom: 0,
                                   left: 0,
-                                  right: 100,
+                                  right: screenWidth*0.23,
                                   child: new Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
@@ -132,14 +112,14 @@ class _PerfilClientState extends State<PerfilClient> {
                               // Perfil Adalt Esquerra
                               Positioned(
                                   top: 0,
-                                  bottom: 250,
+                                  bottom: screenHeight*0.3,
                                   left: 0,
-                                  right: 230,
+                                  right: screenWidth*0.55,
                                   child: new Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       SizedBox.fromSize(
-                                        size: _iconSize, // button width and height
+                                        size: _globusSize, // button width and height
                                         child: ClipOval(
                                           child: Material(
                                             color: !_statusButtons[0] ? yellowColor : yellowColorTrans, // button color
@@ -152,24 +132,24 @@ class _PerfilClientState extends State<PerfilClient> {
                                                 });
                                                 //_showSettingsPanel();
                                               }, // button pressed
-                                              child: Icon( Icons.face, color: Colors.white, size: 35.0,), // icon
+                                              child: Icon( Icons.face, color: Colors.white, size: _iconSize,), // icon
                                               ),
                                             ),
                                           ),
                                         ),
                                     ],
                                   )),
-                              // Contraseña Adalt Dreta
+                              // Ajustes Adalt Dreta
                               Positioned(
                                   top: 0,
-                                  bottom: 250,
-                                  left: 230,
+                                  bottom: screenHeight*0.3,
+                                  left: screenWidth*0.55,
                                   right: 0,
                                   child: new Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       SizedBox.fromSize(
-                                        size: _iconSize, // button width and height
+                                        size: _globusSize, // button width and height
                                         child: ClipOval(
                                           child: Material(
                                             color: yellowColor, // button color
@@ -181,7 +161,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                                   _showPerfiClientModals(1);
                                                 });
                                               }, // button pressed
-                                              child: Icon(Icons.settings, color: Colors.white, size: 35.0,), // icon
+                                              child: Icon(Icons.settings, color: Colors.white, size: _iconSize,), // icon
                                               ),
                                             ),
                                           ),
@@ -189,79 +169,17 @@ class _PerfilClientState extends State<PerfilClient> {
 
                                     ],
                                   )),
-                              // Entrenos Mig Esquerra
-                              Positioned(
-                                  top: 0,
-                                  bottom: 0,
-                                  left: 0,
-                                  right: 300,
-                                  child: new Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      SizedBox.fromSize(
-                                        size: _iconSize, // button width and height
-                                        child: ClipOval(
-                                          child: Material(
-                                            color: yellowColor, // button color
-                                            child: InkWell(
-                                              splashColor: Colors.white, // splash color
-                                              onTap: () {
-                                                setState(() {
-                                                  _statusButtons[2] = !_statusButtons[2];
-                                                  _showPerfiClientModals(2);
-                                                });
-                                              }, // button pressed
-                                              child: Icon(Icons.event_note, color: Colors.white, size: 35.0,), // icon
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                    ],
-                                  )),
-                              // Analisis Mig Dreta
-                              Positioned(
-                                  top: 0,
-                                  bottom: 0,
-                                  left: 300,
-                                  right: 0,
-                                  child: new Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      SizedBox.fromSize(
-                                        size: _iconSize, // button width and height
-                                        child: ClipOval(
-                                          child: Material(
-                                            color: yellowColor, // button color
-                                            child: InkWell(
-                                              splashColor: Colors.white, // splash color
-                                              onTap: () {
-                                                setState(() {
-                                                  _statusButtons[3] = !_statusButtons[3];
-                                                  _showPerfiClientModals(3);
-                                                });
-                                              }, // button pressed
-                                              child: Icon(
-                                                    Icons.leaderboard_outlined,
-                                                    color: Colors.white,
-                                                    size: 35.0,
-                                                  ), // icon
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                    ],
-                                  )),
                               // Feedback Abaix Esquerra
                               Positioned(
-                                  top: 250,
+                                  top: screenHeight*0.3,
                                   bottom: 0,
                                   left: 0,
-                                  right: 230,
+                                  right: screenWidth*0.55,
                                   child: new Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       SizedBox.fromSize(
-                                        size: _iconSize, // button width and height
+                                        size: _globusSize, // button width and height
                                         child: ClipOval(
                                           child: Material(
                                             color: yellowColor, // button color
@@ -270,10 +188,10 @@ class _PerfilClientState extends State<PerfilClient> {
                                               onTap: () {
                                                 setState(() {
                                                   _statusButtons[4] = !_statusButtons[4];
-                                                  _showPerfiClientModals(4);
+                                                  _showPerfiClientModals(2);
                                                 });
                                               }, // button pressed
-                                              child: Icon(Icons.help_outline, color: Colors.white, size: 35.0,), // icon
+                                              child: Icon(Icons.help_outline, color: Colors.white, size: _iconSize,), // icon
                                               ),
                                             ),
                                           ),
@@ -282,15 +200,15 @@ class _PerfilClientState extends State<PerfilClient> {
                                   )),
                               // Bug Abaix Dreta
                               Positioned(
-                                  top: 250,
+                                  top: screenHeight*0.3,
                                   bottom: 0,
-                                  left: 230,
+                                  left: screenWidth*0.55,
                                   right: 0,
                                   child: new Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       SizedBox.fromSize(
-                                        size: _iconSize, // button width and height
+                                        size: _globusSize, // button width and height
                                         child: ClipOval(
                                           child: Material(
                                             color: yellowColor, // button color
@@ -299,13 +217,13 @@ class _PerfilClientState extends State<PerfilClient> {
                                               onTap: () {
                                                 setState(() {
                                                   _statusButtons[5] = !_statusButtons[5];
-                                                  _showPerfiClientModals(5);
+                                                  _showPerfiClientModals(3);
                                                 });
                                               }, // button pressed
                                               child: Icon(
                                                     Icons.report_problem_outlined,
                                                     color: Colors.white,
-                                                    size: 35.0,
+                                                    size: _iconSize,
                                                   ), // icon
                                               ),
                                             ),

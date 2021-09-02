@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 // Internal App Tools
 import 'package:mamba_castelldefels/Models/Client.dart';
+import 'package:mamba_castelldefels/Models/Error.dart';
 import 'package:mamba_castelldefels/Models/Trainer.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
@@ -16,6 +17,7 @@ class DatabaseService {
   final usersCollection = FirebaseFirestore.instance.collection('Users');
   final clientsCollection = FirebaseFirestore.instance.collection('Clients');
   final trainersCollection = FirebaseFirestore.instance.collection('Trainers');
+  final errorsCollection = FirebaseFirestore.instance.collection('Errors');
 
   // UPDATES
   Future<void> updateUsersData(String uid, bool isTrainer, bool isFirst, String? idioma, String? previousIdioma) async {
@@ -49,6 +51,16 @@ class DatabaseService {
       'gender': gender,
       'isPrivate': isPrivate,
       'dateOfBirth': dateOfBirth,
+    });
+  }
+
+  Future<void> updateErrorData(Error error) async {
+    var uid = error.createUID();
+    return await errorsCollection.doc(uid).set({
+      "uid": uid,
+      "title": error.title,
+      "descripcion": error.descripcion,
+      "stepsReproduce": error.stepsReproduce
     });
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

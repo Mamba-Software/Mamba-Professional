@@ -1,28 +1,29 @@
-// Flutter Libs
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
-import 'package:mamba_castelldefels/Providers/UserProvider.dart';
+import 'package:mamba_castelldefels/Models/Trainer.dart';
+import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
+import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
+import 'package:mamba_castelldefels/Providers/TrainerProvider.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilClient.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilTrainer.dart';
 import 'package:provider/provider.dart';
 
-class TuMarca extends StatefulWidget {
-  const TuMarca({Key? key}) : super(key: key);
+import 'TuMarcaClient.dart';
 
-  @override
-  _TuMarcaState createState() => _TuMarcaState();
-}
-
-class _TuMarcaState extends State<TuMarca> {
-  // Loading Screen Boolean
-  bool loading = false;
+class TuMarca extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("TU MARCA",style: purpleTextStyle.copyWith(fontSize: 30, fontWeight: FontWeight.bold)),
-        ],
-      ),
-    );
+    if(userIsTrainer) {
+      return Consumer<TrainerProvider>(
+          builder: (context, TrainerProvider trainerProvider, _) {
+            //return TuMarcaTrainer();
+            return Container();
+          });
+    } else {
+      return Consumer<ClientProvider>(
+          builder: (context, ClientProvider clientProvider, _) {
+            return TuMarcaClient();
+          });
+    }
   }
 }

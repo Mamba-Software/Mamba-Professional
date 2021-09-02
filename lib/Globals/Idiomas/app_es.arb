@@ -160,7 +160,7 @@
   "@feedback":{
     "description": "Feedback Text"
   },
-  "reporting": "Errores",
+  "reporting": "Reporta un error",
   "@reporting":{
     "description": "Errores Text"
   },
@@ -204,6 +204,38 @@
   "typeProfilePublic": "Público",
   "@typeProfilePublic":{
     "description": "typeProfile Text"
+  },
+  "title": "Título",
+  "@title":{
+    "description": "Título Text"
+  },
+  "titleHint": "Introduce un título",
+  "@titleHint":{
+    "description": "Título Hint Text"
+  },
+  "titleError": "Porfavor introduce un título",
+  "@titleError":{
+    "description": "Título Error Text"
+  },
+  "description": "Descripción",
+  "@description":{
+    "description": "Descripción Text"
+  },
+  "descriptionHint": "Describe el error detalladamente",
+  "@descriptionHint":{
+    "description": "Descripción Text"
+  },
+  "descriptionError": "Añade una descripción porfavor",
+  "@descriptionError":{
+    "description": "Descripción Text"
+  },
+  "reproducteSteps": "Pasos para reproducir el error",
+  "@reproducteSteps":{
+    "description": "reproducteSteps Text"
+  },
+  "reproducteStepsHint": "¿Sabes cómo podemos reproducir este error?",
+  "@reproducteStepsHint":{
+    "description": "reproducteStepsHint Text"
   }
 
 }

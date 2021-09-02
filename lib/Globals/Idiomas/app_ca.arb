@@ -38,7 +38,7 @@
   "sessions": "Sessions",
   "stats": "Anàlisi",
   "feedback": "Feedback",
-  "reporting": "Errors",
+  "reporting": "Reporta un error",
   "memberSince": "Membre des {dateJoined}",
   "clientOf": "Client de ",
   "closeSession": "Tancar sessió",
@@ -47,5 +47,13 @@
   "selectDateOfBirth": "Selecciona la teva data de naixement",
   "typeProfile": "Tipus de perfil",
   "typeProfilePrivate": "Privat",
-  "typeProfilePublic": "Públic"
+  "typeProfilePublic": "Públic",
+  "title": "Títol",
+  "titleHint": "Introdueix un títol",
+  "titleError": "Introdueix un títol si us plau",
+  "description": "Descripció",
+  "descriptionHint": "Descriu l'error detalladament",
+  "descriptionError": "Afegeix una descripció si us plau",
+  "reproducteSteps": "Pasos para reproducir el error",
+  "reproducteStepsHint": "¿Sabes cómo podemos reproducir este error?"
 }
