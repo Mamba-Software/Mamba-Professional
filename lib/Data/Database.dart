@@ -18,7 +18,7 @@ class DatabaseService {
   final trainersCollection = FirebaseFirestore.instance.collection('Trainers');
 
   // UPDATES
-  Future<void> updateUsersData(String uid, bool isTrainer, bool isFirst, String? idioma) async {
+  Future<void> updateUsersData(String uid, bool isTrainer, bool isFirst, String? idioma, String? previousIdioma) async {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
@@ -26,8 +26,9 @@ class DatabaseService {
       'uid': uid,
       'isTrainer': isTrainer,
       'isFirst': isFirst,
-      'idioma': idioma,
       'dateJoined': formatted,
+      'idioma': idioma,
+      'previousIdioma': previousIdioma,
     });
   }
   Future<void> updateClientData(String uid, String name, String email, int gender, bool isPrivate, [String? dateOfBirth]) async {
@@ -62,8 +63,9 @@ class DatabaseService {
           uid: data?['uid'],
           isTrainer: data?['isTrainer'],
           isFirst: data?['isFirst'],
+          dateJoined: data?['dateJoined'],
           idioma: data?['idioma'],
-          dateJoined: data?['dateJoined']
+          previousIdioma: data?['previousIdioma'],
       );
     }
     return user;

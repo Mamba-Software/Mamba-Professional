@@ -6,9 +6,11 @@ class Usuario {
   final String uid;
   bool? isTrainer;
   bool? isFirst;
-  String? idioma;
   String? dateJoined;
+  String? idioma;
+  String? previousIdioma;
 
-  Usuario({ required this.uid, this.isTrainer, this.isFirst, this.idioma, this.dateJoined });
+
+  Usuario({required this.uid, this.isTrainer, this.isFirst, this.dateJoined, this.idioma, this.previousIdioma});
 
 }

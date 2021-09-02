@@ -65,7 +65,7 @@ class _FirstTrainerState extends State<FirstTrainer> {
                             loading = true;
                           });
                           String defIdioma = Localizations.localeOf(context).languageCode;
-                          await _databaseService.updateUsersData(trainer.uid, true, false, defIdioma);
+                          await _databaseService.updateUsersData(trainer.uid, true, false, defIdioma, null);
                         },
                       ),
                     ),
@@ -118,7 +118,7 @@ class _FirstTrainerState extends State<FirstTrainer> {
                             loading = true;
                           });
                           String defIdioma = Localizations.localeOf(context).languageCode;
-                          await _databaseService.updateUsersData(trainer.uid, true, false, defIdioma);
+                          await _databaseService.updateUsersData(trainer.uid, true, false, defIdioma, null);
                         },
                       ),
                     ),

@@ -34,4 +34,13 @@ class UserProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> updateUsuarioFirebase(Usuario usuario) async {
+    try {
+      await _databaseService.updateUsersData(usuario.uid, usuario.isTrainer!, usuario.isFirst!, usuario.idioma!, usuario.previousIdioma);
+      this.getUsuarioFirebase(usuario.uid);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 }

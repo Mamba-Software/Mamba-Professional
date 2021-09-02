@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
+import 'package:mamba_castelldefels/Providers/UserProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
@@ -26,9 +28,10 @@ class _SettingsState extends State<Settings> {
   bool? _isPrivate = null;
   final _typeProfileKey = GlobalKey<_ProfileTypeWidgetState>();
   // Idioma Original
-  var idioma;
+  Locale? _idioma;
   @override
   Widget build(BuildContext context) {
+    final usuario = Provider.of<UserProvider>(context).usuario;
     return Container(
       padding: MediaQuery.of(context).viewInsets,
       child: Padding(
@@ -78,6 +81,8 @@ class _SettingsState extends State<Settings> {
                         setState(() {
                           //nombreCompletoController.text = currentUser.name;
                           //emailController.text = currentUser.email;
+                          usuario.idioma = usuario.previousIdioma;
+                          Provider.of<UserProvider>(context, listen: false).updateUsuarioFirebase(usuario);
                           _typeProfileKey.currentState!.resetProfileType();
                           _editStatus = !_editStatus;
                           //FocusScope.of(context).requestFocus(new FocusNode());
@@ -208,9 +213,9 @@ class _SettingsState extends State<Settings> {
                           )),
                       Padding(
                           padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 12.0),
+                              left: 25.0, right: 25.0, top: 12.0, bottom: 12.0),
                           child: LanguagePickerWidget(
-                            editStatus: (_editStatus)
+                              editStatus: (_editStatus)
                           )
                       ),
                     ],
@@ -228,7 +233,6 @@ class _SettingsState extends State<Settings> {
 class ProfileTypeWidget extends StatefulWidget {
   final ValueChanged<bool> selectedProfileTypeChanged;
   final bool editStatus;
-  //final Function resetGender;
   ProfileTypeWidget({required Key key, required this.selectedProfileTypeChanged, required this.editStatus}) : super(key: key);
 
   @override
@@ -344,8 +348,10 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
                 onTap: widget.editStatus ? () => {
                   setState(() {
                     _locale = locale;
-                    Provider.of<LanguageProvider>(context, listen: false).setLocale(_locale!);
-                    //widget.selectedProfileTypeChanged(isPrivate);
+                    var usuario = Provider.of<UserProvider>(context, listen: false).usuario;
+                    usuario.previousIdioma = usuario.idioma;
+                    usuario.idioma = _locale!.languageCode;
+                    Provider.of<UserProvider>(context, listen: false).updateUsuarioFirebase(usuario);
                   }),
                 } : null,
               ),

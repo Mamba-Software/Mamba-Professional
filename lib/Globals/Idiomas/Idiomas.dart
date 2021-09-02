@@ -15,4 +15,12 @@ class Idiomas {
         return '🇪🇸';
     }
   }
+
+  static Locale getLocaleFromString(String localeCode){
+    for(var i=0; i<all.length; i++){
+      if(all[i].languageCode == localeCode) return all[i];
+    }
+    // Retorna el ESP per defecte
+    return all[0];
+  }
 }

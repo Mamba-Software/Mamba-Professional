@@ -23,7 +23,7 @@
   "transgender": "Altres",
   "nameCompleto": "Nom complet",
   "nameCompletoError": "Escriu el teu nom",
-  "register": "Registrat",
+  "register": "Registra't",
   "registerError": "Introdueix un email vàlid si us plau",
   "registerGenderError": "Selecciona el teu gènere si us plau",
   "wellcome": "Hola {username}!",
