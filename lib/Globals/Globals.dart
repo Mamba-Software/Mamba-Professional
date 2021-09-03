@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Models/Client.dart';
-import 'package:mamba_castelldefels/Models/Trainer.dart';
 
 // Main Variables
 final logoExtended = "assets/images/ExtendedWhite.png";

@@ -28,7 +28,8 @@ class _SettingsState extends State<Settings> {
   bool? _isPrivate = null;
   final _typeProfileKey = GlobalKey<_ProfileTypeWidgetState>();
   // Idioma Original
-  Locale? _idioma;
+  bool idiomaChanged = false;
+  final _idiomaChanged = GlobalKey<_LanguagePickerWidgetState>();
   @override
   Widget build(BuildContext context) {
     final usuario = Provider.of<UserProvider>(context).usuario;
@@ -66,8 +67,9 @@ class _SettingsState extends State<Settings> {
                             //if (!emailTemp.isEmpty) currentUser.email = emailTemp;
                             if (!(_isPrivate == null)) currentUser.isPrivate = _isPrivate;
                             Provider.of<ClientProvider>(context, listen: false).updateClientFirebase(currentUser);
+                            _idiomaChanged.currentState!.resetIdiomaChanged();
                             _editStatus = !_editStatus;
-                            //FocusScope.of(context).requestFocus(new FocusNode());
+                            idiomaChanged = false;
                           }
                         })
                       },
@@ -81,11 +83,14 @@ class _SettingsState extends State<Settings> {
                         setState(() {
                           //nombreCompletoController.text = currentUser.name;
                           //emailController.text = currentUser.email;
-                          usuario.idioma = usuario.previousIdioma;
-                          Provider.of<UserProvider>(context, listen: false).updateUsuarioFirebase(usuario);
+                          if (idiomaChanged) {
+                            usuario.idioma = usuario.previousIdioma;
+                            Provider.of<UserProvider>(context, listen: false).updateUsuarioFirebase(usuario);
+                          }
+                          _idiomaChanged.currentState!.resetIdiomaChanged();
                           _typeProfileKey.currentState!.resetProfileType();
                           _editStatus = !_editStatus;
-                          //FocusScope.of(context).requestFocus(new FocusNode());
+                          idiomaChanged = false;
                         })
                       },
                     )
@@ -215,7 +220,11 @@ class _SettingsState extends State<Settings> {
                           padding: EdgeInsets.only(
                               left: 25.0, right: 25.0, top: 12.0, bottom: 12.0),
                           child: LanguagePickerWidget(
-                              editStatus: (_editStatus)
+                              key: _idiomaChanged,
+                              editStatus: (_editStatus),
+                              idiomaChanged: (bool) {
+                                idiomaChanged = bool!;
+                              },
                           )
                       ),
                     ],
@@ -292,8 +301,9 @@ class _ProfileTypeWidgetState extends State<ProfileTypeWidget> {
 }
 
 class LanguagePickerWidget extends StatefulWidget {
-  final bool editStatus;
-  const LanguagePickerWidget({Key? key, required this.editStatus}) : super(key: key);
+  bool editStatus;
+  ValueChanged<bool?> idiomaChanged;
+  LanguagePickerWidget({Key? key, required this.editStatus, required this.idiomaChanged}) : super(key: key);
 
   @override
   _LanguagePickerWidgetState createState() => _LanguagePickerWidgetState();
@@ -301,8 +311,14 @@ class LanguagePickerWidget extends StatefulWidget {
 
 class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
   Locale? _locale;
+  bool idiomaChanged = false;
 
   @override
+  resetIdiomaChanged() => {
+    idiomaChanged = false,
+    print("idiomaChanged"),
+    print(idiomaChanged),
+  };
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
     _locale = languageProvider.idioma;
@@ -347,11 +363,14 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
                 ),
                 onTap: widget.editStatus ? () => {
                   setState(() {
+                    print("ON TAP");
                     _locale = locale;
                     var usuario = Provider.of<UserProvider>(context, listen: false).usuario;
                     usuario.previousIdioma = usuario.idioma;
                     usuario.idioma = _locale!.languageCode;
+                    idiomaChanged = true;
                     Provider.of<UserProvider>(context, listen: false).updateUsuarioFirebase(usuario);
+                    widget.idiomaChanged(idiomaChanged);
                   }),
                 } : null,
               ),

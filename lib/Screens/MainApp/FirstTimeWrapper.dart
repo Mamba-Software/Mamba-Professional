@@ -1,5 +1,4 @@
 // Flutter Libs
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
@@ -19,15 +18,15 @@ class FirstTimeWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<AuthenticationProvider>(context);
+    final usuario = Provider.of<UserProvider>(context).usuario;
+    final language = Provider.of<LanguageProvider>(context,listen: false);
+    Future.delayed(Duration.zero, () async {
+      Locale locale = Idiomas.getLocaleFromString(usuario.idioma!);
+      language.setLocale(locale);
+    });
     return Consumer<UserProvider>(
         builder: (context, UserProvider userProvider, _) {
           userProvider.getUsuarioFirebase(user.user!.uid);
-          final usuario = Provider.of<UserProvider>(context).usuario;
-          final language = Provider.of<LanguageProvider>(context,listen: false);
-          Future.delayed(Duration.zero, () async {
-            Locale locale = Idiomas.getLocaleFromString(usuario.idioma!);
-            language.setLocale(locale);
-          });
           switch (userProvider.first) {
             case First.Uninitialized:
               return Loading();

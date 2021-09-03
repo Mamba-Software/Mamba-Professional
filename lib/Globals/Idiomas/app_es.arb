@@ -236,6 +236,18 @@
   "reproducteStepsHint": "¿Sabes cómo podemos reproducir este error?",
   "@reproducteStepsHint":{
     "description": "reproducteStepsHint Text"
+  },
+  "choseOption": "Escoje una opción",
+  "@choseOption":{
+    "description": "choseOption Text"
+  },
+  "gallery": "Galería",
+  "@gallery":{
+    "description": "Galería Text"
+  },
+  "camera": "Cámara",
+  "@camera":{
+    "description": "Cámara Text"
   }
 
 }

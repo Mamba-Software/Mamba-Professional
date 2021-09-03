@@ -1,11 +1,13 @@
 // Flutter Libs
+import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
 // Internal Apop Tools
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:mamba_castelldefels/Providers/UserProvider.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/FeedBack.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/Settings.dart';
@@ -23,14 +25,58 @@ class PerfilClient extends StatefulWidget {
 
 class _PerfilClientState extends State<PerfilClient> {
   // List Bool Status
-  List<bool> _statusButtons =  [false, false, false, false, false, false];
+  List<bool> _statusButtons =  [false, false, false, false, false];
   final FocusNode myFocusNode = FocusNode();
   // Size of Icons
   final _globusSize = Size(75, 75);
   final _iconSize = 45.0;
+  // Image Picker
+  final picker = ImagePicker();
+  var _image;
 
   @override
   Widget build(BuildContext context) {
+    Future<void>_showChoiceDialog(BuildContext context) {
+      return showDialog(context: context,builder: (BuildContext context){
+        return AlertDialog(
+          title: Text(
+            AppLocalizations.of(context)!.choseOption,
+            style: purpleTextStyle,
+          ),
+          //backgroundColor: yellowColor,
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: [
+                Divider(height: 1,color: Colors.blue,),
+                ListTile(
+                  onTap: (){
+                    _openGallery(context);
+                  },
+                  title: Text(
+                    AppLocalizations.of(context)!.gallery,
+                    style: purpleTextStyle,
+                  ),
+                  leading: Icon(Icons.collections_outlined,color: purpleColor,),
+                ),
+
+                Divider(height: 1,color: Colors.blue,),
+                ListTile(
+                  onTap: (){
+                    _openCamera(context);
+                  },
+                  title: Text(
+                    AppLocalizations.of(context)!.camera,
+                    style: purpleTextStyle,
+                  ),
+                  leading: Icon(Icons.camera_alt_outlined, color: purpleColor,),
+                ),
+              ],
+            ),
+          ),
+        );
+      }).then((exit) => _statusButtons[4] = !_statusButtons[4]);
+    }
+
     final _authProvider = Provider.of<AuthenticationProvider>(context);
     final userFirebase = Provider.of<UserProvider>(context).usuario;
     void _showPerfiClientModals(int _buttonIndex) {
@@ -84,7 +130,10 @@ class _PerfilClientState extends State<PerfilClient> {
                                     decoration: new BoxDecoration(
                                       shape: BoxShape.circle,
                                       image: new DecorationImage(
-                                        image: new ExactAssetImage(fotoPerfil),
+                                        image: _image == null ?
+                                        new ExactAssetImage(fotoPerfil)
+                                            :
+                                        new Image.file(_image).image,
                                         fit: BoxFit.cover,
                                       ),
                                     )),
@@ -98,14 +147,24 @@ class _PerfilClientState extends State<PerfilClient> {
                                   child: new Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
-                                      new CircleAvatar(
-                                        backgroundColor: yellowColor,
-                                        radius: 20.0,
-                                        child: new Icon(
-                                          Icons.camera_alt,
-                                          color: Colors.white,
+                                      SizedBox.fromSize(
+                                        size: Size(40, 40), // button width and height
+                                        child: ClipOval(
+                                          child: Material(
+                                            color: !_statusButtons[4] ? yellowColor : yellowColorTrans, // button color
+                                            child: InkWell(
+                                              // splash color
+                                              onTap: () {
+                                                setState(() {
+                                                  _statusButtons[4] = !_statusButtons[4];
+                                                  _showChoiceDialog(context);
+                                                });
+                                              }, // button pressed
+                                              child: Icon(Icons.camera_alt, color: Colors.white, size: 25,), // icon
+                                            ),
+                                          ),
                                         ),
-                                      )
+                                      ),
                                     ],
                                   )),
                               // Logos Flotants
@@ -187,7 +246,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                               splashColor: Colors.white, // splash color
                                               onTap: () {
                                                 setState(() {
-                                                  _statusButtons[4] = !_statusButtons[4];
+                                                  _statusButtons[2] = !_statusButtons[2];
                                                   _showPerfiClientModals(2);
                                                 });
                                               }, // button pressed
@@ -216,7 +275,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                               splashColor: Colors.white, // splash color
                                               onTap: () {
                                                 setState(() {
-                                                  _statusButtons[5] = !_statusButtons[5];
+                                                  _statusButtons[3] = !_statusButtons[3];
                                                   _showPerfiClientModals(3);
                                                 });
                                               }, // button pressed
@@ -285,6 +344,50 @@ class _PerfilClientState extends State<PerfilClient> {
             ],
           ),
         );
+  }
+
+  void _openGallery(BuildContext context) async{
+    XFile? pickedFile = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 50,
+        preferredCameraDevice: CameraDevice.front,
+    );
+    setState(() {
+      _image  = io.File(pickedFile!.path);
+    });
+    Navigator.pop(context);
+  }
+
+  void _openCamera(BuildContext context) async {
+    XFile? pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+      imageQuality: 50,
+      preferredCameraDevice: CameraDevice.front,
+    );
+    setState(() {
+      _image  = io.File(pickedFile!.path);
+    });
+    Navigator.pop(context);
+  }
+
+  Future uploadImageToFirebase(BuildContext context) async {
+    String fileName = _image!.path;
+    firebase_storage.Reference ref =
+    firebase_storage.FirebaseStorage.instance
+        .ref().child('uploads').child('/$fileName');
+
+    final metadata = firebase_storage.SettableMetadata(
+        contentType: 'image/jpeg',
+        customMetadata: {'picked-file-path': fileName});
+    firebase_storage.UploadTask uploadTask;
+    //late StorageUploadTask uploadTask = firebaseStorageRef.putFile(_imageFile);
+    uploadTask = ref.putFile(io.File(_image!.path), metadata);
+    firebase_storage.UploadTask task= await Future.value(uploadTask);
+    Future.value(uploadTask).then((value) => {
+      print("Upload file path ${value.ref.fullPath}")
+    }).onError((error, stackTrace) => {
+      print("Upload file path error ${error.toString()} ")
+    });
   }
 
   @override
