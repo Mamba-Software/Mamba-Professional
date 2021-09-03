@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _currentIndex,
             type: BottomNavigationBarType.shifting,
-            iconSize: 32,
+            iconSize: 40,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.explore_outlined, color: whiteColor,),

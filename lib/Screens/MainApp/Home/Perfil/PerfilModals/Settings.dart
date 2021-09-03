@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
+import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
 import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Providers/UserProvider.dart';
@@ -33,6 +34,7 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     final usuario = Provider.of<UserProvider>(context).usuario;
+    final user = Provider.of<AuthenticationProvider>(context);
     return Container(
       padding: MediaQuery.of(context).viewInsets,
       child: Padding(
@@ -120,6 +122,64 @@ class _SettingsState extends State<Settings> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
                                   new Text(
+                                    AppLocalizations.of(context)!.email,
+                                    style: purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 4.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              new Flexible(
+                                child: new TextFormField(
+                                  controller: emailController,
+                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
+                                  onChanged: (val) {
+                                    setState(() => emailTemp = val);
+                                  },
+                                  decoration: InputDecoration(
+                                    hintText: AppLocalizations.of(context)!.email,
+                                  ),
+                                  enabled: false,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 25.0),
+                                child: Container(
+                                  height: 50,
+                                  width: 80,
+                                  decoration: BoxDecoration(
+                                      color: !_editStatus ? purpleColorTrans : purpleColor, borderRadius: BorderRadius.circular(20)
+                                  ),
+                                  child: TextButton(
+                                    onPressed: _editStatus ? () async {
+                                      //await user.signIn(email,password);
+                                    } : null,
+                                    child: Text(
+                                      AppLocalizations.of(context)!.change,
+                                      style: whiteTextStyle.copyWith(fontSize: 16),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 25.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              new Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  new Text(
                                     AppLocalizations.of(context)!.changePassword,
                                     style: purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                                   ),
@@ -129,44 +189,35 @@ class _SettingsState extends State<Settings> {
                           )),
                       Padding(
                           padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 2.0),
+                              left: 25.0, right: 25.0, top: 12.0),
                           child: new Row(
                             mainAxisSize: MainAxisSize.max,
                             children: <Widget>[
                               new Flexible(
                                 child: new TextFormField(
-                                  controller: nombreCompletoController,
-                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.passwordError : null,
-                                  onChanged: (val) {
-                                    setState(() => nombreCompletoTemp = val);
-                                  },
-                                  decoration: InputDecoration(
-                                    hintText: AppLocalizations.of(context)!.newPassword,
-                                  ),
+                                  initialValue: "abcdefghijklmn",
+                                  decoration: InputDecoration(),
                                   obscureText: true,
-                                  enabled: _editStatus,
                                 ),
                               ),
-                            ],
-                          )),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 2.0),
-                          child: new Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              new Flexible(
-                                child: new TextFormField(
-                                  controller: nombreCompletoController,
-                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.passwordNotSameError : null,
-                                  onChanged: (val) {
-                                    setState(() => nombreCompletoTemp = val);
-                                  },
-                                  decoration: InputDecoration(
-                                    hintText: AppLocalizations.of(context)!.passworRepeat,
+                              Padding(
+                                padding: const EdgeInsets.only(left: 25.0),
+                                child: Container(
+                                  height: 50,
+                                  width: 80,
+                                  decoration: BoxDecoration(
+                                      color: !_editStatus ? purpleColorTrans : purpleColor, borderRadius: BorderRadius.circular(20)
                                   ),
-                                  obscureText: true,
-                                  enabled: _editStatus,
+                                  child: TextButton(
+                                    onPressed: _editStatus ? () async {
+                                      await user.resetPassword(currentUser.email);
+                                      Navigator.pop(context);
+                                    } : null,
+                                    child: Text(
+                                      AppLocalizations.of(context)!.change,
+                                      style: whiteTextStyle.copyWith(fontSize: 16),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
@@ -191,7 +242,7 @@ class _SettingsState extends State<Settings> {
                           )),
                       Padding(
                           padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 10.0),
+                              left: 25.0, right: 25.0, top: 12.0),
                           child: ProfileTypeWidget(
                             key: _typeProfileKey,
                             editStatus: (_editStatus),

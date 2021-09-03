@@ -39,7 +39,7 @@
   "@newPassword":{
     "description": "Contraseña Text "
   },
-  "changePassword": "Cambia tu contraseña",
+  "changePassword": "¿Quieres cambiar tu contraseña?",
   "@changePassword":{
     "description": "changePassword Text"
   },
@@ -248,6 +248,10 @@
   "camera": "Cámara",
   "@camera":{
     "description": "Cámara Text"
+  },
+  "change": "Cambiar",
+  "@change":{
+    "description": "Cambiar Text"
   }
 
 }

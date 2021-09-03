@@ -63,6 +63,13 @@ class AuthenticationProvider with ChangeNotifier {
     return Future.delayed(Duration.zero);
   }
 
+  Future resetPassword(String email) async {
+    _auth.sendPasswordResetEmail(email: email);
+    _status = Status.Unauthenticated;
+    notifyListeners();
+    currentUser = null;
+  }
+
   Future<void> _onAuthStateChanged(User? firebaseUser) async {
     if (firebaseUser == null) {
       _status = Status.Unauthenticated;

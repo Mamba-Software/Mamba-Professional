@@ -35,10 +35,7 @@ class ChildWidget extends StatelessWidget {
     }
 
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: navBarTabs[_currentIndex]
-      ),
+      child: navBarTabs[_currentIndex]
     );
   }
 }

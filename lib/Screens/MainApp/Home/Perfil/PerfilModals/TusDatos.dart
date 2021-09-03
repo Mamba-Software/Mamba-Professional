@@ -168,45 +168,6 @@ class _TusDatosState extends State<TusDatos> {
                           )),
                       Padding(
                           padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 25.0),
-                          child: new Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              new Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  new Text(
-                                    AppLocalizations.of(context)!.email,
-                                    style: purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 2.0),
-                          child: new Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              new Flexible(
-                                child: new TextFormField(
-                                  controller: emailController,
-                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
-                                  onChanged: (val) {
-                                    setState(() => emailTemp = val);
-                                  },
-                                  decoration: InputDecoration(
-                                    hintText: AppLocalizations.of(context)!.email,
-                                  ),
-                                  enabled: _editStatus,
-                                ),
-                              ),
-                            ],
-                          )),
-                      Padding(
-                          padding: EdgeInsets.only(
                               left: 25.0, right: 25.0, top: 10.0),
                           child: GenderWidget(
                             key: _genderKey,
