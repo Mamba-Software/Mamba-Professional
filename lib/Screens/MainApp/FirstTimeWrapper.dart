@@ -20,15 +20,15 @@ class FirstTimeWrapper extends StatelessWidget {
     errorAuthLogin = false;
     errorAuthRegister = false;
     final user = Provider.of<AuthenticationProvider>(context);
+    Provider.of<UserProvider>(context).getUsuarioFirebase(user.user!.uid);;
     final usuario = Provider.of<UserProvider>(context).usuario;
     final language = Provider.of<LanguageProvider>(context,listen: false);
-    Future.delayed(Duration.zero, () async {
-      Locale locale = Idiomas.getLocaleFromString(usuario.idioma!);
-      language.setLocale(locale);
-    });
-    return Consumer<UserProvider>(
+    return usuario.isFirst == null ? Loading() : Consumer<UserProvider>(
         builder: (context, UserProvider userProvider, _) {
-          userProvider.getUsuarioFirebase(user.user!.uid);
+          Future.delayed(Duration.zero, () async {
+            Locale locale = Idiomas.getLocaleFromString(usuario.idioma!);
+            language.setLocale(locale);
+          });
           switch (userProvider.first) {
             case First.Uninitialized:
               return Loading();

@@ -59,6 +59,7 @@ class AuthenticationProvider with ChangeNotifier {
     _auth.signOut();
     _status = Status.Unauthenticated;
     notifyListeners();
+    currentUser = null;
     return Future.delayed(Duration.zero);
   }
 
