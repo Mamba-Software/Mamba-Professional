@@ -21,6 +21,8 @@ import 'package:mamba_castelldefels/Screens/MainApp/Home/TuMarca/TuMarca.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/Chat.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilClient.dart';
 
+import 'ChildWidget.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -30,14 +32,21 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // Index of Bottom Navigation Bar
-  int _currentIndex = 3;
-  // Navigation Bar Tabs
-  final navBarTabs= [
-    CercaDeTi(),
-    TuMarca(),
-    Chat(),
-    Perfil(),
-  ];
+  int _currentIndex = 0;
+  // Page Controller
+  PageController _pageController = PageController(
+    initialPage: 0,
+  );
+
+  Widget childWidget = ChildWidget(
+    number: AvailableNumber.First,
+  );
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +75,6 @@ class _HomePageState extends State<HomePage> {
             actions: <Widget>[
             ],
           ),
-          body: navBarTabs[_currentIndex],
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _currentIndex,
             type: BottomNavigationBarType.shifting,
@@ -94,17 +102,36 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
             onTap: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
+              _currentIndex = index;
+              _pageController.animateToPage(
+                index,
+                duration: Duration(milliseconds: 200),
+                curve: Curves.linear,
+              );
+              setState(() {});
             },
             selectedItemColor: whiteColor,
             selectedLabelStyle: whiteTextStyle.copyWith(fontSize: 15),
             unselectedItemColor: whiteColor,
             unselectedLabelStyle: whiteTextStyle.copyWith(fontSize: 15),
           ),
+          body: PageView(
+            controller: _pageController,
+            onPageChanged: (page) {
+              setState(() {
+                _currentIndex = page;
+              });
+            },
+            children: <Widget>[
+              ChildWidget(number: AvailableNumber.First),
+              ChildWidget(number: AvailableNumber.Second),
+              ChildWidget(number: AvailableNumber.Third),
+              ChildWidget(number: AvailableNumber.Fourth)
+            ],
+          ),
         )
     );
   }
 }
+
 
