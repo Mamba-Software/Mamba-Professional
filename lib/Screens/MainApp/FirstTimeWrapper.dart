@@ -17,6 +17,8 @@ import 'Home/Home.dart';
 class FirstTimeWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    errorAuthLogin = false;
+    errorAuthRegister = false;
     final user = Provider.of<AuthenticationProvider>(context);
     final usuario = Provider.of<UserProvider>(context).usuario;
     final language = Provider.of<LanguageProvider>(context,listen: false);

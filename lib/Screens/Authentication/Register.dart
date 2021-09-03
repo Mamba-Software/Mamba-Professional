@@ -51,8 +51,9 @@ class _RegisterState extends State<Register> {
   }
   // FormVariables
   final _formKey = GlobalKey<FormState>();
-  bool error = false;
   String errorText = '';
+  bool errorGender = false;
+  String errorGenderText = '';
   String name = '';
   String email = '';
   String password1 = '';
@@ -72,6 +73,7 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
+    errorText = AppLocalizations.of(context)!.registerError;
     final user = Provider.of<AuthenticationProvider>(context);
     return WillPopScope(
       onWillPop: _onBackPressed,
@@ -85,7 +87,7 @@ class _RegisterState extends State<Register> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                        padding: EdgeInsets.only(top: 16.0),
+                        padding: EdgeInsets.only(top: 24.0),
                         width: 200,
                         height: 100,
                         child: Image.asset(logoExtended)),
@@ -97,8 +99,18 @@ class _RegisterState extends State<Register> {
                             }
                         ),
                     ),
+                    errorGender ? Padding(
+                      padding: EdgeInsets.only(left: 0, right: 0, top: 2.0),
+                      child: Center(
+                        child: Text(
+                          errorGenderText,
+                          style: redTextStyle.copyWith(fontSize: 12),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ) : new Container(),
                     Padding(
-                        padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
+                        padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 0),
                         child: TextFormField(
                           validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError  : null,
                           onChanged: (val) {
@@ -244,25 +256,20 @@ class _RegisterState extends State<Register> {
                         onPressed: () async {
                           if(gender == null) {
                             setState(() {
-                              error = true;
-                              errorText = AppLocalizations.of(context)!.registerGenderError;
+                              errorGender = true;
+                              errorGenderText = AppLocalizations.of(context)!.registerGenderError;
                             });
                           } else {
-                            String defIdioma = Localizations.localeOf(context).languageCode;
-                            if(_formKey.currentState!.validate()){
-                              setState(() {
-                                error = false;
-                                loading = true;
-                              });
-                              bool result = await user.signUp(email,password1,name,gender!,defIdioma,isTrainer);
-                              if (!result) {
-                                setState(() {
-                                  error = true;
-                                  errorText = AppLocalizations.of(context)!.registerError;
-                                  loading = false;
-                                });
-                              }
-                            }
+                            setState(() {
+                              errorGender = false;
+                            });
+                          };
+                          String defIdioma = Localizations.localeOf(context).languageCode;
+                          if(_formKey.currentState!.validate()){
+                            setState(() {
+                              loading = true;
+                            });
+                            await user.signUp(email,password1,name,gender!,defIdioma,isTrainer);
                           }
                         },
                         child: Text(
@@ -283,7 +290,7 @@ class _RegisterState extends State<Register> {
                           )
                       ),
                     ),
-                    error ? Padding(
+                    errorAuthRegister ? Padding(
                       padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 8.0),
                       child: Center(
                         child: Text(

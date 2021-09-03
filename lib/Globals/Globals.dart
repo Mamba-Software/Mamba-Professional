@@ -7,6 +7,10 @@ final logoSimple = "assets/images/SimpleWhite.png";
 final logoSimpleYellow = "assets/images/SimpleYellow.png";
 final fotoPerfil = "assets/images/as.png";
 
+// Error Auth
+var errorAuthLogin = false;
+var errorAuthRegister = false;
+
 // User
 String userUID = "";
 bool userIsTrainer = false;

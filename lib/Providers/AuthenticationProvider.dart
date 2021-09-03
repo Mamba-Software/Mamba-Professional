@@ -25,6 +25,8 @@ class AuthenticationProvider with ChangeNotifier {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       return true;
     } catch (e) {
+      print(e.toString());
+      errorAuthLogin = true;
       _status = Status.Unauthenticated;
       notifyListeners();
       return false;
@@ -46,6 +48,7 @@ class AuthenticationProvider with ChangeNotifier {
       return true;
     } catch (e) {
       print(e.toString());
+      errorAuthRegister = true;
       _status = Status.Unauthenticated;
       notifyListeners();
       return false;

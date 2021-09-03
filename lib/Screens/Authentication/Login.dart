@@ -29,8 +29,7 @@ class _LoginState extends State<Login> {
   String email = '';
   String password = '';
   // Error Control
-  String errorText = '';
-  bool error = false;
+  String? errorText;
 
   Future<bool> _onBackPressed() async {
     return (await showDialog(
@@ -60,6 +59,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    errorText = AppLocalizations.of(context)!.loginError;
     final user = Provider.of<AuthenticationProvider>(context);
     return WillPopScope(
         onWillPop: _onBackPressed,
@@ -150,19 +150,8 @@ class _LoginState extends State<Login> {
                         if(_formKey.currentState!.validate()){
                           setState(() {
                             loading = true;
-                            error = false;
                           });
-                          bool result = await user.signIn(email,password);
-                          if (!result) {
-                            // Aqui arriba pero el set state no es fa pq el widget ja ha cambiat a Loading() i despres ha tornat a Authenticate()
-                            // Solucio, es podria possar un count al constructor per saber si s'ha intentat autenticar o no.
-                            setState(() {
-                              error = true;
-                              errorText = AppLocalizations.of(context)!.loginError;
-                              loading = false;
-                            });
-
-                          }
+                          await user.signIn(email,password);
                         }
                       },
                       child: Text(
@@ -183,9 +172,9 @@ class _LoginState extends State<Login> {
                         )
                     ),
                   ),
-                  error ? Center(
+                  errorAuthLogin ? Center(
                     child: Text(
-                      errorText,
+                      errorText!,
                       style: redTextStyle.copyWith(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),

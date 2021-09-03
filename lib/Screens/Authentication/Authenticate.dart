@@ -1,5 +1,6 @@
 // Flutter Libs
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Globals/Globals.dart';
 // Internal App Resources
 import 'package:mamba_castelldefels/screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/screens/Authentication/Register.dart';
@@ -12,9 +13,11 @@ class Authenticate extends StatefulWidget {
 }
 
 class _AuthenticateState extends State<Authenticate> {
-  bool showSignIn = true;
+  bool showSignIn = errorAuthRegister == true ? false : true;
   void toggleView(){
     setState(() => showSignIn = !showSignIn);
+    errorAuthLogin = false;
+    errorAuthRegister = false;
   }
   @override
   Widget build(BuildContext context) {
