@@ -91,8 +91,9 @@ class _PerfilClientState extends State<PerfilClient> {
                                     height: screenHeight*0.23,
                                     decoration: new BoxDecoration(
                                       shape: BoxShape.circle,
+                                      border: Border.all(color: yellowColor, width: 2.0),
                                       image: new DecorationImage(
-                                        image: _image == null ?
+                                        image: _image == null || currentUser.imageURL == null  ?
                                         new ExactAssetImage(fotoPerfil)
                                             :
                                         new Image.network(currentUser.imageURL).image,
@@ -117,6 +118,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                             child: InkWell(
                                               onTap: () async {
                                                 _image = await _openGallery(context);
+                                                currentUser.imageURL = "";
                                                 await client.uploadFileClientProfile(_image!);
                                                 setState(() {});
                                               },

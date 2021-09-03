@@ -54,8 +54,8 @@
   "description": "Descripció",
   "descriptionHint": "Descriu l'error detalladament",
   "descriptionError": "Afegeix una descripció si us plau",
-  "reproducteSteps": "Pasos para reproducir el error",
-  "reproducteStepsHint": "¿Sabes cómo podemos reproducir este error?",
+  "reproducteSteps": "Passos per reproduir l'error",
+  "reproducteStepsHint": "Saps com podem reproduir l'error?",
   "choseOption": "Escull una opció",
   "gallery": "Galeria",
   "camera": "Càmara"
