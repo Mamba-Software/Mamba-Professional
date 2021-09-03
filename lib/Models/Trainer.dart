@@ -8,8 +8,9 @@ class Trainer {
   bool? isPrivate;
   String? dateJoined;
   String? dateOfBirth;
+  String? imageURL;
 
-  Trainer({required this.uid, this.name,  this.email, this.gender, this.isPrivate, this.dateJoined, this.dateOfBirth });
+  Trainer({required this.uid, this.name,  this.email, this.gender, this.isPrivate, this.dateJoined, this.dateOfBirth, this.imageURL});
 
   toJson() {
     return {
@@ -20,6 +21,7 @@ class Trainer {
       "isPrivate": isPrivate,
       "dateJoined": dateJoined,
       "dateOfBirth": dateOfBirth,
+      "imageURL": imageURL,
     };
   }
 

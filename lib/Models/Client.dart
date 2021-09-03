@@ -9,10 +9,11 @@ class Client {
   bool? isPrivate;
   String? dateJoined;
   String? dateOfBirth;
+  String? imageURL;
 
   // Optional Parameters
 
-  Client({required this.uid, this.name,  this.email, this.gender, this.isPrivate, this.dateJoined, this.dateOfBirth });
+  Client({required this.uid, this.name,  this.email, this.gender, this.isPrivate, this.dateJoined, this.dateOfBirth, this.imageURL});
 
   toJson() {
     return {
@@ -23,6 +24,7 @@ class Client {
       "isPrivate": isPrivate,
       "dateJoined": dateJoined,
       "dateOfBirth": dateOfBirth,
+      "imageURL": imageURL,
     };
   }
 

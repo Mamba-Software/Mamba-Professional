@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/Database.dart';
 import 'package:mamba_castelldefels/Models/Client.dart';
@@ -6,6 +9,8 @@ enum LoaderC {Uninitialized, YES, NO}
 
 class ClientProvider extends ChangeNotifier {
   DatabaseService _databaseService = DatabaseService();
+  FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+
   Client _client = new Client(uid: "uid");
   LoaderC _loader = LoaderC.Uninitialized;
 
@@ -27,11 +32,24 @@ class ClientProvider extends ChangeNotifier {
 
   Future<void> updateClientFirebase(Client client) async {
     try {
-      _databaseService.updateClientData(client.uid, client.name!, client.email!, client.gender!, client.isPrivate!, client.dateOfBirth!);
+      _databaseService.updateClientData(client.uid, client.name!, client.email!, client.gender!, client.isPrivate!, client.dateOfBirth, client.imageURL!);
       this.getClientFirebase(client.uid);
       notifyListeners();
     } catch (e) {
       print(e.toString());
     }
   }
+
+  Future<void> uploadFileClientProfile(File file) async {
+    var storageRef = _firebaseStorage.ref().child("profileImages/client/${_client.uid}");
+    var uploadTask = storageRef.putFile(file);
+    uploadTask.whenComplete(() async {
+      await storageRef.getDownloadURL().then((value) {
+        client.imageURL = value;
+        print(client.imageURL);
+        updateClientFirebase(client);
+      });
+    });
+  }
+
 }

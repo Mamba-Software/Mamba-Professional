@@ -84,7 +84,9 @@ class _SettingsState extends State<Settings> {
                           //nombreCompletoController.text = currentUser.name;
                           //emailController.text = currentUser.email;
                           if (idiomaChanged) {
+                            var tempIdioma = usuario.idioma;
                             usuario.idioma = usuario.previousIdioma;
+                            usuario.previousIdioma = tempIdioma;
                             Provider.of<UserProvider>(context, listen: false).updateUsuarioFirebase(usuario);
                           }
                           _idiomaChanged.currentState!.resetIdiomaChanged();
@@ -315,9 +317,7 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
 
   @override
   resetIdiomaChanged() => {
-    idiomaChanged = false,
-    print("idiomaChanged"),
-    print(idiomaChanged),
+    idiomaChanged = false
   };
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
@@ -363,7 +363,6 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
                 ),
                 onTap: widget.editStatus ? () => {
                   setState(() {
-                    print("ON TAP");
                     _locale = locale;
                     var usuario = Provider.of<UserProvider>(context, listen: false).usuario;
                     usuario.previousIdioma = usuario.idioma;

@@ -33,7 +33,7 @@ class DatabaseService {
       'previousIdioma': previousIdioma,
     });
   }
-  Future<void> updateClientData(String uid, String name, String email, int gender, bool isPrivate, [String? dateOfBirth]) async {
+  Future<void> updateClientData(String uid, String name, String email, int gender, bool isPrivate, [String? dateOfBirth, String? imageURL]) async {
     return await clientsCollection.doc(uid).set({
       'uid': uid,
       'name': name,
@@ -41,9 +41,10 @@ class DatabaseService {
       'gender': gender,
       'isPrivate': isPrivate,
       'dateOfBirth': dateOfBirth,
+      'imageURL': imageURL,
     });
   }
-  Future<void> updateTrainerData(String uid, String name, String email, int gender, bool isPrivate, [String? dateOfBirth]) async {
+  Future<void> updateTrainerData(String uid, String name, String email, int gender, bool isPrivate, [String? dateOfBirth, String? imageURL]) async {
     return await trainersCollection.doc(uid).set({
       'uid': uid,
       'name': name,
@@ -51,6 +52,7 @@ class DatabaseService {
       'gender': gender,
       'isPrivate': isPrivate,
       'dateOfBirth': dateOfBirth,
+      'imageURL': imageURL,
     });
   }
 
@@ -97,7 +99,9 @@ class DatabaseService {
           email: data?['email'],
           gender: data?['gender'],
           isPrivate: data?['isPrivate'],
-          dateOfBirth: data?['dateOfBirth']);
+          dateOfBirth: data?['dateOfBirth'],
+          imageURL: data?['imageURL']
+      );
     }
     return client;
   }
@@ -132,7 +136,9 @@ class DatabaseService {
         email: data?['email'],
         gender: data?['gender'],
         isPrivate: data?['isPrivate'],
-        dateOfBirth: data?['dateOfBirth'], );
+        dateOfBirth: data?['dateOfBirth'],
+        imageURL: data?['imageURL'],
+      );
     }
     return trainer;
   }
