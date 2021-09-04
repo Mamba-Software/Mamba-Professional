@@ -1,6 +1,7 @@
 // Flutter Libs
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 // Internal App Resources
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
@@ -9,7 +10,6 @@ import 'package:mamba_castelldefels/Globals/Loading.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Register.dart';
-import 'package:provider/provider.dart';
 
 // Login Widget
 class Login extends StatefulWidget {
@@ -20,16 +20,18 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  // Access to DataBaseService
+  var _accessDatabase = new DatabaseAccess();
   // Loading Screen Boolean
-  bool loading = false;
+  bool isLoading = false;
   // Password Visible
   bool _passwordVisible = false;
+  // Scaffold Messenger Key
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   // FormVariables
   final _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
-  // Error Control
-  String? errorText;
 
   Future<bool> _onBackPressed() async {
     return (await showDialog(
@@ -59,137 +61,205 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    errorText = AppLocalizations.of(context)!.loginError;
     return WillPopScope(
       onWillPop: _onBackPressed,
-      child: Scaffold(
-        backgroundColor: Styles.mainColor,
-        body: Center(
-          child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+        child: ScaffoldMessenger(
+          key: scaffoldMessengerKey,
+          child: Scaffold(
+              resizeToAvoidBottomInset: true,
+              backgroundColor: Styles.mainColor,
+              body: isLoading ?
+              Stack(
                 children: <Widget>[
-                  Container(
-                      padding: EdgeInsets.only(top: 16.0),
-                      width: 200,
-                      height: 100,
-                      child: Image.asset(Constants.logoExtended)),
-                  Padding(
-                      padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 13.0, bottom: 0.0),
-                      child: TextFormField(
-                        validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
-                        onChanged: (val) {
-                          setState(() => email = val);
-                        },
-                        decoration: Styles.textFromInputDecoration.copyWith(
-                          labelText: AppLocalizations.of(context)!.email,
-                          prefixIcon:  Padding(
-                            padding: EdgeInsets.all(0.0),
-                            child: Icon(
-                              Icons.email_outlined,
-                              color: Styles.accent,
-                            ), // icon is 48px widget.
-                          )
-                        )
-                      )
-                  ),
-                  Padding(
-                      padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
-                      child: TextFormField(
-                        validator: (val) => val!.length < 6 ? AppLocalizations.of(context)!.passwordError : null,
-                        onChanged: (val) {
-                          setState(() => password = val);
-                        },
-                        obscureText: !_passwordVisible,
-                          decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
-                              suffixIcon: Padding(
-                                  padding: EdgeInsets.all(0.0),
-                                  child: IconButton(
-                                    icon: Icon(
-                                    // Based on passwordVisible state choose the icon
-                                    _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                    color: Styles.accent
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _passwordVisible = !_passwordVisible;
-                                      });
-                                    }
-                                  )
-                              ),
-                              prefixIcon:  Padding(
-                                padding: EdgeInsets.all(0.0),
-                                child: Icon(
-                                  Icons.vpn_key_outlined,
-                                  color: Styles.accent,
-                                ), // icon is 48px widget.
-                              )
-                          )
-                      )
-                  ),
-                  TextButton(
-                    onPressed: (){
-                      //TODO: FORGOT PASSWORD SCREEN GOES HERE
-                    },
-                    child: Text(
-                      AppLocalizations.of(context)!.forgotPassword,
-                      style: Styles.whiteTextStyle,
-                    ),
-                  ),
-                  Container(
-                    height: 50,
-                    width: 250,
-                    decoration: BoxDecoration(
-                        color: Styles.accent, borderRadius: BorderRadius.circular(20)
-                    ),
-                    child: TextButton(
-                      onPressed: () async {
-                        if(_formKey.currentState!.validate()){
-                          setState(() {
-                            loading = true;
-                          });
-                          //await user.signIn(email,password);
-                        }
-                      },
-                      child: Text(
-                        AppLocalizations.of(context)!.login,
-                        style: Styles.whiteTextStyle.copyWith(fontSize: 28),
+                  Center(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      child: CircularProgressIndicator(
+                        color: Styles.white,
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 16.0),
-                    child: TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute<Null>(
-                                builder: (context) => Register(),
-                                settings: RouteSettings(name: 'Register'),
-                              )
-                          );
-                        },
-                        child: Text(
-                          AppLocalizations.of(context)!.newUser,
-                          style: Styles.whiteTextStyle,
-                        )
+                  Center(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.15,
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      child: Image(
+                          image: AssetImage(Constants.logoSimple)
+                      ),
                     ),
                   ),
-                  Globals.errorAuthLogin ? Center(
-                    child: Text(
-                      errorText!,
-                      style: Styles.redTextStyle.copyWith(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
-                  ) : new Container()
                 ],
+              )
+                  :
+              Center(
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                            padding: EdgeInsets.only(top: 16.0),
+                            width: 200,
+                            height: 100,
+                            child: Image.asset(Constants.logoExtended)),
+                        Padding(
+                            padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 13.0, bottom: 0.0),
+                            child: TextFormField(
+                              validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
+                              onChanged: (val) {
+                                setState(() => email = val);
+                              },
+                              decoration: Styles.textFromInputDecoration.copyWith(
+                                labelText: AppLocalizations.of(context)!.email,
+                                prefixIcon:  Padding(
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Icon(
+                                    Icons.email_outlined,
+                                    color: Styles.accent,
+                                  ), // icon is 48px widget.
+                                )
+                              )
+                            )
+                        ),
+                        Padding(
+                            padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
+                            child: TextFormField(
+                              validator: (val) => val!.length < 6 ? AppLocalizations.of(context)!.passwordError : null,
+                              onChanged: (val) {
+                                setState(() => password = val);
+                              },
+                              obscureText: !_passwordVisible,
+                                decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
+                                    suffixIcon: Padding(
+                                        padding: EdgeInsets.all(0.0),
+                                        child: IconButton(
+                                          icon: Icon(
+                                          // Based on passwordVisible state choose the icon
+                                          _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                          color: Styles.accent
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              _passwordVisible = !_passwordVisible;
+                                            });
+                                          }
+                                        )
+                                    ),
+                                    prefixIcon:  Padding(
+                                      padding: EdgeInsets.all(0.0),
+                                      child: Icon(
+                                        Icons.vpn_key_outlined,
+                                        color: Styles.accent,
+                                      ), // icon is 48px widget.
+                                    )
+                                )
+                            )
+                        ),
+                        TextButton(
+                          onPressed: (){
+                            //TODO: FORGOT PASSWORD SCREEN GOES HERE
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!.forgotPassword,
+                            style: Styles.whiteTextStyle,
+                          ),
+                        ),
+                        Container(
+                          height: 50,
+                          width: 250,
+                          decoration: BoxDecoration(
+                              color: Styles.accent, borderRadius: BorderRadius.circular(20)
+                          ),
+                          child: TextButton(
+                            onPressed: () async {
+                              if(_formKey.currentState!.validate()){
+                                onSignInButtonPressed();
+                              }
+                            },
+                            child: Text(
+                              AppLocalizations.of(context)!.login,
+                              style: Styles.whiteTextStyle.copyWith(fontSize: 28),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 16.0),
+                          child: TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    CupertinoPageRoute<Null>(
+                                      builder: (context) => Register(),
+                                      settings: RouteSettings(name: 'Register'),
+                                    )
+                                );
+                              },
+                              child: Text(
+                                AppLocalizations.of(context)!.newUser,
+                                style: Styles.whiteTextStyle,
+                              )
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
           ),
         ),
-      ),
     );
   }
+
+  void signIn() async {
+    int result = await _accessDatabase.signIn(email, password);
+    if (result == 0) {
+      Navigator.pushReplacement(
+          context,
+          CupertinoPageRoute<Null>(
+            builder: (context) => Container(child: Text(
+                "HOMEPAGE "
+            ),),
+            settings: RouteSettings(name: 'HomePage'),
+          )
+      );
+    } else if(result == -2) {
+      setState(() {
+        isLoading = false;
+      });
+      showInSnackBar(AppLocalizations.of(context)!.validateError);
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      showInSnackBar(AppLocalizations.of(context)!.loginError);
+    }
+  }
+
+  // Actions to do when login and register
+  void onSignInButtonPressed() {
+    setState(() {
+      isLoading = true;
+    });
+    signIn();
+  }
+
+  void showInSnackBar(String value) {
+    final snackbar = new SnackBar(
+      content: new Text(
+        value,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            color: Colors.white,
+            fontSize: 16.0,
+            fontFamily: "Raleway"),
+      ),
+      backgroundColor: Styles.accent,
+      duration: Duration(seconds: 3),
+    );
+    scaffoldMessengerKey.currentState!.showSnackBar(snackbar);
+  }
+
+
 }

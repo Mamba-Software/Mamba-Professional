@@ -21,14 +21,13 @@ class FirebaseDatabaseService {
     UserCredential authResult = await _auth .signInWithEmailAndPassword(email: email, password: password).catchError((value){
       error = true;
     });
-    if(error) return -1;
-    if(authResult == null) return -1;
+    if (error) return -1;
+    if (authResult == null) return -1;
     if (authResult.user != null) {
-      return 0;
-    } else {
-      return -1;
+      if (authResult.user!.emailVerified) return 0;
+      else return -2;
     }
-    /* Verificació de Email --> if(authResult.user!.isEmailVerified)return 0 else return -2;*/
+    else return -1;
   }
   Future<void> signOut() async {
     return await _auth.signOut();
@@ -59,7 +58,54 @@ class FirebaseDatabaseService {
     return Usuario.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
 
+  // Add User
+  Future<int> addUser(String email, String password, String name, bool isTrainer, int gender, String idioma) async {
+    bool authError = false;
+    bool firestoreError = false;
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final String formatted = formatter.format(now);
+    UserCredential? authResult = await _auth
+        .createUserWithEmailAndPassword(
+        email: email,
+        password: password)
+       .then((userCredential) async {
+          if(userCredential != null && userCredential.user != null) {
+          await _firestore
+              .collection("Users")
+              .doc(userCredential.user!.uid)
+              .set({
+            "name": name,
+            "email": email,
+            "imageUrl": null,
+            "isFirst": true,
+            "isTrainer": isTrainer,
+            "isPrivate": true,
+            "gender": gender,
+            "dateJoined": formatted,
+            "idioma": idioma,
+            "previousIdioma": null,
+          })
+          .catchError((err) {
+            print(err);
+            firestoreError = true;
+          });
+          await userCredential.user!.sendEmailVerification();
+        }
+          return userCredential;
+      }).catchError((err) {
+        print(err);
+        authError = true;
+      });
 
+    if (authResult != null && authResult.user != null) {
+      if (authError) return -1;
+      else if (firestoreError) return -2;
+      else return 0;
+    } else {
+      return -1;
+    }
+  }
 
   // EL QUE TENIA JO
   // Collection reference

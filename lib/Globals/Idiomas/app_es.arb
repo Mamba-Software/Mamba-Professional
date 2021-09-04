@@ -67,6 +67,14 @@
   "@loginError":{
     "description": "LogIn Error Text "
   },
+  "validate": "Te hemos enviado un correo de validación",
+  "@validate":{
+    "description": "LogIn Text "
+  },
+  "validateError": "No has validado tu email",
+  "@validateError":{
+    "description": "LogIn Error Text "
+  },
   "newUser": "¿No estás registrado? Crea tu cuenta",
   "@newUser":{
     "description": "New User Text "
@@ -103,7 +111,11 @@
   "@register":{
     "description": "Regístrate Text "
   },
-  "registerError": "Porfavor introduce un email válido",
+  "sameEmail": "Ya existe un usuario con este email",
+  "@sameEmail":{
+    "description": "Regístrate Error Text "
+  },
+  "registerError": "Ha ocurrido un error. Vuelva a probar",
   "@registerError":{
     "description": "Regístrate Error Text "
   },

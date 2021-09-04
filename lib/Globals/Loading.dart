@@ -27,7 +27,7 @@ class _LoadingState extends State<Loading> {
 
   void checkAndGetCurrentUserDetails() async {
     User? currentUser = await _accessDatabase.getCurrentUser();
-    if(currentUser != null) {
+    if(currentUser != null && currentUser.emailVerified) {
       Navigator.pushReplacement(
           context,
           CupertinoPageRoute<Null>(
