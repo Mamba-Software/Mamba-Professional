@@ -39,19 +39,9 @@ class _FirstTimeWrapperState extends State<FirstTimeWrapper> {
 
   void getCurrentUserDetails() async {
     user = await _accessDatabase.getCurrentUserDetails();
-    if(!(user!.isFirst!)) {
-      Navigator.pushReplacement(
-          context,
-          CupertinoPageRoute<Null>(
-            builder: (context) => HomePage(),
-            settings: RouteSettings(name: 'HomePage'),
-          )
-      );
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override

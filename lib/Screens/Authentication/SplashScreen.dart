@@ -6,8 +6,10 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 //Internal App Resources
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/FirstTimeWrapper.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
 
 class Loading extends StatefulWidget {
   Loading({Key? key}) : super(key: key);
@@ -29,13 +31,24 @@ class _LoadingState extends State<Loading> {
   void checkAndGetCurrentUserDetails() async {
     User? currentUser = await _accessDatabase.getCurrentUser();
     if(currentUser != null && currentUser.emailVerified) {
-      Navigator.pushReplacement(
-          context,
-          CupertinoPageRoute<Null>(
-            builder: (context) => FirstTimeWrapper(),
-            settings: RouteSettings(name: 'FirstTimeWrapper'),
-          )
-      );
+      Usuario? user = await _accessDatabase.getCurrentUserDetails();
+      if(!(user.isFirst!)) {
+        Navigator.pushReplacement(
+            context,
+            CupertinoPageRoute<Null>(
+              builder: (context) => HomePage(),
+              settings: RouteSettings(name: 'HomePage'),
+            )
+        );
+      } else {
+        Navigator.pushReplacement(
+            context,
+            CupertinoPageRoute<Null>(
+              builder: (context) => FirstTimeWrapper(),
+              settings: RouteSettings(name: 'FirstTimeWrapper'),
+            )
+        );
+      }
     } else {
       Navigator.pushAndRemoveUntil(
         context,
