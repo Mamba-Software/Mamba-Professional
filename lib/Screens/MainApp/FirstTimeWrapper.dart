@@ -129,6 +129,13 @@ class _FirstTimeWrapperState extends State<FirstTimeWrapper> {
                               isLoading = true;
                             });
                             _accessDatabase.updateCurrentUserFirstTime();
+                            Navigator.pushReplacement(
+                                context,
+                                CupertinoPageRoute<Null>(
+                                  builder: (context) => HomePage(),
+                                  settings: RouteSettings(name: 'HomePage'),
+                                )
+                            );
                           },
                         ),
                       ),
@@ -169,6 +176,13 @@ class _FirstTimeWrapperState extends State<FirstTimeWrapper> {
                               isLoading = true;
                             });
                             _accessDatabase.updateCurrentUserFirstTime();
+                            Navigator.pushReplacement(
+                                context,
+                                CupertinoPageRoute<Null>(
+                                  builder: (context) => HomePage(),
+                                  settings: RouteSettings(name: 'HomePage'),
+                                )
+                            );
                           },
                         ),
                       ),

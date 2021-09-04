@@ -7,8 +7,10 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 // Authentication Service
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Register.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/FirstTimeWrapper.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
 
 // Login Widget
 class Login extends StatefulWidget {
@@ -214,13 +216,24 @@ class _LoginState extends State<Login> {
   void signIn() async {
     int result = await _accessDatabase.signIn(email, password);
     if (result == 0) {
-      Navigator.pushReplacement(
-          context,
-          CupertinoPageRoute<Null>(
-            builder: (context) => FirstTimeWrapper(),
-            settings: RouteSettings(name: 'FirstTimeWrapper'),
-          )
-      );
+      Usuario? user = await _accessDatabase.getCurrentUserDetails();
+      if(!(user.isFirst!)) {
+        Navigator.pushReplacement(
+            context,
+            CupertinoPageRoute<Null>(
+              builder: (context) => HomePage(),
+              settings: RouteSettings(name: 'HomePage'),
+            )
+        );
+      } else {
+        Navigator.pushReplacement(
+            context,
+            CupertinoPageRoute<Null>(
+              builder: (context) => FirstTimeWrapper(),
+              settings: RouteSettings(name: 'FirstTimeWrapper'),
+            )
+        );
+      }
     } else if(result == -2) {
       setState(() {
         isLoading = false;
