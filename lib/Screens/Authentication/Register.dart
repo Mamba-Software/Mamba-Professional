@@ -5,11 +5,9 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 // Internal App Resources
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
-import 'package:mamba_castelldefels/Globals/SplashScreen.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 // Authentication Service
-import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
-import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

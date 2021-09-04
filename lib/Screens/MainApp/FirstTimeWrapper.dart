@@ -6,6 +6,8 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+
+import 'Home/HomePage.dart';
 // Internal App Tools
 
 class FirstTimeWrapper extends StatefulWidget {
@@ -41,7 +43,7 @@ class _FirstTimeWrapperState extends State<FirstTimeWrapper> {
       Navigator.pushReplacement(
           context,
           CupertinoPageRoute<Null>(
-            builder: (context) => Container(child: Text("HOMEPAGE"),),
+            builder: (context) => HomePage(),
             settings: RouteSettings(name: 'HomePage'),
           )
       );
