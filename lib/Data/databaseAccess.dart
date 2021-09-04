@@ -17,5 +17,6 @@ class DatabaseAccess {
 
   Future<int> addUser(String email, String password, String name, bool isTrainer, int gender, String idioma) => _firebase.addUser(email, password, name, isTrainer, gender, idioma);
 
+  Future<void> updateCurrentUserFirstTime() => _firebase.updateCurrentUserFirstTime();
 
 }

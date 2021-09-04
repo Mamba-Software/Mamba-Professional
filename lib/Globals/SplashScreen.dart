@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/FirstTimeWrapper.dart';
 
 class Loading extends StatefulWidget {
   Loading({Key? key}) : super(key: key);
@@ -31,10 +32,8 @@ class _LoadingState extends State<Loading> {
       Navigator.pushReplacement(
           context,
           CupertinoPageRoute<Null>(
-            builder: (context) => Container(child: Text(
-              "HOMEPAGE "
-            ),),
-            settings: RouteSettings(name: 'HomePage'),
+            builder: (context) => FirstTimeWrapper(),
+            settings: RouteSettings(name: 'FirstTimeWrapper'),
           )
       );
     } else {

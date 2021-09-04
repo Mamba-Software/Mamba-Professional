@@ -57,7 +57,7 @@ class FirebaseDatabaseService {
     DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Users").doc(currentUser!.uid).get();
     return Usuario.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
-
+  // User Model Services
   // Add User
   Future<int> addUser(String email, String password, String name, bool isTrainer, int gender, String idioma) async {
     bool authError = false;
@@ -106,6 +106,14 @@ class FirebaseDatabaseService {
       return -1;
     }
   }
+  // Updates
+  Future<void> updateCurrentUserFirstTime() async {
+    User? currentUser = await getCurrentUser();
+    await _firestore.collection("Users").doc(currentUser!.uid).update({
+      "isFirst": false,
+    });
+  }
+
 
   // EL QUE TENIA JO
   // Collection reference

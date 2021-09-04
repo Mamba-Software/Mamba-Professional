@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 // Internal App Resources
 import 'package:mamba_castelldefels/Globals/Constants.dart';
-import 'package:mamba_castelldefels/Globals/Globals.dart';
-import 'package:mamba_castelldefels/Globals/Loading.dart';
 // Authentication Service
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Register.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/FirstTimeWrapper.dart';
 
 // Login Widget
 class Login extends StatefulWidget {
@@ -218,10 +217,8 @@ class _LoginState extends State<Login> {
       Navigator.pushReplacement(
           context,
           CupertinoPageRoute<Null>(
-            builder: (context) => Container(child: Text(
-                "HOMEPAGE "
-            ),),
-            settings: RouteSettings(name: 'HomePage'),
+            builder: (context) => FirstTimeWrapper(),
+            settings: RouteSettings(name: 'FirstTimeWrapper'),
           )
       );
     } else if(result == -2) {

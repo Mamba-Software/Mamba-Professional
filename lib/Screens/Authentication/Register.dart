@@ -5,7 +5,7 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 // Internal App Resources
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
-import 'package:mamba_castelldefels/Globals/Loading.dart';
+import 'package:mamba_castelldefels/Globals/SplashScreen.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 // Authentication Service
 import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
@@ -63,7 +63,6 @@ class _RegisterState extends State<Register> {
   String email = '';
   String password1 = '';
   String password2 = '';
-
   // Gender Widget value
   int? gender;
   void updateGender(int newGender) {
@@ -92,27 +91,27 @@ class _RegisterState extends State<Register> {
             backgroundColor: Styles.mainColor,
             body: isLoading ?
               Stack(
-              children: <Widget>[
-                Center(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    height: MediaQuery.of(context).size.height * 0.15,
-                    child: CircularProgressIndicator(
-                      color: Styles.white,
+                children: <Widget>[
+                  Center(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      child: CircularProgressIndicator(
+                        color: Styles.white,
+                      ),
                     ),
                   ),
-                ),
-                Center(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.15,
-                    height: MediaQuery.of(context).size.height * 0.15,
-                    child: Image(
-                        image: AssetImage(Constants.logoSimple)
+                  Center(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.15,
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      child: Image(
+                          image: AssetImage(Constants.logoSimple)
+                      ),
                     ),
                   ),
-                ),
-              ],
-            )
+                ],
+              )
                   :
               Center(
                 child: SingleChildScrollView(
@@ -355,6 +354,9 @@ class _RegisterState extends State<Register> {
           isLoading = false;
         });
         showInSnackBar(AppLocalizations.of(context)!.validate);
+        Future.delayed(Duration(seconds: 4), () async {
+          Navigator.pop(context);
+        });
       } else if (result == -1) {
         setState(() {
           isLoading = false;
