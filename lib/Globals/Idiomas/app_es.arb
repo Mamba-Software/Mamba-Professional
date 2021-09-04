@@ -47,7 +47,7 @@
   "@passwordError":{
     "description": "Contraseña Error Text "
   },
-  "passworRepeat": "Repite tu contraseña",
+  "passworRepeat": "Confirma tu contraseña",
   "@passworRepeat":{
     "description": "Contraseña Repeat Text "
   },
@@ -74,6 +74,10 @@
   "alreadyUser": "¿Tienes una cuenta? Inicia sesión",
   "@alreadyUser":{
     "description": "Already user Text "
+  },
+  "createAccount": "Crea tu cuenta",
+  "@createAccount":{
+    "createAccount": "Cambiar Text"
   },
   "male": "Hombre",
   "@male":{

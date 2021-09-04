@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/Database.dart';
+import 'package:mamba_castelldefels/Data/firebaseDatabase.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
 enum Type {Uninitialized, Trainer, Client}
 enum First {Uninitialized, YES, NO}
 
 class UserProvider extends ChangeNotifier {
-  DatabaseService _databaseService = DatabaseService();
+  FirebaseDatabaseService _databaseService = FirebaseDatabaseService();
   Usuario _usuario = new Usuario(uid: "uid");
   Type _type = Type.Uninitialized;
   First _firstTime = First.Uninitialized;
@@ -37,8 +37,8 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> updateUsuarioFirebase(Usuario usuario) async {
     try {
-      await _databaseService.updateUsersData(usuario.uid, usuario.isTrainer!, usuario.isFirst!, usuario.idioma!, usuario.previousIdioma);
-      this.getUsuarioFirebase(usuario.uid);
+      await _databaseService.updateUsersData(usuario.uid!, usuario.isTrainer!, usuario.isFirst!, usuario.idioma!, usuario.previousIdioma);
+      this.getUsuarioFirebase(usuario.uid!);
     } catch (e) {
       print(e.toString());
     }

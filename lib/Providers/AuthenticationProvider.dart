@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mamba_castelldefels/Data/Database.dart';
-import 'package:mamba_castelldefels/Globals/Globals.dart';
+import 'package:mamba_castelldefels/Data/firebaseDatabase.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 
 // USER STATUS
 enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
@@ -26,7 +26,7 @@ class AuthenticationProvider with ChangeNotifier {
       return true;
     } catch (e) {
       print(e.toString());
-      errorAuthLogin = true;
+      //errorAuthLogin = true;
       _status = Status.Unauthenticated;
       notifyListeners();
       return false;
@@ -39,16 +39,16 @@ class AuthenticationProvider with ChangeNotifier {
       notifyListeners();
       await _auth.createUserWithEmailAndPassword(email: email, password: password);
       if (isTrainer) {
-        await DatabaseService().updateUsersData(_user!.uid,true,true,idioma,null);
-        await DatabaseService().updateTrainerData(_user!.uid,name,email,gender,true);
+        //await DatabaseService().updateUsersData(_user!.uid,true,true,idioma,null);
+        //await DatabaseService().updateTrainerData(_user!.uid,name,email,gender,true);
       } else {
-        await DatabaseService().updateUsersData(_user!.uid,false,true,idioma,null);
-        await DatabaseService().updateClientData(_user!.uid,name,email,gender,true);
+        //await DatabaseService().updateUsersData(_user!.uid,false,true,idioma,null);
+        //await DatabaseService().updateClientData(_user!.uid,name,email,gender,true);
       }
       return true;
     } catch (e) {
       print(e.toString());
-      errorAuthRegister = true;
+      //errorAuthRegister = true;
       _status = Status.Unauthenticated;
       notifyListeners();
       return false;
@@ -59,7 +59,6 @@ class AuthenticationProvider with ChangeNotifier {
     _auth.signOut();
     _status = Status.Unauthenticated;
     notifyListeners();
-    currentUser = null;
     return Future.delayed(Duration.zero);
   }
 
@@ -67,7 +66,6 @@ class AuthenticationProvider with ChangeNotifier {
     _auth.sendPasswordResetEmail(email: email);
     _status = Status.Unauthenticated;
     notifyListeners();
-    currentUser = null;
   }
 
   Future<void> _onAuthStateChanged(User? firebaseUser) async {
@@ -75,7 +73,6 @@ class AuthenticationProvider with ChangeNotifier {
       _status = Status.Unauthenticated;
     } else {
       _user = firebaseUser;
-      userUID = firebaseUser.uid;
       _status = Status.Authenticated;
     }
     notifyListeners();

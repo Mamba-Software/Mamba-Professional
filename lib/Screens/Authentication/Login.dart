@@ -2,18 +2,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // Internal App Resources
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Loading.dart';
 // Authentication Service
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Providers/AuthenticationProvider.dart';
+import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/Register.dart';
 import 'package:provider/provider.dart';
 
 // Login Widget
 class Login extends StatefulWidget {
-
-  final Function toggleView;
-  Login({ required this.toggleView });
+  Login({Key? key}) : super(key: key);
 
   @override
   _LoginState createState() => _LoginState();
@@ -35,18 +35,18 @@ class _LoginState extends State<Login> {
     return (await showDialog(
       context: context,
       builder: (context) => new AlertDialog(
-        title: Center(child: Text(AppLocalizations.of(context)!.logOut, style: redTextStyle)),
+        title: Center(child: Text(AppLocalizations.of(context)!.logOut, style: Styles.redTextStyle)),
         content: Row (
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextButton(
-                child: Text(AppLocalizations.of(context)!.no, style: purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),),
+                child: Text(AppLocalizations.of(context)!.no, style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),),
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
               ), // button 1
               TextButton(
-                child: Text(AppLocalizations.of(context)!.yes, style: purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),),
+                child: Text(AppLocalizations.of(context)!.yes, style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),),
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
@@ -60,11 +60,10 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     errorText = AppLocalizations.of(context)!.loginError;
-    final user = Provider.of<AuthenticationProvider>(context);
     return WillPopScope(
-        onWillPop: _onBackPressed,
-      child: loading ? Loading() :Scaffold(
-        backgroundColor: yellowColor,
+      onWillPop: _onBackPressed,
+      child: Scaffold(
+        backgroundColor: Styles.mainColor,
         body: Center(
           child: SingleChildScrollView(
             child: Form(
@@ -76,7 +75,7 @@ class _LoginState extends State<Login> {
                       padding: EdgeInsets.only(top: 16.0),
                       width: 200,
                       height: 100,
-                      child: Image.asset(logoExtended)),
+                      child: Image.asset(Constants.logoExtended)),
                   Padding(
                       padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 13.0, bottom: 0.0),
                       child: TextFormField(
@@ -84,13 +83,13 @@ class _LoginState extends State<Login> {
                         onChanged: (val) {
                           setState(() => email = val);
                         },
-                        decoration: textFromInputDecoration.copyWith(
+                        decoration: Styles.textFromInputDecoration.copyWith(
                           labelText: AppLocalizations.of(context)!.email,
                           prefixIcon:  Padding(
                             padding: EdgeInsets.all(0.0),
                             child: Icon(
                               Icons.email_outlined,
-                              color: purpleColor,
+                              color: Styles.accent,
                             ), // icon is 48px widget.
                           )
                         )
@@ -104,14 +103,14 @@ class _LoginState extends State<Login> {
                           setState(() => password = val);
                         },
                         obscureText: !_passwordVisible,
-                          decoration: textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
+                          decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
                               suffixIcon: Padding(
                                   padding: EdgeInsets.all(0.0),
                                   child: IconButton(
                                     icon: Icon(
                                     // Based on passwordVisible state choose the icon
                                     _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                    color: purpleColor
+                                    color: Styles.accent
                                     ),
                                     onPressed: () {
                                       setState(() {
@@ -124,7 +123,7 @@ class _LoginState extends State<Login> {
                                 padding: EdgeInsets.all(0.0),
                                 child: Icon(
                                   Icons.vpn_key_outlined,
-                                  color: purpleColor,
+                                  color: Styles.accent,
                                 ), // icon is 48px widget.
                               )
                           )
@@ -136,14 +135,14 @@ class _LoginState extends State<Login> {
                     },
                     child: Text(
                       AppLocalizations.of(context)!.forgotPassword,
-                      style: whiteTextStyle,
+                      style: Styles.whiteTextStyle,
                     ),
                   ),
                   Container(
                     height: 50,
                     width: 250,
                     decoration: BoxDecoration(
-                        color: purpleColor, borderRadius: BorderRadius.circular(20)
+                        color: Styles.accent, borderRadius: BorderRadius.circular(20)
                     ),
                     child: TextButton(
                       onPressed: () async {
@@ -151,12 +150,12 @@ class _LoginState extends State<Login> {
                           setState(() {
                             loading = true;
                           });
-                          await user.signIn(email,password);
+                          //await user.signIn(email,password);
                         }
                       },
                       child: Text(
                         AppLocalizations.of(context)!.login,
-                        style: whiteTextStyle.copyWith(fontSize: 28),
+                        style: Styles.whiteTextStyle.copyWith(fontSize: 28),
                       ),
                     ),
                   ),
@@ -164,18 +163,24 @@ class _LoginState extends State<Login> {
                     padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 16.0),
                     child: TextButton(
                         onPressed: () {
-                          widget.toggleView();
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute<Null>(
+                                builder: (context) => Register(),
+                                settings: RouteSettings(name: 'Register'),
+                              )
+                          );
                         },
                         child: Text(
                           AppLocalizations.of(context)!.newUser,
-                          style: whiteTextStyle,
+                          style: Styles.whiteTextStyle,
                         )
                     ),
                   ),
-                  errorAuthLogin ? Center(
+                  Globals.errorAuthLogin ? Center(
                     child: Text(
                       errorText!,
-                      style: redTextStyle.copyWith(fontWeight: FontWeight.bold),
+                      style: Styles.redTextStyle.copyWith(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                   ) : new Container()

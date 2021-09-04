@@ -1,18 +1,67 @@
 // Flutter Libs
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 // Internal App Tools
 import 'package:mamba_castelldefels/Models/Client.dart';
 import 'package:mamba_castelldefels/Models/Error.dart';
 import 'package:mamba_castelldefels/Models/Trainer.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Globals/Globals.dart';
 
-class DatabaseService {
+class FirebaseDatabaseService {
 
-  DatabaseService();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
+  // Authentication Services
+  Future<int> signIn(String email, String password) async {
+    bool error = false;
+    UserCredential authResult = await _auth .signInWithEmailAndPassword(email: email, password: password).catchError((value){
+      error = true;
+    });
+    if(error) return -1;
+    if(authResult == null) return -1;
+    if (authResult.user != null) {
+      return 0;
+    } else {
+      return -1;
+    }
+    /* Verificació de Email --> if(authResult.user!.isEmailVerified)return 0 else return -2;*/
+  }
+  Future<void> signOut() async {
+    return await _auth.signOut();
+  }
+  Future<void> resetPassword(String email) async {
+    return await _auth.sendPasswordResetEmail(email: email);
+  }
+  Future<bool> checkCurrentUser() async {
+    User currentUser;
+    currentUser = await _auth.currentUser!;
+    if(currentUser != null) return true;
+    else return false;
+  }
+  Future<bool> checkIfItsMe(String uid) async {
+    User currentUser;
+    currentUser = await _auth.currentUser!;
+    if(currentUser.uid == uid) return true;
+    else return false;
+  }
+  Future<User?> getCurrentUser() async {
+    User? currentUser;
+    currentUser = await _auth.currentUser;
+    return currentUser;
+  }
+  Future<Usuario> getCurrentUserDetails() async {
+    User? currentUser = await getCurrentUser();
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Users").doc(currentUser!.uid).get();
+    return Usuario.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+  }
+
+
+
+  // EL QUE TENIA JO
   // Collection reference
   final usersCollection = FirebaseFirestore.instance.collection('Users');
   final clientsCollection = FirebaseFirestore.instance.collection('Clients');
@@ -55,7 +104,6 @@ class DatabaseService {
       'imageURL': imageURL,
     });
   }
-
   Future<void> updateErrorData(Error error) async {
     var uid = error.createUID();
     return await errorsCollection.doc(uid).set({
@@ -84,7 +132,6 @@ class DatabaseService {
     }
     return user;
   }
-
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // CLIENT
   // Client From Snapshot
@@ -105,7 +152,6 @@ class DatabaseService {
     }
     return client;
   }
-
   // Client List from snapshot
   List<Client> _clientListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc){
@@ -121,7 +167,6 @@ class DatabaseService {
   Stream<List<Client>> get clients {
     return clientsCollection.snapshots().map(_clientListFromSnapshot);
   }
-
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // TRAINER
   // Trainer From Snapshot
@@ -142,7 +187,6 @@ class DatabaseService {
     }
     return trainer;
   }
-
   // Trainer List from snapshot
   List<Trainer> _trainerListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc){

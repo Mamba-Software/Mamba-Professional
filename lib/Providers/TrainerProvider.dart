@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/Database.dart';
+import 'package:mamba_castelldefels/Data/firebaseDatabase.dart';
 import 'package:mamba_castelldefels/Models/Trainer.dart';
 
 enum LoaderT {Uninitialized, YES, NO}
 
 class TrainerProvider extends ChangeNotifier {
-  DatabaseService _databaseService = DatabaseService();
+  FirebaseDatabaseService _databaseService = FirebaseDatabaseService();
   Trainer _trainer = new Trainer(uid: "uid");
   LoaderT _loader = LoaderT.Uninitialized;
 

@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/Database.dart';
+import 'package:mamba_castelldefels/Data/firebaseDatabase.dart';
 import 'package:mamba_castelldefels/Models/Client.dart';
 
 enum LoaderC {Uninitialized, YES, NO}
 
 class ClientProvider extends ChangeNotifier {
-  DatabaseService _databaseService = DatabaseService();
+  FirebaseDatabaseService _databaseService = FirebaseDatabaseService();
   FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   Client _client = new Client(uid: "uid");
