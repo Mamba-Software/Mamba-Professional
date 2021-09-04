@@ -16,13 +16,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   // Index of Bottom Navigation Bar
-  int _currentIndex = 0;
+  int _currentIndex = 3;
   // Page Controller
   PageController _pageController = PageController(
-    initialPage: 0,
+    initialPage: 3,
   );
   Widget childWidget = ChildWidget(
-    number: AvailableNumber.First,
+    number: AvailableNumber.Fourth,
   );
 
   @override
@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.shifting,
-        iconSize: 40,
+        iconSize: 35,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.explore_outlined, color: Styles.white,),

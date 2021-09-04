@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'firebaseDatabase.dart';
@@ -18,5 +20,6 @@ class DatabaseAccess {
   Future<int> addUser(String email, String password, String name, bool isTrainer, int gender, String idioma) => _firebase.addUser(email, password, name, isTrainer, gender, idioma);
 
   Future<void> updateCurrentUserFirstTime() => _firebase.updateCurrentUserFirstTime();
+  Future<void> updateCurrentUserPhoto(File image) => _firebase.updateCurrentUserPhoto(image);
 
 }

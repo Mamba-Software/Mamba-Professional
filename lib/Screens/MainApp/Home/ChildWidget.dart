@@ -10,7 +10,6 @@ enum AvailableNumber { First, Second, Third, Fourth }
 class ChildWidget extends StatelessWidget {
   final AvailableNumber number;
   ChildWidget({Key? key, required this.number}) : super(key: key);
-
   // Navigation Index
   var _currentIndex;
   // Navigation Bar Tabs

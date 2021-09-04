@@ -4,6 +4,7 @@ class Styles {
 
   // Colors for Theme
   static const Color mainColor = Color(0xFFF4AD1F);
+  static const Color mainColorTrans = Color(0x33F4AD1F);
 
   static const Color accent = Color(0xFF200758);
   static const Color accentLight = Color(0x8F200758);

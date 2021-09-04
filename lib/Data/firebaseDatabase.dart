@@ -1,4 +1,5 @@
 // Flutter Libs
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -74,7 +75,7 @@ class FirebaseDatabaseService {
               .set({
             "name": name,
             "email": email,
-            "imageUrl": null,
+            "imageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-24-8.appspot.com/o/emptyProfileImage.png?alt=media&token=59103e64-82a3-42bf-b3a0-342beb1919a6",
             "isFirst": true,
             "isTrainer": isTrainer,
             "isPrivate": true,
@@ -108,6 +109,18 @@ class FirebaseDatabaseService {
     User? currentUser = await getCurrentUser();
     await _firestore.collection("Users").doc(currentUser!.uid).update({
       "isFirst": false,
+    });
+  }
+  Future<void> updateCurrentUserPhoto(File image) async {
+    User? currentUser = await getCurrentUser();
+    var storageRef = await _firebaseStorage.ref().child("userPics/" + currentUser!.uid + ".png");
+    var uploadTask= storageRef.putFile(image);
+    uploadTask.whenComplete(() async {
+      await storageRef.getDownloadURL().then((value) async {
+        await _firestore.collection("Users").doc(currentUser.uid).update({
+          "imageUrl": value,
+        });
+      });
     });
   }
 }

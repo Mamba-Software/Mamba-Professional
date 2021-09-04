@@ -54,7 +54,6 @@ class _FirstTimeWrapperState extends State<FirstTimeWrapper> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -192,7 +191,6 @@ class _FirstTimeWrapperState extends State<FirstTimeWrapper> {
         ),
       );
     }
-
   }
 }
 
