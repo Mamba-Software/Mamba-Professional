@@ -176,6 +176,10 @@
   "@feedback":{
     "description": "Feedback Text"
   },
+  "noFeedback": "No hay nuevas preguntas a contestar.\n\n¡Gracias por querer ayudarnos!",
+  "@noFeedback":{
+    "description": "Feedback Text"
+  },
   "reporting": "Reporta un error",
   "@reporting":{
     "description": "Errores Text"
@@ -252,6 +256,10 @@
   "reproducteStepsHint": "¿Sabes cómo podemos reproducir este error?",
   "@reproducteStepsHint":{
     "description": "reproducteStepsHint Text"
+  },
+  "errorSent": "¡Gracias por reportar este error!\nNecesitamos a más gente como tú",
+  "@errorSent":{
+    "description": "errorSent Text"
   },
   "choseOption": "Escoje una opción",
   "@choseOption":{

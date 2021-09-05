@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 // Internal App Tools
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
@@ -102,6 +103,24 @@ class FirebaseDatabaseService {
       else return 0;
     } else {
       return -1;
+    }
+  }
+  // Add Error/ Report Bug
+  Future<bool> addError(String title, String description, [String? stepsReproduce]) async {
+    var uuid = Uuid();
+    var uid = uuid.v1();
+    User? currentUser = await getCurrentUser();
+    try {
+      await _firestore.collection("Errors").doc(uid).set({
+        "userID": currentUser!.uid,
+        "title": title,
+        "descripcion": description,
+        "stepsReproduce": stepsReproduce
+      });
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
     }
   }
   // Updates

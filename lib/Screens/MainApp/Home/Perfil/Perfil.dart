@@ -10,6 +10,8 @@ import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 
+import 'PerfilModals/FeedBack.dart';
+import 'PerfilModals/ReportBug.dart';
 import 'PerfilModals/Settings.dart';
 import 'PerfilModals/TusDatos.dart';
 
@@ -88,9 +90,9 @@ class _PerfilState extends State<Perfil> {
               case 1:
                 return Settings();
               case 2:
-                //return FeedBack();
+                return FeedBack();
               case 3:
-                //return ReportBug();
+                return ReportBug();
               default:
                 return Container();
             }

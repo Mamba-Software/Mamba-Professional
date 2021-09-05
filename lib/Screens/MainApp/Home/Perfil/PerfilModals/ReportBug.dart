@@ -1,12 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/Database.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/LoadingView.dart';
+import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Error.dart';
-import 'package:mamba_castelldefels/Providers/ClientProvider.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReportBug extends StatefulWidget {
@@ -17,8 +14,12 @@ class ReportBug extends StatefulWidget {
 }
 
 class _ReportBugState extends State<ReportBug> {
-  // DATABASE INSTANCE
-  final DatabaseService _databaseService = DatabaseService();
+  // Acceso a Base de Datos
+  var _accessDatabase = new DatabaseAccess();
+  // Boolean Loading
+  bool isLoading = false;
+  bool errorIsSent = false;
+
   // Form Values
   final _formKey = GlobalKey<FormState>();
   String tituloTemp = "";
@@ -28,186 +29,222 @@ class _ReportBugState extends State<ReportBug> {
   final descriptionController = TextEditingController();
   final stepsReproduceController = TextEditingController();
 
+  void clearControllers() {
+    tituloController.clear();
+    descriptionController.clear();
+    stepsReproduceController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
-    void clearControllers() {
-      tituloController.clear();
-      descriptionController.clear();
-      stepsReproduceController.clear();
-    }
-
-    return Container(
-      padding: MediaQuery.of(context).viewInsets,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return isLoading ?
+      Container(
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: LoadingView()
+      )
+        :
+      Container(
+        constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height*0.86,
+        ),
+        padding: MediaQuery.of(context).viewInsets,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: purpleColor),
-                  onPressed: () => {Navigator.of(context).pop()},
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.arrow_back, color: Styles.accent),
+                      onPressed: () => {Navigator.of(context).pop()},
+                    ),
+                    Text(AppLocalizations.of(context)!.reporting, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+                    IconButton(
+                        icon: Icon(Icons.send, color: Styles.accent),
+                        onPressed: () async {
+                          if(_formKey.currentState!.validate()){
+                            setState(() {
+                              isLoading = true;
+                            });
+                            sendError();
+                          }
+                        }
+                    ),
+                    IconButton(
+                        icon: Icon(Icons.delete, color: Styles.accent),
+                        onPressed: () async {
+                          clearControllers();
+                        }
+                    ),
+                  ],
                 ),
-                Text(AppLocalizations.of(context)!.reporting, style: purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
-                IconButton(
-                    icon: Icon(Icons.send, color: purpleColor),
-                    onPressed: () async {
-                    if(_formKey.currentState!.validate()){
-                      _databaseService.updateErrorData(
-                        new Error(
-                          title: tituloTemp,
-                          descripcion: descriptionTemp
-                        ));
-                      clearControllers();
-                      }
-                    }
-                ),
-                IconButton(
-                    icon: Icon(Icons.delete, color: purpleColor),
-                    onPressed: () async {
-                      clearControllers();
-                    }
-                ),
+                new Container(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 25.0),
+                    child: Form(
+                      key: _formKey,
+                      child: new Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          errorIsSent ? Padding(
+                            padding: EdgeInsets.only(top: 25.0),
+                            child: Center(
+                              child: new Text(
+                                        AppLocalizations.of(context)!.errorSent,
+                                        textAlign: TextAlign.center,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green),
+                                      ),
+                            ),
+                          ) : Container(),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  left: 25.0, right: 25.0, top: 25.0),
+                              child: new Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  new Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      new Text(
+                                        AppLocalizations.of(context)!.title,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  left: 25.0, right: 25.0, top: 2.0),
+                              child: new Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  new Flexible(
+                                    child: new TextFormField(
+                                      controller: tituloController,
+                                      validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
+                                      onChanged: (val) {
+                                        setState(() => tituloTemp = val);
+                                      },
+                                      decoration: InputDecoration(
+                                        hintText: AppLocalizations.of(context)!.titleHint,
+                                      ),
+                                      enabled: true,
+                                    ),
+                                  ),
+                                ],
+                              )),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  left: 25.0, right: 25.0, top: 25.0, bottom: 8.0),
+                              child: new Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  new Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      new Text(
+                                        AppLocalizations.of(context)!.description,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  left: 25.0, right: 25.0, top: 2.0),
+                              child: new Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  new Flexible(
+                                    child: new TextFormField(
+                                      controller: descriptionController,
+                                      validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
+                                      onChanged: (val) {
+                                        setState(() => descriptionTemp = val);
+                                      },
+                                      maxLines: 6,
+                                      decoration: Styles.textFromInputDecoration.copyWith(hintText:AppLocalizations.of(context)!.descriptionHint)
+                                    ),
+                                  ),
+                                ],
+                              )),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  left: 25.0, right: 25.0, top: 25.0),
+                              child: new Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  new Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      new Text(
+                                        AppLocalizations.of(context)!.reproducteSteps,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  left: 25.0, right: 25.0, top: 2.0),
+                              child: new Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  new Flexible(
+                                    child: new TextFormField(
+                                      controller: stepsReproduceController,
+                                      onChanged: (val) {
+                                        setState(() => stepsReproduceTemp = val);
+                                      },
+                                      decoration: InputDecoration(
+                                        hintMaxLines: 2,
+                                        hintText: AppLocalizations.of(context)!.reproducteStepsHint,
+                                      ),
+                                      enabled: true,
+                                    ),
+                                  ),
+                                ],
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
               ],
             ),
-            new Container(
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 25.0),
-                child: Form(
-                  key: _formKey,
-                  child: new Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 25.0),
-                          child: new Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              new Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  new Text(
-                                    AppLocalizations.of(context)!.title,
-                                    style: purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 2.0),
-                          child: new Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              new Flexible(
-                                child: new TextFormField(
-                                  controller: tituloController,
-                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
-                                  onChanged: (val) {
-                                    setState(() => tituloTemp = val);
-                                  },
-                                  decoration: InputDecoration(
-                                    hintText: AppLocalizations.of(context)!.titleHint,
-                                  ),
-                                  enabled: true,
-                                ),
-                              ),
-                            ],
-                          )),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 25.0, bottom: 8.0),
-                          child: new Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              new Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  new Text(
-                                    AppLocalizations.of(context)!.description,
-                                    style: purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 2.0),
-                          child: new Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              new Flexible(
-                                child: new TextFormField(
-                                  controller: descriptionController,
-                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
-                                  onChanged: (val) {
-                                    setState(() => descriptionTemp = val);
-                                  },
-                                  maxLines: 4,
-                                  decoration: textFromInputDecoration.copyWith(hintText:AppLocalizations.of(context)!.descriptionHint)
-                                ),
-                              ),
-                            ],
-                          )),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 25.0),
-                          child: new Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              new Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  new Text(
-                                    AppLocalizations.of(context)!.reproducteSteps,
-                                    style: purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 2.0),
-                          child: new Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              new Flexible(
-                                child: new TextFormField(
-                                  controller: stepsReproduceController,
-                                  onChanged: (val) {
-                                    setState(() => stepsReproduceTemp = val);
-                                  },
-                                  decoration: InputDecoration(
-                                    hintMaxLines: 2,
-                                    hintText: AppLocalizations.of(context)!.reproducteStepsHint,
-                                  ),
-                                  enabled: true,
-                                ),
-                              ),
-                            ],
-                          )),
-                    ],
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
       ),
+        ),
     );
   }
+
+  Future<void> sendError() async {
+    var result = await _accessDatabase.addError(tituloTemp, descriptionTemp, stepsReproduceTemp);
+    if (result) {
+      setState(() {
+        isLoading = false;
+        errorIsSent = true;
+      });
+      clearControllers();
+      Future.delayed(Duration(seconds: 4), () async {
+        setState(() {
+          errorIsSent = false;
+        });
+      });
+    }
+  }
+
 }
 
 
