@@ -123,4 +123,20 @@ class FirebaseDatabaseService {
       });
     });
   }
+  Future<void> updateCurrentUserDatosPerifl(String name, int gender, String? dateOfBirth) async {
+    User? currentUser = await getCurrentUser();
+    await _firestore.collection("Users").doc(currentUser!.uid).update({
+      "name": name,
+      "gender": gender,
+      "dateOfBirth": dateOfBirth,
+    });
+  }
+  Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma, String previousIdioma) async {
+    User? currentUser = await getCurrentUser();
+    await _firestore.collection("Users").doc(currentUser!.uid).update({
+      "isPrivate": isPrivate,
+      "idioma": idioma,
+      "previousIdioma": previousIdioma,
+    });
+  }
 }

@@ -16,13 +16,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   // Index of Bottom Navigation Bar
-  int _currentIndex = 3;
+  int _currentIndex = 2;
   // Page Controller
   PageController _pageController = PageController(
-    initialPage: 3,
+    initialPage: 2,
   );
   Widget childWidget = ChildWidget(
-    number: AvailableNumber.Fourth,
+    number: AvailableNumber.Third,
   );
 
   @override

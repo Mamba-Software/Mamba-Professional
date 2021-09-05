@@ -5,11 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 //Internal App Resources
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/FirstTimeWrapper.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
+import 'package:provider/provider.dart';
 
 class Loading extends StatefulWidget {
   Loading({Key? key}) : super(key: key);
@@ -32,6 +35,7 @@ class _LoadingState extends State<Loading> {
     User? currentUser = await _accessDatabase.getCurrentUser();
     if(currentUser != null && currentUser.emailVerified) {
       Usuario? user = await _accessDatabase.getCurrentUserDetails();
+      Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(user.idioma!));
       if(!(user.isFirst!)) {
         Navigator.pushReplacement(
             context,

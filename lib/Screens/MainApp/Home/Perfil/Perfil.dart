@@ -10,6 +10,9 @@ import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 
+import 'PerfilModals/Settings.dart';
+import 'PerfilModals/TusDatos.dart';
+
 class Perfil extends StatefulWidget {
   const Perfil({Key? key}) : super(key: key);
 
@@ -22,7 +25,6 @@ class _PerfilState extends State<Perfil> {
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
   bool isLoading = false;
-  bool firstBuild = true;
   // Model Usuario
   Usuario? user;
   // List Bool Status
@@ -82,9 +84,9 @@ class _PerfilState extends State<Perfil> {
           builder: (context) {
             switch (_buttonIndex) {
               case 0:
-                //return TusDatos();
+                return TusDatos();
               case 1:
-                //return Settings();
+                return Settings();
               case 2:
                 //return FeedBack();
               case 3:
@@ -100,8 +102,7 @@ class _PerfilState extends State<Perfil> {
     return isLoading ?
       LoadingView()
         :
-      !(user!.isTrainer!) ?
-        Center(
+      Center(
           child: SingleChildScrollView(
           child: Column(
             children: [
@@ -354,9 +355,8 @@ class _PerfilState extends State<Perfil> {
             ],
           ),
       ),
-        )
-          :
-        Center(child: Text("${user!.name}"));
+    );
+
   }
 
   @override
@@ -367,38 +367,3 @@ class _PerfilState extends State<Perfil> {
   }
 
 }
-
-/*
-if (isLoading) {
-      return Scaffold(
-        backgroundColor: Styles.mainColor,
-        body: Stack(
-          children: <Widget>[
-            Center(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.3,
-                height: MediaQuery.of(context).size.height * 0.15,
-                child: CircularProgressIndicator(
-                  color: Styles.white,
-                ),
-              ),
-            ),
-            Center(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.15,
-                height: MediaQuery.of(context).size.height * 0.15,
-                child: Image(
-                    image: AssetImage(Constants.logoSimple)
-                ),
-              ),
-            ),
-          ],
-        )
-      );
-    } else {
-      return Scaffold(
-        backgroundColor: Styles.mainColor,
-        body:
-      );
-    }
- */

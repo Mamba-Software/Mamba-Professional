@@ -6,11 +6,14 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 // Authentication Service
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Register.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/FirstTimeWrapper.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
+import 'package:provider/provider.dart';
 
 // Login Widget
 class Login extends StatefulWidget {
@@ -217,6 +220,7 @@ class _LoginState extends State<Login> {
     int result = await _accessDatabase.signIn(email, password);
     if (result == 0) {
       Usuario? user = await _accessDatabase.getCurrentUserDetails();
+      Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(user.idioma!));
       if(!(user.isFirst!)) {
         Navigator.pushReplacement(
             context,

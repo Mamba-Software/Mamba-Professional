@@ -10,8 +10,8 @@ class LoadingView extends StatelessWidget {
       children: <Widget>[
         Center(
           child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.3,
-            height: MediaQuery.of(context).size.height * 0.15,
+            width: MediaQuery.of(context).size.width * 0.15,
+            height: MediaQuery.of(context).size.height * 0.08,
             child: CircularProgressIndicator(
               color: Styles.mainColor,
             ),
@@ -19,13 +19,13 @@ class LoadingView extends StatelessWidget {
         ),
         Center(
           child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.13,
-            height: MediaQuery.of(context).size.height * 0.13,
+            width: MediaQuery.of(context).size.width * 0.07,
+            height: MediaQuery.of(context).size.height * 0.07,
             child: Image(
-                image: AssetImage(Constants.logoSimpleYellow)
+                  image: AssetImage(Constants.logoSimpleYellow)
+              ),
             ),
           ),
-        ),
       ],
     );
   }
