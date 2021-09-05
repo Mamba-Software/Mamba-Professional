@@ -71,8 +71,16 @@
   "@validate":{
     "description": "LogIn Text "
   },
+  "validatePassword": "Te hemos enviado un email para cambiar tu contraseña",
+  "@validatePassword":{
+    "description": "LogIn Text "
+  },
   "validateError": "No has validado tu email",
   "@validateError":{
+    "description": "LogIn Error Text "
+  },
+  "validateEmail": "Email no válido",
+  "@validateEmail":{
     "description": "LogIn Error Text "
   },
   "newUser": "¿No estás registrado? Crea tu cuenta",

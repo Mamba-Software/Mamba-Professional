@@ -141,59 +141,6 @@ class _SettingsState extends State<Settings> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
                                   new Text(
-                                    AppLocalizations.of(context)!.changePassword,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 12.0),
-                          child: new Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              new Flexible(
-                                child: new TextFormField(
-                                  initialValue: "abcdefghijklmn",
-                                  decoration: InputDecoration(),
-                                  obscureText: true,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 25.0),
-                                child: Container(
-                                  height: 50,
-                                  width: 80,
-                                  decoration: BoxDecoration(
-                                      color: !_editStatus ? Styles.accentLight : Styles.accent, borderRadius: BorderRadius.circular(20)
-                                  ),
-                                  child: TextButton(
-                                    onPressed: _editStatus ? () async {
-                                      //await user.resetPassword(currentUser.email);
-                                      Navigator.pop(context);
-                                    } : null,
-                                    child: Text(
-                                      AppLocalizations.of(context)!.change,
-                                      style: Styles.whiteTextStyle.copyWith(fontSize: 16),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 25.0),
-                          child: new Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              new Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  new Text(
                                     AppLocalizations.of(context)!.typeProfile,
                                     style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                                   ),

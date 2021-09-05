@@ -163,7 +163,16 @@ class _LoginState extends State<Login> {
                         ),
                         TextButton(
                           onPressed: (){
-                            //TODO: FORGOT PASSWORD SCREEN GOES HERE
+                            if(email.isEmpty) {
+                              showInSnackBar(AppLocalizations.of(context)!.emailError);
+                            } else {
+                              if(emailValidator(email)){
+                                _accessDatabase.resetPassword(email);
+                                showInSnackBar(AppLocalizations.of(context)!.validatePassword);
+                              } else {
+                                showInSnackBar(AppLocalizations.of(context)!.validateEmail);
+                              }
+                            }
                           },
                           child: Text(
                             AppLocalizations.of(context)!.forgotPassword,
@@ -257,6 +266,17 @@ class _LoginState extends State<Login> {
       isLoading = true;
     });
     signIn();
+  }
+
+  // Validate email and pwd format
+  bool emailValidator(String value) {
+    Pattern pattern = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
+    RegExp regex = new RegExp(pattern.toString());
+    if (!regex.hasMatch(value)) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   void showInSnackBar(String value) {
