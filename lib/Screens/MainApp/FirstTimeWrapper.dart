@@ -24,11 +24,11 @@ class _FirstTimeWrapperState extends State<FirstTimeWrapper> {
   // Models
   Usuario? user;
   // Booleans
-  bool codigo = false;
   bool isLoading = true;
   // FormVariables
   final _formKey = GlobalKey<FormState>();
-  String key = "";
+  var _codigoController = TextEditingController();
+  String _codigo = "";
 
   @override
   void initState() {
@@ -96,32 +96,90 @@ class _FirstTimeWrapperState extends State<FirstTimeWrapper> {
                   Padding(
                     padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0, bottom: 4.0),
                     child: Text(
-                      user!.isTrainer! ? AppLocalizations.of(context)!.alreadyCreatedTrainer : AppLocalizations.of(context)!.alreadyCreatedClient,
+                      AppLocalizations.of(context)!.alreadyCreatedFirm,
                       style: Styles.purpleTextStyle,
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  Row(
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 24.0),
-                        child: FloatingActionButton(
-                          child: Text(AppLocalizations.of(context)!.yes, style: Styles.whiteTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
-                          backgroundColor: Colors.green,
-                          foregroundColor: Colors.white,
-                          onPressed: () {
-                            setState(() {
-                              codigo = true;
-                            });
-
-                          },
-                        ),
+                        padding: EdgeInsets.all(4),
+                        child: Padding(
+                            padding: EdgeInsets.only(
+                                left: 25.0, right: 25.0, top: 12.0),
+                            child: new Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                new Flexible(
+                                  child: Material(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(13)
+                                    ),
+                                    elevation: 5,
+                                    child: new TextFormField(
+                                      controller: _codigoController,
+                                      validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.codigo : null,
+                                      onChanged: (val) {
+                                        setState(() => _codigo = val);
+                                      },
+                                      decoration: InputDecoration(
+                                        hintText: AppLocalizations.of(context)!.codigo,
+                                        hintStyle: Styles.whiteTextStyle,
+                                        filled: true,
+                                        fillColor: Colors.green,
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.green, width: 1.0),
+                                          borderRadius: BorderRadius.circular(13.0),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.green, width: 1.0),
+                                          borderRadius: BorderRadius.circular(13.0),
+                                        ),
+                                      ),
+                                      style: Styles.whiteTextStyle.copyWith(fontSize: 14.5),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 15.0),
+                                  child: FloatingActionButton(
+                                    child: Icon(Icons.qr_code),
+                                    backgroundColor: Colors.green,
+                                    foregroundColor: Styles.white,
+                                    onPressed: () async {
+                                      // TODO: validació del codi per entrar directament a formar part del grup de entrenadors.
+                                      //if(_formKey.currentState!.validate()){}
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      _accessDatabase.updateCurrentUserFirstTime();
+                                      Navigator.pushReplacement(
+                                          context,
+                                          CupertinoPageRoute<Null>(
+                                            builder: (context) => HomePage(),
+                                            settings: RouteSettings(name: 'HomePage'),
+                                          )
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            )),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 24.0),
-                        child: FloatingActionButton(
-                          child: Text(AppLocalizations.of(context)!.no, style: Styles.whiteTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
+                        padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 16.0, bottom: 4.0),
+                        child: FloatingActionButton.extended(
+                          label: Row(
+                            children: <Widget>[
+                              Text(AppLocalizations.of(context)!.noCodigo, style: Styles.whiteTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
+                              SizedBox(width: 10,),
+                              Icon(Icons.highlight_off, size: 30,)
+                            ],
+                          ),
+                          icon: Container(),
                           backgroundColor: Colors.red,
                           foregroundColor: Colors.white,
                           onPressed: () async {
@@ -141,53 +199,6 @@ class _FirstTimeWrapperState extends State<FirstTimeWrapper> {
                       ),
                     ],
                   ),
-                  codigo ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 8.0),
-                        child: Text(
-                          user!.isTrainer! ? AppLocalizations.of(context)!.alreadyCreatedTrainerFirm : AppLocalizations.of(context)!.perfectClient,
-                          style: Styles.purpleTextStyle,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 45.0, right: 45.0, top: 4.0, bottom: 0),
-                        child: TextFormField(
-                            validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.codigo : null,
-                            onChanged: (val) {
-                              setState(() => key = val);
-                            },
-                            decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.codigo)
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: FloatingActionButton.extended(
-                          icon: Icon(Icons.qr_code),
-                          label: Text(AppLocalizations.of(context)!.letsGo, style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
-                          backgroundColor: Styles.white,
-                          foregroundColor: Styles.accent,
-                          onPressed: () async {
-                            // TODO: validació del codi per entrar directament a formar part del grup de entrenadors.
-                            //if(_formKey.currentState!.validate()){}
-                            setState(() {
-                              isLoading = true;
-                            });
-                            _accessDatabase.updateCurrentUserFirstTime();
-                            Navigator.pushReplacement(
-                                context,
-                                CupertinoPageRoute<Null>(
-                                  builder: (context) => HomePage(),
-                                  settings: RouteSettings(name: 'HomePage'),
-                                )
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ) : Container(),
                 ],
               ),
             ),
@@ -197,4 +208,3 @@ class _FirstTimeWrapperState extends State<FirstTimeWrapper> {
     }
   }
 }
-

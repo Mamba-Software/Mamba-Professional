@@ -31,9 +31,8 @@ class _PerfilState extends State<Perfil> {
   Usuario? user;
   // List Bool Status
   List<bool> _statusButtons =  [false, false, false, false];
-  final FocusNode myFocusNode = FocusNode();
   // Size of Icons
-  final _globusSize = Size(75, 75);
+  final _globusSize = Size(80, 80);
   final _iconSize = 45.0;
   // Image Picker
   var _image;
@@ -96,9 +95,11 @@ class _PerfilState extends State<Perfil> {
               default:
                 return Container();
             }
-          }).whenComplete(() =>
-      _statusButtons[_buttonIndex] = !_statusButtons[_buttonIndex]
-      );
+          }).whenComplete(() => {
+              setState(() {
+                _statusButtons[_buttonIndex] = !_statusButtons[_buttonIndex];
+              })
+          });
     }
 
     return isLoading ?
@@ -106,256 +107,257 @@ class _PerfilState extends State<Perfil> {
         :
       Center(
           child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: new Container(
-                  height: MediaQuery.of(context).size.height*0.5,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: new Container(
+                    height: MediaQuery.of(context).size.height*0.5,
+                    //padding: EdgeInsets.only(top: 25.0, bottom: 25.0, right: 25.0, left: 25.0),
+                    child: new Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          height: MediaQuery.of(context).size.height*0.5,
+                          child: new Stack(
+                              alignment: Alignment.center,
+                              fit: StackFit.expand,
+                              children: <Widget>[
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Container(
+                                        width: MediaQuery.of(context).size.width*0.55,
+                                        height: MediaQuery.of(context).size.height*0.55,
+                                        decoration: new BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(color: Styles.mainColor, width: 4.0),
+                                          image: new DecorationImage(
+                                            image: _image == null ? Image.network(user!.imageUrl!).image : FileImage(_image),
+                                            fit: BoxFit.fitWidth,
+                                          ),
+                                        )),
+                                  ],
+                                ),
+                                Positioned(
+                                    top: MediaQuery.of(context).size.height*0.25,
+                                    bottom: 0,
+                                    left: 0,
+                                    right: MediaQuery.of(context).size.width*0.23,
+                                    child: new Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        SizedBox.fromSize(
+                                          size: Size(40, 40), // button width and height
+                                          child: ClipOval(
+                                            child: Material(
+                                              color: Styles.mainColor, // button color
+                                              child: InkWell(
+                                                onTap: () async {
+                                                  getImage();
+                                                  setState(() {});
+                                                },
+                                                child: Icon(Icons.collections_outlined, color: Colors.white, size: 25,), // icon
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                // Logos Flotants
+                                // Perfil Adalt Esquerra
+                                Positioned(
+                                    top: 0,
+                                    bottom: MediaQuery.of(context).size.height*0.35,
+                                    left: 0,
+                                    right: MediaQuery.of(context).size.width*0.60,
+                                    child: new Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        SizedBox.fromSize(
+                                          size: _globusSize, // button width and height
+                                          child: ClipOval(
+                                            child: Material(
+                                              color: !_statusButtons[0] ? Styles.mainColor : Styles.mainColorTrans, // button color
+                                              child: InkWell(
+                                                // splash color
+                                                onTap: () {
+                                                  setState(() {
+                                                    _statusButtons[0] = !_statusButtons[0];
+                                                    _showPerfiClientModals(0);
+                                                  });
+                                                  //_showSettingsPanel();
+                                                }, // button pressed
+                                                child: Icon( Icons.face, color: Colors.white, size: _iconSize,), // icon
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                                // Ajustes Adalt Dreta
+                                Positioned(
+                                    top: 0,
+                                    bottom: MediaQuery.of(context).size.height*0.35,
+                                    left: MediaQuery.of(context).size.width*0.60,
+                                    right: 0,
+                                    child: new Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        SizedBox.fromSize(
+                                          size: _globusSize, // button width and height
+                                          child: ClipOval(
+                                            child: Material(
+                                              color: !_statusButtons[1] ? Styles.mainColor : Styles.mainColorTrans, // button color
+                                              child: InkWell(
+                                                splashColor: Colors.white, // splash color
+                                                onTap: () {
+                                                  setState(() {
+                                                    _statusButtons[1] = !_statusButtons[1];
+                                                    _showPerfiClientModals(1);
+                                                  });
+                                                }, // button pressed
+                                                child: Icon(Icons.settings, color: Colors.white, size: _iconSize,), // icon
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+
+                                      ],
+                                    )),
+                                // Feedback Abaix Esquerra
+                                Positioned(
+                                    top: MediaQuery.of(context).size.height*0.35,
+                                    bottom: 0,
+                                    left: 0,
+                                    right: MediaQuery.of(context).size.width*0.60,
+                                    child: new Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        SizedBox.fromSize(
+                                          size: _globusSize, // button width and height
+                                          child: ClipOval(
+                                            child: Material(
+                                              color: !_statusButtons[2] ? Styles.mainColor : Styles.mainColorTrans, // button color
+                                              child: InkWell(
+                                                splashColor: Colors.white, // splash color
+                                                onTap: () {
+                                                  setState(() {
+                                                    _statusButtons[2] = !_statusButtons[2];
+                                                    _showPerfiClientModals(2);
+                                                  });
+                                                }, // button pressed
+                                                child: Icon(Icons.help_outline, color: Colors.white, size: _iconSize,), // icon
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                                // Bug Abaix Dreta
+                                Positioned(
+                                    top: MediaQuery.of(context).size.height*0.35,
+                                    bottom: 0,
+                                    left: MediaQuery.of(context).size.width*0.60,
+                                    right: 0,
+                                    child: new Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        SizedBox.fromSize(
+                                          size: _globusSize, // button width and height
+                                          child: ClipOval(
+                                            child: Material(
+                                              color: !_statusButtons[3] ? Styles.mainColor : Styles.mainColorTrans, // button color
+                                              child: InkWell(
+                                                splashColor: Colors.white, // splash color
+                                                onTap: () {
+                                                  setState(() {
+                                                    _statusButtons[3] = !_statusButtons[3];
+                                                    _showPerfiClientModals(3);
+                                                  });
+                                                }, // button pressed
+                                                child: Icon(
+                                                  Icons.report_problem_outlined,
+                                                  color: Colors.white,
+                                                  size: _iconSize,
+                                                ), // icon
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                              ]),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                new Container(
                   //padding: EdgeInsets.only(top: 25.0, bottom: 25.0, right: 25.0, left: 25.0),
                   child: new Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
+                    children: [
+                      Text("${user!.name}", style: Styles.purpleTextStyle.copyWith(fontSize: 24, fontWeight: FontWeight.bold),),
+                      Padding(
+                        padding: const EdgeInsets.only(top:20.0, bottom: 5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(AppLocalizations.of(context)!.memberSince(user!.dateJoined!), style: Styles.purpleTextStyle.copyWith(fontSize: 16)),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top:5.0, bottom: 20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(AppLocalizations.of(context)!.clientOf, style: Styles.purpleTextStyle.copyWith(fontSize: 16,)),
+                            Text("Roldan Coach", style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
+                          ],
+                        ),
+                      ),
                       Container(
-                        height: MediaQuery.of(context).size.height*0.5,
-                        child: new Stack(
-                            alignment: Alignment.center,
-                            fit: StackFit.expand,
-                            children: <Widget>[
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Container(
-                                      width: MediaQuery.of(context).size.width*0.5,
-                                      height: MediaQuery.of(context).size.height*0.5,
-                                      decoration: new BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(color: Styles.mainColor, width: 4.0),
-                                        image: new DecorationImage(
-                                          image: _image == null ? Image.network(user!.imageUrl!).image : FileImage(_image),
-                                          fit: BoxFit.fitWidth,
-                                        ),
-                                      )),
-                                ],
+                        height: 50,
+                        width: 250,
+                        decoration: BoxDecoration(
+                            color: Styles.accent, borderRadius: BorderRadius.circular(20)
+                        ),
+                        child: TextButton(
+                          onPressed: () async {
+                            _accessDatabase.signOut().then((value) =>
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  CupertinoPageRoute<Null>(
+                                    builder: (context) => Login(),
+                                    settings: RouteSettings(name: 'Login'),
+                                  ),
+                                      (_) => false,
+                                )
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.logout_outlined, color: Styles.white),
+                              SizedBox(width: 10),
+                              Text(
+                                AppLocalizations.of(context)!.closeSession,
+                                style: Styles.whiteTextStyle,
                               ),
-                              Positioned(
-                                  top: MediaQuery.of(context).size.height*0.20,
-                                  bottom: 0,
-                                  left: 0,
-                                  right: MediaQuery.of(context).size.width*0.23,
-                                  child: new Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      SizedBox.fromSize(
-                                        size: Size(40, 40), // button width and height
-                                        child: ClipOval(
-                                          child: Material(
-                                            color: Styles.mainColor, // button color
-                                            child: InkWell(
-                                              onTap: () async {
-                                                getImage();
-                                                setState(() {});
-                                              },
-                                              child: Icon(Icons.collections_outlined, color: Colors.white, size: 25,), // icon
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                              // Logos Flotants
-                              // Perfil Adalt Esquerra
-                              Positioned(
-                                  top: 0,
-                                  bottom: MediaQuery.of(context).size.height*0.3,
-                                  left: 0,
-                                  right: MediaQuery.of(context).size.width*0.55,
-                                  child: new Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      SizedBox.fromSize(
-                                        size: _globusSize, // button width and height
-                                        child: ClipOval(
-                                          child: Material(
-                                            color: !_statusButtons[0] ? Styles.mainColor : Styles.mainColorTrans, // button color
-                                            child: InkWell(
-                                              // splash color
-                                              onTap: () {
-                                                setState(() {
-                                                  _statusButtons[0] = !_statusButtons[0];
-                                                  _showPerfiClientModals(0);
-                                                });
-                                                //_showSettingsPanel();
-                                              }, // button pressed
-                                              child: Icon( Icons.face, color: Colors.white, size: _iconSize,), // icon
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                              // Ajustes Adalt Dreta
-                              Positioned(
-                                  top: 0,
-                                  bottom: MediaQuery.of(context).size.height*0.3,
-                                  left: MediaQuery.of(context).size.width*0.55,
-                                  right: 0,
-                                  child: new Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      SizedBox.fromSize(
-                                        size: _globusSize, // button width and height
-                                        child: ClipOval(
-                                          child: Material(
-                                            color: Styles.mainColor, // button color
-                                            child: InkWell(
-                                              splashColor: Colors.white, // splash color
-                                              onTap: () {
-                                                setState(() {
-                                                  _statusButtons[1] = !_statusButtons[1];
-                                                  _showPerfiClientModals(1);
-                                                });
-                                              }, // button pressed
-                                              child: Icon(Icons.settings, color: Colors.white, size: _iconSize,), // icon
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-
-                                    ],
-                                  )),
-                              // Feedback Abaix Esquerra
-                              Positioned(
-                                  top: MediaQuery.of(context).size.height*0.3,
-                                  bottom: 0,
-                                  left: 0,
-                                  right: MediaQuery.of(context).size.width*0.55,
-                                  child: new Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      SizedBox.fromSize(
-                                        size: _globusSize, // button width and height
-                                        child: ClipOval(
-                                          child: Material(
-                                            color: Styles.mainColor, // button color
-                                            child: InkWell(
-                                              splashColor: Colors.white, // splash color
-                                              onTap: () {
-                                                setState(() {
-                                                  _statusButtons[2] = !_statusButtons[2];
-                                                  _showPerfiClientModals(2);
-                                                });
-                                              }, // button pressed
-                                              child: Icon(Icons.help_outline, color: Colors.white, size: _iconSize,), // icon
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                              // Bug Abaix Dreta
-                              Positioned(
-                                  top: MediaQuery.of(context).size.height*0.3,
-                                  bottom: 0,
-                                  left: MediaQuery.of(context).size.width*0.55,
-                                  right: 0,
-                                  child: new Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      SizedBox.fromSize(
-                                        size: _globusSize, // button width and height
-                                        child: ClipOval(
-                                          child: Material(
-                                            color: Styles.mainColor, // button color
-                                            child: InkWell(
-                                              splashColor: Colors.white, // splash color
-                                              onTap: () {
-                                                setState(() {
-                                                  _statusButtons[3] = !_statusButtons[3];
-                                                  _showPerfiClientModals(3);
-                                                });
-                                              }, // button pressed
-                                              child: Icon(
-                                                Icons.report_problem_outlined,
-                                                color: Colors.white,
-                                                size: _iconSize,
-                                              ), // icon
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                            ]),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ),
-              new Container(
-                //padding: EdgeInsets.only(top: 25.0, bottom: 25.0, right: 25.0, left: 25.0),
-                child: new Column(
-                  children: [
-                    Text("${user!.name}", style: Styles.purpleTextStyle.copyWith(fontSize: 24, fontWeight: FontWeight.bold),),
-                    Padding(
-                      padding: const EdgeInsets.only(top:20.0, bottom: 5.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(AppLocalizations.of(context)!.memberSince(user!.dateJoined!), style: Styles.purpleTextStyle.copyWith(fontSize: 16)),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top:5.0, bottom: 20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(AppLocalizations.of(context)!.clientOf, style: Styles.purpleTextStyle.copyWith(fontSize: 16,)),
-                          Text("Roldan Coach", style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 50,
-                      width: 250,
-                      decoration: BoxDecoration(
-                          color: Styles.accent, borderRadius: BorderRadius.circular(20)
-                      ),
-                      child: TextButton(
-                        onPressed: () async {
-                          _accessDatabase.signOut().then((value) =>
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                CupertinoPageRoute<Null>(
-                                  builder: (context) => Login(),
-                                  settings: RouteSettings(name: 'Login'),
-                                ),
-                                    (_) => false,
-                              )
-                          );
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.logout_outlined, color: Styles.white),
-                            SizedBox(width: 10),
-                            Text(
-                              AppLocalizations.of(context)!.closeSession,
-                              style: Styles.whiteTextStyle,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+              ],
+            ),
       ),
     );
 
@@ -363,8 +365,6 @@ class _PerfilState extends State<Perfil> {
 
   @override
   void dispose() {
-    // Clean up the controller when the Widget is disposed
-    myFocusNode.dispose();
     super.dispose();
   }
 

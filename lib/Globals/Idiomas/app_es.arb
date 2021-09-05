@@ -144,15 +144,15 @@
   "@codigo":{
     "description": "Cliente forma parte de una marca SÍ Text"
   },
+  "noCodigo": "No tengo ningún código",
+  "@noCodigo":{
+    "description": "noCodigo Text"
+  },
   "letsGo": "Vamos!",
   "@letsGo":{
     "description": "Lets Go Text"
   },
-  "alreadyCreatedTrainer": "¿Quieres crear tu marca personal desde cero?",
-  "@alreadyCreatedTrainer":{
-    "description": "Trainer forma parte de una marca Text"
-  },
-  "alreadyCreatedTrainerFirm": "¿Formas parte de una marca ya creada?",
+  "alreadyCreatedFirm": "¿Tienes un código de invitació a una marca?",
   "@alreadyCreatedTrainerFirm":{
     "description": "Trainer forma parte de una marca ya creada Text"
   },
