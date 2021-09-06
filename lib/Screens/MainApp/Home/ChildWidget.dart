@@ -5,7 +5,7 @@ import 'Chat/Chat.dart';
 import 'Perfil/Perfil.dart';
 import 'TuMarca/TuMarca.dart';
 
-enum AvailableNumber { First, Second, Third, Fourth }
+enum AvailableNumber { First, Second, Third}
 
 class ChildWidget extends StatelessWidget {
   final AvailableNumber number;
@@ -13,11 +13,10 @@ class ChildWidget extends StatelessWidget {
   // Navigation Index
   var _currentIndex;
   // Navigation Bar Tabs
-  final navBarTabs= [
-    CercaDeTi(),
+  final navBarTabs = [
+    Perfil(),
     TuMarca(),
     Chat(),
-    Perfil(),
   ];
 
   @override
@@ -29,8 +28,6 @@ class ChildWidget extends StatelessWidget {
       _currentIndex = 1;
     } else if (number == AvailableNumber.Third) {
       _currentIndex = 2;
-    } else if (number == AvailableNumber.Fourth) {
-      _currentIndex = 3;
     }
 
     return SafeArea(

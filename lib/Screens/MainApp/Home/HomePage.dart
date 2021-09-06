@@ -16,13 +16,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   // Index of Bottom Navigation Bar
-  int _currentIndex = 2;
+  int _currentIndex = 1;
   // Page Controller
   PageController _pageController = PageController(
-    initialPage: 2,
+    initialPage: 1,
   );
   Widget childWidget = ChildWidget(
-    number: AvailableNumber.Third,
+    number: AvailableNumber.Second,
   );
 
   @override
@@ -50,8 +50,8 @@ class _HomePageState extends State<HomePage> {
         iconSize: 35,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.explore_outlined, color: Styles.white,),
-            label: 'Cerca de ti',
+            icon: Icon(Icons.person, color: Styles.white,),
+            label: 'Perfil',
             backgroundColor: Styles.mainColor,
           ),
           BottomNavigationBarItem(
@@ -64,11 +64,7 @@ class _HomePageState extends State<HomePage> {
             label: 'Chat',
             backgroundColor: Styles.mainColor,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle_outlined, color: Styles.white,),
-            label: 'Perfil',
-            backgroundColor: Styles.mainColor,
-          ),
+
         ],
         onTap: (index) {
           _currentIndex = index;
@@ -95,7 +91,6 @@ class _HomePageState extends State<HomePage> {
           ChildWidget(number: AvailableNumber.First),
           ChildWidget(number: AvailableNumber.Second),
           ChildWidget(number: AvailableNumber.Third),
-          ChildWidget(number: AvailableNumber.Fourth)
         ],
       ),
     );

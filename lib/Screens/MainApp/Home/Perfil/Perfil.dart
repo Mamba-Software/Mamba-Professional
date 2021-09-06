@@ -59,7 +59,6 @@ class _PerfilState extends State<Perfil> {
     retrieveLostData();
     _accessDatabase.updateCurrentUserPhoto(_image);
     getUser();
-    print(user!.imageUrl);
   }
 
   Future<void> retrieveLostData() async {
@@ -76,30 +75,94 @@ class _PerfilState extends State<Perfil> {
   }
 
   Widget build(BuildContext context) {
-    void _showPerfiClientModals(int _buttonIndex) {
-      showModalBottomSheet(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-          isScrollControlled: true,
-          context: context,
-          builder: (context) {
-            switch (_buttonIndex) {
-              case 0:
-                return TusDatos();
-              case 1:
-                return Settings();
-              case 2:
-                return FeedBack();
-              case 3:
-                return ReportBug();
-              default:
-                return Container();
+    void _showPerfiClientModals(int _buttonIndex) async {
+      switch (_buttonIndex) {
+        case 0:
+          bool? updated = await showModalBottomSheet<bool>(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+            isDismissible: false,
+            enableDrag: false,
+            isScrollControlled: true,
+            context: context,
+            builder: (context) {
+              return TusDatos();
             }
-          }).whenComplete(() => {
-              setState(() {
-                _statusButtons[_buttonIndex] = !_statusButtons[_buttonIndex];
-              })
+          );
+          if(updated!){
+            print("Update");
+            setState(() {
+              isLoading = true;
+            });
+            getUser();
+          } else {
+            print("No Update");
+          }
+          setState(() {
+            _statusButtons[0] = !_statusButtons[0];
           });
+          break;
+        case 1:
+          bool? updated = await showModalBottomSheet<bool>(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+              isDismissible: false,
+              enableDrag: false,
+              isScrollControlled: true,
+              context: context,
+              builder: (context) {
+                return Settings();
+              }
+          );
+          if(updated!){
+            print("Update");
+            getUser();
+          } else {
+            print("No Update");
+          }
+          setState(() {
+            _statusButtons[1] = !_statusButtons[1];
+          });
+          break;
+        case 2:
+          showModalBottomSheet(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+              isScrollControlled: true,
+              isDismissible: false,
+              enableDrag: false,
+              context: context,
+              builder: (context) {
+                return FeedBack();
+              }).whenComplete(() => {
+                setState(() {
+                  _statusButtons[2] = !_statusButtons[2];
+                })
+              });
+          break;
+        case 3:
+          showModalBottomSheet(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+              isScrollControlled: true,
+              isDismissible: false,
+              enableDrag: false,
+              context: context,
+              builder: (context) {
+                return ReportBug();
+              }).whenComplete(() => {
+                setState(() {
+                  _statusButtons[3] = !_statusButtons[3];
+                })
+              });
+          break;
+        default:
+          showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return Container();
+              });
+      }
     }
 
     return isLoading ?
@@ -190,7 +253,7 @@ class _PerfilState extends State<Perfil> {
                                                   });
                                                   //_showSettingsPanel();
                                                 }, // button pressed
-                                                child: Icon( Icons.face, color: Colors.white, size: _iconSize,), // icon
+                                                child: Icon( Icons.info_outline, color: Colors.white, size: _iconSize,), // icon
                                               ),
                                             ),
                                           ),

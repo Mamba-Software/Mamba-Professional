@@ -62,6 +62,11 @@ class _FeedBackState extends State<FeedBack> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 }
 
 
