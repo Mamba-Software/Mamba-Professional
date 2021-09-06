@@ -1,4 +1,3 @@
-// Flutter Libs
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
@@ -6,10 +5,12 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
-
 import 'Home/HomePage.dart';
-// Internal App Tools
 
+// Page only shown the First time the User is logging in.
+// They are asked if they have an invite code to directly access his/her training brand. Two scenarios here:
+// - HAVE Invitation Code: They are added to that brand and directed to the brand´s page.
+// - DON'T HAVE Invitation Code: They are directed to the Search for Trainer page.
 class FirstTimeWrapper extends StatefulWidget {
   const FirstTimeWrapper({Key? key}) : super(key: key);
 

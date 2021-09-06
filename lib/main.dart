@@ -1,4 +1,3 @@
-// Plugins
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,6 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+// Starting app function. After initialitzation, we define the providers:
+// - Language Provider: To change the Language of the App.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -26,6 +27,7 @@ void main() async {
   );
 }
 
+// Launching the Splash Screen after Apps basic data is filled.
 class Mamba extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,7 @@ class Mamba extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            home: Loading(),
+            home: SplashScreen(),
           );
         }
     );

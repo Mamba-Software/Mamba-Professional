@@ -1,13 +1,12 @@
-// Flutter Libs
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
-// Internal App Tools
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
+// Firebase Service Class. All calls to Firebase are in this class.
 class FirebaseDatabaseService {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -150,12 +149,11 @@ class FirebaseDatabaseService {
       "dateOfBirth": dateOfBirth,
     });
   }
-  Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma, String previousIdioma) async {
+  Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma) async {
     User? currentUser = await getCurrentUser();
     await _firestore.collection("Users").doc(currentUser!.uid).update({
       "isPrivate": isPrivate,
       "idioma": idioma,
-      "previousIdioma": previousIdioma,
     });
   }
 }

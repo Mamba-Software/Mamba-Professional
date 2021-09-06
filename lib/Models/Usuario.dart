@@ -1,3 +1,4 @@
+// Model for a User in our App
 class Usuario {
 
   String? id;
@@ -11,8 +12,6 @@ class Usuario {
   String? dateJoined;
   String? dateOfBirth;
   String? idioma;
-  String? previousIdioma;
-  String? uid;
 
   Usuario({
     this.id,
@@ -26,8 +25,6 @@ class Usuario {
     this.dateJoined,
     this.dateOfBirth,
     this.idioma,
-    this.previousIdioma,
-    this.uid
   });
 
   Map toMap(Usuario user) {
@@ -42,8 +39,6 @@ class Usuario {
     data['dateJoined'] = user.dateJoined;
     data['dateOfBirth'] = user.dateOfBirth;
     data['idioma'] = user.idioma;
-    data['previousIdioma'] = user.previousIdioma;
-    data['uid'] = user.uid;
     return data;
   }
 
@@ -59,7 +54,5 @@ class Usuario {
     this.dateJoined = mapData['dateJoined'].toString();
     this.dateOfBirth = mapData['dateOfBirth'].toString();
     this.idioma = mapData['idioma'].toString();
-    this.previousIdioma = mapData['previousIdioma'].toString();
-    this.uid = mapData['uid'].toString();
   }
 }

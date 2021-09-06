@@ -1,11 +1,12 @@
-// Flutter Libs
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
-
 import 'ChildWidget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+// HomePage for the App. Here the user can change between the diferent pages.
+// In this class we can only see the declaration of those pages and the swiping/changing between screens.
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -21,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   PageController _pageController = PageController(
     initialPage: 1,
   );
+  // Child widget for the Page controller.
   Widget childWidget = ChildWidget(
     number: AvailableNumber.Second,
   );
@@ -48,23 +50,22 @@ class _HomePageState extends State<HomePage> {
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.shifting,
         iconSize: 35,
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.person, color: Styles.white,),
-            label: 'Perfil',
+            label: AppLocalizations.of(context)!.profileBottomNav,
             backgroundColor: Styles.mainColor,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.fitness_center_rounded, color: Styles.white,),
-            label: 'Tu Marca',
+            label: AppLocalizations.of(context)!.brandBottomNav,
             backgroundColor: Styles.mainColor,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.chat, color: Styles.white,),
-            label: 'Chat',
+            label: AppLocalizations.of(context)!.chatBottomNav,
             backgroundColor: Styles.mainColor,
           ),
-
         ],
         onTap: (index) {
           _currentIndex = index;

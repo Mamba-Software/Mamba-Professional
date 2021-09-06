@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Styles contains all the Colors, Themes and TextStyles used in the App.
 class Styles {
 
   // Colors for Theme

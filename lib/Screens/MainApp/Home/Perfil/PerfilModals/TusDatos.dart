@@ -1,14 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
+// Tus Datos Widget.
 class TusDatos extends StatefulWidget {
   const TusDatos({Key? key}) : super(key: key);
 
@@ -48,7 +47,7 @@ class _TusDatosState extends State<TusDatos> {
     isLoading = true;
     getUser();
   }
-
+  // Gets user data when opening.
   void getUser() async {
     user = await _accessDatabase.getCurrentUserDetails();
     setState(() {
@@ -58,13 +57,14 @@ class _TusDatosState extends State<TusDatos> {
 
   @override
   Widget build(BuildContext context) {
+    // Initialises some data the first time that the Widget is build and data is Loaded.
     if(!isLoading && firstBuild){
       nombreCompletoController = TextEditingController(text: user!.name);
       selectedDate = user!.dateOfBirth == "null" ? DateTime.now() : DateFormat('dd-MM-yyyy').parse(user!.dateOfBirth!);
       isUpdated = false;
       firstBuild = false;
     }
-
+    // Widget to Select your date.
     Future<void> _selectDate(BuildContext context) async {
       final DateTime? picked = await showDatePicker(
           context: context,
@@ -77,7 +77,7 @@ class _TusDatosState extends State<TusDatos> {
           selectedDateTemp = picked;
         });
     }
-
+    // Date to String Function.
     String dateToString(DateTime date) {
       final DateFormat formatter = DateFormat('dd-MM-yyyy');
       final String formatted = formatter.format(date);

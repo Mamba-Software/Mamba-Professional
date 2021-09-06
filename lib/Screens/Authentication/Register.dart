@@ -1,17 +1,13 @@
-// Flutter Libs
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
-// Internal App Resources
 import 'package:mamba_castelldefels/Globals/Constants.dart';
-import 'package:mamba_castelldefels/Globals/Globals.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
-// Authentication Service
-import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-// Register Widget
+// Register Page that allows the User to create his profile. This is the same for Client and Trainer.
+// After registering the page pop´s after 5 seconds and the user is sent to the Login page. Before Login in
+// they need to verify his email.
 class Register extends StatefulWidget {
   Register({Key? key}) : super(key: key);
 

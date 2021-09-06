@@ -1,10 +1,7 @@
-// Flutter Libs
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
-// Internal App Resources
 import 'package:mamba_castelldefels/Globals/Constants.dart';
-// Authentication Service
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -15,7 +12,7 @@ import 'package:mamba_castelldefels/Screens/MainApp/FirstTimeWrapper.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
 import 'package:provider/provider.dart';
 
-// Login Widget
+// Login Page. This allow the User to get Logged In or to Register a new account.
 class Login extends StatefulWidget {
   Login({Key? key}) : super(key: key);
 
@@ -37,6 +34,7 @@ class _LoginState extends State<Login> {
   String email = '';
   String password = '';
 
+  // Alert shown before leaving the App when clicking back button on the LogIn page.
   Future<bool> _onBackPressed() async {
     return (await showDialog(
       context: context,

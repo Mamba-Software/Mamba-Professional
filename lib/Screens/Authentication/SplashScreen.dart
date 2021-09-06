@@ -1,9 +1,7 @@
-// Flutter Libs
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
-//Internal App Resources
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -14,14 +12,22 @@ import 'package:mamba_castelldefels/Screens/MainApp/FirstTimeWrapper.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
 import 'package:provider/provider.dart';
 
-class Loading extends StatefulWidget {
-  Loading({Key? key}) : super(key: key);
+class SplashScreen extends StatefulWidget {
+  SplashScreen({Key? key}) : super(key: key);
 
   @override
-  _LoadingState createState() => _LoadingState();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _LoadingState extends State<Loading> {
+// Splash Screen, the first one that is being shown.
+// This screen has 3 possible outcomes.
+// A) User NOT Logged In => LogInPage()
+// B) User IS Logged In ...
+//      1) isFirstTime? YES => FirstTimeWrapper()
+//      2) isFirstTime? NO => HomePage()
+//
+// While getting data from Database it is showing a Loading Widget.
+class _SplashScreenState extends State<SplashScreen> {
 
   var _accessDatabase = new DatabaseAccess();
 

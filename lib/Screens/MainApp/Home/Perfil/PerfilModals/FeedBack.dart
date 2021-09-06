@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 
+// Feedback Widget.
+// Here the Users will give us Weekly Feedback.
 class FeedBack extends StatefulWidget {
   const FeedBack({Key? key}) : super(key: key);
 

@@ -43,14 +43,13 @@ class _SettingsState extends State<Settings> {
     isLoading = true;
     getUser();
   }
-
+  // Gets user info.
   void getUser() async {
     user = await _accessDatabase.getCurrentUserDetails();
     setState(() {
       isLoading = false;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +75,8 @@ class _SettingsState extends State<Settings> {
                     if (idiomaChanged) {
                       user!.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode,
                       isUpdated = true,
-                    },_accessDatabase.updateCurrentUserSettingsPerifl(user!.isPrivate!, user!.idioma!, user!.previousIdioma!),
+                    },
+                    _accessDatabase.updateCurrentUserSettingsPerifl(user!.isPrivate!, user!.idioma!),
                     _idiomaChanged.currentState!.resetIdiomaChanged(),
                     idiomaChanged = false,
                     Navigator.pop(context, isUpdated)

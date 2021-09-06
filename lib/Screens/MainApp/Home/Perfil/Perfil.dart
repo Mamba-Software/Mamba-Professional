@@ -4,17 +4,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
-
 import 'PerfilModals/FeedBack.dart';
 import 'PerfilModals/ReportBug.dart';
 import 'PerfilModals/Settings.dart';
 import 'PerfilModals/TusDatos.dart';
 
+// Profile page for each user.
 class Perfil extends StatefulWidget {
   const Perfil({Key? key}) : super(key: key);
 
@@ -37,20 +36,21 @@ class _PerfilState extends State<Perfil> {
   // Image Picker
   var _image;
 
+  // init Widget state. Loading user info.
   @override
   void initState() {
     super.initState();
     isLoading = true;
     getUser();
   }
-
+  // Gets the user info from firebase.
   void getUser() async {
     user = await _accessDatabase.getCurrentUserDetails();
     setState(() {
       isLoading = false;
     });
   }
-
+  // Selects image from Gallery and updates in firebase.
   Future getImage() async {
     var image = await ImagePicker().pickImage(source: ImageSource.gallery);
     setState(() {
@@ -60,7 +60,7 @@ class _PerfilState extends State<Perfil> {
     _accessDatabase.updateCurrentUserPhoto(_image);
     getUser();
   }
-
+  // Retrieve lost data of Gallery if it crashes becasue of Android.
   Future<void> retrieveLostData() async {
     final LostDataResponse response =
     await ImagePicker().retrieveLostData();
@@ -75,6 +75,9 @@ class _PerfilState extends State<Perfil> {
   }
 
   Widget build(BuildContext context) {
+    // Calls a Modal Bottom Sheet every time an Icon is Tapped. It updates the page after closing only if there have been changes
+    // inside the modal. Some set the isLoading to true (TusDatos, as the name needs to be updated in the UI), others don´t as it
+    // can happen in the background (Settings)
     void _showPerfiClientModals(int _buttonIndex) async {
       switch (_buttonIndex) {
         case 0:

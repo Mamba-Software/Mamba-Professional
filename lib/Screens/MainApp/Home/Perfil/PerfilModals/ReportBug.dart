@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
-import 'package:mamba_castelldefels/Models/Error.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+// Report a Bug Widget.
 class ReportBug extends StatefulWidget {
   const ReportBug({Key? key}) : super(key: key);
 
@@ -29,6 +29,7 @@ class _ReportBugState extends State<ReportBug> {
   final descriptionController = TextEditingController();
   final stepsReproduceController = TextEditingController();
 
+  // Clears all values.
   void clearControllers() {
     tituloController.clear();
     descriptionController.clear();
@@ -229,6 +230,7 @@ class _ReportBugState extends State<ReportBug> {
     );
   }
 
+  // Sends error to the Database.
   Future<void> sendError() async {
     var result = await _accessDatabase.addError(tituloTemp, descriptionTemp, stepsReproduceTemp);
     if (result) {

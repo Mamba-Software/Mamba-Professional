@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-import 'CercaDeTi/CercaDeTi.dart';
 import 'Chat/Chat.dart';
 import 'Perfil/Perfil.dart';
 import 'TuMarca/TuMarca.dart';
@@ -29,7 +27,6 @@ class ChildWidget extends StatelessWidget {
     } else if (number == AvailableNumber.Third) {
       _currentIndex = 2;
     }
-
     return SafeArea(
       child: navBarTabs[_currentIndex]
     );

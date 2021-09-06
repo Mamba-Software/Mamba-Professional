@@ -1,5 +1,8 @@
 {
   "language": "Idioma",
+  "profileBottomNav": "Perfil",
+  "brandBottomNav": "Marca",
+  "chatBottomNav": "Xat",
   "yes": "Sí",
   "no": "No",
   "logOut": "Vols sortir de Mamba?",

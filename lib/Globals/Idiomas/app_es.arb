@@ -3,6 +3,18 @@
   "@language":{
     "description": "Lenguaje de la App"
   },
+  "profileBottomNav": "Perfil",
+  "@profileBottomNav":{
+    "description": "Perfil Text"
+  },
+  "brandBottomNav": "Marca",
+  "@brandBottomNav":{
+    "description": "Marca Text"
+  },
+  "chatBottomNav": "Chat",
+  "@chatBottomNav":{
+  "description": "Chat Text"
+  },
   "yes": "Sí",
   "@yes":{
     "description": "Sí Text"
