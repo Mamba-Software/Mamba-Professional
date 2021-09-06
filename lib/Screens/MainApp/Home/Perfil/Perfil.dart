@@ -90,13 +90,10 @@ class _PerfilState extends State<Perfil> {
             }
           );
           if(updated!){
-            print("Update");
             setState(() {
               isLoading = true;
             });
             getUser();
-          } else {
-            print("No Update");
           }
           setState(() {
             _statusButtons[0] = !_statusButtons[0];
@@ -115,10 +112,8 @@ class _PerfilState extends State<Perfil> {
               }
           );
           if(updated!){
-            print("Update");
             getUser();
           } else {
-            print("No Update");
           }
           setState(() {
             _statusButtons[1] = !_statusButtons[1];
