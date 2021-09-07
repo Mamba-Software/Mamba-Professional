@@ -215,7 +215,13 @@ class _PerfilState extends State<Perfil> {
                                               ),
                                             ),
                                           ),
-                                          placeholder: (context, url) => LoadingView(),
+                                          placeholder: (context, url) => Container(
+                                              decoration: new BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(color: Styles.mainColor, width: 2),
+                                              ),
+                                              child: LoadingView(),
+                                          ),
                                           errorWidget: (context, url, error) => Icon(Icons.error),
                                         ),
                                     )
@@ -230,7 +236,7 @@ class _PerfilState extends State<Perfil> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         SizedBox.fromSize(
-                                          size: Size(40, 40), // button width and height
+                                          size: Size(50, 50), // button width and height
                                           child: ClipOval(
                                             child: Material(
                                               color: Styles.mainColor, // button color
@@ -239,7 +245,7 @@ class _PerfilState extends State<Perfil> {
                                                   getImage();
                                                   setState(() {});
                                                 },
-                                                child: Icon(Icons.collections_outlined, color: Colors.white, size: 25,), // icon
+                                                child: Icon(Icons.collections_outlined, color: Colors.white, size: 30,), // icon
                                               ),
                                             ),
                                           ),
