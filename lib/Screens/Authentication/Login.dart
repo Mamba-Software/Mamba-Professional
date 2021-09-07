@@ -34,38 +34,9 @@ class _LoginState extends State<Login> {
   String email = '';
   String password = '';
 
-  // Alert shown before leaving the App when clicking back button on the LogIn page.
-  Future<bool> _onBackPressed() async {
-    return (await showDialog(
-      context: context,
-      builder: (context) => new AlertDialog(
-        title: Center(child: Text(AppLocalizations.of(context)!.logOut, style: Styles.redTextStyle)),
-        content: Row (
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextButton(
-                child: Text(AppLocalizations.of(context)!.no, style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),),
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-              ), // button 1
-              TextButton(
-                child: Text(AppLocalizations.of(context)!.yes, style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),),
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-              ), // button 2
-            ]
-        )
-      ),
-    )) ?? false;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onBackPressed,
-        child: ScaffoldMessenger(
+    return ScaffoldMessenger(
           key: scaffoldMessengerKey,
           child: Scaffold(
               resizeToAvoidBottomInset: true,
@@ -219,38 +190,39 @@ class _LoginState extends State<Login> {
                 ),
               ),
           ),
-        ),
-    );
+        );
   }
 
   void signIn() async {
-    int result = await _accessDatabase.signIn(email, password);
-    if (result == 0) {
-      Usuario? user = await _accessDatabase.getCurrentUserDetails();
-      Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(user.idioma!));
-      if(!(user.isFirst!)) {
-        Navigator.pushReplacement(
-            context,
-            CupertinoPageRoute<Null>(
-              builder: (context) => HomePage(),
-              settings: RouteSettings(name: 'HomePage'),
-            )
-        );
-      } else {
-        Navigator.pushReplacement(
-            context,
-            CupertinoPageRoute<Null>(
-              builder: (context) => FirstTimeWrapper(),
-              settings: RouteSettings(name: 'FirstTimeWrapper'),
-            )
-        );
+    try {
+      int result = await _accessDatabase.signIn(email, password);
+      if (result == 0) {
+        Usuario? user = await _accessDatabase.getCurrentUserDetails();
+        Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(user.idioma!));
+        if(!(user.isFirst!)) {
+          Navigator.pushReplacement(
+              context,
+              CupertinoPageRoute<Null>(
+                builder: (context) => HomePage(),
+                settings: RouteSettings(name: 'HomePage'),
+              )
+          );
+        } else {
+          Navigator.pushReplacement(
+              context,
+              CupertinoPageRoute<Null>(
+                builder: (context) => FirstTimeWrapper(),
+                settings: RouteSettings(name: 'FirstTimeWrapper'),
+              )
+          );
+        }
+      } else if(result == -2) {
+        setState(() {
+          isLoading = false;
+        });
+        showInSnackBar(AppLocalizations.of(context)!.validateError);
       }
-    } else if(result == -2) {
-      setState(() {
-        isLoading = false;
-      });
-      showInSnackBar(AppLocalizations.of(context)!.validateError);
-    } else {
+    } catch (e) {
       setState(() {
         isLoading = false;
       });

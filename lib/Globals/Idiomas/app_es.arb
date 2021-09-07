@@ -75,7 +75,7 @@
   "@login":{
     "description": "LogIn Text "
   },
-  "loginError": "No encontramos este usuario.\n Porfavor prueba otra vez",
+  "loginError": "No encontramos este usuario.\n Por favor, prueba otra vez",
   "@loginError":{
     "description": "LogIn Error Text "
   },
