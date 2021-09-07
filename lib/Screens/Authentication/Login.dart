@@ -33,6 +33,7 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
+  String emailTemp = '';
 
   @override
   Widget build(BuildContext context) {
@@ -80,9 +81,12 @@ class _LoginState extends State<Login> {
                         Padding(
                             padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 13.0, bottom: 0.0),
                             child: TextFormField(
+                              initialValue: emailTemp,
                               validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
                               onChanged: (val) {
-                                setState(() => email = val);
+                                setState(() {
+                                  email = val;
+                                });
                               },
                               decoration: Styles.textFromInputDecoration.copyWith(
                                 labelText: AppLocalizations.of(context)!.email,
@@ -101,7 +105,9 @@ class _LoginState extends State<Login> {
                             child: TextFormField(
                               validator: (val) => val!.length < 6 ? AppLocalizations.of(context)!.passwordError : null,
                               onChanged: (val) {
-                                setState(() => password = val);
+                                setState(() {
+                                  password = val;
+                                });
                               },
                               obscureText: !_passwordVisible,
                                 decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
@@ -157,6 +163,7 @@ class _LoginState extends State<Login> {
                           child: TextButton(
                             onPressed: () async {
                               if(_formKey.currentState!.validate()){
+                                emailTemp = email;
                                 onSignInButtonPressed();
                               }
                             },
@@ -225,6 +232,7 @@ class _LoginState extends State<Login> {
     } catch (e) {
       setState(() {
         isLoading = false;
+        email = emailTemp;
       });
       showInSnackBar(AppLocalizations.of(context)!.loginError);
     }

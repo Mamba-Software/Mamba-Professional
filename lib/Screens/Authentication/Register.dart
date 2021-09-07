@@ -22,31 +22,9 @@ class _RegisterState extends State<Register> {
   bool isLoading = false;
   // Password Visible
   bool _passwordVisible = false;
-  // Switch Trainer Client
+  // isTrainer?
   bool isTrainer = false;
-  Color textColorClient = Styles.white;
-  Color textColorTrainer = Styles.accent;
-  FontWeight fontWeightClient = FontWeight.bold;
-  FontWeight fontWeightTrainer = FontWeight.normal;
-  void toggleSwitch(bool value) {
-    if(isTrainer == false) {
-      setState(() {
-        isTrainer = true;
-        textColorTrainer = Styles.white;
-        fontWeightTrainer = FontWeight.bold;
-        textColorClient = Styles.accent;
-        fontWeightClient = FontWeight.normal;
-      });
-    } else {
-      setState(() {
-        isTrainer = false;
-        textColorClient = Styles.white;
-        fontWeightClient = FontWeight.bold;
-        textColorTrainer = Styles.accent;
-        fontWeightTrainer = FontWeight.normal;
-      });
-    }
-  }
+  bool? isTrainerTemp;
   // Scaffold Messenger Key
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   // FormVariables
@@ -54,11 +32,14 @@ class _RegisterState extends State<Register> {
   bool errorGender = false;
   String errorGenderText = '';
   String name = '';
+  String nameTemp = '';
   String email = '';
+  String emailTemp = '';
   String password1 = '';
   String password2 = '';
   // Gender Widget value
   int? gender;
+  var genderTemp;
   void updateGender(int newGender) {
     setState(() {
       gender = newGender;
@@ -115,54 +96,19 @@ class _RegisterState extends State<Register> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Padding(
-                          padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 8.0),
-                          child: TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
+                            padding: EdgeInsets.only(
+                                left: 25.0, right: 25.0, top: 12.0),
+                            child: UserTypeWidget(
+                              isTrainer: isTrainerTemp == null ? isTrainer : isTrainerTemp!,
+                              selectedProfileTypeChanged: (_isTrainer) {
+                                isTrainer = _isTrainer;
                               },
-                              child: Text(
-                                AppLocalizations.of(context)!.createAccount,
-                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)
-                              )
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                                child: Text(
-                                  AppLocalizations.of(context)!.client,
-                                  style: TextStyle(color: textColorClient, fontSize: 22, fontWeight: fontWeightClient),
-                                ),
-                              ),
-                              Container(
-                                child: Transform.scale( scale: 2.0,
-                                  child: new Switch(
-                                    onChanged: toggleSwitch,
-                                    value: isTrainer,
-                                    activeColor: Styles.accent,
-                                    activeTrackColor: Styles.accentLight,
-                                    inactiveThumbColor: Styles.accent,
-                                    inactiveTrackColor: Styles.accentLight,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                                child: Text(
-                                  AppLocalizations.of(context)!.trainer,
-                                  style: TextStyle(color: textColorTrainer, fontSize: 22, fontWeight: fontWeightTrainer),
-                                ),
-                              )
-                            ],
-                          ),
+                            )
                         ),
                         Padding(
                             padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 0),
                             child: TextFormField(
+                              initialValue: nameTemp,
                               validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError  : null,
                               onChanged: (val) {
                                 setState(() => name = val);
@@ -181,6 +127,7 @@ class _RegisterState extends State<Register> {
                         Padding(
                             padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
                             child: TextFormField(
+                              initialValue: emailTemp,
                               validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
                               onChanged: (val) {
                                 setState(() => email = val);
@@ -199,6 +146,7 @@ class _RegisterState extends State<Register> {
                         Padding(
                           padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
                           child: GenderWidget(
+                              genderTemp: genderTemp,
                               selectedGenderChanged: (gender) {
                                 updateGender(gender);
                               }
@@ -301,6 +249,10 @@ class _RegisterState extends State<Register> {
                                 });
                               };
                               if(_formKey.currentState!.validate()){
+                                isTrainerTemp = isTrainer;
+                                nameTemp = name;
+                                emailTemp = email;
+                                genderTemp = gender;
                                 onSignUpButtonPressed();
                               }
                             },
@@ -388,19 +340,89 @@ class _RegisterState extends State<Register> {
   }
 }
 
+class UserTypeWidget extends StatefulWidget {
+  final ValueChanged<bool> selectedProfileTypeChanged;
+  final bool isTrainer;
+  UserTypeWidget({Key? key, required this.selectedProfileTypeChanged, required this.isTrainer}) : super(key: key);
+
+  @override
+  _UserTypeWidgetState createState() => _UserTypeWidgetState();
+}
+
+class _UserTypeWidgetState extends State<UserTypeWidget> {
+  bool firstBuild = true;
+  var _isTrainer;
+
+  @override
+  Widget build(BuildContext context) {
+    if (firstBuild) {
+      _isTrainer = widget.isTrainer;
+      firstBuild = false;
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _icon(false, text: AppLocalizations.of(context)!.client, icon: Icons.directions_run),
+        _icon(true, text: AppLocalizations.of(context)!.trainer, icon: Icons.record_voice_over),
+      ],
+    );
+  }
+  Widget _icon(bool index, {required String text, required IconData icon}) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: InkResponse(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 45,
+                color: _isTrainer == index ? Colors.white : Styles.accent,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                    text,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      color: _isTrainer == index ? Colors.white : Styles.accent
+                    )
+                ),
+              ),
+            ],
+          ),
+          onTap: () => {
+            setState(() {
+              _isTrainer = index;
+              widget.selectedProfileTypeChanged(_isTrainer);
+            }),
+          },
+        ),
+    );
+  }
+}
+
 class GenderWidget extends StatefulWidget {
   final ValueChanged<int> selectedGenderChanged;
-  GenderWidget({required this.selectedGenderChanged});
+  final int? genderTemp;
+  GenderWidget({required this.selectedGenderChanged, required this.genderTemp});
 
   @override
   _GenderWidgetState createState() => _GenderWidgetState();
 }
 
 class _GenderWidgetState extends State<GenderWidget> {
+  bool firstBuild = true;
   int? gender;
 
   @override
   Widget build(BuildContext context) {
+    if (firstBuild) {
+      if(widget.genderTemp != null) gender = widget.genderTemp;
+      firstBuild = false;
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,

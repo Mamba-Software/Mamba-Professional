@@ -26,7 +26,6 @@ class _SettingsState extends State<Settings> {
   bool firstBuild = true;
   // Model Usuario
   Usuario? user;
-
   // Type of Profile Widget value
   bool? _isPrivate = null;
   final _typeProfileKey = GlobalKey<_ProfileTypeWidgetState>();
