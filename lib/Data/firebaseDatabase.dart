@@ -82,7 +82,7 @@ class FirebaseDatabaseService {
             "gender": gender,
             "dateJoined": formatted,
             "idioma": idioma,
-            "previousIdioma": null,
+            "brandID": null,
           })
           .catchError((err) {
             print(err);

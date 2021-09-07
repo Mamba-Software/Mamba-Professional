@@ -292,7 +292,7 @@ class _TusDatosState extends State<TusDatos> {
                                                     ),
                                                     onPressed: () => _selectDate(context),
                                                     child: Text(
-                                                      AppLocalizations.of(context)!.selectDateOfBirth,
+                                                      selectedDateTemp == null ? AppLocalizations.of(context)!.selectDateOfBirth : dateToString(selectedDateTemp),
                                                       style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87),
                                                     ),
                                                   )

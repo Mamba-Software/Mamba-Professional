@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Chat/Chat.dart';
 import 'Perfil/Perfil.dart';
-import 'TuMarca/TuMarca.dart';
+import 'Marca/Marca.dart';
 
 enum AvailableNumber { First, Second, Third}
 
@@ -13,7 +13,7 @@ class ChildWidget extends StatelessWidget {
   // Navigation Bar Tabs
   final navBarTabs = [
     Perfil(),
-    TuMarca(),
+    Marca(),
     Chat(),
   ];
 

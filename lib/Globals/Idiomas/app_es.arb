@@ -172,7 +172,7 @@
   "@letsGo":{
     "description": "Lets Go Text"
   },
-  "alreadyCreatedFirm": "¿Tienes un código de invitació a una marca?",
+  "alreadyCreatedFirm": "¿Tienes un código de invitación a una marca?",
   "@alreadyCreatedTrainerFirm":{
     "description": "Trainer forma parte de una marca ya creada Text"
   },

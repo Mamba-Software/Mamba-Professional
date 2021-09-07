@@ -12,6 +12,7 @@ class Usuario {
   String? dateJoined;
   String? dateOfBirth;
   String? idioma;
+  String? brandID; // UID of the user´s training brand.
 
   Usuario({
     this.id,
@@ -25,6 +26,7 @@ class Usuario {
     this.dateJoined,
     this.dateOfBirth,
     this.idioma,
+    this.brandID,
   });
 
   Map toMap(Usuario user) {
@@ -39,6 +41,7 @@ class Usuario {
     data['dateJoined'] = user.dateJoined;
     data['dateOfBirth'] = user.dateOfBirth;
     data['idioma'] = user.idioma;
+    data['brandID'] = user.brandID;
     return data;
   }
 
@@ -54,5 +57,6 @@ class Usuario {
     this.dateJoined = mapData['dateJoined'].toString();
     this.dateOfBirth = mapData['dateOfBirth'].toString();
     this.idioma = mapData['idioma'].toString();
+    this.brandID = mapData['brandID'].toString();
   }
 }
