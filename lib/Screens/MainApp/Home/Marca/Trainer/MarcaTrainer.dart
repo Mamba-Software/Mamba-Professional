@@ -105,7 +105,7 @@ class _MarcaTrainerState extends State<MarcaTrainer> {
                                   },
                                   decoration: InputDecoration(
                                     hintText: AppLocalizations.of(context)!.codigo,
-                                    hintStyle: Styles.whiteTextStyle.copyWith(fontSize: 14),
+                                    hintStyle: Styles.whiteTextStyle.copyWith(fontSize: 14, color: Colors.green),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(color: Colors.green, width: 1.0),
                                       borderRadius: BorderRadius.circular(13.0),
