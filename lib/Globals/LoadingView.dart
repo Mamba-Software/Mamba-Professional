@@ -10,8 +10,8 @@ class LoadingView extends StatelessWidget {
       children: <Widget>[
         Center(
           child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.15,
-            height: MediaQuery.of(context).size.height * 0.08,
+            width: MediaQuery.of(context).size.width * 0.14,
+            height: MediaQuery.of(context).size.height * 0.07,
             child: CircularProgressIndicator(
               color: Styles.mainColor,
             ),

@@ -1,6 +1,7 @@
 // Flutter Libs
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 
 class Chat extends StatefulWidget {
@@ -13,6 +14,8 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text("CHAT",style: Styles.purpleTextStyle.copyWith(fontSize: 30, fontWeight: FontWeight.bold)));
+    return Center(
+      child: LoadingView(),
+    );
   }
 }

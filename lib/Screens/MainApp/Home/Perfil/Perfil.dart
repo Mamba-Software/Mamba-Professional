@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -191,14 +192,33 @@ class _PerfilState extends State<Perfil> {
                                     Container(
                                         width: MediaQuery.of(context).size.width*0.55,
                                         height: MediaQuery.of(context).size.height*0.55,
-                                        decoration: new BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(color: Styles.mainColor, width: 4.0),
-                                          image: new DecorationImage(
-                                            image: _image == null ? Image.network(user!.imageUrl!).image : FileImage(_image),
-                                            fit: BoxFit.fitWidth,
+                                        child: _image != null ?
+                                        Container(
+                                          decoration: new BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(color: Styles.mainColor, width: 4.0),
+                                            image: new DecorationImage(
+                                              image: FileImage(_image),
+                                              fit: BoxFit.fitWidth,
+                                            ),
+                                          )
+                                        ) :
+                                        CachedNetworkImage(
+                                          imageUrl: user!.imageUrl!,
+                                          imageBuilder: (context, imageProvider) => Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(color: Styles.mainColor, width: 4.0),
+                                              image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.fitWidth,
+                                              ),
+                                            ),
                                           ),
-                                        )),
+                                          placeholder: (context, url) => LoadingView(),
+                                          errorWidget: (context, url, error) => Icon(Icons.error),
+                                        ),
+                                    )
                                   ],
                                 ),
                                 Positioned(
