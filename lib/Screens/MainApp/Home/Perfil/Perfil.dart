@@ -82,45 +82,33 @@ class _PerfilState extends State<Perfil> {
     void _showPerfiClientModals(int _buttonIndex) async {
       switch (_buttonIndex) {
         case 0:
-          bool? updated = await showModalBottomSheet<bool>(
+          showModalBottomSheet<bool>(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-            isDismissible: false,
-            enableDrag: false,
             isScrollControlled: true,
             context: context,
             builder: (context) {
               return TusDatos();
             }
-          );
-          if(updated!){
+          ).whenComplete(() =>{
             setState(() {
-              isLoading = true;
-            });
-            getUser();
-          }
-          setState(() {
             _statusButtons[0] = !_statusButtons[0];
+            })
           });
           break;
         case 1:
-          bool? updated = await showModalBottomSheet<bool>(
+          showModalBottomSheet<bool>(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-              isDismissible: false,
-              enableDrag: false,
               isScrollControlled: true,
               context: context,
               builder: (context) {
                 return Settings();
               }
-          );
-          if(updated!){
-            getUser();
-          } else {
-          }
-          setState(() {
-            _statusButtons[1] = !_statusButtons[1];
+          ).whenComplete(() =>{
+            setState(() {
+              _statusButtons[1] = !_statusButtons[1];
+            })
           });
           break;
         case 2:
@@ -128,8 +116,6 @@ class _PerfilState extends State<Perfil> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
               isScrollControlled: true,
-              isDismissible: false,
-              enableDrag: false,
               context: context,
               builder: (context) {
                 return FeedBack();
@@ -144,8 +130,6 @@ class _PerfilState extends State<Perfil> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
               isScrollControlled: true,
-              isDismissible: false,
-              enableDrag: false,
               context: context,
               builder: (context) {
                 return ReportBug();

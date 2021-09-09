@@ -52,6 +52,16 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
+    // Checking if there has been a change that has not been saved.
+    if (!isLoading) {
+      if (_isPrivate != user!.isPrivate! && _isPrivate != null) {
+        isUpdated = true;
+      } else if (idiomaChanged) {
+        isUpdated = true;
+      } else {
+        isUpdated = false;
+      }
+    }
     return Container(
       padding: MediaQuery.of(context).viewInsets,
       child: Padding(
@@ -67,22 +77,27 @@ class _SettingsState extends State<Settings> {
                 IconButton(
                   icon: Icon(Icons.arrow_back, color: Styles.accent),
                   onPressed: () => {
-                    if (!(_isPrivate == null)) {
-                      user!.isPrivate = _isPrivate,
-                      isUpdated = true,
-                    },
-                    if (idiomaChanged) {
-                      user!.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode,
-                      isUpdated = true,
-                    },
-                    _accessDatabase.updateCurrentUserSettingsPerifl(user!.isPrivate!, user!.idioma!),
-                    _idiomaChanged.currentState!.resetIdiomaChanged(),
-                    idiomaChanged = false,
-                    Navigator.pop(context, isUpdated)
+                    Navigator.pop(context)
                   },
                 ),
                 Text(AppLocalizations.of(context)!.settings, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
-                SizedBox(width: 30,),
+                IconButton(
+                  icon: Icon(Icons.save, color: isUpdated ? Colors.green : Styles.accentLight),
+                  onPressed: isUpdated ? () => {
+                    setState(() {
+                      if (!(_isPrivate == null)) {
+                        user!.isPrivate = _isPrivate;
+                      };
+                      if (idiomaChanged) {
+                        user!.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
+                      };
+                      _accessDatabase.updateCurrentUserSettingsPerifl(user!.isPrivate!, user!.idioma!);
+                      _idiomaChanged.currentState!.resetIdiomaChanged();
+                      idiomaChanged = false;
+                      Navigator.pop(context);
+                    })
+                  } : null,
+                ),
               ],
             ),
             isLoading ?
@@ -123,7 +138,9 @@ class _SettingsState extends State<Settings> {
                             key: _typeProfileKey,
                             user: user,
                             selectedProfileTypeChanged: (isPrivate) {
-                              _isPrivate = isPrivate;
+                              setState(() {
+                                _isPrivate = isPrivate;
+                              });
                             },
                           )
                       ),
