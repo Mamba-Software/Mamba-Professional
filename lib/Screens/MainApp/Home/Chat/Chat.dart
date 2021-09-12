@@ -1,8 +1,6 @@
 // Flutter Libs
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
-import 'package:mamba_castelldefels/Globals/LoadingView.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/LoadingViewPurple.dart';
 
 class Chat extends StatefulWidget {
   const Chat({Key? key}) : super(key: key);
@@ -15,7 +13,7 @@ class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: LoadingView(),
+      child: LoadingViewPurple(),
     );
   }
 }

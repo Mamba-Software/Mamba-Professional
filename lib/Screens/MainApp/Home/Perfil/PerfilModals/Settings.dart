@@ -115,7 +115,7 @@ class _SettingsState extends State<Settings> {
             ),
             isLoading ?
               Container(
-                height: MediaQuery.of(context).size.height * 0.4,
+                height: MediaQuery.of(context).size.height * 0.2,
                 child: LoadingView()
               )
                 :
