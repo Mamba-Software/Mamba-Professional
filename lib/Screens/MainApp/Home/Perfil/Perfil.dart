@@ -5,10 +5,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
+import 'package:provider/provider.dart';
 import 'PerfilModals/FeedBack.dart';
 import 'PerfilModals/ReportBug.dart';
 import 'PerfilModals/Settings.dart';
@@ -36,6 +39,9 @@ class _PerfilState extends State<Perfil> {
   final _iconSize = 45.0;
   // Image Picker
   var _image;
+  // IdiomaChanged Settings Modal
+  var _isSaved;
+  var _isUpdated;
 
   // init Widget state. Loading user info.
   @override
@@ -80,6 +86,8 @@ class _PerfilState extends State<Perfil> {
     // inside the modal. Some set the isLoading to true (TusDatos, as the name needs to be updated in the UI), others don´t as it
     // can happen in the background (Settings)
     void _showPerfiClientModals(int _buttonIndex) async {
+      _isSaved = false;
+      _isUpdated = false;
       switch (_buttonIndex) {
         case 0:
           showModalBottomSheet<bool>(
@@ -88,9 +96,19 @@ class _PerfilState extends State<Perfil> {
             isScrollControlled: true,
             context: context,
             builder: (context) {
-              return TusDatos();
+              return TusDatos(
+                isUpdated: (bool) {
+                  _isUpdated = bool!;
+                }
+              );
             }
           ).whenComplete(() =>{
+            if(_isUpdated){
+              setState(() {
+                isLoading = true;
+                getUser();
+              }),
+            },
             setState(() {
             _statusButtons[0] = !_statusButtons[0];
             })
@@ -103,12 +121,28 @@ class _PerfilState extends State<Perfil> {
               isScrollControlled: true,
               context: context,
               builder: (context) {
-                return Settings();
+                return Settings(
+                  isSaved: (bool) {
+                    _isSaved = bool!;
+                  },
+                  isUpdated: (bool) {
+                   _isUpdated = bool!;
+                  }
+                );
               }
           ).whenComplete(() =>{
+            if(_isUpdated){
+              setState(() {
+                isLoading = true;
+                getUser();
+              }),
+            },
+            if(!_isSaved){
+              Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(user!.idioma!)),
+            },
             setState(() {
               _statusButtons[1] = !_statusButtons[1];
-            })
+            }),
           });
           break;
         case 2:
@@ -370,7 +404,7 @@ class _PerfilState extends State<Perfil> {
                   //padding: EdgeInsets.only(top: 25.0, bottom: 25.0, right: 25.0, left: 25.0),
                   child: new Column(
                     children: [
-                      Text("${user!.name}", style: Styles.purpleTextStyle.copyWith(fontSize: 24, fontWeight: FontWeight.bold),),
+                      Text("${user!.name}", style: Styles.purpleTextStyle.copyWith(fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
                       Padding(
                         padding: const EdgeInsets.only(top:20.0, bottom: 5.0),
                         child: Row(

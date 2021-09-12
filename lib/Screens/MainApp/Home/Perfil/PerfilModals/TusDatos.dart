@@ -9,7 +9,8 @@ import 'package:mamba_castelldefels/Models/Usuario.dart';
 
 // Tus Datos Widget.
 class TusDatos extends StatefulWidget {
-  const TusDatos({Key? key}) : super(key: key);
+  final ValueChanged<bool?> isUpdated;
+  const TusDatos({Key? key, required this.isUpdated}) : super(key: key);
 
   @override
   _TusDatosState createState() => _TusDatosState();
@@ -121,6 +122,7 @@ class _TusDatosState extends State<TusDatos> {
                     icon: Icon(Icons.save, color: isUpdated ? Colors.green : Styles.accentLight),
                     onPressed: isUpdated ? () => {
                       setState(() {
+                        widget.isUpdated(isUpdated);
                         if(_formKey.currentState!.validate()){
                           if (nombreCompletoTemp.isNotEmpty) {
                             user!.name = nombreCompletoTemp;

@@ -10,14 +10,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 
 class Settings extends StatefulWidget {
-  const Settings({Key? key}) : super(key: key);
-
+  final ValueChanged<bool?> isSaved;
+  final ValueChanged<bool?> isUpdated;
+  const Settings({Key? key, required this.isSaved, required this.isUpdated}) : super(key: key);
   @override
   _SettingsState createState() => _SettingsState();
 }
 
 class _SettingsState extends State<Settings> {
-
 
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
@@ -32,9 +32,10 @@ class _SettingsState extends State<Settings> {
   // Idioma Original
   bool idiomaChanged = false;
   final _idiomaChanged = GlobalKey<_LanguagePickerWidgetState>();
-
   // Boolean isUpdated
   bool isUpdated = false;
+  // Boolean isSaved
+  bool isSaved = false;
 
   @override
   void initState() {
@@ -77,6 +78,14 @@ class _SettingsState extends State<Settings> {
                 IconButton(
                   icon: Icon(Icons.arrow_back, color: Styles.accent),
                   onPressed: () => {
+                    isSaved = true,
+                    widget.isSaved(isSaved),
+                    if (idiomaChanged) {
+                      user!.idioma = user!.previousIdioma,
+                      user!.previousIdioma = "",
+                      Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(user!.idioma!)),
+                      _accessDatabase.updateCurrentUserSettingsPerifl(user!.isPrivate!, user!.idioma!, user!.previousIdioma!)
+                    },
                     Navigator.pop(context)
                   },
                 ),
@@ -85,13 +94,17 @@ class _SettingsState extends State<Settings> {
                   icon: Icon(Icons.save, color: isUpdated ? Colors.green : Styles.accentLight),
                   onPressed: isUpdated ? () => {
                     setState(() {
+                      isSaved = true;
+                      widget.isSaved(isSaved);
+                      widget.isUpdated(isUpdated);
                       if (!(_isPrivate == null)) {
                         user!.isPrivate = _isPrivate;
                       };
                       if (idiomaChanged) {
                         user!.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
+                        user!.previousIdioma = "";
                       };
-                      _accessDatabase.updateCurrentUserSettingsPerifl(user!.isPrivate!, user!.idioma!);
+                      _accessDatabase.updateCurrentUserSettingsPerifl(user!.isPrivate!, user!.idioma!,user!.previousIdioma!);
                       _idiomaChanged.currentState!.resetIdiomaChanged();
                       idiomaChanged = false;
                       Navigator.pop(context);
@@ -107,73 +120,74 @@ class _SettingsState extends State<Settings> {
               )
                 :
               new Container(
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 25.0),
-                child : new Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 25.0),
-                          child: new Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              new Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  new Text(
-                                    AppLocalizations.of(context)!.typeProfile,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 12.0),
-                          child: ProfileTypeWidget(
-                            key: _typeProfileKey,
-                            user: user,
-                            selectedProfileTypeChanged: (isPrivate) {
-                              setState(() {
-                                _isPrivate = isPrivate;
-                              });
-                            },
-                          )
-                      ),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 12.0),
-                          child: new Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              new Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  new Text(
-                                    AppLocalizations.of(context)!.language,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 12.0, bottom: 12.0),
-                          child: LanguagePickerWidget(
-                              key: _idiomaChanged,
-                              idiomaChanged: (bool) {
-                                idiomaChanged = bool!;
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 25.0),
+                  child : new Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        !(user!.isTrainer!) ? Padding(
+                            padding: EdgeInsets.only(
+                                left: 25.0, right: 25.0, top: 25.0),
+                            child: new Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                new Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    new Text(
+                                      AppLocalizations.of(context)!.typeProfile,
+                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )) : Container(),
+                        !(user!.isTrainer!) ? Padding(
+                            padding: EdgeInsets.only(
+                                left: 25.0, right: 25.0, top: 12.0),
+                            child: ProfileTypeWidget(
+                              key: _typeProfileKey,
+                              user: user,
+                              selectedProfileTypeChanged: (isPrivate) {
+                                setState(() {
+                                  _isPrivate = isPrivate;
+                                });
                               },
-                          )
-                      ),
-                    ],
-                  ),
+                            )
+                        ) : Container(),
+                        Padding(
+                            padding: EdgeInsets.only(
+                                left: 25.0, right: 25.0, top: 12.0),
+                            child: new Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                new Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    new Text(
+                                      AppLocalizations.of(context)!.language,
+                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )),
+                        Padding(
+                            padding: EdgeInsets.only(
+                                left: 25.0, right: 25.0, top: 12.0, bottom: 12.0),
+                            child: LanguagePickerWidget(
+                                user: user,
+                                key: _idiomaChanged,
+                                idiomaChanged: (bool) {
+                                  idiomaChanged = bool!;
+                                },
+                            )
+                        ),
+                      ],
+                    ),
                 ),
               ),
           ],
@@ -195,7 +209,6 @@ class ProfileTypeWidget extends StatefulWidget {
 class _ProfileTypeWidgetState extends State<ProfileTypeWidget> {
   bool firstBuild = true;
   var isPrivate;
-
   @override
   resetProfileType() => isPrivate = widget.user!.isPrivate!;
   Widget build(BuildContext context) {
@@ -250,9 +263,9 @@ class _ProfileTypeWidgetState extends State<ProfileTypeWidget> {
 }
 
 class LanguagePickerWidget extends StatefulWidget {
+  final Usuario? user;
   ValueChanged<bool?> idiomaChanged;
-  LanguagePickerWidget({Key? key, required this.idiomaChanged}) : super(key: key);
-
+  LanguagePickerWidget({Key? key, required this.idiomaChanged, required this.user}) : super(key: key);
   @override
   _LanguagePickerWidgetState createState() => _LanguagePickerWidgetState();
 }
@@ -261,7 +274,6 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
   Locale? _locale;
   var allLocales;
   bool idiomaChanged = false;
-
   @override
   resetIdiomaChanged() => {
     idiomaChanged = false
@@ -289,7 +301,6 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
       ],
     );
   }
-
   Widget _iconLocale(Locale locale, BuildContext context ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -311,7 +322,14 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
                 onTap: () => {
                   setState(() {
                     _locale = locale;
-                    idiomaChanged = true;
+                    if (_locale!.languageCode != widget.user!.idioma!) {
+                      idiomaChanged = true;
+                    }
+                    if (_locale!.languageCode == widget.user!.previousIdioma!) {
+                      idiomaChanged = false;
+                    }
+                    widget.user!.previousIdioma = widget.user!.idioma!;
+                    widget.user!.idioma = _locale!.languageCode;
                     Provider.of<LanguageProvider>(context, listen: false).setLocale(_locale!);
                     widget.idiomaChanged(idiomaChanged);
                   }),
@@ -323,46 +341,3 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
     );
   }
 }
-
-/*
-Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.save, color: Colors.green),
-                      onPressed: !isLoading ? () => {
-                        setState(() {
-                            if (!(_isPrivate == null)) user!.isPrivate = _isPrivate;
-                            if (idiomaChanged) {
-                              user!.previousIdioma = user!.idioma;
-                              user!.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
-                            }
-                            _accessDatabase.updateCurrentUserSettingsPerifl(user!.isPrivate!, user!.idioma!, user!.previousIdioma!);
-                            _idiomaChanged.currentState!.resetIdiomaChanged();
-                            _editStatus = !_editStatus;
-                            idiomaChanged = false;
-                        })
-                      } : null,
-                    ),
-                    SizedBox.fromSize(
-                      size: Size(10, 0),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.highlight_off, color: Colors.red),
-                      onPressed: !isLoading ? () => {
-                        setState(() {
-                          //nombreCompletoController.text = currentUser.name;
-                          //emailController.text = currentUser.email;
-                          if (idiomaChanged) {
-                            var locale = Idiomas.getLocaleFromString(user!.idioma!);
-                            Provider.of<LanguageProvider>(context, listen: false).setLocale(locale);
-                          }
-                          _idiomaChanged.currentState!.resetIdiomaChanged();
-                          _typeProfileKey.currentState!.resetProfileType();
-                          _editStatus = !_editStatus;
-                          idiomaChanged = false;
-                        })
-                      } : null,
-                    )
-                  ],
-                ),
- */

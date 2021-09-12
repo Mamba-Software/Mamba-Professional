@@ -12,6 +12,7 @@ class Usuario {
   String? dateJoined;
   String? dateOfBirth;
   String? idioma;
+  String? previousIdioma;
   String? brandID; // UID of the user´s training brand.
 
   Usuario({
@@ -26,6 +27,7 @@ class Usuario {
     this.dateJoined,
     this.dateOfBirth,
     this.idioma,
+    this.previousIdioma,
     this.brandID,
   });
 
@@ -41,6 +43,7 @@ class Usuario {
     data['dateJoined'] = user.dateJoined;
     data['dateOfBirth'] = user.dateOfBirth;
     data['idioma'] = user.idioma;
+    data['previousIdioma'] = user.previousIdioma;
     data['brandID'] = user.brandID;
     return data;
   }
@@ -57,6 +60,7 @@ class Usuario {
     this.dateJoined = mapData['dateJoined'].toString();
     this.dateOfBirth = mapData['dateOfBirth'].toString();
     this.idioma = mapData['idioma'].toString();
+    this.previousIdioma = mapData['previousIdioma'].toString();
     this.brandID = mapData['brandID'].toString();
   }
 }

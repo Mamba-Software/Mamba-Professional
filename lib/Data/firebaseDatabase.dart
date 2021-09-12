@@ -149,11 +149,12 @@ class FirebaseDatabaseService {
       "dateOfBirth": dateOfBirth,
     });
   }
-  Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma) async {
+  Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma, String previousIdioma) async {
     User? currentUser = await getCurrentUser();
     await _firestore.collection("Users").doc(currentUser!.uid).update({
       "isPrivate": isPrivate,
       "idioma": idioma,
+      "previousIdioma": previousIdioma,
     });
   }
 }
