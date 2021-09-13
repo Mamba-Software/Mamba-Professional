@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -5,6 +6,8 @@ import 'package:mamba_castelldefels/Globals/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/RegistrarMarca.dart';
+
 
 class MarcaTrainer extends StatefulWidget {
   const MarcaTrainer({Key? key}) : super(key: key);
@@ -53,20 +56,27 @@ class _MarcaTrainerState extends State<MarcaTrainer> {
             children: [
               Container(
                 constraints: BoxConstraints(
-                  maxHeight: (MediaQuery.of(context).size.height*0.7889)*0.36,
+                  maxHeight: (MediaQuery.of(context).size.height*0.7889)*0.26,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: Text("¡Bienvenido a Mamba ${user!.name!}!", style: Styles.purpleTextStyle,),
+                      child: Text("¡Bienvenido a Mamba ${splitCommonName(user!.name!)}!", style: Styles.purpleTextStyle,textAlign: TextAlign.center,),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: FloatingActionButton.extended(
+                        heroTag: null,
                         onPressed: () {
-                          print("Crear Marca Nueva");
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute<Null>(
+                                builder: (context) => RegistrarMarca(),
+                                settings: RouteSettings(name: 'RegistrarMarca'),
+                              )
+                          );
                         },
                         icon: Icon(Icons.add_circle, size: 40,),
                         label: Text("Crea tu Marca", style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),),
@@ -134,6 +144,7 @@ class _MarcaTrainerState extends State<MarcaTrainer> {
                             Padding(
                               padding: const EdgeInsets.only(left: 5.0),
                               child: FloatingActionButton(
+                                heroTag: null,
                                 child: Icon(Icons.close),
                                 backgroundColor: Colors.red,
                                 foregroundColor: Styles.white,
@@ -147,17 +158,16 @@ class _MarcaTrainerState extends State<MarcaTrainer> {
                           ],
                         )
                     ),
-                    SizedBox(height: 30,),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 14.0),
-                      child: Text("Otros entrenadores en tu zona:", style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
-                    ),
                   ],
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.only(top: 14.0),
+                child: Text("Otros entrenadores en tu zona:", style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
+              ),
               Container(
                 constraints: BoxConstraints(
-                  maxHeight: (MediaQuery.of(context).size.height*0.7889)*0.60,
+                  maxHeight: (MediaQuery.of(context).size.height*0.7889)*0.63,
                 ),
                 child: Center(
                   child: SingleChildScrollView(
@@ -178,5 +188,10 @@ class _MarcaTrainerState extends State<MarcaTrainer> {
           ),
         )
     );
+  }
+
+  String splitCommonName(String name) {
+    List<String> aux = name.split(" ");
+    return aux[0];
   }
 }

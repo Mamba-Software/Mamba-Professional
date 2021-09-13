@@ -51,6 +51,7 @@
   "reporting": "Reporta un error",
   "memberSince": "Membre des {dateJoined}",
   "clientOf": "Client de ",
+  "trainerOf": "Entrena a ",
   "closeSession": "Tancar sessió",
   "dateOfBirth": "Data de Naixement",
   "noDateOfBirth": "No introduïda",

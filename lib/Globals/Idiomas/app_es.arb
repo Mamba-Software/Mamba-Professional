@@ -215,7 +215,11 @@
   },
   "clientOf": "Cliente de ",
   "@clientOf": {
-    "description": "Member Since message"
+    "description": "Cliente de message"
+  },
+  "trainerOf": "Entrena en ",
+  "@trainerOf": {
+    "description": "Entrena en message"
   },
   "closeSession": "Cerrar sesión",
   "@closeSession":{
