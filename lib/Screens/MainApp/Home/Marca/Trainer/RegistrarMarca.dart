@@ -106,7 +106,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                           size: 35.0,
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                          padding: const EdgeInsets.symmetric(vertical: 4.0),
                                           child: new Text(
                                             "Añade tu logo",
                                             style: Styles.purpleTextStyle.copyWith(fontSize: 14, fontWeight: FontWeight.bold),
@@ -128,7 +128,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                                 width: MediaQuery.of(context).size.width*0.35,
                                                 decoration: new BoxDecoration(
                                                   shape: BoxShape.circle,
-                                                  border: Border.all(color: Styles.mainColor, width: 2.0),
                                                   image: new DecorationImage(
                                                     image: FileImage(_image),
                                                     fit: BoxFit.fitWidth,
@@ -147,7 +146,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
                                       Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 5),
+                                          padding: EdgeInsets.symmetric(horizontal: 10),
                                           child: new Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
@@ -165,7 +164,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                           )
                                       ),
                                       Padding(
-                                          padding: EdgeInsets.only(left: 5, right: 20),
+                                          padding: EdgeInsets.only(left: 10, right: 20),
                                           child: new Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
@@ -180,6 +179,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                                   },
                                                   decoration: InputDecoration(
                                                     hintText: AppLocalizations.of(context)!.nameCompleto,
+                                                    hintStyle: TextStyle(fontSize: 12),
                                                   ),
                                                 ),
                                               ),
@@ -243,6 +243,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                                     },
                                                     decoration: InputDecoration(
                                                       hintText: "Escoje tu ubicación",
+                                                      hintStyle: TextStyle(fontSize: 12),
                                                     ),
                                                   ),
                                                 ),
@@ -304,7 +305,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                                       setState(() => descriptionTemp = val);
                                                     },
                                                     maxLines: 8,
-                                                    decoration: Styles.textFromInputDecoration.copyWith(hintText:"Describe tu marca en pocas palabras!")
+                                                    decoration: Styles.textFromInputDecoration.copyWith(hintText:"Describe tu marca en pocas palabras!",hintStyle: TextStyle(fontSize: 12),),
+
                                                 ),
                                               ),
                                             ],
@@ -326,7 +328,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                               ),
                               child: TextButton(
                                 onPressed: () async {
-
+                                  Navigator.pop(context);
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
