@@ -78,7 +78,7 @@ class _SplashScreenState extends State<SplashScreen> {
         value:SystemUiOverlayStyle(
           statusBarColor: Colors.transparent, //i like transaparent :-)
           systemNavigationBarColor: Colors.black, // navigation bar color
-          statusBarIconBrightness: Brightness.dark, // status bar icons' color
+          statusBarIconBrightness: Brightness.light, // status bar icons' color
           systemNavigationBarIconBrightness:Brightness.light, //navigation bar icons' color
         ),
         child: Scaffold(

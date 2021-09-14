@@ -47,8 +47,8 @@ class _LoginState extends State<Login> {
                 children: <Widget>[
                   Center(
                     child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      height: MediaQuery.of(context).size.height * 0.15,
+                      width: MediaQuery.of(context).size.width * 0.14,
+                      height: MediaQuery.of(context).size.height * 0.07,
                       child: CircularProgressIndicator(
                         color: Styles.white,
                       ),
@@ -56,8 +56,8 @@ class _LoginState extends State<Login> {
                   ),
                   Center(
                     child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.15,
-                      height: MediaQuery.of(context).size.height * 0.15,
+                      width: MediaQuery.of(context).size.width * 0.07,
+                      height: MediaQuery.of(context).size.height * 0.07,
                       child: Image(
                           image: AssetImage(Constants.logoSimple)
                       ),

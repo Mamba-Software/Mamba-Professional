@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Globals/LoadingView.dart';
-import 'package:mamba_castelldefels/Globals/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 
 class MarcaClient  extends StatelessWidget {

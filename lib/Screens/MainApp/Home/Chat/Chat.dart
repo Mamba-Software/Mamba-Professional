@@ -1,6 +1,6 @@
 // Flutter Libs
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Globals/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 
 class Chat extends StatefulWidget {
   const Chat({Key? key}) : super(key: key);

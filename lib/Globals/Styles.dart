@@ -9,6 +9,7 @@ class Styles {
 
   static const Color accent = Color(0xFF200758);
   static const Color accentLight = Color(0x8F200758);
+  static const Color accentLightTrans = Color(0xFFEAE4F7);
 
   static const Color white = Color(0xFFFFFFFF);
   static const Color transparentWhite = Color(0x00FFFFFF);
