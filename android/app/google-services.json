@@ -1,20 +1,20 @@
 {
   "project_info": {
-    "project_number": "556444346766",
-    "project_id": "mamba-24-8",
-    "storage_bucket": "mamba-24-8.appspot.com"
+    "project_number": "331547241606",
+    "project_id": "mamba-style",
+    "storage_bucket": "mamba-style.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:556444346766:android:0384d455dc3a4b3f8d9cdf",
+        "mobilesdk_app_id": "1:331547241606:android:b352fbacbdd2666a7d3507",
         "android_client_info": {
           "package_name": "com.mamba.castelldefels.mamba_castelldefels"
         }
       },
       "oauth_client": [
         {
-          "client_id": "556444346766-rfnbncp8faug9isjv5pn9e100i5c2ucs.apps.googleusercontent.com",
+          "client_id": "331547241606-hi9v6golhte2j8m8s5p7q9vij3cuaefm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.mamba.castelldefels.mamba_castelldefels",
@@ -22,20 +22,20 @@
           }
         },
         {
-          "client_id": "556444346766-2q4iu676edqmjn3nledn7kmls3ube6v0.apps.googleusercontent.com",
+          "client_id": "331547241606-kan54dkiql9kp2cgk41fata2nubl239s.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBGuLCxaAYQ_7ULLqMXDFDBuZNWPbop3qY"
+          "current_key": "AIzaSyCnOl8HKFgrpvbGkFIgyZl9qB4tCOmJKSk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "556444346766-2q4iu676edqmjn3nledn7kmls3ube6v0.apps.googleusercontent.com",
+              "client_id": "331547241606-kan54dkiql9kp2cgk41fata2nubl239s.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

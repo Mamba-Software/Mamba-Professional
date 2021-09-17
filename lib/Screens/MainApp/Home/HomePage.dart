@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'ChildWidget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,6 +19,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  // Acceso a Base de Datos
+  var _accessDatabase = new DatabaseAccess();
+  // Boolean Loading
+  bool isLoading = false;
   // Index of Bottom Navigation Bar
   int _currentIndex = 1;
   // Page Controller
@@ -30,70 +37,88 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    isLoading = true;
+    getUserAndBrand();
+    // Faltaria ficar aqui totes les altres inicialitzacions...
+  }
+  // Gets the user info from firebase.
+  void getUserAndBrand() async {
+    currentUser = await _accessDatabase.getCurrentUserDetails();
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Image.asset(
-          Constants.logoExtended,
-          fit: BoxFit.contain,
-          height: 32,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+        value:SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent, //i like transaparent :-)
+          systemNavigationBarColor: Colors.black, // navigation bar color
+          statusBarIconBrightness: Brightness.light, // status bar icons' color
+          systemNavigationBarIconBrightness:Brightness.light, //navigation bar icons' color
         ),
-        centerTitle: true,
-        elevation: 10,
-        automaticallyImplyLeading: false,
-      ),
-      backgroundColor: Styles.white,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.shifting,
-        iconSize: 35,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person, color: Styles.white,),
-            label: AppLocalizations.of(context)!.profileBottomNav,
-            backgroundColor: Styles.mainColor,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Image.asset(
+              Constants.logoExtended,
+              fit: BoxFit.contain,
+              height: 32,
+            ),
+            centerTitle: true,
+            elevation: 10,
+            automaticallyImplyLeading: false,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.fitness_center_rounded, color: Styles.white,),
-            label: AppLocalizations.of(context)!.brandBottomNav,
-            backgroundColor: Styles.mainColor,
+          backgroundColor: Styles.white,
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            type: BottomNavigationBarType.shifting,
+            iconSize: 35,
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person, color: Styles.white,),
+                label: AppLocalizations.of(context)!.profileBottomNav,
+                backgroundColor: Styles.mainColor,
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.fitness_center_rounded, color: Styles.white,),
+                label: AppLocalizations.of(context)!.brandBottomNav,
+                backgroundColor: Styles.mainColor,
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.chat, color: Styles.white,),
+                label: AppLocalizations.of(context)!.chatBottomNav,
+                backgroundColor: Styles.mainColor,
+              ),
+            ],
+            onTap: (index) {
+              _currentIndex = index;
+              _pageController.animateToPage(
+                index,
+                duration: Duration(milliseconds: 200),
+                curve: Curves.linear,
+              );
+              setState(() {});
+            },
+            selectedItemColor: Styles.white,
+            selectedLabelStyle: Styles.whiteTextStyle.copyWith(fontSize: 15),
+            unselectedItemColor: Styles.white,
+            unselectedLabelStyle: Styles.whiteTextStyle.copyWith(fontSize: 15),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat, color: Styles.white,),
-            label: AppLocalizations.of(context)!.chatBottomNav,
-            backgroundColor: Styles.mainColor,
+          body: PageView(
+            controller: _pageController,
+            onPageChanged: (page) {
+              setState(() {
+                _currentIndex = page;
+              });
+            },
+            children: <Widget>[
+              ChildWidget(number: AvailableNumber.First),
+              ChildWidget(number: AvailableNumber.Second),
+              ChildWidget(number: AvailableNumber.Third),
+            ],
           ),
-        ],
-        onTap: (index) {
-          _currentIndex = index;
-          _pageController.animateToPage(
-            index,
-            duration: Duration(milliseconds: 200),
-            curve: Curves.linear,
-          );
-          setState(() {});
-        },
-        selectedItemColor: Styles.white,
-        selectedLabelStyle: Styles.whiteTextStyle.copyWith(fontSize: 15),
-        unselectedItemColor: Styles.white,
-        unselectedLabelStyle: Styles.whiteTextStyle.copyWith(fontSize: 15),
-      ),
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (page) {
-          setState(() {
-            _currentIndex = page;
-          });
-        },
-        children: <Widget>[
-          ChildWidget(number: AvailableNumber.First),
-          ChildWidget(number: AvailableNumber.Second),
-          ChildWidget(number: AvailableNumber.Third),
-        ],
-      ),
+        )
     );
   }
 

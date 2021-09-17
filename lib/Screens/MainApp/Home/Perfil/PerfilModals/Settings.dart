@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
@@ -24,8 +25,6 @@ class _SettingsState extends State<Settings> {
   // Boolean Loading
   bool isLoading = false;
   bool firstBuild = true;
-  // Model Usuario
-  Usuario? user;
   // Type of Profile Widget value
   bool? _isPrivate = null;
   final _typeProfileKey = GlobalKey<_ProfileTypeWidgetState>();
@@ -40,12 +39,10 @@ class _SettingsState extends State<Settings> {
   @override
   void initState() {
     super.initState();
-    isLoading = true;
-    getUser();
   }
   // Gets user info.
   void getUser() async {
-    user = await _accessDatabase.getCurrentUserDetails();
+    currentUser = await _accessDatabase.getCurrentUserDetails();
     setState(() {
       isLoading = false;
     });
@@ -55,7 +52,7 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     // Checking if there has been a change that has not been saved.
     if (!isLoading) {
-      if (_isPrivate != user!.isPrivate! && _isPrivate != null) {
+      if (_isPrivate != currentUser.isPrivate! && _isPrivate != null) {
         isUpdated = true;
       } else if (idiomaChanged) {
         isUpdated = true;
@@ -78,37 +75,33 @@ class _SettingsState extends State<Settings> {
                 IconButton(
                   icon: Icon(Icons.arrow_back, color: Styles.accent),
                   onPressed: () => {
-                    isSaved = true,
+                    isSaved = false,
                     widget.isSaved(isSaved),
-                    if (idiomaChanged) {
-                      user!.idioma = user!.previousIdioma,
-                      user!.previousIdioma = "",
-                      Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(user!.idioma!)),
-                      _accessDatabase.updateCurrentUserSettingsPerifl(user!.isPrivate!, user!.idioma!, user!.previousIdioma!)
-                    },
                     Navigator.pop(context)
                   },
                 ),
                 Text(AppLocalizations.of(context)!.settings, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
                 IconButton(
                   icon: Icon(Icons.save, color: isUpdated ? Colors.green : Styles.accentLight),
-                  onPressed: isUpdated ? () => {
+                  onPressed: isUpdated ? () async => {
                     setState(() {
                       isSaved = true;
                       widget.isSaved(isSaved);
                       widget.isUpdated(isUpdated);
                       if (!(_isPrivate == null)) {
-                        user!.isPrivate = _isPrivate;
+                        currentUser.isPrivate = _isPrivate;
                       };
                       if (idiomaChanged) {
-                        user!.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
-                        user!.previousIdioma = "";
+                        currentUser.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
+                        currentUser.previousIdioma = "";
                       };
-                      _accessDatabase.updateCurrentUserSettingsPerifl(user!.isPrivate!, user!.idioma!,user!.previousIdioma!);
+                      isLoading = true;
                       _idiomaChanged.currentState!.resetIdiomaChanged();
                       idiomaChanged = false;
-                      Navigator.pop(context);
-                    })
+                    }),
+                  await _accessDatabase.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!),
+
+                  Navigator.pop(context),
                   } : null,
                 ),
               ],
@@ -126,7 +119,7 @@ class _SettingsState extends State<Settings> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        !(user!.isTrainer!) ? Padding(
+                        !(currentUser.isTrainer!) ? Padding(
                             padding: EdgeInsets.only(
                                 left: 25.0, right: 25.0, top: 25.0),
                             child: new Row(
@@ -144,12 +137,12 @@ class _SettingsState extends State<Settings> {
                                 ),
                               ],
                             )) : Container(),
-                        !(user!.isTrainer!) ? Padding(
+                        !(currentUser.isTrainer!) ? Padding(
                             padding: EdgeInsets.only(
                                 left: 25.0, right: 25.0, top: 12.0),
                             child: ProfileTypeWidget(
                               key: _typeProfileKey,
-                              user: user,
+                              user: currentUser,
                               selectedProfileTypeChanged: (isPrivate) {
                                 setState(() {
                                   _isPrivate = isPrivate;
@@ -179,7 +172,6 @@ class _SettingsState extends State<Settings> {
                             padding: EdgeInsets.only(
                                 left: 25.0, right: 25.0, top: 12.0, bottom: 12.0),
                             child: LanguagePickerWidget(
-                                user: user,
                                 key: _idiomaChanged,
                                 idiomaChanged: (bool) {
                                   idiomaChanged = bool!;
@@ -263,9 +255,8 @@ class _ProfileTypeWidgetState extends State<ProfileTypeWidget> {
 }
 
 class LanguagePickerWidget extends StatefulWidget {
-  final Usuario? user;
   ValueChanged<bool?> idiomaChanged;
-  LanguagePickerWidget({Key? key, required this.idiomaChanged, required this.user}) : super(key: key);
+  LanguagePickerWidget({Key? key, required this.idiomaChanged}) : super(key: key);
   @override
   _LanguagePickerWidgetState createState() => _LanguagePickerWidgetState();
 }
@@ -322,14 +313,11 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
                 onTap: () => {
                   setState(() {
                     _locale = locale;
-                    if (_locale!.languageCode != widget.user!.idioma!) {
+                    if (_locale!.languageCode != currentUser.idioma!) {
                       idiomaChanged = true;
-                    }
-                    if (_locale!.languageCode == widget.user!.previousIdioma!) {
+                    } else {
                       idiomaChanged = false;
                     }
-                    widget.user!.previousIdioma = widget.user!.idioma!;
-                    widget.user!.idioma = _locale!.languageCode;
                     Provider.of<LanguageProvider>(context, listen: false).setLocale(_locale!);
                     widget.idiomaChanged(idiomaChanged);
                   }),

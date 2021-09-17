@@ -8,6 +8,7 @@ class Usuario {
   bool? isFirst;
   bool? isTrainer;
   bool? isPrivate;
+  bool? isAdmin;
   int? gender;
   String? dateJoined;
   String? dateOfBirth;
@@ -23,6 +24,7 @@ class Usuario {
     this.isFirst,
     this.isTrainer,
     this.isPrivate,
+    this.isAdmin,
     this.gender,
     this.dateJoined,
     this.dateOfBirth,
@@ -39,6 +41,7 @@ class Usuario {
     data['isFirst'] = user.isFirst;
     data['isTrainer'] = user.isTrainer;
     data['isPrivate'] = user.isPrivate;
+    data['isAdmin'] = user.isAdmin;
     data['gender'] = user.gender;
     data['dateJoined'] = user.dateJoined;
     data['dateOfBirth'] = user.dateOfBirth;
@@ -56,6 +59,7 @@ class Usuario {
     this.isFirst = mapData['isFirst'];
     this.isTrainer = mapData['isTrainer'];
     this.isPrivate = mapData['isPrivate'];
+    this.isAdmin = mapData['isAdmin'];
     this.gender = mapData['gender'];
     this.dateJoined = mapData['dateJoined'].toString();
     this.dateOfBirth = mapData['dateOfBirth'].toString();

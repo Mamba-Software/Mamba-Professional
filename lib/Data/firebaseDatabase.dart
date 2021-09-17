@@ -75,7 +75,7 @@ class FirebaseDatabaseService {
               .set({
             "name": name,
             "email": email,
-            "imageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-24-8.appspot.com/o/emptyProfileImage.png?alt=media&token=59103e64-82a3-42bf-b3a0-342beb1919a6",
+            "imageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/SimpleYellow.png?alt=media&token=9cc261f4-2d68-4b1d-aefc-f619d477f8e3",
             "isFirst": true,
             "isTrainer": isTrainer,
             "isPrivate": true,
@@ -83,6 +83,7 @@ class FirebaseDatabaseService {
             "dateJoined": formatted,
             "idioma": idioma,
             "brandID": null,
+            "isAdmin": false,
           })
           .catchError((err) {
             print(err);

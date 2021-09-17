@@ -3,10 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
+import 'package:mamba_castelldefels/Screens/Admin/Admin.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/FirstTimeWrapper.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
@@ -39,27 +41,38 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void checkAndGetCurrentUserDetails() async {
-    User? currentUser = await _accessDatabase.getCurrentUser();
-    if(currentUser != null && currentUser.emailVerified) {
-      Usuario? user = await _accessDatabase.getCurrentUserDetails();
+    User? firebaseUser = await _accessDatabase.getCurrentUser();
+    if(firebaseUser != null && firebaseUser.emailVerified) {
+      var user = await _accessDatabase.getCurrentUserDetails();
       Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(user.idioma!));
-      if(!(user.isFirst!)) {
+      if(user.isAdmin!) {
         Navigator.pushReplacement(
             context,
             CupertinoPageRoute<Null>(
-              builder: (context) => HomePage(),
-              settings: RouteSettings(name: 'HomePage'),
+              builder: (context) => Admin(),
+              settings: RouteSettings(name: 'Admin'),
             )
         );
       } else {
-        Navigator.pushReplacement(
-            context,
-            CupertinoPageRoute<Null>(
-              builder: (context) => FirstTimeWrapper(),
-              settings: RouteSettings(name: 'FirstTimeWrapper'),
-            )
-        );
+        if(!(user.isFirst!)) {
+          Navigator.pushReplacement(
+              context,
+              CupertinoPageRoute<Null>(
+                builder: (context) => HomePage(),
+                settings: RouteSettings(name: 'HomePage'),
+              )
+          );
+        } else {
+          Navigator.pushReplacement(
+              context,
+              CupertinoPageRoute<Null>(
+                builder: (context) => FirstTimeWrapper(),
+                settings: RouteSettings(name: 'FirstTimeWrapper'),
+              )
+          );
+        }
       }
+
     } else {
       Navigator.pushAndRemoveUntil(
         context,

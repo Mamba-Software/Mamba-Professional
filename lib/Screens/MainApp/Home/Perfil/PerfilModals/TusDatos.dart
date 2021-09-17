@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
@@ -23,8 +24,6 @@ class _TusDatosState extends State<TusDatos> {
   // Boolean Loading
   bool isLoading = false;
   bool firstBuild = true;
-  // Model Usuario
-  Usuario? user;
 
   // Form Values
   final _formKey = GlobalKey<FormState>();
@@ -45,12 +44,10 @@ class _TusDatosState extends State<TusDatos> {
   @override
   void initState() {
     super.initState();
-    isLoading = true;
-    getUser();
   }
   // Gets user data when opening.
   void getUser() async {
-    user = await _accessDatabase.getCurrentUserDetails();
+    currentUser = await _accessDatabase.getCurrentUserDetails();
     setState(() {
       isLoading = false;
     });
@@ -59,9 +56,9 @@ class _TusDatosState extends State<TusDatos> {
   @override
   Widget build(BuildContext context) {
     // Initialises some data the first time that the Widget is build and data is Loaded.
-    if(!isLoading && firstBuild){
-      nombreCompletoController = TextEditingController(text: user!.name);
-      selectedDate = user!.dateOfBirth == "null" ? DateTime.now() : DateFormat('dd-MM-yyyy').parse(user!.dateOfBirth!);
+    if(firstBuild){
+      nombreCompletoController = TextEditingController(text: currentUser.name);
+      selectedDate = currentUser.dateOfBirth == "null" ? DateTime.now() : DateFormat('dd-MM-yyyy').parse(currentUser.dateOfBirth!);
       firstBuild = false;
     }
     // Widget to Select your date.
@@ -85,9 +82,9 @@ class _TusDatosState extends State<TusDatos> {
     }
     // Checking if there has been a change that has not been saved.
     if (!isLoading) {
-      if (nombreCompletoTemp != user!.name! && nombreCompletoTemp != "") {
+      if (nombreCompletoTemp != currentUser.name! && nombreCompletoTemp != "") {
         isUpdated = true;
-      } else if (genderTemp != user!.gender! && genderTemp != null) {
+      } else if (genderTemp != currentUser.gender! && genderTemp != null) {
         isUpdated = true;
       } else if (selectedDateTemp != selectedDate && selectedDateTemp != null) {
         isUpdated = true;
@@ -120,24 +117,25 @@ class _TusDatosState extends State<TusDatos> {
                   Text(AppLocalizations.of(context)!.info, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
                   IconButton(
                     icon: Icon(Icons.save, color: isUpdated ? Colors.green : Styles.accentLight),
-                    onPressed: isUpdated ? () => {
+                    onPressed: isUpdated ? () async => {
                       setState(() {
                         widget.isUpdated(isUpdated);
                         if(_formKey.currentState!.validate()){
                           if (nombreCompletoTemp.isNotEmpty) {
-                            user!.name = nombreCompletoTemp;
+                            currentUser.name = nombreCompletoTemp;
                           };
                           if (!(genderTemp == null)) {
-                            user!.gender = genderTemp;
+                            currentUser.gender = genderTemp;
                           };
                           if (!(selectedDateTemp == null)) {
-                            user!.dateOfBirth = dateToString(selectedDateTemp);
+                            currentUser.dateOfBirth = dateToString(selectedDateTemp);
                           };
-                          // Update User DataBase
-                          _accessDatabase.updateCurrentUserDatosPerifl(user!.name!, user!.gender!, user!.dateOfBirth!);
-                          Navigator.pop(context);
                         }
-                      })
+                        isLoading = true;
+                      }),
+                      // Update User DataBase
+                      await _accessDatabase.updateCurrentUserDatosPerifl(currentUser.name!, currentUser.gender!, currentUser.dateOfBirth!),
+                      Navigator.pop(context)
                     } : null,
                   ),
                 ],
@@ -230,7 +228,7 @@ class _TusDatosState extends State<TusDatos> {
                                       decoration: InputDecoration(
                                         hintText: AppLocalizations.of(context)!.email,
                                       ),
-                                      initialValue: user!.email!,
+                                      initialValue: currentUser.email!,
                                       enabled: false,
                                     ),
                                   ),
@@ -241,7 +239,7 @@ class _TusDatosState extends State<TusDatos> {
                                   left: 20.0, right: 20.0, top: 10.0),
                               child: GenderWidget(
                                 key: _genderKey,
-                                user: user,
+                                user: currentUser,
                                 selectedGenderChanged: (gender) {
                                   setState(() {
                                     genderTemp = gender;

@@ -5,10 +5,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Globals.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
-import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:provider/provider.dart';
@@ -30,8 +30,6 @@ class _PerfilState extends State<Perfil> {
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
   bool isLoading = false;
-  // Model Usuario
-  Usuario? user;
   // List Bool Status
   List<bool> _statusButtons =  [false, false, false, false];
   // Size of Icons
@@ -47,12 +45,10 @@ class _PerfilState extends State<Perfil> {
   @override
   void initState() {
     super.initState();
-    isLoading = true;
-    getUser();
   }
   // Gets the user info from firebase.
   void getUser() async {
-    user = await _accessDatabase.getCurrentUserDetails();
+    currentUser = await _accessDatabase.getCurrentUserDetails();
     setState(() {
       isLoading = false;
     });
@@ -138,7 +134,7 @@ class _PerfilState extends State<Perfil> {
               }),
             },
             if(!_isSaved){
-              Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(user!.idioma!)),
+              Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!)),
             },
             setState(() {
               _statusButtons[1] = !_statusButtons[1];
@@ -222,14 +218,14 @@ class _PerfilState extends State<Perfil> {
                                           )
                                         ) :
                                         CachedNetworkImage(
-                                          imageUrl: user!.imageUrl!,
+                                          imageUrl: currentUser.imageUrl!,
                                           imageBuilder: (context, imageProvider) => Container(
                                             decoration: BoxDecoration(
                                               shape: BoxShape.circle,
                                               border: Border.all(color: Styles.mainColor, width: 4.0),
                                               image: DecorationImage(
                                                   image: imageProvider,
-                                                  fit: BoxFit.fitWidth,
+                                                  fit: BoxFit.scaleDown,
                                               ),
                                             ),
                                           ),
@@ -295,7 +291,7 @@ class _PerfilState extends State<Perfil> {
                                                   });
                                                   //_showSettingsPanel();
                                                 }, // button pressed
-                                                child: Icon( Icons.info_outline, color: Colors.white, size: _iconSize,), // icon
+                                                child: Icon( Icons.person, color: Colors.white, size: _iconSize,), // icon
                                               ),
                                             ),
                                           ),
@@ -404,14 +400,14 @@ class _PerfilState extends State<Perfil> {
                   //padding: EdgeInsets.only(top: 25.0, bottom: 25.0, right: 25.0, left: 25.0),
                   child: new Column(
                     children: [
-                      Text("${user!.name}", style: Styles.purpleTextStyle.copyWith(fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                      Text("${currentUser.name}", style: Styles.purpleTextStyle.copyWith(fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
                       Padding(
                         padding: const EdgeInsets.only(top:20.0, bottom: 5.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(AppLocalizations.of(context)!.memberSince(user!.dateJoined!), style: Styles.purpleTextStyle.copyWith(fontSize: 16)),
+                            Text(AppLocalizations.of(context)!.memberSince(currentUser.dateJoined!), style: Styles.purpleTextStyle.copyWith(fontSize: 16)),
                           ],
                         ),
                       ),
@@ -421,7 +417,7 @@ class _PerfilState extends State<Perfil> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text( user!.isTrainer! ? AppLocalizations.of(context)!.trainerOf : AppLocalizations.of(context)!.clientOf, style: Styles.purpleTextStyle.copyWith(fontSize: 16,)),
+                            Text(currentUser.isTrainer! ? AppLocalizations.of(context)!.trainerOf : AppLocalizations.of(context)!.clientOf, style: Styles.purpleTextStyle.copyWith(fontSize: 16,)),
                             Text("Roldan Coach", style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
                           ],
                         ),
