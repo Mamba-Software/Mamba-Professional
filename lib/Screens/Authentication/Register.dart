@@ -23,23 +23,26 @@ class _RegisterState extends State<Register> {
   // Password Visible
   bool _passwordVisible = false;
   // isTrainer?
-  bool isTrainer = false;
+  bool? isTrainer;
   bool? isTrainerTemp;
+  bool errorType = false;
+  String errorTypeText = '';
   // Scaffold Messenger Key
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   // FormVariables
   final _formKey = GlobalKey<FormState>();
-  bool errorGender = false;
-  String errorGenderText = '';
   String name = '';
-  String nameTemp = '';
+  String? nameTemp;
   String email = '';
-  String emailTemp = '';
+  String? emailTemp;
   String password1 = '';
   String password2 = '';
+
   // Gender Widget value
   int? gender;
   var genderTemp;
+  bool errorGender = false;
+  String errorGenderText = '';
   void updateGender(int newGender) {
     setState(() {
       gender = newGender;
@@ -105,11 +108,21 @@ class _RegisterState extends State<Register> {
                               },
                             )
                         ),
+                        errorType ? Padding(
+                          padding: EdgeInsets.only(left: 0, right: 0, top: 2.0, bottom: 8),
+                          child: Center(
+                            child: Text(
+                              errorTypeText,
+                              style: Styles.redTextStyle.copyWith(fontSize: 12),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ) : new Container(),
                         Padding(
                             padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 0),
                             child: TextFormField(
-                              initialValue: nameTemp,
-                              validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError  : null,
+                              //initialValue: nameTemp,
+                              validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nameCompletoError  : null,
                               onChanged: (val) {
                                 setState(() => name = val);
                               },
@@ -127,8 +140,8 @@ class _RegisterState extends State<Register> {
                         Padding(
                             padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
                             child: TextFormField(
-                              initialValue: emailTemp,
-                              validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
+                              //initialValue: emailTemp,
+                              validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.emailError : null,
                               onChanged: (val) {
                                 setState(() => email = val);
                               },
@@ -248,6 +261,17 @@ class _RegisterState extends State<Register> {
                                   errorGender = false;
                                 });
                               };
+                              if (isTrainer == null) {
+                                setState(() {
+                                  errorType = true;
+                                  errorTypeText = AppLocalizations.of(context)!.registerTypeError;
+                                  isLoading = false;
+                                });
+                              } else {
+                                setState(() {
+                                  errorType = false;
+                                });
+                              };
                               if(_formKey.currentState!.validate()){
                                 isTrainerTemp = isTrainer;
                                 nameTemp = name;
@@ -294,7 +318,7 @@ class _RegisterState extends State<Register> {
 
   void signUp() async{
     try {
-      var result =  await _accessDatabase.addUser(email, password1, name, isTrainer, gender!, Localizations.localeOf(context).languageCode);
+      var result =  await _accessDatabase.addUser(email, password1, name, isTrainer!, gender!, Localizations.localeOf(context).languageCode);
       if(result == 0) {
         setState(() {
           isLoading = false;
@@ -342,7 +366,7 @@ class _RegisterState extends State<Register> {
 
 class UserTypeWidget extends StatefulWidget {
   final ValueChanged<bool> selectedProfileTypeChanged;
-  final bool isTrainer;
+  final bool? isTrainer;
   UserTypeWidget({Key? key, required this.selectedProfileTypeChanged, required this.isTrainer}) : super(key: key);
 
   @override

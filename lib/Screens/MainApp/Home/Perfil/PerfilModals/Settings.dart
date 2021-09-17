@@ -80,9 +80,11 @@ class _SettingsState extends State<Settings> {
                     Navigator.pop(context)
                   },
                 ),
-                Text(AppLocalizations.of(context)!.settings, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
-                IconButton(
-                  icon: Icon(Icons.save, color: isUpdated ? Colors.green : Styles.accentLight),
+                Padding(
+                  padding: const EdgeInsets.only(left: 30.0),
+                  child: Text(AppLocalizations.of(context)!.settings, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+                ),
+                MaterialButton(
                   onPressed: isUpdated ? () async => {
                     setState(() {
                       isSaved = true;
@@ -99,10 +101,14 @@ class _SettingsState extends State<Settings> {
                       _idiomaChanged.currentState!.resetIdiomaChanged();
                       idiomaChanged = false;
                     }),
-                  await _accessDatabase.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!),
+                    await _accessDatabase.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!),
 
-                  Navigator.pop(context),
+                    Navigator.pop(context),
                   } : null,
+                  color: isUpdated ? Colors.green : Colors.transparent,
+                  child: Icon(Icons.save, color: isUpdated ? Colors.white : Styles.accentLight),
+                  padding: EdgeInsets.all(15),
+                  shape: CircleBorder(),
                 ),
               ],
             ),

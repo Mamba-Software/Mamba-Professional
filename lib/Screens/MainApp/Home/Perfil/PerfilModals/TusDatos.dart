@@ -114,9 +114,11 @@ class _TusDatosState extends State<TusDatos> {
                       Navigator.pop(context)
                     },
                   ),
-                  Text(AppLocalizations.of(context)!.info, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
-                  IconButton(
-                    icon: Icon(Icons.save, color: isUpdated ? Colors.green : Styles.accentLight),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30.0),
+                    child: Text(AppLocalizations.of(context)!.info, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+                  ),
+                  MaterialButton(
                     onPressed: isUpdated ? () async => {
                       setState(() {
                         widget.isUpdated(isUpdated);
@@ -137,6 +139,10 @@ class _TusDatosState extends State<TusDatos> {
                       await _accessDatabase.updateCurrentUserDatosPerifl(currentUser.name!, currentUser.gender!, currentUser.dateOfBirth!),
                       Navigator.pop(context)
                     } : null,
+                    color: isUpdated ? Colors.green : Colors.transparent,
+                    child: Icon(Icons.save, color: isUpdated ? Colors.white : Styles.accentLight),
+                    padding: EdgeInsets.all(15),
+                    shape: CircleBorder(),
                   ),
                 ],
               ),

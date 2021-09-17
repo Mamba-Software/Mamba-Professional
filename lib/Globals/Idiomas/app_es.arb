@@ -143,6 +143,10 @@
   "@registerGenderError":{
     "description": "Regístrate Gender Error Text "
   },
+  "registerTypeError": "Porfavor selecciona tu tipo de usuario",
+  "@registerTypeError":{
+    "description": "Regístrate Gender Error Text "
+  },
   "wellcome": "¡Hola {username}!",
   "@wellcome": {
     "description": "Wellcome message",
