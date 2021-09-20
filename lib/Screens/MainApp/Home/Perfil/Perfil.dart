@@ -390,7 +390,7 @@ class _PerfilState extends State<Perfil> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(currentUser.isTrainer! ? AppLocalizations.of(context)!.trainerOf : AppLocalizations.of(context)!.clientOf, style: Styles.purpleTextStyle.copyWith(fontSize: 16,)),
-                            Text("Roldan Coach", style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
+                            Text("----------", style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
                           ],
                         ),
                       ),

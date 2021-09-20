@@ -75,330 +75,330 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
       ),
       backgroundColor: Styles.white,
       body: SingleChildScrollView(
-              child: Form(
-                key: _formBasicInfoKey,
+        child: Form(
+          key: _formBasicInfoKey,
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.all(12),
                 child: Column(
                   children: [
-                    Container(
-                      padding: EdgeInsets.all(12),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-                                child: new Text(
-                                  AppLocalizations.of(context)!.basicInfo,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                          child: new Text(
+                            AppLocalizations.of(context)!.basicInfo,
+                            style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 15.0),
-                                height: MediaQuery.of(context).size.height * 0.20,
-                                child: Center(
-                                  child: _image == null ?
-                                  RawMaterialButton(
-                                    onPressed: getImage,
-                                    child: Column(
-                                      children: [
-                                        new Icon(
-                                          Icons.camera_alt_outlined,
-                                          color: Styles.accent,
-                                          size: 35.0,
-                                        ),
-                                      ],
-                                    ),
-                                    shape: CircleBorder(),
-                                    elevation: 10.0,
-                                    fillColor: Colors.white,
-                                    padding: EdgeInsets.only(left: 50, right: 50, top: 63),
-                                  ):
-                                  GestureDetector(
-                                    onTap: getImage,
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Center(
-                                            child: Container(
-                                                width: MediaQuery.of(context).size.width*0.35,
-                                                decoration: new BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  image: new DecorationImage(
-                                                    image: FileImage(_image),
-                                                    fit: BoxFit.fitWidth,
-                                                  ),
-                                                )
-                                            )
-                                        ),
-                                      ],
-                                    ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 15.0),
+                          height: MediaQuery.of(context).size.height * 0.20,
+                          child: Center(
+                            child: _image == null ?
+                            RawMaterialButton(
+                              onPressed: getImage,
+                              child: Column(
+                                children: [
+                                  new Icon(
+                                    Icons.camera_alt_outlined,
+                                    color: Styles.accent,
+                                    size: 35.0,
                                   ),
-                                ),
+                                ],
                               ),
-                              Expanded(
-                                  child: new Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 10),
-                                          child: new Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              new Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  new Text(
-                                                    AppLocalizations.of(context)!.name,
-                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                          padding: EdgeInsets.only(left: 10, right: 20),
-                                          child: new Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              new Flexible(
-                                                child: new TextFormField(
-                                                  controller: nameBrandController,
-                                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
-                                                  onChanged: (val) {
-                                                    setState(() => {
-                                                      nameBrand = val
-                                                    });
-                                                  },
-                                                  decoration: InputDecoration(
-                                                    hintText: AppLocalizations.of(context)!.nameCompletoError,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                    child: new Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Padding(
-                                            padding: EdgeInsets.only(left: 20, right: 20, top: 10),
-                                            child: new Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                new Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      AppLocalizations.of(context)!.baseLocation,
-                                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                                    ),
-                                                  ],
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 0),
-                                                  child: IconButton(
-                                                    padding: EdgeInsets.zero,
-                                                    icon: Icon(Icons.info_outline, color: Styles.accent, size: 20),
-                                                    onPressed: () {  },
-                                                  )
-                                                ),
-                                              ],
-                                            )
-                                        ),
-                                        Padding(
-                                            padding: EdgeInsets.symmetric(horizontal: 20,),
-                                            child: new Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                              Expanded(
-                                                child: TextField(
-                                                  controller: ubicacionController,
-                                                  readOnly: true,
-                                                  onTap: () async {
-                                                    // generate a new token here
-                                                    final Suggestion? result = await showSearch(
-                                                      context: context,
-                                                      delegate: AddressSearch(),
-                                                    );
-                                                    // This will change the text displayed in the TextField
-                                                    if (result != null) {
-                                                      final placeDetails = await LocationPlacesSearch()
-                                                          .getPlaceDetailFromId(result.placeId);
-                                                      setState(() {
-                                                        ubicacionController.text = result.description;
-                                                        if(placeDetails.street!=null) _street = placeDetails.street!; else _street="N/A";
-                                                        if(placeDetails.streetNumber!=null) _streetNumber = placeDetails.streetNumber!; else _streetNumber="N/A";
-                                                        if(placeDetails.city!=null) _city = placeDetails.city!; else _city="N/A";
-                                                        if(placeDetails.zipCode!=null) _zipCode = placeDetails.zipCode!; else _zipCode="N/A";
-                                                      });
-                                                    }
-                                                  },
-                                                  decoration: InputDecoration(
-                                                    icon: Container(
-                                                      width: 10,
-                                                      height: 10,
-                                                      child: Icon(
-                                                        Icons.location_on_outlined,
-                                                        color: Styles.accent,
-                                                        size: 35,
-                                                      ),
-                                                    ),
-                                                    hintText: AppLocalizations.of(context)!.enterAddress,
-                                                    border: InputBorder.none,
-                                                    contentPadding: EdgeInsets.only(left: 18.0, top: 16.0),
-                                                  ),
+                              shape: CircleBorder(),
+                              elevation: 10.0,
+                              fillColor: Colors.white,
+                              padding: EdgeInsets.only(left: 50, right: 50, top: 63),
+                            ):
+                            GestureDetector(
+                              onTap: getImage,
+                              child: Stack(
+                                children: <Widget>[
+                                  Center(
+                                      child: Container(
+                                          width: MediaQuery.of(context).size.width*0.35,
+                                          decoration: new BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            image: new DecorationImage(
+                                              image: FileImage(_image),
+                                              fit: BoxFit.fitWidth,
                                             ),
-                                              )
+                                          )
+                                      )
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                            child: new Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 10),
+                                    child: new Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        new Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            new Text(
+                                              AppLocalizations.of(context)!.name,
+                                              style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                            ),
                                           ],
                                         ),
+                                      ],
+                                    )
+                                ),
+                                Padding(
+                                    padding: EdgeInsets.only(left: 10, right: 20),
+                                    child: new Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        new Flexible(
+                                          child: new TextFormField(
+                                            controller: nameBrandController,
+                                            validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
+                                            onChanged: (val) {
+                                              setState(() => {
+                                                nameBrand = val
+                                              });
+                                            },
+                                            decoration: InputDecoration(
+                                              hintText: AppLocalizations.of(context)!.nameCompletoError,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                              child: new Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                      padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                                      child: new Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: <Widget>[
+                                          new Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Text(
+                                                AppLocalizations.of(context)!.baseLocation,
+                                                style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 0),
+                                            child: IconButton(
+                                              padding: EdgeInsets.zero,
+                                              icon: Icon(Icons.info_outline, color: Styles.accent, size: 20),
+                                              onPressed: () {  },
+                                            )
+                                          ),
+                                        ],
+                                      )
+                                  ),
+                                  Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 20,),
+                                      child: new Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: <Widget>[
+                                        Expanded(
+                                          child: TextField(
+                                            controller: ubicacionController,
+                                            readOnly: true,
+                                            onTap: () async {
+                                              // generate a new token here
+                                              final Suggestion? result = await showSearch(
+                                                context: context,
+                                                delegate: AddressSearch(),
+                                              );
+                                              // This will change the text displayed in the TextField
+                                              if (result != null) {
+                                                final placeDetails = await LocationPlacesSearch()
+                                                    .getPlaceDetailFromId(result.placeId);
+                                                setState(() {
+                                                  ubicacionController.text = result.description;
+                                                  if(placeDetails.street!=null) _street = placeDetails.street!; else _street="N/A";
+                                                  if(placeDetails.streetNumber!=null) _streetNumber = placeDetails.streetNumber!; else _streetNumber="N/A";
+                                                  if(placeDetails.city!=null) _city = placeDetails.city!; else _city="N/A";
+                                                  if(placeDetails.zipCode!=null) _zipCode = placeDetails.zipCode!; else _zipCode="N/A";
+                                                });
+                                              }
+                                            },
+                                            decoration: InputDecoration(
+                                              icon: Container(
+                                                width: 10,
+                                                height: 10,
+                                                child: Icon(
+                                                  Icons.location_on_outlined,
+                                                  color: Styles.accent,
+                                                  size: 35,
+                                                ),
+                                              ),
+                                              hintText: AppLocalizations.of(context)!.enterAddress,
+                                              border: InputBorder.none,
+                                              contentPadding: EdgeInsets.only(left: 18.0, top: 16.0),
+                                            ),
                                       ),
+                                        )
                                     ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          _street != "" ?
-                          Padding(
-                              padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 20),
-                              child: new Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(AppLocalizations.of(context)!.streetName, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
-                                      Text(_street, style: Styles.purpleTextStyle,),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(AppLocalizations.of(context)!.streetNumber, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
-                                      Text(_streetNumber, style: Styles.purpleTextStyle,),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(AppLocalizations.of(context)!.city, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
-                                      Text(_city, style: Styles.purpleTextStyle,),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(AppLocalizations.of(context)!.zipCode, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
-                                      Text(_zipCode, style: Styles.purpleTextStyle,),
-                                    ],
-                                  ),
-                                ],
-                              )
-                          ) : Container(),
-                          Padding(
-                              padding: EdgeInsets.only(left: 20, right: 20, top: 10),
-                              child: new Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  new Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Text(
-                                        AppLocalizations.of(context)!.description,
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                  Padding(
-                                      padding: const EdgeInsets.only(left: 0),
-                                      child: IconButton(
-                                        padding: EdgeInsets.zero,
-                                        icon: Icon(Icons.info_outline, color: Styles.accent, size: 20),
-                                        onPressed: () {  },
-                                      )
-                                  ),
-                                ],
-                              )
-                          ),
-                          Padding(
-                              padding: EdgeInsets.only(left: 20, right: 20, top: 10),
-                              child: new Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  new Flexible(
-                                    child: new TextFormField(
-                                        controller: descriptionController,
-                                        validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
-                                        onChanged: (val) {
-                                          setState(() => description = val);
-                                        },
-                                        maxLines: 6,
-                                        decoration: Styles.textFromInputDecoration.copyWith(hintText:AppLocalizations.of(context)!.descriptionError)
-                                    ),
-                                  ),
-                                ],
-                              )),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 20),
-                            child: Container(
-                              height: 50,
-                              width: 250,
-                              decoration: BoxDecoration(
-                                  color: Styles.accent, borderRadius: BorderRadius.circular(20)
-                              ),
-                              child: TextButton(
-                                onPressed: () async {
-                                  Navigator.push(
-                                      context,
-                                      CupertinoPageRoute<Null>(
-                                        builder: (context) => RegistrarMarcaCalendar(),
-                                        settings: RouteSettings(name: 'RegistrarMarcaCalendar'),
-                                      )
-                                  );
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      AppLocalizations.of(context)!.disponibilidad,
-                                      style: Styles.whiteTextStyle,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Icon(Icons.calendar_today_outlined, color: Styles.white),
-                                  ],
+                        ],
+                      ),
+                    ),
+                    _street != "" ?
+                    Padding(
+                        padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 20),
+                        child: new Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(AppLocalizations.of(context)!.streetName, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                                Text(_street, style: Styles.purpleTextStyle,),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(AppLocalizations.of(context)!.streetNumber, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                                Text(_streetNumber, style: Styles.purpleTextStyle,),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(AppLocalizations.of(context)!.city, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                                Text(_city, style: Styles.purpleTextStyle,),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(AppLocalizations.of(context)!.zipCode, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                                Text(_zipCode, style: Styles.purpleTextStyle,),
+                              ],
+                            ),
+                          ],
+                        )
+                    ) : Container(),
+                    Padding(
+                        padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                        child: new Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            new Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Text(
+                                  AppLocalizations.of(context)!.description,
+                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                                 ),
+                              ],
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.only(left: 0),
+                                child: IconButton(
+                                  padding: EdgeInsets.zero,
+                                  icon: Icon(Icons.info_outline, color: Styles.accent, size: 20),
+                                  onPressed: () {  },
+                                )
+                            ),
+                          ],
+                        )
+                    ),
+                    Padding(
+                        padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                        child: new Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            new Flexible(
+                              child: new TextFormField(
+                                  controller: descriptionController,
+                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
+                                  onChanged: (val) {
+                                    setState(() => description = val);
+                                  },
+                                  maxLines: 6,
+                                  decoration: Styles.textFromInputDecoration.copyWith(hintText:AppLocalizations.of(context)!.descriptionError)
                               ),
                             ),
+                          ],
+                        )),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Container(
+                        height: 50,
+                        width: 250,
+                        decoration: BoxDecoration(
+                            color: Styles.accent, borderRadius: BorderRadius.circular(20)
+                        ),
+                        child: TextButton(
+                          onPressed: () async {
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute<Null>(
+                                  builder: (context) => RegistrarMarcaCalendar(),
+                                  settings: RouteSettings(name: 'RegistrarMarcaCalendar'),
+                                )
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.disponibilidad,
+                                style: Styles.whiteTextStyle,
+                              ),
+                              SizedBox(width: 10),
+                              Icon(Icons.calendar_today_outlined, color: Styles.white),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ],
                 ),
-              )
-            ),
+              ),
+            ],
+          ),
+        )
+      ),
     );
   }
 

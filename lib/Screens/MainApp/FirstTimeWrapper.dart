@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'Home/HomePage.dart';
@@ -22,8 +23,6 @@ class _FirstTimeWrapperState extends State<FirstTimeWrapper> {
 
   //DataBase Access
   var _accessDatabase = new DatabaseAccess();
-  // Models
-  Usuario? user;
   // Booleans
   bool isLoading = true;
   // FormVariables
@@ -39,7 +38,7 @@ class _FirstTimeWrapperState extends State<FirstTimeWrapper> {
   }
 
   void getCurrentUserDetails() async {
-    user = await _accessDatabase.getCurrentUserDetails();
+    currentUser = await _accessDatabase.getCurrentUserDetails();
     setState(() {
       isLoading = false;
     });
@@ -90,7 +89,7 @@ class _FirstTimeWrapperState extends State<FirstTimeWrapper> {
                       child: Image.asset(Constants.logoExtended)),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Text(AppLocalizations.of(context)!.wellcome(user!.name!),
+                    child: Text(AppLocalizations.of(context)!.wellcome(currentUser.name!),
                       style: Styles.purpleTextStyle.copyWith(fontSize: 23, fontWeight:FontWeight.bold),
                       textAlign: TextAlign.center,),
                   ),
