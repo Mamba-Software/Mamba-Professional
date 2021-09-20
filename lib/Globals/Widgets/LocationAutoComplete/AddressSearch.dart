@@ -56,7 +56,10 @@ class AddressSearch extends SearchDelegate<Suggestion> {
           ),
         )
         :
-        Container(child: Text(AppLocalizations.of(context)!.loading, style: Styles.purpleTextStyle.copyWith(color: Colors.grey),)),
+      Container(
+        padding: EdgeInsets.all(16.0),
+        child: Text(AppLocalizations.of(context)!.loading),
+      )
     );
   }
 }

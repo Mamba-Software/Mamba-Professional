@@ -87,5 +87,6 @@
   "zipCode": "Codi Postal: ",
   "clear": "Netejar",
   "back": "Enrere",
-  "enterAddress": "Introdueix la teva adreça"
+  "enterAddress": "Introdueix la teva adreça",
+  "disponibilidad": "Disponibilitat"
 }

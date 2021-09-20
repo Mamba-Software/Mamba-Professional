@@ -331,11 +331,11 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      AppLocalizations.of(context)!.createBrand,
-                                      style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                      AppLocalizations.of(context)!.disponibilidad,
+                                      style: Styles.whiteTextStyle,
                                     ),
                                     SizedBox(width: 10),
-                                    Icon(Icons.fitness_center_rounded, color: Styles.white),
+                                    Icon(Icons.calendar_today_outlined, color: Styles.white),
                                   ],
                                 ),
                               ),

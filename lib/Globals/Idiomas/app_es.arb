@@ -369,6 +369,11 @@
   "enterAddress": "Introduce tu dirección",
   "@enterAddress":{
     "description": "zipCode text"
+  },
+  "disponibilidad": "Disponibilidad",
+  "@disponibilidad":{
+    "description": "disponibilidad text"
   }
+
 
 }
