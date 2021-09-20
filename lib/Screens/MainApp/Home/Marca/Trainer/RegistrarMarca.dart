@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
 
 class RegistrarMarca extends StatefulWidget {
   const RegistrarMarca({Key? key}) : super(key: key);
@@ -22,15 +25,19 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
   // Form Values
   final _formBasicInfoKey = GlobalKey<FormState>();
   String nameBrand = "";
-  String descriptionTemp = "";
-  var nameBrandController;
-  var descriptionController;
+  String ubicacionTemp = "";
+  var nameBrandController = TextEditingController();
+  var ubicacionController =  TextEditingController();
   // Image Picker
   var _image;
   // Multi Select Especialidades
   List<String> selected = [];
   List<String> options = ['a' , 'b' , 'c' , 'd'];
-
+  // Ubicación
+  String _streetNumber = '';
+  String _street = '';
+  String _city = '';
+  String _zipCode = '';
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
@@ -66,8 +73,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
         ),
       ),
       backgroundColor: Styles.white,
-      body: Center(
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
               child: Form(
                 key: _formBasicInfoKey,
                 child: Column(
@@ -92,8 +98,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                padding: EdgeInsets.symmetric(horizontal: 5.0),
-                                height: MediaQuery.of(context).size.height * 0.2,
+                                padding: EdgeInsets.symmetric(horizontal: 15.0),
+                                height: MediaQuery.of(context).size.height * 0.20,
                                 child: Center(
                                   child: _image == null ?
                                   RawMaterialButton(
@@ -101,23 +107,16 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                     child: Column(
                                       children: [
                                         new Icon(
-                                          Icons.photo_library,
+                                          Icons.camera_alt_outlined,
                                           color: Styles.accent,
                                           size: 35.0,
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                          child: new Text(
-                                            "Añade tu logo",
-                                            style: Styles.purpleTextStyle.copyWith(fontSize: 14, fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
                                       ],
                                     ),
-                                    shape: new CircleBorder(),
+                                    shape: CircleBorder(),
                                     elevation: 10.0,
                                     fillColor: Colors.white,
-                                    padding: EdgeInsets.all(50),
+                                    padding: EdgeInsets.only(left: 50, right: 50, top: 63),
                                   ):
                                   GestureDetector(
                                     onTap: getImage,
@@ -202,7 +201,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: <Widget>[
                                         Padding(
-                                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                            padding: EdgeInsets.only(left: 20, right: 20, top: 10),
                                             child: new Row(
                                               mainAxisSize: MainAxisSize.max,
                                               children: <Widget>[
@@ -224,93 +223,47 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                             child: new Row(
                                               mainAxisSize: MainAxisSize.max,
                                               children: <Widget>[
-                                                Padding(
-                                                  padding: const EdgeInsets.only(right: 15.0),
-                                                  child: Icon(
-                                                    Icons.location_on_outlined,
-                                                    color: Styles.accent,
-                                                    size: 30,
-                                                  ),
-                                                ),
-                                                new Flexible(
-                                                  child: new TextFormField(
-                                                    controller: nameBrandController,
-                                                    validator: (val) => val!.isEmpty ? "Escoje tu ubicación" : null,
-                                                    onChanged: (val) {
-                                                      setState(() => {
-                                                        nameBrand = val
+                                              Expanded(
+                                                child: TextField(
+                                                  controller: ubicacionController,
+                                                  readOnly: true,
+                                                  onTap: () async {
+                                                    // generate a new token here
+                                                    final Suggestion? result = await showSearch(
+                                                      context: context,
+                                                      delegate: AddressSearch(),
+                                                    );
+                                                    // This will change the text displayed in the TextField
+                                                    if (result != null) {
+                                                      final placeDetails = await LocationPlacesSearch()
+                                                          .getPlaceDetailFromId(result.placeId);
+                                                      setState(() {
+                                                        ubicacionController.text = result.description;
+                                                        _streetNumber = placeDetails.streetNumber!;
+                                                        _street = placeDetails.street!;
+                                                        _city = placeDetails.city!;
+                                                        _zipCode = placeDetails.zipCode!;
                                                       });
-                                                    },
-                                                    decoration: InputDecoration(
-                                                      hintText: "Escoje tu ubicación",
-                                                      hintStyle: TextStyle(fontSize: 12),
+                                                    }
+                                                  },
+                                                  decoration: InputDecoration(
+                                                    icon: Container(
+                                                      width: 10,
+                                                      height: 10,
+                                                      child: Icon(
+                                                        Icons.location_on_outlined,
+                                                        color: Styles.accent,
+                                                        size: 35,
+                                                      ),
                                                     ),
+                                                    hintText: "Enter your shipping address",
+                                                    border: InputBorder.none,
+                                                    contentPadding: EdgeInsets.only(left: 18.0, top: 16.0),
                                                   ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 15.0),
-                                                  child: Icon(
-                                                    Icons.my_location,
-                                                    color: Styles.accent,
-                                                    size: 30,
-                                                  ),
-                                                ),
-                                              ],
-                                            )
+                                            ),
+                                              )
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: new Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                                          child: new Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              new Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  new Text(
-                                                    "Descripción",
-                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                                          child: new Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              new Flexible(
-                                                child: new TextFormField(
-                                                    controller: descriptionController,
-                                                    validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
-                                                    onChanged: (val) {
-                                                      setState(() => descriptionTemp = val);
-                                                    },
-                                                    maxLines: 8,
-                                                    decoration: Styles.textFromInputDecoration.copyWith(hintText:"Describe tu marca en pocas palabras!",hintStyle: TextStyle(fontSize: 12),),
-
-                                                ),
-                                              ),
-                                            ],
-                                          )
                                       ),
                                     ],
                                   ),
@@ -318,6 +271,12 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                               ],
                             ),
                           ),
+                          SizedBox(height: 10.0),
+                          Text('Street Number: $_streetNumber'),
+                          Text('Street: $_street'),
+                          Text('City: $_city'),
+                          Text('ZIP Code: $_zipCode'),
+                          SizedBox(height: 20.0),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: Container(
@@ -351,7 +310,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                 ),
               )
             ),
-      ),
     );
   }
+
 }
