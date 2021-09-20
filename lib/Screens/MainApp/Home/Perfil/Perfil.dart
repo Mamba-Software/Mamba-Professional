@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
@@ -60,7 +60,7 @@ class _PerfilState extends State<Perfil> {
       _image = File(image!.path);
     });
     retrieveLostData();
-    _accessDatabase.updateCurrentUserPhoto(_image);
+    await _accessDatabase.updateCurrentUserPhoto(_image);
     getUser();
   }
   // Retrieve lost data of Gallery if it crashes becasue of Android.
@@ -204,41 +204,13 @@ class _PerfilState extends State<Perfil> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Container(
-                                        width: MediaQuery.of(context).size.width*0.55,
-                                        height: MediaQuery.of(context).size.height*0.55,
-                                        child: _image != null ?
-                                        Container(
-                                          decoration: new BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(color: Styles.mainColor, width: 4.0),
-                                            image: new DecorationImage(
-                                              image: FileImage(_image),
-                                              fit: BoxFit.fitWidth,
-                                            ),
-                                          )
-                                        ) :
-                                        CachedNetworkImage(
-                                          imageUrl: currentUser.imageUrl!,
-                                          imageBuilder: (context, imageProvider) => Container(
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(color: Styles.mainColor, width: 4.0),
-                                              image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.scaleDown,
-                                              ),
-                                            ),
-                                          ),
-                                          placeholder: (context, url) => Container(
-                                              decoration: new BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(color: Styles.mainColor, width: 2),
-                                              ),
-                                              child: LoadingView(),
-                                          ),
-                                          errorWidget: (context, url, error) => Icon(Icons.error),
-                                        ),
-                                    )
+                                      height: MediaQuery.of(context).size.height * 0.4,
+                                      child: Center(
+                                        child: isLoading ?
+                                        CircularProgressIndicator() :
+                                        CircularImage(size: MediaQuery.of(context).size.height * 0.3, image: currentUser.imageUrl, file: _image,),
+                                      ),
+                                    ),
                                   ],
                                 ),
                                 Positioned(

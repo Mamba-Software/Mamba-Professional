@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:uuid/uuid.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
@@ -131,14 +132,15 @@ class FirebaseDatabaseService {
     });
   }
   Future<void> updateCurrentUserPhoto(File image) async {
-    User? currentUser = await getCurrentUser();
-    var storageRef = await _firebaseStorage.ref().child("userPics/" + currentUser!.uid + ".png");
+    User? firebaseUser = await getCurrentUser();
+    var storageRef = await _firebaseStorage.ref().child("userPics/" + firebaseUser!.uid + ".png");
     var uploadTask= storageRef.putFile(image);
     uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
-        await _firestore.collection("Users").doc(currentUser.uid).update({
+        await _firestore.collection("Users").doc(firebaseUser.uid).update({
           "imageUrl": value,
         });
+        currentUser.imageUrl = value;
       });
     });
   }
