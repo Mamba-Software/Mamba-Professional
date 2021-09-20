@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
@@ -107,8 +108,7 @@ class FirebaseDatabaseService {
   }
   // Add Error/ Report Bug
   Future<bool> addError(String title, String description, [String? stepsReproduce]) async {
-    var uuid = Uuid();
-    var uid = uuid.v1();
+    var uid = UniqueKey().toString();
     User? currentUser = await getCurrentUser();
     try {
       await _firestore.collection("Errors").doc(uid).set({
