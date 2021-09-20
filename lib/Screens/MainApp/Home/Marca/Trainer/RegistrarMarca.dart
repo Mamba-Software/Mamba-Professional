@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/RegistrarMarcaCalendar.dart';
 
 class RegistrarMarca extends StatefulWidget {
   const RegistrarMarca({Key? key}) : super(key: key);
@@ -25,9 +25,10 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
   // Form Values
   final _formBasicInfoKey = GlobalKey<FormState>();
   String nameBrand = "";
-  String ubicacionTemp = "";
+  String description = "";
   var nameBrandController = TextEditingController();
   var ubicacionController =  TextEditingController();
+  var descriptionController =  TextEditingController();
   // Image Picker
   var _image;
   // Multi Select Especialidades
@@ -65,7 +66,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Crea tu Marca", style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22),),
+        title: Text(AppLocalizations.of(context)!.createBrand, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22),),
         centerTitle: true,
         elevation: 10,
         iconTheme: IconThemeData(
@@ -246,10 +247,10 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                                           .getPlaceDetailFromId(result.placeId);
                                                       setState(() {
                                                         ubicacionController.text = result.description;
-                                                        _streetNumber = placeDetails.streetNumber!;
-                                                        _street = placeDetails.street!;
-                                                        _city = placeDetails.city!;
-                                                        _zipCode = placeDetails.zipCode!;
+                                                        if(placeDetails.street!=null) _street = placeDetails.street!; else _street="N/A";
+                                                        if(placeDetails.streetNumber!=null) _streetNumber = placeDetails.streetNumber!; else _streetNumber="N/A";
+                                                        if(placeDetails.city!=null) _city = placeDetails.city!; else _city="N/A";
+                                                        if(placeDetails.zipCode!=null) _zipCode = placeDetails.zipCode!; else _zipCode="N/A";
                                                       });
                                                     }
                                                   },
@@ -316,6 +317,50 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                               )
                           ) : Container(),
                           Padding(
+                              padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                              child: new Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  new Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Text(
+                                        AppLocalizations.of(context)!.description,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                      padding: const EdgeInsets.only(left: 0),
+                                      child: IconButton(
+                                        padding: EdgeInsets.zero,
+                                        icon: Icon(Icons.info_outline, color: Styles.accent, size: 20),
+                                        onPressed: () {  },
+                                      )
+                                  ),
+                                ],
+                              )
+                          ),
+                          Padding(
+                              padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                              child: new Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  new Flexible(
+                                    child: new TextFormField(
+                                        controller: descriptionController,
+                                        validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
+                                        onChanged: (val) {
+                                          setState(() => description = val);
+                                        },
+                                        maxLines: 6,
+                                        decoration: Styles.textFromInputDecoration.copyWith(hintText:AppLocalizations.of(context)!.descriptionError)
+                                    ),
+                                  ),
+                                ],
+                              )),
+                          Padding(
                             padding: const EdgeInsets.symmetric(vertical: 20),
                             child: Container(
                               height: 50,
@@ -325,7 +370,13 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                               ),
                               child: TextButton(
                                 onPressed: () async {
-                                  Navigator.pop(context);
+                                  Navigator.push(
+                                      context,
+                                      CupertinoPageRoute<Null>(
+                                        builder: (context) => RegistrarMarcaCalendar(),
+                                        settings: RouteSettings(name: 'RegistrarMarcaCalendar'),
+                                      )
+                                  );
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
