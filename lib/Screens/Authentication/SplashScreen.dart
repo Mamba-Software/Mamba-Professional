@@ -43,9 +43,9 @@ class _SplashScreenState extends State<SplashScreen> {
   void checkAndGetCurrentUserDetails() async {
     User? firebaseUser = await _accessDatabase.getCurrentUser();
     if(firebaseUser != null && firebaseUser.emailVerified) {
-      var user = await _accessDatabase.getCurrentUserDetails();
-      Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(user.idioma!));
-      if(user.isAdmin!) {
+      currentUser = await _accessDatabase.getCurrentUserDetails();
+      Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
+      if(currentUser.isAdmin!) {
         Navigator.pushReplacement(
             context,
             CupertinoPageRoute<Null>(
@@ -54,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
             )
         );
       } else {
-        if(!(user.isFirst!)) {
+        if(!(currentUser.isFirst!)) {
           Navigator.pushReplacement(
               context,
               CupertinoPageRoute<Null>(

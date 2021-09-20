@@ -5,7 +5,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:uuid/uuid.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
 // Firebase Service Class. All calls to Firebase are in this class.
