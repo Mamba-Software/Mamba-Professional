@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'LocationPlacesSearch.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddressSearch extends SearchDelegate<Suggestion> {
 
@@ -12,7 +13,7 @@ class AddressSearch extends SearchDelegate<Suggestion> {
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
-        tooltip: 'Clear',
+        tooltip: AppLocalizations.of(context)!.clear,
         icon: Icon(Icons.clear),
         onPressed: () {
           query = '';
@@ -23,7 +24,7 @@ class AddressSearch extends SearchDelegate<Suggestion> {
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-      tooltip: 'Back',
+      tooltip: AppLocalizations.of(context)!.back,
       icon: Icon(Icons.arrow_back),
       onPressed: () {
         close(context, Suggestion('',''));
@@ -42,7 +43,7 @@ class AddressSearch extends SearchDelegate<Suggestion> {
       builder: (context, snapshot) => query == '' ?
         Container(
           padding: EdgeInsets.all(16.0),
-          child: Text('Enter your address'),
+          child: Text(AppLocalizations.of(context)!.enterAddress),
         )
         : snapshot.hasData ?
         ListView.builder(
@@ -55,7 +56,7 @@ class AddressSearch extends SearchDelegate<Suggestion> {
           ),
         )
         :
-        Container(child: Text('Loading...')),
+        Container(child: Text(AppLocalizations.of(context)!.loading, style: Styles.purpleTextStyle.copyWith(color: Colors.grey),)),
     );
   }
 }

@@ -88,7 +88,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
                                 child: new Text(
-                                  "Información Básica",
+                                  AppLocalizations.of(context)!.basicInfo,
                                   style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
                                 ),
                               ),
@@ -154,7 +154,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
                                                   new Text(
-                                                    "Nombre",
+                                                    AppLocalizations.of(context)!.name,
                                                     style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                                                   ),
                                                 ],
@@ -177,8 +177,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                                     });
                                                   },
                                                   decoration: InputDecoration(
-                                                    hintText: AppLocalizations.of(context)!.nameCompleto,
-                                                    hintStyle: TextStyle(fontSize: 12),
+                                                    hintText: AppLocalizations.of(context)!.nameCompletoError,
                                                   ),
                                                 ),
                                               ),
@@ -209,11 +208,19 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   mainAxisSize: MainAxisSize.min,
                                                   children: <Widget>[
-                                                    new Text(
-                                                      "Ubicación",
+                                                    Text(
+                                                      AppLocalizations.of(context)!.baseLocation,
                                                       style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                                                     ),
                                                   ],
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(left: 0),
+                                                  child: IconButton(
+                                                    padding: EdgeInsets.zero,
+                                                    icon: Icon(Icons.info_outline, color: Styles.accent, size: 20),
+                                                    onPressed: () {  },
+                                                  )
                                                 ),
                                               ],
                                             )
@@ -256,7 +263,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                                         size: 35,
                                                       ),
                                                     ),
-                                                    hintText: "Enter your shipping address",
+                                                    hintText: AppLocalizations.of(context)!.enterAddress,
                                                     border: InputBorder.none,
                                                     contentPadding: EdgeInsets.only(left: 18.0, top: 16.0),
                                                   ),
@@ -271,14 +278,45 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 10.0),
-                          Text('Street Number: $_streetNumber'),
-                          Text('Street: $_street'),
-                          Text('City: $_city'),
-                          Text('ZIP Code: $_zipCode'),
-                          SizedBox(height: 20.0),
+                          _street != "" ?
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
+                              padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 20),
+                              child: new Column(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(AppLocalizations.of(context)!.streetName, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                                      Text(_street, style: Styles.purpleTextStyle,),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(AppLocalizations.of(context)!.streetNumber, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                                      Text(_streetNumber, style: Styles.purpleTextStyle,),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(AppLocalizations.of(context)!.city, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                                      Text(_city, style: Styles.purpleTextStyle,),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(AppLocalizations.of(context)!.zipCode, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                                      Text(_zipCode, style: Styles.purpleTextStyle,),
+                                    ],
+                                  ),
+                                ],
+                              )
+                          ) : Container(),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
                             child: Container(
                               height: 50,
                               width: 250,
@@ -293,11 +331,11 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "Disponibilidad",
-                                      style: Styles.whiteTextStyle,
+                                      AppLocalizations.of(context)!.createBrand,
+                                      style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
                                     ),
                                     SizedBox(width: 10),
-                                    Icon(Icons.calendar_today_outlined, color: Styles.white),
+                                    Icon(Icons.fitness_center_rounded, color: Styles.white),
                                   ],
                                 ),
                               ),

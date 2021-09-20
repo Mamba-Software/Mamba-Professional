@@ -119,6 +119,10 @@
   "@transgender":{
     "description": "Otros Text "
   },
+  "name": "Nombre",
+  "@name":{
+    "description": "Nombre"
+  },
   "nameCompleto": "Nombre completo",
   "@nameCompleto":{
     "description": "Nombre Completo Text "
@@ -304,6 +308,67 @@
   "change": "Cambiar",
   "@change":{
     "description": "Cambiar Text"
+  },
+  "welcomeMes": "¡Bienvenido a Mamba {name}!",
+  "@welcomeMes": {
+    "description": "welcomeMes Text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "createBrand": "Crea tu Marca",
+  "@createBrand":{
+    "description": "createBrand Text"
+  },
+  "addCode": "Añadir Código",
+  "@addCode":{
+    "description": "createBrand Text"
+  },
+  "trainersZone": "Otros entrenadores en tu zona:",
+  "@trainersZone":{
+    "description": "trainersZone Text"
+  },
+  "loading": "Cargando...",
+  "@loading":{
+    "description": "loading text"
+  },
+  "basicInfo": "Información Básica",
+  "@basicInfo":{
+    "description": "basicInfo text"
+  },
+  "baseLocation": "Ubicación Base",
+  "@baseLocation":{
+    "description": "baseLocation text"
+  },
+  "streetName": "Calle: ",
+  "@streetName":{
+    "description": "streetName text"
+  },
+  "streetNumber": "Número: ",
+  "@streetNumber":{
+    "description": "streetNumber text"
+  },
+  "city": "Ciudad: ",
+  "@city":{
+    "description": "city text"
+  },
+  "zipCode": "Código Postal: ",
+  "@zipCode":{
+    "description": "zipCode text"
+  },
+  "clear": "Limpiar",
+  "@clear":{
+    "description": "zipCode text"
+  },
+  "back": "Atrás",
+  "@back":{
+    "description": "zipCode text"
+  },
+  "enterAddress": "Introduce tu dirección",
+  "@enterAddress":{
+    "description": "zipCode text"
   }
 
 }

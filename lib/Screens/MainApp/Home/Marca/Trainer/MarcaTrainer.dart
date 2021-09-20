@@ -63,7 +63,7 @@ class _MarcaTrainerState extends State<MarcaTrainer> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: Text("¡Bienvenido a Mamba ${splitCommonName(user!.name!)}!", style: Styles.purpleTextStyle,textAlign: TextAlign.center,),
+                      child: Text(AppLocalizations.of(context)!.welcomeMes(splitCommonName(user!.name!)), style: Styles.purpleTextStyle,textAlign: TextAlign.center,),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(4.0),
@@ -79,7 +79,7 @@ class _MarcaTrainerState extends State<MarcaTrainer> {
                           );
                         },
                         icon: Icon(Icons.add_circle, size: 40,),
-                        label: Text("Crea tu Marca", style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                        label: Text(AppLocalizations.of(context)!.createBrand, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),),
                       ),
                     ),
                     !codigoClicked ? Padding(
@@ -92,7 +92,7 @@ class _MarcaTrainerState extends State<MarcaTrainer> {
                         },
                         backgroundColor: Colors.green,
                         icon: Icon(Icons.qr_code_outlined, size: 40,),
-                        label: Text("Añadir Código",
+                        label: Text(AppLocalizations.of(context)!.addCode,
                           style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -163,7 +163,7 @@ class _MarcaTrainerState extends State<MarcaTrainer> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 14.0),
-                child: Text("Otros entrenadores en tu zona:", style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
+                child: Text(AppLocalizations.of(context)!.trainersZone, style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
               ),
               Container(
                 constraints: BoxConstraints(
@@ -177,7 +177,7 @@ class _MarcaTrainerState extends State<MarcaTrainer> {
                             LoadingViewPurple(),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("Cargando...", style: Styles.purpleTextStyle),
+                              child: Text(AppLocalizations.of(context)!.loading, style: Styles.purpleTextStyle),
                             ),
                           ],
                         ),
