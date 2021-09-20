@@ -39,7 +39,7 @@ class AddressSearch extends SearchDelegate<Suggestion> {
   @override
   Widget buildSuggestions(BuildContext context) {
     return FutureBuilder<List<Suggestion>>(
-      future: query == "" ? null : apiClient.fetchSuggestions(query, Localizations.localeOf(context).languageCode),
+      future: query == "" ? null : apiClient.fetchSuggestions(query),
       builder: (context, snapshot) => query == '' ?
         Container(
           padding: EdgeInsets.all(16.0),

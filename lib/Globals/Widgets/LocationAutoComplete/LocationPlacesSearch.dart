@@ -42,9 +42,9 @@ class LocationPlacesSearch {
   static final String iosKey = 'YOUR_API_KEY_HERE';
   final apiKey = Platform.isAndroid ? androidKey : iosKey;
 
-  Future<List<Suggestion>> fetchSuggestions(String input, String lang) async {
+  Future<List<Suggestion>> fetchSuggestions(String input) async {
     final request =
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=address&language=$lang&key=$apiKey';
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=address&key=$apiKey';
     final response = await http.get(Uri.parse(request));
 
     if (response.statusCode == 200) {
@@ -71,6 +71,7 @@ class LocationPlacesSearch {
 
     if (response.statusCode == 200) {
       final result = json.decode(response.body);
+
       if (result['status'] == 'OK') {
         final components =
         result['result']['address_components'] as List<dynamic>;
