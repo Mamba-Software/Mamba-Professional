@@ -72,7 +72,6 @@ class _SplashScreenState extends State<SplashScreen> {
           );
         }
       }
-
     } else {
       Navigator.pushAndRemoveUntil(
         context,

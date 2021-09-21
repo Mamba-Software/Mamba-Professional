@@ -5,6 +5,7 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Screens/Admin/AdminTool.dart';
 
 
 class Admin extends StatefulWidget {
@@ -18,19 +19,14 @@ class _AdminState extends State<Admin> {
 
   //DataBase Access
   var _accessDatabase = new DatabaseAccess();
-  // Models
-  Usuario? user;
+  // List strings
+  List<String> Names = [
+    'Usuaris','Errors','FeedBack'
+  ];
 
   @override
   void initState() {
     super.initState();
-    getCurrentUserDetails();
-  }
-
-  void getCurrentUserDetails() async {
-    user = await _accessDatabase.getCurrentUserDetails();
-    setState(() {
-    });
   }
 
   @override
@@ -56,9 +52,45 @@ class _AdminState extends State<Admin> {
             centerTitle: true,
             elevation: 10,
             automaticallyImplyLeading: false,
+            iconTheme: IconThemeData(
+              color: Colors.white, //change your color here
+            ),
           ),
           backgroundColor: Colors.white,
-          body: Container()
+          body: ListView.builder(
+            itemBuilder: (context,int index) => EachList(this.Names[index]),
+            itemCount: this.Names.length,
+          ),
       );
+  }
+}
+
+class EachList extends StatelessWidget{
+  final String name;
+  EachList(this.name);
+  @override
+  Widget build(BuildContext context) {
+    return new Card(
+      margin: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0.0),
+      child: ListTile(
+        leading: CircleAvatar(
+          radius: 25.0,
+          child: new Text(name[0]),
+          backgroundColor: Styles.mainColorTrans,
+        ),
+        trailing: Icon(Icons.east),
+        title: Text(name,style: TextStyle(fontSize: 20.0),),
+        subtitle: Text("Admin Tool"),
+        onTap: (){
+          Navigator.push(
+              context,
+              CupertinoPageRoute<Null>(
+                builder: (context) => AdminTool(title: name),
+                settings: RouteSettings(name: 'AdminTool'),
+              )
+          );
+        },
+      ),
+    );
   }
 }
