@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
+import 'package:mamba_castelldefels/Screens/Admin/Admin.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Register.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/FirstTimeWrapper.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
@@ -204,24 +206,34 @@ class _LoginState extends State<Login> {
     try {
       int result = await _accessDatabase.signIn(email, password);
       if (result == 0) {
-        Usuario? user = await _accessDatabase.getCurrentUserDetails();
-        Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(user.idioma!));
-        if(!(user.isFirst!)) {
+        currentUser = await _accessDatabase.getCurrentUserDetails();
+        Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
+        if(currentUser.isAdmin!) {
           Navigator.pushReplacement(
               context,
               CupertinoPageRoute<Null>(
-                builder: (context) => HomePage(),
-                settings: RouteSettings(name: 'HomePage'),
+                builder: (context) => Admin(),
+                settings: RouteSettings(name: 'Admin'),
               )
           );
         } else {
-          Navigator.pushReplacement(
-              context,
-              CupertinoPageRoute<Null>(
-                builder: (context) => FirstTimeWrapper(),
-                settings: RouteSettings(name: 'FirstTimeWrapper'),
-              )
-          );
+          if(!(currentUser.isFirst!)) {
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<Null>(
+                  builder: (context) => HomePage(),
+                  settings: RouteSettings(name: 'HomePage'),
+                )
+            );
+          } else {
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<Null>(
+                  builder: (context) => FirstTimeWrapper(),
+                  settings: RouteSettings(name: 'FirstTimeWrapper'),
+                )
+            );
+          }
         }
       } else if(result == -2) {
         setState(() {
