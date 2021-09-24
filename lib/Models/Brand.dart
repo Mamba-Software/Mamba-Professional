@@ -7,14 +7,14 @@ class Brand {
   String? name;
   String? description;
   String? dateJoined;
-  // Ubicació
+  String? placeId;
+  double? latitude;
+  double? longitude;
   // Sector
   // Disponibilitat
   // Preus
   // Xarxes Socials
   // TOP 10 FOTOS
-
-  List<String>? idiomas;
 
   Brand({
     this.id,
@@ -23,6 +23,9 @@ class Brand {
     this.name,
     this.description,
     this.dateJoined,
+    this.placeId,
+    this.latitude,
+    this.longitude,
   });
 
   Map toMap(Brand brand) {
@@ -33,6 +36,9 @@ class Brand {
     data['name'] = brand.name;
     data['description'] = brand.description;
     data['dateJoined'] = brand.dateJoined;
+    data['placeId'] = brand.placeId;
+    data['latitude'] = brand.latitude;
+    data['longitude'] = brand.longitude;
     return data;
   }
 
@@ -43,5 +49,8 @@ class Brand {
     this.name = mapData['name'].toString();
     this.description = mapData['description'].toString();
     this.dateJoined = mapData['dateJoined'].toString();
+    this.placeId = mapData['placeId'].toString();
+    this.latitude = mapData['latitude'];
+    this.longitude = mapData['longitude'];
   }
 }

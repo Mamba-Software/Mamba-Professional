@@ -6,6 +6,7 @@ import 'package:mamba_castelldefels/Models/Usuario.dart';
 
 import 'Client/MarcaClient.dart';
 import 'Trainer/MarcaTrainer.dart';
+import 'Trainer/SinMarca/SinMarcaTrainer.dart';
 
 class Marca extends StatefulWidget {
   const Marca({Key? key}) : super(key: key);

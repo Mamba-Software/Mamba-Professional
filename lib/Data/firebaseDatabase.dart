@@ -3,9 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:uuid/uuid.dart';
 
 // Firebase Service Class. All calls to Firebase are in this class.
 class FirebaseDatabaseService {
@@ -108,7 +111,7 @@ class FirebaseDatabaseService {
   }
   // Add Error/ Report Bug
   Future<bool> addError(String title, String description, [String? stepsReproduce]) async {
-    var uid = UniqueKey().toString();
+    var uid = Uuid().v1();
     User? currentUser = await getCurrentUser();
     try {
       await _firestore.collection("Errors").doc(uid).set({
@@ -159,4 +162,55 @@ class FirebaseDatabaseService {
       "previousIdioma": previousIdioma,
     });
   }
+  // Brand Model Services
+  // Add Brand
+  Future<String> addBrand(String name, File image, String description, String placeId, double latitude, double longitude) async {
+    User? firebaseUser = await getCurrentUser();
+    bool firestoreError = false;
+    var uid = Uuid().v4();
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final String formatted = formatter.format(now);
+    await _firestore
+        .collection("Brands")
+        .doc(uid)
+        .set({
+      "adminID": firebaseUser!.uid,
+      "logoUrl": "",
+      "name": name,
+      "description": description,
+      "dateJoined": formatted,
+      "placeId": placeId,
+      "latitude": latitude,
+      "longitude": longitude,
+    }).catchError((err) {
+      print(err);
+      firestoreError = true;
+    });
+
+    if(!firestoreError){
+      await updateCurrentBrandPhoto(uid,image);
+      return uid;
+    } else {
+      return "Error";
+    }
+  }
+
+  Future<void> updateCurrentBrandPhoto(String brandID, File image) async {
+    var storageRef = await _firebaseStorage.ref().child("brandPics/" + brandID + ".png");
+    var uploadTask= storageRef.putFile(image);
+    uploadTask.whenComplete(() async {
+      await storageRef.getDownloadURL().then((value) async {
+        await _firestore.collection("Brands").doc(brandID).update({
+          "logoUrl": value,
+        });
+      });
+    });
+  }
+
+  Future<Brand> getCurrentBrandDetails() async {
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Brands").doc(currentBrand.id).get();
+    return Brand.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+  }
+
 }

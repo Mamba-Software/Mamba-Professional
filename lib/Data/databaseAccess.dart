@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'firebaseDatabase.dart';
 
@@ -25,5 +26,9 @@ class DatabaseAccess {
   Future<void> updateCurrentUserDatosPerifl(String name, int gender, String dateOfBirth) => _firebase.updateCurrentUserDatosPerifl(name, gender, dateOfBirth);
   Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma, String previousIdioma) => _firebase.updateCurrentUserSettingsPerifl(isPrivate, idioma, previousIdioma);
 
+  Future<String> addBrand(String name, File image, String description, String placeId, double latitude, double longitude) => _firebase.addBrand(name, image, description, placeId, latitude, longitude);
 
+  Future<void> updateCurrentBrandPhoto(String brandID,File image) => _firebase.updateCurrentBrandPhoto(brandID, image);
+
+  Future<Brand> getCurrentBrandDetails() => _firebase.getCurrentBrandDetails();
 }

@@ -370,6 +370,10 @@
   "@enterAddress":{
     "description": "zipCode text"
   },
+  "enterAddressError": "Introduce tu dirección por favor",
+  "@enterAddressError":{
+    "description": "zipCode text"
+  },
   "disponibilidad": "Disponibilidad",
   "@disponibilidad":{
     "description": "disponibilidad text"

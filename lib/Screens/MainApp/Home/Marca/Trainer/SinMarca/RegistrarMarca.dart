@@ -1,14 +1,15 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:image_picker/image_picker.dart';
+import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/RegistrarMarcaCalendar.dart';
 
 class RegistrarMarca extends StatefulWidget {
   const RegistrarMarca({Key? key}) : super(key: key);
@@ -18,12 +19,13 @@ class RegistrarMarca extends StatefulWidget {
 }
 
 class _RegistrarMarcaState extends State<RegistrarMarca> {
-  //DataBase Access
+  // DataBase Access
+  var _accessDatabase = new DatabaseAccess();
+  // Google APIS
   googlePlace.GooglePlace? gPlace;
   googlePlace.DetailsResult? detailsResult;
-  // Booleans
-  bool basicInfo = false;
-
+  // Boolean Basic Info
+  bool basicInfo = true;
   // Form Values
   final _formBasicInfoKey = GlobalKey<FormState>();
   String nameBrand = "";
@@ -32,10 +34,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
   var ubicacionController =  TextEditingController();
   var descriptionController =  TextEditingController();
   // Image Picker
+  bool errorImage = false;
   var _image;
-  // Multi Select Especialidades
-  List<String> selected = [];
-  List<String> options = ['a' , 'b' , 'c' , 'd'];
   // Ubicación
   String _streetNumber = '';
   String _street = '';
@@ -83,9 +83,23 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
         iconTheme: IconThemeData(
           color: Colors.white, //change your color here
         ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, size: 25,),
+          onPressed: () {
+            if (basicInfo) {
+              Navigator.pop(context);
+            } else {
+              setState(() {
+                basicInfo = !basicInfo;
+              });
+            }
+          },
+          tooltip: 'Back',
+        ),
       ),
       backgroundColor: Styles.white,
-      body: SingleChildScrollView(
+      body: basicInfo ?
+      SingleChildScrollView(
         child: Form(
           key: _formBasicInfoKey,
           child: Column(
@@ -114,22 +128,28 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                           height: MediaQuery.of(context).size.height * 0.20,
                           child: Center(
                             child: _image == null ?
-                            RawMaterialButton(
+                            OutlinedButton(
                               onPressed: getImage,
                               child: Column(
                                 children: [
                                   new Icon(
-                                    Icons.camera_alt_outlined,
+                                    Icons.image,
                                     color: Styles.accent,
                                     size: 35.0,
                                   ),
                                 ],
                               ),
-                              shape: CircleBorder(),
-                              elevation: 10.0,
-                              fillColor: Colors.white,
-                              padding: EdgeInsets.only(left: 50, right: 50, top: 63),
-                            ):
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(
+                                  color: errorImage ? Colors.red : Styles.accent,
+                                  width: 1.5
+                                ),
+                                backgroundColor: Colors.white,
+                                elevation: 10,
+                                shape: CircleBorder(),
+                                padding: EdgeInsets.only(left: 50, right: 50, top: 63),
+                              ),
+                            ) :
                             GestureDetector(
                               onTap: getImage,
                               child: Stack(
@@ -138,6 +158,11 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                       child: Container(
                                           width: MediaQuery.of(context).size.width*0.35,
                                           decoration: new BoxDecoration(
+                                            border: Border.all(
+                                              width: 1.5,
+                                              color: Styles.accent,
+                                              style: BorderStyle.solid,
+                                            ),
                                             shape: BoxShape.circle,
                                             image: new DecorationImage(
                                               image: FileImage(_image),
@@ -243,8 +268,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                         mainAxisSize: MainAxisSize.max,
                                         children: <Widget>[
                                         Expanded(
-                                          child: TextField(
+                                          child: TextFormField(
                                             controller: ubicacionController,
+                                            validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.enterAddressError : null,
                                             readOnly: true,
                                             onTap: () async {
                                               // generate a new token here
@@ -252,7 +278,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                                 context: context,
                                                 delegate: AddressSearch(),
                                               );
-                                              // This will change the text displayed in the TextField
+                                              // This will change the text displayed in the TextFormField
                                               if (result != null) {
                                                 final placeDetails = await LocationPlacesSearch()
                                                     .getPlaceDetailFromId(result.placeId);
@@ -264,7 +290,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                                   if(placeDetails.city!=null) _city = placeDetails.city!; else _city="N/A";
                                                   if(placeDetails.zipCode!=null) _zipCode = placeDetails.zipCode!; else _zipCode="N/A";
                                                 });
-
                                               }
                                             },
                                             decoration: InputDecoration(
@@ -382,14 +407,21 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                             color: Styles.accent, borderRadius: BorderRadius.circular(20)
                         ),
                         child: TextButton(
-                          onPressed: () async {
-                            Navigator.push(
-                                context,
-                                CupertinoPageRoute<Null>(
-                                  builder: (context) => RegistrarMarcaCalendar(),
-                                  settings: RouteSettings(name: 'RegistrarMarcaCalendar'),
-                                )
-                            );
+                          onPressed: () {
+                            setState(() {
+                              if (_image==null) {
+                                setState(() {
+                                  errorImage = true;
+                                });
+                              } else {
+                                setState(() {
+                                  errorImage = false;
+                                });
+                              }
+                              if(_formBasicInfoKey.currentState!.validate()){
+                                basicInfo = false;
+                              }
+                            });
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -411,6 +443,53 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
             ],
           ),
         )
+      ) :
+      SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Container(
+                  child: Text("AQUÍ VINDRA EL CALENDAR WIDGET", style: Styles.purpleTextStyle.copyWith(fontSize: 25), textAlign: TextAlign.center,)
+                ),
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Container(
+                  height: 50,
+                  width: 250,
+                  decoration: BoxDecoration(
+                      color: Styles.accent, borderRadius: BorderRadius.circular(20)
+                  ),
+                  child: TextButton(
+                    onPressed: () async {
+                      var result = await _accessDatabase.addBrand(nameBrand, _image, description, detailsResult!.placeId!, latitude, longitude);
+                      setState(() {
+                        currentBrand.id = result;
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Crear Marca",
+                          style: Styles.whiteTextStyle,
+                        ),
+                        SizedBox(width: 10),
+                        Icon(Icons.calendar_today_outlined, color: Styles.white),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -421,6 +500,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
       detailsResult = result.result;
       latitude = detailsResult!.geometry!.location!.lat!;
       longitude = detailsResult!.geometry!.location!.lng!;
+      print(latitude);
+      print(longitude);
     }
   }
 

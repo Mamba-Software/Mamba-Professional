@@ -88,5 +88,6 @@
   "clear": "Netejar",
   "back": "Enrere",
   "enterAddress": "Introdueix la teva adreça",
+  "enterAddressError": "Introdueix la teva adreça si us plau",
   "disponibilidad": "Disponibilitat"
 }
