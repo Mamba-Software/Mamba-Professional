@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:image_picker/image_picker.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
@@ -18,7 +19,8 @@ class RegistrarMarca extends StatefulWidget {
 
 class _RegistrarMarcaState extends State<RegistrarMarca> {
   //DataBase Access
-  var _accessDatabase = new DatabaseAccess();
+  googlePlace.GooglePlace? gPlace;
+  googlePlace.DetailsResult? detailsResult;
   // Booleans
   bool basicInfo = false;
 
@@ -39,6 +41,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
   String _street = '';
   String _city = '';
   String _zipCode = '';
+  double latitude = 0;
+  double longitude = 0;
+
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
@@ -60,6 +65,12 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
         _image = response.file;
       });
     }
+  }
+
+  @override
+  void initState() {
+    gPlace = googlePlace.GooglePlace(placesAPI);
+    super.initState();
   }
 
   @override
@@ -245,6 +256,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                               if (result != null) {
                                                 final placeDetails = await LocationPlacesSearch()
                                                     .getPlaceDetailFromId(result.placeId);
+                                                getDetils(result.placeId);
                                                 setState(() {
                                                   ubicacionController.text = result.description;
                                                   if(placeDetails.street!=null) _street = placeDetails.street!; else _street="N/A";
@@ -252,6 +264,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                                   if(placeDetails.city!=null) _city = placeDetails.city!; else _city="N/A";
                                                   if(placeDetails.zipCode!=null) _zipCode = placeDetails.zipCode!; else _zipCode="N/A";
                                                 });
+
                                               }
                                             },
                                             decoration: InputDecoration(
@@ -400,6 +413,15 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
         )
       ),
     );
+  }
+
+  void getDetils(String placeId) async {
+    var result = await gPlace!.details.get(placeId);
+    if (result != null && result.result != null && mounted) {
+      detailsResult = result.result;
+      latitude = detailsResult!.geometry!.location!.lat!;
+      longitude = detailsResult!.geometry!.location!.lng!;
+    }
   }
 
 }

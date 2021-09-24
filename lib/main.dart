@@ -9,14 +9,11 @@ import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter/services.dart';
-import 'package:time_machine/time_machine.dart';
 
 // Starting app function. After initialitzation, we define the global providers:
 // - Language Provider: To change the Language of the App.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await TimeMachine.initialize({'rootBundle': rootBundle});
   await Firebase.initializeApp();
   runApp(
     MultiProvider(
