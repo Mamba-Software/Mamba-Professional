@@ -511,7 +511,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                               settings: RouteSettings(name: 'SplashScreen'),
                             )
                         );
-
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

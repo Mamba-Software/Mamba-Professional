@@ -23,12 +23,13 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
   // Boolean Loading
   bool isLoading = false;
   bool codigoClicked = false;
+  bool isLoadingCodigo = false;
   // Model Usuario
   Usuario? user;
   // FormVariables
-  final _formKey = GlobalKey<FormState>();
   var _codigoController = TextEditingController();
   var _codigo;
+  bool codigoError = false;
 
   // init Widget state. Loading user info.
   @override
@@ -111,52 +112,114 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                 elevation: 5,
                                 child: new TextFormField(
                                   controller: _codigoController,
-                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.codigo : null,
                                   onChanged: (val) {
-                                    setState(() => _codigo = val);
+                                    setState(() {
+                                      codigoError = false;
+                                      _codigo = val;
+                                    });
                                   },
                                   decoration: InputDecoration(
                                     hintText: AppLocalizations.of(context)!.codigo,
-                                    hintStyle: Styles.whiteTextStyle.copyWith(fontSize: 14, color: Colors.green),
+                                    hintStyle: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
                                     enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.green, width: 1.0),
+                                      borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
                                       borderRadius: BorderRadius.circular(13.0),
                                     ),
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.green, width: 1.0),
+                                      borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
                                       borderRadius: BorderRadius.circular(13.0),
                                     ),
                                   ),
-                                  style: Styles.whiteTextStyle.copyWith(fontSize: 14, color: Colors.green),
+                                  style: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 15.0),
-                              child: FloatingActionButton(
-                                child: Icon(Icons.login),
-                                backgroundColor: Colors.green,
-                                foregroundColor: Styles.white,
-                                onPressed: () async {
-                                  print("Afegir a Brand amb ID: $_codigo");
-                                },
+                            !isLoadingCodigo ?
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15.0),
+                                    child: FloatingActionButton(
+                                      child: Icon(Icons.login),
+                                      backgroundColor: Colors.green,
+                                      foregroundColor: Styles.white,
+                                      onPressed: () async {
+                                        if(_codigo == null || _codigo=="") {
+                                          setState(() {
+                                            codigoError = true;
+                                          });
+                                        } else {
+                                          setState(() {
+                                            isLoadingCodigo = true;
+                                          });
+                                          var result = await _accessDatabase.checkIfBrandExists(_codigo);
+                                          if (!result) {
+                                            setState(() {
+                                              isLoadingCodigo = false;
+                                              codigoError = true;
+                                            });
+                                          } else {
+                                            await _accessDatabase
+                                                .updateCurrentUserBrand(
+                                                _codigo);
+                                            Navigator.pushReplacement(
+                                                context,
+                                                CupertinoPageRoute<Null>(
+                                                  builder: (context) =>
+                                                      SplashScreen(),
+                                                  settings: RouteSettings(
+                                                      name: 'SplashScreen'),
+                                                )
+                                            );
+                                          }
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 5.0),
+                                    child: FloatingActionButton(
+                                      heroTag: null,
+                                      child: Icon(Icons.close),
+                                      backgroundColor: Colors.red,
+                                      foregroundColor: Styles.white,
+                                      onPressed: () async {
+                                        setState(() {
+                                          codigoClicked = !codigoClicked;
+                                          codigoError = false;
+                                          _codigoController.text = "";
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ) :
+                              SizedBox(
+                                width: 130,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    FloatingActionButton(
+                                      heroTag: null,
+                                      child: SizedBox(
+                                        width: 100,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(18.0),
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                            strokeWidth: 2,
+                                          ),
+                                        ),
+                                      ),
+                                      backgroundColor: Colors.orangeAccent,
+                                      foregroundColor: Styles.white,
+                                      onPressed: false ? () {} : null
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 5.0),
-                              child: FloatingActionButton(
-                                heroTag: null,
-                                child: Icon(Icons.close),
-                                backgroundColor: Colors.red,
-                                foregroundColor: Styles.white,
-                                onPressed: () async {
-                                  setState(() {
-                                    codigoClicked = !codigoClicked;
-                                  });
-                                },
-                              ),
-                            ),
                           ],
                         )
                     ),
@@ -168,24 +231,25 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                 child: Text(AppLocalizations.of(context)!.trainersZone, style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
               ),
               Container(
-                constraints: BoxConstraints(
-                  maxHeight: (MediaQuery.of(context).size.height*0.7889)*0.63,
-                ),
-                child: Center(
-                  child: SingleChildScrollView(
-                    child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            LoadingViewPurple(),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(AppLocalizations.of(context)!.loading, style: Styles.purpleTextStyle),
-                            ),
-                          ],
-                        ),
+                  constraints: BoxConstraints(
+                    maxHeight: (MediaQuery.of(context).size.height*0.7889)*0.63,
+                  ),
+                  padding: MediaQuery.of(context).viewInsets,
+                  child: Center(
+                    child: SingleChildScrollView(
+                      child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              LoadingViewPurple(),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(AppLocalizations.of(context)!.loading, style: Styles.purpleTextStyle),
+                              ),
+                            ],
+                          ),
+                    ),
                   ),
                 ),
-                  ),
               ],
           ),
         )

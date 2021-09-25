@@ -133,11 +133,20 @@ class FirebaseDatabaseService {
       "isFirst": false,
     });
   }
-  Future<void> updateCurrentUserBrand(String brandID) async {
+  Future<int> updateCurrentUserBrand(String brandID) async {
     User? currentUser = await getCurrentUser();
+    bool firestoreError = false;
     await _firestore.collection("Users").doc(currentUser!.uid).update({
       "brandID": brandID,
+    }).catchError((err) {
+      print(err);
+      firestoreError = true;
     });
+    if(firestoreError){
+      return -1;
+    } else {
+      return 1;
+    }
   }
   Future<void> updateCurrentUserPhoto(File image) async {
     User? firebaseUser = await getCurrentUser();
@@ -217,6 +226,16 @@ class FirebaseDatabaseService {
   Future<Brand> getCurrentBrandDetails(String brandID) async {
     DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Brands").doc(brandID).get();
     return Brand.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+  }
+
+  Future<bool> checkIfBrandExists(String brandID) async {
+    var userDocRef = await _firestore.collection('Brands').doc(brandID);
+    var doc = await userDocRef.get();
+    if (doc.exists) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

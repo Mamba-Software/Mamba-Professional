@@ -22,12 +22,14 @@ class DatabaseAccess {
   Future<bool> addError(String title, String description, String stepsReproduce) => _firebase.addError(title, description, stepsReproduce);
 
   Future<void> updateCurrentUserFirstTime() => _firebase.updateCurrentUserFirstTime();
-  Future<void> updateCurrentUserBrand(String brandID) => _firebase.updateCurrentUserBrand(brandID);
+  Future<int> updateCurrentUserBrand(String brandID) => _firebase.updateCurrentUserBrand(brandID);
   Future<void> updateCurrentUserPhoto(File image) => _firebase.updateCurrentUserPhoto(image);
   Future<void> updateCurrentUserDatosPerifl(String name, int gender, String dateOfBirth) => _firebase.updateCurrentUserDatosPerifl(name, gender, dateOfBirth);
   Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma, String previousIdioma) => _firebase.updateCurrentUserSettingsPerifl(isPrivate, idioma, previousIdioma);
 
   Future<String> addBrand(String name, File image, String description, String placeId, double latitude, double longitude) => _firebase.addBrand(name, image, description, placeId, latitude, longitude);
+
+  Future<bool> checkIfBrandExists(String brandID) => _firebase.checkIfBrandExists(brandID);
 
   Future<void> updateCurrentBrandPhoto(String brandID,File image) => _firebase.updateCurrentBrandPhoto(brandID, image);
 
