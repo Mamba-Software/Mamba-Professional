@@ -133,6 +133,12 @@ class FirebaseDatabaseService {
       "isFirst": false,
     });
   }
+  Future<void> updateCurrentUserBrand(String brandID) async {
+    User? currentUser = await getCurrentUser();
+    await _firestore.collection("Users").doc(currentUser!.uid).update({
+      "brandID": brandID,
+    });
+  }
   Future<void> updateCurrentUserPhoto(File image) async {
     User? firebaseUser = await getCurrentUser();
     var storageRef = await _firebaseStorage.ref().child("userPics/" + firebaseUser!.uid + ".png");
@@ -208,8 +214,8 @@ class FirebaseDatabaseService {
     });
   }
 
-  Future<Brand> getCurrentBrandDetails() async {
-    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Brands").doc(currentBrand.id).get();
+  Future<Brand> getCurrentBrandDetails(String brandID) async {
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Brands").doc(brandID).get();
     return Brand.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
 

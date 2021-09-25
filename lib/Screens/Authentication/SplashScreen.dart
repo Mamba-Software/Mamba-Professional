@@ -44,6 +44,9 @@ class _SplashScreenState extends State<SplashScreen> {
     User? firebaseUser = await _accessDatabase.getCurrentUser();
     if(firebaseUser != null && firebaseUser.emailVerified) {
       currentUser = await _accessDatabase.getCurrentUserDetails();
+      if (currentUser.brandID != "null") {
+        currentBrand = await _accessDatabase.getCurrentBrandDetails(currentUser.brandID!);
+      }
       Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
       if(currentUser.isAdmin!) {
         Navigator.pushReplacement(

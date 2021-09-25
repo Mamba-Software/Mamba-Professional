@@ -6,6 +6,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';
 
 
@@ -73,7 +74,8 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                           Navigator.push(
                               context,
                               CupertinoPageRoute<Null>(
-                                builder: (context) => RegistrarMarca(),
+                                builder: (context) => RegistrarMarca(
+                                ),
                                 settings: RouteSettings(name: 'RegistrarMarca'),
                               )
                           );

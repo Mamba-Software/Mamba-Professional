@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/SinMarcaTrainer.dart';
 
@@ -13,6 +12,9 @@ class MarcaTrainer extends StatefulWidget {
 }
 
 class _MarcaTrainerState extends State<MarcaTrainer> {
+
+  // Boolean For Brand Creation
+  var _newBrand = false;
 
   @override
   void initState() {
