@@ -53,9 +53,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final items = <Widget>[
-      Icon(Icons.person, color: Styles.white, size: 40,),
-      Icon(Icons.fitness_center_rounded, color: Styles.white, size: 40,),
-      Icon(Icons.chat, color: Styles.white, size: 40,),
+      Icon(Icons.person, color: Styles.white, size: 33,),
+      Icon(Icons.fitness_center_rounded, color: Styles.white, size: 33,),
+      Icon(Icons.chat, color: Styles.white, size: 33,),
     ];
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
