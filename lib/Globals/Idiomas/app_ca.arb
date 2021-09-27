@@ -54,6 +54,7 @@
   "clientOf": "Client de ",
   "trainerOf": "Entrena a ",
   "closeSession": "Tancar sessió",
+  "deleteAccount": "Eliminar compte",
   "dateOfBirth": "Data de Naixement",
   "noDateOfBirth": "No introduïda",
   "selectDateOfBirth": "Selecciona la teva data de naixement",
@@ -90,5 +91,11 @@
   "enterAddress": "Introdueix la teva adreça",
   "enterAddressError": "Introdueix la teva adreça si us plau",
   "disponibilidad": "Disponibilitat",
-  "brandNotFound": "No trobem aquesta Marca. Si us plau assegureu-vos que heu introduït el codi correctament"
+  "brandNotFound": "No trobem aquesta Marca. Si us plau assegureu-vos que heu introduït el codi correctament",
+  "notInBrand": "No formes part de cap marca",
+  "wantDeleteUser": "¿Vols eliminar el teu usuari?",
+  "writeDeleteUser": "Escriu",
+  "confirmDeleteUser": "per confirmar aquesta acció:",
+  "delete": "Eliminar",
+  "cancel": "Cancel·lar"
 }

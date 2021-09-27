@@ -233,6 +233,10 @@
   "@closeSession":{
     "description": "Cerrar sesión Text"
   },
+  "deleteAccount": "Eliminar cuenta",
+  "@deleteAccount":{
+    "description": "Cerrar sesión Text"
+  },
   "dateOfBirth": "Fecha de nacimiento",
   "@dateOfBirth":{
     "description": "Fecha de nacimiento Text"
@@ -381,5 +385,29 @@
   "brandNotFound": "No encontramos esta Marca. Por favor asegúrate que has introducido el cógido correctamente",
   "@brandNotFound":{
     "description": "disponibilidad text"
+  },
+  "notInBrand": "No formas parte de ninguna marca",
+  "@notInBrand":{
+    "description": "notInBrand text"
+  },
+  "wantDeleteUser": "¿Quieres eliminar tu usuario?",
+  "@wantDeleteUser":{
+    "description": "notInBrand text"
+  },
+  "writeDeleteUser": "Escribe",
+  "@writeDeleteUser":{
+    "description": "notInBrand text"
+  },
+  "confirmDeleteUser": "para confirmar esta acción:",
+  "@confirmDeleteUser":{
+    "description": "notInBrand text"
+  },
+  "delete": "Eliminar",
+  "@delete":{
+    "description": "notInBrand text"
+  },
+  "cancel": "Cancelar",
+  "@cancel":{
+    "description": "Cancelar text"
   }
 }

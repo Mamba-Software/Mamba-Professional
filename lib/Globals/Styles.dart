@@ -14,7 +14,7 @@ class Styles {
   static const Color white = Color(0xFFFFFFFF);
   static const Color transparentWhite = Color(0x00FFFFFF);
 
-  static const Color red = Color(0xfff81b60);
+  static const Color red = Colors.red;
   static const Color weakerRed = Color(0xffd81b60);
 
   static Color themePrimary = mainColor;

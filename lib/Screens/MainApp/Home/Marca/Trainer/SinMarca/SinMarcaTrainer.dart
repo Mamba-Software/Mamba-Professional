@@ -56,175 +56,167 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              Container(
-                constraints: BoxConstraints(
-                  maxHeight: (MediaQuery.of(context).size.height*0.7889)*0.26,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text(AppLocalizations.of(context)!.welcomeMes(splitCommonName(user!.name!)), style: Styles.purpleTextStyle,textAlign: TextAlign.center,),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: FloatingActionButton.extended(
+                      heroTag: null,
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute<Null>(
+                              builder: (context) => RegistrarMarca(
+                              ),
+                              settings: RouteSettings(name: 'RegistrarMarca'),
+                            )
+                        );
+                      },
+                      icon: Icon(Icons.add_circle, size: 40,),
+                      label: Text(AppLocalizations.of(context)!.createBrand, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: FloatingActionButton.extended(
-                        heroTag: null,
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute<Null>(
-                                builder: (context) => RegistrarMarca(
-                                ),
-                                settings: RouteSettings(name: 'RegistrarMarca'),
-                              )
-                          );
-                        },
-                        icon: Icon(Icons.add_circle, size: 40,),
-                        label: Text(AppLocalizations.of(context)!.createBrand, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                  ),
+                  !codigoClicked ? Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: FloatingActionButton.extended(
+                      onPressed: () {
+                        setState(() {
+                          codigoClicked = !codigoClicked;
+                        });
+                      },
+                      backgroundColor: Colors.green,
+                      icon: Icon(Icons.qr_code_outlined, size: 40,),
+                      label: Text(AppLocalizations.of(context)!.addCode,
+                        style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
                       ),
                     ),
-                    !codigoClicked ? Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: FloatingActionButton.extended(
-                        onPressed: () {
-                          setState(() {
-                            codigoClicked = !codigoClicked;
-                          });
-                        },
-                        backgroundColor: Colors.green,
-                        icon: Icon(Icons.qr_code_outlined, size: 40,),
-                        label: Text(AppLocalizations.of(context)!.addCode,
-                          style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ) : Padding(
-                        padding: EdgeInsets.only(top: 4),
-                        child: new Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            new Flexible(
-                              child: Material(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(13)
-                                ),
-                                elevation: 5,
-                                child: new TextFormField(
-                                  controller: _codigoController,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      codigoError = false;
-                                      _codigo = val;
-                                    });
-                                  },
-                                  decoration: InputDecoration(
-                                    hintText: AppLocalizations.of(context)!.codigo,
-                                    hintStyle: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
-                                      borderRadius: BorderRadius.circular(13.0),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
-                                      borderRadius: BorderRadius.circular(13.0),
-                                    ),
+                  ) : Padding(
+                      padding: EdgeInsets.only(top: 4),
+                      child: new Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          new Flexible(
+                            child: Material(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(13)
+                              ),
+                              elevation: 5,
+                              child: new TextFormField(
+                                controller: _codigoController,
+                                onChanged: (val) {
+                                  setState(() {
+                                    codigoError = false;
+                                    _codigo = val;
+                                  });
+                                },
+                                decoration: InputDecoration(
+                                  hintText: AppLocalizations.of(context)!.codigo,
+                                  hintStyle: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
+                                    borderRadius: BorderRadius.circular(13.0),
                                   ),
-                                  style: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
-                                  textAlign: TextAlign.center,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
+                                    borderRadius: BorderRadius.circular(13.0),
+                                  ),
                                 ),
+                                style: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
+                                textAlign: TextAlign.center,
                               ),
                             ),
-                            !isLoadingCodigo ?
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: FloatingActionButton(
-                                      child: Icon(Icons.login),
-                                      backgroundColor: Colors.green,
-                                      foregroundColor: Styles.white,
-                                      onPressed: () async {
-                                        if(_codigo == null || _codigo=="") {
+                          ),
+                          !isLoadingCodigo ?
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 15.0),
+                                  child: FloatingActionButton(
+                                    child: Icon(Icons.login),
+                                    backgroundColor: Colors.green,
+                                    foregroundColor: Styles.white,
+                                    onPressed: () async {
+                                      if(_codigo == null || _codigo=="") {
+                                        setState(() {
+                                          codigoError = true;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          isLoadingCodigo = true;
+                                        });
+                                        var result = await _accessDatabase.checkIfBrandExists(_codigo);
+                                        if (!result) {
                                           setState(() {
+                                            isLoadingCodigo = false;
                                             codigoError = true;
                                           });
                                         } else {
-                                          setState(() {
-                                            isLoadingCodigo = true;
-                                          });
-                                          var result = await _accessDatabase.checkIfBrandExists(_codigo);
-                                          if (!result) {
-                                            setState(() {
-                                              isLoadingCodigo = false;
-                                              codigoError = true;
-                                            });
-                                          } else {
-                                            await _accessDatabase
-                                                .updateCurrentUserBrand(
-                                                _codigo);
-                                            Navigator.pushReplacement(
-                                                context,
-                                                CupertinoPageRoute<Null>(
-                                                  builder: (context) =>
-                                                      SplashScreen(),
-                                                  settings: RouteSettings(
-                                                      name: 'SplashScreen'),
-                                                )
-                                            );
-                                          }
+                                          await _accessDatabase
+                                              .updateCurrentUserBrand(
+                                              _codigo);
+                                          Navigator.pushReplacement(
+                                              context,
+                                              CupertinoPageRoute<Null>(
+                                                builder: (context) =>
+                                                    SplashScreen(),
+                                                settings: RouteSettings(
+                                                    name: 'SplashScreen'),
+                                              )
+                                          );
                                         }
-                                      },
-                                    ),
+                                      }
+                                    },
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 5.0),
-                                    child: FloatingActionButton(
-                                      heroTag: null,
-                                      child: Icon(Icons.close),
-                                      backgroundColor: Colors.red,
-                                      foregroundColor: Styles.white,
-                                      onPressed: () async {
-                                        setState(() {
-                                          codigoClicked = !codigoClicked;
-                                          codigoError = false;
-                                          _codigoController.text = "";
-                                        });
-                                      },
-                                    ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 5.0),
+                                  child: FloatingActionButton(
+                                    heroTag: null,
+                                    child: Icon(Icons.close),
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Styles.white,
+                                    onPressed: () async {
+                                      setState(() {
+                                        codigoClicked = !codigoClicked;
+                                        codigoError = false;
+                                        _codigoController.text = "";
+                                      });
+                                    },
                                   ),
-                                ],
-                              ) :
-                              SizedBox(
-                                width: 130,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    FloatingActionButton(
-                                      heroTag: null,
-                                      child: SizedBox(
-                                        width: 100,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(18.0),
-                                          child: CircularProgressIndicator(
-                                            color: Colors.white,
-                                            strokeWidth: 2,
-                                          ),
+                                ),
+                              ],
+                            ) :
+                            SizedBox(
+                              width: 130,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  FloatingActionButton(
+                                    heroTag: null,
+                                    child: SizedBox(
+                                      width: 100,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(18.0),
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
                                         ),
                                       ),
-                                      backgroundColor: Colors.orangeAccent,
-                                      foregroundColor: Styles.white,
-                                      onPressed: false ? () {} : null
                                     ),
-                                  ],
-                                ),
+                                    backgroundColor: Colors.orangeAccent,
+                                    foregroundColor: Styles.white,
+                                    onPressed: false ? () {} : null
+                                  ),
+                                ],
                               ),
-                          ],
-                        )
-                    ),
-                  ],
-                ),
+                            ),
+                        ],
+                      )
+                  ),
+                ],
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 14.0),
@@ -232,7 +224,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
               ),
               Container(
                   constraints: BoxConstraints(
-                    maxHeight: (MediaQuery.of(context).size.height*0.7889)*0.63,
+                    maxHeight: (MediaQuery.of(context).size.height*0.7889)*0.75,
                   ),
                   padding: MediaQuery.of(context).viewInsets,
                   child: Center(
@@ -254,10 +246,5 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
           ),
         )
     );
-  }
-
-  String splitCommonName(String name) {
-    List<String> aux = name.split(" ");
-    return aux[0];
   }
 }

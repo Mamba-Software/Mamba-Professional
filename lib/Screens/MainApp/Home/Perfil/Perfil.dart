@@ -394,38 +394,6 @@ class _PerfilState extends State<Perfil> {
                           ],
                         ),
                       ),
-                      Container(
-                        height: 50,
-                        width: 250,
-                        decoration: BoxDecoration(
-                            color: Styles.accent, borderRadius: BorderRadius.circular(20)
-                        ),
-                        child: TextButton(
-                          onPressed: () async {
-                            _accessDatabase.signOut().then((value) =>
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  CupertinoPageRoute<Null>(
-                                    builder: (context) => Login(),
-                                    settings: RouteSettings(name: 'Login'),
-                                  ),
-                                      (_) => false,
-                                )
-                            );
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.logout_outlined, color: Styles.white),
-                              SizedBox(width: 10),
-                              Text(
-                                AppLocalizations.of(context)!.closeSession,
-                                style: Styles.whiteTextStyle,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
