@@ -221,11 +221,11 @@
       }
     }
   },
-  "clientOf": "Cliente de ",
+  "clientOf": "Cliente de",
   "@clientOf": {
     "description": "Cliente de message"
   },
-  "trainerOf": "Entrena en ",
+  "trainerOf": "Entrenador en",
   "@trainerOf": {
     "description": "Entrena en message"
   },

@@ -374,7 +374,7 @@ class _PerfilState extends State<Perfil> {
                     children: [
                       Text("${currentUser.name}", style: Styles.purpleTextStyle.copyWith(fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
                       Padding(
-                        padding: const EdgeInsets.only(top:20.0, bottom: 5.0),
+                        padding: const EdgeInsets.only(top:20.0, bottom: 10.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -383,14 +383,29 @@ class _PerfilState extends State<Perfil> {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top:5.0, bottom: 20.0),
+                      currentUser.brandID != "null" ? Container(
+                        padding: EdgeInsets.all(0),
                         child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(currentUser.isTrainer! ? AppLocalizations.of(context)!.trainerOf : AppLocalizations.of(context)!.clientOf, style: Styles.purpleTextStyle.copyWith(fontSize: 16,)),
-                            Text("----------", style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
+                            Text(currentUser.isTrainer! ? AppLocalizations.of(context)!.trainerOf : AppLocalizations.of(context)!.clientOf, style: Styles.purpleTextStyle.copyWith(fontSize: 16)),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 5),
+                              child: Text(currentBrand.name!, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold,)),
+                            ),
+                            CircularImage(size: MediaQuery.of(context).size.height * 0.07, image: currentBrand.logoUrl, borderWidth: 1.5,),
+                          ],
+                        ),
+                      ) : Container(
+                        padding: EdgeInsets.all(0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(AppLocalizations.of(context)!.notInBrand, style: Styles.purpleTextStyle.copyWith(fontSize: 16)),
                           ],
                         ),
                       ),
