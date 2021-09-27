@@ -39,8 +39,12 @@ class FirebaseDatabaseService {
   }
   Future<bool> deleteUser(String password) async {
     try {
+      bool error = false;
       User user = await _auth.currentUser!;
-      await signIn(user.email!, password);
+      await _auth .signInWithEmailAndPassword(email: user.email!, password: password).catchError((value){
+        error = true;
+      });
+      if (error) return false;
       await _firestore.collection("Users").doc(user.uid).delete();
       await user.delete();
       return true;

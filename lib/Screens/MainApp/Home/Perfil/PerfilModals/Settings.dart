@@ -295,6 +295,8 @@ class _DeleteDialogState extends State<DeleteDialog> {
   bool wrongPassword = false;
   String deleteTemp = "";
   var deleteController;
+  // Password Visible
+  bool _passwordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -333,7 +335,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                     children: <Widget>[
                       new Flexible(
                         child: new TextFormField(
-                          obscureText: true,
+                          obscureText: !_passwordVisible,
                           controller: deleteController,
                           onChanged: (val) {
                             setState(() => {
@@ -360,6 +362,21 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.red, width: 1),
                               borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            suffixIcon: Padding(
+                                padding: EdgeInsets.all(0.0),
+                                child: IconButton(
+                                    icon: Icon(
+                                      // Based on passwordVisible state choose the icon
+                                        _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                        color: Styles.red
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _passwordVisible = !_passwordVisible;
+                                      });
+                                    }
+                                )
                             ),
                           ),
                         ),

@@ -54,257 +54,256 @@ class _RegisterState extends State<Register> {
     return ScaffoldMessenger(
       key: scaffoldMessengerKey,
       child: Scaffold(
-            appBar: AppBar(
-              title: Image.asset(
-                      Constants.logoExtended,
-                      fit: BoxFit.contain,
-                      height: 32,
-                    ),
-              centerTitle: true,
-              elevation: 10,
-              iconTheme: IconThemeData(
-                color: Colors.white, //change your color here
-              ),
+          appBar: AppBar(
+            title: Image.asset(
+                    Constants.logoExtended,
+                    fit: BoxFit.contain,
+                    height: 32,
+                  ),
+            centerTitle: true,
+            elevation: 0,
+            iconTheme: IconThemeData(
+              color: Colors.white, //change your color here
             ),
-            backgroundColor: Colors.white,
-            body: isLoading ?
-              Stack(
-                children: <Widget>[
-                  Center(
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.14,
-                      height: MediaQuery.of(context).size.height * 0.07,
-                      child: CircularProgressIndicator(
-                        color: Styles.white,
-                      ),
+          ),
+          backgroundColor: Styles.mainColor,
+          body: isLoading ?
+            Stack(
+              children: <Widget>[
+                Center(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.14,
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    child: CircularProgressIndicator(
+                      color: Styles.white,
                     ),
                   ),
-                  Center(
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.07,
-                      height: MediaQuery.of(context).size.height * 0.07,
-                      child: Image(
-                          image: AssetImage(Constants.logoSimple)
-                      ),
+                ),
+                Center(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.07,
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    child: Image(
+                        image: AssetImage(Constants.logoSimple)
                     ),
                   ),
-                ],
-              )
-                  :
-              Center(
-                child: SingleChildScrollView(
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Padding(
-                            padding: EdgeInsets.only(
-                                left: 25.0, right: 25.0),
-                            child: UserTypeWidget(
-                              isTrainer: isTrainerTemp == null ? isTrainer : isTrainerTemp!,
-                              selectedProfileTypeChanged: (_isTrainer) {
-                                isTrainer = _isTrainer;
-                              },
-                            )
-                        ),
-                        errorType ? Padding(
-                          padding: EdgeInsets.only(left: 0, right: 0, top: 2.0, bottom: 8),
-                          child: Center(
-                            child: Text(
-                              errorTypeText,
-                              style: Styles.redTextStyle.copyWith(fontSize: 12),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ) : new Container(),
-                        Padding(
-                            padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 0),
-                            child: TextFormField(
-                              //initialValue: nameTemp,
-                              validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nameCompletoError  : null,
-                              onChanged: (val) {
-                                setState(() => name = val);
-                              },
-                              decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.nameCompleto,
-                                  prefixIcon:  Padding(
-                                    padding: EdgeInsets.all(0.0),
-                                    child: Icon(
-                                      Icons.badge_outlined,
-                                      color: Styles.accent,
-                                    ), // icon is 48px widget.
-                                  )
-                              )
-                            )
-                        ),
-                        Padding(
-                            padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
-                            child: TextFormField(
-                              keyboardType: TextInputType.emailAddress,
-                              //initialValue: emailTemp,
-                              validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.emailError : null,
-                              onChanged: (val) {
-                                setState(() => email = val);
-                              },
-                              decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.email,
-                                  prefixIcon:  Padding(
-                                    padding: EdgeInsets.all(0.0),
-                                    child: Icon(
-                                      Icons.email_outlined,
-                                      color: Styles.accent,
-                                    ), // icon is 48px widget.
-                                  )
-                              )
-                            )
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
-                          child: GenderWidget(
-                              genderTemp: genderTemp,
-                              selectedGenderChanged: (gender) {
-                                updateGender(gender);
-                              }
+                ),
+              ],
+            )
+                :
+            Center(
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0),
+                          child: UserTypeWidget(
+                            isTrainer: isTrainerTemp == null ? isTrainer : isTrainerTemp!,
+                            selectedProfileTypeChanged: (_isTrainer) {
+                              isTrainer = _isTrainer;
+                            },
+                          )
+                      ),
+                      errorType ? Padding(
+                        padding: EdgeInsets.only(left: 0, right: 0, top: 2.0, bottom: 8),
+                        child: Center(
+                          child: Text(
+                            errorTypeText,
+                            style: Styles.redTextStyle.copyWith(fontSize: 12),
+                            textAlign: TextAlign.center,
                           ),
                         ),
-                        errorGender ? Padding(
-                          padding: EdgeInsets.only(left: 0, right: 0, top: 2.0),
-                          child: Center(
-                            child: Text(
-                              errorGenderText,
-                              style: Styles.redTextStyle.copyWith(fontSize: 12),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ) : new Container(),
-                        Padding(
-                            padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
-                            child: TextFormField(
-                              validator: (val) => val!.length < 6 ? AppLocalizations.of(context)!.passwordError : null,
-                              onChanged: (val) {
-                                setState(() => password1 = val);
-                              },
-                              obscureText: !_passwordVisible,
-                              decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
-                                  suffixIcon: Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: IconButton(
-                                          icon: Icon(
-                                            // Based on passwordVisible state choose the icon
-                                              _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                              color: Styles.accent
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              _passwordVisible = !_passwordVisible;
-                                            });
-                                          }
-                                      )
-                                  ),
-                                  prefixIcon:  Padding(
-                                    padding: EdgeInsets.all(0.0),
-                                    child: Icon(
-                                      Icons.vpn_key_outlined,
-                                      color: Styles.accent,
-                                    ), // icon is 48px widget.
-                                  )
-                              )
-                            )
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 16.0),
+                      ) : new Container(),
+                      Padding(
+                          padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 0),
                           child: TextFormField(
-                              validator: (val) => val == password1 ? null : AppLocalizations.of(context)!.passwordNotSameError,
-                              onChanged: (val) {
-                                setState(() => password2 = val);
-                              },
-                              obscureText: !_passwordVisible,
-                              decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.passworRepeat,
-                                  suffixIcon: Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: IconButton(
-                                          icon: Icon(
-                                            // Based on passwordVisible state choose the icon
-                                              _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                              color: Styles.accent
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              _passwordVisible = !_passwordVisible;
-                                            });
-                                          }
-                                      )
-                                  ),
-                                  prefixIcon:  Padding(
-                                    padding: EdgeInsets.all(0.0),
-                                    child: Icon(
-                                      Icons.vpn_key_outlined,
-                                      color: Styles.accent,
-                                    ), // icon is 48px widget.
-                                  )
-                              )
+                            //initialValue: nameTemp,
+                            validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nameCompletoError  : null,
+                            onChanged: (val) {
+                              setState(() => name = val);
+                            },
+                            decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.nameCompleto,
+                                prefixIcon:  Padding(
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Icon(
+                                    Icons.badge_outlined,
+                                    color: Styles.accent,
+                                  ), // icon is 48px widget.
+                                )
+                            )
+                          )
+                      ),
+                      Padding(
+                          padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
+                          child: TextFormField(
+                            keyboardType: TextInputType.emailAddress,
+                            //initialValue: emailTemp,
+                            validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.emailError : null,
+                            onChanged: (val) {
+                              setState(() => email = val);
+                            },
+                            decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.email,
+                                prefixIcon:  Padding(
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Icon(
+                                    Icons.email_outlined,
+                                    color: Styles.accent,
+                                  ), // icon is 48px widget.
+                                )
+                            )
+                          )
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
+                        child: GenderWidget(
+                            genderTemp: genderTemp,
+                            selectedGenderChanged: (gender) {
+                              updateGender(gender);
+                            }
+                        ),
+                      ),
+                      errorGender ? Padding(
+                        padding: EdgeInsets.only(left: 0, right: 0, top: 2.0),
+                        child: Center(
+                          child: Text(
+                            errorGenderText,
+                            style: Styles.redTextStyle.copyWith(fontSize: 12),
+                            textAlign: TextAlign.center,
                           ),
                         ),
-                        Container(
-                          height: 50,
-                          width: 250,
-                          decoration: BoxDecoration(
-                              color: Styles.accent, borderRadius: BorderRadius.circular(20)),
-                          child: TextButton(
-                            onPressed: () async {
-                              if (gender == null) {
-                                setState(() {
-                                  errorGender = true;
-                                  errorGenderText = AppLocalizations.of(context)!.registerGenderError;
-                                  isLoading = false;
-                                });
-                              } else {
-                                setState(() {
-                                  errorGender = false;
-                                });
-                              };
-                              if (isTrainer == null) {
-                                setState(() {
-                                  errorType = true;
-                                  errorTypeText = AppLocalizations.of(context)!.registerTypeError;
-                                  isLoading = false;
-                                });
-                              } else {
-                                setState(() {
-                                  errorType = false;
-                                });
-                              };
-                              if(_formKey.currentState!.validate()){
-                                isTrainerTemp = isTrainer;
-                                nameTemp = name;
-                                emailTemp = email;
-                                genderTemp = gender;
-                                onSignUpButtonPressed();
-                              }
+                      ) : new Container(),
+                      Padding(
+                          padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
+                          child: TextFormField(
+                            validator: (val) => val!.length < 6 ? AppLocalizations.of(context)!.passwordError : null,
+                            onChanged: (val) {
+                              setState(() => password1 = val);
+                            },
+                            obscureText: !_passwordVisible,
+                            decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
+                                suffixIcon: Padding(
+                                    padding: EdgeInsets.all(0.0),
+                                    child: IconButton(
+                                        icon: Icon(
+                                          // Based on passwordVisible state choose the icon
+                                            _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                            color: Styles.accent
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _passwordVisible = !_passwordVisible;
+                                          });
+                                        }
+                                    )
+                                ),
+                                prefixIcon:  Padding(
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Icon(
+                                    Icons.vpn_key_outlined,
+                                    color: Styles.accent,
+                                  ), // icon is 48px widget.
+                                )
+                            )
+                          )
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 16.0),
+                        child: TextFormField(
+                            validator: (val) => val == password1 ? null : AppLocalizations.of(context)!.passwordNotSameError,
+                            onChanged: (val) {
+                              setState(() => password2 = val);
+                            },
+                            obscureText: !_passwordVisible,
+                            decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.passworRepeat,
+                                suffixIcon: Padding(
+                                    padding: EdgeInsets.all(0.0),
+                                    child: IconButton(
+                                        icon: Icon(
+                                          // Based on passwordVisible state choose the icon
+                                            _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                            color: Styles.accent
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _passwordVisible = !_passwordVisible;
+                                          });
+                                        }
+                                    )
+                                ),
+                                prefixIcon:  Padding(
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Icon(
+                                    Icons.vpn_key_outlined,
+                                    color: Styles.accent,
+                                  ), // icon is 48px widget.
+                                )
+                            )
+                        ),
+                      ),
+                      Container(
+                        height: 50,
+                        width: 250,
+                        decoration: BoxDecoration(
+                            color: Styles.accent, borderRadius: BorderRadius.circular(20)),
+                        child: TextButton(
+                          onPressed: () async {
+                            if (gender == null) {
+                              setState(() {
+                                errorGender = true;
+                                errorGenderText = AppLocalizations.of(context)!.registerGenderError;
+                                isLoading = false;
+                              });
+                            } else {
+                              setState(() {
+                                errorGender = false;
+                              });
+                            };
+                            if (isTrainer == null) {
+                              setState(() {
+                                errorType = true;
+                                errorTypeText = AppLocalizations.of(context)!.registerTypeError;
+                                isLoading = false;
+                              });
+                            } else {
+                              setState(() {
+                                errorType = false;
+                              });
+                            };
+                            if(_formKey.currentState!.validate()){
+                              isTrainerTemp = isTrainer;
+                              nameTemp = name;
+                              emailTemp = email;
+                              genderTemp = gender;
+                              onSignUpButtonPressed();
+                            }
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!.register,
+                            style: Styles.whiteTextStyle.copyWith(fontSize: 28),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 8.0),
+                        child: TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
                             },
                             child: Text(
-                              AppLocalizations.of(context)!.register,
-                              style: Styles.whiteTextStyle.copyWith(fontSize: 28),
-                            ),
-                          ),
+                              AppLocalizations.of(context)!.alreadyUser,
+                              style: Styles.purpleTextStyle.copyWith(color: Colors.white),
+                            )
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 8.0),
-                          child: TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                AppLocalizations.of(context)!.alreadyUser,
-                                style: Styles.purpleTextStyle,
-                              )
-                          ),
-                        ),
-                      ],
-                  ),
-                ),
-
+                      ),
+                    ],
                 ),
               ),
+              ),
+            ),
         ),
     );
 
@@ -345,7 +344,6 @@ class _RegisterState extends State<Register> {
       });
       showInSnackBar(AppLocalizations.of(context)!.sameEmail);
     }
-
   }
 
   void showInSnackBar(String value) {
@@ -403,7 +401,7 @@ class _UserTypeWidgetState extends State<UserTypeWidget> {
               Icon(
                 icon,
                 size: 45,
-                color: _isTrainer == index ? Styles.mainColor : Styles.accent,
+                color: _isTrainer == index ? Colors.white : Styles.accent,
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
@@ -412,7 +410,7 @@ class _UserTypeWidgetState extends State<UserTypeWidget> {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 22,
-                      color: _isTrainer == index ? Styles.mainColor : Styles.accent
+                      color: _isTrainer == index ? Colors.white : Styles.accent
                     )
                 ),
               ),
@@ -468,10 +466,10 @@ class _GenderWidgetState extends State<GenderWidget> {
           children: [
             Icon(
               icon,
-              color: gender == index ? Styles.mainColor : Styles.accent,
+              color: gender == index ? Colors.white : Styles.accent,
               size: 45,
             ),
-            Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize:22, color: gender == index ? Styles.mainColor : Styles.accent)),
+            Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize:22, color: gender == index ? Colors.white : Styles.accent)),
           ],
         ),
         onTap: () => {

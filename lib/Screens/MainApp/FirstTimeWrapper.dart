@@ -94,7 +94,7 @@ class _FirstTimeWrapperState extends State<FirstTimeWrapper> {
                       child: Image.asset(Constants.logoExtended)),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Text(AppLocalizations.of(context)!.wellcome(currentUser.name!),
+                    child: Text(AppLocalizations.of(context)!.wellcome(splitCommonName(currentUser.name!)),
                       style: Styles.purpleTextStyle.copyWith(fontSize: 23, fontWeight:FontWeight.bold),
                       textAlign: TextAlign.center,),
                   ),
@@ -306,4 +306,10 @@ class _FirstTimeWrapperState extends State<FirstTimeWrapper> {
       );
     }
   }
+
+  String splitCommonName(String name) {
+    List<String> aux = name.split(" ");
+    return aux[0];
+  }
+
 }
