@@ -31,19 +31,9 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
   var _isSaved;
   var _isUpdated;
 
-  // Get current BrandDetails
-  void getCurrentBrandDetails() async {
-    currentBrand = await _accessDatabase.getCurrentBrandDetails(currentBrand.id!);
-    print(currentBrand);
-    setState(() {
-      isLoading = false;
-    });
-  }
 
   @override
   void initState() {
-    isLoading = true;
-    getCurrentBrandDetails();
     super.initState();
   }
 
