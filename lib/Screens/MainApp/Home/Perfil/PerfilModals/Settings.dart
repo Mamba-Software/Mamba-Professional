@@ -62,367 +62,220 @@ class _SettingsState extends State<Settings> {
       }
     }
     return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height*0.86,
+      ),
       padding: MediaQuery.of(context).viewInsets,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: Styles.accent),
-                  onPressed: () => {
-                    isSaved = false,
-                    widget.isSaved(isSaved),
-                    Navigator.pop(context)
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 30.0),
-                  child: Text(AppLocalizations.of(context)!.settings, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
-                ),
-                MaterialButton(
-                  onPressed: isUpdated ? () async => {
-                    setState(() {
-                      isSaved = true;
-                      widget.isSaved(isSaved);
-                      widget.isUpdated(isUpdated);
-                      if (!(_isPrivate == null)) {
-                        currentUser.isPrivate = _isPrivate;
-                      };
-                      if (idiomaChanged) {
-                        currentUser.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
-                        currentUser.previousIdioma = "";
-                      };
-                      isLoading = true;
-                      _idiomaChanged.currentState!.resetIdiomaChanged();
-                      idiomaChanged = false;
-                    }),
-                    await _accessDatabase.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back, color: Styles.accent),
+                    onPressed: () => {
+                      isSaved = false,
+                      widget.isSaved(isSaved),
+                      Navigator.pop(context)
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30.0),
+                    child: Text(AppLocalizations.of(context)!.settings, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+                  ),
+                  MaterialButton(
+                    onPressed: isUpdated ? () async => {
+                      setState(() {
+                        isSaved = true;
+                        widget.isSaved(isSaved);
+                        widget.isUpdated(isUpdated);
+                        if (!(_isPrivate == null)) {
+                          currentUser.isPrivate = _isPrivate;
+                        };
+                        if (idiomaChanged) {
+                          currentUser.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
+                          currentUser.previousIdioma = "";
+                        };
+                        isLoading = true;
+                        _idiomaChanged.currentState!.resetIdiomaChanged();
+                        idiomaChanged = false;
+                      }),
+                      await _accessDatabase.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!),
 
-                    Navigator.pop(context),
-                  } : null,
-                  color: isUpdated ? Colors.green : Colors.transparent,
-                  child: Icon(Icons.save, color: isUpdated ? Colors.white : Styles.accentLight),
-                  padding: EdgeInsets.all(15),
-                  shape: CircleBorder(),
-                ),
-              ],
-            ),
-            isLoading ?
-              Container(
-                height: MediaQuery.of(context).size.height * 0.2,
-                child: LoadingView()
-              )
-                :
-              new Container(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 25.0),
-                  child : new Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        !(currentUser.isTrainer!) ? Padding(
-                            padding: EdgeInsets.only(
-                                left: 25.0, right: 25.0, top: 25.0),
-                            child: new Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                new Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    new Text(
-                                      AppLocalizations.of(context)!.typeProfile,
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )) : Container(),
-                        !(currentUser.isTrainer!) ? Padding(
-                            padding: EdgeInsets.only(
-                                left: 25.0, right: 25.0, top: 12.0),
-                            child: ProfileTypeWidget(
-                              key: _typeProfileKey,
-                              user: currentUser,
-                              selectedProfileTypeChanged: (isPrivate) {
-                                setState(() {
-                                  _isPrivate = isPrivate;
-                                });
-                              },
-                            )
-                        ) : Container(),
-                        Padding(
-                            padding: EdgeInsets.only(
-                                left: 25.0, right: 25.0, top: 12.0),
-                            child: new Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                new Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    new Text(
-                                      AppLocalizations.of(context)!.language,
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )),
-                        Padding(
+                      Navigator.pop(context),
+                    } : null,
+                    color: isUpdated ? Colors.green : Colors.transparent,
+                    child: Icon(Icons.save, color: isUpdated ? Colors.white : Styles.accentLight),
+                    padding: EdgeInsets.all(15),
+                    shape: CircleBorder(),
+                  ),
+                ],
+              ),
+              isLoading ?
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.2,
+                  child: LoadingView()
+                )
+                  :
+                new Container(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 25.0),
+                    child : new Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          !(currentUser.isTrainer!) ? Padding(
+                              padding: EdgeInsets.only(
+                                  left: 25.0, right: 25.0, top: 25.0),
+                              child: new Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  new Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      new Text(
+                                        AppLocalizations.of(context)!.typeProfile,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )) : Container(),
+                          !(currentUser.isTrainer!) ? Padding(
+                              padding: EdgeInsets.only(
+                                  left: 25.0, right: 25.0, top: 12.0),
+                              child: ProfileTypeWidget(
+                                key: _typeProfileKey,
+                                user: currentUser,
+                                selectedProfileTypeChanged: (isPrivate) {
+                                  setState(() {
+                                    _isPrivate = isPrivate;
+                                  });
+                                },
+                              )
+                          ) : Container(),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  left: 25.0, right: 25.0, top: 12.0),
+                              child: new Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  new Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      new Text(
+                                        AppLocalizations.of(context)!.language,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  left: 25.0, right: 25.0, top: 12.0, bottom: 12.0),
+                              child: LanguagePickerWidget(
+                                  key: _idiomaChanged,
+                                  idiomaChanged: (bool) {
+                                    idiomaChanged = bool!;
+                                  },
+                              )
+                          ),
+                          Padding(
                             padding: EdgeInsets.only(
                                 left: 25.0, right: 25.0, top: 12.0, bottom: 12.0),
-                            child: LanguagePickerWidget(
-                                key: _idiomaChanged,
-                                idiomaChanged: (bool) {
-                                  idiomaChanged = bool!;
-                                },
-                            )
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 12.0, bottom: 12.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                height: 50,
-                                width: 250,
-                                decoration: BoxDecoration(
-                                    color: Styles.accent, borderRadius: BorderRadius.circular(20)
-                                ),
-                                child: TextButton(
-                                  onPressed: () async {
-                                    _accessDatabase.signOut().then((value) =>
-                                        Navigator.pushAndRemoveUntil(
-                                          context,
-                                          CupertinoPageRoute<Null>(
-                                            builder: (context) => Login(),
-                                            settings: RouteSettings(name: 'Login'),
-                                          ),
-                                              (_) => false,
-                                        )
-                                    );
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.logout_outlined, color: Styles.white),
-                                      SizedBox(width: 10),
-                                      Text(
-                                        AppLocalizations.of(context)!.closeSession,
-                                        style: Styles.whiteTextStyle,
-                                      ),
-                                    ],
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height: 50,
+                                  width: 250,
+                                  decoration: BoxDecoration(
+                                      color: Styles.accent, borderRadius: BorderRadius.circular(20)
+                                  ),
+                                  child: TextButton(
+                                    onPressed: () async {
+                                      _accessDatabase.signOut().then((value) =>
+                                          Navigator.pushAndRemoveUntil(
+                                            context,
+                                            CupertinoPageRoute<Null>(
+                                              builder: (context) => Login(),
+                                              settings: RouteSettings(name: 'Login'),
+                                            ),
+                                                (_) => false,
+                                          )
+                                      );
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.logout_outlined, color: Styles.white),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          AppLocalizations.of(context)!.closeSession,
+                                          style: Styles.whiteTextStyle,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0, top: 12.0, bottom: 12.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                height: 50,
-                                width: 250,
-                                decoration: BoxDecoration(
-                                    color: Colors.red, borderRadius: BorderRadius.circular(20)
-                                ),
-                                child: TextButton(
-                                  onPressed: () async {
-                                    showDialog(
-                                      context: context,
-                                      builder: (_) {
-                                        return DeleteDialog();
-                                      });
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.delete_outline, color: Styles.white),
-                                      SizedBox(width: 10),
-                                      Text(
-                                        AppLocalizations.of(context)!.deleteAccount,
-                                        style: Styles.whiteTextStyle,
-                                      ),
-                                    ],
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: 25.0, right: 25.0, top: 12.0, bottom: 12.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height: 50,
+                                  width: 250,
+                                  decoration: BoxDecoration(
+                                      color: Colors.red, borderRadius: BorderRadius.circular(20)
+                                  ),
+                                  child: TextButton(
+                                    onPressed: () async {
+                                      showDialog(
+                                        context: context,
+                                        builder: (_) {
+                                          return DeleteDialog();
+                                        });
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.delete_outline, color: Styles.white),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          AppLocalizations.of(context)!.deleteAccount,
+                                          style: Styles.whiteTextStyle,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
-
-  showAlertDialog(BuildContext context) {
-    // Delete Alert
-    bool canDelete = false;
-    String deleteTemp = "";
-    var deleteController;
-
-    // set up the buttons
-    Widget cancelButton = FloatingActionButton.extended(
-      icon: Icon(Icons.cancel_outlined, size: 30,),
-      label: Text(AppLocalizations.of(context)!.cancel),
-      backgroundColor: Styles.accent,
-      foregroundColor: Styles.white,
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-
-    Widget continueButton = FloatingActionButton.extended(
-      label: Text(AppLocalizations.of(context)!.delete),
-      icon: Icon(Icons.delete_outline),
-      backgroundColor: canDelete ? Colors.red : Colors.red[100],
-      foregroundColor: Styles.white,
-      onPressed: () {
-        setState(() {
-          canDelete = true;
-        });
-      },
-    );
-    
-    Dialog dialog = Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.all(20),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: Colors.white
-        ),
-        child: Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.center,
-          children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 25, bottom: 10.0),
-                  child: Text(AppLocalizations.of(context)!.wantDeleteUser, style: Styles.redTextStyle.copyWith(color: Colors.red, fontSize: 22, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("${AppLocalizations.of(context)!.writeDeleteUser} ", style: Styles.purpleTextStyle.copyWith(fontSize: 16), textAlign: TextAlign.center,),
-                    Text("${AppLocalizations.of(context)!.delete}/${splitCommonName(currentUser.name!)}", style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),textAlign: TextAlign.center),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("${AppLocalizations.of(context)!.confirmDeleteUser}", style: Styles.purpleTextStyle.copyWith(fontSize: 16),),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0, left: 50, right: 50),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      new Flexible(
-                        child: new TextFormField(
-                          controller: deleteController,
-                          onChanged: (val) {
-                            setState(() => {
-                              deleteTemp = val
-                            });
-                          },
-                          style: Styles.redTextStyle.copyWith(fontSize: 14),
-                          decoration: InputDecoration(
-                            hintText: "${AppLocalizations.of(context)!.delete}/${splitCommonName(currentUser.name!)}",
-                            hintStyle: Styles.redTextStyle.copyWith(fontSize: 14, color: Colors.red),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red, width: 1),
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red, width: 1),
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0, left: 10, right: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      continueButton,
-                      cancelButton,
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Positioned(
-                top: -90,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox.fromSize(
-                      size: Size(100, 100), // button width and height
-                      child: ClipOval(
-                        child: Material(
-                          color: Colors.red, // button color
-                          child: InkWell(
-                            onTap: () async {
-                              setState(() {});
-                            },
-                            child: Icon(Icons.warning, color: Colors.white, size: 60,), // icon
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-            )
-            )
-          ],
-        ),
-      ),
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return dialog;
-          },
-        );
-      },
-    ).whenComplete(() => deleteTemp = "");
-  }
-
-  String splitCommonName(String name) {
-    List<String> aux = name.split(" ");
-    return aux[0];
-  }
-
 }
 
 class DeleteDialog extends StatefulWidget {
@@ -434,9 +287,12 @@ class DeleteDialog extends StatefulWidget {
 
 class _DeleteDialogState extends State<DeleteDialog> {
 
+  // Acceso a Base de Datos
+  var _accessDatabase = new DatabaseAccess();
   // Delete Alert
   bool firstBuild = true;
   bool canDelete = false;
+  bool wrongPassword = false;
   String deleteTemp = "";
   var deleteController;
 
@@ -445,14 +301,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
     if(firstBuild) {
       deleteTemp = "";
       firstBuild = false;
-    } else {
-      if(deleteTemp == "${AppLocalizations.of(context)!.delete}/${splitCommonName(currentUser.name!)}"){
-        setState(() {
-          canDelete = true;
-        });
-      }
     }
-
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.all(20),
@@ -474,35 +323,35 @@ class _DeleteDialogState extends State<DeleteDialog> {
                   padding: const EdgeInsets.only(top: 25, bottom: 10.0),
                   child: Text(AppLocalizations.of(context)!.wantDeleteUser, style: Styles.redTextStyle.copyWith(color: Colors.red, fontSize: 22, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("${AppLocalizations.of(context)!.writeDeleteUser} ", style: Styles.purpleTextStyle.copyWith(fontSize: 16), textAlign: TextAlign.center,),
-                    Text("${AppLocalizations.of(context)!.delete}/${splitCommonName(currentUser.name!)}", style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),textAlign: TextAlign.center),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("${AppLocalizations.of(context)!.confirmDeleteUser}", style: Styles.purpleTextStyle.copyWith(fontSize: 16),),
-                  ],
+                Flexible(
+                  child: Text("${AppLocalizations.of(context)!.writeDeleteUser} ", style: Styles.purpleTextStyle.copyWith(fontSize: 16), textAlign: TextAlign.center,),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 20.0, left: 50, right: 50),
+                  padding: const EdgeInsets.only(top: 20.0, left: 30, right: 30),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       new Flexible(
                         child: new TextFormField(
+                          obscureText: true,
                           controller: deleteController,
                           onChanged: (val) {
                             setState(() => {
                               deleteTemp = val
                             });
+                            if (val.length < 6) {
+                              setState(() => {
+                                canDelete = false
+                              });
+                            } else {
+                              setState(() => {
+                                canDelete = true
+                              });
+                            }
                           },
                           style: Styles.redTextStyle.copyWith(fontSize: 14),
                           decoration: InputDecoration(
-                            hintText: "${AppLocalizations.of(context)!.delete}/${splitCommonName(currentUser.name!)}",
+                            hintText: AppLocalizations.of(context)!.passworRepeat,
                             hintStyle: Styles.redTextStyle.copyWith(fontSize: 14, color: Colors.red),
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.red, width: 1),
@@ -518,6 +367,12 @@ class _DeleteDialogState extends State<DeleteDialog> {
                     ],
                   ),
                 ),
+                wrongPassword ? Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 20.0, left: 10, right: 10),
+                    child: Text("${AppLocalizations.of(context)!.passwordNotSameError} ", style: Styles.redTextStyle.copyWith(fontSize: 16), textAlign: TextAlign.center,),
+                  ),
+                ) : Container(),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, left: 10, right: 10),
                   child: Row(
@@ -528,8 +383,23 @@ class _DeleteDialogState extends State<DeleteDialog> {
                         icon: Icon(Icons.delete_outline),
                         backgroundColor: canDelete ? Colors.red : Colors.red[100],
                         foregroundColor: Styles.white,
-                        onPressed: () {
+                        onPressed: () async {
                           // Delete Function
+                          var result = await _accessDatabase.deleteUser(deleteTemp);
+                          if (!result) {
+                            setState(() {
+                              wrongPassword = true;
+                            });
+                          } else {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              CupertinoPageRoute<Null>(
+                                builder: (context) => Login(),
+                                settings: RouteSettings(name: 'Login'),
+                              ),
+                                  (_) => false,
+                            );
+                          }
                         },
                       ),
                       FloatingActionButton.extended(

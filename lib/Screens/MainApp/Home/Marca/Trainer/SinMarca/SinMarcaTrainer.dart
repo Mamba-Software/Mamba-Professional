@@ -219,7 +219,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 14.0),
+                padding: const EdgeInsets.only(top: 12.0),
                 child: Text(AppLocalizations.of(context)!.trainersZone, style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
               ),
               Container(

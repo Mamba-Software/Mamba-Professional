@@ -94,7 +94,7 @@
   "brandNotFound": "No trobem aquesta Marca. Si us plau assegureu-vos que heu introduït el codi correctament",
   "notInBrand": "No formes part de cap marca",
   "wantDeleteUser": "¿Vols eliminar el teu usuari?",
-  "writeDeleteUser": "Escriu",
+  "writeDeleteUser": "Escriu la teva contrasenya per confirmar aquesta acció:",
   "confirmDeleteUser": "per confirmar aquesta acció:",
   "delete": "Eliminar",
   "cancel": "Cancel·lar"

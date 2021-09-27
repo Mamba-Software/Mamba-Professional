@@ -12,6 +12,7 @@ class DatabaseAccess {
   Future<int> signIn(String email, String password) => _firebase.signIn(email, password);
   Future<void> signOut() => _firebase.signOut();
   Future<void> resetPassword(String email) => _firebase.resetPassword(email);
+  Future<bool> deleteUser(String password) => _firebase.deleteUser(password);
 
   Future<bool> checkCurrentUser() => _firebase.checkCurrentUser();
   Future<bool> checkIfItsMe(String uid) => _firebase.checkIfItsMe(uid);

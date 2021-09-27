@@ -37,6 +37,18 @@ class FirebaseDatabaseService {
   Future<void> resetPassword(String email) async {
     return await _auth.sendPasswordResetEmail(email: email);
   }
+  Future<bool> deleteUser(String password) async {
+    try {
+      User user = await _auth.currentUser!;
+      await signIn(user.email!, password);
+      await _firestore.collection("Users").doc(user.uid).delete();
+      await user.delete();
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
   Future<bool> checkCurrentUser() async {
     User currentUser;
     currentUser = await _auth.currentUser!;

@@ -394,7 +394,7 @@
   "@wantDeleteUser":{
     "description": "notInBrand text"
   },
-  "writeDeleteUser": "Escribe",
+  "writeDeleteUser": "Escribe tu contraseña para confirmar esta acción:",
   "@writeDeleteUser":{
     "description": "notInBrand text"
   },
