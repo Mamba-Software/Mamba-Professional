@@ -66,7 +66,7 @@ class _RegisterState extends State<Register> {
                 color: Colors.white, //change your color here
               ),
             ),
-            backgroundColor: Styles.mainColor,
+            backgroundColor: Colors.white,
             body: isLoading ?
               Stack(
                 children: <Widget>[
@@ -100,7 +100,7 @@ class _RegisterState extends State<Register> {
                       children: <Widget>[
                         Padding(
                             padding: EdgeInsets.only(
-                                left: 25.0, right: 25.0, top: 12.0),
+                                left: 25.0, right: 25.0),
                             child: UserTypeWidget(
                               isTrainer: isTrainerTemp == null ? isTrainer : isTrainerTemp!,
                               selectedProfileTypeChanged: (_isTrainer) {
@@ -294,7 +294,7 @@ class _RegisterState extends State<Register> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.alreadyUser,
-                                style: Styles.whiteTextStyle,
+                                style: Styles.purpleTextStyle,
                               )
                           ),
                         ),
@@ -402,7 +402,7 @@ class _UserTypeWidgetState extends State<UserTypeWidget> {
               Icon(
                 icon,
                 size: 45,
-                color: _isTrainer == index ? Colors.white : Styles.accent,
+                color: _isTrainer == index ? Styles.mainColor : Styles.accent,
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
@@ -411,7 +411,7 @@ class _UserTypeWidgetState extends State<UserTypeWidget> {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 22,
-                      color: _isTrainer == index ? Colors.white : Styles.accent
+                      color: _isTrainer == index ? Styles.mainColor : Styles.accent
                     )
                 ),
               ),
@@ -467,9 +467,10 @@ class _GenderWidgetState extends State<GenderWidget> {
           children: [
             Icon(
               icon,
-              color: gender == index ? Colors.white : Styles.accent,
+              color: gender == index ? Styles.mainColor : Styles.accent,
+              size: 45,
             ),
-            Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize:22, color: gender == index ? Colors.white : Styles.accent)),
+            Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize:22, color: gender == index ? Styles.mainColor : Styles.accent)),
           ],
         ),
         onTap: () => {
