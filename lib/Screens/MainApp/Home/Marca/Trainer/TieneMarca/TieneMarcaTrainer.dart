@@ -7,6 +7,12 @@ import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AjustesMarca.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AnadirMiembro.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/Calendario.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/HistorialSesiones.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/Subscripciones.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembros.dart';
 
 class TieneMarcaTrainer extends StatefulWidget {
   const TieneMarcaTrainer({Key? key}) : super(key: key);
@@ -21,7 +27,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
   // Boolean Loading
   bool isLoading = false;
   // List Bool Status
-  List<bool> _statusButtons =  [false, false, false, false];
+  List<bool> _statusButtons =  [false, false, false, false, false, false];
   // Size of Icons
   final _globusSize = Size(75, 75);
   final _iconSize = 40.0;
@@ -42,7 +48,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
     // Calls a Modal Bottom Sheet every time an Icon is Tapped. It updates the page after closing only if there have been changes
     // inside the modal. Some set the isLoading to true (TusDatos, as the name needs to be updated in the UI), others don´t as it
     // can happen in the background (Settings)
-    /*
+
     void _showPerfiClientModals(int _buttonIndex) async {
       _isSaved = false;
       _isUpdated = false;
@@ -54,19 +60,9 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
               isScrollControlled: true,
               context: context,
               builder: (context) {
-                return TusDatos(
-                    isUpdated: (bool) {
-                      _isUpdated = bool!;
-                    }
-                );
+                return AnadirMiembro();
               }
           ).whenComplete(() =>{
-            if(_isUpdated){
-              setState(() {
-                isLoading = true;
-                getUser();
-              }),
-            },
             setState(() {
               _statusButtons[0] = !_statusButtons[0];
             })
@@ -79,25 +75,9 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
               isScrollControlled: true,
               context: context,
               builder: (context) {
-                return Settings(
-                    isSaved: (bool) {
-                      _isSaved = bool!;
-                    },
-                    isUpdated: (bool) {
-                      _isUpdated = bool!;
-                    }
-                );
+                return TodosMiembros();
               }
           ).whenComplete(() =>{
-            if(_isUpdated){
-              setState(() {
-                isLoading = true;
-                getUser();
-              }),
-            },
-            if(!_isSaved){
-              Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!)),
-            },
             setState(() {
               _statusButtons[1] = !_statusButtons[1];
             }),
@@ -110,7 +90,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
               isScrollControlled: true,
               context: context,
               builder: (context) {
-                return FeedBack();
+                return Calendario();
               }).whenComplete(() => {
             setState(() {
               _statusButtons[2] = !_statusButtons[2];
@@ -124,22 +104,49 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
               isScrollControlled: true,
               context: context,
               builder: (context) {
-                return ReportBug();
+                return HistorialSesiones();
               }).whenComplete(() => {
             setState(() {
               _statusButtons[3] = !_statusButtons[3];
             })
           });
           break;
-        default:
+        case 4:
           showModalBottomSheet(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+              isScrollControlled: true,
               context: context,
               builder: (context) {
-                return Container();
-              });
+                return Subscripciones();
+              }).whenComplete(() => {
+            setState(() {
+              _statusButtons[4] = !_statusButtons[4];
+            })
+          });
+          break;
+        case 5:
+          showModalBottomSheet(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+              isScrollControlled: true,
+              context: context,
+              builder: (context) {
+                return AjustesMarca();
+              }).whenComplete(() => {
+            setState(() {
+              _statusButtons[5] = !_statusButtons[5];
+            })
+          });
+          break;
+        default:
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return Container();
+          });
       }
     }
-     */
 
     return isLoading ?
     LoadingView()
@@ -211,10 +218,10 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                           onTap: () {
                                             setState(() {
                                               _statusButtons[0] = !_statusButtons[0];
-                                              //_showPerfiClientModals(0);
+                                              _showPerfiClientModals(0);
                                             });
                                             //_showSettingsPanel();
-                                          }, // button pressed
+                                          },
                                           child: Icon( Icons.group_add, color: Colors.white, size: _iconSize,), // icon
                                         ),
                                       ),
@@ -241,15 +248,14 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                           onTap: () {
                                             setState(() {
                                               _statusButtons[1] = !_statusButtons[1];
-                                              //_showPerfiClientModals(1);
+                                              _showPerfiClientModals(1);
                                             });
-                                          }, // button pressed
+                                          },
                                           child: Icon(Icons.groups, color: Colors.white, size: _iconSize,), // icon
                                         ),
                                       ),
                                     ),
                                   ),
-
                                 ],
                               )),
                           // Ajustes Mig Esquerra
@@ -265,15 +271,15 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                     size: _globusSize, // button width and height
                                     child: ClipOval(
                                       child: Material(
-                                        color: !_statusButtons[1] ? Styles.mainColor : Styles.mainColorTrans, // button color
+                                        color: !_statusButtons[2] ? Styles.mainColor : Styles.mainColorTrans, // button color
                                         child: InkWell(
                                           splashColor: Colors.white, // splash color
                                           onTap: () {
                                             setState(() {
-                                              _statusButtons[1] = !_statusButtons[1];
-                                              //_showPerfiClientModals(1);
+                                              _statusButtons[2] = !_statusButtons[2];
+                                              _showPerfiClientModals(2);
                                             });
-                                          }, // button pressed
+                                          },
                                           child: Icon(Icons.today, color: Colors.white, size: _iconSize,), // icon
                                         ),
                                       ),
@@ -295,15 +301,15 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                     size: _globusSize, // button width and height
                                     child: ClipOval(
                                       child: Material(
-                                        color: !_statusButtons[1] ? Styles.mainColor : Styles.mainColorTrans, // button color
+                                        color: !_statusButtons[3] ? Styles.mainColor : Styles.mainColorTrans, // button color
                                         child: InkWell(
                                           splashColor: Colors.white, // splash color
                                           onTap: () {
                                             setState(() {
-                                              _statusButtons[1] = !_statusButtons[1];
-                                              //_showPerfiClientModals(1);
+                                              _statusButtons[3] = !_statusButtons[3];
+                                              _showPerfiClientModals(3);
                                             });
-                                          }, // button pressed
+                                          },
                                           child: Icon(Icons.checklist, color: Colors.white, size: _iconSize,), // icon
                                         ),
                                       ),
@@ -325,15 +331,15 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                     size: _globusSize, // button width and height
                                     child: ClipOval(
                                       child: Material(
-                                        color: !_statusButtons[2] ? Styles.mainColor : Styles.mainColorTrans, // button color
+                                        color: !_statusButtons[4] ? Styles.mainColor : Styles.mainColorTrans, // button color
                                         child: InkWell(
                                           splashColor: Colors.white, // splash color
                                           onTap: () {
                                             setState(() {
-                                              _statusButtons[2] = !_statusButtons[2];
-                                              //_showPerfiClientModals(2);
+                                              _statusButtons[4] = !_statusButtons[4];
+                                              _showPerfiClientModals(4);
                                             });
-                                          }, // button pressed
+                                          },
                                           child: Icon(Icons.payment, color: Colors.white, size: _iconSize,), // icon
                                         ),
                                       ),
@@ -354,15 +360,15 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                     size: _globusSize, // button width and height
                                     child: ClipOval(
                                       child: Material(
-                                        color: !_statusButtons[3] ? Styles.mainColor : Styles.mainColorTrans, // button color
+                                        color: !_statusButtons[5] ? Styles.mainColor : Styles.mainColorTrans, // button color
                                         child: InkWell(
                                           splashColor: Colors.white, // splash color
                                           onTap: () {
                                             setState(() {
-                                              _statusButtons[3] = !_statusButtons[3];
-                                              //_showPerfiClientModals(3);
+                                              _statusButtons[5] = !_statusButtons[5];
+                                              _showPerfiClientModals(5);
                                             });
-                                          }, // button pressed
+                                          },
                                           child: Icon(
                                             Icons.settings,
                                             color: Colors.white,
