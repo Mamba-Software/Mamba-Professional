@@ -140,6 +140,7 @@ class _RegisterState extends State<Register> {
                         Padding(
                             padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
                             child: TextFormField(
+                              keyboardType: TextInputType.emailAddress,
                               //initialValue: emailTemp,
                               validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.emailError : null,
                               onChanged: (val) {
