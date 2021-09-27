@@ -23,8 +23,8 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
   // List Bool Status
   List<bool> _statusButtons =  [false, false, false, false];
   // Size of Icons
-  final _globusSize = Size(80, 80);
-  final _iconSize = 45.0;
+  final _globusSize = Size(75, 75);
+  final _iconSize = 40.0;
   // Image Picker
   var _image;
   // IdiomaChanged Settings Modal
@@ -199,7 +199,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                             bottom: 0,
                             left: 0,
                             right: 0,
-                            child: Text("${currentBrand.name}", style: Styles.purpleTextStyle.copyWith(fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.center,)
+                            child: Text("${currentBrand.name}", style: Styles.purpleTextStyle.copyWith(fontSize: 23, fontWeight: FontWeight.bold), textAlign: TextAlign.center,)
                           ),
                           // Logos Flotants
                           // Perfil Adalt Esquerra
@@ -391,11 +391,16 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Container(
               child: new Column(
                 children: [
-                  Text("Eventos de Hoy", style: Styles.purpleTextStyle.copyWith(fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text("Eventos de Hoy", style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                    ],
+                  ),
                 ],
               ),
             ),
