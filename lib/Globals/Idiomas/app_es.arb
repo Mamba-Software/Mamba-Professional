@@ -377,5 +377,9 @@
   "disponibilidad": "Disponibilidad",
   "@disponibilidad":{
     "description": "disponibilidad text"
+  },
+  "brandNotFound": "No encontramos esta Marca. Por favor asegúrate que has introducido el cógido correctamente",
+  "@brandNotFound":{
+    "description": "disponibilidad text"
   }
 }

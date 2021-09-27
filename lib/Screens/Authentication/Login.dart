@@ -84,6 +84,7 @@ class _LoginState extends State<Login> {
                         Padding(
                             padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 13.0, bottom: 0.0),
                             child: TextFormField(
+                              keyboardType: TextInputType.emailAddress,
                               initialValue: emailTemp,
                               validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
                               onChanged: (val) {
