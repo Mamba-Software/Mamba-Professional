@@ -391,7 +391,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                   ),
                 ) : Container(),
                 Padding(
-                  padding: const EdgeInsets.only(top: 20.0, left: 10, right: 10),
+                  padding: const EdgeInsets.only(top: 20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [

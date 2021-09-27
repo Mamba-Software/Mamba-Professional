@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -51,23 +52,30 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldMessenger(
-      key: scaffoldMessengerKey,
-      child: Scaffold(
-          appBar: AppBar(
-            title: Image.asset(
-                    Constants.logoExtended,
-                    fit: BoxFit.contain,
-                    height: 32,
-                  ),
-            centerTitle: true,
-            elevation: 0,
-            iconTheme: IconThemeData(
-              color: Colors.white, //change your color here
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+        value:SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent, //i like transaparent :-)
+          systemNavigationBarColor: Colors.black, // navigation bar color
+          statusBarIconBrightness: Brightness.light, // status bar icons' color
+          systemNavigationBarIconBrightness:Brightness.light, //navigation bar icons' color
+        ),
+        child: ScaffoldMessenger(
+          key: scaffoldMessengerKey,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Image.asset(
+                Constants.logoExtended,
+                fit: BoxFit.contain,
+                height: 32,
+              ),
+              centerTitle: true,
+              elevation: 0,
+              iconTheme: IconThemeData(
+                color: Colors.white, //change your color here
+              ),
             ),
-          ),
-          backgroundColor: Styles.mainColor,
-          body: isLoading ?
+            backgroundColor: Styles.mainColor,
+            body: isLoading ?
             Stack(
               children: <Widget>[
                 Center(
@@ -122,39 +130,39 @@ class _RegisterState extends State<Register> {
                           padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 0),
                           child: TextFormField(
                             //initialValue: nameTemp,
-                            validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nameCompletoError  : null,
-                            onChanged: (val) {
-                              setState(() => name = val);
-                            },
-                            decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.nameCompleto,
-                                prefixIcon:  Padding(
-                                  padding: EdgeInsets.all(0.0),
-                                  child: Icon(
-                                    Icons.badge_outlined,
-                                    color: Styles.accent,
-                                  ), // icon is 48px widget.
-                                )
-                            )
+                              validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nameCompletoError  : null,
+                              onChanged: (val) {
+                                setState(() => name = val);
+                              },
+                              decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.nameCompleto,
+                                  prefixIcon:  Padding(
+                                    padding: EdgeInsets.all(0.0),
+                                    child: Icon(
+                                      Icons.badge_outlined,
+                                      color: Styles.accent,
+                                    ), // icon is 48px widget.
+                                  )
+                              )
                           )
                       ),
                       Padding(
                           padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
                           child: TextFormField(
-                            keyboardType: TextInputType.emailAddress,
-                            //initialValue: emailTemp,
-                            validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.emailError : null,
-                            onChanged: (val) {
-                              setState(() => email = val);
-                            },
-                            decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.email,
-                                prefixIcon:  Padding(
-                                  padding: EdgeInsets.all(0.0),
-                                  child: Icon(
-                                    Icons.email_outlined,
-                                    color: Styles.accent,
-                                  ), // icon is 48px widget.
-                                )
-                            )
+                              keyboardType: TextInputType.emailAddress,
+                              //initialValue: emailTemp,
+                              validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.emailError : null,
+                              onChanged: (val) {
+                                setState(() => email = val);
+                              },
+                              decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.email,
+                                  prefixIcon:  Padding(
+                                    padding: EdgeInsets.all(0.0),
+                                    child: Icon(
+                                      Icons.email_outlined,
+                                      color: Styles.accent,
+                                    ), // icon is 48px widget.
+                                  )
+                              )
                           )
                       ),
                       Padding(
@@ -179,35 +187,35 @@ class _RegisterState extends State<Register> {
                       Padding(
                           padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
                           child: TextFormField(
-                            validator: (val) => val!.length < 6 ? AppLocalizations.of(context)!.passwordError : null,
-                            onChanged: (val) {
-                              setState(() => password1 = val);
-                            },
-                            obscureText: !_passwordVisible,
-                            decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
-                                suffixIcon: Padding(
+                              validator: (val) => val!.length < 6 ? AppLocalizations.of(context)!.passwordError : null,
+                              onChanged: (val) {
+                                setState(() => password1 = val);
+                              },
+                              obscureText: !_passwordVisible,
+                              decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
+                                  suffixIcon: Padding(
+                                      padding: EdgeInsets.all(0.0),
+                                      child: IconButton(
+                                          icon: Icon(
+                                            // Based on passwordVisible state choose the icon
+                                              _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                              color: Styles.accent
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              _passwordVisible = !_passwordVisible;
+                                            });
+                                          }
+                                      )
+                                  ),
+                                  prefixIcon:  Padding(
                                     padding: EdgeInsets.all(0.0),
-                                    child: IconButton(
-                                        icon: Icon(
-                                          // Based on passwordVisible state choose the icon
-                                            _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                            color: Styles.accent
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            _passwordVisible = !_passwordVisible;
-                                          });
-                                        }
-                                    )
-                                ),
-                                prefixIcon:  Padding(
-                                  padding: EdgeInsets.all(0.0),
-                                  child: Icon(
-                                    Icons.vpn_key_outlined,
-                                    color: Styles.accent,
-                                  ), // icon is 48px widget.
-                                )
-                            )
+                                    child: Icon(
+                                      Icons.vpn_key_outlined,
+                                      color: Styles.accent,
+                                    ), // icon is 48px widget.
+                                  )
+                              )
                           )
                       ),
                       Padding(
@@ -300,13 +308,13 @@ class _RegisterState extends State<Register> {
                         ),
                       ),
                     ],
+                  ),
                 ),
               ),
-              ),
             ),
-        ),
+          ),
+        )
     );
-
   }
 
   void onSignUpButtonPressed() {

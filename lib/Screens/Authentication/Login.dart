@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -41,50 +42,57 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldMessenger(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+        value:SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent, //i like transaparent :-)
+          systemNavigationBarColor: Colors.black, // navigation bar color
+          statusBarIconBrightness: Brightness.dark, // status bar icons' color
+          systemNavigationBarIconBrightness:Brightness.light, //navigation bar icons' color
+        ),
+        child: ScaffoldMessenger(
           key: scaffoldMessengerKey,
           child: Scaffold(
-              resizeToAvoidBottomInset: true,
-              backgroundColor: Styles.mainColor,
-              body: isLoading ?
-              Stack(
-                children: <Widget>[
-                  Center(
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.14,
-                      height: MediaQuery.of(context).size.height * 0.07,
-                      child: CircularProgressIndicator(
-                        color: Styles.white,
-                      ),
+            resizeToAvoidBottomInset: true,
+            backgroundColor: Styles.mainColor,
+            body: isLoading ?
+            Stack(
+              children: <Widget>[
+                Center(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.14,
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    child: CircularProgressIndicator(
+                      color: Styles.white,
                     ),
                   ),
-                  Center(
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.07,
-                      height: MediaQuery.of(context).size.height * 0.07,
-                      child: Image(
-                          image: AssetImage(Constants.logoSimple)
-                      ),
+                ),
+                Center(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.07,
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    child: Image(
+                        image: AssetImage(Constants.logoSimple)
                     ),
                   ),
-                ],
-              )
-                  :
-              Center(
-                child: SingleChildScrollView(
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                            padding: EdgeInsets.only(top: 16.0),
-                            width: 200,
-                            height: 100,
-                            child: Image.asset(Constants.logoExtended)),
-                        Padding(
-                            padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 13.0, bottom: 0.0),
-                            child: TextFormField(
+                ),
+              ],
+            )
+                :
+            Center(
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                          padding: EdgeInsets.only(top: 16.0),
+                          width: 200,
+                          height: 100,
+                          child: Image.asset(Constants.logoExtended)),
+                      Padding(
+                          padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 13.0, bottom: 0.0),
+                          child: TextFormField(
                               keyboardType: TextInputType.emailAddress,
                               initialValue: emailTemp,
                               validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
@@ -94,20 +102,20 @@ class _LoginState extends State<Login> {
                                 });
                               },
                               decoration: Styles.textFromInputDecoration.copyWith(
-                                labelText: AppLocalizations.of(context)!.email,
-                                prefixIcon:  Padding(
-                                  padding: EdgeInsets.all(0.0),
-                                  child: Icon(
-                                    Icons.email_outlined,
-                                    color: Styles.accent,
-                                  ), // icon is 48px widget.
-                                )
+                                  labelText: AppLocalizations.of(context)!.email,
+                                  prefixIcon:  Padding(
+                                    padding: EdgeInsets.all(0.0),
+                                    child: Icon(
+                                      Icons.email_outlined,
+                                      color: Styles.accent,
+                                    ), // icon is 48px widget.
+                                  )
                               )
-                            )
-                        ),
-                        Padding(
-                            padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
-                            child: TextFormField(
+                          )
+                      ),
+                      Padding(
+                          padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
+                          child: TextFormField(
                               validator: (val) => val!.length < 6 ? AppLocalizations.of(context)!.passwordError : null,
                               onChanged: (val) {
                                 setState(() {
@@ -115,94 +123,95 @@ class _LoginState extends State<Login> {
                                 });
                               },
                               obscureText: !_passwordVisible,
-                                decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
-                                    suffixIcon: Padding(
-                                        padding: EdgeInsets.all(0.0),
-                                        child: IconButton(
+                              decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
+                                  suffixIcon: Padding(
+                                      padding: EdgeInsets.all(0.0),
+                                      child: IconButton(
                                           icon: Icon(
-                                          // Based on passwordVisible state choose the icon
-                                          _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                          color: Styles.accent
+                                            // Based on passwordVisible state choose the icon
+                                              _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                              color: Styles.accent
                                           ),
                                           onPressed: () {
                                             setState(() {
                                               _passwordVisible = !_passwordVisible;
                                             });
                                           }
-                                        )
-                                    ),
-                                    prefixIcon:  Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Icon(
-                                        Icons.vpn_key_outlined,
-                                        color: Styles.accent,
-                                      ), // icon is 48px widget.
-                                    )
-                                )
-                            )
-                        ),
-                        TextButton(
-                          onPressed: (){
-                            if(email.isEmpty) {
-                              showInSnackBar(AppLocalizations.of(context)!.emailError);
+                                      )
+                                  ),
+                                  prefixIcon:  Padding(
+                                    padding: EdgeInsets.all(0.0),
+                                    child: Icon(
+                                      Icons.vpn_key_outlined,
+                                      color: Styles.accent,
+                                    ), // icon is 48px widget.
+                                  )
+                              )
+                          )
+                      ),
+                      TextButton(
+                        onPressed: (){
+                          if(email.isEmpty) {
+                            showInSnackBar(AppLocalizations.of(context)!.emailError);
+                          } else {
+                            if(emailValidator(email)){
+                              _accessDatabase.resetPassword(email);
+                              showInSnackBar(AppLocalizations.of(context)!.validatePassword);
                             } else {
-                              if(emailValidator(email)){
-                                _accessDatabase.resetPassword(email);
-                                showInSnackBar(AppLocalizations.of(context)!.validatePassword);
-                              } else {
-                                showInSnackBar(AppLocalizations.of(context)!.validateEmail);
-                              }
+                              showInSnackBar(AppLocalizations.of(context)!.validateEmail);
+                            }
+                          }
+                        },
+                        child: Text(
+                          AppLocalizations.of(context)!.forgotPassword,
+                          style: Styles.whiteTextStyle,
+                        ),
+                      ),
+                      Container(
+                        height: 50,
+                        width: 250,
+                        decoration: BoxDecoration(
+                            color: Styles.accent, borderRadius: BorderRadius.circular(20)
+                        ),
+                        child: TextButton(
+                          onPressed: () async {
+                            if(_formKey.currentState!.validate()){
+                              emailTemp = email;
+                              onSignInButtonPressed();
                             }
                           },
                           child: Text(
-                            AppLocalizations.of(context)!.forgotPassword,
-                            style: Styles.whiteTextStyle,
+                            AppLocalizations.of(context)!.login,
+                            style: Styles.whiteTextStyle.copyWith(fontSize: 28),
                           ),
                         ),
-                        Container(
-                          height: 50,
-                          width: 250,
-                          decoration: BoxDecoration(
-                              color: Styles.accent, borderRadius: BorderRadius.circular(20)
-                          ),
-                          child: TextButton(
-                            onPressed: () async {
-                              if(_formKey.currentState!.validate()){
-                                emailTemp = email;
-                                onSignInButtonPressed();
-                              }
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 16.0),
+                        child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute<Null>(
+                                    builder: (context) => Register(),
+                                    settings: RouteSettings(name: 'Register'),
+                                  )
+                              );
                             },
                             child: Text(
-                              AppLocalizations.of(context)!.login,
-                              style: Styles.whiteTextStyle.copyWith(fontSize: 28),
-                            ),
-                          ),
+                              AppLocalizations.of(context)!.newUser,
+                              style: Styles.whiteTextStyle,
+                            )
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 16.0),
-                          child: TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    CupertinoPageRoute<Null>(
-                                      builder: (context) => Register(),
-                                      settings: RouteSettings(name: 'Register'),
-                                    )
-                                );
-                              },
-                              child: Text(
-                                AppLocalizations.of(context)!.newUser,
-                                style: Styles.whiteTextStyle,
-                              )
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
+            ),
           ),
-        );
+        )
+    );
   }
 
   void signIn() async {
