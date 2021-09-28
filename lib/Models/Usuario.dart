@@ -1,4 +1,6 @@
 // Model for a User in our App
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Usuario {
 
   String? id;
@@ -66,5 +68,22 @@ class Usuario {
     this.idioma = mapData['idioma'].toString();
     this.previousIdioma = mapData['previousIdioma'].toString();
     this.brandID = mapData['brandID'].toString();
+  }
+
+  Usuario.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
+    this.id = documentId;
+    this.email = documentSnapshot.get("email").toString();
+    this.name = documentSnapshot.get("name").toString();
+    this.imageUrl = documentSnapshot.get("imageUrl").toString();
+    this.isFirst = documentSnapshot.get("isFirst");
+    this.isTrainer = documentSnapshot.get("isTrainer");
+    this.isPrivate = documentSnapshot.get("isPrivate");
+    this.isAdmin = documentSnapshot.get("isAdmin");
+    this.gender = documentSnapshot.get("gender");
+    this.dateJoined = documentSnapshot.get("dateJoined").toString();
+    this.dateOfBirth = documentSnapshot.get("dateOfBirth").toString();
+    this.idioma = documentSnapshot.get("idioma").toString();
+    this.previousIdioma = documentSnapshot.get("previousIdioma").toString();
+    this.brandID = documentSnapshot.get("brandID").toString();
   }
 }
