@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                 child: CurvedNavigationBar(
                   index: _currentIndex,
                   color: Styles.mainColor,
-                  backgroundColor: Colors.transparent.withOpacity(0.01),
+                  backgroundColor: Colors.transparent,
                   animationCurve: Curves.easeInOut,
                   animationDuration: Duration(milliseconds: 200),
                   height: 60,
