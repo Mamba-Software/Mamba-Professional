@@ -111,7 +111,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.createBrand, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22),),
           centerTitle: true,
-          elevation: 10,
+          elevation: 8,
           iconTheme: IconThemeData(
             color: Colors.white, //change your color here
           ),
@@ -190,7 +190,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                         child: Container(
                                             width: MediaQuery.of(context).size.width*0.35,
                                             decoration: new BoxDecoration(
-                                              border: Border.all(
+                                                border: Border.all(
                                                 width: 1.5,
                                                 color: Styles.accent,
                                                 style: BorderStyle.solid,

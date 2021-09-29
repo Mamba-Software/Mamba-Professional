@@ -33,7 +33,7 @@ class _PerfilState extends State<Perfil> {
   // List Bool Status
   List<bool> _statusButtons =  [false, false, false, false];
   // Size of Icons
-  final _globusSize = Size(80, 80);
+  final _globusSize = 20.0;
   final _iconSize = 45.0;
   // Image Picker
   var _image;
@@ -248,23 +248,25 @@ class _PerfilState extends State<Perfil> {
                                     child: new Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
-                                        SizedBox.fromSize(
-                                          size: _globusSize, // button width and height
-                                          child: ClipOval(
-                                            child: Material(
-                                              color: !_statusButtons[0] ? Styles.mainColor : Styles.mainColorTrans, // button color
-                                              child: InkWell(
-                                                // splash color
-                                                onTap: () {
-                                                  setState(() {
-                                                    _statusButtons[0] = !_statusButtons[0];
-                                                    _showPerfiClientModals(0);
-                                                  });
-                                                  //_showSettingsPanel();
-                                                }, // button pressed
-                                                child: Icon( Icons.person, color: Colors.white, size: _iconSize,), // icon
-                                              ),
-                                            ),
+                                        OutlinedButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              _statusButtons[0] = !_statusButtons[0];
+                                              _showPerfiClientModals(0);
+                                            });
+                                          },
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon( Icons.person, color: Colors.white, size: _iconSize,),
+                                            ],
+                                          ),
+                                          style: OutlinedButton.styleFrom(
+                                            backgroundColor: !_statusButtons[0] ? Styles.mainColor : Styles.mainColorTrans,
+                                            elevation: 5,
+                                            shape: CircleBorder(),
+                                            padding: EdgeInsets.all(_globusSize),
                                           ),
                                         ),
                                       ],
@@ -278,25 +280,27 @@ class _PerfilState extends State<Perfil> {
                                     child: new Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
-                                        SizedBox.fromSize(
-                                          size: _globusSize, // button width and height
-                                          child: ClipOval(
-                                            child: Material(
-                                              color: !_statusButtons[1] ? Styles.mainColor : Styles.mainColorTrans, // button color
-                                              child: InkWell(
-                                                splashColor: Colors.white, // splash color
-                                                onTap: () {
-                                                  setState(() {
-                                                    _statusButtons[1] = !_statusButtons[1];
-                                                    _showPerfiClientModals(1);
-                                                  });
-                                                }, // button pressed
-                                                child: Icon(Icons.settings, color: Colors.white, size: _iconSize,), // icon
-                                              ),
-                                            ),
+                                        OutlinedButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              _statusButtons[1] = !_statusButtons[1];
+                                              _showPerfiClientModals(1);
+                                            });
+                                          },
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.settings, color: Colors.white, size: _iconSize,), // icon
+                                            ],
+                                          ),
+                                          style: OutlinedButton.styleFrom(
+                                            backgroundColor: !_statusButtons[1] ? Styles.mainColor : Styles.mainColorTrans,
+                                            elevation: 5,
+                                            shape: CircleBorder(),
+                                            padding: EdgeInsets.all(_globusSize),
                                           ),
                                         ),
-
                                       ],
                                     )),
                                 // Feedback Abaix Esquerra
@@ -308,22 +312,25 @@ class _PerfilState extends State<Perfil> {
                                     child: new Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
-                                        SizedBox.fromSize(
-                                          size: _globusSize, // button width and height
-                                          child: ClipOval(
-                                            child: Material(
-                                              color: !_statusButtons[2] ? Styles.mainColor : Styles.mainColorTrans, // button color
-                                              child: InkWell(
-                                                splashColor: Colors.white, // splash color
-                                                onTap: () {
-                                                  setState(() {
-                                                    _statusButtons[2] = !_statusButtons[2];
-                                                    _showPerfiClientModals(2);
-                                                  });
-                                                }, // button pressed
-                                                child: Icon(Icons.help_outline, color: Colors.white, size: _iconSize,), // icon
-                                              ),
-                                            ),
+                                        OutlinedButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              _statusButtons[2] = !_statusButtons[2];
+                                              _showPerfiClientModals(2);
+                                            });
+                                          },
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.help_outline, color: Colors.white, size: _iconSize,), // icon
+                                            ],
+                                          ),
+                                          style: OutlinedButton.styleFrom(
+                                            backgroundColor: !_statusButtons[2] ? Styles.mainColor : Styles.mainColorTrans,
+                                            elevation: 5,
+                                            shape: CircleBorder(),
+                                            padding: EdgeInsets.all(_globusSize),
                                           ),
                                         ),
                                       ],
@@ -337,26 +344,25 @@ class _PerfilState extends State<Perfil> {
                                     child: new Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
-                                        SizedBox.fromSize(
-                                          size: _globusSize, // button width and height
-                                          child: ClipOval(
-                                            child: Material(
-                                              color: !_statusButtons[3] ? Styles.mainColor : Styles.mainColorTrans, // button color
-                                              child: InkWell(
-                                                splashColor: Colors.white, // splash color
-                                                onTap: () {
-                                                  setState(() {
-                                                    _statusButtons[3] = !_statusButtons[3];
-                                                    _showPerfiClientModals(3);
-                                                  });
-                                                }, // button pressed
-                                                child: Icon(
-                                                  Icons.report_problem_outlined,
-                                                  color: Colors.white,
-                                                  size: _iconSize,
-                                                ), // icon
-                                              ),
-                                            ),
+                                        OutlinedButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              _statusButtons[3] = !_statusButtons[3];
+                                              _showPerfiClientModals(3);
+                                            });
+                                          },
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.report_problem_outlined, color: Colors.white, size: _iconSize,), // icon
+                                            ],
+                                          ),
+                                          style: OutlinedButton.styleFrom(
+                                            backgroundColor: !_statusButtons[3] ? Styles.mainColor : Styles.mainColorTrans,
+                                            elevation: 5,
+                                            shape: CircleBorder(),
+                                            padding: EdgeInsets.all(_globusSize),
                                           ),
                                         ),
                                       ],

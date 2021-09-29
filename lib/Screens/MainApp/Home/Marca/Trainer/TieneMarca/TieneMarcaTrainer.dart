@@ -25,7 +25,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
   // List Bool Status
   List<bool> _statusButtons =  [false, false, false, false, false, false];
   // Size of Icons
-  final _globusSize = Size(75, 75);
+  final _globusSize = 20.0;
   final _iconSize = 40.0;
 
 
@@ -191,23 +191,25 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                               child: new Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  SizedBox.fromSize(
-                                    size: _globusSize, // button width and height
-                                    child: ClipOval(
-                                      child: Material(
-                                        color: !_statusButtons[0] ? Styles.mainColor : Styles.mainColorTrans, // button color
-                                        child: InkWell(
-                                          // splash color
-                                          onTap: () {
-                                            setState(() {
-                                              _statusButtons[0] = !_statusButtons[0];
-                                              _showPerfiClientModals(0);
-                                            });
-                                            //_showSettingsPanel();
-                                          },
-                                          child: Icon( Icons.group_add, color: Colors.white, size: _iconSize,), // icon
-                                        ),
-                                      ),
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _statusButtons[0] = !_statusButtons[0];
+                                        _showPerfiClientModals(0);
+                                      });
+                                    },
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.group_add, color: Colors.white, size: _iconSize,), // icon
+                                      ],
+                                    ),
+                                    style: OutlinedButton.styleFrom(
+                                      backgroundColor: !_statusButtons[0] ? Styles.mainColor : Styles.mainColorTrans,
+                                      elevation: 5,
+                                      shape: CircleBorder(),
+                                      padding: EdgeInsets.all(_globusSize),
                                     ),
                                   ),
                                 ],
@@ -221,22 +223,25 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                               child: new Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  SizedBox.fromSize(
-                                    size: _globusSize, // button width and height
-                                    child: ClipOval(
-                                      child: Material(
-                                        color: !_statusButtons[1] ? Styles.mainColor : Styles.mainColorTrans, // button color
-                                        child: InkWell(
-                                          splashColor: Colors.white, // splash color
-                                          onTap: () {
-                                            setState(() {
-                                              _statusButtons[1] = !_statusButtons[1];
-                                              _showPerfiClientModals(1);
-                                            });
-                                          },
-                                          child: Icon(Icons.groups, color: Colors.white, size: _iconSize,), // icon
-                                        ),
-                                      ),
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _statusButtons[1] = !_statusButtons[1];
+                                        _showPerfiClientModals(1);
+                                      });
+                                    },
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.groups, color: Colors.white, size: _iconSize,), // icon
+                                      ],
+                                    ),
+                                    style: OutlinedButton.styleFrom(
+                                      backgroundColor: !_statusButtons[1] ? Styles.mainColor : Styles.mainColorTrans,
+                                      elevation: 5,
+                                      shape: CircleBorder(),
+                                      padding: EdgeInsets.all(_globusSize),
                                     ),
                                   ),
                                 ],
@@ -250,25 +255,27 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                               child: new Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  SizedBox.fromSize(
-                                    size: _globusSize, // button width and height
-                                    child: ClipOval(
-                                      child: Material(
-                                        color: !_statusButtons[2] ? Styles.mainColor : Styles.mainColorTrans, // button color
-                                        child: InkWell(
-                                          splashColor: Colors.white, // splash color
-                                          onTap: () {
-                                            setState(() {
-                                              _statusButtons[2] = !_statusButtons[2];
-                                              _showPerfiClientModals(2);
-                                            });
-                                          },
-                                          child: Icon(Icons.today, color: Colors.white, size: _iconSize,), // icon
-                                        ),
-                                      ),
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _statusButtons[2] = !_statusButtons[2];
+                                        _showPerfiClientModals(2);
+                                      });
+                                    },
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.today, color: Colors.white, size: _iconSize,), // icon
+                                      ],
+                                    ),
+                                    style: OutlinedButton.styleFrom(
+                                      backgroundColor: !_statusButtons[2] ? Styles.mainColor : Styles.mainColorTrans,
+                                      elevation: 5,
+                                      shape: CircleBorder(),
+                                      padding: EdgeInsets.all(_globusSize),
                                     ),
                                   ),
-
                                 ],
                               )),
                           // Ajustes Mig Dreta
@@ -280,25 +287,27 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                               child: new Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  SizedBox.fromSize(
-                                    size: _globusSize, // button width and height
-                                    child: ClipOval(
-                                      child: Material(
-                                        color: !_statusButtons[3] ? Styles.mainColor : Styles.mainColorTrans, // button color
-                                        child: InkWell(
-                                          splashColor: Colors.white, // splash color
-                                          onTap: () {
-                                            setState(() {
-                                              _statusButtons[3] = !_statusButtons[3];
-                                              _showPerfiClientModals(3);
-                                            });
-                                          },
-                                          child: Icon(Icons.checklist, color: Colors.white, size: _iconSize,), // icon
-                                        ),
-                                      ),
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _statusButtons[3] = !_statusButtons[3];
+                                        _showPerfiClientModals(3);
+                                      });
+                                    },
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.checklist, color: Colors.white, size: _iconSize,), // icon
+                                      ],
+                                    ),
+                                    style: OutlinedButton.styleFrom(
+                                      backgroundColor: !_statusButtons[3] ? Styles.mainColor : Styles.mainColorTrans,
+                                      elevation: 5,
+                                      shape: CircleBorder(),
+                                      padding: EdgeInsets.all(_globusSize),
                                     ),
                                   ),
-
                                 ],
                               )),
                           // Feedback Abaix Esquerra
@@ -310,22 +319,25 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                               child: new Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  SizedBox.fromSize(
-                                    size: _globusSize, // button width and height
-                                    child: ClipOval(
-                                      child: Material(
-                                        color: !_statusButtons[4] ? Styles.mainColor : Styles.mainColorTrans, // button color
-                                        child: InkWell(
-                                          splashColor: Colors.white, // splash color
-                                          onTap: () {
-                                            setState(() {
-                                              _statusButtons[4] = !_statusButtons[4];
-                                              _showPerfiClientModals(4);
-                                            });
-                                          },
-                                          child: Icon(Icons.payment, color: Colors.white, size: _iconSize,), // icon
-                                        ),
-                                      ),
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _statusButtons[4] = !_statusButtons[4];
+                                        _showPerfiClientModals(4);
+                                      });
+                                    },
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.payment, color: Colors.white, size: _iconSize,), // icon
+                                      ],
+                                    ),
+                                    style: OutlinedButton.styleFrom(
+                                      backgroundColor: !_statusButtons[4] ? Styles.mainColor : Styles.mainColorTrans,
+                                      elevation: 5,
+                                      shape: CircleBorder(),
+                                      padding: EdgeInsets.all(_globusSize),
                                     ),
                                   ),
                                 ],
@@ -339,26 +351,25 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                               child: new Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  SizedBox.fromSize(
-                                    size: _globusSize, // button width and height
-                                    child: ClipOval(
-                                      child: Material(
-                                        color: !_statusButtons[5] ? Styles.mainColor : Styles.mainColorTrans, // button color
-                                        child: InkWell(
-                                          splashColor: Colors.white, // splash color
-                                          onTap: () {
-                                            setState(() {
-                                              _statusButtons[5] = !_statusButtons[5];
-                                              _showPerfiClientModals(5);
-                                            });
-                                          },
-                                          child: Icon(
-                                            Icons.settings,
-                                            color: Colors.white,
-                                            size: _iconSize,
-                                          ), // icon
-                                        ),
-                                      ),
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _statusButtons[5] = !_statusButtons[5];
+                                        _showPerfiClientModals(5);
+                                      });
+                                    },
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.settings, color: Colors.white, size: _iconSize,), // icon
+                                      ],
+                                    ),
+                                    style: OutlinedButton.styleFrom(
+                                      backgroundColor: !_statusButtons[5] ? Styles.mainColor : Styles.mainColorTrans,
+                                      elevation: 5,
+                                      shape: CircleBorder(),
+                                      padding: EdgeInsets.all(_globusSize),
                                     ),
                                   ),
                                 ],

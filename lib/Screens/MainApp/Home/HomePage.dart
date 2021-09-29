@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
               height: 32,
             ),
             centerTitle: true,
-            elevation: 10,
+            elevation: 8,
             automaticallyImplyLeading: false,
           ),
           body: Stack(

@@ -49,8 +49,8 @@ class _CircularImageState extends State<CircularImage> {
                 ),
                 shape: BoxShape.circle,
                 image: new DecorationImage(
-                    fit: BoxFit.cover,
-                    image: widget.file != null ? FileImage(widget.file!) : NetworkImage(widget.image!) as ImageProvider,
+                  fit: BoxFit.cover,
+                  image: widget.file != null ? FileImage(widget.file!) : NetworkImage(widget.image!) as ImageProvider,
                 )
             )
         )
