@@ -36,11 +36,10 @@ class DatabaseAccess {
   Future<void> updateCurrentBrandPhoto(String brandID,File image) => _firebase.updateCurrentBrandPhoto(brandID, image);
 
   Future<Brand> getCurrentBrandDetails(String brandID) => _firebase.getCurrentBrandDetails(brandID);
-
+  
   // Streams
   Stream<QuerySnapshot> getAllBrands() => _firebase.getAllBrands();
 
   //Admin
-  Stream<QuerySnapshot> getAllUsers() => _firebase.getAllUsers();
-
+  Future<Stream<QuerySnapshot>> getAllUsers() async => await _firebase.getAllUsers();
 }
