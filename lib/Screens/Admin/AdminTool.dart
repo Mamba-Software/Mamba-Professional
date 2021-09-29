@@ -23,17 +23,29 @@ class _AdminToolState extends State<AdminTool> {
   //DataBase Access
   var _accessDatabase = new DatabaseAccess();
   List<Usuario> usersList = [];
+  List<Usuario> fullusersList = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    isLoading = true;
+    getUsersList();
   }
 
- /* Future<void> getUsersList() async {
-    usersList = await _accessDatabase.getAllUsers();
-    print(usersList.length);
-    print(usersList);
-  }*/
+  Future<void> getUsersList() async {
+    Stream<QuerySnapshot> snapshot = await _accessDatabase.getAllUsers();
+     await snapshot.forEach((field) async {
+      field.docs.asMap().forEach((index, value) {
+        //usersList.add(field.docs[index]["name"]);
+        usersList.add(Usuario.fromObject(field.docs[index], field.docs[index].id));
+      });
+      setState(() {
+        isLoading = false;
+      });
+      fullusersList = usersList;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,42 +64,34 @@ class _AdminToolState extends State<AdminTool> {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-          Padding(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
-            child: TextField(
-              onChanged: (value) {
-                filterSearchResults(value);
-              },
-                //controller: editingController,
-                decoration: InputDecoration(
-                    labelText: "Search",
-                    hintText: "Search",
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)))),
-              ),
-          ),
-            StreamBuilder<QuerySnapshot>(
-                stream: _accessDatabase.getAllUsers(),
-                builder: (context, snapshot) {
-                  //if(snapshot == null || snapshot.data == null || snapshot.data.documents == null ) return EmptyView();
-                  //else if(snapshot.hasError) return ErrorView();
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return LoadingView();
-                  } else {
-                    usersList = documentsToUsers(snapshot.data!.docs);
-                    return Column(
-                      children: [
-                        ListView.builder(
-                          itemBuilder: (context, int index) => UserTile(usersList[index]),
-                          itemCount: usersList.length,
-                          shrinkWrap: true,
-                        ),
-                      ],
-                    );
-                  }
-                }
+            Padding(
+              padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+              child: TextField(
+                onChanged: (value) {
+                  filterSearchResults(value);
+                },
+                  //controller: editingController,
+                  decoration: InputDecoration(
+                      labelText: "Search",
+                      hintText: "Search",
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+                ),
             ),
+            isLoading ?
+            LoadingView()
+                :
+            Column(
+              children: [
+                ListView.builder(
+                  itemBuilder: (context, int index) => UserTile(usersList[index]),
+                  itemCount: usersList.length,
+                  shrinkWrap: true,
+                ),
+              ],
+            )
+
           ]
         ),
      );
@@ -111,14 +115,22 @@ class _AdminToolState extends State<AdminTool> {
         }
       });
 
-      /*setState(() {
+      setState(() {
         usersList.clear();
         usersList.addAll(usersFiltered);
         //print(usersList[1].name);
-      });*/
+      });
+
+
 
       return;
-    }
+    } /*else {
+      setState(() {
+        usersList.clear();
+        usersList.addAll(fullusersList);
+      });
+    }*/
+    return;
   }
 
 }
@@ -143,5 +155,25 @@ class UserTile extends StatelessWidget{
 }
 
 /*
-
+ StreamBuilder<QuerySnapshot>(
+                stream: _accessDatabase.getAllUsers(),
+                builder: (context, snapshot) {
+                  //if(snapshot == null || snapshot.data == null || snapshot.data.documents == null ) return EmptyView();
+                  //else if(snapshot.hasError) return ErrorView();
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return LoadingView();
+                  } else {
+                    usersList = documentsToUsers(snapshot.data!.docs);
+                    return Column(
+                      children: [
+                        ListView.builder(
+                          itemBuilder: (context, int index) => UserTile(usersList[index]),
+                          itemCount: usersList.length,
+                          shrinkWrap: true,
+                        ),
+                      ],
+                    );
+                  }
+                }
+            ),
  */

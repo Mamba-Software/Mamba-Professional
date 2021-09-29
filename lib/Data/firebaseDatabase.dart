@@ -265,7 +265,7 @@ class FirebaseDatabaseService {
 
   //admin
   // get brews stream
-  Stream<QuerySnapshot> getAllUsers() {
+  Future<Stream<QuerySnapshot>> getAllUsers() async {
     return _firestore.collection("Users")
         .snapshots();
   }
