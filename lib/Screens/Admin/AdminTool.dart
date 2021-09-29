@@ -102,7 +102,6 @@ class _AdminToolState extends State<AdminTool> {
     for(int i = 0; i < documents.length; i++) {
       users.add(Usuario.fromObject(documents[i], documents[i].id));
     }
-    print(usersList);
     return users;
   }
 

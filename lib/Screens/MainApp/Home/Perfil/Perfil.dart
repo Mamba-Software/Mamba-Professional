@@ -181,8 +181,7 @@ class _PerfilState extends State<Perfil> {
     return isLoading ?
       LoadingView()
         :
-      Center(
-          child: SingleChildScrollView(
+      SingleChildScrollView(
             child: Column(
               children: [
                 Padding(
@@ -231,7 +230,7 @@ class _PerfilState extends State<Perfil> {
                                                   getImage();
                                                   setState(() {});
                                                 },
-                                                child: Icon(Icons.collections_outlined, color: Colors.white, size: 30,), // icon
+                                                child: Icon(Icons.image_outlined, color: Colors.white, size: 30,), // icon
                                               ),
                                             ),
                                           ),
@@ -414,9 +413,7 @@ class _PerfilState extends State<Perfil> {
                 ),
               ],
             ),
-      ),
-    );
-
+      );
   }
 
   @override

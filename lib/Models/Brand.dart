@@ -1,4 +1,6 @@
 // Model for a Brand in our App
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Brand {
 
   String? id;
@@ -52,5 +54,17 @@ class Brand {
     this.placeId = mapData['placeId'].toString();
     this.latitude = mapData['latitude'];
     this.longitude = mapData['longitude'];
+  }
+
+  Brand.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
+    this.id = documentId;
+    this.adminID = documentSnapshot.get("adminID").toString();
+    this.logoUrl = documentSnapshot.get("logoUrl").toString();
+    this.name = documentSnapshot.get("name").toString();
+    this.description = documentSnapshot.get("description").toString();
+    this.dateJoined = documentSnapshot.get("dateJoined").toString();
+    this.placeId = documentSnapshot.get("placeId").toString();
+    this.latitude = documentSnapshot.get("latitude");
+    this.longitude = documentSnapshot.get("longitude");
   }
 }

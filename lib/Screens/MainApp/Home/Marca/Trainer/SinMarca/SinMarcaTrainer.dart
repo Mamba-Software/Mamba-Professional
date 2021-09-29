@@ -1,10 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';
@@ -20,39 +22,28 @@ class SinMarcaTrainer extends StatefulWidget {
 class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
-  // Boolean Loading
-  bool isLoading = false;
   bool codigoClicked = false;
   bool isLoadingCodigo = false;
   // Model Usuario
   Usuario? user;
   // FormVariables
+  var ubicacionController =  TextEditingController();
   var _codigoController = TextEditingController();
   var _codigo;
   bool codigoError = false;
+  // Brand List
+  List<Brand> brandList = [];
 
   // init Widget state. Loading user info.
   @override
   void initState() {
     super.initState();
-    isLoading = true;
-    getUser();
-  }
-  // Gets the user info from firebase.
-  void getUser() async {
-    user = await _accessDatabase.getCurrentUserDetails();
-    setState(() {
-      isLoading = false;
-    });
   }
   @override
   Widget build(BuildContext context) {
-    return isLoading ?
-    LoadingView()
-      :
-    Container(
+    return Container(
       child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
@@ -79,7 +70,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                     ),
                   ),
                   !codigoClicked ? Padding(
-                    padding: const EdgeInsets.all(4.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: FloatingActionButton.extended(
                       onPressed: () {
                         setState(() {
@@ -93,7 +84,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                       ),
                     ),
                   ) : Padding(
-                      padding: EdgeInsets.only(top: 4),
+                      padding: EdgeInsets.all(8),
                       child: new Row(
                         mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
@@ -222,29 +213,145 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                 padding: const EdgeInsets.only(top: 12.0),
                 child: Text(AppLocalizations.of(context)!.trainersZone, style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
               ),
-              Container(
-                  constraints: BoxConstraints(
-                    maxHeight: (MediaQuery.of(context).size.height*0.7889)*0.75,
-                  ),
-                  padding: MediaQuery.of(context).viewInsets,
-                  child: Center(
-                    child: SingleChildScrollView(
-                      child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              LoadingViewPurple(),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(AppLocalizations.of(context)!.loading, style: Styles.purpleTextStyle),
+              BrandList(),
+            ],
+          ),
+        )
+    );
+  }
+}
+
+class BrandList extends StatelessWidget {
+  BrandList({Key? key}) : super(key: key);
+  // Acceso a Base de Datos
+  var _accessDatabase = new DatabaseAccess();
+  // Brand List
+  List<Brand> brandList = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8.0, bottom: 10),
+        child: Container(
+          child: StreamBuilder<QuerySnapshot>(
+              stream: _accessDatabase.getAllBrands(),
+              builder: (context, snapshot) {
+                //if(snapshot == null || snapshot.data == null || snapshot.data.documents == null ) return EmptyView();
+                //else if(snapshot.hasError) return ErrorView();
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return LoadingView();
+                } else {
+                  brandList = documentsToBrands(snapshot.data!.docs);
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: brandList.length,
+                    itemBuilder: (context, int index) =>
+                        index == brandList.length-1 ?
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 60),
+                          child: BrandTile(brandList[index]),
+                        ) :
+                        BrandTile(brandList[index]),
+                  );
+                }
+              }
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Brand> documentsToBrands(List<DocumentSnapshot> documents) {
+    List<Brand> brands = [];
+    for(int i = 0; i < documents.length; i++) {
+      brands.add(Brand.fromObject(documents[i], documents[i].id));
+    }
+    return brands;
+  }
+
+}
+
+
+class BrandTile extends StatelessWidget{
+  final Brand brand;
+  BrandTile(this.brand);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => {
+        print(brand.name)
+      },
+      child: Container(
+        height: 130,
+        child: new Card(
+          elevation: 3,
+          shape: RoundedRectangleBorder(
+            //side: BorderSide(color: Styles.accent, width: 0.01),
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          margin: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: CircularImage(size: MediaQuery.of(context).size.width*0.20, image: brand.logoUrl, color: Colors.transparent,),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width*0.69,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(brand.name!,style: Styles.purpleTextStyle.copyWith(fontSize: 20.0, fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width*0.64,
+                              child: new Row(
+                                children: <Widget>[
+                                  Flexible(
+                                    child: TextFormField(
+                                      initialValue: "Passeig de la Ribera 23, Castelldefels 08860, Barcelona",
+                                      readOnly: true,
+                                      onTap: () async {
+                                      },
+                                      decoration: InputDecoration(
+                                        icon: Icon(
+                                          Icons.location_on_outlined,
+                                          color: Styles.accent,
+                                        ),
+                                        border: InputBorder.none,
+                                        contentPadding: EdgeInsets.only(left: -15.0),
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
-                            ],
-                          ),
-                    ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
+            ),
           ),
-        )
+        ),
+      ),
     );
   }
 }
