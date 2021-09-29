@@ -38,6 +38,6 @@ class DatabaseAccess {
   Future<Brand> getCurrentBrandDetails(String brandID) => _firebase.getCurrentBrandDetails(brandID);
 
   //admin
-  Stream<QuerySnapshot> getAllUsers() => _firebase.getAllUsers();
+  Future<Stream<QuerySnapshot>> getAllUsers() async => await _firebase.getAllUsers();
 
 }
