@@ -52,7 +52,7 @@ class _AdminToolState extends State<AdminTool> {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-          Padding(
+            Padding(
             padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
             child: TextField(
               onChanged: (value) {
@@ -98,7 +98,6 @@ class _AdminToolState extends State<AdminTool> {
     for(int i = 0; i < documents.length; i++) {
       users.add(Usuario.fromObject(documents[i], documents[i].id));
     }
-    print(usersList);
     return users;
   }
 

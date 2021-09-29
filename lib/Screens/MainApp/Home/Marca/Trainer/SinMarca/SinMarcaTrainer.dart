@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';
@@ -30,6 +33,8 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
   var _codigoController = TextEditingController();
   var _codigo;
   bool codigoError = false;
+  // Brand List
+  List<Brand> brandList = [];
 
   // init Widget state. Loading user info.
   @override
@@ -52,7 +57,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
       :
     Container(
       child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
@@ -79,7 +84,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                     ),
                   ),
                   !codigoClicked ? Padding(
-                    padding: const EdgeInsets.all(4.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: FloatingActionButton.extended(
                       onPressed: () {
                         setState(() {
@@ -93,7 +98,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                       ),
                     ),
                   ) : Padding(
-                      padding: EdgeInsets.only(top: 4),
+                      padding: EdgeInsets.all(8),
                       child: new Row(
                         mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
@@ -222,29 +227,65 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                 padding: const EdgeInsets.only(top: 12.0),
                 child: Text(AppLocalizations.of(context)!.trainersZone, style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
               ),
-              Container(
-                  constraints: BoxConstraints(
-                    maxHeight: (MediaQuery.of(context).size.height*0.7889)*0.75,
-                  ),
-                  padding: MediaQuery.of(context).viewInsets,
-                  child: Center(
-                    child: SingleChildScrollView(
-                      child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              LoadingViewPurple(),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(AppLocalizations.of(context)!.loading, style: Styles.purpleTextStyle),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Container(
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: _accessDatabase.getAllBrands(),
+                        builder: (context, snapshot) {
+                          //if(snapshot == null || snapshot.data == null || snapshot.data.documents == null ) return EmptyView();
+                          //else if(snapshot.hasError) return ErrorView();
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return LoadingView();
+                          } else {
+                            brandList = documentsToBrands(snapshot.data!.docs);
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10.0,
                               ),
-                            ],
-                          ),
+                              scrollDirection: Axis.vertical,
+                              itemCount: brandList.length,
+                              itemBuilder: (context, int index) => BrandTile(brandList[index]),
+                            );
+                          }
+                        }
+                      ),
                     ),
-                  ),
                 ),
+              ),
               ],
           ),
         )
+    );
+  }
+
+  List<Brand> documentsToBrands(List<DocumentSnapshot> documents) {
+    List<Brand> brands = [];
+    for(int i = 0; i < documents.length; i++) {
+      brands.add(Brand.fromObject(documents[i], documents[i].id));
+    }
+    return brands;
+  }
+
+}
+
+class BrandTile extends StatelessWidget{
+  final Brand brand;
+  BrandTile(this.brand);
+  @override
+  Widget build(BuildContext context) {
+    return new Card(
+      margin: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0.0),
+      child: ListTile(
+        leading: CircularImage(size: MediaQuery.of(context).size.width*0.15, image: brand.logoUrl, borderWidth: 0),
+        title: Text(brand.name!,style: TextStyle(fontSize: 20.0),),
+        subtitle: Text("Admin Tool"),
+        onTap: () {
+
+        },
+      ),
     );
   }
 }

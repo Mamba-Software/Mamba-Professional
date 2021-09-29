@@ -77,6 +77,7 @@ class _HomePageState extends State<HomePage> {
             automaticallyImplyLeading: false,
           ),
           backgroundColor: Styles.white,
+          extendBody: true,
           bottomNavigationBar: CurvedNavigationBar(
             index: _currentIndex,
             color: Styles.mainColor,
@@ -94,7 +95,6 @@ class _HomePageState extends State<HomePage> {
               );
               setState(() {});
             },
-
           ),
           body: PageView(
             controller: _pageController,
