@@ -29,7 +29,7 @@ class DatabaseAccess {
   Future<void> updateCurrentUserDatosPerifl(String name, int gender, String dateOfBirth) => _firebase.updateCurrentUserDatosPerifl(name, gender, dateOfBirth);
   Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma, String previousIdioma) => _firebase.updateCurrentUserSettingsPerifl(isPrivate, idioma, previousIdioma);
 
-  Future<String> addBrand(String name, File image, String description, String placeId, double latitude, double longitude) => _firebase.addBrand(name, image, description, placeId, latitude, longitude);
+  Future<String> addBrand(String name, File image, String description, String placeId, String address, double latitude, double longitude) => _firebase.addBrand(name, image, description, placeId, address, latitude, longitude);
 
   Future<bool> checkIfBrandExists(String brandID) => _firebase.checkIfBrandExists(brandID);
 

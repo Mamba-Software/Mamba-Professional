@@ -44,6 +44,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
   String _street = '';
   String _city = '';
   String _zipCode = '';
+  String address = '';
   double latitude = 0;
   double longitude = 0;
 
@@ -321,6 +322,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                                     if(placeDetails.city!=null) _city = placeDetails.city!; else _city="N/A";
                                                     if(placeDetails.zipCode!=null) _zipCode = placeDetails.zipCode!; else _zipCode="N/A";
                                                   });
+                                                  address =_street+" "+_streetNumber+", "+_city;
+                                                  if(placeDetails.city!=null) address +=", "+_zipCode;
                                                 }
                                               },
                                               decoration: InputDecoration(
@@ -501,7 +504,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                         setState(() {
                           isLoading = true;
                         });
-                        var result = await _accessDatabase.addBrand(nameBrand, _image, description, detailsResult!.placeId!, latitude, longitude);
+                        var result = await _accessDatabase.addBrand(nameBrand, _image, description, detailsResult!.placeId!, address, latitude, longitude);
                         await _accessDatabase.updateCurrentUserBrand(result);
                         Navigator.pop(context);
                         Navigator.pushReplacement(

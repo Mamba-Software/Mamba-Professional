@@ -197,7 +197,7 @@ class FirebaseDatabaseService {
   }
   // Brand Model Services
   // Add Brand
-  Future<String> addBrand(String name, File image, String description, String placeId, double latitude, double longitude) async {
+  Future<String> addBrand(String name, File image, String description, String placeId, String address, double latitude, double longitude) async {
     User? firebaseUser = await getCurrentUser();
     bool firestoreError = false;
     var uid = Uuid().v4();
@@ -214,6 +214,7 @@ class FirebaseDatabaseService {
       "description": description,
       "dateJoined": formatted,
       "placeId": placeId,
+      "address": address,
       "latitude": latitude,
       "longitude": longitude,
     }).catchError((err) {
@@ -229,16 +230,19 @@ class FirebaseDatabaseService {
     }
   }
 
-  Future<void> updateCurrentBrandPhoto(String brandID, File image) async {
+  Future<String> updateCurrentBrandPhoto(String brandID, File image) async {
+    var result;
     var storageRef = await _firebaseStorage.ref().child("brandPics/" + brandID + ".png");
     var uploadTask= storageRef.putFile(image);
-    uploadTask.whenComplete(() async {
+    await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
+        result = value;
         await _firestore.collection("Brands").doc(brandID).update({
           "logoUrl": value,
         });
       });
     });
+    return result;
   }
 
   Future<Brand> getCurrentBrandDetails(String brandID) async {

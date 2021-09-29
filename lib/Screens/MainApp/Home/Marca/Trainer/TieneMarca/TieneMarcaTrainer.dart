@@ -5,8 +5,6 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AjustesMarca.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AnadirMiembro.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/Calendario.dart';
@@ -24,18 +22,11 @@ class TieneMarcaTrainer extends StatefulWidget {
 class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
-  // Boolean Loading
-  bool isLoading = false;
   // List Bool Status
   List<bool> _statusButtons =  [false, false, false, false, false, false];
   // Size of Icons
   final _globusSize = Size(75, 75);
   final _iconSize = 40.0;
-  // Image Picker
-  var _image;
-  // IdiomaChanged Settings Modal
-  var _isSaved;
-  var _isUpdated;
 
 
   @override
@@ -48,10 +39,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
     // Calls a Modal Bottom Sheet every time an Icon is Tapped. It updates the page after closing only if there have been changes
     // inside the modal. Some set the isLoading to true (TusDatos, as the name needs to be updated in the UI), others don´t as it
     // can happen in the background (Settings)
-
     void _showPerfiClientModals(int _buttonIndex) async {
-      _isSaved = false;
-      _isUpdated = false;
       switch (_buttonIndex) {
         case 0:
           showModalBottomSheet<bool>(
@@ -148,10 +136,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
       }
     }
 
-    return isLoading ?
-    LoadingView()
-        :
-    SingleChildScrollView(
+    return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -182,9 +167,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                   Container(
                                     height: MediaQuery.of(context).size.height * 0.3,
                                     child: Center(
-                                      child: isLoading ?
-                                      CircularProgressIndicator() :
-                                      CircularImage(size: MediaQuery.of(context).size.height * 0.20, image: currentBrand.logoUrl, file: _image,),
+                                      child: CircularImage(size: MediaQuery.of(context).size.height * 0.20, image: currentBrand.logoUrl),
                                     ),
                                   ),
                                 ],

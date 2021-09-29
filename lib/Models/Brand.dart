@@ -52,6 +52,7 @@ class Brand {
     this.description = mapData['description'].toString();
     this.dateJoined = mapData['dateJoined'].toString();
     this.placeId = mapData['placeId'].toString();
+    this.placeId = mapData['address'].toString();
     this.latitude = mapData['latitude'];
     this.longitude = mapData['longitude'];
   }
@@ -64,6 +65,7 @@ class Brand {
     this.description = documentSnapshot.get("description").toString();
     this.dateJoined = documentSnapshot.get("dateJoined").toString();
     this.placeId = documentSnapshot.get("placeId").toString();
+    this.placeId = documentSnapshot.get("address").toString();
     this.latitude = documentSnapshot.get("latitude");
     this.longitude = documentSnapshot.get("longitude");
   }
