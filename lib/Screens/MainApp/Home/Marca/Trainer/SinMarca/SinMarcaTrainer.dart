@@ -5,7 +5,6 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
@@ -23,13 +22,12 @@ class SinMarcaTrainer extends StatefulWidget {
 class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
-  // Boolean Loading
-  bool isLoading = false;
   bool codigoClicked = false;
   bool isLoadingCodigo = false;
   // Model Usuario
   Usuario? user;
   // FormVariables
+  var ubicacionController =  TextEditingController();
   var _codigoController = TextEditingController();
   var _codigo;
   bool codigoError = false;
@@ -40,22 +38,10 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
   @override
   void initState() {
     super.initState();
-    isLoading = true;
-    getUser();
-  }
-  // Gets the user info from firebase.
-  void getUser() async {
-    user = await _accessDatabase.getCurrentUserDetails();
-    setState(() {
-      isLoading = false;
-    });
   }
   @override
   Widget build(BuildContext context) {
-    return isLoading ?
-    LoadingView()
-      :
-    Container(
+    return Container(
       child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Column(
@@ -227,37 +213,53 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                 padding: const EdgeInsets.only(top: 12.0),
                 child: Text(AppLocalizations.of(context)!.trainersZone, style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Container(
-                      child: StreamBuilder<QuerySnapshot>(
-                        stream: _accessDatabase.getAllBrands(),
-                        builder: (context, snapshot) {
-                          //if(snapshot == null || snapshot.data == null || snapshot.data.documents == null ) return EmptyView();
-                          //else if(snapshot.hasError) return ErrorView();
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return LoadingView();
-                          } else {
-                            brandList = documentsToBrands(snapshot.data!.docs);
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 10.0,
-                              ),
-                              scrollDirection: Axis.vertical,
-                              itemCount: brandList.length,
-                              itemBuilder: (context, int index) => BrandTile(brandList[index]),
-                            );
-                          }
-                        }
-                      ),
-                    ),
-                ),
-              ),
-              ],
+              BrandList(),
+            ],
           ),
         )
+    );
+  }
+}
+
+class BrandList extends StatelessWidget {
+  BrandList({Key? key}) : super(key: key);
+  // Acceso a Base de Datos
+  var _accessDatabase = new DatabaseAccess();
+  // Brand List
+  List<Brand> brandList = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8.0, bottom: 10),
+        child: Container(
+          child: StreamBuilder<QuerySnapshot>(
+              stream: _accessDatabase.getAllBrands(),
+              builder: (context, snapshot) {
+                //if(snapshot == null || snapshot.data == null || snapshot.data.documents == null ) return EmptyView();
+                //else if(snapshot.hasError) return ErrorView();
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return LoadingView();
+                } else {
+                  brandList = documentsToBrands(snapshot.data!.docs);
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: brandList.length,
+                    itemBuilder: (context, int index) =>
+                        index == brandList.length-1 ?
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 60),
+                          child: BrandTile(brandList[index]),
+                        ) :
+                        BrandTile(brandList[index]),
+                  );
+                }
+              }
+          ),
+        ),
+      ),
     );
   }
 
@@ -271,20 +273,84 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
 
 }
 
+
 class BrandTile extends StatelessWidget{
   final Brand brand;
   BrandTile(this.brand);
+
   @override
   Widget build(BuildContext context) {
-    return new Card(
-      margin: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0.0),
-      child: ListTile(
-        leading: CircularImage(size: MediaQuery.of(context).size.width*0.15, image: brand.logoUrl, borderWidth: 0),
-        title: Text(brand.name!,style: TextStyle(fontSize: 20.0),),
-        subtitle: Text("Admin Tool"),
-        onTap: () {
-
-        },
+    return InkWell(
+      onTap: () => {
+        print(brand.name)
+      },
+      child: Container(
+        height: 130,
+        child: new Card(
+          elevation: 3,
+          shape: RoundedRectangleBorder(
+            //side: BorderSide(color: Styles.accent, width: 0.01),
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          margin: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: CircularImage(size: MediaQuery.of(context).size.width*0.20, image: brand.logoUrl, color: Colors.transparent,),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width*0.69,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(brand.name!,style: Styles.purpleTextStyle.copyWith(fontSize: 20.0, fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width*0.64,
+                              child: new Row(
+                                children: <Widget>[
+                                  Flexible(
+                                    child: TextFormField(
+                                      initialValue: "Passeig de la Ribera 23, Castelldefels 08860, Barcelona",
+                                      readOnly: true,
+                                      onTap: () async {
+                                      },
+                                      decoration: InputDecoration(
+                                        icon: Icon(
+                                          Icons.location_on_outlined,
+                                          color: Styles.accent,
+                                        ),
+                                        border: InputBorder.none,
+                                        contentPadding: EdgeInsets.only(left: -15.0),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

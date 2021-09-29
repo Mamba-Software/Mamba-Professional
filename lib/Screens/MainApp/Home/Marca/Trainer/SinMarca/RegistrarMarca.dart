@@ -296,7 +296,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                     Padding(
                                         padding: EdgeInsets.symmetric(horizontal: 20,),
                                         child: new Row(
-                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisSize: MainAxisSize.min,
                                           children: <Widget>[
                                           Expanded(
                                             child: TextFormField(
@@ -313,7 +313,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                                 if (result != null) {
                                                   final placeDetails = await LocationPlacesSearch()
                                                       .getPlaceDetailFromId(result.placeId);
-                                                  getDetils(result.placeId);
+                                                  getDetails(result.placeId);
                                                   setState(() {
                                                     ubicacionController.text = result.description;
                                                     if(placeDetails.street!=null) _street = placeDetails.street!; else _street="N/A";
@@ -533,14 +533,12 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
     );
   }
 
-  void getDetils(String placeId) async {
+  void getDetails(String placeId) async {
     var result = await gPlace!.details.get(placeId);
     if (result != null && result.result != null && mounted) {
       detailsResult = result.result;
       latitude = detailsResult!.geometry!.location!.lat!;
       longitude = detailsResult!.geometry!.location!.lng!;
-      print(latitude);
-      print(longitude);
     }
   }
 

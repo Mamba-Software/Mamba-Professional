@@ -181,8 +181,7 @@ class _PerfilState extends State<Perfil> {
     return isLoading ?
       LoadingView()
         :
-      Center(
-          child: SingleChildScrollView(
+      SingleChildScrollView(
             child: Column(
               children: [
                 Padding(
@@ -414,9 +413,7 @@ class _PerfilState extends State<Perfil> {
                 ),
               ],
             ),
-      ),
-    );
-
+      );
   }
 
   @override
