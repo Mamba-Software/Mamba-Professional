@@ -6,7 +6,7 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
-import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Admin/Admin.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
@@ -32,7 +32,10 @@ class SplashScreen extends StatefulWidget {
 // While getting data from Database it is showing a Loading Widget.
 class _SplashScreenState extends State<SplashScreen> {
 
+  // Data Base Access
   var _accessDatabase = new DatabaseAccess();
+  // Geolocator
+  final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
 
   @override
   initState() {
@@ -47,6 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (currentUser.brandID != "null") {
         currentBrand = await _accessDatabase.getCurrentBrandDetails(currentUser.brandID!);
       }
+      _getCurrentLocation();
       Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
       if(currentUser.isAdmin!) {
         Navigator.pushReplacement(
@@ -84,6 +88,29 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
             (_) => false,
       );
+    }
+  }
+
+  void _getCurrentLocation() {
+    geolocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+        .then((Position position) {
+            currentPosition = position;
+            print(currentPosition);
+            _getAddressFromLatLng();
+          }).catchError((e) {
+            print(e);
+          });
+  }
+
+  void _getAddressFromLatLng() async {
+    try {
+      List<Placemark> p = await geolocator.placemarkFromCoordinates(currentPosition!.latitude, currentPosition!.longitude);
+      Placemark place = p[0];
+      currentAddress = "${place.locality}, ${place.postalCode}, ${place.country}";
+      print(currentAddress);
+    } catch (e) {
+      print(e);
     }
   }
 

@@ -45,5 +45,11 @@
     <string>Need to access your camera to capture a photo add and update profile picture.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Need to access your photo library to select a photo add and update profile picture</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs access to location when open.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This app needs access to location when in the background.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>This app needs access to location when open and in the background.</string>
 </dict>
 </plist>
