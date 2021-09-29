@@ -101,7 +101,9 @@ class FirebaseDatabaseService {
             "isPrivate": true,
             "gender": gender,
             "dateJoined": formatted,
+            "dateOfBirth": null,
             "idioma": idioma,
+            "previousIdioma": null,
             "brandID": null,
             "isAdmin": false,
           })
@@ -259,6 +261,13 @@ class FirebaseDatabaseService {
   // STREAMS
   Stream<QuerySnapshot> getAllBrands() {
     return _firestore.collection("Brands").snapshots();
+  }
+
+  //admin
+  // get brews stream
+  Stream<QuerySnapshot> getAllUsers() {
+    return _firestore.collection("Users")
+        .snapshots();
   }
 
 }
