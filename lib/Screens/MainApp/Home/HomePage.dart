@@ -76,38 +76,49 @@ class _HomePageState extends State<HomePage> {
             elevation: 10,
             automaticallyImplyLeading: false,
           ),
-          backgroundColor: Styles.white,
-          extendBody: true,
-          bottomNavigationBar: CurvedNavigationBar(
-            index: _currentIndex,
-            color: Styles.mainColor,
-            backgroundColor: Colors.transparent,
-            animationCurve: Curves.easeInOut,
-            animationDuration: Duration(milliseconds: 200),
-            height: 60,
-            items: items,
-            onTap: (index) {
-              _currentIndex = index;
-              _pageController.animateToPage(
-                index,
-                duration: Duration(milliseconds: 200),
-                curve: Curves.linear,
-              );
-              setState(() {});
-            },
-          ),
-          body: PageView(
-            controller: _pageController,
-            onPageChanged: (page) {
-              setState(() {
-                _currentIndex = page;
-              });
-            },
-            children: <Widget>[
-              ChildWidget(number: AvailableNumber.First),
-              ChildWidget(number: AvailableNumber.Second),
-              ChildWidget(number: AvailableNumber.Third),
-            ],
+          body: Stack(
+            children: [
+              Container(
+                color: Colors.transparent,
+              ),
+              Align(
+                alignment: Alignment.topCenter,
+                child: PageView(
+                  controller: _pageController,
+                  onPageChanged: (page) {
+                    setState(() {
+                      _currentIndex = page;
+                    });
+                  },
+                  children: <Widget>[
+                    ChildWidget(number: AvailableNumber.First),
+                    ChildWidget(number: AvailableNumber.Second),
+                    ChildWidget(number: AvailableNumber.Third),
+                  ],
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: CurvedNavigationBar(
+                  index: _currentIndex,
+                  color: Styles.mainColor,
+                  backgroundColor: Colors.transparent.withOpacity(0.01),
+                  animationCurve: Curves.easeInOut,
+                  animationDuration: Duration(milliseconds: 200),
+                  height: 60,
+                  items: items,
+                  onTap: (index) {
+                    _currentIndex = index;
+                    _pageController.animateToPage(
+                      index,
+                      duration: Duration(milliseconds: 200),
+                      curve: Curves.linear,
+                    );
+                    setState(() {});
+                  },
+                ),
+              ),
+            ]
           ),
         )
     );
