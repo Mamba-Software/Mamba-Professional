@@ -49,7 +49,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
   String address = '';
   double latitude = 0;
   double longitude = 0;
-
+  // Time Picker Horari de Trabajo
+  TimeOfDay _startTime = TimeOfDay(hour: 6, minute: 00);
+  TimeOfDay _endTime = TimeOfDay(hour: 23, minute: 00);
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
@@ -514,7 +516,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                         ],
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        padding: const EdgeInsets.only(top: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -561,9 +563,167 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                     child: new Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
-                                        Expanded(
-                                          child: Text("Horario de Trabajo"),
-                                        )
+                                        TextButton(
+                                          onPressed: () async {
+                                            TimeOfDay temp = await _selectTime(_startTime);
+                                            setState(() {
+                                              _startTime = temp;
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                                              border: Border.all(color: Styles.accent, width: 1.0),
+                                              color: Colors.transparent,
+                                            ),
+                                            child: Text(
+                                              '${_startTime.format(context)}',
+                                              style: Styles.purpleTextStyle.copyWith(fontSize: 25),
+                                            ),
+                                          ),
+                                        ),
+                                        Text("-", style: Styles.purpleTextStyle.copyWith(fontSize: 30),),
+                                        TextButton(
+                                          onPressed: () async {
+                                            TimeOfDay temp = await _selectTime(_endTime);
+                                            setState(() {
+                                              _endTime = temp;
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                                              border: Border.all(color: Styles.accent, width: 1.0),
+                                              color: Colors.transparent,
+                                            ),
+                                            child: Text(
+                                              '${_endTime.format(context)}',
+                                              style: Styles.purpleTextStyle.copyWith(fontSize: 25),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: new Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                      padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                                      child: new Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: <Widget>[
+                                          new Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Text(
+                                                AppLocalizations.of(context)!.lunchBreak,
+                                                style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                              padding: const EdgeInsets.only(left: 0),
+                                              child: IconButton(
+                                                padding: EdgeInsets.zero,
+                                                icon: Icon(Icons.info_outline, color: Styles.accent, size: 20),
+                                                onPressed: () {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (_) {
+                                                        return InformationDialog(text: AppLocalizations.of(context)!.lunchBreakDescription);
+                                                      }
+                                                  );
+                                                },
+                                              )
+                                          ),
+                                        ],
+                                      )
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 20,),
+                                    child: new Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        TextButton(
+                                          onPressed: () async {
+                                            TimeOfDay temp = await _selectTime(_startTime);
+                                            setState(() {
+                                              _startTime = temp;
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                                              border: Border.all(color: Styles.accent, width: 1.0),
+                                              color: Colors.transparent,
+                                            ),
+                                            child: Text(
+                                              '${_startTime.format(context)}',
+                                              style: Styles.purpleTextStyle.copyWith(fontSize: 25),
+                                            ),
+                                          ),
+                                        ),
+                                        Text("-", style: Styles.purpleTextStyle.copyWith(fontSize: 30),),
+                                        TextButton(
+                                          onPressed: () async {
+                                            TimeOfDay temp = await _selectTime(_endTime);
+                                            setState(() {
+                                              _endTime = temp;
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                                              border: Border.all(color: Styles.accent, width: 1.0),
+                                              color: Colors.transparent,
+                                            ),
+                                            child: Text(
+                                              '${_endTime.format(context)}',
+                                              style: Styles.purpleTextStyle.copyWith(fontSize: 25),
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 10.0),
+                                          child: OutlinedButton(
+                                            onPressed: () {
+                                              setState(() {
+                                              });
+                                            },
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Icon( Icons.add, color: Colors.white, size: 30,),
+                                              ],
+                                            ),
+                                            style: OutlinedButton.styleFrom(
+                                              backgroundColor: Styles.accent,
+                                              elevation: 3,
+                                              shape: CircleBorder(),
+                                              padding: EdgeInsets.all(5),
+                                            ),
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -675,6 +835,34 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
           ),
         ),
     );
+  }
+
+  Future<TimeOfDay> _selectTime(TimeOfDay time) async {
+    final TimeOfDay? newTime = await showTimePicker(
+      context: context,
+      initialTime: time,
+      initialEntryMode: TimePickerEntryMode.input,
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData(
+            colorScheme: ColorScheme.light().copyWith(
+              primary: Colors.amber,
+            ),
+          ),
+          child: MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              // Using 12-Hour format
+                alwaysUse24HourFormat: true),
+            // If you want 24-Hour format, just change alwaysUse24HourFormat to true
+            child: child!)
+        );
+      }
+    );
+    if (newTime != null) {
+      return newTime;
+    } else {
+      return time;
+    }
   }
 
   void getDetails(String placeId) async {

@@ -398,6 +398,14 @@
   "@workingHoursDescription":{
     "description": "workingHours text"
   },
+  "lunchBreak": "Descansos",
+  "@lunchBreak":{
+    "description": "Descansos text"
+  },
+  "lunchBreakDescription": "En caso de que siempre te tomes un descanso a la misma hora, por ejemplo a la hora de comer, añadelo para que conste en tu calendario.",
+  "@lunchBreakDescription":{
+    "description": "workingHours text"
+  },
   "disponibilidad": "Disponibilidad",
   "@disponibilidad":{
     "description": "disponibilidad text"
