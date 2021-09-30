@@ -81,7 +81,9 @@
   "loading": "Cargant...",
   "name": "Nom",
   "basicInfo": "Informació Bàsica",
+  "canEdit": "Tota la informació podrà ser editada més endavant",
   "baseLocation": "Ubicació Base",
+  "baseLocationDescription": "Aquesta és l'ubicació que utilitzarem per localitzar la teva marca al mapa perque els clients puguin trobar-te a prop seu. En cas de no tenir adreça fixe, introduiex una ubicació utilitzada frequentment.",
   "streetName": "Carrer: ",
   "streetNumber": "Número: ",
   "city": "Ciutat: ",
@@ -90,6 +92,9 @@
   "back": "Enrere",
   "enterAddress": "Introdueix la teva adreça",
   "enterAddressError": "Introdueix la teva adreça si us plau",
+  "brandDescription": "El primer que llegirán els teus clients sobre tu i la teva marca és aquesta petita descripció. En un parell de linies, plasma els teus valors fonamentals y transmet els beneficis de treballar de la teva mà.",
+  "workingHours": "Horari de Treball",
+  "workingHoursDescription": "És important que defineixis el teu horari de treball perquè els teus clients sàpiguen quan pots ser contactat i quan estàs fora del teu horari laboral.",
   "disponibilidad": "Disponibilitat",
   "brandNotFound": "No trobem aquesta Marca. Si us plau assegureu-vos que heu introduït el codi correctament",
   "notInBrand": "No formes part de cap marca",
@@ -97,5 +102,7 @@
   "writeDeleteUser": "Escriu la teva contrasenya per confirmar aquesta acció:",
   "confirmDeleteUser": "per confirmar aquesta acció:",
   "delete": "Eliminar",
-  "cancel": "Cancel·lar"
+  "cancel": "Cancel·lar",
+  "close": "Tancar",
+  "entendido": "Entesos"
 }

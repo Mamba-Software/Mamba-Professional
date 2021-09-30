@@ -342,8 +342,16 @@
   "@basicInfo":{
     "description": "basicInfo text"
   },
+  "canEdit": "Toda la información podrá ser editada más adelante.",
+  "@canEdit":{
+    "description": "basicInfo text"
+  },
   "baseLocation": "Ubicación Base",
   "@baseLocation":{
+    "description": "baseLocation text"
+  },
+  "baseLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor. En caso de no tener una dirección fija, introduce una ubicación utilizada frequentemente.",
+  "@baseLocationDescription":{
     "description": "baseLocation text"
   },
   "streetName": "Calle: ",
@@ -378,6 +386,18 @@
   "@enterAddressError":{
     "description": "zipCode text"
   },
+  "brandDescription": "Lo primero que leerán tus clientes sobre tu marca y tu forma de trabajar es esta pequeña descripción. En un par de lineas, transmite tus valores fundamentales y beneficios de trabajar de tu mano.",
+  "@brandDescription":{
+    "description": "zipCode text"
+  },
+  "workingHours": "Horario de Trabajo",
+  "@workingHours":{
+    "description": "workingHours text"
+  },
+  "workingHoursDescription": "Es importante que definas tu horario de trabajo para que tus clientes sepan cuando puedes ser contactado y cuando estás fuera de tu horario laboral.",
+  "@workingHoursDescription":{
+    "description": "workingHours text"
+  },
   "disponibilidad": "Disponibilidad",
   "@disponibilidad":{
     "description": "disponibilidad text"
@@ -408,6 +428,14 @@
   },
   "cancel": "Cancelar",
   "@cancel":{
+    "description": "Cancelar text"
+  },
+  "close": "Cerrar",
+  "@close":{
+    "description": "Cancelar text"
+  },
+  "entendido": "Entendido",
+  "@entendido":{
     "description": "Cancelar text"
   }
 }

@@ -248,7 +248,8 @@ class _SettingsState extends State<Settings> {
                                         context: context,
                                         builder: (_) {
                                           return DeleteDialog();
-                                        });
+                                        }
+                                      );
                                     },
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,

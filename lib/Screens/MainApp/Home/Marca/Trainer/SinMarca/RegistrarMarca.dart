@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/InformationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
@@ -28,6 +29,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
   googlePlace.DetailsResult? detailsResult;
   // Boolean Basic Info
   bool basicInfo = true;
+  bool editInfo = true;
   bool isLoading = false;
   // Form Values
   final _formBasicInfoKey = GlobalKey<FormState>();
@@ -136,6 +138,52 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
             key: _formBasicInfoKey,
             child: Column(
               children: [
+                editInfo ? Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 2),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(15),
+                        bottomRight: Radius.circular(15),
+                      ),
+                      color: Styles.accent
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                            child: Icon(Icons.edit, color: Colors.white, size: 30,),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                              child: Text(
+                                AppLocalizations.of(context)!.canEdit,
+                                style: Styles.whiteTextStyle.copyWith(fontSize: 16,),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4.0, right: 8.0),
+                            child: TextButton(
+                                child: Text(AppLocalizations.of(context)!.entendido, style: Styles.whiteTextStyle.copyWith(fontSize: 16, decoration: TextDecoration.underline)),
+                                onPressed: () {
+                                  setState(() {
+                                    editInfo = false;
+                                  });
+                                }
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ) : Container(),
                 Container(
                   padding: EdgeInsets.all(12),
                   child: Column(
@@ -147,7 +195,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                             padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
                             child: new Text(
                               AppLocalizations.of(context)!.basicInfo,
-                              style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
+                              style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
                             ),
                           ),
                         ],
@@ -247,6 +295,13 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                               },
                                               decoration: InputDecoration(
                                                 hintText: AppLocalizations.of(context)!.nameCompletoError,
+                                                enabledBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(color: Styles.accent),
+                                                ),
+                                                focusedBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(color: Styles.accent),
+                                                ),
+
                                               ),
                                             ),
                                           ),
@@ -288,7 +343,14 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                               child: IconButton(
                                                 padding: EdgeInsets.zero,
                                                 icon: Icon(Icons.info_outline, color: Styles.accent, size: 20),
-                                                onPressed: () {  },
+                                                onPressed: () {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (_) {
+                                                        return InformationDialog(text: AppLocalizations.of(context)!.baseLocationDescription);
+                                                      }
+                                                  );
+                                                },
                                               )
                                             ),
                                           ],
@@ -338,7 +400,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                                 ),
                                                 hintText: AppLocalizations.of(context)!.enterAddress,
                                                 border: InputBorder.none,
-                                                contentPadding: EdgeInsets.only(left: 18.0, top: 16.0),
+                                                contentPadding: EdgeInsets.only(left: 18.0, top: 25.0),
                                               ),
                                         ),
                                           )
@@ -408,7 +470,14 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                   child: IconButton(
                                     padding: EdgeInsets.zero,
                                     icon: Icon(Icons.info_outline, color: Styles.accent, size: 20),
-                                    onPressed: () {  },
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (_) {
+                                            return InformationDialog(text: AppLocalizations.of(context)!.brandDescription);
+                                          }
+                                      );
+                                    },
                                   )
                               ),
                             ],
@@ -432,6 +501,78 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                               ),
                             ],
                           )),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 30),
+                            child: new Text(
+                              AppLocalizations.of(context)!.disponibilidad,
+                              style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: new Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                      padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                                      child: new Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: <Widget>[
+                                          new Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Text(
+                                                AppLocalizations.of(context)!.workingHours,
+                                                style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                              padding: const EdgeInsets.only(left: 0),
+                                              child: IconButton(
+                                                padding: EdgeInsets.zero,
+                                                icon: Icon(Icons.info_outline, color: Styles.accent, size: 20),
+                                                onPressed: () {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (_) {
+                                                        return InformationDialog(text: AppLocalizations.of(context)!.workingHoursDescription);
+                                                      }
+                                                  );
+                                                },
+                                              )
+                                          ),
+                                        ],
+                                      )
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 20,),
+                                    child: new Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Text("Horario de Trabajo"),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         child: Container(
