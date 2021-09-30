@@ -330,7 +330,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                   child: Text("${AppLocalizations.of(context)!.writeDeleteUser} ", style: Styles.purpleTextStyle.copyWith(fontSize: 16), textAlign: TextAlign.center,),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 20.0, left: 30, right: 30),
+                  padding: const EdgeInsets.only(top: 20.0, left: 15, right: 15),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[

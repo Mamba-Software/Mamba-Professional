@@ -63,7 +63,7 @@
   "@passworRepeat":{
     "description": "Contraseña Repeat Text "
   },
-  "passwordNotSameError": "Contraseñas no coinciden",
+  "passwordNotSameError": "Las contraseñas no coinciden",
   "@passwordNotSameError":{
     "description": "Contraseña Error Text "
   },
