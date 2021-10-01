@@ -9,10 +9,10 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/CalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/InformationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 
 class RegistrarMarca extends StatefulWidget {
   const RegistrarMarca({Key? key}) : super(key: key);
@@ -141,11 +141,15 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.arrow_forward, size: 25,),
+              icon: Icon(basicInfo ? Icons.arrow_forward : Icons.add_circle_outline, size: 30,),
               onPressed: () {
-                setState(() {
-                  basicInfo = !basicInfo;
-                });
+                if (basicInfo) {
+                  setState(() {
+                    basicInfo = !basicInfo;
+                  });
+                } else {
+                  print("Ara creamos la Marca");
+                }
               },
               tooltip: 'Back',
             ),
@@ -922,61 +926,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
             ),
           )
         ) :
-        SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: Container(
-                    child: Text("AQUÍ VINDRA EL CALENDAR WIDGET", style: Styles.purpleTextStyle.copyWith(fontSize: 25), textAlign: TextAlign.center,)
-                  ),
-                ),
-              ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: Container(
-                    height: 50,
-                    width: 250,
-                    decoration: BoxDecoration(
-                        color: Styles.accent, borderRadius: BorderRadius.circular(20)
-                    ),
-                    child: TextButton(
-                      onPressed: () async {
-                        setState(() {
-                          isLoading = true;
-                        });
-                        var result = await _accessDatabase.addBrand(nameBrand, _image, description, detailsResult!.placeId!, address, latitude, longitude);
-                        await _accessDatabase.updateCurrentUserBrand(result);
-                        Navigator.pop(context);
-                        Navigator.pushReplacement(
-                            context,
-                            CupertinoPageRoute<Null>(
-                              builder: (context) => SplashScreen(),
-                              settings: RouteSettings(name: 'SplashScreen'),
-                            )
-                        );
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Crear Marca",
-                            style: Styles.whiteTextStyle,
-                          ),
-                          SizedBox(width: 10),
-                          Icon(Icons.calendar_today_outlined, color: Styles.white),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        CalendarWidget(),
     );
   }
 

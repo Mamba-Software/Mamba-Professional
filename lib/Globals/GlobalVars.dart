@@ -2,6 +2,8 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Models/Event.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 // API Keys
 var placesAPI = "AIzaSyBjUcoI0sYFY9H8mb2n0IoBv26GxnPTRgs";
@@ -13,3 +15,7 @@ var currentBrand = Brand();
 // Current User Location
 Position? currentPosition;
 String? currentAddress;
+
+// Global All Events
+var allEvents = <Event>[];
+List<Appointment> allAppointments = <Appointment>[];

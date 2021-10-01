@@ -39,6 +39,7 @@ dependencies:
   uuid: ^3.0.4
   curved_navigation_bar: ^1.0.1
   geolocator: ^5.3.1
+  syncfusion_flutter_calendar: ^19.2.62
 
 
   # The following adds the Cupertino Icons font to your application.
