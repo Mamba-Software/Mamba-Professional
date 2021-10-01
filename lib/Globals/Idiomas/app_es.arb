@@ -143,11 +143,11 @@
   "@registerError":{
     "description": "Regístrate Error Text "
   },
-  "registerGenderError": "Porfavor selecciona tu género",
+  "registerGenderError": "Por favor selecciona tu género",
   "@registerGenderError":{
     "description": "Regístrate Gender Error Text "
   },
-  "registerTypeError": "Porfavor selecciona tu tipo de usuario",
+  "registerTypeError": "Por favor selecciona tu tipo de usuario",
   "@registerTypeError":{
     "description": "Regístrate Gender Error Text "
   },
@@ -269,7 +269,7 @@
   "@titleHint":{
     "description": "Título Hint Text"
   },
-  "titleError": "Porfavor introduce un título",
+  "titleError": "Por favor introduce un título",
   "@titleError":{
     "description": "Título Error Text"
   },
@@ -281,7 +281,7 @@
   "@descriptionHint":{
     "description": "Descripción Text"
   },
-  "descriptionError": "Añade una descripción porfavor",
+  "descriptionError": "Añade una descripción por favor",
   "@descriptionError":{
     "description": "Descripción Text"
   },
@@ -394,6 +394,10 @@
   "@workingHours":{
     "description": "workingHours text"
   },
+  "workingHoursError": "Introduce tu horario laboral por favor",
+  "@workingHours":{
+    "description": "workingHours text"
+  },
   "workingHoursDescription": "Es importante que definas tu horario de trabajo para que tus clientes sepan cuando puedes ser contactado y cuando estás fuera de tu horario laboral.",
   "@workingHoursDescription":{
     "description": "workingHours text"
@@ -402,13 +406,25 @@
   "@lunchBreak":{
     "description": "Descansos text"
   },
-  "lunchBreakDescription": "En caso de que siempre te tomes un descanso a la misma hora, por ejemplo a la hora de comer, añadelo para que conste en tu calendario.",
+  "lunchBreakDescription": "En caso de que siempre te tomes un descanso a la misma hora, por ejemplo a la hora de comer, añadelo para que conste en tu calendario. Puedes añadir un máximo de tres descansos durante el dia.",
   "@lunchBreakDescription":{
     "description": "workingHours text"
+  },
+  "lunchBreakAdded": "¡Descanso añadido!",
+  "@lunchBreakAdded":{
+    "description": "lunchBreakAdded text"
   },
   "disponibilidad": "Disponibilidad",
   "@disponibilidad":{
     "description": "disponibilidad text"
+  },
+  "calendar": "Calendario",
+  "@calendar":{
+    "description": "disponibilidad text"
+  },
+  "next": "Siguiente",
+  "@next":{
+    "description": "Siguiente text"
   },
   "brandNotFound": "No encontramos esta Marca. Por favor asegúrate que has introducido el cógido correctamente",
   "@brandNotFound":{

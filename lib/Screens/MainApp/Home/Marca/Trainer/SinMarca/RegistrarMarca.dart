@@ -50,8 +50,15 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
   double latitude = 0;
   double longitude = 0;
   // Time Picker Horari de Trabajo
-  TimeOfDay _startTime = TimeOfDay(hour: 6, minute: 00);
+  bool errorTime = false;
+  TimeOfDay _startTime = TimeOfDay(hour: 0, minute: 00);
   TimeOfDay _endTime = TimeOfDay(hour: 23, minute: 00);
+  // Descansos
+  TimeOfDay _breakStartTime = TimeOfDay(hour: 13, minute: 00);
+  TimeOfDay _breakEndTime = TimeOfDay(hour: 14, minute: 00);
+  List<TimeOfDay> _breakList = [];
+  List<int> removedIndex = [];
+  int breakLimit = 6;
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
@@ -132,6 +139,17 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
             },
             tooltip: 'Back',
           ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.arrow_forward, size: 25,),
+              onPressed: () {
+                setState(() {
+                  basicInfo = !basicInfo;
+                });
+              },
+              tooltip: 'Back',
+            ),
+          ],
         ),
         backgroundColor: Styles.white,
         body: basicInfo ?
@@ -194,7 +212,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
                             child: new Text(
                               AppLocalizations.of(context)!.basicInfo,
                               style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
@@ -206,7 +224,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 15.0),
+                            padding: EdgeInsets.symmetric(horizontal: 10.0),
                             height: MediaQuery.of(context).size.height * 0.20,
                             child: Center(
                               child: _image == null ?
@@ -326,7 +344,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
                                     Padding(
-                                        padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                                        padding: EdgeInsets.only(left: 10, right: 10, top: 10),
                                         child: new Row(
                                           mainAxisSize: MainAxisSize.max,
                                           children: <Widget>[
@@ -359,7 +377,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                         )
                                     ),
                                     Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 20,),
+                                        padding: EdgeInsets.symmetric(horizontal: 10,),
                                         child: new Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: <Widget>[
@@ -417,33 +435,33 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                       ),
                       _street != "" ?
                       Padding(
-                          padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 20),
+                          padding: EdgeInsets.only(left: 15, right: 10, top: 10, bottom: 10),
                           child: new Column(
                             mainAxisSize: MainAxisSize.max,
                             children: <Widget>[
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(AppLocalizations.of(context)!.streetName, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
                                   Text(_street, style: Styles.purpleTextStyle,),
                                 ],
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(AppLocalizations.of(context)!.streetNumber, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
                                   Text(_streetNumber, style: Styles.purpleTextStyle,),
                                 ],
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(AppLocalizations.of(context)!.city, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
                                   Text(_city, style: Styles.purpleTextStyle,),
                                 ],
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(AppLocalizations.of(context)!.zipCode, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
                                   Text(_zipCode, style: Styles.purpleTextStyle,),
@@ -453,7 +471,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                           )
                       ) : Container(),
                       Padding(
-                          padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                          padding: EdgeInsets.only(left: 10, right: 10, top: 10),
                           child: new Row(
                             mainAxisSize: MainAxisSize.max,
                             children: <Widget>[
@@ -486,7 +504,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                           )
                       ),
                       Padding(
-                          padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                          padding: EdgeInsets.only(left: 10, right: 10, top: 10),
                           child: new Row(
                             mainAxisSize: MainAxisSize.max,
                             children: <Widget>[
@@ -507,7 +525,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 30),
+                            padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 30),
                             child: new Text(
                               AppLocalizations.of(context)!.disponibilidad,
                               style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
@@ -526,7 +544,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
                                   Padding(
-                                      padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                                      padding: EdgeInsets.only(left: 10, right: 10, top: 10),
                                       child: new Row(
                                         mainAxisSize: MainAxisSize.max,
                                         children: <Widget>[
@@ -559,7 +577,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                       )
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 20,),
+                                    padding: EdgeInsets.symmetric(horizontal: 5,),
                                     child: new Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
@@ -607,6 +625,14 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                       ],
                                     ),
                                   ),
+                                  errorTime ? Padding(
+                                    padding: EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
+                                    child: Text(
+                                        AppLocalizations.of(context)!.workingHoursError,
+                                        style: Styles.redTextStyle.copyWith(fontSize: 12),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                  ) : new Container(),
                                 ],
                               ),
                             ),
@@ -624,7 +650,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
                                   Padding(
-                                      padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                                      padding: EdgeInsets.only(left: 10, right: 10, top: 10),
                                       child: new Row(
                                         mainAxisSize: MainAxisSize.max,
                                         children: <Widget>[
@@ -657,56 +683,67 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                       )
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 20,),
+                                    padding: EdgeInsets.symmetric(horizontal: 5,),
                                     child: new Row(
-                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisSize: MainAxisSize.max,
                                       children: <Widget>[
-                                        TextButton(
-                                          onPressed: () async {
-                                            TimeOfDay temp = await _selectTime(_startTime);
-                                            setState(() {
-                                              _startTime = temp;
-                                            });
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.all(8),
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(Radius.circular(5)),
-                                              border: Border.all(color: Styles.accent, width: 1.0),
-                                              color: Colors.transparent,
-                                            ),
-                                            child: Text(
-                                              '${_startTime.format(context)}',
-                                              style: Styles.purpleTextStyle.copyWith(fontSize: 25),
-                                            ),
+                                        Container(
+                                          width: MediaQuery.of(context).size.width * 0.52,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              TextButton(
+                                                onPressed: () async {
+                                                  TimeOfDay temp = await _selectTime(_breakStartTime);
+                                                  setState(() {
+                                                    _breakStartTime = temp;
+                                                  });
+                                                },
+                                                child: Container(
+                                                  padding: EdgeInsets.all(8),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                                    border: Border.all(color: Styles.accent, width: 1.0),
+                                                    color: Colors.transparent,
+                                                  ),
+                                                  child: Text(
+                                                    '${_breakStartTime.format(context)}',
+                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 25),
+                                                  ),
+                                                ),
+                                              ),
+                                              Text("-", style: Styles.purpleTextStyle.copyWith(fontSize: 30),),
+                                              TextButton(
+                                                onPressed: () async {
+                                                  TimeOfDay temp = await _selectTime(_breakEndTime);
+                                                  setState(() {
+                                                    _breakEndTime = temp;
+                                                  });
+                                                },
+                                                child: Container(
+                                                  padding: EdgeInsets.all(8),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                                    border: Border.all(color: Styles.accent, width: 1.0),
+                                                    color: Colors.transparent,
+                                                  ),
+                                                  child: Text(
+                                                    '${_breakEndTime.format(context)}',
+                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 25),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        Text("-", style: Styles.purpleTextStyle.copyWith(fontSize: 30),),
-                                        TextButton(
-                                          onPressed: () async {
-                                            TimeOfDay temp = await _selectTime(_endTime);
-                                            setState(() {
-                                              _endTime = temp;
-                                            });
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.all(8),
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(Radius.circular(5)),
-                                              border: Border.all(color: Styles.accent, width: 1.0),
-                                              color: Colors.transparent,
-                                            ),
-                                            child: Text(
-                                              '${_endTime.format(context)}',
-                                              style: Styles.purpleTextStyle.copyWith(fontSize: 25),
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 10.0),
+                                        _breakList.length < breakLimit ? Padding(
+                                          padding: const EdgeInsets.only(left: 0.0),
                                           child: OutlinedButton(
                                             onPressed: () {
                                               setState(() {
+                                                _breakList.add(_breakStartTime);
+                                                _breakList.add(_breakEndTime);
                                               });
                                             },
                                             child: Column(
@@ -723,9 +760,106 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                               padding: EdgeInsets.all(5),
                                             ),
                                           ),
-                                        ),
+                                        ) : Container(),
                                       ],
                                     ),
+                                  ),
+                                  ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: _breakList.length,
+                                    itemBuilder: (context, int index) {
+                                      if(index.isEven && !removedIndex.contains(index)) {
+                                        return Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 5,),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: <Widget>[
+                                              Container(
+                                                width: MediaQuery.of(context).size.width * 0.52,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  mainAxisSize: MainAxisSize.max,
+                                                  children: [
+                                                    TextButton(
+                                                      onPressed: () async {
+                                                        TimeOfDay temp = await _selectTime(_breakList[index]);
+                                                        setState(() {
+                                                          _breakList[index] = temp;
+                                                        });
+                                                      },
+                                                      child: Container(
+                                                        padding: EdgeInsets.all(8),
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                                                          border: Border.all(color: Colors.green, width: 1.0),
+                                                          color: Colors.transparent,
+                                                        ),
+                                                        child: Text(
+                                                          '${_breakList[index].format(context)}',
+                                                          style: Styles.purpleTextStyle.copyWith(fontSize: 25, color: Colors.green),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Text("-", style: Styles.purpleTextStyle.copyWith(fontSize: 30, color: Colors.green),),
+                                                    TextButton(
+                                                      onPressed: () async {
+                                                        TimeOfDay temp = await _selectTime(_breakList[index+1]);
+                                                        setState(() {
+                                                          _breakList[index+1] = temp;
+                                                        });
+                                                      },
+                                                      child: Container(
+                                                        padding: EdgeInsets.all(8),
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                                                          border: Border.all(color: Colors.green, width: 1.0),
+                                                          color: Colors.transparent,
+                                                        ),
+                                                        child: Text(
+                                                          '${_breakList[index+1].format(context)}',
+                                                          style: Styles.purpleTextStyle.copyWith(fontSize: 25, color: Colors.green),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 0.0),
+                                                child: OutlinedButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      removedIndex.add(index);
+                                                      removedIndex.add(index+1);
+                                                      breakLimit += 2;
+                                                    });
+                                                  },
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Icon( Icons.remove, color: Colors.white, size: 30,),
+                                                    ],
+                                                  ),
+                                                  style: OutlinedButton.styleFrom(
+                                                    backgroundColor: Colors.red,
+                                                    elevation: 3,
+                                                    shape: CircleBorder(),
+                                                    padding: EdgeInsets.all(5),
+                                                  ),
+                                                ),
+                                              ),
+                                              Flexible(
+                                                child: Text(AppLocalizations.of(context)!.lunchBreakAdded, style: Styles.purpleTextStyle.copyWith(fontSize: 13,fontStyle: FontStyle.italic, color: Colors.green), textAlign: TextAlign.center,),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      } else {
+                                        return Container();
+                                      }
+                                    },
+                                    shrinkWrap: true,
                                   ),
                                 ],
                               ),
@@ -753,6 +887,15 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                     errorImage = false;
                                   });
                                 }
+                                if (_startTime == TimeOfDay(hour: 0, minute: 00) && _endTime == TimeOfDay(hour: 23, minute: 00)) {
+                                  setState(() {
+                                    errorTime = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    errorTime = false;
+                                  });
+                                }
                                 if(_formBasicInfoKey.currentState!.validate()){
                                   basicInfo = false;
                                 }
@@ -762,7 +905,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!.disponibilidad,
+                                  AppLocalizations.of(context)!.next,
                                   style: Styles.whiteTextStyle,
                                 ),
                                 SizedBox(width: 10),
