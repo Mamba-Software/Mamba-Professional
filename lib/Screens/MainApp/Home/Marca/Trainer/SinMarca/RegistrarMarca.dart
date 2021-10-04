@@ -91,30 +91,30 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
   @override
   void initState() {
     gPlace = googlePlace.GooglePlace(placesAPI);
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (editInfo) {
-      showTopSnackBar(
-        context,
-        CustomSnackBar.info(
-          icon: Container(),
-          /*
+    /*
+    showTopSnackBar(
+      context,
+      CustomSnackBar.info(
+        icon: Container(),
+        /*
           Padding(
             padding: const EdgeInsets.only(left: 10),
             child: Icon(Icons.edit, size: 80, color: Colors.white.withOpacity(0.2),),
           ),
            */
-          iconRotationAngle: 0,
-          backgroundColor: Styles.accent,
-          message: AppLocalizations.of(context)!.canEdit,
-          textStyle: Styles.whiteTextStyle,
-        ),
-      );
-    }
+        iconRotationAngle: 0,
+        backgroundColor: Styles.accent,
+        message: AppLocalizations.of(context)!.canEdit,
+        textStyle: Styles.whiteTextStyle,
+      ),
+    );
+    */
+    // widget.addCallback
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.createBrand, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22),),

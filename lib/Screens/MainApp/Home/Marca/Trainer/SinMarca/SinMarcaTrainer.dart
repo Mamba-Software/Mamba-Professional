@@ -239,7 +239,7 @@ class BrandList extends StatelessWidget {
               builder: (context, snapshot) {
                 //if(snapshot == null || snapshot.data == null || snapshot.data.documents == null ) return EmptyView();
                 //else if(snapshot.hasError) return ErrorView();
-                if (snapshot.connectionState == ConnectionState.waiting) {
+                if (snapshot.data == null) {
                   return LoadingView();
                 } else {
                   brandList = documentsToBrands(snapshot.data!.docs);
@@ -287,6 +287,7 @@ class BrandTile extends StatelessWidget{
       child: Container(
         height: 130,
         child: new Card(
+          color: Colors.white,
           elevation: 3,
           shape: RoundedRectangleBorder(
             //side: BorderSide(color: Styles.accent, width: 0.01),

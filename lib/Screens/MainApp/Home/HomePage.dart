@@ -6,7 +6,6 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'ChildWidget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
@@ -57,15 +56,7 @@ class _HomePageState extends State<HomePage> {
       Icon(Icons.fitness_center_rounded, color: Styles.white, size: 33,),
       Icon(Icons.chat, color: Styles.white, size: 33,),
     ];
-
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-        value:SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent, //i like transaparent :-)
-          systemNavigationBarColor: Colors.black, // navigation bar color
-          statusBarIconBrightness: Brightness.light, // status bar icons' color
-          systemNavigationBarIconBrightness:Brightness.light, //navigation bar icons' color
-        ),
-        child: Scaffold(
+    return Scaffold(
           appBar: AppBar(
             title: Image.asset(
               Constants.logoExtended,
@@ -120,8 +111,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ]
           ),
-        )
-    );
+        );
   }
 
   @override

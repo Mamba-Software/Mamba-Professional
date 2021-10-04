@@ -119,38 +119,31 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-        value:SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent, //i like transaparent :-)
-          systemNavigationBarColor: Colors.black, // navigation bar color
-          statusBarIconBrightness: Brightness.light, // status bar icons' color
-          systemNavigationBarIconBrightness:Brightness.light, //navigation bar icons' color
-        ),
-        child: Scaffold(
-                backgroundColor: Styles.mainColor,
-                body: Stack(
-                  children: <Widget>[
-                    Center(
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.14,
-                        height: MediaQuery.of(context).size.height * 0.07,
-                        child: CircularProgressIndicator(
-                          color: Styles.white,
-                         ),
-                        ),
-                      ),
-                      Center(
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.07,
-                          height: MediaQuery.of(context).size.height * 0.07,
-                          child: Image(
-                            image: AssetImage(Constants.logoSimple)
-                            ),
-                          ),
-                      ),
-                  ],
-                )
+    return Scaffold(
+        backgroundColor: Styles.mainColor,
+        body: Stack(
+          children: <Widget>[
+            Center(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.14,
+                height: MediaQuery.of(context).size.height * 0.07,
+                child: CircularProgressIndicator(
+                  color: Styles.white,
+                 ),
+                ),
+              ),
+              Center(
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.07,
+                  height: MediaQuery.of(context).size.height * 0.07,
+                  child: Image(
+                    image: AssetImage(Constants.logoSimple)
+                    ),
+                  ),
+              ),
+          ],
         )
     );
+
   }
 }

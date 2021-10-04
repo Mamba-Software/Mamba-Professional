@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Styles contains all the Colors, Themes and TextStyles used in the App.
 class Styles {
@@ -27,6 +28,16 @@ class Styles {
     accentColor:  themeAccent,
     backgroundColor: themeBackground,
     fontFamily: 'Raleway',
+    //brightness: Brightness.dark,
+    scaffoldBackgroundColor: Colors.white,
+    appBarTheme: AppBarTheme(
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.light, // status bar icons' color
+        systemNavigationBarColor: Colors.orangeAccent,
+      ),
+    ),
   );
 
   // Text Style

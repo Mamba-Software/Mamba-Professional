@@ -52,14 +52,7 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-        value:SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent, //i like transaparent :-)
-          systemNavigationBarColor: Colors.black, // navigation bar color
-          statusBarIconBrightness: Brightness.light, // status bar icons' color
-          systemNavigationBarIconBrightness:Brightness.light, //navigation bar icons' color
-        ),
-        child: ScaffoldMessenger(
+    return ScaffoldMessenger(
           key: scaffoldMessengerKey,
           child: Scaffold(
             appBar: AppBar(
@@ -313,8 +306,8 @@ class _RegisterState extends State<Register> {
               ),
             ),
           ),
-        )
-    );
+        );
+
   }
 
   void onSignUpButtonPressed() {

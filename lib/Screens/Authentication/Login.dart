@@ -42,14 +42,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-        value:SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent, //i like transaparent :-)
-          systemNavigationBarColor: Colors.black, // navigation bar color
-          statusBarIconBrightness: Brightness.dark, // status bar icons' color
-          systemNavigationBarIconBrightness:Brightness.light, //navigation bar icons' color
-        ),
-        child: ScaffoldMessenger(
+    return ScaffoldMessenger(
           key: scaffoldMessengerKey,
           child: Scaffold(
             resizeToAvoidBottomInset: true,
@@ -210,8 +203,7 @@ class _LoginState extends State<Login> {
               ),
             ),
           ),
-        )
-    );
+        );
   }
 
   void signIn() async {
