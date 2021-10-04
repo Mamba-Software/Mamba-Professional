@@ -901,7 +901,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                     _workShift.add(toDouble(_breakList[i+1]));
                                   }
                                 }
-                                var result = await _accessDatabase.addBrand(nameBrand, _image, description, address, detailsResult!.placeId!, latitude, longitude, _workShift);
+                                var result = await _accessDatabase.addBrand(nameBrand, _image, description, detailsResult!.placeId!, address, latitude, longitude, _workShift);
                                 await _accessDatabase.updateCurrentUserBrand(result);
                                 Navigator.pop(context);
                                 Navigator.pushReplacement(
