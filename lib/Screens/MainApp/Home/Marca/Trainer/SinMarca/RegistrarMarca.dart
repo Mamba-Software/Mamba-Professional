@@ -100,10 +100,13 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
       showTopSnackBar(
         context,
         CustomSnackBar.info(
-          icon: Padding(
+          icon: Container(),
+          /*
+          Padding(
             padding: const EdgeInsets.only(left: 10),
             child: Icon(Icons.edit, size: 80, color: Colors.white.withOpacity(0.2),),
           ),
+           */
           iconRotationAngle: 0,
           backgroundColor: Styles.accent,
           message: AppLocalizations.of(context)!.canEdit,

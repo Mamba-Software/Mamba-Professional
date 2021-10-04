@@ -233,10 +233,13 @@ class _ReportBugState extends State<ReportBug> {
       showTopSnackBar(
         context,
         CustomSnackBar.success(
-          icon: Padding(
+          icon: Container(),
+          /*
+          Padding(
             padding: const EdgeInsets.only(left: 20),
             child: Icon(Icons.send, size: 40, color: Colors.white.withOpacity(0.2),),
           ),
+           */
           iconRotationAngle: 0,
           backgroundColor: Colors.green,
           message: AppLocalizations.of(context)!.errorSent,

@@ -111,10 +111,13 @@ class _AnadirMiembroState extends State<AnadirMiembro> {
                                         showTopSnackBar(
                                           context,
                                           CustomSnackBar.info(
-                                            icon: Padding(
+                                            icon: Container(),
+                                            /*
+                                            Padding(
                                               padding: const EdgeInsets.only(left: 20),
                                               child: Icon(Icons.copy, size: 50, color: Colors.white.withOpacity(0.2),),
                                             ),
+                                             */
                                             iconRotationAngle: 0,
                                             backgroundColor: Styles.accent,
                                             message: AppLocalizations.of(context)!.copyCorrectCode,
