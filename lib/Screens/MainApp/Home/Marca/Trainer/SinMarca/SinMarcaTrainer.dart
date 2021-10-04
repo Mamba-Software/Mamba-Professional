@@ -88,7 +88,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                       child: new Row(
                         mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
-                          new Flexible(
+                          Flexible(
                             child: Material(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(13)

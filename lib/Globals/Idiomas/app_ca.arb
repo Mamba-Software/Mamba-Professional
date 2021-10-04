@@ -111,5 +111,9 @@
   "delete": "Eliminar",
   "cancel": "Cancel·lar",
   "close": "Tancar",
-  "entendido": "Entesos"
+  "entendido": "Entesos",
+  "addMembers": "Afegir Membres",
+  "inviteCode": "Codi d'invitació",
+  "copyCorrectCode": "Codi d'invitació copìat correctament",
+  "members": "Membres"
 }

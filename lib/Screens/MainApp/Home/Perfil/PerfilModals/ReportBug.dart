@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -93,16 +96,6 @@ class _ReportBugState extends State<ReportBug> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          errorIsSent ? Padding(
-                            padding: EdgeInsets.only(top: 25.0),
-                            child: Center(
-                              child: new Text(
-                                        AppLocalizations.of(context)!.errorSent,
-                                        textAlign: TextAlign.center,
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green),
-                                      ),
-                            ),
-                          ) : Container(),
                           Padding(
                               padding: EdgeInsets.only(
                                   left: 25.0, right: 25.0, top: 25.0),
@@ -236,14 +229,21 @@ class _ReportBugState extends State<ReportBug> {
     if (result) {
       setState(() {
         isLoading = false;
-        errorIsSent = true;
       });
+      showTopSnackBar(
+        context,
+        CustomSnackBar.success(
+          icon: Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Icon(Icons.send, size: 40, color: Colors.white.withOpacity(0.2),),
+          ),
+          iconRotationAngle: 0,
+          backgroundColor: Colors.green,
+          message: AppLocalizations.of(context)!.errorSent,
+          textStyle: Styles.whiteTextStyle,
+        ),
+      );
       clearControllers();
-      Future.delayed(Duration(seconds: 4), () async {
-        setState(() {
-          errorIsSent = false;
-        });
-      });
     }
   }
 

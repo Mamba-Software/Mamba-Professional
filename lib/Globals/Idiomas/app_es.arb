@@ -465,5 +465,21 @@
   "entendido": "Entendido",
   "@entendido":{
     "description": "Cancelar text"
+  },
+  "addMembers": "Añadir Miembros",
+  "@addMembers":{
+    "description": "Añadir Miembros text"
+  },
+  "inviteCode": "Código de invitación",
+  "@inviteCode":{
+    "description": "inviteCode text"
+  },
+  "copyCorrectCode": "Código de invitación copìado correctamente",
+  "@copyCorrectCode":{
+    "description": "inviteCode text"
+  },
+  "members": "Miembros",
+  "@members":{
+    "description": "Añadir Miembros text"
   }
 }

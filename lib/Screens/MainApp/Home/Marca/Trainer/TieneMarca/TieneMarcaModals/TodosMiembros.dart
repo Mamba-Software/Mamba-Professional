@@ -16,53 +16,61 @@ class _TodosMiembrosState extends State<TodosMiembros> {
   Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height*0.86,
+        maxHeight: MediaQuery.of(context).size.height*0.88,
       ),
       padding: MediaQuery.of(context).viewInsets,
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back, color: Styles.accent),
-                    onPressed: () => {Navigator.of(context).pop()},
+      child: DefaultTabController(
+          length: 2,
+          child: Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              bottom: TabBar(
+                unselectedLabelColor: Colors.redAccent,
+                tabs: [
+                  Tab(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.record_voice_over, color: Styles.accent,),
+                          SizedBox(width: 10,),
+                          Text(AppLocalizations.of(context)!.trainer, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                        ],
+                      ),
+                    ),
                   ),
-                  Text("Miembros", style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
-                  SizedBox(width: 30,),
+                  Tab(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.directions_run, color: Styles.accent,),
+                          SizedBox(width: 10,),
+                          Text(AppLocalizations.of(context)!.client, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
-              new Container(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 25.0),
-                  child: new Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 80.0),
-                          child: Text(
-                            AppLocalizations.of(context)!.noFeedback,
-                            textAlign: TextAlign.center,
-                            style: Styles.purpleTextStyle.copyWith(fontSize: 22),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              title: Text(AppLocalizations.of(context)!.members, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+              centerTitle: true,
+              iconTheme: IconThemeData(
+                color: Styles.accent, //change your color here
               ),
-            ],
+            ),
+            backgroundColor: Colors.transparent,
+            body: const TabBarView(
+              children: [
+                Icon(Icons.record_voice_over),
+                Icon(Icons.directions_run),
+              ],
+            ),
           ),
         ),
-      ),
     );
   }
 

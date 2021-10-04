@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
@@ -93,6 +96,22 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
 
   @override
   Widget build(BuildContext context) {
+    if(editInfo){
+      showTopSnackBar(
+        context,
+        CustomSnackBar.info(
+          icon: Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: Icon(Icons.edit, size: 80, color: Colors.white.withOpacity(0.2),),
+          ),
+          iconRotationAngle: 0,
+          backgroundColor: Styles.accent,
+          message: AppLocalizations.of(context)!.canEdit,
+          textStyle: Styles.whiteTextStyle,
+        ),
+      );
+    }
+
     return Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.createBrand, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22),),
@@ -124,52 +143,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
             key: _formBasicInfoKey,
             child: Column(
               children: [
-                editInfo ? Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 2),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(15),
-                        bottomRight: Radius.circular(15),
-                      ),
-                      color: Styles.accent
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                            child: Icon(Icons.edit, color: Colors.white, size: 30,),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                              child: Text(
-                                AppLocalizations.of(context)!.canEdit,
-                                style: Styles.whiteTextStyle.copyWith(fontSize: 16,),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 4.0, right: 8.0),
-                            child: TextButton(
-                                child: Text(AppLocalizations.of(context)!.entendido, style: Styles.whiteTextStyle.copyWith(fontSize: 16, decoration: TextDecoration.underline)),
-                                onPressed: () {
-                                  setState(() {
-                                    editInfo = false;
-                                  });
-                                }
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ) : Container(),
                 Container(
                   padding: EdgeInsets.all(12),
                   child: Column(
@@ -975,3 +948,52 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
   }
 
 }
+
+/*
+editInfo ? Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 2),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(15),
+                        bottomRight: Radius.circular(15),
+                      ),
+                      color: Styles.accent
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                            child: Icon(Icons.edit, color: Colors.white, size: 30,),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                              child: Text(
+                                AppLocalizations.of(context)!.canEdit,
+                                style: Styles.whiteTextStyle.copyWith(fontSize: 16,),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4.0, right: 8.0),
+                            child: TextButton(
+                                child: Text(AppLocalizations.of(context)!.entendido, style: Styles.whiteTextStyle.copyWith(fontSize: 16, decoration: TextDecoration.underline)),
+                                onPressed: () {
+                                  setState(() {
+                                    editInfo = false;
+                                  });
+                                }
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ) : Container(),
+ */
