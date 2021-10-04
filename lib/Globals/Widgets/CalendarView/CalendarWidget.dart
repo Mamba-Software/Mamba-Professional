@@ -55,85 +55,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(context)!.calendar,
-          style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'Raleway',
-              fontSize: 22,
-              fontWeight: FontWeight.bold),
-        ),
-        elevation: 10,
-        automaticallyImplyLeading: true,
-        iconTheme: IconThemeData(
-          color: Colors.white, //change your color here
-        ),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            size: 25,
-          ),
-          onPressed: () {},
-          tooltip: 'Back',
-        ),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Container(
-              height: 10,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.white,
-                  width: 2,
-                ),
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-              ),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.view_day, size: 25),
-                    onPressed: () {
-                      print("Switch to 1-Day View");
-                      _controller.view = CalendarView.day;
-                      setState(() {
-                        showOneDayView = true;
-                        showThreeDayView = false;
-                      });
-                    },
-                    tooltip: 'Go to 1-Day View',
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.calendar_view_day, size: 25),
-                    onPressed: () {
-                      print("Switch to 3-Day View");
-                      filterSlots(prevDay, _controller.displayDate!, nextDay);
-                      _controller.view = CalendarView.workWeek;
-                      setState(() {
-                        showOneDayView = true;
-                        showThreeDayView = true;
-                      });
-                    },
-                    tooltip: 'Go to 3-Day View',
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.calendar_view_week, size: 25),
-                    onPressed: () {
-                      print("Switch to Week View");
-                      _controller.view = CalendarView.week;
-                      setState(() {
-                        showOneDayView = false;
-                        showThreeDayView = false;
-                      });
-                    },
-                    tooltip: 'Go to Week View',
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
       body: Padding(
         padding: EdgeInsets.only(
           top: 10,
@@ -144,18 +65,40 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               view: CalendarView.week,
               controller: _controller,
               showDatePickerButton: true,
-//              onViewChanged: (details) {
-//                SchedulerBinding.instance!.addPostFrameCallback((duration) {
-//                  setState(() {
-//                    nextDay = _controller.displayDate!.add(Duration(days: 1));
-//                    prevDay = _controller.displayDate!.add(Duration(days: -1));
-//
-//                    if (showThreeDayView) {
-//                      filterSlots(prevDay, _controller.displayDate!, nextDay);
-//                    }
-//                  });
-//                });
-//              },
+              headerHeight: 30,
+              dataSource: _getCalendarDataSource(),
+              specialRegions: _getTimeRegions(),
+              firstDayOfWeek: 1,
+              showCurrentTimeIndicator: false,
+              timeSlotViewSettings: TimeSlotViewSettings(
+                timelineAppointmentHeight: 60,
+                timeIntervalHeight: 60,
+                startHour: 0,
+                endHour:  24,
+                timeFormat: 'h:mm',
+                dayFormat: 'E',
+                dateFormat: 'dd',
+                timeRulerSize: 45,
+                nonWorkingDays: [],
+                //minimumAppointmentDuration: Duration(hours: 1),
+                timeTextStyle: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: Colors.black,
+                )
+              ),
+              headerStyle: CalendarHeaderStyle(
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
+              ),
+              onLongPress: (details) {
+                _addEvent();
+              },
+              onTap: (details) {
+                log(details.date.toString());
+              },
               appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
                 return InkWell(
                   onTap: () {
@@ -177,121 +120,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   ),
                 );
               },
-              headerHeight: _controller.view == CalendarView.day ? 5 : 5,
-              specialRegions: _getTimeRegions(),
-              dataSource: _getCalendarDataSource(),
-              firstDayOfWeek: 1,
-              timeSlotViewSettings: TimeSlotViewSettings(
-                  timelineAppointmentHeight: 60,
-                  timeIntervalHeight: 60,
-                  dayFormat: '',
-                  startHour: 6,
-                  nonWorkingDays: showThreeDayView ? nonWorkDays : [],
-                  minimumAppointmentDuration: Duration(hours: 1),
-                  timeTextStyle: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: Colors.black,
-                  )),
-              headerStyle: CalendarHeaderStyle(
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              onLongPress: (details) {
-                _addEvent();
-              },
-              onTap: (details) {
-                log(details.date.toString());
-              },
             ),
-            showOneDayView
-                ? Stack(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.only(
-                          left: showThreeDayView ? 20 : 10,
-                        ),
-                        height: showThreeDayView ? 20 : 10,
-                        color: Colors.white,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Container(
-                              width: 20,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                  child: Text(
-                                    '${prevDay.day}',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                log(_controller.displayDate!.day.toString());
-                              },
-                              child: Container(
-                                width: 20,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.orange,
-                                ),
-                                child: Center(
-                                    child: Text(
-                                      '${_controller.displayDate!.day}',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    )),
-                              ),
-                            ),
-                            Container(
-                              width: 20,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                  child: Text(
-                                    '${nextDay.day}',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        right: 0,
-                        top: 0,
-                        child: InkWell(
-                          onTap: () {
-                            _controller.displayDate = DateTime.now();
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 10,
-                            ),
-                            child: Icon(
-                              Icons.today,
-                              size: 30,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                : Container(),
           ],
         ),
       ),
@@ -330,7 +159,12 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       color: Colors.grey.withOpacity(0.3),
       recurrenceRule: 'DAILY;INTERVAL=1',
     ));
+
     return regions;
+  }
+
+  double _getCalendarHeight() {
+    return 60;
   }
 
   AppointmentDataSource _getCalendarDataSource() {
