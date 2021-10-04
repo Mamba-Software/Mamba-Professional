@@ -3,8 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-
 import '../../GlobalVars.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../Styles.dart';
 
 class AddEvent extends StatefulWidget {
   Appointment? oldData;
@@ -33,7 +35,6 @@ class _AddEventState extends State<AddEvent> {
 
   bool validateAndSave() {
     final form = formKey.currentState;
-
     if (form!.validate()) {
       form.save();
       return true;
@@ -62,63 +63,74 @@ class _AddEventState extends State<AddEvent> {
       );
       endDateController.text = DateFormat('d/M/y HH:mm').format(endDate!);
     }
-
     showCupertinoModalPopup(
-        context: ctx,
-        builder: (_) => Material(
-              child: Container(
-                height: 200,
-                color: Color.fromARGB(255, 255, 255, 255),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 50,
-                    ),
-                    Text(
-                      start ? 'Select Start Time' : 'Select End Time',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
-                    ),
-                    Container(
-                      height: 100,
-                      child: CupertinoDatePicker(
-                          mode: CupertinoDatePickerMode.dateAndTime,
-                          initialDateTime: DateTime(initial.year, initial.month,
-                              initial.day, initial.hour, 0),
-                          maximumDate: DateTime(2025, 12),
-                          minimumDate: DateTime(2000, 12),
-                          use24hFormat: true,
-                          minuteInterval: 60,
-                          onDateTimeChanged: (val) {
-                            setState(() {
-                              if (start) {
-                                startDate = val;
-                                startDateController.text =
-                                    DateFormat('d/M/y HH:mm').format(val);
-                              } else {
-                                endDate = val;
-                                endDateController.text =
-                                    DateFormat('d/M/y HH:mm').format(val);
-                              }
-                            });
-                          }),
-                    ),
-
-                    // Close the modal
-                    CupertinoButton(
-                      child: Text('Done'),
+      context: ctx,
+      builder: (_) => Material(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+        ),
+        child: Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height*0.40,
+          ),
+          //padding: MediaQuery.of(context).viewInsets,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Text("Selecciona día y hora ", style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: CupertinoDatePicker(
+                      mode: CupertinoDatePickerMode.dateAndTime,
+                      initialDateTime: DateTime(initial.year, initial.month, initial.day, initial.hour,0),
+                      maximumDate: DateTime(2025, 12),
+                      minimumDate: DateTime(2000, 12),
+                      use24hFormat: true,
+                      minuteInterval: 60,
+                      onDateTimeChanged: (val) {
+                        setState(() {
+                          if (start) {
+                            startDate = val;
+                            startDateController.text =
+                                DateFormat('d/M/y HH:mm').format(val);
+                          } else {
+                            endDate = val;
+                            endDateController.text =
+                                DateFormat('d/M/y HH:mm').format(val);
+                          }
+                        });
+                      }),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 0),
+                    child: TextButton(
+                      child: Text(AppLocalizations.of(context)!.entendido, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
                       onPressed: () {
                         Navigator.of(ctx).pop();
-                      },
-                    )
-                  ],
-                ),
+                      }
+                    ),
+                  ),
+                ],
               ),
-            ));
-
+            ],
+          ),
+        ),
+      )
+    );
     return Future.value(startDate!);
   }
 
@@ -138,7 +150,7 @@ class _AddEventState extends State<AddEvent> {
   Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints(
-        maxHeight: 150,
+        maxHeight: MediaQuery.of(context).size.height*0.86,
       ),
       padding: MediaQuery.of(context).viewInsets,
       child: SingleChildScrollView(
@@ -149,22 +161,20 @@ class _AddEventState extends State<AddEvent> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
-                      icon: Icon(Icons.arrow_back, color: Color(0xFFF4AD1F)),
-                      onPressed: () => {Navigator.pop(context)},
+                      icon: Icon(Icons.arrow_back, color: Styles.accent),
+                      onPressed: () => {
+                        Navigator.pop(context)
+                      },
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 30.0),
-                      child: Text("Add Event",
-                          style: TextStyle(
-                              color: Color(0xFFF4AD1F),
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Raleway')),
+                      child: Text("Añadir Evento", style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
                     ),
                     SizedBox(
                       width: 40,
@@ -172,19 +182,34 @@ class _AddEventState extends State<AddEvent> {
                   ],
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                  padding: EdgeInsets.only(bottom: 25.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(width: 20, child: Text("ID")),
-                            Container(
-                                width: 50,
+                          padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              new Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  new Text(
+                                    "ID",
+                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 2.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              new Flexible(
                                 child: TextFormField(
                                   textAlignVertical: TextAlignVertical.top,
                                   maxLines: 1,
@@ -192,7 +217,7 @@ class _AddEventState extends State<AddEvent> {
                                   enabled: widget.update! ? false : true,
                                   onFieldSubmitted: (val) {},
                                   validator: (value) =>
-                                      value!.isEmpty ? 'Enter an ID' : null,
+                                  value!.isEmpty ? 'Enter an ID' : null,
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     contentPadding: EdgeInsets.only(
@@ -248,207 +273,223 @@ class _AddEventState extends State<AddEvent> {
                                     fontSize: 16,
                                   ),
                                   cursorColor: Colors.black,
-                                )),
-                          ],
+                                )
+                              ),
+                            ],
+                          )),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 25.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              new Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  new Text(
+                                    "Titulo de la Sessión",
+                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 2.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              new Flexible(
+                                child: TextFormField(
+                                  textAlignVertical: TextAlignVertical.top,
+                                  maxLines: 1,
+                                  controller: titleController,
+                                  onFieldSubmitted: (val) {},
+                                  validator: (value) =>
+                                  value!.isEmpty ? 'Enter a Title' : null,
+                                  decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    contentPadding: EdgeInsets.only(
+                                      top: 20.0,
+                                      left: 20,
+                                    ),
+                                    hintText: 'Enter title',
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 16,
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
+                                      borderSide: BorderSide(
+                                          color: Colors.black, width: 0.0),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
+                                      borderSide: BorderSide(
+                                          color: Colors.grey[300]!, width: 0.0),
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
+                                      borderSide: BorderSide(
+                                          color: Colors.grey[300]!, width: 0.0),
+                                    ),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
+                                      borderSide: BorderSide(
+                                          color: Colors.grey[300]!, width: 0.0),
+                                    ),
+                                    disabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
+                                      borderSide: BorderSide(
+                                          color: Colors.grey[300]!, width: 0.0),
+                                    ),
+                                  ),
+                                  keyboardType: TextInputType.name,
+                                  style: TextStyle(
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                  ),
+                                  cursorColor: Colors.black,
+                                ),
+                              ),
+                            ],
+                          )),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 25.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              new Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  new Text(
+                                    "START TIME",
+                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: 25.0, right: 25.0, top: 2.0),
+                        child: InkWell(
+                          onTap: () {
+                            selectSlot(context, false);
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              new Flexible(
+                                child: TextFormField(
+                                  textAlignVertical: TextAlignVertical.top,
+                                  maxLines: 1,
+                                  enabled: false,
+                                  controller: startDateController,
+                                  onFieldSubmitted: (val) {},
+                                  decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    contentPadding: EdgeInsets.only(
+                                      top: 20.0,
+                                      left: 20,
+                                    ),
+                                    hintText: 'DD/MM/YYYY HH:MM',
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 16,
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
+                                      borderSide: BorderSide(
+                                          color: Colors.grey[300]!, width: 0.0),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
+                                      borderSide: BorderSide(
+                                          color: Colors.grey[300]!, width: 0.0),
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
+                                      borderSide: BorderSide(
+                                          color: Colors.grey[300]!, width: 0.0),
+                                    ),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
+                                      borderSide: BorderSide(
+                                          color: Colors.grey[300]!, width: 0.0),
+                                    ),
+                                    disabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
+                                      borderSide: BorderSide(
+                                          color: Colors.grey[300]!, width: 0.0),
+                                    ),
+                                  ),
+                                  keyboardType: TextInputType.name,
+                                  style: TextStyle(
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                  ),
+                                  cursorColor: Colors.black,
+                                ),
+                              ),
+                            ],
+                          )
                         ),
+
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(width: 20, child: Text("TITLE")),
-                            Container(
-                              width: 50,
-                              child: TextFormField(
-                                textAlignVertical: TextAlignVertical.top,
-                                maxLines: 1,
-                                controller: titleController,
-                                onFieldSubmitted: (val) {},
-                                validator: (value) =>
-                                    value!.isEmpty ? 'Enter a Title' : null,
-                                decoration: InputDecoration(
-                                  fillColor: Colors.white,
-                                  contentPadding: EdgeInsets.only(
-                                    top: 20.0,
-                                    left: 20,
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 25.0),
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              new Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  new Text(
+                                    "END TIME",
+                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                                   ),
-                                  hintText: 'Enter title',
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 16,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                    borderSide: BorderSide(
-                                        color: Colors.black, width: 0.0),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[300]!, width: 0.0),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[300]!, width: 0.0),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[300]!, width: 0.0),
-                                  ),
-                                  disabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[300]!, width: 0.0),
-                                  ),
-                                ),
-                                keyboardType: TextInputType.name,
-                                style: TextStyle(
-                                  color: Colors.orange,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
-                                cursorColor: Colors.black,
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 50,
-                            child: Text(
-                              'START TIME',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              selectSlot(context, true);
-                            },
-                            child: Container(
-                              width: 50,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[200],
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5),
-                                ),
-                              ),
-                              child: TextFormField(
-                                textAlignVertical: TextAlignVertical.top,
-                                maxLines: 1,
-                                enabled: false,
-                                controller: startDateController,
-                                onFieldSubmitted: (val) {},
-                                decoration: InputDecoration(
-                                  fillColor: Colors.white,
-                                  contentPadding: EdgeInsets.only(
-                                    top: 20.0,
-                                    left: 20,
-                                  ),
-                                  hintText: 'DD/MM/YYYY HH:MM',
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 16,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[300]!, width: 0.0),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[300]!, width: 0.0),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[300]!, width: 0.0),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[300]!, width: 0.0),
-                                  ),
-                                  disabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[300]!, width: 0.0),
-                                  ),
-                                ),
-                                keyboardType: TextInputType.name,
-                                style: TextStyle(
-                                  color: Colors.orange,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
-                                cursorColor: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 50,
-                            child: Text(
-                              'END TIME',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              selectSlot(context, false);
-                            },
-                            child: Container(
-                              width: 50,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[200],
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5),
-                                ),
-                              ),
+                            ],
+                          )),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: 25.0, right: 25.0, top: 2.0),
+                        child: new Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            new Flexible(
                               child: TextFormField(
                                 textAlignVertical: TextAlignVertical.top,
                                 maxLines: 1,
@@ -512,19 +553,23 @@ class _AddEventState extends State<AddEvent> {
                                 cursorColor: Colors.black,
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        )
                       ),
                     ],
                   ),
                 ),
-                FloatingActionButton(
-                  onPressed: _addEvent,
-                  backgroundColor: Color(0xFFF4AD1F),
-                  tooltip: 'Add Event',
-                  child: Icon(
-                    Icons.add,
-                    size: 30,
+                Padding(
+                  padding: EdgeInsets.only(bottom: 25.0),
+                  child: FloatingActionButton.extended(
+                    onPressed: _addEvent,
+                    label: Text("Añadir", style: Styles.whiteTextStyle.copyWith(fontSize: 20),),
+                    icon: Icon(
+                      Icons.add_circle_outline,
+                      size: 35,
+                    ),
+                    backgroundColor: Styles.accent,
+                    tooltip: 'Add Event',
                   ),
                 ),
               ],

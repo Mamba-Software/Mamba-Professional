@@ -96,7 +96,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
 
   @override
   Widget build(BuildContext context) {
-    if(editInfo){
+    if (editInfo) {
       showTopSnackBar(
         context,
         CustomSnackBar.info(

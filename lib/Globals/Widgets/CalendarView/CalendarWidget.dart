@@ -1,8 +1,11 @@
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../GlobalVars.dart';
+import '../../Styles.dart';
 import 'AddEvent.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -14,72 +17,62 @@ class CalendarWidget extends StatefulWidget {
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
+  // Acceso a Base de Datos
+  var _accessDatabase = new DatabaseAccess();
+  // Calendar Controller
   final CalendarController _controller = CalendarController();
-
-
-  DateTime inActiveHoursStartRange1 = DateTime(2020, 09, 19, 0, 0, 0);
-  DateTime inActiveHoursEndRange1 = DateTime(2020, 09, 19, 7, 0, 0);
-
-  DateTime inActiveHoursStartRange2 = DateTime(2020, 09, 19, 14, 0, 0);
-  DateTime inActiveHoursEndRange2 = DateTime(2020, 09, 19, 16, 0, 0);
-
-
-  bool showOneDayView = false;
-  bool showThreeDayView = false;
-
+  // Dies de la semana que el entrenador no treballa
   List<int> nonWorkDays = [];
-
-  DateTime prevDay = DateTime.now().add(Duration(days: -1));
-  DateTime currDay = DateTime.now();
-  DateTime nextDay = DateTime.now().add(Duration(days: 1));
-
-  filterSlots(DateTime _prev, DateTime _curr, DateTime _next) {
-    nonWorkDays = [];
-    for (int i = 1; i <= 7; i++) {
-      if (i != _prev.weekday && i != _curr.weekday && i != _next.weekday) {
-        nonWorkDays.add(i);
-      }
-    }
-    log(nonWorkDays.toString());
-  }
+  // Horari
+  double _startHour = currentBrand.workShift[0];
+  double _endHour = currentBrand.workShift[1];
+  // Descansos
+  DateTime dateJoined = DateFormat('dd-MM-yyyy').parse(currentBrand.dateJoined!);
 
   @override
   void initState() {
-    filterSlots(prevDay, currDay, nextDay);
-
-    log(nonWorkDays.toString());
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.only(
-          top: 10,
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.calendar, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22),),
+        centerTitle: true,
+        elevation: 8,
+        iconTheme: IconThemeData(
+          color: Colors.white, //change your color here
         ),
-        child: Stack(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, size: 25,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          tooltip: 'Back',
+        ),
+      ),
+      body: Stack(
           children: [
             SfCalendar(
               view: CalendarView.week,
               controller: _controller,
-              showDatePickerButton: true,
-              headerHeight: 30,
+              showDatePickerButton: false,
+              headerHeight: 50,
               dataSource: _getCalendarDataSource(),
               specialRegions: _getTimeRegions(),
               firstDayOfWeek: 1,
-              showCurrentTimeIndicator: false,
+              showCurrentTimeIndicator: true,
               timeSlotViewSettings: TimeSlotViewSettings(
                 timelineAppointmentHeight: 60,
                 timeIntervalHeight: 60,
-                startHour: 0,
-                endHour:  24,
+                startHour: _startHour-1,
+                endHour:  _endHour+1,
                 timeFormat: 'h:mm',
                 dayFormat: 'E',
-                dateFormat: 'dd',
+                dateFormat: 'd',
                 timeRulerSize: 45,
-                nonWorkingDays: [],
+                nonWorkingDays: nonWorkDays,
                 //minimumAppointmentDuration: Duration(hours: 1),
                 timeTextStyle: TextStyle(
                   fontWeight: FontWeight.w500,
@@ -88,9 +81,12 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 )
               ),
               headerStyle: CalendarHeaderStyle(
+                textAlign: TextAlign.center,
+                backgroundColor: Styles.mainColorTrans,
                 textStyle: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
+                  letterSpacing: 4
                 ),
               ),
               onLongPress: (details) {
@@ -123,7 +119,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             ),
           ],
         ),
-      ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Container(
@@ -145,26 +140,38 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   List<TimeRegion> _getTimeRegions() {
     final List<TimeRegion> regions = <TimeRegion>[];
+    for (var i=2; i < currentBrand.workShift.length ; i+=2) {
+      var start = currentBrand.workShift[i];
+      var startHour = int.parse(start.toString().split(".")[0]);
+      var startMin = int.parse(start.toString().split(".")[1]);
+      var end = currentBrand.workShift[i+1];
+      var endHour = int.parse(end.toString().split(".")[0]);
+      var endMin = int.parse(end.toString().split(".")[1]);
+      DateTime inActiveHoursStart = DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHour, startMin, 0);
+      DateTime inActiveHoursEnd = DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHour, endMin, 0);
+      regions.add(TimeRegion(
+        enablePointerInteraction: false,
+        startTime: inActiveHoursStart,
+        endTime: inActiveHoursEnd,
+        color: Colors.grey.withOpacity(0.3),
+        recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+      ));
+    }
     regions.add(TimeRegion(
       enablePointerInteraction: false,
-      startTime: inActiveHoursStartRange1,
-      endTime: inActiveHoursEndRange1,
+      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, _startHour.toInt()-1, 0, 0),
+      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, _startHour.toInt(), 0, 0),
       color: Colors.grey.withOpacity(0.3),
       recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
     ));
     regions.add(TimeRegion(
       enablePointerInteraction: false,
-      startTime: inActiveHoursStartRange2,
-      endTime: inActiveHoursEndRange2,
+      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, _endHour.toInt(), 0, 0),
+      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, _endHour.toInt()+1, 0, 0),
       color: Colors.grey.withOpacity(0.3),
-      recurrenceRule: 'DAILY;INTERVAL=1',
+      recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
     ));
-
     return regions;
-  }
-
-  double _getCalendarHeight() {
-    return 60;
   }
 
   AppointmentDataSource _getCalendarDataSource() {
@@ -173,18 +180,17 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   void _addEvent({Appointment? appointment, bool? updated}) {
     log(allAppointments.toString());
-
     showModalBottomSheet<bool>(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-        isScrollControlled: true,
-        context: context,
-        builder: (context) {
-          return AddEvent(
-            oldData: appointment,
-            update: updated ?? false,
-          );
-        }).then((value) {
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return AddEvent(
+          oldData: appointment,
+          update: updated ?? false,
+        );
+      }).then((value) {
       setState(() {});
     });
   }

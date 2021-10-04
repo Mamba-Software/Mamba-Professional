@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/CalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AjustesMarca.dart';
@@ -44,7 +45,8 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
         case 0:
           showModalBottomSheet<bool>(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+              ),
               isScrollControlled: true,
               context: context,
               builder: (context) {
@@ -72,6 +74,18 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
           });
           break;
         case 2:
+          Navigator.push(
+              context,
+              CupertinoPageRoute<Null>(
+                builder: (context) => CalendarWidget(),
+                settings: RouteSettings(name: 'CalendarWidget'),
+              )
+          ).whenComplete(() =>
+            setState(() {
+              _statusButtons[2] = !_statusButtons[2];
+            }),
+          );
+          /*
           showModalBottomSheet(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
@@ -84,6 +98,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
               _statusButtons[2] = !_statusButtons[2];
             })
           });
+           */
           break;
         case 3:
           showModalBottomSheet(
