@@ -395,7 +395,11 @@
     "description": "workingHours text"
   },
   "workingHoursError": "Introduce tu horario laboral por favor",
-  "@workingHours":{
+  "@workingHoursError":{
+    "description": "workingHours text"
+  },
+  "workingHoursError1": "La hora de inicio tiene que ser previa a la hora de finalización",
+  "@workingHoursError1":{
     "description": "workingHours text"
   },
   "workingHoursDescription": "Es importante que definas tu horario de trabajo para que tus clientes sepan cuando puedes ser contactado y cuando estás fuera de tu horario laboral.",

@@ -197,7 +197,7 @@ class FirebaseDatabaseService {
   }
   // Brand Model Services
   // Add Brand
-  Future<String> addBrand(String name, File image, String description, String placeId, String address, double latitude, double longitude) async {
+  Future<String> addBrand(String name, File image, String description, String placeId, String address, double latitude, double longitude, List<double> workShift) async {
     User? firebaseUser = await getCurrentUser();
     bool firestoreError = false;
     var uid = Uuid().v4();
@@ -217,6 +217,7 @@ class FirebaseDatabaseService {
       "address": address,
       "latitude": latitude,
       "longitude": longitude,
+      "workShift": workShift,
     }).catchError((err) {
       print(err);
       firestoreError = true;

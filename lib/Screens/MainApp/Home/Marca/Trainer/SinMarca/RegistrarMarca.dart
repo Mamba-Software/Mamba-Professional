@@ -1,18 +1,17 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/CalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/InformationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 
 class RegistrarMarca extends StatefulWidget {
   const RegistrarMarca({Key? key}) : super(key: key);
@@ -50,15 +49,19 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
   double latitude = 0;
   double longitude = 0;
   // Time Picker Horari de Trabajo
-  bool errorTime = false;
+  int? errorTime;
+  bool errorBreakTime = false;
   TimeOfDay _startTime = TimeOfDay(hour: 0, minute: 00);
   TimeOfDay _endTime = TimeOfDay(hour: 23, minute: 00);
+  List<double> _workShift = [];
   // Descansos
   TimeOfDay _breakStartTime = TimeOfDay(hour: 13, minute: 00);
   TimeOfDay _breakEndTime = TimeOfDay(hour: 14, minute: 00);
   List<TimeOfDay> _breakList = [];
   List<int> removedIndex = [];
   int breakLimit = 6;
+
+
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
@@ -90,35 +93,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading ?
-      Scaffold(
-          resizeToAvoidBottomInset: true,
-          backgroundColor: Styles.mainColor,
-          body: Stack(
-            children: <Widget>[
-              Center(
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.14,
-                  height: MediaQuery.of(context).size.height * 0.07,
-                  child: CircularProgressIndicator(
-                    color: Styles.white,
-                  ),
-                ),
-              ),
-              Center(
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.07,
-                  height: MediaQuery.of(context).size.height * 0.07,
-                  child: Image(
-                    image: AssetImage(Constants.logoSimple)
-                  ),
-                ),
-              ),
-            ],
-          )
-      )
-        :
-      Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.createBrand, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22),),
           centerTitle: true,
@@ -139,24 +114,11 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
             },
             tooltip: 'Back',
           ),
-          actions: [
-            IconButton(
-              icon: Icon(basicInfo ? Icons.arrow_forward : Icons.add_circle_outline, size: 30,),
-              onPressed: () {
-                if (basicInfo) {
-                  setState(() {
-                    basicInfo = !basicInfo;
-                  });
-                } else {
-                  print("Ara creamos la Marca");
-                }
-              },
-              tooltip: 'Back',
-            ),
-          ],
         ),
         backgroundColor: Styles.white,
-        body: basicInfo ?
+        body: isLoading ?
+        LoadingView()
+          :
         SingleChildScrollView(
           child: Form(
             key: _formBasicInfoKey,
@@ -587,6 +549,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                       children: <Widget>[
                                         TextButton(
                                           onPressed: () async {
+                                            FocusScope.of(context).requestFocus(new FocusNode());
                                             TimeOfDay temp = await _selectTime(_startTime);
                                             setState(() {
                                               _startTime = temp;
@@ -608,6 +571,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                         Text("-", style: Styles.purpleTextStyle.copyWith(fontSize: 30),),
                                         TextButton(
                                           onPressed: () async {
+                                            FocusScope.of(context).requestFocus(new FocusNode());
                                             TimeOfDay temp = await _selectTime(_endTime);
                                             setState(() {
                                               _endTime = temp;
@@ -629,10 +593,10 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                       ],
                                     ),
                                   ),
-                                  errorTime ? Padding(
+                                  errorTime != null ? Padding(
                                     padding: EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
                                     child: Text(
-                                        AppLocalizations.of(context)!.workingHoursError,
+                                        errorTime == 1 ? AppLocalizations.of(context)!.workingHoursError : AppLocalizations.of(context)!.workingHoursError1,
                                         style: Styles.redTextStyle.copyWith(fontSize: 12),
                                         textAlign: TextAlign.center,
                                       ),
@@ -699,6 +663,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                             children: [
                                               TextButton(
                                                 onPressed: () async {
+                                                  FocusScope.of(context).requestFocus(new FocusNode());
                                                   TimeOfDay temp = await _selectTime(_breakStartTime);
                                                   setState(() {
                                                     _breakStartTime = temp;
@@ -720,6 +685,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                               Text("-", style: Styles.purpleTextStyle.copyWith(fontSize: 30),),
                                               TextButton(
                                                 onPressed: () async {
+                                                  FocusScope.of(context).requestFocus(new FocusNode());
                                                   TimeOfDay temp = await _selectTime(_breakEndTime);
                                                   setState(() {
                                                     _breakEndTime = temp;
@@ -745,10 +711,18 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                           padding: const EdgeInsets.only(left: 0.0),
                                           child: OutlinedButton(
                                             onPressed: () {
-                                              setState(() {
-                                                _breakList.add(_breakStartTime);
-                                                _breakList.add(_breakEndTime);
-                                              });
+                                              double toDouble(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
+                                              if (toDouble(_breakStartTime) > toDouble(_breakEndTime)){
+                                                setState(() {
+                                                  errorBreakTime = true;
+                                                });
+                                              } else {
+                                                setState(() {
+                                                  errorBreakTime = false ;
+                                                  _breakList.add(_breakStartTime);
+                                                  _breakList.add(_breakEndTime);
+                                                });
+                                              }
                                             },
                                             child: Column(
                                               mainAxisSize: MainAxisSize.min,
@@ -768,6 +742,14 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                       ],
                                     ),
                                   ),
+                                  errorBreakTime ? Padding(
+                                    padding: EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
+                                    child: Text(
+                                      AppLocalizations.of(context)!.workingHoursError1,
+                                      style: Styles.redTextStyle.copyWith(fontSize: 12),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ) : new Container(),
                                   ListView.builder(
                                     physics: NeverScrollableScrollPhysics(),
                                     itemCount: _breakList.length,
@@ -877,43 +859,69 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                           height: 50,
                           width: 250,
                           decoration: BoxDecoration(
-                              color: Styles.accent, borderRadius: BorderRadius.circular(20)
+                              color: Colors.green, borderRadius: BorderRadius.circular(20)
                           ),
                           child: TextButton(
-                            onPressed: () {
-                              setState(() {
-                                if (_image==null) {
+                            onPressed: () async {
+                              if (_image==null) {
+                                setState(() {
+                                  errorImage = true;
+                                });
+                              } else {
+                                setState(() {
+                                  errorImage = false;
+                                });
+                              }
+                              if (_startTime == TimeOfDay(hour: 0, minute: 00) && _endTime == TimeOfDay(hour: 23, minute: 00)) {
+                                setState(() {
+                                  errorTime = 1;
+                                });
+                              } else {
+                                double toDouble(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
+                                if (toDouble(_startTime) > toDouble(_endTime)){
                                   setState(() {
-                                    errorImage = true;
+                                    errorTime = 2;
                                   });
                                 } else {
                                   setState(() {
-                                    errorImage = false;
+                                    errorTime = null;
                                   });
                                 }
-                                if (_startTime == TimeOfDay(hour: 0, minute: 00) && _endTime == TimeOfDay(hour: 23, minute: 00)) {
-                                  setState(() {
-                                    errorTime = true;
-                                  });
-                                } else {
-                                  setState(() {
-                                    errorTime = false;
-                                  });
+                              }
+                              if(_formBasicInfoKey.currentState!.validate()) {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                double toDouble(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
+                                _workShift.add(toDouble(_startTime));
+                                _workShift.add(toDouble(_endTime));
+                                for (var i=0; i < _breakList.length; i+=2) {
+                                  if(!removedIndex.contains(i)) {
+                                    _workShift.add(toDouble(_breakList[i]));
+                                    _workShift.add(toDouble(_breakList[i+1]));
+                                  }
                                 }
-                                if(_formBasicInfoKey.currentState!.validate()){
-                                  basicInfo = false;
-                                }
-                              });
+                                var result = await _accessDatabase.addBrand(nameBrand, _image, description, address, detailsResult!.placeId!, latitude, longitude, _workShift);
+                                await _accessDatabase.updateCurrentUserBrand(result);
+                                Navigator.pop(context);
+                                Navigator.pushReplacement(
+                                    context,
+                                    CupertinoPageRoute<Null>(
+                                      builder: (context) => SplashScreen(),
+                                      settings: RouteSettings(name: 'SplashScreen'),
+                                    )
+                                );
+                              }
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!.next,
+                                  AppLocalizations.of(context)!.createBrand,
                                   style: Styles.whiteTextStyle,
                                 ),
                                 SizedBox(width: 10),
-                                Icon(Icons.calendar_today_outlined, color: Styles.white),
+                                Icon(Icons.add_circle_outline, color: Styles.white, size: 30,),
                               ],
                             ),
                           ),
@@ -925,8 +933,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
               ],
             ),
           )
-        ) :
-        CalendarWidget(),
+        )
     );
   }
 
