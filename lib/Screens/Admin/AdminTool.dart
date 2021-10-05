@@ -25,6 +25,8 @@ class _AdminToolState extends State<AdminTool> {
   List<Usuario> usersList = [];
   List<Usuario> fullusersList = [];
   bool isLoading = true;
+  bool filteredBySearcher = false;
+  bool filtredByTrainerClient = false;
 
   @override
   void initState() {
@@ -38,12 +40,13 @@ class _AdminToolState extends State<AdminTool> {
      await snapshot.forEach((field) async {
       field.docs.asMap().forEach((index, value) {
         //usersList.add(field.docs[index]["name"]);
+        fullusersList.add(Usuario.fromObject(field.docs[index], field.docs[index].id));
         usersList.add(Usuario.fromObject(field.docs[index], field.docs[index].id));
       });
       setState(() {
         isLoading = false;
       });
-      fullusersList = usersList;
+
     });
   }
 
@@ -58,6 +61,7 @@ class _AdminToolState extends State<AdminTool> {
           color: Colors.white, //change your color here
         ),
       ),
+
       backgroundColor: Colors.white,
       body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -72,12 +76,80 @@ class _AdminToolState extends State<AdminTool> {
                 },
                   //controller: editingController,
                   decoration: InputDecoration(
-                      labelText: "Search",
+                      labelText: "Look for people!",
                       hintText: "Search",
                       prefixIcon: Icon(Icons.search),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(25.0)))),
                 ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: InkResponse(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.directions_run,
+                          size: 45,
+                          color: Styles.accent,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 0.0),
+                          child: Text(
+                              "Client",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22,
+                                  color: Styles.accent
+                              )
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () => {
+                      setState(() {
+                        filterClientTrainer(false);
+                      }),
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: InkResponse(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.record_voice_over,
+                          size: 45,
+                          color: Styles.accent,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 0.0),
+                          child: Text(
+                              "Trainer",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22,
+                                  color: Styles.accent
+                              )
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () => {
+                      setState(() {
+                          filterClientTrainer(true);
+                      }),
+                    },
+                  ),
+                ),
+              ],
             ),
             isLoading ?
             LoadingView()
@@ -90,11 +162,20 @@ class _AdminToolState extends State<AdminTool> {
                   shrinkWrap: true,
                 ),
               ],
-            )
-
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: TextButton(
+                child: Text('Refresh', style: TextStyle(fontSize: 20.0),),
+                onPressed: (){
+                  refresh();
+                },
+              ),
+            ),
           ]
         ),
-     );
+    );
+
   }
 
   List<Usuario> documentsToUsers(List<DocumentSnapshot> documents) {
@@ -105,34 +186,124 @@ class _AdminToolState extends State<AdminTool> {
     return users;
   }
 
+  void filterClientTrainer(bool TrainerFilter) {
+
+    List<Usuario> usersFiltered = [];
+
+    if(filteredBySearcher == true) {
+      if (TrainerFilter) {
+        for (var item in usersList) {
+          if (item.isTrainer == true) {
+            usersFiltered.add(item);
+          }
+        }
+      }
+
+      else {
+        for (var item in usersList) {
+          if (item.isTrainer == false) {
+            usersFiltered.add(item);
+          }
+        }
+      }
+    }
+
+    else {
+      if (TrainerFilter) {
+        for (var item in fullusersList) {
+          if (item.isTrainer == true) {
+            usersFiltered.add(item);
+          }
+        }
+      }
+
+      else {
+        for (var item in fullusersList) {
+          if (item.isTrainer == false) {
+            usersFiltered.add(item);
+          }
+        }
+      }
+    }
+
+
+
+    setState(() {
+      usersList.clear();
+      usersList.addAll(usersFiltered);
+      //print(usersList[1].name);
+    });
+
+      filtredByTrainerClient = true;
+      return;
+    }
+
   void filterSearchResults(String query) {
     List<Usuario> usersFiltered = [];
-    if(query.isNotEmpty) {
-      usersList.forEach((item) {
-        if (item.name!.contains(query)) {
-          usersFiltered.add(item);
+    if(filtredByTrainerClient == false) {
+      if (query.isNotEmpty) {
+        for (var item in fullusersList) {
+          if (item.name!.startsWith(query)) {
+            usersFiltered.add(item);
+          }
         }
-      });
 
-      setState(() {
-        usersList.clear();
-        usersList.addAll(usersFiltered);
-        //print(usersList[1].name);
-      });
+        filteredBySearcher = true;
 
+        setState(() {
+          usersList.clear();
+          usersList.addAll(usersFiltered);
+          //print(usersList[1].name);
+        });
 
+        return;
+      } else {
+        filteredBySearcher = false;
+        setState(() {
+          usersList.clear();
+          usersList.addAll(fullusersList);
+        });
+      }
+    }
+    else {
+      if (query.isNotEmpty) {
+        for (var item in usersList) {
+          if (item.name!.startsWith(query)) {
+            usersFiltered.add(item);
+          }
+        }
 
-      return;
-    } /*else {
-      setState(() {
-        usersList.clear();
-        usersList.addAll(fullusersList);
-      });
-    }*/
+        filteredBySearcher = true;
+
+        setState(() {
+          usersList.clear();
+          usersList.addAll(usersFiltered);
+          //print(usersList[1].name);
+        });
+
+        return;
+      } else {
+        filteredBySearcher = false;
+        setState(() {
+          usersList.clear();
+          usersList.addAll(fullusersList);
+        });
+      }
+    }
     return;
   }
 
+  void refresh() {
+    setState(() {
+      filteredBySearcher = false;
+      usersList.clear();
+      usersList.addAll(fullusersList);
+    });
+  }
+
 }
+
+
 
 class UserTile extends StatelessWidget{
   final Usuario user;
