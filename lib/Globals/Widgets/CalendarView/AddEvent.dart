@@ -11,8 +11,9 @@ import '../../Styles.dart';
 class AddEvent extends StatefulWidget {
   Appointment? oldData;
   bool? update;
+  DateTime? initialDateTime;
 
-  AddEvent({Key? key, this.oldData, @required this.update}) : super(key: key);
+  AddEvent({Key? key, this.oldData, @required this.update, this.initialDateTime}) : super(key: key);
 
   @override
   _AddEventState createState() => _AddEventState();
@@ -23,12 +24,12 @@ class _AddEventState extends State<AddEvent> {
   var iDController = TextEditingController();
   var titleController = TextEditingController();
   TextEditingController startDateController = TextEditingController();
-  TextEditingController endDateController = TextEditingController();
-
-  DateTime? startDate = DateTime.now();
-  DateTime? endDate = DateTime.now().add(Duration(hours: 1));
-
+  TextEditingController durationController = TextEditingController();
+  // Select duration and Time
   DateTime initial = DateTime.now();
+  DateTime? startDate = DateTime.now();
+  String? duration;
+  List<String> durations = ["0.15","0.30","0.45","1.0","1.15","1.30","1.45","2.0","2.15","2.30","2.45","3.0"];
 
   //////////////// form
   final formKey = GlobalKey<FormState>();
@@ -43,8 +44,8 @@ class _AddEventState extends State<AddEvent> {
     }
   }
 
-  Future<DateTime> selectSlot(ctx, bool start) {
-    if (start) {
+  Future<DateTime> selectSlot(ctx, bool onlyHours) {
+    if (widget.initialDateTime == null) {
       startDate = DateTime(
         startDate!.year,
         startDate!.month,
@@ -53,15 +54,6 @@ class _AddEventState extends State<AddEvent> {
         0,
       );
       startDateController.text = DateFormat('d/M/y HH:mm').format(startDate!);
-    } else {
-      endDate = DateTime(
-        endDate!.year,
-        endDate!.month,
-        endDate!.day,
-        endDate!.hour,
-        0,
-      );
-      endDateController.text = DateFormat('d/M/y HH:mm').format(endDate!);
     }
     showCupertinoModalPopup(
       context: ctx,
@@ -85,12 +77,14 @@ class _AddEventState extends State<AddEvent> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
-                    child: Text("Selecciona día y hora ", style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
+                    child: Text( onlyHours ? "Selecciona la duración " : "Selecciona día y hora ", style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
                   ),
                 ],
               ),
               Expanded(
-                child: CupertinoDatePicker(
+                child:
+                !onlyHours ?
+                CupertinoDatePicker(
                       mode: CupertinoDatePickerMode.dateAndTime,
                       initialDateTime: DateTime(initial.year, initial.month, initial.day, initial.hour,0),
                       maximumDate: DateTime(2025, 12),
@@ -99,17 +93,38 @@ class _AddEventState extends State<AddEvent> {
                       minuteInterval: 60,
                       onDateTimeChanged: (val) {
                         setState(() {
-                          if (start) {
-                            startDate = val;
-                            startDateController.text =
-                                DateFormat('d/M/y HH:mm').format(val);
-                          } else {
-                            endDate = val;
-                            endDateController.text =
-                                DateFormat('d/M/y HH:mm').format(val);
-                          }
+                          startDate = val;
+                          startDateController.text = DateFormat('d/M/y HH:mm').format(val);
                         });
-                      }),
+                      })
+                  :
+                CupertinoPicker(
+                  scrollController: new FixedExtentScrollController(
+                  ),
+                  itemExtent: 40.0,
+                  backgroundColor: Colors.transparent,
+                  onSelectedItemChanged: (int index) {
+                    setState(() {
+                      duration = durations[index];
+                      var hour = durations[index].split(".")[0];
+                      var min = durations[index].split(".")[1];
+                      durationController.text = "${hour}h ${min}min";
+                    });
+                  },
+                  children:
+                    new List<Widget>.generate(
+                        durations.length, (int index) {
+                        var item = durations[index];
+                        var hour = item.split(".")[0];
+                        var min = item.split(".")[1];
+                        return new Center(
+                          child: new Text(
+                            "${hour}h ${min}min"
+                          ),
+                        );
+                      }
+                    )
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -139,10 +154,10 @@ class _AddEventState extends State<AddEvent> {
     if (widget.update!) {
       iDController.text = widget.oldData!.id.toString();
       titleController.text = widget.oldData!.subject;
-      startDateController.text =
-          DateFormat('d/M/y HH:mm').format(widget.oldData!.startTime);
-      endDateController.text =
-          DateFormat('d/M/y HH:mm').format(widget.oldData!.endTime);
+      startDateController.text = DateFormat('d/M/y HH:mm').format(widget.oldData!.startTime);
+      //endDateController.text = DateFormat('d/M/y HH:mm').format(widget.oldData!.endTime);
+    } else if (widget.initialDateTime != null) {
+      startDateController.text = DateFormat('d/M/y HH:mm').format(widget.initialDateTime!);
     }
   }
 
@@ -476,7 +491,7 @@ class _AddEventState extends State<AddEvent> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
                                   new Text(
-                                    "END TIME",
+                                    "DURATION",
                                     style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                                   ),
                                 ],
@@ -486,75 +501,80 @@ class _AddEventState extends State<AddEvent> {
                       Padding(
                         padding: EdgeInsets.only(
                             left: 25.0, right: 25.0, top: 2.0),
-                        child: new Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            new Flexible(
-                              child: TextFormField(
-                                textAlignVertical: TextAlignVertical.top,
-                                maxLines: 1,
-                                enabled: false,
-                                controller: endDateController,
-                                onFieldSubmitted: (val) {},
-                                decoration: InputDecoration(
-                                  fillColor: Colors.white,
-                                  contentPadding: EdgeInsets.only(
-                                    top: 20.0,
-                                    left: 20,
-                                  ),
-                                  hintText: 'DD/MM/YYYY HH:MM',
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 16,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
+                        child: InkWell(
+                            onTap: () {
+                              selectSlot(context, true);
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                new Flexible(
+                                  child: TextFormField(
+                                    textAlignVertical: TextAlignVertical.top,
+                                    maxLines: 1,
+                                    enabled: false,
+                                    controller: durationController,
+                                    decoration: InputDecoration(
+                                      fillColor: Colors.white,
+                                      contentPadding: EdgeInsets.only(
+                                        top: 20.0,
+                                        left: 20,
+                                      ),
+                                      hintText: 'DD/MM/YYYY HH:MM',
+                                      hintStyle: TextStyle(
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(5),
+                                        ),
+                                        borderSide: BorderSide(
+                                            color: Colors.grey[300]!, width: 0.0),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(5),
+                                        ),
+                                        borderSide: BorderSide(
+                                            color: Colors.grey[300]!, width: 0.0),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(5),
+                                        ),
+                                        borderSide: BorderSide(
+                                            color: Colors.grey[300]!, width: 0.0),
+                                      ),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(5),
+                                        ),
+                                        borderSide: BorderSide(
+                                            color: Colors.grey[300]!, width: 0.0),
+                                      ),
+                                      disabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(5),
+                                        ),
+                                        borderSide: BorderSide(
+                                            color: Colors.grey[300]!, width: 0.0),
+                                      ),
                                     ),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[300]!, width: 0.0),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
+                                    keyboardType: TextInputType.name,
+                                    style: TextStyle(
+                                      color: Colors.orange,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
                                     ),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[300]!, width: 0.0),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[300]!, width: 0.0),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[300]!, width: 0.0),
-                                  ),
-                                  disabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey[300]!, width: 0.0),
+                                    cursorColor: Colors.black,
                                   ),
                                 ),
-                                keyboardType: TextInputType.name,
-                                style: TextStyle(
-                                  color: Colors.orange,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
-                                cursorColor: Colors.black,
-                              ),
-                            ),
-                          ],
-                        )
+                              ],
+                            )
+                        ),
+
                       ),
                     ],
                   ),
@@ -586,7 +606,7 @@ class _AddEventState extends State<AddEvent> {
     // Event(1,"First", DateTime.now(), DateTime.now().add(Duration(hours: 2)))
     // and then:
     // allEvents.add(Event(1,"First", DateTime.now(), DateTime.now().add(Duration(hours: 2))));
-
+    /*
     if (validateAndSave()) {
       if (widget.update!) {
         Event event = allEvents.firstWhere(
@@ -625,6 +645,7 @@ class _AddEventState extends State<AddEvent> {
       }
       Navigator.pop(context);
     }
+     */
   }
 
   int getLastId() {

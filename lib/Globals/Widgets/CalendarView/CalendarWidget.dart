@@ -68,7 +68,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 timeIntervalHeight: 60,
                 startHour: _startHour-1,
                 endHour:  _endHour+1,
-                timeFormat: 'h:mm',
+                timeFormat: 'HH:mm',
                 dayFormat: 'E',
                 dateFormat: 'd',
                 timeRulerSize: 45,
@@ -90,7 +90,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 ),
               ),
               onLongPress: (details) {
-                _addEvent();
+                _addEvent(dateTimeClicked: details.date);
               },
               onTap: (details) {
                 log(details.date.toString());
@@ -178,7 +178,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     return AppointmentDataSource(allAppointments);
   }
 
-  void _addEvent({Appointment? appointment, bool? updated}) {
+  void _addEvent({Appointment? appointment, bool? updated, DateTime? dateTimeClicked}) {
     log(allAppointments.toString());
     showModalBottomSheet<bool>(
       shape: RoundedRectangleBorder(
@@ -189,6 +189,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         return AddEvent(
           oldData: appointment,
           update: updated ?? false,
+          initialDateTime: dateTimeClicked ?? null,
         );
       }).then((value) {
       setState(() {});
