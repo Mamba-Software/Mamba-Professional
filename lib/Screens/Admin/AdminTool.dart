@@ -27,6 +27,7 @@ class _AdminToolState extends State<AdminTool> {
   bool isLoading = true;
   bool filteredBySearcher = false;
   bool filtredByTrainerClient = false;
+  var editingController = TextEditingController();
 
   @override
   void initState() {
@@ -68,22 +69,82 @@ class _AdminToolState extends State<AdminTool> {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
-              child: TextField(
-                onChanged: (value) {
-                  filterSearchResults(value);
-                },
-                  //controller: editingController,
-                  decoration: InputDecoration(
-                      labelText: "Look for people!",
-                      hintText: "Search",
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+            Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height*0.90,
+              ),
+              child: DefaultTabController(
+                length: 2,
+                child: Scaffold(
+                  appBar: AppBar(
+                    automaticallyImplyLeading: false,
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                    title: SizedBox(
+                      height: 43,
+                      child: TextFormField(
+                        controller: editingController,
+                        onChanged: (value) {
+                          filterSearchResults(value);
+                        },
+                        decoration: InputDecoration(
+                            labelText: "Look for people!",
+                            hintText: "Search",
+                            prefixIcon: Icon(Icons.search),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(15.0)))
+                        ),
+                      ),
+                    ),
+                    centerTitle: true,
+                    bottom: TabBar(
+                      tabs: [
+                        Tab(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.record_voice_over, color: Styles.accent,),
+                                SizedBox(width: 10,),
+                                Text(AppLocalizations.of(context)!.trainer, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Tab(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.directions_run, color: Styles.accent,),
+                                SizedBox(width: 10,),
+                                Text(AppLocalizations.of(context)!.client, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  backgroundColor: Colors.transparent,
+                  body: const TabBarView(
+                    children: [
+                      Icon(Icons.record_voice_over),
+                      Icon(Icons.directions_run),
+                    ],
+                  ),
                 ),
+              ),
             ),
-            Row(
+          ]
+        ),
+    );
+  }
+
+  /*
+  Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -172,11 +233,7 @@ class _AdminToolState extends State<AdminTool> {
                 },
               ),
             ),
-          ]
-        ),
-    );
-
-  }
+   */
 
   List<Usuario> documentsToUsers(List<DocumentSnapshot> documents) {
     List<Usuario> users = [];
@@ -298,6 +355,7 @@ class _AdminToolState extends State<AdminTool> {
       filteredBySearcher = false;
       usersList.clear();
       usersList.addAll(fullusersList);
+      editingController.text = "";
     });
   }
 
