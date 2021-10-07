@@ -13,35 +13,39 @@ class Styles {
   static const Color accentLightTrans = Color(0xFFEAE4F7);
 
   static const Color white = Color(0xFFFFFFFF);
-  static const Color transparentWhite = Color(0x00FFFFFF);
+  static const Color transparentWhite = Color(0xFFFFFF);
+
+  static const Color lightGrey = Color(0xFFF5F5F5);
+  static const Color background = Color(0xFFDEDEDE);
+  static const Color grey = Color(0xFF808080);
 
   static const Color red = Colors.red;
   static const Color weakerRed = Color(0xffd81b60);
 
-  static Color themePrimary = mainColor;
-  static Color themeAccent = accent;
-  static Color themeBackground = white;
-
   // Theme Data
-  static ThemeData appTheme = ThemeData(
-    primaryColor: themePrimary,
-    accentColor:  themeAccent,
-    backgroundColor: themeBackground,
-    fontFamily: 'Raleway',
-    //brightness: Brightness.dark,
-    scaffoldBackgroundColor: Colors.white,
+  static ThemeData lightTheme = ThemeData(
+    backgroundColor: red,
+    primaryColor: mainColor,
+    accentColor:  accent,
+    scaffoldBackgroundColor: white,
+    brightness: Brightness.light,
+    fontFamily: "Raleway",
     appBarTheme: AppBarTheme(
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.light, // status bar icons' color
-        systemNavigationBarColor: Colors.orangeAccent,
+      elevation: 4.0,
+      backgroundColor: mainColor,
+      textTheme: TextTheme(
+        headline6: TextStyle(
+          fontFamily: "Raleway",
+          color: white,
+          fontSize: 22.0,
+          fontWeight: FontWeight.w800,
+        ),
       ),
     ),
   );
 
   // Text Style
-  static const purpleTextStyle = TextStyle(color: accent, fontSize: 18);
+  static TextStyle purpleTextStyle = TextStyle(color: accent, fontSize: 18);
   static const whiteTextStyle = TextStyle(color: white, fontSize: 18);
   static const redTextStyle = TextStyle(color: red, fontSize: 20);
 
