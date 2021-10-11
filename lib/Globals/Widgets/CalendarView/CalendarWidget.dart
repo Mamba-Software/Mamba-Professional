@@ -113,17 +113,20 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     _addEvent(appointment: appointment, updated: true);
                   },
                   child: Center(
-                    child: Container(
-                      width: details.bounds.width,
-                      height: details.bounds.height,
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5),
+                    child: Material(
+                      elevation: 2,
+                      child: Container(
+                        width: details.bounds.width,
+                        height: details.bounds.height,
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(5),
+                          ),
                         ),
-                      ),
-                      child: Center(
-                        child: Text(appointment.subject, textAlign: TextAlign.center,),
+                        child: Center(
+                          child: Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                        ),
                       ),
                     ),
                   ),
