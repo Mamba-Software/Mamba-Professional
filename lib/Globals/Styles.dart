@@ -24,18 +24,18 @@ class Styles {
 
   // Theme Data
   static ThemeData lightTheme = ThemeData(
-    backgroundColor: red,
+    backgroundColor: white,
     primaryColor: mainColor,
     accentColor:  accent,
     scaffoldBackgroundColor: white,
     brightness: Brightness.light,
-    fontFamily: "Raleway",
+    fontFamily: "Helvetica",
     appBarTheme: AppBarTheme(
       elevation: 4.0,
       backgroundColor: mainColor,
       textTheme: TextTheme(
         headline6: TextStyle(
-          fontFamily: "Raleway",
+          fontFamily: "Helvetica",
           color: white,
           fontSize: 22.0,
           fontWeight: FontWeight.w800,

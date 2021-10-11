@@ -5,26 +5,27 @@ import 'package:flutter/material.dart';
 class Event {
   int? id;
   String? title;
-  Color? backgroundColor = Colors.green;
   DateTime? start;
-  DateTime? end;
+  double? duration;
+  String? placeId;
+  int? members;
+  Color? backgroundColor = Colors.green;
 
-  Event(int? id, String? title, DateTime? start, DateTime? end) {
+  Event(int? id, String? title, DateTime? start, double? duration, String? placeId, int? members) {
     this.id = id;
     this.title = title;
     this.start = start;
-    this.end = end;
+    this.duration = duration;
+    this.placeId = placeId;
+    this.members = members;
   }
 
-  updateEvent({int? id, String? title, DateTime? start, DateTime? end}) {
+  updateEvent({int? id, String? title, DateTime? start, double? duration, String? placeId, int? members}) {
     this.id = id;
     this.title = title;
     this.start = start;
-    this.end = end;
-  }
-
-  eventToString() {
-    print(
-        "Event --- ID:${this.id}; TITLE:${this.title}; START:${this.start.toString()}; END:${this.end.toString()};");
+    this.duration = duration;
+    this.placeId = placeId;
+    this.members = members;
   }
 }
