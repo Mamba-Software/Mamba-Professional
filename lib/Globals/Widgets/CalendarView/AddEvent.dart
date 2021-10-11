@@ -333,7 +333,7 @@ class _AddEventState extends State<AddEvent> {
                               Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 20),
-                                width: MediaQuery.of(context).size.width*0.72,
+                                width: MediaQuery.of(context).size.width*0.70,
                                 child: InkWell(
                                       onTap: () {
                                         selectSlot(context, 0);
