@@ -57,12 +57,22 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             SfCalendar(
               view: CalendarView.week,
               controller: _controller,
+              // Per tenir el botó de back to today
               showDatePickerButton: false,
               headerHeight: 50,
               dataSource: _getCalendarDataSource(),
               specialRegions: _getTimeRegions(),
+              timeRegionBuilder: timeRegionBuilder,
               firstDayOfWeek: 1,
               showCurrentTimeIndicator: true,
+              viewHeaderStyle: ViewHeaderStyle(
+                backgroundColor: Color(0xFFF5F5F5),
+                dateTextStyle: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                dayTextStyle: Styles.purpleTextStyle.copyWith(fontSize: 14),
+              ),
+              selectionDecoration: BoxDecoration(
+                border: Border.all(width: 0.1, color: Colors.transparent)
+              ),
               timeSlotViewSettings: TimeSlotViewSettings(
                 timelineAppointmentHeight: 60,
                 timeIntervalHeight: 60,
@@ -77,16 +87,17 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 timeTextStyle: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 14,
-                  color: Colors.black,
+                  color: Theme.of(context).accentColor,
                 )
               ),
               headerStyle: CalendarHeaderStyle(
                 textAlign: TextAlign.center,
-                backgroundColor: Styles.mainColorTrans,
+                backgroundColor: Color(0xFFF5F5F5),
                 textStyle: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
-                  letterSpacing: 4
+                  letterSpacing: 4,
+                  color: Theme.of(context).accentColor,
                 ),
               ),
               onLongPress: (details) {
@@ -96,22 +107,24 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 log(details.date.toString());
               },
               appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
-                return InkWell(
+                final Appointment appointment = details.appointments.first;
+                return GestureDetector(
                   onTap: () {
-                    _addEvent(appointment: details.appointments.first, updated: true);
+                    _addEvent(appointment: appointment, updated: true);
                   },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5),
+                  child: Center(
+                    child: Container(
+                      width: details.bounds.width,
+                      height: details.bounds.height,
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(5),
+                        ),
                       ),
-                    ),
-                    alignment: Alignment.center,
-                    width: 80,
-                    height: 100,
-                    child: Center(
-                      child: Text('1/5'),
+                      child: Center(
+                        child: Text(appointment.subject, textAlign: TextAlign.center,),
+                      ),
                     ),
                   ),
                 );
@@ -135,6 +148,12 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           ),
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  Widget timeRegionBuilder(BuildContext context, TimeRegionDetails timeRegionDetails) {
+    return Container(
+      color: Color(0x40B5B5B5),
     );
   }
 

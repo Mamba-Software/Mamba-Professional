@@ -29,10 +29,12 @@ class _AddEventState extends State<AddEvent> {
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
   bool isLoading = false;
-  // Title Controller
+  // ID Controller
   var idController = TextEditingController();
   // Title Controller
   var titleController = TextEditingController();
+  // Description Controller
+  var descriptionController = TextEditingController();
   // Starting Date and Time
   TextEditingController startDateController = TextEditingController();
   // Duration
@@ -69,7 +71,7 @@ class _AddEventState extends State<AddEvent> {
     var widgetPicker;
     // Init for differnt types
     if (type == 0) {
-      startDate = DateFormat('EEEE d/M/y - HH:mm').parse(startDateController.text);
+      startDate = DateFormat('E d/M/y - HH:mm').parse(startDateController.text);
     } else if (type == 1) {
       initialDuration = durations.indexWhere((element) => element == duration);
     } else if (type == 2) {
@@ -85,7 +87,7 @@ class _AddEventState extends State<AddEvent> {
       minuteInterval: 60,
       onDateTimeChanged: (val) {
         setState(() {
-          startDateController.text = DateFormat('EEEE d/M/y - HH:mm').format(val);
+          startDateController.text = DateFormat('E d/M/y - HH:mm').format(val);
         });
       }
     );
@@ -206,13 +208,13 @@ class _AddEventState extends State<AddEvent> {
     if (widget.update!) {
       idController.text = widget.oldData!.id.toString();
       titleController.text = widget.oldData!.subject;
-      startDateController.text = DateFormat('EEEE d/M/y - HH:mm').format(widget.oldData!.startTime);
+      startDateController.text = DateFormat('E d/M/y - HH:mm').format(widget.oldData!.startTime);
       setState(() {
         isLoading = false;
       });
     } else {
       if (widget.initialDateTime != null) {
-        startDateController.text = DateFormat('EEEE d/M/y - HH:mm').format(widget.initialDateTime!);
+        startDateController.text = DateFormat('E d/M/y - HH:mm').format(widget.initialDateTime!);
       } else {
         var startDate = DateTime.now();
         startDate = DateTime(
@@ -222,7 +224,7 @@ class _AddEventState extends State<AddEvent> {
           startDate.hour,
           0,
         );
-        startDateController.text = DateFormat('EEEE d/M/y - HH:mm').format(startDate);
+        startDateController.text = DateFormat('E d/M/y - HH:mm').format(startDate);
       }
       idController.text = getLastId().toString();
       titleController.text = "Sesión #${getLastId()}";
@@ -318,6 +320,11 @@ class _AddEventState extends State<AddEvent> {
                                     validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
                                     decoration: InputDecoration(
                                       hintText: AppLocalizations.of(context)!.titleHint,
+                                      border: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
                                     ),
                                     enabled: true,
                                   ),
@@ -325,7 +332,49 @@ class _AddEventState extends State<AddEvent> {
                               ],
                             )),
                         Padding(
-                          padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
+                            padding: EdgeInsets.only(
+                                left: 25.0, right: 25.0, top: 15.0),
+                            child: new Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                new Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    new Text(
+                                      AppLocalizations.of(context)!.description,
+                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )),
+                        Padding(
+                            padding: EdgeInsets.only(
+                                left: 25.0, right: 25.0, top: 2.0),
+                            child: new Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                new Flexible(
+                                  child: new TextFormField(
+                                    controller: descriptionController,
+                                    minLines: 1,
+                                    maxLines: 4,
+                                    decoration: InputDecoration(
+                                      labelStyle: Styles.purpleTextStyle,
+                                      hintText:AppLocalizations.of(context)!.descriptionError,
+                                      border: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )),
+                        Padding(
+                          padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 10.0),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -335,32 +384,32 @@ class _AddEventState extends State<AddEvent> {
                                 padding: EdgeInsets.symmetric(horizontal: 20),
                                 width: MediaQuery.of(context).size.width*0.70,
                                 child: InkWell(
-                                      onTap: () {
-                                        selectSlot(context, 0);
-                                      },
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: <Widget>[
-                                          new Flexible(
-                                            child: TextFormField(
-                                              controller: startDateController,
-                                              readOnly: true,
-                                              enabled: false,
-                                              style: Styles.purpleTextStyle,
-                                              decoration: InputDecoration(
-                                                labelStyle: Styles.purpleTextStyle,
-                                                border: InputBorder.none,
-                                                focusedBorder: InputBorder.none,
-                                                enabledBorder: InputBorder.none,
-                                                errorBorder: InputBorder.none,
-                                                disabledBorder: InputBorder.none,
-                                              ),
-                                              textAlign: TextAlign.start,
+                                    onTap: () {
+                                      selectSlot(context, 0);
+                                    },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        new Flexible(
+                                          child: TextFormField(
+                                            controller: startDateController,
+                                            readOnly: true,
+                                            enabled: false,
+                                            style: Styles.purpleTextStyle,
+                                            decoration: InputDecoration(
+                                              labelStyle: Styles.purpleTextStyle,
+                                              border: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
                                             ),
+                                            textAlign: TextAlign.start,
                                           ),
-                                        ],
-                                      )
-                                  ),
+                                        ),
+                                      ],
+                                    )
+                                ),
                               ),
                             ],
                           ),
@@ -524,7 +573,7 @@ class _AddEventState extends State<AddEvent> {
     // and then:
     // allEvents.add(Event(1,"First", DateTime.now(), DateTime.now().add(Duration(hours: 2))));
     if (validateAndSave()) {
-      var startDate = DateFormat('EEEE d/M/y - HH:mm').parse(startDateController.text);
+      var startDate = DateFormat('E d/M/y - HH:mm').parse(startDateController.text);
       print(double.parse(duration));
       var temp  = double.parse(duration);
       var endDate =  startDate.add(Duration(hours: temp.toInt()));
@@ -532,7 +581,10 @@ class _AddEventState extends State<AddEvent> {
         Event event = allEvents.firstWhere((element) => element.id == int.parse(idController.text));
         event.updateEvent(
           id: int.parse(idController.text),
+          uid: currentUser.id,
+          brandID: currentBrand.id,
           title: titleController.text,
+          description: titleController.text,
           start: startDate,
           duration: double.parse(duration),
           placeId: placeId,
@@ -547,6 +599,9 @@ class _AddEventState extends State<AddEvent> {
         allEvents.add(
           Event(
             int.parse(idController.text),
+            currentUser.id,
+            currentBrand.id,
+            titleController.text,
             titleController.text,
             startDate,
             double.parse(duration),
