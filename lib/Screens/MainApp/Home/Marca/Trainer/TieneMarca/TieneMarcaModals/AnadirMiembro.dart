@@ -21,7 +21,7 @@ class _AnadirMiembroState extends State<AnadirMiembro> {
   Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height*0.86,
+        maxHeight: MediaQuery.of(context).size.height*0.89,
       ),
       padding: MediaQuery.of(context).viewInsets,
       child: SingleChildScrollView(
