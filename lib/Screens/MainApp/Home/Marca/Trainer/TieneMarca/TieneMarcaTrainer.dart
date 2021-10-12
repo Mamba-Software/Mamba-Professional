@@ -345,7 +345,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Container(
-                          height: 200,
+                          height: 150,
                           child: Image.asset(Constants.emptyCalendar)
                       ),
                       Text("¡No tienes ningún evento a la vista!", style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080)), textAlign: TextAlign.center,),

@@ -16,7 +16,7 @@ class _HistorialSesionesState extends State<HistorialSesiones> {
   Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height*0.89,
+        maxHeight: MediaQuery.of(context).size.height*0.88,
       ),
       padding: MediaQuery.of(context).viewInsets,
       child: SingleChildScrollView(

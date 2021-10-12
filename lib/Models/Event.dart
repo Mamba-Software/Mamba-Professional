@@ -1,40 +1,51 @@
 // This class represents the Object <Event> that will be showed in the Calendar Widget.
-import 'dart:ui';
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Event {
-  int? id;
-  String? uid;
+  String? id;
+  String? creatorID;
   String? brandID;
   String? title;
   String? description;
-  DateTime? start;
+  String? year;
+  String? month;
+  String? day;
+  String? hour;
   double? duration;
   String? placeId;
-  int? members;
-  Color? backgroundColor = Colors.green;
+  int? maxMembers;
+  var joinedMembers;
+  //var assignedTrainers;
 
-  Event(int? id, String? uid, String? brandID, String? title, String? description, DateTime? start, double? duration, String? placeId, int? members) {
-    this.id = id;
-    this.uid = uid;
-    this.brandID = brandID;
-    this.title = title;
-    this.description = description;
-    this.start = start;
-    this.duration = duration;
-    this.placeId = placeId;
-    this.members = members;
-  }
+  Event({
+    this.id,
+    this.creatorID,
+    this.brandID,
+    this.title,
+    this.description,
+    this.year,
+    this.month,
+    this.day,
+    this.hour,
+    this.duration,
+    this.placeId,
+    this.maxMembers,
+    this.joinedMembers,
+  });
 
-  updateEvent({int? id, String? uid, String? brandID, String? title, String? description, DateTime? start, double? duration, String? placeId, int? members}) {
-    this.id = id;
-    this.uid = uid;
-    this.brandID = brandID;
-    this.title = title;
-    this.description = description;
-    this.start = start;
-    this.duration = duration;
-    this.placeId = placeId;
-    this.members = members;
+  Event.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
+    this.id = documentId;
+    this.creatorID = documentSnapshot.get("creatorID").toString();
+    this.brandID = documentSnapshot.get("brandID").toString();
+    this.title = documentSnapshot.get("title").toString();
+    this.description = documentSnapshot.get("description").toString();
+    this.year = documentSnapshot.get("year").toString();
+    this.month = documentSnapshot.get("month").toString();
+    this.day = documentSnapshot.get("day").toString();
+    this.hour = documentSnapshot.get("hour").toString();
+    this.duration = documentSnapshot.get("duration");
+    this.placeId = documentSnapshot.get("placeId").toString();
+    this.maxMembers = documentSnapshot.get("maxMembers");
+    this.joinedMembers = documentSnapshot.get("joinedMembers");
   }
 }

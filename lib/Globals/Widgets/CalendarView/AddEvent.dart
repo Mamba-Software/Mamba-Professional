@@ -566,49 +566,35 @@ class _AddEventState extends State<AddEvent> {
     );
   }
 
-  void _addEvent() {
-    // TODO: Create the event given the values in Bottom Sheet.
-    // The event needs to be constructed like this example:
-    // Event(1,"First", DateTime.now(), DateTime.now().add(Duration(hours: 2)))
-    // and then:
-    // allEvents.add(Event(1,"First", DateTime.now(), DateTime.now().add(Duration(hours: 2))));
+  Future<void> _addEvent() async {
     if (validateAndSave()) {
       var startDate = DateFormat('E d/M/y - HH:mm').parse(startDateController.text);
       print(double.parse(duration));
       var temp  = double.parse(duration);
       var endDate =  startDate.add(Duration(hours: temp.toInt()));
       if (widget.update!) {
+        /*
         Event event = allEvents.firstWhere((element) => element.id == int.parse(idController.text));
         event.updateEvent(
           id: int.parse(idController.text),
-          uid: currentUser.id,
+          creatorID: currentUser.id,
           brandID: currentBrand.id,
           title: titleController.text,
           description: titleController.text,
           start: startDate,
           duration: double.parse(duration),
           placeId: placeId,
-          members: members
+          maxMembers: members
         );
 
         Appointment appointment = allAppointments.firstWhere((element) => element.id == int.parse(idController.text));
         appointment.subject = titleController.text;
         appointment.startTime = startDate;
         appointment.endTime = endDate;
+        */
       } else {
-        allEvents.add(
-          Event(
-            int.parse(idController.text),
-            currentUser.id,
-            currentBrand.id,
-            titleController.text,
-            titleController.text,
-            startDate,
-            double.parse(duration),
-            placeId,
-            members
-          ),
-        );
+        var eventID = await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), double.parse(duration), placeId, members);
+        print(eventID);
         setState(() {
           allAppointments.add(Appointment(
             id: int.parse(idController.text),

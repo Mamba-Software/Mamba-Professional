@@ -261,14 +261,53 @@ class FirebaseDatabaseService {
     }
   }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Events Calendar
+  // Add Event
+  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, double? duration, String? placeId, int? maxMembers) async {
+    var eventID = Uuid().v1();
+    User? currentUser = await getCurrentUser();
+    try {
+      await _firestore.collection("Events").doc(eventID).set({
+        "brandID": currentBrand.id,
+        "creatorID": currentUser!.uid,
+        "title": title,
+        "description": description,
+        "year": year,
+        "month": month,
+        "day": day,
+        "hour": hour,
+        "duration": duration,
+        "placeId": placeId,
+        "maxMembers": maxMembers,
+        "joinedMembers": [],
+      });
+      return eventID;
+    } catch (e) {
+      print(e.toString());
+      return "Error";
+    }
+  }
+  // Delete Event
+  // Update Event Info
+  // Update Event Participants
+  // Update Event Trainers
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // STREAMS
+
+  // Brands
   Stream<QuerySnapshot> getAllBrands() {
     return _firestore.collection("Brands").snapshots();
   }
 
-  //admin
+  // Events
+  Stream<QuerySnapshot> getAllEventsFromBrand() {
+    return _firestore.collection("Events")
+        .where("brandID", isEqualTo: currentBrand.id)
+        .snapshots();
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // get brews stream
   Future<Stream<QuerySnapshot>> getAllUsers() async {
     return _firestore.collection("Users")
