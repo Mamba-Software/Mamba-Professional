@@ -11,6 +11,7 @@ class Event {
   String? month;
   String? day;
   String? hour;
+  String? minute;
   double? duration;
   String? placeId;
   int? maxMembers;
@@ -27,11 +28,30 @@ class Event {
     this.month,
     this.day,
     this.hour,
+    this.minute,
     this.duration,
     this.placeId,
     this.maxMembers,
     this.joinedMembers,
   });
+
+  Event.fromMap(Map<String, dynamic> mapData, String documentId) {
+    this.id = documentId;
+    this.creatorID = mapData['creatorID'].toString();
+    this.brandID = mapData['brandID'].toString();
+    this.title = mapData['title'].toString();
+    this.description = mapData['description'].toString();
+    this.year = mapData['year'].toString();
+    this.month = mapData['month'].toString();
+    this.day = mapData['day'].toString();
+    this.hour = mapData['hour'].toString();
+    this.minute = mapData['minute'].toString();
+    this.duration = mapData['duration'];
+    this.placeId = mapData['placeId'].toString();
+    this.maxMembers = mapData['maxMembers'];
+    this.joinedMembers = mapData['joinedMembers'];
+  }
+
 
   Event.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
     this.id = documentId;
@@ -43,6 +63,7 @@ class Event {
     this.month = documentSnapshot.get("month").toString();
     this.day = documentSnapshot.get("day").toString();
     this.hour = documentSnapshot.get("hour").toString();
+    this.minute = documentSnapshot.get("minute").toString();
     this.duration = documentSnapshot.get("duration");
     this.placeId = documentSnapshot.get("placeId").toString();
     this.maxMembers = documentSnapshot.get("maxMembers");

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
+import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:uuid/uuid.dart';
 
@@ -263,7 +264,7 @@ class FirebaseDatabaseService {
 
   // Events Calendar
   // Add Event
-  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, double? duration, String? placeId, int? maxMembers) async {
+  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers) async {
     var eventID = Uuid().v1();
     User? currentUser = await getCurrentUser();
     try {
@@ -276,6 +277,7 @@ class FirebaseDatabaseService {
         "month": month,
         "day": day,
         "hour": hour,
+        "minute": minute,
         "duration": duration,
         "placeId": placeId,
         "maxMembers": maxMembers,
@@ -286,6 +288,11 @@ class FirebaseDatabaseService {
       print(e.toString());
       return "Error";
     }
+  }
+  // Get Single Event
+  Future<Event> getSingleEvent(String id) async {
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Events").doc(id).get();
+    return Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
   // Delete Event
   // Update Event Info

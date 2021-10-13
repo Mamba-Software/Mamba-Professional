@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
+import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'firebaseDatabase.dart';
 
@@ -41,8 +42,9 @@ class DatabaseAccess {
   Future<bool> addError(String title, String description, String stepsReproduce) => _firebase.addError(title, description, stepsReproduce);
 
   // Events
-  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, double? duration, String? placeId, int? maxMembers) => _firebase.addEvent(brandID, title, description, year, month, day, hour, duration, placeId, maxMembers);
+  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers) => _firebase.addEvent(brandID, title, description, year, month, day, hour, minute, duration, placeId, maxMembers);
 
+  Future<Event> getSingleEvent(String id) => _firebase.getSingleEvent(id);
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams

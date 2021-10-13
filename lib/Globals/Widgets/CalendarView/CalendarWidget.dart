@@ -40,23 +40,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   @override
   void initState() {
-    isLoading = true;
-    getAllEventsFromCurrentBrand();
     super.initState();
   }
-
-  Future<void> getAllEventsFromCurrentBrand() async {
-    Stream<QuerySnapshot> snapshot = await _accessDatabase.getAllEventsFromBrand();
-    await snapshot.forEach((field) async {
-      field.docs.asMap().forEach((index, value) {
-        eventsList.add(Event.fromObject(field.docs[index], field.docs[index].id));
-      });
-      setState(() {
-        isLoading = false;
-      });
-    });
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,12 +61,18 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           tooltip: 'Back',
         ),
       ),
-      body: isLoading ?
-        LoadingViewPurple()
-          :
-        Stack(
-            children: [
-              SfCalendar(
+      body: StreamBuilder<QuerySnapshot>(
+          stream: _accessDatabase.getAllEventsFromBrand(),
+          builder: (context, snapshot) {
+            if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
+              return LoadingViewPurple();
+            }
+            //else if(snapshot.hasError) return ErrorView();
+            //else if(snapshot.connectionState == ConnectionState.waiting) return LoadingViewPurple();
+            //else if(snapshot.data!.docs.isEmpty) return EmptyTodayAndSearch(msg: AppLocalizations.of(context).translate('noEventsForThisDay'),);
+            else {
+              eventsList = documentsToEvents(snapshot.data!.docs);
+              return SfCalendar(
                 view: CalendarView.week,
                 controller: _controller,
                 // Per tenir el botó de back to today
@@ -97,24 +89,24 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   dayTextStyle: Styles.purpleTextStyle.copyWith(fontSize: 14),
                 ),
                 selectionDecoration: BoxDecoration(
-                  border: Border.all(width: 0.1, color: Colors.transparent)
+                    border: Border.all(width: 0.1, color: Colors.transparent)
                 ),
                 timeSlotViewSettings: TimeSlotViewSettings(
-                  timelineAppointmentHeight: 60,
-                  timeIntervalHeight: 60,
-                  startHour: _startHour-1,
-                  endHour:  _endHour+1,
-                  timeFormat: 'HH:mm',
-                  dayFormat: 'E',
-                  dateFormat: 'd',
-                  timeRulerSize: 45,
-                  nonWorkingDays: nonWorkDays,
-                  //minimumAppointmentDuration: Duration(hours: 1),
-                  timeTextStyle: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                    color: Theme.of(context).accentColor,
-                  )
+                    timelineAppointmentHeight: 60,
+                    timeIntervalHeight: 60,
+                    startHour: _startHour-1,
+                    endHour:  _endHour+1,
+                    timeFormat: 'HH:mm',
+                    dayFormat: 'E',
+                    dateFormat: 'd',
+                    timeRulerSize: 45,
+                    nonWorkingDays: nonWorkDays,
+                    minimumAppointmentDuration: Duration(minutes: 30),
+                    timeTextStyle: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: Theme.of(context).accentColor,
+                    )
                 ),
                 headerStyle: CalendarHeaderStyle(
                   textAlign: TextAlign.center,
@@ -158,13 +150,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     ),
                   );
                 },
-              ),
-            ],
-          ),
-      floatingActionButton: isLoading ?
-        Container()
-            :
-        Padding(
+              );
+            }
+          }
+      ),
+      floatingActionButton: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Container(
             height: 65,
@@ -225,25 +215,16 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     return regions;
   }
 
-  void _addEvent({Appointment? appointment, bool? updated, DateTime? dateTimeClicked}) {
-    log(allAppointments.toString());
-    showModalBottomSheet<bool>(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-      isScrollControlled: true,
-      context: context,
-      builder: (context) {
-        return AddEvent(
-          oldData: appointment,
-          update: updated ?? false,
-          initialDateTime: dateTimeClicked ?? null,
-        );
-      }).then((value) {
-      setState(() {});
-    });
+  List<Event> documentsToEvents(List<DocumentSnapshot> documents) {
+    List<Event> events = [];
+    for(int i = 0; i < documents.length; i++) {
+      events.add(Event.fromObject(documents[i], documents[i].id));
+    }
+    return events;
   }
 
   AppointmentDataSource _getCalendarDataSource() {
+    List<Appointment> tempAllAppointments = [];
     for (var i=0; i < eventsList.length; i++) {
       var event = eventsList[i];
       // Date Time
@@ -252,14 +233,14 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         int.parse(event.month!),
         int.parse(event.day!),
         int.parse(event.hour!),
-        0,
+        int.parse(event.minute!),
       );
       var endDate =  startDate.add(Duration(hours: event.duration!.toInt()));
       // Subject
       var subject = "${event.joinedMembers.length}/${event.maxMembers}";
       // Colors
-      // Afegir percentatges de ple.
-      allAppointments.add(Appointment(
+      // Afegir percentatges de members al Event.
+      tempAllAppointments.add(Appointment(
         id: event.id,
         startTime: startDate,
         endTime: endDate,
@@ -269,7 +250,27 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         endTimeZone: '',
       ));
     }
+    allAppointments = tempAllAppointments;
     return AppointmentDataSource(allAppointments);
+  }
+
+  void _addEvent({Appointment? appointment, bool? updated, DateTime? dateTimeClicked}) {
+    showModalBottomSheet<bool>(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+              top: Radius.circular(25.0)
+          )
+      ),
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return AddEvent(
+          oldData: appointment,
+          update: updated ?? false,
+          locale: Localizations.localeOf(context),
+          initialDateTime: dateTimeClicked ?? null,
+        );
+      });
   }
 
 }
