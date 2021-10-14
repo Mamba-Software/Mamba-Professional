@@ -22,32 +22,46 @@ class _AdminToolState extends State<AdminTool> {
 
   //DataBase Access
   var _accessDatabase = new DatabaseAccess();
+  List<Usuario> usersListTrainer = [];
+  List<Usuario> usersListClient = [];
   List<Usuario> usersList = [];
-  List<Usuario> fullusersList = [];
+  List<Usuario> fullusersListTrainer = [];
+  List<Usuario> fullusersListClient = [];
   bool isLoading = true;
   bool filteredBySearcher = false;
   bool filtredByTrainerClient = false;
   var editingController = TextEditingController();
+  var tabViewController;
 
   @override
   void initState() {
     super.initState();
     isLoading = true;
     getUsersList();
+
   }
 
   Future<void> getUsersList() async {
     Stream<QuerySnapshot> snapshot = await _accessDatabase.getAllUsers();
      await snapshot.forEach((field) async {
       field.docs.asMap().forEach((index, value) {
+        var user = Usuario.fromObject(field.docs[index], field.docs[index].id);
+        if(user.isTrainer!) {
+          usersListTrainer.add(user);
+        } else {
+          usersListClient.add(user);
+        }
+        fullusersListTrainer = usersListTrainer;
+        fullusersListClient = usersListClient;
         //usersList.add(field.docs[index]["name"]);
-        fullusersList.add(Usuario.fromObject(field.docs[index], field.docs[index].id));
-        usersList.add(Usuario.fromObject(field.docs[index], field.docs[index].id));
+        //fullusersList.add(Usuario.fromObject(field.docs[index], field.docs[index].id));
+        //usersList.add(Usuario.fromObject(field.docs[index], field.docs[index].id));
       });
       setState(() {
         isLoading = false;
       });
-
+      print(usersListClient);
+      print(usersListTrainer);
     });
   }
 
@@ -71,8 +85,9 @@ class _AdminToolState extends State<AdminTool> {
           children: [
             Container(
               constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height*0.90,
+                maxHeight: MediaQuery.of(context).size.height*0.70,
               ),
+              padding: MediaQuery.of(context).viewInsets,
               child: DefaultTabController(
                 length: 2,
                 child: Scaffold(
@@ -98,6 +113,9 @@ class _AdminToolState extends State<AdminTool> {
                     ),
                     centerTitle: true,
                     bottom: TabBar(
+                      onTap: (val) {
+                        //filterClientTrainer(val);
+                      },
                       tabs: [
                         Tab(
                           child: Align(
@@ -129,21 +147,61 @@ class _AdminToolState extends State<AdminTool> {
                     ),
                   ),
                   backgroundColor: Colors.transparent,
-                  body: const TabBarView(
+                  body: TabBarView(
+                    controller: tabViewController,
                     children: [
-                      Icon(Icons.record_voice_over),
-                      Icon(Icons.directions_run),
+                      isLoading ?
+                      LoadingView()
+                          :
+                      Column(
+                        children: [
+                          ListView.builder(
+                            itemCount: usersListTrainer.length,
+                            itemBuilder: (context, int index) {
+                              //filterClientTrainer(true);
+                              return UserTile(usersListTrainer[index]);
+                            },
+                            shrinkWrap: true,
+                          ),
+                        ],
+                      ),
+                      isLoading ?
+                      LoadingView()
+                          :
+                      Column(
+                        children: [
+                          ListView.builder(
+                            itemCount: usersListClient.length,
+                            itemBuilder: (context, int index) {
+                              //filterClientTrainer(false);
+                              return UserTile(usersListClient[index]);
+                            },
+                            shrinkWrap: true,
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
+
           ]
         ),
     );
   }
 
   /*
+  Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: TextButton(
+                child: Text('Refresh', style: TextStyle(fontSize: 20.0),),
+                onPressed: (){
+                  refresh();
+                },
+              ),
+            ),
+
   Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -243,118 +301,77 @@ class _AdminToolState extends State<AdminTool> {
     return users;
   }
 
-  void filterClientTrainer(bool TrainerFilter) {
+  /*void filterClientTrainer(int TrainerFilter) {
 
     List<Usuario> usersFiltered = [];
+    List<Usuario> usersToAnalyze = [];
 
-    if(filteredBySearcher == true) {
-      if (TrainerFilter) {
-        for (var item in usersList) {
-          if (item.isTrainer == true) {
-            usersFiltered.add(item);
-          }
-        }
-      }
+    if(filteredBySearcher == true) usersToAnalyze = usersList;
+    else usersToAnalyze = fullusersList;
 
-      else {
-        for (var item in usersList) {
-          if (item.isTrainer == false) {
+    if (TrainerFilter == 0) {
+      for (var item in usersToAnalyze) {
+        if (item.isTrainer == true) {
             usersFiltered.add(item);
-          }
         }
       }
     }
 
     else {
-      if (TrainerFilter) {
-        for (var item in fullusersList) {
-          if (item.isTrainer == true) {
-            usersFiltered.add(item);
-          }
-        }
-      }
-
-      else {
-        for (var item in fullusersList) {
-          if (item.isTrainer == false) {
-            usersFiltered.add(item);
-          }
+      for (var item in usersToAnalyze) {
+        if (item.isTrainer == false) {
+          usersFiltered.add(item);
         }
       }
     }
 
+    usersList.clear();
+    usersList.addAll(usersFiltered);
+
+    filtredByTrainerClient = true;
+    return;
+
+  }*/
 
 
-    setState(() {
-      usersList.clear();
-      usersList.addAll(usersFiltered);
-      //print(usersList[1].name);
-    });
+  void filterSearchResults(String query) {
 
-      filtredByTrainerClient = true;
+    List<Usuario> usersFiltered = [];
+    List<Usuario> usersToAnalyze = [];
+
+    if(filtredByTrainerClient == false) usersToAnalyze = usersListTrainer;
+    else usersToAnalyze = usersListTrainer;
+
+    if (query.isNotEmpty) {
+
+      for (var item in usersToAnalyze) {
+        if (item.name!.startsWith(query)) {
+          usersFiltered.add(item);
+        }
+      }
+
+      filteredBySearcher = true;
+      usersListClient.clear();
+      usersListClient.addAll(usersFiltered);
+
       return;
     }
 
-  void filterSearchResults(String query) {
-    List<Usuario> usersFiltered = [];
-    if(filtredByTrainerClient == false) {
-      if (query.isNotEmpty) {
-        for (var item in fullusersList) {
-          if (item.name!.startsWith(query)) {
-            usersFiltered.add(item);
-          }
-        }
-
-        filteredBySearcher = true;
-
-        setState(() {
-          usersList.clear();
-          usersList.addAll(usersFiltered);
-          //print(usersList[1].name);
-        });
-
-        return;
-      } else {
-        filteredBySearcher = false;
-        setState(() {
-          usersList.clear();
-          usersList.addAll(fullusersList);
-        });
-      }
-    }
     else {
-      if (query.isNotEmpty) {
-        for (var item in usersList) {
-          if (item.name!.startsWith(query)) {
-            usersFiltered.add(item);
-          }
-        }
 
-        filteredBySearcher = true;
+      filteredBySearcher = false;
+      usersListClient.clear();
+      usersListClient.addAll(fullusersListTrainer);
 
-        setState(() {
-          usersList.clear();
-          usersList.addAll(usersFiltered);
-          //print(usersList[1].name);
-        });
-
-        return;
-      } else {
-        filteredBySearcher = false;
-        setState(() {
-          usersList.clear();
-          usersList.addAll(fullusersList);
-        });
-      }
     }
-    return;
+
   }
 
   void refresh() {
     setState(() {
       filteredBySearcher = false;
       usersList.clear();
-      usersList.addAll(fullusersList);
+      usersList.addAll(fullusersListClient);
       editingController.text = "";
     });
   }
