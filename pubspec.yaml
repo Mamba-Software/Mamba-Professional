@@ -41,6 +41,7 @@ dependencies:
   geolocator: ^5.3.1
   syncfusion_flutter_calendar: ^19.2.62
   top_snackbar_flutter: ^1.0.1
+  weekday_selector: ^1.0.0
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:weekday_selector/weekday_selector.dart';
 import '../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../Styles.dart';
@@ -49,11 +50,17 @@ class _AddEventState extends State<AddEvent> {
   TextEditingController membersController = TextEditingController();
   int members = 1;
   int membersMax = 15;
+  // Evento Recurrente
+  bool isRecurrent = false;
+  // Diumenge, Dilluns, Dimarts, Dimecres, Dijous, Divendres, Dissabte
+  final values = <bool?>[false, false, true, false, true, false, false];
+  int _value = -1;
   // Form To Validate User
   final formKey = GlobalKey<FormState>();
   // Event Retrieved From BD
   var event;
   var placeDetails;
+
 
   String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
   String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
@@ -639,55 +646,160 @@ class _AddEventState extends State<AddEvent> {
                           ),
                         ),
                         Padding(
-                            padding: EdgeInsets.only(top: 15),
+                            padding: EdgeInsets.only(top: 10),
                             child: new Row(
                               mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                new Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    new Text(
-                                      AppLocalizations.of(context)!.title,
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
+                              children: [
+                                Text(
+                                  "Crear evento recurrente",
+                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(width: 10,),
+                                Checkbox(
+                                  checkColor: Colors.white,
+                                  fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                  value: isRecurrent,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      isRecurrent = value!;
+                                    });
+                                  },
                                 ),
                               ],
                             )
                         ),
-                        Padding(
-                            padding: EdgeInsets.only(top: 2.0),
-                            child: new Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                new Flexible(
-                                  child: new TextFormField(
-                                    controller: titleController,
-                                    validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
-                                    onChanged: (val) {
-                                      setState(() {
-                                        titleString = val;
-                                      });
-                                    },
-                                    decoration: InputDecoration(
-                                      hintText: AppLocalizations.of(context)!.titleHint,
-                                      border: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                      enabledBorder: InputBorder.none,
-                                      errorBorder: InputBorder.none,
-                                      disabledBorder: InputBorder.none,
+                        isRecurrent ? Column(
+                          children: [
+                            Padding(
+                                padding: EdgeInsets.only(top: 10),
+                                child: new Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Text(
+                                        "Días",
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                      ),
                                     ),
-                                    enabled: true,
-                                  ),
-                                ),
-                              ],
-                            )),
+                                    WeekdaySelector(
+                                      fillColor: Colors.white,
+                                      selectedFillColor: Theme.of(context).accentColor,
+                                      textStyle: Styles.purpleTextStyle,
+                                      selectedTextStyle: Styles.whiteTextStyle,
+                                      // Working Days disabledFillColor: Colors.red,
+                                      onChanged: (v) {
+                                        printIntAsDay(v);
+                                        setState(() {
+                                          values[v % 7] = !values[v % 7]!;
+                                        });
+                                      },
+                                      selectedElevation: 15,
+                                      elevation: 5,
+                                      disabledElevation: 0,
+                                      values: values,
+                                    ),
+                                  ],
+                                )
+                            ),
+                            Padding(
+                                padding: EdgeInsets.only(top: 10),
+                                child: new Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Text(
+                                        "Durante",
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                      ),
+                                    ),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        ListTile(
+                                          dense: true,
+                                          contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                                          title: Text(
+                                            'Solo esta semana',
+                                            style: Styles.purpleTextStyle,
+                                          ),
+                                          subtitle: Text(
+                                            "Hasta el ${toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(DateTime.now()))}",
+                                            style: Styles.purpleTextStyle.copyWith(fontSize: 14), textAlign: TextAlign.left,
+                                          ),
+                                          leading: Radio(
+                                            value: 1,
+                                            groupValue: _value,
+                                            activeColor: Theme.of(context).accentColor,
+                                            fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _value = int.parse(value.toString());
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                        ListTile(
+                                          dense: true,
+                                          contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                                          title: Text(
+                                            'Dos semanas',
+                                            style: Styles.purpleTextStyle,
+                                          ),
+                                          subtitle: Text(
+                                            "Hasta el ${toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(DateTime.now()))}",
+                                            style: Styles.purpleTextStyle.copyWith(fontSize: 14), textAlign: TextAlign.left,
+                                          ),
+                                          leading: Radio(
+                                            value: 2,
+                                            groupValue: _value,
+                                            activeColor: Theme.of(context).accentColor,
+                                            fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _value = int.parse(value.toString());
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                        ListTile(
+                                          dense: true,
+                                          contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                                          title: Text(
+                                            'Todo el mes',
+                                            style: Styles.purpleTextStyle,
+                                          ),
+                                          subtitle: Text(
+                                            "Hasta el ${toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(DateTime.now()))}",
+                                            style: Styles.purpleTextStyle.copyWith(fontSize: 14), textAlign: TextAlign.left,
+                                          ),
+                                          leading: Radio(
+                                            value: 3,
+                                            groupValue: _value,
+                                            activeColor: Theme.of(context).accentColor,
+                                            fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _value = int.parse(value.toString());
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                            ),
+                          ],
+                        ) : Container(),
                       ],
                     ),
                   ),
                   !widget.update ? Padding(
-                    padding: EdgeInsets.only(bottom: 25.0),
+                    padding: EdgeInsets.only(bottom: 25.0, top: 15),
                     child: FloatingActionButton.extended(
                       onPressed: _addEvent,
                       label: Text("Añadir", style: Styles.whiteTextStyle.copyWith(fontSize: 20),),
@@ -700,7 +812,7 @@ class _AddEventState extends State<AddEvent> {
                   )
                     :
                   Padding(
-                    padding: EdgeInsets.only(bottom: 25.0),
+                    padding: EdgeInsets.only(bottom: 25.0, top: 15),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -724,6 +836,33 @@ class _AddEventState extends State<AddEvent> {
           ),
         ),
     );
+  }
+
+  printIntAsDay(int day) {
+    print('Received integer: $day. Corresponds to day: ${intDayToEnglish(day)}');
+  }
+
+  String intDayToEnglish(int day) {
+    if (day % 7 == DateTime.monday % 7) return 'Monday';
+    if (day % 7 == DateTime.tuesday % 7) return 'Tueday';
+    if (day % 7 == DateTime.wednesday % 7) return 'Wednesday';
+    if (day % 7 == DateTime.thursday % 7) return 'Thursday';
+    if (day % 7 == DateTime.friday % 7) return 'Friday';
+    if (day % 7 == DateTime.saturday % 7) return 'Saturday';
+    if (day % 7 == DateTime.sunday % 7) return 'Sunday';
+    throw '🐞 This should never have happened: $day';
+  }
+
+  Color getColor(Set<MaterialState> states) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed,
+      MaterialState.hovered,
+      MaterialState.focused,
+    };
+    if (states.any(interactiveStates.contains)) {
+      return Colors.blue;
+    }
+    return Theme.of(context).accentColor;
   }
 
   Future<void> _addEvent() async {
