@@ -16,6 +16,7 @@ class Event {
   String? placeId;
   int? maxMembers;
   var joinedMembers;
+  var selectedTrainers;
   //var assignedTrainers;
 
   Event({
@@ -33,6 +34,7 @@ class Event {
     this.placeId,
     this.maxMembers,
     this.joinedMembers,
+    this.selectedTrainers,
   });
 
   Event.fromMap(Map<String, dynamic> mapData, String documentId) {
@@ -50,6 +52,7 @@ class Event {
     this.placeId = mapData['placeId'].toString();
     this.maxMembers = mapData['maxMembers'];
     this.joinedMembers = mapData['joinedMembers'];
+    this.selectedTrainers = mapData['selectedTrainers'];
   }
 
 
@@ -68,5 +71,6 @@ class Event {
     this.placeId = documentSnapshot.get("placeId").toString();
     this.maxMembers = documentSnapshot.get("maxMembers");
     this.joinedMembers = documentSnapshot.get("joinedMembers");
+    this.selectedTrainers = documentSnapshot.get("selectedTrainers");
   }
 }

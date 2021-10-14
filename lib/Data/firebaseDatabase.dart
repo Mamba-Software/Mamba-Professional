@@ -271,7 +271,7 @@ class FirebaseDatabaseService {
 
   // Events Calendar
   // Add Event
-  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers) async {
+  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers, var selectedTrainers) async {
     var eventID = Uuid().v1();
     User? currentUser = await getCurrentUser();
     try {
@@ -289,9 +289,8 @@ class FirebaseDatabaseService {
         "placeId": placeId,
         "maxMembers": maxMembers,
         "joinedMembers": [],
+        "selectedTrainers": selectedTrainers,
       });
-
-      updateBrandEventCreated(currentBrand.id!, currentBrand.eventsCreated!);
       return eventID;
     } catch (e) {
       print(e.toString());
