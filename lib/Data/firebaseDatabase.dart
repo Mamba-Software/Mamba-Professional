@@ -219,6 +219,7 @@ class FirebaseDatabaseService {
       "latitude": latitude,
       "longitude": longitude,
       "workShift": workShift,
+      "eventsCreated": 0,
     }).catchError((err) {
       print(err);
       firestoreError = true;
@@ -230,6 +231,12 @@ class FirebaseDatabaseService {
     } else {
       return "Error";
     }
+  }
+
+  Future<void> updateBrandEventCreated(String brandID, int prevNumEvents) async {
+    await _firestore.collection("Brands").doc(brandID).update({
+      "eventsCreated": prevNumEvents+1,
+    });
   }
 
   Future<String> updateCurrentBrandPhoto(String brandID, File image) async {
@@ -283,6 +290,8 @@ class FirebaseDatabaseService {
         "maxMembers": maxMembers,
         "joinedMembers": [],
       });
+
+      updateBrandEventCreated(currentBrand.id!, currentBrand.eventsCreated!);
       return eventID;
     } catch (e) {
       print(e.toString());

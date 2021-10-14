@@ -13,6 +13,7 @@ class Brand {
   double? latitude;
   double? longitude;
   var workShift;
+  int? eventsCreated;
   // Sector
   // Disponibilitat
   // Preus
@@ -30,6 +31,7 @@ class Brand {
     this.latitude,
     this.longitude,
     this.workShift,
+    this.eventsCreated,
   });
 
   Map toMap(Brand brand) {
@@ -44,6 +46,7 @@ class Brand {
     data['latitude'] = brand.latitude;
     data['longitude'] = brand.longitude;
     data['workShift'] = brand.workShift;
+    data['eventsCreated'] = brand.eventsCreated;
     return data;
   }
 
@@ -59,6 +62,7 @@ class Brand {
     this.latitude = mapData['latitude'];
     this.longitude = mapData['longitude'];
     this.workShift = mapData['workShift'];
+    this.eventsCreated = mapData['eventsCreated'];
   }
 
   Brand.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
@@ -73,5 +77,6 @@ class Brand {
     this.latitude = documentSnapshot.get("latitude");
     this.longitude = documentSnapshot.get("longitude");
     this.workShift = documentSnapshot.get("workShift");
+    this.eventsCreated = documentSnapshot.get("eventsCreated");
   }
 }

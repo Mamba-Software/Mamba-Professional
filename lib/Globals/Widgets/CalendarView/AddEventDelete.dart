@@ -32,8 +32,10 @@ class _AddEventState extends State<AddEvent> {
   bool isUpdated = false;
   // Title Controller
   var titleController = TextEditingController();
+  String? titleString;
   // Description Controller
   var descriptionController = TextEditingController();
+  String? descriptionString;
   // Starting Date and Time
   TextEditingController startDateController = TextEditingController();
   // Duration
@@ -59,6 +61,8 @@ class _AddEventState extends State<AddEvent> {
   bool validateAndSave() {
     final form = formKey.currentState;
     if (form!.validate()) {
+      // No poder crear un event abans de DateTime.now
+      // No poder crear hores in actives
       form.save();
       return true;
     } else {
@@ -240,7 +244,8 @@ class _AddEventState extends State<AddEvent> {
         startDateController.text = toCapitalized(startDateController.text);
 
       }
-      titleController.text = "Sesión #${currentBrand.name}";
+      titleController.text = "${currentBrand.name!.replaceAll(RegExp(r"\s+"), "")}";
+      titleString = titleController.text;
       var hour = durations[1].split(".")[0];
       var min = durations[1].split(".")[1];
       durationController.text = "${hour}h ${min}min";
@@ -252,7 +257,9 @@ class _AddEventState extends State<AddEvent> {
   void getEventInfo(String id) async {
     event = await _accessDatabase.getSingleEvent(id);
     titleController.text = "${event.title}";
+    titleString = "${event.title}";
     descriptionController.text = "${event.description}";
+    descriptionString = "${event.description}";
     var startDate = DateTime(
       int.parse(event.year!),
       int.parse(event.month!),
@@ -290,11 +297,11 @@ class _AddEventState extends State<AddEvent> {
       );
       var hour = event.duration.toString().split(".")[0];
       var min = event.duration!.toStringAsFixed(2).split(".")[1];
-      if (titleController.text != "${event.title}") {
+      if (titleController.text != "${event.title}" || (titleString != "${event.title}" && titleString != null)) {
         setState(() {
           isUpdated = true;
         });
-      } else if (descriptionController.text != "${event.description}") {
+      } else if (descriptionController.text != "${event.description}" || (descriptionString != "${event.description}" && descriptionString != null)) {
         setState(() {
           isUpdated = true;
         });
@@ -352,12 +359,18 @@ class _AddEventState extends State<AddEvent> {
                         },
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 30.0),
+                        padding: const EdgeInsets.only(left: 40.0, right: 10),
                         child: Text(!widget.update ? "Añadir Evento" : "Editar Evento", style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
                       ),
-                      SizedBox(
-                        width: 40,
-                      )
+                      widget.update ? MaterialButton(
+                        onPressed: isUpdated ? () => {
+                          _addEvent(),
+                        } : null,
+                        color: isUpdated ? Colors.green : Colors.transparent,
+                        child: Icon(Icons.save, color: isUpdated ? Colors.white : Styles.accentLight),
+                        padding: EdgeInsets.all(15),
+                        shape: CircleBorder(),
+                      ) : SizedBox(width: 40),
                     ],
                   ),
                   Padding(
@@ -392,6 +405,11 @@ class _AddEventState extends State<AddEvent> {
                                   child: new TextFormField(
                                     controller: titleController,
                                     validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        titleString = val;
+                                      });
+                                    },
                                     decoration: InputDecoration(
                                       hintText: AppLocalizations.of(context)!.titleHint,
                                       border: InputBorder.none,
@@ -429,9 +447,15 @@ class _AddEventState extends State<AddEvent> {
                               children: <Widget>[
                                 new Flexible(
                                   child: new TextFormField(
+                                    keyboardType: TextInputType.visiblePassword,
                                     controller: descriptionController,
                                     minLines: 1,
                                     maxLines: 4,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        descriptionString = val;
+                                      });
+                                    },
                                     decoration: InputDecoration(
                                       labelStyle: Styles.purpleTextStyle,
                                       hintText:AppLocalizations.of(context)!.descriptionError,
@@ -614,6 +638,51 @@ class _AddEventState extends State<AddEvent> {
                             ],
                           ),
                         ),
+                        Padding(
+                            padding: EdgeInsets.only(top: 15),
+                            child: new Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                new Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    new Text(
+                                      AppLocalizations.of(context)!.title,
+                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )
+                        ),
+                        Padding(
+                            padding: EdgeInsets.only(top: 2.0),
+                            child: new Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                new Flexible(
+                                  child: new TextFormField(
+                                    controller: titleController,
+                                    validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        titleString = val;
+                                      });
+                                    },
+                                    decoration: InputDecoration(
+                                      hintText: AppLocalizations.of(context)!.titleHint,
+                                      border: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                    ),
+                                    enabled: true,
+                                  ),
+                                ),
+                              ],
+                            )),
                       ],
                     ),
                   ),
@@ -646,15 +715,6 @@ class _AddEventState extends State<AddEvent> {
                             Navigator.of(context).pop();
                           },
                         ),
-                        FloatingActionButton.extended(
-                          icon: Icon(Icons.save),
-                          label: Text("Guardar", style: Styles.whiteTextStyle.copyWith(fontSize: 18),),
-                          backgroundColor: isUpdated ? Colors.green : Colors.green[100],
-                          foregroundColor: Styles.white,
-                          onPressed: isUpdated ? () {
-                            _addEvent();
-                          } : null,
-                        ),
                       ],
                     ),
                   ),
@@ -672,6 +732,7 @@ class _AddEventState extends State<AddEvent> {
       if (widget.update) {
         if(isUpdated) await _accessDatabase.updateEvent(widget.oldData!.id.toString(), titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members);
       } else {
+        currentBrand.eventsCreated = (currentBrand.eventsCreated! + 1);
         await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members);
       }
       Navigator.pop(context);
