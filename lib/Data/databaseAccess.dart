@@ -44,6 +44,10 @@ class DatabaseAccess {
   // Events
   Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers) => _firebase.addEvent(brandID, title, description, year, month, day, hour, minute, duration, placeId, maxMembers);
 
+  Future<void> updateEvent(String id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers) => _firebase.updateEvent(id, title, description, year, month, day, hour, minute, duration, placeId, maxMembers);
+
+  Future<void> deleteEvent(String id) => _firebase.deleteEvent(id);
+
   Future<Event> getSingleEvent(String id) => _firebase.getSingleEvent(id);
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

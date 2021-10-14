@@ -10,7 +10,7 @@ import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../GlobalVars.dart';
 import '../../Styles.dart';
-import 'AddEvent.dart';
+import 'AddEventDelete.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalendarWidget extends StatefulWidget {
@@ -137,7 +137,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                           width: details.bounds.width,
                           height: details.bounds.height,
                           decoration: BoxDecoration(
-                            color: Colors.green,
+                            color: appointment.color,
                             borderRadius: BorderRadius.all(
                               Radius.circular(5),
                             ),
@@ -198,6 +198,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
       ));
     }
+    // Hora Inactiva Matí
     regions.add(TimeRegion(
       enablePointerInteraction: false,
       startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, _startHour.toInt()-1, 0, 0),
@@ -205,6 +206,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       color: Colors.grey.withOpacity(0.3),
       recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
     ));
+    // Hora Inactiva Nit
     regions.add(TimeRegion(
       enablePointerInteraction: false,
       startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, _endHour.toInt(), 0, 0),
@@ -235,17 +237,26 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         int.parse(event.hour!),
         int.parse(event.minute!),
       );
-      var endDate =  startDate.add(Duration(hours: event.duration!.toInt()));
+      var hour = event.duration.toString().split(".")[0];
+      var min = event.duration!.toStringAsFixed(2).split(".")[1];
+      var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
       // Subject
       var subject = "${event.joinedMembers.length}/${event.maxMembers}";
       // Colors
+      var color;
+      double bookedCapacity = event.joinedMembers.length/event.maxMembers;
+      if(bookedCapacity < 0.20) color = Colors.green;
+      else if(bookedCapacity > 0.20 && bookedCapacity < 0.40) color = Color(0xFFECE014);
+      else if(bookedCapacity > 0.40 && bookedCapacity < 0.60) color = Colors.orangeAccent;
+      else if(bookedCapacity > 0.60 && bookedCapacity < 0.80) color = Colors.deepOrangeAccent;
+      else if(bookedCapacity == 1) color = Colors.red;
       // Afegir percentatges de members al Event.
       tempAllAppointments.add(Appointment(
         id: event.id,
         startTime: startDate,
         endTime: endDate,
         subject: subject,
-        color: Colors.green,
+        color: color,
         startTimeZone: '',
         endTimeZone: '',
       ));

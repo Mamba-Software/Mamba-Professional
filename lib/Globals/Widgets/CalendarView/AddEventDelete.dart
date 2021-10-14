@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
@@ -7,8 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../Styles.dart';
@@ -31,6 +28,8 @@ class _AddEventState extends State<AddEvent> {
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
   bool isLoading = false;
+  // Boolean isUpdated
+  bool isUpdated = false;
   // Title Controller
   var titleController = TextEditingController();
   // Description Controller
@@ -40,7 +39,7 @@ class _AddEventState extends State<AddEvent> {
   // Duration
   TextEditingController durationController = TextEditingController();
   String duration = "1.0";
-  List<String> durations = ["0.30","1.0","1.30","2.0","2.30","3.0","3.30","4.0"];
+  List<String> durations = ["0.30","1.00","1.30","2.00","2.30","3.00","3.30","4.00"];
   // Ubicació
   var ubicacionController =  TextEditingController();
   var placeId =  currentBrand.placeId!;
@@ -50,6 +49,9 @@ class _AddEventState extends State<AddEvent> {
   int membersMax = 15;
   // Form To Validate User
   final formKey = GlobalKey<FormState>();
+  // Event Retrieved From BD
+  var event;
+  var placeDetails;
 
   String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
   String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
@@ -75,9 +77,17 @@ class _AddEventState extends State<AddEvent> {
     if (type == 0) {
       startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
     } else if (type == 1) {
-      initialDuration = durations.indexWhere((element) => element == duration);
+      if (widget.update){
+        initialDuration = durations.indexWhere((element) => element == event.duration.toStringAsFixed(2));
+      } else {
+        initialDuration = durations.indexWhere((element) => element == duration);
+      }
     } else if (type == 2) {
-      initialMembers = members-1;
+      if (widget.update){
+        initialMembers = event.maxMembers - 1;
+      } else {
+        initialMembers = members-1;
+      }
     }
     // Different types of pickers
     Widget dateTimePicker = CupertinoDatePicker(
@@ -129,7 +139,11 @@ class _AddEventState extends State<AddEvent> {
         onSelectedItemChanged: (int index) {
           setState(() {
             members = index+1;
-            membersController.text = "${members.toString()}";
+            if (widget.update) {
+              membersController.text = "${event.joinedMembers.length.toString()} / ${members.toString()}";
+            } else {
+              membersController.text = "${members.toString()}";
+            }
           });
         },
         children: new List<Widget>.generate(
@@ -236,7 +250,7 @@ class _AddEventState extends State<AddEvent> {
   }
 
   void getEventInfo(String id) async {
-    final event = await _accessDatabase.getSingleEvent(id);
+    event = await _accessDatabase.getSingleEvent(id);
     titleController.text = "${event.title}";
     descriptionController.text = "${event.description}";
     var startDate = DateTime(
@@ -248,7 +262,7 @@ class _AddEventState extends State<AddEvent> {
     );
     startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(startDate);
     startDateController.text = toCapitalized(startDateController.text);
-    var hour = event.toString().split(".")[0];
+    var hour = event.duration.toString().split(".")[0];
     var min = event.duration!.toStringAsFixed(2).split(".")[1];
     durationController.text = "${hour}h ${min}min";
     membersController.text = "${event.joinedMembers.length.toString()} / ${event.maxMembers.toString()}";
@@ -256,7 +270,7 @@ class _AddEventState extends State<AddEvent> {
   }
 
   void getPlaceFullAddress() async {
-    final placeDetails = await LocationPlacesSearch().getPlaceDetailFromId(placeId);
+    placeDetails = await LocationPlacesSearch().getPlaceDetailFromId(placeId);
     ubicacionController.text = placeDetails.fullAddress!;
     setState(() {
       isLoading = false;
@@ -265,6 +279,48 @@ class _AddEventState extends State<AddEvent> {
 
   @override
   Widget build(BuildContext context) {
+    // Check if something has changed
+    if(widget.update && event != null) {
+      var startDate = DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
+      var hour = event.duration.toString().split(".")[0];
+      var min = event.duration!.toStringAsFixed(2).split(".")[1];
+      if (titleController.text != "${event.title}") {
+        setState(() {
+          isUpdated = true;
+        });
+      } else if (descriptionController.text != "${event.description}") {
+        setState(() {
+          isUpdated = true;
+        });
+      } else if (undoCapitalized(startDateController.text) != DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(startDate)) {
+        setState(() {
+          isUpdated = true;
+        });
+      } else if (durationController.text != "${hour}h ${min}min") {
+        setState(() {
+          isUpdated = true;
+        });
+      } else if (membersController.text != "${event.joinedMembers.length.toString()} / ${event.maxMembers.toString()}") {
+        setState(() {
+          isUpdated = true;
+        });
+      } else if (ubicacionController.text != placeDetails.fullAddress!) {
+        setState(() {
+          isUpdated = true;
+        });
+      } else {
+        setState(() {
+          isUpdated = false;
+        });
+      }
+    }
+
     return isLoading ?
       Container(
         height: MediaQuery.of(context).size.height * 0.4,
@@ -580,21 +636,24 @@ class _AddEventState extends State<AddEvent> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         FloatingActionButton.extended(
-                          icon: Icon(Icons.save, size: 30,),
-                          label: Text("Guardar", style: Styles.whiteTextStyle.copyWith(fontSize: 20),),
-                          backgroundColor: Colors.green,
-                          foregroundColor: Styles.white,
-                          onPressed: () {
-                          },
-                        ),
-                        FloatingActionButton.extended(
-                          label: Text("Eliminar", style: Styles.whiteTextStyle.copyWith(fontSize: 20),),
+                          label: Text("Eliminar", style: Styles.whiteTextStyle.copyWith(fontSize: 18),),
                           icon: Icon(Icons.delete_outline),
                           backgroundColor: Colors.red,
                           foregroundColor: Styles.white,
                           onPressed: () async {
                             // Delete Function
+                            _accessDatabase.deleteEvent(widget.oldData!.id!.toString());
+                            Navigator.of(context).pop();
                           },
+                        ),
+                        FloatingActionButton.extended(
+                          icon: Icon(Icons.save),
+                          label: Text("Guardar", style: Styles.whiteTextStyle.copyWith(fontSize: 18),),
+                          backgroundColor: isUpdated ? Colors.green : Colors.green[100],
+                          foregroundColor: Styles.white,
+                          onPressed: isUpdated ? () {
+                            _addEvent();
+                          } : null,
                         ),
                       ],
                     ),
@@ -610,28 +669,8 @@ class _AddEventState extends State<AddEvent> {
   Future<void> _addEvent() async {
     if (validateAndSave()) {
       var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
-      var temp  = double.parse(duration);
-      var endDate =  startDate.add(Duration(hours: temp.toInt()));
       if (widget.update) {
-        /*
-        Event event = allEvents.firstWhere((element) => element.id == int.parse(idController.text));
-        event.updateEvent(
-          id: int.parse(idController.text),
-          creatorID: currentUser.id,
-          brandID: currentBrand.id,
-          title: titleController.text,
-          description: titleController.text,
-          start: startDate,
-          duration: double.parse(duration),
-          placeId: placeId,
-          maxMembers: members
-        );
-
-        Appointment appointment = allAppointments.firstWhere((element) => element.id == int.parse(idController.text));
-        appointment.subject = titleController.text;
-        appointment.startTime = startDate;
-        appointment.endTime = endDate;
-        */
+        if(isUpdated) await _accessDatabase.updateEvent(widget.oldData!.id.toString(), titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members);
       } else {
         await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members);
       }

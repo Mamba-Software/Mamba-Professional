@@ -295,7 +295,34 @@ class FirebaseDatabaseService {
     return Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
   // Delete Event
-  // Update Event Info
+  Future<void> deleteEvent(String id) async {
+    try {
+      await _firestore.collection("Events").doc(id).delete();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+  // Update Event
+  // Add Event
+  Future<void> updateEvent(String? id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers) async {
+    try {
+      await _firestore.collection("Events").doc(id).update({
+        "title": title,
+        "description": description,
+        "year": year,
+        "month": month,
+        "day": day,
+        "hour": hour,
+        "minute": minute,
+        "duration": duration,
+        "placeId": placeId,
+        "maxMembers": maxMembers,
+        "joinedMembers": [],
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
   // Update Event Participants
   // Update Event Trainers
 
