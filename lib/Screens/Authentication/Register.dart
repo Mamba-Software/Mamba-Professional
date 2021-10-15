@@ -66,6 +66,7 @@ class _RegisterState extends State<Register> {
               iconTheme: IconThemeData(
                 color: Colors.white, //change your color here
               ),
+              backgroundColor: Theme.of(context).primaryColor,
             ),
             backgroundColor: Styles.mainColor,
             body: isLoading ?
