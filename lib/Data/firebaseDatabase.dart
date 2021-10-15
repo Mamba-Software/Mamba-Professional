@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
+import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:uuid/uuid.dart';
 
@@ -218,6 +219,7 @@ class FirebaseDatabaseService {
       "latitude": latitude,
       "longitude": longitude,
       "workShift": workShift,
+      "eventsCreated": 0,
     }).catchError((err) {
       print(err);
       firestoreError = true;
@@ -229,6 +231,12 @@ class FirebaseDatabaseService {
     } else {
       return "Error";
     }
+  }
+
+  Future<void> updateBrandEventCreated(String brandID, int prevNumEvents) async {
+    await _firestore.collection("Brands").doc(brandID).update({
+      "eventsCreated": prevNumEvents+1,
+    });
   }
 
   Future<String> updateCurrentBrandPhoto(String brandID, File image) async {
@@ -261,14 +269,87 @@ class FirebaseDatabaseService {
     }
   }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Events Calendar
+  // Add Event
+  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers, var selectedTrainers) async {
+    var eventID = Uuid().v1();
+    User? currentUser = await getCurrentUser();
+    try {
+      await _firestore.collection("Events").doc(eventID).set({
+        "brandID": currentBrand.id,
+        "creatorID": currentUser!.uid,
+        "title": title,
+        "description": description,
+        "year": year,
+        "month": month,
+        "day": day,
+        "hour": hour,
+        "minute": minute,
+        "duration": duration,
+        "placeId": placeId,
+        "maxMembers": maxMembers,
+        "joinedMembers": [],
+        "selectedTrainers": selectedTrainers,
+      });
+      return eventID;
+    } catch (e) {
+      print(e.toString());
+      return "Error";
+    }
+  }
+  // Get Single Event
+  Future<Event> getSingleEvent(String id) async {
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Events").doc(id).get();
+    return Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+  }
+  // Delete Event
+  Future<void> deleteEvent(String id) async {
+    try {
+      await _firestore.collection("Events").doc(id).delete();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+  // Update Event
+  // Add Event
+  Future<void> updateEvent(String? id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers) async {
+    try {
+      await _firestore.collection("Events").doc(id).update({
+        "title": title,
+        "description": description,
+        "year": year,
+        "month": month,
+        "day": day,
+        "hour": hour,
+        "minute": minute,
+        "duration": duration,
+        "placeId": placeId,
+        "maxMembers": maxMembers,
+        "joinedMembers": [],
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+  // Update Event Participants
+  // Update Event Trainers
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // STREAMS
+
+  // Brands
   Stream<QuerySnapshot> getAllBrands() {
     return _firestore.collection("Brands").snapshots();
   }
 
-  //admin
+  // Events
+  Stream<QuerySnapshot> getAllEventsFromBrand() {
+    return _firestore.collection("Events")
+        .where("brandID", isEqualTo: currentBrand.id)
+        .snapshots();
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // get brews stream
   Future<Stream<QuerySnapshot>> getAllUsers() async {
     return _firestore.collection("Users")

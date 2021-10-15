@@ -15,7 +15,3 @@ var currentBrand = Brand();
 // Current User Location
 Position? currentPosition;
 String? currentAddress;
-
-// Global All Events
-var allEvents = <Event>[];
-List<Appointment> allAppointments = <Appointment>[];

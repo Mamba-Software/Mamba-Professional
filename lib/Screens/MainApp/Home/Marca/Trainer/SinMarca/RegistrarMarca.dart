@@ -336,8 +336,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                                 );
                                                 // This will change the text displayed in the TextFormField
                                                 if (result != null) {
-                                                  final placeDetails = await LocationPlacesSearch()
-                                                      .getPlaceDetailFromId(result.placeId);
+                                                  final placeDetails = await LocationPlacesSearch().getPlaceDetailFromId(result.placeId);
                                                   getDetails(result.placeId);
                                                   setState(() {
                                                     ubicacionController.text = result.description;

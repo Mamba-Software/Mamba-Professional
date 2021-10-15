@@ -1,14 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/CalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AjustesMarca.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AnadirMiembro.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/Calendario.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/HistorialSesiones.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/Subscripciones.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembros.dart';
@@ -157,175 +156,213 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 10),
-            child: new Container(
-              height: MediaQuery.of(context).size.height*0.5,
-              //padding: EdgeInsets.only(top: 25.0, bottom: 25.0, right: 25.0, left: 25.0),
-              child: new Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    height: MediaQuery.of(context).size.height*0.5,
-                    child: new Stack(
-                        alignment: Alignment.topCenter,
-                        fit: StackFit.expand,
-                        children: <Widget>[
-                          // Logo Brand
-                          Positioned(
-                              top: MediaQuery.of(context).size.height*0.07,
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Container(
-                                    height: MediaQuery.of(context).size.height * 0.3,
-                                    child: Center(
-                                      child: CircularImage(size: MediaQuery.of(context).size.height * 0.20, image: currentBrand.logoUrl),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                          ),
-                          // Titol Brand
-                          Positioned(
-                            top: MediaQuery.of(context).size.height*0.33,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  height: MediaQuery.of(context).size.height*0.4,
+                  child: new Stack(
+                      alignment: Alignment.topCenter,
+                      fit: StackFit.expand,
+                      children: <Widget>[
+                        // Logo Brand
+                        Positioned(
+                            top: MediaQuery.of(context).size.height*0.07,
                             bottom: 0,
                             left: 0,
                             right: 0,
-                            child: Text("${currentBrand.name}", style: Styles.purpleTextStyle.copyWith(fontSize: 23, fontWeight: FontWeight.bold), textAlign: TextAlign.center,)
-                          ),
-                          // Logos Flotants
-                          // Perfil Adalt Esquerra
-                          Positioned(
-                              top: 0,
-                              bottom: MediaQuery.of(context).size.height*0.35,
-                              left: 0,
-                              right: MediaQuery.of(context).size.width*0.45,
-                              child: new Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  OutlinedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _statusButtons[0] = !_statusButtons[0];
-                                        _showPerfiClientModals(0);
-                                      });
-                                    },
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.group_add, color: Colors.white, size: _iconSize,), // icon
-                                      ],
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      backgroundColor: !_statusButtons[0] ? Styles.mainColor : Styles.mainColorTrans,
-                                      elevation: 5,
-                                      shape: CircleBorder(),
-                                      padding: EdgeInsets.all(_globusSize),
-                                    ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  height: MediaQuery.of(context).size.height * 0.30,
+                                  child: Center(
+                                    child: CircularImage(size: MediaQuery.of(context).size.height * 0.20, image: currentBrand.logoUrl),
                                   ),
-                                ],
-                              )),
-                          // Ajustes Adalt Dreta
-                          Positioned(
-                              top: 0,
-                              bottom: MediaQuery.of(context).size.height*0.35,
-                              left: MediaQuery.of(context).size.width*0.45,
-                              right: 0,
-                              child: new Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  OutlinedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _statusButtons[1] = !_statusButtons[1];
-                                        _showPerfiClientModals(1);
-                                      });
-                                    },
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.groups, color: Colors.white, size: _iconSize,), // icon
-                                      ],
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      backgroundColor: !_statusButtons[1] ? Styles.mainColor : Styles.mainColorTrans,
-                                      elevation: 5,
-                                      shape: CircleBorder(),
-                                      padding: EdgeInsets.all(_globusSize),
-                                    ),
+                                ),
+                              ],
+                            ),
+                        ),
+                        // Titol Brand
+                        Positioned(
+                          top: MediaQuery.of(context).size.height*0.34,
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Text("${currentBrand.name}", style: Styles.purpleTextStyle.copyWith(fontSize: 23, fontWeight: FontWeight.bold), textAlign: TextAlign.center,)
+                        ),
+                        // Logos Flotants
+                        // Perfil Adalt Esquerra
+                        Positioned(
+                            top: 0,
+                            bottom: MediaQuery.of(context).size.height*0.28,
+                            left: 0,
+                            right: MediaQuery.of(context).size.width*0.45,
+                            child: new Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                OutlinedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _statusButtons[0] = !_statusButtons[0];
+                                      _showPerfiClientModals(0);
+                                    });
+                                  },
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.group_add, color: Colors.white, size: _iconSize,), // icon
+                                    ],
                                   ),
-                                ],
-                              )),
-                          // Ajustes Mig Esquerra
-                          Positioned(
-                              top: 0,
-                              bottom: 0,
-                              left: 0,
-                              right:  MediaQuery.of(context).size.width*0.70,
-                              child: new Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  OutlinedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _statusButtons[2] = !_statusButtons[2];
-                                        _showPerfiClientModals(2);
-                                      });
-                                    },
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.today, color: Colors.white, size: _iconSize,), // icon
-                                      ],
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      backgroundColor: !_statusButtons[2] ? Styles.mainColor : Styles.mainColorTrans,
-                                      elevation: 5,
-                                      shape: CircleBorder(),
-                                      padding: EdgeInsets.all(_globusSize),
-                                    ),
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: !_statusButtons[0] ? Styles.mainColor : Styles.mainColorTrans,
+                                    elevation: 5,
+                                    shape: CircleBorder(),
+                                    padding: EdgeInsets.all(_globusSize),
                                   ),
-                                ],
-                              )),
-                          // Ajustes Mig Dreta
-                          Positioned(
-                              top: 0,
-                              bottom: 0,
-                              left: MediaQuery.of(context).size.width*0.70,
-                              right: 0,
-                              child: new Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  OutlinedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _statusButtons[3] = !_statusButtons[3];
-                                        _showPerfiClientModals(3);
-                                      });
-                                    },
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.checklist, color: Colors.white, size: _iconSize,), // icon
-                                      ],
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      backgroundColor: !_statusButtons[3] ? Styles.mainColor : Styles.mainColorTrans,
-                                      elevation: 5,
-                                      shape: CircleBorder(),
-                                      padding: EdgeInsets.all(_globusSize),
-                                    ),
+                                ),
+                              ],
+                            )),
+                        // Ajustes Adalt Dreta
+                        Positioned(
+                            top: 0,
+                            bottom: MediaQuery.of(context).size.height*0.28,
+                            left: MediaQuery.of(context).size.width*0.45,
+                            right: 0,
+                            child: new Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                OutlinedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _statusButtons[1] = !_statusButtons[1];
+                                      _showPerfiClientModals(1);
+                                    });
+                                  },
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.groups, color: Colors.white, size: _iconSize,), // icon
+                                    ],
                                   ),
-                                ],
-                              )),
-                          // Feedback Abaix Esquerra
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: !_statusButtons[1] ? Styles.mainColor : Styles.mainColorTrans,
+                                    elevation: 5,
+                                    shape: CircleBorder(),
+                                    padding: EdgeInsets.all(_globusSize),
+                                  ),
+                                ),
+                              ],
+                            )),
+                        // Ajustes Mig Esquerra
+                        Positioned(
+                            top: 0,
+                            bottom: 0,
+                            left: 0,
+                            right:  MediaQuery.of(context).size.width*0.70,
+                            child: new Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                OutlinedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _statusButtons[3] = !_statusButtons[3];
+                                      _showPerfiClientModals(3);
+                                    });
+                                  },
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.checklist, color: Colors.white, size: _iconSize,), // icon
+                                    ],
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: !_statusButtons[3] ? Styles.mainColor : Styles.mainColorTrans,
+                                    elevation: 5,
+                                    shape: CircleBorder(),
+                                    padding: EdgeInsets.all(_globusSize),
+                                  ),
+                                ),
+                              ],
+                            )),
+                        // Ajustes Mig Dreta
+                        Positioned(
+                            top: 0,
+                            bottom: 0,
+                            left: MediaQuery.of(context).size.width*0.70,
+                            right: 0,
+                            child: new Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                OutlinedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _statusButtons[2] = !_statusButtons[2];
+                                      _showPerfiClientModals(2);
+                                    });
+                                  },
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.today, color: Colors.white, size: _iconSize,), // icon
+                                    ],
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: !_statusButtons[2] ? Styles.mainColor : Styles.mainColorTrans,
+                                    elevation: 5,
+                                    shape: CircleBorder(),
+                                    padding: EdgeInsets.all(_globusSize),
+                                  ),
+                                ),
+                              ],
+                            )),
+                      ]),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text("Próximos eventos...", style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                  ],
+                ),
+                Container(
+                  padding: EdgeInsets.only(bottom: 120),
+                  height: MediaQuery.of(context).size.height*0.49,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Container(
+                          height: 150,
+                          child: Image.asset(Constants.emptyCalendar)
+                      ),
+                      Text("¡No tienes ningún evento a la vista!", style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080)), textAlign: TextAlign.center,),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/*
+// Feedback Abaix Esquerra
                           Positioned(
                               top: MediaQuery.of(context).size.height*0.35,
                               bottom: 0,
@@ -389,30 +426,5 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                   ),
                                 ],
                               )),
-                        ]),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Container(
-              child: new Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text("Eventos de Hoy", style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+ */
 

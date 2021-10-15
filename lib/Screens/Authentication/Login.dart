@@ -46,7 +46,7 @@ class _LoginState extends State<Login> {
           key: scaffoldMessengerKey,
           child: Scaffold(
             resizeToAvoidBottomInset: true,
-            backgroundColor: Styles.mainColor,
+            backgroundColor: Theme.of(context).primaryColor,
             body: isLoading ?
             Stack(
               children: <Widget>[
@@ -79,10 +79,11 @@ class _LoginState extends State<Login> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Container(
-                          padding: EdgeInsets.only(top: 16.0),
-                          width: 200,
-                          height: 100,
-                          child: Image.asset(Constants.logoExtended)),
+                        padding: EdgeInsets.only(top: 16.0),
+                        width: 200,
+                        height: 100,
+                        child: Image.asset(Constants.logoExtended)
+                      ),
                       Padding(
                           padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 13.0, bottom: 0.0),
                           child: TextFormField(
@@ -100,7 +101,7 @@ class _LoginState extends State<Login> {
                                     padding: EdgeInsets.all(0.0),
                                     child: Icon(
                                       Icons.email_outlined,
-                                      color: Styles.accent,
+                                      color: Theme.of(context).accentColor
                                     ), // icon is 48px widget.
                                   )
                               )
@@ -123,7 +124,7 @@ class _LoginState extends State<Login> {
                                           icon: Icon(
                                             // Based on passwordVisible state choose the icon
                                               _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                              color: Styles.accent
+                                              color: Theme.of(context).accentColor
                                           ),
                                           onPressed: () {
                                             setState(() {

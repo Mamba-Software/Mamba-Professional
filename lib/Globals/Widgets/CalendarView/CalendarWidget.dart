@@ -1,12 +1,16 @@
 import 'dart:developer';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
+import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../GlobalVars.dart';
 import '../../Styles.dart';
-import 'AddEvent.dart';
+import 'AddEventDelete.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalendarWidget extends StatefulWidget {
@@ -19,6 +23,8 @@ class CalendarWidget extends StatefulWidget {
 class _CalendarWidgetState extends State<CalendarWidget> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  // Boolean Loading
+  bool isLoading = false;
   // Calendar Controller
   final CalendarController _controller = CalendarController();
   // Dies de la semana que el entrenador no treballa
@@ -28,12 +34,15 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   double _endHour = currentBrand.workShift[1];
   // Descansos
   DateTime dateJoined = DateFormat('dd-MM-yyyy').parse(currentBrand.dateJoined!);
+  // Events From Brand
+  List<Event> eventsList = [];
+  List<Appointment> allAppointments = <Appointment>[];
 
   @override
   void initState() {
     super.initState();
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,89 +61,121 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           tooltip: 'Back',
         ),
       ),
-      body: Stack(
-          children: [
-            SfCalendar(
-              view: CalendarView.week,
-              controller: _controller,
-              showDatePickerButton: false,
-              headerHeight: 50,
-              dataSource: _getCalendarDataSource(),
-              specialRegions: _getTimeRegions(),
-              firstDayOfWeek: 1,
-              showCurrentTimeIndicator: true,
-              timeSlotViewSettings: TimeSlotViewSettings(
-                timelineAppointmentHeight: 60,
-                timeIntervalHeight: 60,
-                startHour: _startHour-1,
-                endHour:  _endHour+1,
-                timeFormat: 'h:mm',
-                dayFormat: 'E',
-                dateFormat: 'd',
-                timeRulerSize: 45,
-                nonWorkingDays: nonWorkDays,
-                //minimumAppointmentDuration: Duration(hours: 1),
-                timeTextStyle: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                  color: Colors.black,
-                )
-              ),
-              headerStyle: CalendarHeaderStyle(
-                textAlign: TextAlign.center,
-                backgroundColor: Styles.mainColorTrans,
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                  letterSpacing: 4
+      body: StreamBuilder<QuerySnapshot>(
+          stream: _accessDatabase.getAllEventsFromBrand(),
+          builder: (context, snapshot) {
+            if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
+              return LoadingViewPurple();
+            }
+            //else if(snapshot.hasError) return ErrorView();
+            //else if(snapshot.connectionState == ConnectionState.waiting) return LoadingViewPurple();
+            //else if(snapshot.data!.docs.isEmpty) return EmptyTodayAndSearch(msg: AppLocalizations.of(context).translate('noEventsForThisDay'),);
+            else {
+              eventsList = documentsToEvents(snapshot.data!.docs);
+              return SfCalendar(
+                view: CalendarView.week,
+                controller: _controller,
+                // Per tenir el botó de back to today
+                showDatePickerButton: false,
+                headerHeight: 50,
+                dataSource: _getCalendarDataSource(),
+                specialRegions: _getTimeRegions(),
+                timeRegionBuilder: timeRegionBuilder,
+                firstDayOfWeek: 1,
+                showCurrentTimeIndicator: true,
+                viewHeaderStyle: ViewHeaderStyle(
+                  backgroundColor: Color(0xFFF5F5F5),
+                  dateTextStyle: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                  dayTextStyle: Styles.purpleTextStyle.copyWith(fontSize: 14),
                 ),
-              ),
-              onLongPress: (details) {
-                _addEvent();
-              },
-              onTap: (details) {
-                log(details.date.toString());
-              },
-              appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
-                return InkWell(
-                  onTap: () {
-                    _addEvent(appointment: details.appointments.first, updated: true);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5),
+                selectionDecoration: BoxDecoration(
+                    border: Border.all(width: 0.1, color: Colors.transparent)
+                ),
+                timeSlotViewSettings: TimeSlotViewSettings(
+                    timelineAppointmentHeight: 60,
+                    timeIntervalHeight: 60,
+                    startHour: _startHour-1,
+                    endHour:  _endHour+1,
+                    timeFormat: 'HH:mm',
+                    dayFormat: 'E',
+                    dateFormat: 'd',
+                    timeRulerSize: 45,
+                    nonWorkingDays: nonWorkDays,
+                    minimumAppointmentDuration: Duration(minutes: 30),
+                    timeTextStyle: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: Theme.of(context).accentColor,
+                    )
+                ),
+                headerStyle: CalendarHeaderStyle(
+                  textAlign: TextAlign.center,
+                  backgroundColor: Color(0xFFF5F5F5),
+                  textStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                    letterSpacing: 4,
+                    color: Theme.of(context).accentColor,
+                  ),
+                ),
+                onLongPress: (details) {
+                  _addEvent(dateTimeClicked: details.date);
+                },
+                onTap: (details) {
+                  log(details.date.toString());
+                },
+                appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
+                  final Appointment appointment = details.appointments.first;
+                  return GestureDetector(
+                    onTap: () {
+                      _addEvent(appointment: appointment, updated: true);
+                    },
+                    child: Center(
+                      child: Material(
+                        elevation: 2,
+                        child: Container(
+                          width: details.bounds.width,
+                          height: details.bounds.height,
+                          decoration: BoxDecoration(
+                            color: appointment.color,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(5),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                          ),
+                        ),
                       ),
                     ),
-                    alignment: Alignment.center,
-                    width: 80,
-                    height: 100,
-                    child: Center(
-                      child: Text('1/5'),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+                  );
+                },
+              );
+            }
+          }
+      ),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Container(
-          height: 65,
-          width: 65,
-          child: FloatingActionButton(
-            onPressed: _addEvent,
-            backgroundColor: Color(0xFFF4AD1F),
-            tooltip: 'Add Event',
-            child: Icon(
-              Icons.more_time,
-              size: 30,
+          padding: const EdgeInsets.all(20.0),
+          child: Container(
+            height: 65,
+            width: 65,
+            child: FloatingActionButton(
+              onPressed: _addEvent,
+              backgroundColor: Color(0xFFF4AD1F),
+              tooltip: 'Add Event',
+              child: Icon(
+                Icons.more_time,
+                size: 30,
+              ),
             ),
           ),
-        ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+        ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  Widget timeRegionBuilder(BuildContext context, TimeRegionDetails timeRegionDetails) {
+    return Container(
+      color: Color(0x40B5B5B5),
     );
   }
 
@@ -157,6 +198,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
       ));
     }
+    // Hora Inactiva Matí
     regions.add(TimeRegion(
       enablePointerInteraction: false,
       startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, _startHour.toInt()-1, 0, 0),
@@ -164,6 +206,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       color: Colors.grey.withOpacity(0.3),
       recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
     ));
+    // Hora Inactiva Nit
     regions.add(TimeRegion(
       enablePointerInteraction: false,
       startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, _endHour.toInt(), 0, 0),
@@ -174,26 +217,73 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     return regions;
   }
 
+  List<Event> documentsToEvents(List<DocumentSnapshot> documents) {
+    List<Event> events = [];
+    for(int i = 0; i < documents.length; i++) {
+      events.add(Event.fromObject(documents[i], documents[i].id));
+    }
+    return events;
+  }
+
   AppointmentDataSource _getCalendarDataSource() {
+    List<Appointment> tempAllAppointments = [];
+    for (var i=0; i < eventsList.length; i++) {
+      var event = eventsList[i];
+      // Date Time
+      var startDate =  DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
+      var hour = event.duration.toString().split(".")[0];
+      var min = event.duration!.toStringAsFixed(2).split(".")[1];
+      var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
+      // Subject
+      var subject = "${event.joinedMembers.length}/${event.maxMembers}";
+      // Colors
+      var color;
+      double bookedCapacity = event.joinedMembers.length/event.maxMembers;
+      if(bookedCapacity < 0.20) color = Colors.green;
+      else if(bookedCapacity > 0.20 && bookedCapacity < 0.40) color = Color(0xFFECE014);
+      else if(bookedCapacity > 0.40 && bookedCapacity < 0.60) color = Colors.orangeAccent;
+      else if(bookedCapacity > 0.60 && bookedCapacity < 0.80) color = Colors.deepOrangeAccent;
+      else if(bookedCapacity == 1) color = Colors.red;
+      // Afegir percentatges de members al Event.
+      tempAllAppointments.add(Appointment(
+        id: event.id,
+        startTime: startDate,
+        endTime: endDate,
+        subject: subject,
+        color: color,
+        startTimeZone: '',
+        endTimeZone: '',
+      ));
+    }
+    allAppointments = tempAllAppointments;
     return AppointmentDataSource(allAppointments);
   }
 
-  void _addEvent({Appointment? appointment, bool? updated}) {
-    log(allAppointments.toString());
+  void _addEvent({Appointment? appointment, bool? updated, DateTime? dateTimeClicked}) {
     showModalBottomSheet<bool>(
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+          borderRadius: BorderRadius.vertical(
+              top: Radius.circular(25.0)
+          )
+      ),
       isScrollControlled: true,
       context: context,
       builder: (context) {
         return AddEvent(
           oldData: appointment,
           update: updated ?? false,
+          locale: Localizations.localeOf(context),
+          initialDateTime: dateTimeClicked ?? null,
         );
-      }).then((value) {
-      setState(() {});
-    });
+      });
   }
+
 }
 
 class AppointmentDataSource extends CalendarDataSource {
