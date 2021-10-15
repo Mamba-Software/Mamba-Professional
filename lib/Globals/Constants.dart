@@ -6,6 +6,7 @@ class Constants {
   // Constant Assets
   static String logoExtended = "assets/images/ExtendedWhite.png";
   static String logoExtendedYellow = "assets/images/ExtendedYellow.png";
+  static String logoExtendedPurple = "assets/images/ExtendedPurple.png";
   static String logoSimple = "assets/images/SimpleWhite.png";
   static String logoSimpleYellow = "assets/images/SimpleYellow.png";
   static String logoSimplePurple = "assets/images/SimplePurple.png";

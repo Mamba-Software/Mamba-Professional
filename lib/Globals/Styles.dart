@@ -22,6 +22,7 @@ class Styles {
   // Background Color
   static const Color white = Color(0xFFFFFFFF);
   static const Color lightGrey = Color(0xFFF5F5F5);
+  static const Color darkerGrey = Color(0xFFDEDEDE);
   static const Color grey = Color(0xFF808080);
 
   // Theme Data
