@@ -66,7 +66,7 @@ class _RegisterState extends State<Register> {
               iconTheme: IconThemeData(
                 color: Colors.white, //change your color here
               ),
-              backgroundColor: Theme.of(context).primaryColor,
+              backgroundColor: Theme.of(context).accentColor,
             ),
             backgroundColor: Styles.mainColor,
             body: isLoading ?
@@ -93,8 +93,7 @@ class _RegisterState extends State<Register> {
               ],
             )
                 :
-            Center(
-              child: SingleChildScrollView(
+            SingleChildScrollView(
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -102,7 +101,7 @@ class _RegisterState extends State<Register> {
                     children: <Widget>[
                       Padding(
                           padding: EdgeInsets.only(
-                              left: 25.0, right: 25.0),
+                              left: 25.0, right: 25.0, top: 10),
                           child: UserTypeWidget(
                             isTrainer: isTrainerTemp == null ? isTrainer : isTrainerTemp!,
                             selectedProfileTypeChanged: (_isTrainer) {
@@ -305,7 +304,6 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
               ),
-            ),
           ),
         );
 

@@ -4,17 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
-import 'package:mamba_castelldefels/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
-import 'package:mamba_castelldefels/Screens/Admin/Admin.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Register.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/FirstTimeWrapper.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
-import 'package:provider/provider.dart';
 
 // Login Page. This allow the User to get Logged In or to Register a new account.
 class Login extends StatefulWidget {
@@ -46,7 +38,7 @@ class _LoginState extends State<Login> {
           key: scaffoldMessengerKey,
           child: Scaffold(
             resizeToAvoidBottomInset: true,
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: Theme.of(context).accentColor,
             body: isLoading ?
             Stack(
               children: <Widget>[
@@ -55,7 +47,7 @@ class _LoginState extends State<Login> {
                     width: MediaQuery.of(context).size.width * 0.14,
                     height: MediaQuery.of(context).size.height * 0.07,
                     child: CircularProgressIndicator(
-                      color: Styles.white,
+                      color: Theme.of(context).scaffoldBackgroundColor,
                     ),
                   ),
                 ),
@@ -101,7 +93,7 @@ class _LoginState extends State<Login> {
                                     padding: EdgeInsets.all(0.0),
                                     child: Icon(
                                       Icons.email_outlined,
-                                      color: Theme.of(context).accentColor
+                                      color: Theme.of(context).primaryColor
                                     ), // icon is 48px widget.
                                   )
                               )
@@ -124,7 +116,7 @@ class _LoginState extends State<Login> {
                                           icon: Icon(
                                             // Based on passwordVisible state choose the icon
                                               _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                              color: Theme.of(context).accentColor
+                                              color: Theme.of(context).primaryColor
                                           ),
                                           onPressed: () {
                                             setState(() {
@@ -158,14 +150,14 @@ class _LoginState extends State<Login> {
                         },
                         child: Text(
                           AppLocalizations.of(context)!.forgotPassword,
-                          style: Styles.whiteTextStyle,
+                          style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor, fontSize: 18),
                         ),
                       ),
                       Container(
                         height: 50,
                         width: 250,
                         decoration: BoxDecoration(
-                            color: Styles.accent, borderRadius: BorderRadius.circular(20)
+                            color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(20)
                         ),
                         child: TextButton(
                           onPressed: () async {
@@ -176,7 +168,7 @@ class _LoginState extends State<Login> {
                           },
                           child: Text(
                             AppLocalizations.of(context)!.login,
-                            style: Styles.whiteTextStyle.copyWith(fontSize: 28),
+                            style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor, fontSize: 24),
                           ),
                         ),
                       ),
@@ -194,7 +186,7 @@ class _LoginState extends State<Login> {
                             },
                             child: Text(
                               AppLocalizations.of(context)!.newUser,
-                              style: Styles.whiteTextStyle,
+                              style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor, fontSize: 18),
                             )
                         ),
                       ),
@@ -208,7 +200,6 @@ class _LoginState extends State<Login> {
   }
 
   void signIn() async {
-    print("hola");
     try {
       int result = await _accessDatabase.signIn(email, password);
       if (result == 0) {

@@ -12,34 +12,42 @@ class Styles {
   static const Color accentLight = Color(0x8F200758);
   static const Color accentLightTrans = Color(0xFFEAE4F7);
 
-  static const Color white = Color(0xFFFFFFFF);
-  static const Color transparentWhite = Color(0xFFFFFF);
-
-  static const Color lightGrey = Color(0xFFF5F5F5);
-  static const Color background = Color(0xFFDEDEDE);
-  static const Color grey = Color(0xFF808080);
-
   static const Color red = Colors.red;
   static const Color weakerRed = Color(0xffd81b60);
 
+  // New Theme
+  // Light Theme
+  static const Color blue = Color(0xFF200758);
+  static const Color amber = Color(0xFFF4AD1F);
+  // Background Color
+  static const Color white = Color(0xFFFFFFFF);
+  static const Color lightGrey = Color(0xFFF5F5F5);
+  static const Color grey = Color(0xFF808080);
+
   // Theme Data
   static ThemeData lightTheme = ThemeData(
-    backgroundColor: white,
-    primaryColor: mainColor,
-    accentColor:  accent,
+    // Primary Colors
+    primaryColor: blue,
+    accentColor:  amber,
+    // BackGround Colors
+    backgroundColor: lightGrey,
     scaffoldBackgroundColor: white,
+    // Brightness
     brightness: Brightness.light,
+    // Texts
+    textTheme: TextTheme(
+      headline1: TextStyle(color: accent, fontSize: 22),
+      subtitle1: TextStyle(color: grey, fontSize: 16),
+    ),
     fontFamily: "Helvetica",
     appBarTheme: AppBarTheme(
       elevation: 4.0,
-      backgroundColor: mainColor,
-      textTheme: TextTheme(
-        headline6: TextStyle(
-          fontFamily: "Helvetica",
-          color: white,
-          fontSize: 22.0,
-          fontWeight: FontWeight.w800,
-        ),
+      backgroundColor: lightGrey,
+      titleTextStyle: TextStyle(
+        fontFamily: "Helvetica",
+        color: white,
+        fontSize: 22.0,
+        fontWeight: FontWeight.w800,
       ),
     ),
   );
