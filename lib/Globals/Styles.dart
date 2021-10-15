@@ -18,6 +18,7 @@ class Styles {
   // New Theme
   // Light Theme
   static const Color blue = Color(0xFF200758);
+  static const Color lightBlue = Color(0x8F200758);
   static const Color amber = Color(0xFFF4AD1F);
   // Background Color
   static const Color white = Color(0xFFFFFFFF);
@@ -29,7 +30,9 @@ class Styles {
   static ThemeData lightTheme = ThemeData(
     // Primary Colors
     primaryColor: blue,
+    primaryColorLight: lightBlue,
     accentColor:  amber,
+    canvasColor: Colors.transparent,
     // BackGround Colors
     backgroundColor: lightGrey,
     scaffoldBackgroundColor: white,

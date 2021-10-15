@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:provider/provider.dart';
@@ -179,7 +180,7 @@ class _PerfilState extends State<Perfil> {
     }
 
     return isLoading ?
-      LoadingView()
+      LoadingViewPurple()
         :
       SingleChildScrollView(
             child: Column(
@@ -202,41 +203,21 @@ class _PerfilState extends State<Perfil> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    Container(
-                                      height: MediaQuery.of(context).size.height * 0.4,
-                                      child: Center(
-                                        child: isLoading ?
-                                        CircularProgressIndicator() :
-                                        CircularImage(size: MediaQuery.of(context).size.height * 0.3, image: currentUser.imageUrl, file: _image,),
+                                    GestureDetector(
+                                      child: Container(
+                                        height: MediaQuery.of(context).size.height * 0.4,
+                                        child: Center(
+                                          child: isLoading ?
+                                          CircularProgressIndicator() :
+                                          CircularImage(size: MediaQuery.of(context).size.height * 0.3, image: currentUser.imageUrl, file: _image, color: Theme.of(context).primaryColor,),
+                                        ),
                                       ),
+                                      onTap: () async {
+                                        getImage();
+                                        setState(() {});
+                                      },
                                     ),
                                   ],
-                                ),
-                                Positioned(
-                                    top: MediaQuery.of(context).size.height*0.25,
-                                    bottom: 0,
-                                    left: 0,
-                                    right: MediaQuery.of(context).size.width*0.23,
-                                    child: new Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        SizedBox.fromSize(
-                                          size: Size(50, 50), // button width and height
-                                          child: ClipOval(
-                                            child: Material(
-                                              color: Styles.mainColor, // button color
-                                              child: InkWell(
-                                                onTap: () async {
-                                                  getImage();
-                                                  setState(() {});
-                                                },
-                                                child: Icon(Icons.image_outlined, color: Colors.white, size: 30,), // icon
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    )
                                 ),
                                 // Logos Flotants
                                 // Perfil Adalt Esquerra
@@ -263,7 +244,7 @@ class _PerfilState extends State<Perfil> {
                                             ],
                                           ),
                                           style: OutlinedButton.styleFrom(
-                                            backgroundColor: !_statusButtons[0] ? Styles.mainColor : Styles.mainColorTrans,
+                                            backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                             elevation: 5,
                                             shape: CircleBorder(),
                                             padding: EdgeInsets.all(_globusSize),
@@ -295,7 +276,7 @@ class _PerfilState extends State<Perfil> {
                                             ],
                                           ),
                                           style: OutlinedButton.styleFrom(
-                                            backgroundColor: !_statusButtons[1] ? Styles.mainColor : Styles.mainColorTrans,
+                                            backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                             elevation: 5,
                                             shape: CircleBorder(),
                                             padding: EdgeInsets.all(_globusSize),
@@ -327,7 +308,7 @@ class _PerfilState extends State<Perfil> {
                                             ],
                                           ),
                                           style: OutlinedButton.styleFrom(
-                                            backgroundColor: !_statusButtons[2] ? Styles.mainColor : Styles.mainColorTrans,
+                                            backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                             elevation: 5,
                                             shape: CircleBorder(),
                                             padding: EdgeInsets.all(_globusSize),
@@ -359,7 +340,7 @@ class _PerfilState extends State<Perfil> {
                                             ],
                                           ),
                                           style: OutlinedButton.styleFrom(
-                                            backgroundColor: !_statusButtons[3] ? Styles.mainColor : Styles.mainColorTrans,
+                                            backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                             elevation: 5,
                                             shape: CircleBorder(),
                                             padding: EdgeInsets.all(_globusSize),
@@ -384,7 +365,7 @@ class _PerfilState extends State<Perfil> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(AppLocalizations.of(context)!.memberSince(currentUser.dateJoined!), style: Styles.purpleTextStyle.copyWith(fontSize: 16)),
+                            Text(AppLocalizations.of(context)!.memberSince(currentUser.dateJoined!), style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16)),
                           ],
                         ),
                       ),
@@ -395,12 +376,12 @@ class _PerfilState extends State<Perfil> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(currentUser.isTrainer! ? AppLocalizations.of(context)!.trainerOf : AppLocalizations.of(context)!.clientOf, style: Styles.purpleTextStyle.copyWith(fontSize: 16)),
+                            Text(currentUser.isTrainer! ? AppLocalizations.of(context)!.trainerOf : AppLocalizations.of(context)!.clientOf, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16)),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 5),
-                              child: Text(currentBrand.name!, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold,)),
+                              child: Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor)),
                             ),
-                            CircularImage(size: MediaQuery.of(context).size.height * 0.07, image: currentBrand.logoUrl, borderWidth: 1.5,),
+                            CircularImage(size: MediaQuery.of(context).size.height * 0.07, image: currentBrand.logoUrl, borderWidth: 1.5, color: Theme.of(context).accentColor,),
                           ],
                         ),
                       ) : Container(
