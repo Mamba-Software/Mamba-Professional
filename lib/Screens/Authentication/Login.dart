@@ -87,16 +87,17 @@ class _LoginState extends State<Login> {
                                   email = val;
                                 });
                               },
+                              style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18),
                               decoration: Styles.textFromInputDecoration.copyWith(
-                                  labelText: AppLocalizations.of(context)!.email,
-                                  prefixIcon:  Padding(
-                                    padding: EdgeInsets.all(0.0),
-                                    child: Icon(
-                                      Icons.email_outlined,
-                                      color: Theme.of(context).primaryColor
-                                    ), // icon is 48px widget.
-                                  )
-                              )
+                                labelText: AppLocalizations.of(context)!.email,
+                                prefixIcon:  Padding(
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Icon(
+                                    Icons.email_outlined,
+                                    color: Theme.of(context).primaryColor
+                                  ), // icon is 48px widget.
+                                )
+                              ),
                           )
                       ),
                       Padding(
@@ -108,6 +109,7 @@ class _LoginState extends State<Login> {
                                   password = val;
                                 });
                               },
+                              style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18),
                               obscureText: !_passwordVisible,
                               decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
                                   suffixIcon: Padding(

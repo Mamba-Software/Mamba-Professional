@@ -36,7 +36,7 @@ class Styles {
     brightness: Brightness.light,
     // Texts
     textTheme: TextTheme(
-      headline1: TextStyle(color: accent, fontSize: 22),
+      headline1: TextStyle(color: blue, fontSize: 22),
       subtitle1: TextStyle(color: grey, fontSize: 16),
     ),
     fontFamily: "Helvetica",

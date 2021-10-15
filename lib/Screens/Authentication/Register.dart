@@ -56,11 +56,7 @@ class _RegisterState extends State<Register> {
           key: scaffoldMessengerKey,
           child: Scaffold(
             appBar: AppBar(
-              title: Image.asset(
-                Constants.logoExtended,
-                fit: BoxFit.contain,
-                height: 32,
-              ),
+              title: Text(AppLocalizations.of(context)!.createAccount),
               centerTitle: true,
               elevation: 0,
               iconTheme: IconThemeData(
@@ -127,6 +123,7 @@ class _RegisterState extends State<Register> {
                               onChanged: (val) {
                                 setState(() => name = val);
                               },
+                              style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18),
                               decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.nameCompleto,
                                   prefixIcon:  Padding(
                                     padding: EdgeInsets.all(0.0),
@@ -147,6 +144,7 @@ class _RegisterState extends State<Register> {
                               onChanged: (val) {
                                 setState(() => email = val);
                               },
+                              style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18),
                               decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.email,
                                   prefixIcon:  Padding(
                                     padding: EdgeInsets.all(0.0),
@@ -185,6 +183,7 @@ class _RegisterState extends State<Register> {
                                 setState(() => password1 = val);
                               },
                               obscureText: !_passwordVisible,
+                              style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18),
                               decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.password,
                                   suffixIcon: Padding(
                                       padding: EdgeInsets.all(0.0),
@@ -219,6 +218,7 @@ class _RegisterState extends State<Register> {
                               setState(() => password2 = val);
                             },
                             obscureText: !_passwordVisible,
+                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18),
                             decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.passworRepeat,
                                 suffixIcon: Padding(
                                     padding: EdgeInsets.all(0.0),
