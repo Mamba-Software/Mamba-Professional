@@ -40,8 +40,8 @@ class LocationPlacesSearch {
 
   LocationPlacesSearch();
 
-  static final String androidKey = placesAPI;
-  static final String iosKey = 'YOUR_API_KEY_HERE';
+  static final String androidKey = placesAPIAndroid;
+  static final String iosKey = placesAPIIOS;
   final apiKey = Platform.isAndroid ? androidKey : iosKey;
 
   Future<List<Suggestion>> fetchSuggestions(String input) async {
@@ -73,7 +73,6 @@ class LocationPlacesSearch {
 
     if (response.statusCode == 200) {
       final result = json.decode(response.body);
-
       if (result['status'] == 'OK') {
         final components =
         result['result']['address_components'] as List<dynamic>;
