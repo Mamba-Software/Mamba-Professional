@@ -47,12 +47,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.calendar, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22),),
+        title: Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         elevation: 8,
-        iconTheme: IconThemeData(
-          color: Colors.white, //change your color here
-        ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 25,),
           onPressed: () {
@@ -84,9 +81,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 firstDayOfWeek: 1,
                 showCurrentTimeIndicator: true,
                 viewHeaderStyle: ViewHeaderStyle(
-                  backgroundColor: Color(0xFFF5F5F5),
-                  dateTextStyle: Styles.purpleTextStyle.copyWith(fontSize: 14),
-                  dayTextStyle: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                  backgroundColor: Theme.of(context).backgroundColor,
+                  dateTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                  dayTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 selectionDecoration: BoxDecoration(
                     border: Border.all(width: 0.1, color: Colors.transparent)
@@ -103,13 +100,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     nonWorkingDays: nonWorkDays,
                     minimumAppointmentDuration: Duration(minutes: 30),
                     timeTextStyle: TextStyle(
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w800,
                       fontSize: 14,
-                      color: Theme.of(context).accentColor,
+                      color: Theme.of(context).primaryColor,
                     )
                 ),
                 headerStyle: CalendarHeaderStyle(
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.justify,
                   backgroundColor: Color(0xFFF5F5F5),
                   textStyle: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -161,11 +158,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             width: 65,
             child: FloatingActionButton(
               onPressed: _addEvent,
-              backgroundColor: Color(0xFFF4AD1F),
-              tooltip: 'Add Event',
+              backgroundColor: Theme.of(context).accentColor,
               child: Icon(
                 Icons.more_time,
                 size: 30,
+                color: Theme.of(context).backgroundColor,
               ),
             ),
           ),

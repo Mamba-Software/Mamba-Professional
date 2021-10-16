@@ -7,11 +7,9 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:provider/provider.dart';
 import 'PerfilModals/FeedBack.dart';
 import 'PerfilModals/ReportBug.dart';
@@ -205,11 +203,10 @@ class _PerfilState extends State<Perfil> {
                                   children: <Widget>[
                                     GestureDetector(
                                       child: Container(
-                                        height: MediaQuery.of(context).size.height * 0.4,
                                         child: Center(
                                           child: isLoading ?
                                           CircularProgressIndicator() :
-                                          CircularImage(size: MediaQuery.of(context).size.height * 0.3, image: currentUser.imageUrl, file: _image, color: Theme.of(context).accentColor,),
+                                          CircularImage(size: MediaQuery.of(context).size.height * 0.28, image: currentUser.imageUrl, file: _image, color: Theme.of(context).accentColor,),
                                         ),
                                       ),
                                       onTap: () async {
@@ -359,6 +356,74 @@ class _PerfilState extends State<Perfil> {
                   child: new Column(
                     children: [
                       Text("${currentUser.name}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).accentColor, fontWeight: FontWeight.bold, fontSize: 26), textAlign: TextAlign.center,),
+                      Padding(
+                        padding: EdgeInsets.only(top: 16.0, bottom: 8, left: 8, right: 8),
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.10,
+                          width: MediaQuery.of(context).size.width * 0.60,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).backgroundColor,
+                            borderRadius: BorderRadius.all(Radius.circular(15.0))
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 5.0),
+                                        child: Text(
+                                          "0",
+                                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 5.0),
+                                        child: Text(
+                                          "Entrenos Realizados",
+                                          style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Theme.of(context).primaryColor),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 5.0),
+                                        child: Text(
+                                          "0",
+                                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 5.0),
+                                        child: Text(
+                                          "Entrenos Realizados",
+                                          style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Theme.of(context).primaryColor),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.only(top:20.0, bottom: 10.0),
                         child: Row(

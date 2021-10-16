@@ -46,6 +46,9 @@ class Styles {
     appBarTheme: AppBarTheme(
       elevation: 4.0,
       backgroundColor: white,
+      iconTheme: IconThemeData(
+        color: blue
+      ),
       titleTextStyle: TextStyle(
         fontFamily: "Helvetica",
         color: blue,
