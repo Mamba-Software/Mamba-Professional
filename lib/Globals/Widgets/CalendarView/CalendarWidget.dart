@@ -49,7 +49,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
-        elevation: 8,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 25,),
           onPressed: () {
@@ -70,38 +69,42 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             else {
               eventsList = documentsToEvents(snapshot.data!.docs);
               return SfCalendar(
+                cellEndPadding: 0,
                 view: CalendarView.week,
                 controller: _controller,
                 // Per tenir el botó de back to today
                 showDatePickerButton: false,
-                headerHeight: 50,
+                headerHeight: 45,
+                headerDateFormat: null,
                 dataSource: _getCalendarDataSource(),
                 specialRegions: _getTimeRegions(),
                 timeRegionBuilder: timeRegionBuilder,
                 firstDayOfWeek: 1,
                 showCurrentTimeIndicator: true,
+                viewHeaderHeight: 45,
                 viewHeaderStyle: ViewHeaderStyle(
                   backgroundColor: Theme.of(context).backgroundColor,
-                  dateTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                  dayTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                  dateTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 14, fontWeight: FontWeight.bold),
+                  dayTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 10, fontWeight: FontWeight.bold),
                 ),
                 selectionDecoration: BoxDecoration(
                     border: Border.all(width: 0.1, color: Colors.transparent)
                 ),
                 timeSlotViewSettings: TimeSlotViewSettings(
-                    timelineAppointmentHeight: 60,
-                    timeIntervalHeight: 60,
+                    timelineAppointmentHeight: 50,
+                    timeIntervalHeight: 50,
+                    timeIntervalWidth: 55,
                     startHour: _startHour-1,
                     endHour:  _endHour+1,
-                    timeFormat: 'HH:mm',
+                    timeFormat: 'HH',
                     dayFormat: 'E',
                     dateFormat: 'd',
-                    timeRulerSize: 45,
+                    timeRulerSize: 25,
                     nonWorkingDays: nonWorkDays,
                     minimumAppointmentDuration: Duration(minutes: 30),
                     timeTextStyle: TextStyle(
                       fontWeight: FontWeight.w800,
-                      fontSize: 14,
+                      fontSize: 12,
                       color: Theme.of(context).primaryColor,
                     )
                 ),

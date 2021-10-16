@@ -6,10 +6,8 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/CalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AjustesMarca.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AnadirMiembro.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/HistorialSesiones.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/Subscripciones.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembros.dart';
 
 class TieneMarcaTrainer extends StatefulWidget {
@@ -110,34 +108,6 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
               }).whenComplete(() => {
             setState(() {
               _statusButtons[3] = !_statusButtons[3];
-            })
-          });
-          break;
-        case 4:
-          showModalBottomSheet(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-              isScrollControlled: true,
-              context: context,
-              builder: (context) {
-                return Subscripciones();
-              }).whenComplete(() => {
-            setState(() {
-              _statusButtons[4] = !_statusButtons[4];
-            })
-          });
-          break;
-        case 5:
-          showModalBottomSheet(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-              isScrollControlled: true,
-              context: context,
-              builder: (context) {
-                return AjustesMarca();
-              }).whenComplete(() => {
-            setState(() {
-              _statusButtons[5] = !_statusButtons[5];
             })
           });
           break;
