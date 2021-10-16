@@ -209,7 +209,7 @@ class _PerfilState extends State<Perfil> {
                                         child: Center(
                                           child: isLoading ?
                                           CircularProgressIndicator() :
-                                          CircularImage(size: MediaQuery.of(context).size.height * 0.3, image: currentUser.imageUrl, file: _image, color: Theme.of(context).primaryColor,),
+                                          CircularImage(size: MediaQuery.of(context).size.height * 0.3, image: currentUser.imageUrl, file: _image, color: Theme.of(context).accentColor,),
                                         ),
                                       ),
                                       onTap: () async {
@@ -358,7 +358,7 @@ class _PerfilState extends State<Perfil> {
                   //padding: EdgeInsets.only(top: 25.0, bottom: 25.0, right: 25.0, left: 25.0),
                   child: new Column(
                     children: [
-                      Text("${currentUser.name}", style: Styles.purpleTextStyle.copyWith(fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                      Text("${currentUser.name}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).accentColor, fontWeight: FontWeight.bold, fontSize: 26), textAlign: TextAlign.center,),
                       Padding(
                         padding: const EdgeInsets.only(top:20.0, bottom: 10.0),
                         child: Row(
@@ -379,9 +379,9 @@ class _PerfilState extends State<Perfil> {
                             Text(currentUser.isTrainer! ? AppLocalizations.of(context)!.trainerOf : AppLocalizations.of(context)!.clientOf, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16)),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 5),
-                              child: Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor)),
+                              child: Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, fontWeight: FontWeight.bold)),
                             ),
-                            CircularImage(size: MediaQuery.of(context).size.height * 0.07, image: currentBrand.logoUrl, borderWidth: 1.5, color: Theme.of(context).accentColor,),
+                            //CircularImage(size: MediaQuery.of(context).size.height * 0.07, image: currentBrand.logoUrl, borderWidth: 1.5, color: Theme.of(context).accentColor,),
                           ],
                         ),
                       ) : Container(

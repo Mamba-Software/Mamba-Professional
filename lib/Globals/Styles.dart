@@ -32,7 +32,6 @@ class Styles {
     primaryColor: blue,
     primaryColorLight: lightBlue,
     accentColor:  amber,
-    canvasColor: Colors.transparent,
     // BackGround Colors
     backgroundColor: lightGrey,
     scaffoldBackgroundColor: white,
@@ -46,13 +45,20 @@ class Styles {
     fontFamily: "Helvetica",
     appBarTheme: AppBarTheme(
       elevation: 4.0,
-      backgroundColor: lightGrey,
+      backgroundColor: white,
       titleTextStyle: TextStyle(
         fontFamily: "Helvetica",
-        color: white,
+        color: blue,
         fontSize: 22.0,
         fontWeight: FontWeight.w800,
       ),
+    ),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      elevation: 40,
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: white,
+      showUnselectedLabels: false,
+      showSelectedLabels: true,
     ),
   );
 

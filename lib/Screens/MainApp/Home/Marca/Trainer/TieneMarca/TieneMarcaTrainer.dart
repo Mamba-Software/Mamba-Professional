@@ -190,7 +190,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                           bottom: 0,
                           left: 0,
                           right: 0,
-                          child: Text("${currentBrand.name}", style: Styles.purpleTextStyle.copyWith(fontSize: 23, fontWeight: FontWeight.bold), textAlign: TextAlign.center,)
+                          child: Text("${currentBrand.name}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).accentColor, fontWeight: FontWeight.bold, fontSize: 26), textAlign: TextAlign.center,),
                         ),
                         // Logos Flotants
                         // Perfil Adalt Esquerra
@@ -217,7 +217,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                     ],
                                   ),
                                   style: OutlinedButton.styleFrom(
-                                    backgroundColor: !_statusButtons[0] ? Styles.mainColor : Styles.mainColorTrans,
+                                    backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                     elevation: 5,
                                     shape: CircleBorder(),
                                     padding: EdgeInsets.all(_globusSize),
@@ -249,7 +249,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                     ],
                                   ),
                                   style: OutlinedButton.styleFrom(
-                                    backgroundColor: !_statusButtons[1] ? Styles.mainColor : Styles.mainColorTrans,
+                                    backgroundColor: !_statusButtons[1] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                     elevation: 5,
                                     shape: CircleBorder(),
                                     padding: EdgeInsets.all(_globusSize),
@@ -281,7 +281,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                     ],
                                   ),
                                   style: OutlinedButton.styleFrom(
-                                    backgroundColor: !_statusButtons[3] ? Styles.mainColor : Styles.mainColorTrans,
+                                    backgroundColor: !_statusButtons[3] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                     elevation: 5,
                                     shape: CircleBorder(),
                                     padding: EdgeInsets.all(_globusSize),
@@ -313,7 +313,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                     ],
                                   ),
                                   style: OutlinedButton.styleFrom(
-                                    backgroundColor: !_statusButtons[2] ? Styles.mainColor : Styles.mainColorTrans,
+                                    backgroundColor: !_statusButtons[2] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                     elevation: 5,
                                     shape: CircleBorder(),
                                     padding: EdgeInsets.all(_globusSize),

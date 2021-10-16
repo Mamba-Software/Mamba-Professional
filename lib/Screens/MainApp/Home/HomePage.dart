@@ -52,9 +52,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Widget returnTitle (int currentIndex) {
       if (_currentIndex == 0) {
-        return Text(AppLocalizations.of(context)!.profileBottomNav, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).accentColor , fontWeight: FontWeight.bold));
+        return Text(AppLocalizations.of(context)!.profileBottomNav, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor , fontWeight: FontWeight.bold));
       } else if (_currentIndex == 2) {
-        return Text(AppLocalizations.of(context)!.chatBottomNav, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).accentColor , fontWeight: FontWeight.bold));
+        return Text(AppLocalizations.of(context)!.chatBottomNav, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor , fontWeight: FontWeight.bold));
       } else {
         return Image.asset(
           Constants.logoSimpleYellow,
@@ -77,9 +77,8 @@ class _HomePageState extends State<HomePage> {
         automaticallyImplyLeading: false,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        elevation: 0,
+
         currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
         iconSize: 30,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -117,13 +116,7 @@ class _HomePageState extends State<HomePage> {
         unselectedIconTheme: IconThemeData(
             color: Theme.of(context).primaryColor
         ),
-        showUnselectedLabels: false,
-        showSelectedLabels: true,
-        backgroundColor:Colors.transparent,
-        //backgroundColor: Theme.of(context).backgroundColor,
       ),
-      extendBodyBehindAppBar: true,
-      extendBody: true,
       body: PageView(
         controller: _pageController,
         onPageChanged: (page) {
