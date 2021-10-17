@@ -180,47 +180,53 @@ class _PerfilState extends State<Perfil> {
     return isLoading ?
       LoadingViewPurple()
         :
-      SingleChildScrollView(
-            child: Column(
+      Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(0.0),
+                  padding: const EdgeInsets.all(0),
                   child: new Container(
-                    height: MediaQuery.of(context).size.height*0.5,
+                    height: MediaQuery.of(context).size.height*0.40,
                     //padding: EdgeInsets.only(top: 25.0, bottom: 25.0, right: 25.0, left: 25.0),
                     child: new Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Container(
-                          height: MediaQuery.of(context).size.height*0.5,
+                          height: MediaQuery.of(context).size.height*0.40,
                           child: new Stack(
                               alignment: Alignment.center,
-                              fit: StackFit.expand,
+                              //fit: StackFit.,
                               children: <Widget>[
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    GestureDetector(
-                                      child: Container(
-                                        child: Center(
-                                          child: isLoading ?
-                                          CircularProgressIndicator() :
-                                          CircularImage(size: MediaQuery.of(context).size.height * 0.28, image: currentUser.imageUrl, file: _image, color: Theme.of(context).accentColor,),
+                                Positioned(
+                                  top: 0,
+                                  bottom: 0,
+                                  left: 0,
+                                  right: 0,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      GestureDetector(
+                                        child: Container(
+                                          child: Center(
+                                            child: isLoading ?
+                                            CircularProgressIndicator() :
+                                            CircularImage(size: MediaQuery.of(context).size.height * 0.25, image: currentUser.imageUrl, file: _image, color: Theme.of(context).accentColor,),
+                                          ),
                                         ),
+                                        onTap: () async {
+                                          getImage();
+                                          setState(() {});
+                                        },
                                       ),
-                                      onTap: () async {
-                                        getImage();
-                                        setState(() {});
-                                      },
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                                 // Logos Flotants
                                 // Perfil Adalt Esquerra
                                 Positioned(
                                     top: 0,
-                                    bottom: MediaQuery.of(context).size.height*0.35,
+                                    bottom: MediaQuery.of(context).size.height*0.25,
                                     left: 0,
                                     right: MediaQuery.of(context).size.width*0.60,
                                     child: new Row(
@@ -241,7 +247,8 @@ class _PerfilState extends State<Perfil> {
                                             ],
                                           ),
                                           style: OutlinedButton.styleFrom(
-                                            backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
+                                            backgroundColor: Theme.of(context).accentColor,
+                                            //backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                             elevation: 5,
                                             shape: CircleBorder(),
                                             padding: EdgeInsets.all(_globusSize),
@@ -252,7 +259,7 @@ class _PerfilState extends State<Perfil> {
                                 // Ajustes Adalt Dreta
                                 Positioned(
                                     top: 0,
-                                    bottom: MediaQuery.of(context).size.height*0.35,
+                                    bottom: MediaQuery.of(context).size.height*0.25,
                                     left: MediaQuery.of(context).size.width*0.60,
                                     right: 0,
                                     child: new Row(
@@ -273,7 +280,8 @@ class _PerfilState extends State<Perfil> {
                                             ],
                                           ),
                                           style: OutlinedButton.styleFrom(
-                                            backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
+                                            backgroundColor: Theme.of(context).accentColor,
+                                            //backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                             elevation: 5,
                                             shape: CircleBorder(),
                                             padding: EdgeInsets.all(_globusSize),
@@ -283,7 +291,7 @@ class _PerfilState extends State<Perfil> {
                                     )),
                                 // Feedback Abaix Esquerra
                                 Positioned(
-                                    top: MediaQuery.of(context).size.height*0.35,
+                                    top: MediaQuery.of(context).size.height*0.25,
                                     bottom: 0,
                                     left: 0,
                                     right: MediaQuery.of(context).size.width*0.60,
@@ -305,7 +313,8 @@ class _PerfilState extends State<Perfil> {
                                             ],
                                           ),
                                           style: OutlinedButton.styleFrom(
-                                            backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
+                                            backgroundColor: Theme.of(context).accentColor,
+                                            //backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                             elevation: 5,
                                             shape: CircleBorder(),
                                             padding: EdgeInsets.all(_globusSize),
@@ -315,7 +324,7 @@ class _PerfilState extends State<Perfil> {
                                     )),
                                 // Bug Abaix Dreta
                                 Positioned(
-                                    top: MediaQuery.of(context).size.height*0.35,
+                                    top: MediaQuery.of(context).size.height*0.25,
                                     bottom: 0,
                                     left: MediaQuery.of(context).size.width*0.60,
                                     right: 0,
@@ -337,7 +346,8 @@ class _PerfilState extends State<Perfil> {
                                             ],
                                           ),
                                           style: OutlinedButton.styleFrom(
-                                            backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
+                                            backgroundColor: Theme.of(context).accentColor,
+                                            //backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                             elevation: 5,
                                             shape: CircleBorder(),
                                             padding: EdgeInsets.all(_globusSize),
@@ -464,8 +474,8 @@ class _PerfilState extends State<Perfil> {
                   ),
                 ),
               ],
-            ),
-      );
+            );
+
   }
 
   @override

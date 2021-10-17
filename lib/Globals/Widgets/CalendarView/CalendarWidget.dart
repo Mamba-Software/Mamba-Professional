@@ -81,7 +81,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 timeRegionBuilder: timeRegionBuilder,
                 firstDayOfWeek: 1,
                 showCurrentTimeIndicator: true,
-                viewHeaderHeight: 45,
+                viewHeaderHeight: 50,
                 viewHeaderStyle: ViewHeaderStyle(
                   backgroundColor: Theme.of(context).backgroundColor,
                   dateTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 14, fontWeight: FontWeight.bold),

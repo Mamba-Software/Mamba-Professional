@@ -187,7 +187,8 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                     ],
                                   ),
                                   style: OutlinedButton.styleFrom(
-                                    backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
+                                    backgroundColor: Theme.of(context).accentColor,
+                                    //backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                     elevation: 5,
                                     shape: CircleBorder(),
                                     padding: EdgeInsets.all(_globusSize),
@@ -219,7 +220,8 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                     ],
                                   ),
                                   style: OutlinedButton.styleFrom(
-                                    backgroundColor: !_statusButtons[1] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
+                                    backgroundColor: Theme.of(context).accentColor,
+                                    //backgroundColor: !_statusButtons[1] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                     elevation: 5,
                                     shape: CircleBorder(),
                                     padding: EdgeInsets.all(_globusSize),
@@ -251,7 +253,8 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                     ],
                                   ),
                                   style: OutlinedButton.styleFrom(
-                                    backgroundColor: !_statusButtons[3] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
+                                    backgroundColor: Theme.of(context).accentColor,
+                                    //backgroundColor: !_statusButtons[3] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                     elevation: 5,
                                     shape: CircleBorder(),
                                     padding: EdgeInsets.all(_globusSize),
@@ -283,7 +286,8 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                     ],
                                   ),
                                   style: OutlinedButton.styleFrom(
-                                    backgroundColor: !_statusButtons[2] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
+                                    backgroundColor: Theme.of(context).accentColor,
+                                    //backgroundColor: !_statusButtons[2] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                     elevation: 5,
                                     shape: CircleBorder(),
                                     padding: EdgeInsets.all(_globusSize),
