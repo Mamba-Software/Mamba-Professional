@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +31,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   // Dies de la semana que el entrenador no treballa
   List<int> nonWorkDays = [];
   // Horari
-  double _startHour = currentBrand.workShift[0];
-  double _endHour = currentBrand.workShift[1];
+  double _startHour = currentBrand.workShift[0].toDouble();
+  double _endHour = currentBrand.workShift[1].toDouble();
   // Descansos
   DateTime dateJoined = DateFormat('dd-MM-yyyy').parse(currentBrand.dateJoined!);
   // Events From Brand
@@ -92,7 +93,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 ),
                 timeSlotViewSettings: TimeSlotViewSettings(
                     timelineAppointmentHeight: 50,
-                    timeIntervalHeight: 50,
+                    timeIntervalHeight: 60,
                     timeIntervalWidth: 55,
                     startHour: _startHour-1,
                     endHour:  _endHour+1,
@@ -119,7 +120,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   ),
                 ),
                 onLongPress: (details) {
-                  _addEvent(dateTimeClicked: details.date);
+                  if(details.date!.isAfter(DateTime.now())) {
+                    _addEvent(dateTimeClicked: details.date);
+                  }
                 },
                 onTap: (details) {
                   log(details.date.toString());
@@ -181,13 +184,14 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   List<TimeRegion> _getTimeRegions() {
     final List<TimeRegion> regions = <TimeRegion>[];
+    // Breaks
     for (var i=2; i < currentBrand.workShift.length ; i+=2) {
       var start = currentBrand.workShift[i];
-      var startHour = int.parse(start.toString().split(".")[0]);
-      var startMin = int.parse(start.toString().split(".")[1]);
+      var startHour = int.parse(start.toStringAsFixed(2).split(".")[0]);
+      var startMin = int.parse(start.toStringAsFixed(2).split(".")[1]);
       var end = currentBrand.workShift[i+1];
-      var endHour = int.parse(end.toString().split(".")[0]);
-      var endMin = int.parse(end.toString().split(".")[1]);
+      var endHour = int.parse(end.toStringAsFixed(2).split(".")[0]);
+      var endMin = int.parse(end.toStringAsFixed(2).split(".")[1]);
       DateTime inActiveHoursStart = DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHour, startMin, 0);
       DateTime inActiveHoursEnd = DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHour, endMin, 0);
       regions.add(TimeRegion(

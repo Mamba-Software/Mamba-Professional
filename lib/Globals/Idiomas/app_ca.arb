@@ -82,6 +82,7 @@
   "name": "Nom",
   "basicInfo": "Informació Bàsica",
   "canEdit": "Tota la informació podrà ser editada més endavant",
+  "location": "Ubicació",
   "baseLocation": "Ubicació Base",
   "baseLocationDescription": "Aquesta és l'ubicació que utilitzarem per localitzar la teva marca al mapa perque els clients puguin trobar-te a prop seu. En cas de no tenir adreça fixe, introduiex una ubicació utilitzada frequentment.",
   "streetName": "Carrer: ",
@@ -115,5 +116,24 @@
   "addMembers": "Afegir Membres",
   "inviteCode": "Codi d'invitació",
   "copyCorrectCode": "Codi d'invitació copìat correctament",
-  "members": "Membres"
+  "members": "Membres",
+  "mondayLetter": "Dll",
+  "tuesdarLetter": "Dm",
+  "wednesdayLetter": "Dm",
+  "thursdayLetter": "Dj",
+  "fridayLetter": "Dv",
+  "saturadayLetter": "Ds",
+  "sundayLetter": "Dm",
+  "errorDate": "Has introduït una data que ja ha passat o esta a punt de fer-ho",
+  "recurrentEvent": "Event recurrent",
+  "selectDayTime": "Dia i hora",
+  "selectDuration": "Duració",
+  "selectMembers": "Nombre d'assistents",
+  "days": "Dies",
+  "during": "Durant",
+  "thisWeek": "Només aquesta setmana",
+  "nextTwoWeek": "Dos setmanes",
+  "wholeMonth": "Tot el mes",
+  "until": "Fins al {date}"
+
 }
