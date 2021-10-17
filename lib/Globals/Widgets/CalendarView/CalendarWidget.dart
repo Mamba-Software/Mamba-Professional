@@ -31,8 +31,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   // Dies de la semana que el entrenador no treballa
   List<int> nonWorkDays = [];
   // Horari
-  double _startHour = currentBrand.workShift[0].toDouble();
-  double _endHour = currentBrand.workShift[1].toDouble();
+  double? _startHour;
+  double? _endHour;
   // Descansos
   DateTime dateJoined = DateFormat('dd-MM-yyyy').parse(currentBrand.dateJoined!);
   // Events From Brand
@@ -41,6 +41,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   @override
   void initState() {
+    _startHour = double.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
+    _endHour = double.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
+    print(currentBrand.workShift[0]);
+    print(currentBrand.workShift[1]);
     super.initState();
   }
   
@@ -95,8 +99,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     timelineAppointmentHeight: 50,
                     timeIntervalHeight: 60,
                     timeIntervalWidth: 55,
-                    startHour: _startHour-1,
-                    endHour:  _endHour+1,
+                    startHour: _startHour!-1,
+                    endHour:  _endHour!+1,
                     timeFormat: 'HH',
                     dayFormat: 'E',
                     dateFormat: 'd',
@@ -203,18 +207,22 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       ));
     }
     // Hora Inactiva Matí
+    var startHourWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
+    var startMinWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[1]);
     regions.add(TimeRegion(
       enablePointerInteraction: false,
-      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, _startHour.toInt()-1, 0, 0),
-      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, _startHour.toInt(), 0, 0),
+      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS-1, 0, 0),
+      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS, startMinWS, 0),
       color: Colors.grey.withOpacity(0.3),
       recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
     ));
     // Hora Inactiva Nit
+    var endHourWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
+    var endMinWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
     regions.add(TimeRegion(
       enablePointerInteraction: false,
-      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, _endHour.toInt(), 0, 0),
-      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, _endHour.toInt()+1, 0, 0),
+      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS, endMinWS, 0),
+      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS+1, 0, 0),
       color: Colors.grey.withOpacity(0.3),
       recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
     ));

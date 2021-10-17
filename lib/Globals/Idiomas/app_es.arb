@@ -514,7 +514,7 @@
   "@sundayLetter":{
     "description": "tuesdarLetter text"
   },
-  "errorDate": "Has introducido una fecha que ya ha pasado o esta a punto de hacerlo",
+  "errorDate": "Has introducido una fecha y hora inválida",
   "@errorDate":{
     "description": "tuesdarLetter text"
   },

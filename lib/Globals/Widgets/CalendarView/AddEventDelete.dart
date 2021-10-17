@@ -102,7 +102,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     Widget dateTimePicker = CupertinoDatePicker(
       mode: CupertinoDatePickerMode.dateAndTime,
       initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-      minimumDate: startDate,
+      minimumDate: startDate.subtract(Duration(days: 1)),
       maximumDate: startDate.add(Duration(days: 365)),
       use24hFormat: true,
       minuteInterval: 30,
@@ -1588,10 +1588,10 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     var startWorkDay =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(startWorkHour),int.parse(startWorkMin));
     var endWorkDay =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(endWorkHour),int.parse(endWorkMin));
     if ( // Can´t create event in the past
-      startTime.isBefore(DateTime.now()) || endTime.isBefore(DateTime.now())
+      startTime.isBefore(DateTime.now()) || startTime.isAtSameMomentAs(DateTime.now()) || endTime.isBefore(DateTime.now()) || endTime.isAtSameMomentAs(DateTime.now())
       // Can´t create event outside of working hours
-      || startTime.isBefore(startWorkDay) || endTime.isBefore(startWorkDay)
-      || startTime.isAfter(endWorkDay) || endTime.isAfter(endWorkDay)
+      || startTime.isBefore(startWorkDay) || endTime.isAtSameMomentAs(startWorkDay) || endTime.isBefore(startWorkDay)
+      || startTime.isAfter(endWorkDay) || endTime.isAtSameMomentAs(endWorkDay) || endTime.isAfter(endWorkDay)
     ) {
       return false;
     } else {
@@ -1609,7 +1609,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         var startBreak =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(startBreakHour), int.parse(startBreakMin));
         var endBreak =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(endBreakHour), int.parse(endBreakMin));
         // Condition check
-        if ((startTime.isAfter(startBreak) && startTime.isBefore(endBreak)) || (endTime.isAfter(startBreak) && endTime.isBefore(endBreak))) {
+        if ( ((startTime.isAfter(startBreak) || startTime.isAtSameMomentAs(startBreak)) && (startTime.isBefore(endBreak))) ||
+            ((endTime.isAfter(startBreak)) && (endTime.isBefore(endBreak) || endTime.isAtSameMomentAs(endBreak)))) {
           return false;
         }
       }

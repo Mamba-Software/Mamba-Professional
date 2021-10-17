@@ -124,7 +124,7 @@
   "fridayLetter": "Dv",
   "saturadayLetter": "Ds",
   "sundayLetter": "Dm",
-  "errorDate": "Has introduït una data que ja ha passat o esta a punt de fer-ho",
+  "errorDate": "Has introduït una data i hora invàlida",
   "recurrentEvent": "Event recurrent",
   "selectDayTime": "Dia i hora",
   "selectDuration": "Duració",
