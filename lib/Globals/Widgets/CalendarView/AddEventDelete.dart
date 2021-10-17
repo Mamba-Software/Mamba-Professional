@@ -24,13 +24,17 @@ class AddEvent extends StatefulWidget {
   _AddEventState createState() => _AddEventState();
 }
 
-class _AddEventState extends State<AddEvent> {
+class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin{
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
   bool isLoading = false;
   // Boolean isUpdated
   bool isUpdated = false;
+  // Tab Controller
+  TabController? _tabController;
+  int _selectedIndex = 0;
+  List<bool> tabs = [true, true, true];
   // Title Controller
   var titleController = TextEditingController();
   String? titleString;
@@ -232,6 +236,7 @@ class _AddEventState extends State<AddEvent> {
   @override
   initState() {
     isLoading = true;
+    _tabController = TabController(length: 3, vsync: this);
     if (widget.update) {
       getEventInfo(widget.oldData!.id!.toString());
     } else {
@@ -342,6 +347,699 @@ class _AddEventState extends State<AddEvent> {
       )
         :
       Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height*0.70,
+        ),
+        //padding: MediaQuery.of(context).viewInsets,
+        child: Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              toolbarHeight: 120,
+              title: Column(
+                children: [
+                  Text(!widget.update ? "Añadir Evento" : "Editar Evento", style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+                ],
+              ),
+              centerTitle: true,
+              iconTheme: IconThemeData(
+                color: Theme.of(context).primaryColor, //change your color here
+              ),
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back, color: Styles.accent),
+                onPressed: () => {
+                  Navigator.pop(context)
+                },
+              ),
+              bottom: TabBar(
+                controller: _tabController,
+                indicatorColor: Theme.of(context).scaffoldBackgroundColor,
+                onTap: (index) {
+                  _selectedIndex = index;
+                },
+                tabs: [
+                  Tab(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.info_outlined, color: tabs[0] ? Theme.of(context).accentColor : Colors.transparent)
+                        ],
+                      ),
+                    ),
+                  ),
+                  Tab(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.calendar_today_outlined, color: tabs[1] ? Theme.of(context).accentColor : Colors.transparent)
+                        ],
+                      ),
+                    ),
+                  ),
+                  Tab(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.group, color: tabs[2] ? Theme.of(context).accentColor : Colors.transparent)
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            resizeToAvoidBottomInset: false,
+            backgroundColor: Colors.transparent,
+            body: TabBarView(
+              controller: _tabController,
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                Scaffold(
+                  body: SingleChildScrollView(
+                    child: Column(
+                        children: [
+                          LinearProgressIndicator(
+                            value: 0.33,
+                            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                            color: Theme.of(context).accentColor,
+                          ),
+                          Container(
+                            constraints: BoxConstraints(
+                              minHeight: MediaQuery.of(context).size.height*0.43,
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 25.0, right: 25.0),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Padding(
+                                        padding: EdgeInsets.only(top: 25),
+                                        child: new Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: <Widget>[
+                                            new Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                new Text(
+                                                  AppLocalizations.of(context)!.title,
+                                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        )
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.only(top: 2.0),
+                                        child: new Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: <Widget>[
+                                            new Flexible(
+                                              child: new TextFormField(
+                                                controller: titleController,
+                                                validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
+                                                onChanged: (val) {
+                                                  setState(() {
+                                                    titleString = val;
+                                                  });
+                                                },
+                                                decoration: InputDecoration(
+                                                  hintText: AppLocalizations.of(context)!.titleHint,
+                                                  border: InputBorder.none,
+                                                  focusedBorder: InputBorder.none,
+                                                  enabledBorder: InputBorder.none,
+                                                  errorBorder: InputBorder.none,
+                                                  disabledBorder: InputBorder.none,
+                                                ),
+                                                enabled: true,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.only(top: 15),
+                                        child: new Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: <Widget>[
+                                            new Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                new Text(
+                                                  AppLocalizations.of(context)!.description,
+                                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        )
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.only(top: 15.0),
+                                        child: new Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: <Widget>[
+                                            new Flexible(
+                                              child: new TextFormField(
+                                                keyboardType: TextInputType.visiblePassword,
+                                                controller: descriptionController,
+                                                minLines: 1,
+                                                maxLines: 4,
+                                                onChanged: (val) {
+                                                  setState(() {
+                                                    descriptionString = val;
+                                                  });
+                                                },
+                                                decoration: InputDecoration(
+                                                  labelStyle: Styles.purpleTextStyle,
+                                                  hintText:AppLocalizations.of(context)!.descriptionError,
+                                                  border: InputBorder.none,
+                                                  focusedBorder: InputBorder.none,
+                                                  enabledBorder: InputBorder.none,
+                                                  errorBorder: InputBorder.none,
+                                                  disabledBorder: InputBorder.none,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.only(top: 15),
+                                        child: new Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: <Widget>[
+                                            new Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                new Text(
+                                                  "Ubicación",
+                                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        )
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 0),
+                                      child: new Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: TextFormField(
+                                              controller: ubicacionController,
+                                              validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.enterAddressError : null,
+                                              readOnly: true,
+                                              onTap: () async {
+                                                final Suggestion? result = await showSearch(
+                                                  context: context,
+                                                  delegate: AddressSearch(),
+                                                );
+                                                if (result != null) {
+                                                  //final placeDetails = await LocationPlacesSearch().getPlaceDetailFromId(result.placeId);
+                                                  setState(() {
+                                                    ubicacionController.text = result.description;
+                                                  });
+                                                  placeId = result.placeId;
+                                                }
+                                              },
+                                              style: Styles.purpleTextStyle,
+                                              decoration: InputDecoration(
+                                                icon: Container(
+                                                  width: 10,
+                                                  height: 10,
+                                                  child: Icon(
+                                                    Icons.location_on_outlined,
+                                                    color: Theme.of(context).accentColor,
+                                                    size: 28,
+                                                  ),
+                                                ),
+                                                hintText: AppLocalizations.of(context)!.enterAddress,
+                                                hintStyle: Styles.purpleTextStyle,
+                                                border: InputBorder.none,
+                                                contentPadding: EdgeInsets.only(left: 18.0, top: 18),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ]
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                                child: FloatingActionButton.extended(
+                                  onPressed: () {
+                                    _tabController!.animateTo(_selectedIndex += 1);
+                                  },
+                                  backgroundColor: Theme.of(context).accentColor,
+                                  icon: Container(),
+                                  label: Text(AppLocalizations.of(context)!.next, style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                  ),
+                  resizeToAvoidBottomInset: false,
+                ),
+                Scaffold(
+                  body: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          LinearProgressIndicator(
+                            value: 0.67,
+                            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                            valueColor: new AlwaysStoppedAnimation<Color>(Theme.of(context).accentColor),
+                          ),
+                          Container(
+                            constraints: BoxConstraints(
+                              minHeight: MediaQuery.of(context).size.height*0.43,
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 25.0, right: 25.0),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 15.0),
+                                      child: Container(
+                                        height: MediaQuery.of(context).size.height * 0.15,
+                                        width: MediaQuery.of(context).size.width * 0.90,
+                                        decoration: BoxDecoration(
+                                            color: Theme.of(context).backgroundColor,
+                                            borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(left:18, top: 10.0),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
+                                                  Container(
+                                                    padding: EdgeInsets.symmetric(horizontal: 20),
+                                                    width: MediaQuery.of(context).size.width*0.70,
+                                                    child: GestureDetector(
+                                                        onTap: () {
+                                                          selectSlot(context, 0);
+                                                        },
+                                                        child: Row(
+                                                          mainAxisSize: MainAxisSize.max,
+                                                          children: <Widget>[
+                                                            new Flexible(
+                                                              child: TextFormField(
+                                                                controller: startDateController,
+                                                                readOnly: true,
+                                                                enabled: false,
+                                                                style: Styles.purpleTextStyle,
+                                                                decoration: InputDecoration(
+                                                                  labelStyle: Styles.purpleTextStyle,
+                                                                  border: InputBorder.none,
+                                                                  focusedBorder: InputBorder.none,
+                                                                  enabledBorder: InputBorder.none,
+                                                                  errorBorder: InputBorder.none,
+                                                                  disabledBorder: InputBorder.none,
+                                                                ),
+                                                                textAlign: TextAlign.start,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(left:18, top: 10.0),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Icon(Icons.timer, color: Theme.of(context).accentColor,),
+                                                  Container(
+                                                    padding: EdgeInsets.only(left: 20),
+                                                    width: MediaQuery.of(context).size.width*0.30,
+                                                    child: GestureDetector(
+                                                        onTap: () {
+                                                          selectSlot(context, 1);
+                                                        },
+                                                        child: Row(
+                                                          mainAxisSize: MainAxisSize.max,
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            new Flexible(
+                                                              child: TextFormField(
+                                                                controller: durationController,
+                                                                readOnly: true,
+                                                                enabled: false,
+                                                                style: Styles.purpleTextStyle,
+                                                                decoration: InputDecoration(
+                                                                  labelStyle: Styles.purpleTextStyle,
+                                                                  border: InputBorder.none,
+                                                                  focusedBorder: InputBorder.none,
+                                                                  enabledBorder: InputBorder.none,
+                                                                  errorBorder: InputBorder.none,
+                                                                  disabledBorder: InputBorder.none,
+                                                                ),
+                                                                textAlign: TextAlign.start,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.only(top: 15,),
+                                        child: new Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            Text(
+                                              "Crear evento recurrente",
+                                              style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(width: 10,),
+                                            Checkbox(
+                                              checkColor: Colors.white,
+                                              fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                              value: isRecurrent,
+                                              onChanged: (bool? value) {
+                                                setState(() {
+                                                  isRecurrent = value!;
+                                                });
+                                              },
+                                            ),
+                                          ],
+                                        )
+                                    ),
+                                    isRecurrent ? Column(
+                                      children: [
+                                        Padding(
+                                            padding: EdgeInsets.only(top: 0),
+                                            child: new Column(
+                                              mainAxisSize: MainAxisSize.max,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: Text(
+                                                    "Días",
+                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                                  ),
+                                                ),
+                                                WeekdaySelector(
+                                                  fillColor: Colors.white,
+                                                  selectedFillColor: Theme.of(context).accentColor,
+                                                  textStyle: Styles.purpleTextStyle,
+                                                  selectedTextStyle: Styles.whiteTextStyle,
+                                                  // Working Days disabledFillColor: Colors.red,
+                                                  onChanged: (v) {
+                                                    printIntAsDay(v);
+                                                    setState(() {
+                                                      values[v % 7] = !values[v % 7]!;
+                                                    });
+                                                  },
+                                                  selectedElevation: 15,
+                                                  elevation: 5,
+                                                  disabledElevation: 0,
+                                                  values: values,
+                                                ),
+                                              ],
+                                            )
+                                        ),
+                                        Padding(
+                                            padding: EdgeInsets.only(top: 10),
+                                            child: new Column(
+                                              mainAxisSize: MainAxisSize.max,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: Text(
+                                                    "Durante",
+                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                                  ),
+                                                ),
+                                                Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    ListTile(
+                                                      dense: true,
+                                                      contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                                                      title: Text(
+                                                        'Solo esta semana',
+                                                        style: Styles.purpleTextStyle,
+                                                      ),
+                                                      subtitle: Text(
+                                                        "Hasta el ${toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(DateTime.now()))}",
+                                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14), textAlign: TextAlign.left,
+                                                      ),
+                                                      leading: Radio(
+                                                        value: 1,
+                                                        groupValue: _value,
+                                                        activeColor: Theme.of(context).accentColor,
+                                                        fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            _value = int.parse(value.toString());
+                                                          });
+                                                        },
+                                                      ),
+                                                    ),
+                                                    ListTile(
+                                                      dense: true,
+                                                      contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                                                      title: Text(
+                                                        'Dos semanas',
+                                                        style: Styles.purpleTextStyle,
+                                                      ),
+                                                      subtitle: Text(
+                                                        "Hasta el ${toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(DateTime.now()))}",
+                                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14), textAlign: TextAlign.left,
+                                                      ),
+                                                      leading: Radio(
+                                                        value: 2,
+                                                        groupValue: _value,
+                                                        activeColor: Theme.of(context).accentColor,
+                                                        fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            _value = int.parse(value.toString());
+                                                          });
+                                                        },
+                                                      ),
+                                                    ),
+                                                    ListTile(
+                                                      dense: true,
+                                                      contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                                                      title: Text(
+                                                        'Todo el mes',
+                                                        style: Styles.purpleTextStyle,
+                                                      ),
+                                                      subtitle: Text(
+                                                        "Hasta el ${toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(DateTime.now()))}",
+                                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14), textAlign: TextAlign.left,
+                                                      ),
+                                                      leading: Radio(
+                                                        value: 3,
+                                                        groupValue: _value,
+                                                        activeColor: Theme.of(context).accentColor,
+                                                        fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            _value = int.parse(value.toString());
+                                                          });
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            )
+                                        ),
+                                      ],
+                                    ) : Container(),
+                                  ]
+                              )
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                                child: FloatingActionButton.extended(
+                                  onPressed: () {
+                                    _tabController!.animateTo(_selectedIndex += 1);
+                                  },
+                                  backgroundColor: Theme.of(context).accentColor,
+                                  icon: Container(),
+                                  label: Text(AppLocalizations.of(context)!.next, style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                  ),
+                  resizeToAvoidBottomInset: false,
+                ),
+                Scaffold(
+                  body: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          LinearProgressIndicator(
+                            value: 1,
+                            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                            valueColor: new AlwaysStoppedAnimation<Color>(Theme.of(context).accentColor),
+                          ),
+                          Container(
+                            constraints: BoxConstraints(
+                              minHeight: MediaQuery.of(context).size.height*0.43,
+                            ),
+                            child: Padding(
+                                padding: EdgeInsets.only(left: 25.0, right: 25.0),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Padding(
+                                          padding: EdgeInsets.only(top: 25),
+                                          child: new Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: <Widget>[
+                                              new Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  new Text(
+                                                    "Capacidad de Clientes",
+                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          )
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 10),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Icon(Icons.person, color: Theme.of(context).accentColor,),
+                                            Container(
+                                              padding: EdgeInsets.only(left: 20),
+                                              width: MediaQuery.of(context).size.width*0.30,
+                                              child: GestureDetector(
+                                                  onTap: () {
+                                                    selectSlot(context, 2);
+                                                  },
+                                                  child: Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: <Widget>[
+                                                      new Flexible(
+                                                        child: TextFormField(
+                                                          controller: membersController,
+                                                          readOnly: true,
+                                                          enabled: false,
+                                                          style: Styles.purpleTextStyle,
+                                                          decoration: InputDecoration(
+                                                            labelStyle: Styles.purpleTextStyle,
+                                                            border: InputBorder.none,
+                                                            focusedBorder: InputBorder.none,
+                                                            enabledBorder: InputBorder.none,
+                                                            errorBorder: InputBorder.none,
+                                                            disabledBorder: InputBorder.none,
+                                                          ),
+                                                          textAlign: TextAlign.start,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                          padding: EdgeInsets.only(top: 25),
+                                          child: new Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: <Widget>[
+                                              new Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  new Text(
+                                                    "Entrenadores Asignados",
+                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          )
+                                      ),
+                                    ]
+                                )
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                                child: FloatingActionButton.extended(
+                                  onPressed: null,
+                                  backgroundColor: Theme.of(context).accentColor,
+                                  icon: Container(),
+                                  label: Text("Crear evento", style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                  ),
+                  resizeToAvoidBottomInset: false,
+                ),
+              ],
+            ),
+          ),
+      );
+  }
+
+  /*
+  Container(
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height*0.86,
         ),
@@ -836,7 +1534,7 @@ class _AddEventState extends State<AddEvent> {
           ),
         ),
     );
-  }
+   */
 
   printIntAsDay(int day) {
     print('Received integer: $day. Corresponds to day: ${intDayToEnglish(day)}');

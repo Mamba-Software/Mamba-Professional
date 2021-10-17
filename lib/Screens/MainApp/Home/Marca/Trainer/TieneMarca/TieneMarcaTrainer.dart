@@ -58,7 +58,8 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
         case 1:
           showModalBottomSheet<bool>(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+              ),
               isScrollControlled: true,
               context: context,
               builder: (context) {

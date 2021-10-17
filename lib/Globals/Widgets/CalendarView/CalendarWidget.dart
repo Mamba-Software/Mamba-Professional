@@ -268,18 +268,23 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   void _addEvent({Appointment? appointment, bool? updated, DateTime? dateTimeClicked}) {
     showModalBottomSheet<bool>(
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-              top: Radius.circular(25.0)
-          )
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
       ),
       isScrollControlled: true,
       context: context,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       builder: (context) {
-        return AddEvent(
-          oldData: appointment,
-          update: updated ?? false,
-          locale: Localizations.localeOf(context),
-          initialDateTime: dateTimeClicked ?? null,
+        return Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height*0.88,
+          ),
+          padding: MediaQuery.of(context).viewInsets,
+          child: AddEvent(
+            oldData: appointment,
+            update: updated ?? false,
+            locale: Localizations.localeOf(context),
+            initialDateTime: dateTimeClicked ?? null,
+          ),
         );
       });
   }
