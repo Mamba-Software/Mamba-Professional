@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:weekday_selector/weekday_selector.dart';
+import '../../Constants.dart';
 import '../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../Styles.dart';
@@ -566,7 +567,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                   )
                                               ),
                                               Padding(
-                                                padding: EdgeInsets.only(top: 0),
+                                                padding: EdgeInsets.only(bottom: 0),
                                                 child: new Row(
                                                   mainAxisSize: MainAxisSize.min,
                                                   children: <Widget>[
@@ -575,6 +576,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                         controller: ubicacionController,
                                                         validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.enterAddressError : null,
                                                         readOnly: true,
+                                                        maxLines: 2,
                                                         onTap: () async {
                                                           final Suggestion? result = await showSearch(
                                                             context: context,
@@ -607,6 +609,15 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                     )
                                                   ],
                                                 ),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  Container(
+                                                      height: 120,
+                                                      child: Image.asset(Constants.locationImage)
+                                                  ),
+                                                ],
                                               ),
                                             ]
                                         ),
