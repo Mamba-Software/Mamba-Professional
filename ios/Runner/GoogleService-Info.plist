@@ -3,36 +3,34 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>556444346766-ujtjmbv1l97bb3fe7g1pdon6v1isllml.apps.googleusercontent.com</string>
+	<string>331547241606-60l9ocfepeqtoos57487ougk0aekag6n.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.556444346766-ujtjmbv1l97bb3fe7g1pdon6v1isllml</string>
+	<string>com.googleusercontent.apps.331547241606-60l9ocfepeqtoos57487ougk0aekag6n</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>556444346766-rfnbncp8faug9isjv5pn9e100i5c2ucs.apps.googleusercontent.com</string>
+	<string>331547241606-hi9v6golhte2j8m8s5p7q9vij3cuaefm.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyALI4XYHTNJjhSN_Gjb5rVn7boB5fKnq6Y</string>
+	<string>AIzaSyCu2cNcy52ifGK8rp3GYb7FiWV0EmpbFuc</string>
 	<key>GCM_SENDER_ID</key>
-	<string>556444346766</string>
+	<string>331547241606</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.mamba.castelldefels.mambaCastelldefels</string>
 	<key>PROJECT_ID</key>
-	<string>mamba-24-8</string>
+	<string>mamba-style</string>
 	<key>STORAGE_BUCKET</key>
-	<string>mamba-24-8.appspot.com</string>
+	<string>mamba-style.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:556444346766:ios:14f0d10704d60f9d8d9cdf</string>
-	<key>DATABASE_URL</key>
-	<string>https://mamba-24-8-default-rtdb.europe-west1.firebasedatabase.app</string>
+	<string>1:331547241606:ios:e35b259d49b9bdbd7d3507</string>
 </dict>
 </plist>
