@@ -359,12 +359,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
             appBar: AppBar(
               elevation: 0,
               backgroundColor: Colors.transparent,
-              toolbarHeight: 120,
-              title: Column(
-                children: [
-                  Text(!widget.update ? "Añadir Evento" : "Editar Evento", style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
-                ],
-              ),
+              toolbarHeight: MediaQuery.of(context).size.height*0.15,
+              title: Text(!widget.update ? "Añadir Evento" : "Editar Evento", style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
               centerTitle: true,
               iconTheme: IconThemeData(
                 color: Theme.of(context).primaryColor, //change your color here
@@ -376,7 +372,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                 },
               ),
               bottom: PreferredSize(
-                preferredSize: Size.fromHeight(100),
+                preferredSize: Size.fromHeight(0),
                 child: IgnorePointer(
                   child: TabBar(
                     controller: _tabController,
