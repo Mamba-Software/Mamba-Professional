@@ -562,5 +562,25 @@
         "type": "String"
       }
     }
+  },
+  "addEvent": "Añadir evento",
+  "@addEvent":{
+    "description": "addEvent text"
+  },
+  "createEvent": "Crear evento",
+  "@createEvent":{
+    "description": "addEvent text"
+  },
+  "editEvent": "Editar evento",
+  "@editEvent":{
+    "description": "addEvent text"
+  },
+  "maxNumberClients": "Número máximo de asistentes",
+  "@maxNumberClients":{
+    "description": "addEvent text"
+  },
+  "designatedTrainers": "Entrenadores asignados",
+  "@designatedTrainers":{
+    "description": "addEvent text"
   }
 }

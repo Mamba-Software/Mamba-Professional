@@ -197,6 +197,7 @@ class FirebaseDatabaseService {
     });
   }
   // Brand Model Services
+
   // Add Brand
   Future<String> addBrand(String name, File image, String description, String placeId, String address, double latitude, double longitude, List<double> workShift) async {
     User? firebaseUser = await getCurrentUser();
@@ -257,6 +258,18 @@ class FirebaseDatabaseService {
   Future<Brand> getCurrentBrandDetails(String brandID) async {
     DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Brands").doc(brandID).get();
     return Brand.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+  }
+
+  Future<List<Usuario>> getAllTrainersFromBrand(String brandId) async {
+    List<Usuario> users = [];
+    QuerySnapshot querySnapshot = await _firestore.collection("Users")
+        .where("brandID", isEqualTo: brandId)
+        .where("isTrainer", isEqualTo: true)
+        .get();
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      users.add(Usuario.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return users;
   }
 
   Future<bool> checkIfBrandExists(String brandID) async {

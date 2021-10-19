@@ -5,12 +5,14 @@ import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/Locatio
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import '../../Constants.dart';
 import '../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../Styles.dart';
+import '../CircularImage.dart';
 
 
 class AddEvent extends StatefulWidget {
@@ -62,9 +64,10 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   var oneWeek;
   var twoWeek;
   var oneMonth;
-  // Diumenge, Dilluns, Dimarts, Dimecres, Dijous, Divendres, Dissabte
   final values = <bool?>[false, false, false, false, false, false, false];
   int _value = 1;
+  // Members Page
+  List<Usuario>? brandTrainers;
   // Form To Validate User
   final formKeyInfo = GlobalKey<FormState>();
   final formKeyTime = GlobalKey<FormState>();
@@ -266,6 +269,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       var min = durations[1].split(".")[1];
       durationController.text = "${hour}h ${min}min";
       membersController.text = "${members.toString()}";
+      getAllTrainersFromBrand();
       getPlaceFullAddress();
     }
   }
@@ -289,6 +293,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     var min = event.duration!.toStringAsFixed(2).split(".")[1];
     durationController.text = "${hour}h ${min}min";
     membersController.text = "${event.joinedMembers.length.toString()} / ${event.maxMembers.toString()}";
+    getAllTrainersFromBrand();
     getPlaceFullAddress();
   }
 
@@ -299,6 +304,13 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       isLoading = false;
     });
   }
+
+  Future<void> getAllTrainersFromBrand() async {
+    brandTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
+    print(brandTrainers);
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -360,7 +372,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
               elevation: 0,
               backgroundColor: Colors.transparent,
               toolbarHeight: MediaQuery.of(context).size.height*0.15,
-              title: Text(!widget.update ? "Añadir Evento" : "Editar Evento", style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+              title: Text(!widget.update ? AppLocalizations.of(context)!.addEvent : AppLocalizations.of(context)!.editEvent, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
               centerTitle: true,
               iconTheme: IconThemeData(
                 color: Theme.of(context).primaryColor, //change your color here
@@ -940,7 +952,92 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                         mainAxisSize: MainAxisSize.min,
                                                         children: <Widget>[
                                                           new Text(
-                                                            "Capacidad de Clientes",
+                                                            AppLocalizations.of(context)!.designatedTrainers,
+                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  )
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(top: 10),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      height: MediaQuery.of(context).size.height*0.18,
+                                                      child: ListView.builder(
+                                                          shrinkWrap: true,
+                                                          scrollDirection: Axis.horizontal,
+                                                          itemCount: brandTrainers!.length,
+                                                          itemBuilder: (context, int index) {
+                                                            var trainer = brandTrainers![index];
+                                                            return GestureDetector(
+                                                              onTap: null,
+                                                              child: Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: [
+                                                                    Padding(
+                                                                        padding: const EdgeInsets.all(4.0),
+                                                                        child: CircularImage (
+                                                                          size: MediaQuery.of(context).size.width*0.20,
+                                                                          image: trainer.imageUrl,
+                                                                          color: Theme.of(context).accentColor,
+                                                                          borderWidth: 1.5,
+                                                                        ),
+                                                                      ),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.all(4.0),
+                                                                      child: Text(
+                                                                        trainer.name!,
+                                                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                            );
+                                                            /*
+                                                            return GestureDetector(
+                                                              onTap: null,
+                                                              child: Container(
+                                                                constraints: BoxConstraints(
+                                                                  maxHeight: MediaQuery.of(context).size.height*0.15,
+                                                                ),
+                                                                padding: EdgeInsets.all(8),
+                                                                child: Column(
+                                                                  children: [
+                                                                    CircularImage (
+                                                                      size: MediaQuery.of(context).size.width*0.10,
+                                                                      image: trainer.imageUrl,
+                                                                      color: Theme.of(context).accentColor,
+                                                                    ),
+                                                                    Text(
+                                                                      trainer.name!,
+                                                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            );
+                                                             */
+                                                          }
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Padding(
+                                                  padding: EdgeInsets.only(top: 25),
+                                                  child: new Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: <Widget>[
+                                                      new Column(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: <Widget>[
+                                                          new Text(
+                                                            AppLocalizations.of(context)!.maxNumberClients,
                                                             style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                                                           ),
                                                         ],
@@ -990,24 +1087,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                   ],
                                                 ),
                                               ),
-                                              Padding(
-                                                  padding: EdgeInsets.only(top: 25),
-                                                  child: new Row(
-                                                    mainAxisSize: MainAxisSize.max,
-                                                    children: <Widget>[
-                                                      new Column(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        children: <Widget>[
-                                                          new Text(
-                                                            "Entrenadores Asignados",
-                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  )
-                                              ),
                                             ]
                                         )
                                     ),
@@ -1034,7 +1113,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                           },
                           backgroundColor: Theme.of(context).primaryColor,
                           icon: Container(),
-                          label: Text("Atrás", style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                          label: Text(AppLocalizations.of(context)!.back, style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
                         ),
                       ) : Container(),
                       Padding(
@@ -1071,7 +1150,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                           },
                           backgroundColor: _selectedIndex == 2 ? Colors.green : Theme.of(context).accentColor,
                           icon: Container(),
-                          label: Text(_selectedIndex == 2 ? "Crear evento" : AppLocalizations.of(context)!.next, style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                          label: Text(_selectedIndex == 2 ? AppLocalizations.of(context)!.createEvent : AppLocalizations.of(context)!.next, style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
                         ),
                       ),
                     ],
@@ -1595,10 +1674,10 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     var startWorkDay =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(startWorkHour),int.parse(startWorkMin));
     var endWorkDay =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(endWorkHour),int.parse(endWorkMin));
     if ( // Can´t create event in the past
-      startTime.isBefore(DateTime.now()) || startTime.isAtSameMomentAs(DateTime.now()) || endTime.isBefore(DateTime.now()) || endTime.isAtSameMomentAs(DateTime.now())
+       startTime.isBefore(DateTime.now())|| startTime.isAtSameMomentAs(DateTime.now()) || endTime.isBefore(DateTime.now()) || endTime.isAtSameMomentAs(DateTime.now())
       // Can´t create event outside of working hours
-      || startTime.isBefore(startWorkDay) || endTime.isAtSameMomentAs(startWorkDay) || endTime.isBefore(startWorkDay)
-      || startTime.isAfter(endWorkDay) || endTime.isAtSameMomentAs(endWorkDay) || endTime.isAfter(endWorkDay)
+      || startTime.isBefore(startWorkDay) || endTime.isBefore(startWorkDay)
+      || startTime.isAfter(endWorkDay) || endTime.isAfter(endWorkDay)
     ) {
       return false;
     } else {
@@ -1653,7 +1732,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         var weekDay = tempDate.weekday;
         if (_value == 1) {
           // One Week
-          for (var i=0; i<7; i++) {
+          for (var i=0; i<6; i++) {
             if(values[weekDay-1]!) {
               await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), placeId, members);
             }
@@ -1662,7 +1741,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
           }
         } else if (_value == 2) {
           // Two Weeks
-          for (var i=0; i<14; i++) {
+          for (var i=0; i<13; i++) {
             if(values[weekDay-1]!) {
               await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), placeId, members);
             }
@@ -1671,7 +1750,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
           }
         } else if (_value == 3) {
           // One Month
-          for (var i=0; i<30; i++) {
+          for (var i=0; i<29; i++) {
             if(values[weekDay-1]!) {
               await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), placeId, members);
             }

@@ -35,6 +35,7 @@ class DatabaseAccess {
 
   Future<bool> checkIfBrandExists(String brandID) => _firebase.checkIfBrandExists(brandID);
   Future<Brand> getCurrentBrandDetails(String brandID) => _firebase.getCurrentBrandDetails(brandID);
+  Future<List<Usuario>> getAllTrainersFromBrand(String brandID) => _firebase.getAllTrainersFromBrand(brandID);
 
   Future<void> updateCurrentBrandPhoto(String brandID,File image) => _firebase.updateCurrentBrandPhoto(brandID, image);
 
@@ -53,11 +54,11 @@ class DatabaseAccess {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams
 
+  // Users
+  Stream<QuerySnapshot> getAllEventsFromBrand() => _firebase.getAllEventsFromBrand();
+
   // Brands
   Stream<QuerySnapshot> getAllBrands() => _firebase.getAllBrands();
-
-  // Events
-  Stream<QuerySnapshot> getAllEventsFromBrand() => _firebase.getAllEventsFromBrand();
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //Admin

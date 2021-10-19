@@ -43,8 +43,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   void initState() {
     _startHour = double.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
     _endHour = double.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
-    print(currentBrand.workShift[0]);
-    print(currentBrand.workShift[1]);
     super.initState();
   }
   

@@ -134,6 +134,11 @@
   "thisWeek": "Només aquesta setmana",
   "nextTwoWeek": "Dos setmanes",
   "wholeMonth": "Tot el mes",
-  "until": "Fins al {date}"
+  "until": "Fins al {date}",
+  "addEvent": "Afegir event",
+  "createEvent": "Crear event",
+  "editEvent": "Editar event",
+  "maxNumberClients": "Nombre màxim d'asistents",
+  "designatedTrainers": "Entrenadors assignats"
 
 }
