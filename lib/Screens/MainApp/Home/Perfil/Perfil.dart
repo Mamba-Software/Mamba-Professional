@@ -211,7 +211,7 @@ class _PerfilState extends State<Perfil> {
                                           child: Center(
                                             child: isLoading ?
                                             CircularProgressIndicator() :
-                                            CircularImage(size: MediaQuery.of(context).size.height * 0.25, image: currentUser.imageUrl, file: _image, color: Theme.of(context).accentColor,),
+                                            CircularImage(size: MediaQuery.of(context).size.height * 0.22, image: currentUser.imageUrl, file: _image, color: Theme.of(context).accentColor,),
                                           ),
                                         ),
                                         onTap: () async {
