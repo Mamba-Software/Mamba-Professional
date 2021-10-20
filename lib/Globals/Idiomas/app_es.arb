@@ -582,5 +582,9 @@
   "designatedTrainers": "Entrenadores asignados",
   "@designatedTrainers":{
     "description": "addEvent text"
+  },
+  "noTrainerSelectedError": "No hay ningún entrenador asignado",
+  "@noTrainerSelectedError":{
+    "description": "noTrainerSelectedError text"
   }
 }

@@ -139,6 +139,6 @@
   "createEvent": "Crear event",
   "editEvent": "Editar event",
   "maxNumberClients": "Nombre màxim d'asistents",
-  "designatedTrainers": "Entrenadors assignats"
-
+  "designatedTrainers": "Entrenadors assignats",
+  "noTrainerSelectedError": "No hi ha cap entrenador assignat"
 }

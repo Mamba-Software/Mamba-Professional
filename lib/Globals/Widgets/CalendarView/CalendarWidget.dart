@@ -57,7 +57,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           onPressed: () {
             Navigator.pop(context);
           },
-          tooltip: 'Back',
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -66,9 +65,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
               return LoadingViewPurple();
             }
-            //else if(snapshot.hasError) return ErrorView();
-            //else if(snapshot.connectionState == ConnectionState.waiting) return LoadingViewPurple();
-            //else if(snapshot.data!.docs.isEmpty) return EmptyTodayAndSearch(msg: AppLocalizations.of(context).translate('noEventsForThisDay'),);
             else {
               eventsList = documentsToEvents(snapshot.data!.docs);
               return SfCalendar(
