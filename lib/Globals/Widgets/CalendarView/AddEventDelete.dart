@@ -1022,7 +1022,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                   children: [
                                                     Container(
                                                       height: MediaQuery.of(context).size.height*0.18,
-                                                      width: MediaQuery.of(context).size.width*0.88,
+                                                      width: MediaQuery.of(context).size.width*0.87,
                                                       child: ListView.builder(
                                                           shrinkWrap: true,
                                                           physics: AlwaysScrollableScrollPhysics(),
@@ -1506,7 +1506,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                   children: [
                                                     Container(
                                                       height: MediaQuery.of(context).size.height*0.18,
-                                                      width: MediaQuery.of(context).size.width*0.88,
+                                                      width: MediaQuery.of(context).size.width*0.87,
                                                       child: ListView.builder(
                                                           shrinkWrap: true,
                                                           physics: AlwaysScrollableScrollPhysics(),
