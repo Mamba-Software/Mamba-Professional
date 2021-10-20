@@ -575,6 +575,10 @@
   "@editEvent":{
     "description": "addEvent text"
   },
+  "updateEvent": "Guardar evento",
+  "@updateEvent":{
+    "description": "addEvent text"
+  },
   "maxNumberClients": "Número máximo de asistentes",
   "@maxNumberClients":{
     "description": "addEvent text"

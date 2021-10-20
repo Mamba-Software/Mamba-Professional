@@ -138,6 +138,7 @@
   "addEvent": "Afegir event",
   "createEvent": "Crear event",
   "editEvent": "Editar event",
+  "updateEvent": "Guardar event",
   "maxNumberClients": "Nombre màxim d'asistents",
   "designatedTrainers": "Entrenadors assignats",
   "noTrainerSelectedError": "No hi ha cap entrenador assignat"

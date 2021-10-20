@@ -36,6 +36,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   bool isUpdated = false;
   // Tab Controller
   double addEventTabValue = 0.33;
+  double updateEventTabValue = 0.50;
   TabController? _tabController;
   int _selectedIndex = 0;
   List<bool> tabs = [true, true, true];
@@ -240,10 +241,11 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   @override
   initState() {
     isLoading = true;
-    _tabController = TabController(length: 3, vsync: this);
     if (widget.update) {
+      _tabController = TabController(length: 2, vsync: this);
       getEventInfo(widget.oldData!.id!.toString());
     } else {
+      _tabController = TabController(length: 3, vsync: this);
       if (widget.initialDateTime != null) {
         startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(widget.initialDateTime!);
         startDateController.text = toCapitalized(startDateController.text);
@@ -403,7 +405,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
               bottom: PreferredSize(
                 preferredSize: Size.fromHeight(0),
                 child: IgnorePointer(
-                  child: TabBar(
+                  child: !widget.update ? TabBar(
                     controller: _tabController,
                     indicatorColor: Theme.of(context).scaffoldBackgroundColor,
                     onTap: (index) {
@@ -444,6 +446,38 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                         ),
                       ),
                     ],
+                  )
+                      :
+                  TabBar(
+                    controller: _tabController,
+                    indicatorColor: Theme.of(context).scaffoldBackgroundColor,
+                    onTap: (index) {
+                      _selectedIndex = index;
+                    },
+                    tabs: [
+                      Tab(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.info_outlined, color: tabs[0] ? Theme.of(context).accentColor : Colors.transparent)
+                            ],
+                          ),
+                        ),
+                      ),
+                      Tab(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.group, color: tabs[2] ? Theme.of(context).accentColor : Colors.transparent)
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -453,13 +487,17 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
             backgroundColor: Colors.transparent,
             body: Column(
                 children: [
-                  LinearProgressIndicator(
+                  !widget.update ?  LinearProgressIndicator(
                     value: addEventTabValue,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    color: Theme.of(context).accentColor,
+                  ) : LinearProgressIndicator(
+                    value: updateEventTabValue,
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     color: Theme.of(context).accentColor,
                   ),
                   Expanded(
-                    child: TabBarView(
+                    child: !widget.update ? TabBarView(
                       controller: _tabController,
                       physics: NeverScrollableScrollPhysics(),
                       children: [
@@ -984,8 +1022,10 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                   children: [
                                                     Container(
                                                       height: MediaQuery.of(context).size.height*0.18,
+                                                      width: MediaQuery.of(context).size.width*0.88,
                                                       child: ListView.builder(
                                                           shrinkWrap: true,
+                                                          physics: AlwaysScrollableScrollPhysics(),
                                                           scrollDirection: Axis.horizontal,
                                                           itemCount: brandTrainers!.length,
                                                           itemBuilder: (context, int index) {
@@ -1002,7 +1042,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                                     children: [
                                                                       CircularImage (
-                                                                          size: MediaQuery.of(context).size.width*0.23,
+                                                                          size: MediaQuery.of(context).size.width*0.2,
                                                                           image: trainer.imageUrl,
                                                                           color: Theme.of(context).accentColor,
                                                                           borderWidth: 1.5,
@@ -1012,7 +1052,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                                         children: [
                                                                             Text(
                                                                               trainer.name!,
-                                                                              style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                                                              style: Styles.purpleTextStyle.copyWith(fontSize: 15),
+                                                                              textAlign: TextAlign.center,
                                                                             ),
                                                                             SizedBox(
                                                                             width: MediaQuery.of(context).size.width*0.01,
@@ -1123,7 +1164,491 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                           resizeToAvoidBottomInset: false,
                         ),
                       ],
-                    ),
+                    ) : TabBarView(
+                      controller: _tabController,
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                        Scaffold(
+                          body: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    constraints: BoxConstraints(
+                                      minHeight: MediaQuery.of(context).size.height*0.50,
+                                    ),
+                                    child: Form(
+                                      key: formKeyInfo,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(left: 25.0, right: 25.0),
+                                        child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 15.0),
+                                                child: Container(
+                                                  height: MediaQuery.of(context).size.height * 0.15,
+                                                  width: MediaQuery.of(context).size.width * 0.90,
+                                                  decoration: BoxDecoration(
+                                                      color: Theme.of(context).backgroundColor,
+                                                      borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                                  ),
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: EdgeInsets.only(left:18, top: 10.0),
+                                                        child: Row(
+                                                          mainAxisSize: MainAxisSize.max,
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
+                                                            Container(
+                                                              padding: EdgeInsets.symmetric(horizontal: 20),
+                                                              width: MediaQuery.of(context).size.width*0.70,
+                                                              child: GestureDetector(
+                                                                  onTap: () {
+                                                                    selectSlot(context, 0);
+                                                                  },
+                                                                  child: Row(
+                                                                    mainAxisSize: MainAxisSize.max,
+                                                                    children: <Widget>[
+                                                                      new Flexible(
+                                                                        child: TextFormField(
+                                                                          controller: startDateController,
+                                                                          readOnly: true,
+                                                                          enabled: false,
+                                                                          style: Styles.purpleTextStyle,
+                                                                          decoration: InputDecoration(
+                                                                            labelStyle: Styles.purpleTextStyle,
+                                                                            border: InputBorder.none,
+                                                                            focusedBorder: InputBorder.none,
+                                                                            enabledBorder: InputBorder.none,
+                                                                            errorBorder: InputBorder.none,
+                                                                            disabledBorder: InputBorder.none,
+                                                                          ),
+                                                                          textAlign: TextAlign.start,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  )
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: EdgeInsets.only(left:18, top: 10.0),
+                                                        child: Row(
+                                                          mainAxisSize: MainAxisSize.max,
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Icon(Icons.timer, color: Theme.of(context).accentColor,),
+                                                            Container(
+                                                              padding: EdgeInsets.only(left: 20),
+                                                              width: MediaQuery.of(context).size.width*0.30,
+                                                              child: GestureDetector(
+                                                                  onTap: () {
+                                                                    selectSlot(context, 1);
+                                                                  },
+                                                                  child: Row(
+                                                                    mainAxisSize: MainAxisSize.max,
+                                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                                    children: <Widget>[
+                                                                      new Flexible(
+                                                                        child: TextFormField(
+                                                                          controller: durationController,
+                                                                          readOnly: true,
+                                                                          enabled: false,
+                                                                          style: Styles.purpleTextStyle,
+                                                                          decoration: InputDecoration(
+                                                                            labelStyle: Styles.purpleTextStyle,
+                                                                            border: InputBorder.none,
+                                                                            focusedBorder: InputBorder.none,
+                                                                            enabledBorder: InputBorder.none,
+                                                                            errorBorder: InputBorder.none,
+                                                                            disabledBorder: InputBorder.none,
+                                                                          ),
+                                                                          textAlign: TextAlign.start,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  )
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              errorDate ? Padding(
+                                                padding: EdgeInsets.only(left: 25, right: 25, top: 10.0),
+                                                child: Center(
+                                                  child: Text(
+                                                    AppLocalizations.of(context)!.errorDate,
+                                                    style: Styles.redTextStyle.copyWith(fontSize: 16),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              ) : Container(),
+                                              Padding(
+                                                  padding: EdgeInsets.only(top: 25),
+                                                  child: new Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: <Widget>[
+                                                      new Column(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: <Widget>[
+                                                          new Text(
+                                                            AppLocalizations.of(context)!.title,
+                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  )
+                                              ),
+                                              Padding(
+                                                  padding: EdgeInsets.only(top: 2.0),
+                                                  child: new Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: <Widget>[
+                                                      new Flexible(
+                                                        child: new TextFormField(
+                                                          controller: titleController,
+                                                          validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
+                                                          onChanged: (val) {
+                                                            setState(() {
+                                                              titleString = val;
+                                                            });
+                                                          },
+                                                          decoration: InputDecoration(
+                                                            hintText: AppLocalizations.of(context)!.titleHint,
+                                                            border: InputBorder.none,
+                                                            focusedBorder: InputBorder.none,
+                                                            enabledBorder: InputBorder.none,
+                                                            errorBorder: InputBorder.none,
+                                                            disabledBorder: InputBorder.none,
+                                                          ),
+                                                          enabled: true,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                              ),
+                                              Padding(
+                                                  padding: EdgeInsets.only(top: 15),
+                                                  child: new Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: <Widget>[
+                                                      new Column(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: <Widget>[
+                                                          new Text(
+                                                            AppLocalizations.of(context)!.description,
+                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  )
+                                              ),
+                                              Padding(
+                                                  padding: EdgeInsets.only(top: 15.0),
+                                                  child: new Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: <Widget>[
+                                                      new Flexible(
+                                                        child: new TextFormField(
+                                                          keyboardType: TextInputType.visiblePassword,
+                                                          controller: descriptionController,
+                                                          minLines: 1,
+                                                          maxLines: 4,
+                                                          onChanged: (val) {
+                                                            setState(() {
+                                                              descriptionString = val;
+                                                            });
+                                                          },
+                                                          decoration: InputDecoration(
+                                                            labelStyle: Styles.purpleTextStyle,
+                                                            hintText:AppLocalizations.of(context)!.descriptionError,
+                                                            border: InputBorder.none,
+                                                            focusedBorder: InputBorder.none,
+                                                            enabledBorder: InputBorder.none,
+                                                            errorBorder: InputBorder.none,
+                                                            disabledBorder: InputBorder.none,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                              ),
+                                              Padding(
+                                                  padding: EdgeInsets.only(top: 15),
+                                                  child: new Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: <Widget>[
+                                                      new Column(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: <Widget>[
+                                                          new Text(
+                                                            AppLocalizations.of(context)!.location,
+                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  )
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(bottom: 0),
+                                                child: new Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: <Widget>[
+                                                    Expanded(
+                                                      child: TextFormField(
+                                                        controller: ubicacionController,
+                                                        validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.enterAddressError : null,
+                                                        readOnly: true,
+                                                        maxLines: 2,
+                                                        onTap: () async {
+                                                          final Suggestion? result = await showSearch(
+                                                            context: context,
+                                                            delegate: AddressSearch(),
+                                                          );
+                                                          if (result != null && result.description != "") {
+                                                            setState(() {
+                                                              ubicacionController.text = result.description;
+                                                            });
+                                                            placeId = result.placeId;
+                                                          }
+                                                        },
+                                                        style: Styles.purpleTextStyle,
+                                                        decoration: InputDecoration(
+                                                          icon: Container(
+                                                            width: 10,
+                                                            height: 10,
+                                                            child: Icon(
+                                                              Icons.location_on_outlined,
+                                                              color: Theme.of(context).accentColor,
+                                                              size: 28,
+                                                            ),
+                                                          ),
+                                                          hintText: AppLocalizations.of(context)!.enterAddress,
+                                                          hintStyle: Styles.purpleTextStyle,
+                                                          border: InputBorder.none,
+                                                          contentPadding: EdgeInsets.only(left: 18.0, top: 18),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  Container(
+                                                      height: 120,
+                                                      child: Image.asset(Constants.locationImage)
+                                                  ),
+                                                ],
+                                              ),
+                                            ]
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                          ),
+                          resizeToAvoidBottomInset: false,
+                        ),
+                        Scaffold(
+                          body: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    constraints: BoxConstraints(
+                                      minHeight: MediaQuery.of(context).size.height*0.50,
+                                    ),
+                                    child: Padding(
+                                        padding: EdgeInsets.only(left: 25.0, right: 25.0),
+                                        child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Padding(
+                                                  padding: EdgeInsets.only(top: 25),
+                                                  child: new Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: <Widget>[
+                                                      new Column(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: <Widget>[
+                                                          new Text(
+                                                            AppLocalizations.of(context)!.designatedTrainers,
+                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  )
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(top: 15),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      height: MediaQuery.of(context).size.height*0.18,
+                                                      width: MediaQuery.of(context).size.width*0.88,
+                                                      child: ListView.builder(
+                                                          shrinkWrap: true,
+                                                          physics: AlwaysScrollableScrollPhysics(),
+                                                          scrollDirection: Axis.horizontal,
+                                                          itemCount: brandTrainers!.length,
+                                                          itemBuilder: (context, int index) {
+                                                            var trainer = brandTrainers![index];
+                                                            return GestureDetector(
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  brandTrainersSelected[index] = !brandTrainersSelected[index];
+                                                                });
+                                                              },
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                                child: Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: [
+                                                                    CircularImage (
+                                                                      size: MediaQuery.of(context).size.width*0.2,
+                                                                      image: trainer.imageUrl,
+                                                                      color: Theme.of(context).accentColor,
+                                                                      borderWidth: 1.5,
+                                                                    ),
+                                                                    Row(
+                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                      children: [
+                                                                        Text(
+                                                                          trainer.name!,
+                                                                          style: Styles.purpleTextStyle.copyWith(fontSize: 15),
+                                                                          textAlign: TextAlign.center,
+                                                                        ),
+                                                                        SizedBox(
+                                                                          width: MediaQuery.of(context).size.width*0.01,
+                                                                        ),
+                                                                        SizedBox(
+                                                                          width: MediaQuery.of(context).size.width*0.05,
+                                                                          child: Checkbox(
+                                                                            checkColor: Colors.white,
+                                                                            fillColor: MaterialStateProperty.resolveWith(getColor),
+                                                                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                                            value: brandTrainersSelected[index],
+                                                                            shape: CircleBorder(
+                                                                                side: BorderSide.none
+                                                                            ),
+                                                                            onChanged: (bool? value) {
+                                                                            },
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            );
+                                                          }
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              errorNoTrainerSelected ? Padding(
+                                                padding: EdgeInsets.only(left: 25, right: 25, top: 10.0),
+                                                child: Center(
+                                                  child: Text(
+                                                    AppLocalizations.of(context)!.noTrainerSelectedError,
+                                                    style: Styles.redTextStyle.copyWith(fontSize: 16),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              ) : Container(),
+                                              Padding(
+                                                  padding: EdgeInsets.only(top: 25),
+                                                  child: new Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: <Widget>[
+                                                      new Column(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: <Widget>[
+                                                          new Text(
+                                                            AppLocalizations.of(context)!.maxNumberClients,
+                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  )
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(top: 10),
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.max,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Icon(Icons.person, color: Theme.of(context).accentColor,),
+                                                    Container(
+                                                      padding: EdgeInsets.only(left: 20),
+                                                      width: MediaQuery.of(context).size.width*0.30,
+                                                      child: GestureDetector(
+                                                          onTap: () {
+                                                            selectSlot(context, 2);
+                                                          },
+                                                          child: Row(
+                                                            mainAxisSize: MainAxisSize.max,
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            children: <Widget>[
+                                                              new Flexible(
+                                                                child: TextFormField(
+                                                                  controller: membersController,
+                                                                  readOnly: true,
+                                                                  enabled: false,
+                                                                  style: Styles.purpleTextStyle,
+                                                                  decoration: InputDecoration(
+                                                                    labelStyle: Styles.purpleTextStyle,
+                                                                    border: InputBorder.none,
+                                                                    focusedBorder: InputBorder.none,
+                                                                    enabledBorder: InputBorder.none,
+                                                                    errorBorder: InputBorder.none,
+                                                                    disabledBorder: InputBorder.none,
+                                                                  ),
+                                                                  textAlign: TextAlign.start,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          )
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ]
+                                        )
+                                    ),
+                                  ),
+                                ],
+                              )
+                          ),
+                          resizeToAvoidBottomInset: false,
+                        ),
+                      ],
+                    )
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -1132,10 +1657,17 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                         padding: const EdgeInsets.only(top: 15, bottom: 15),
                         child: FloatingActionButton.extended(
                           onPressed: () {
-                            _tabController!.animateTo(_selectedIndex -= 1);
-                            setState(() {
-                              addEventTabValue -= 0.33;
-                            });
+                            if (!widget.update) {
+                              _tabController!.animateTo(_selectedIndex -= 1);
+                              setState(() {
+                                addEventTabValue -= 0.33;
+                              });
+                            } else {
+                              _tabController!.animateTo(_selectedIndex -= 1);
+                              setState(() {
+                                updateEventTabValue -= 0.50;
+                              });
+                            }
                           },
                           backgroundColor: Theme.of(context).primaryColor,
                           icon: Container(),
@@ -1146,6 +1678,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
                         child: FloatingActionButton.extended(
                           onPressed: () {
+                            if (!widget.update) {
                               if (_selectedIndex == 0) {
                                 if (formKeyInfo.currentState!.validate()){
                                   _tabController!.animateTo(_selectedIndex += 1);
@@ -1177,10 +1710,45 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                   _addEvent();
                                 }
                               }
+                            } else {
+                              if (_selectedIndex == 0) {
+                                var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
+                                if (!validateDateAndTime(startDate, double.parse(duration))) {
+                                  setState(() {
+                                    errorDate = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    errorDate = false;
+                                  });
+                                }
+                                if (formKeyInfo.currentState!.validate()){
+                                  if (!errorDate) {
+                                    _tabController!.animateTo(_selectedIndex += 1);
+                                    setState(() {
+                                      updateEventTabValue += 0.50;
+                                    });
+                                  }
+                                }
+                              } else if (_selectedIndex == 1) {
+                                if (!brandTrainersSelected.contains(true)) {
+                                  setState(() {
+                                    errorNoTrainerSelected = true;
+                                  });
+                                } else {
+                                  _addEvent();
+                                }
+                              }
+                            }
                           },
-                          backgroundColor: _selectedIndex == 2 ? Colors.green : Theme.of(context).accentColor,
+                          backgroundColor: !widget.update ? _selectedIndex == 2 ? Colors.green : Theme.of(context).accentColor : _selectedIndex == 1 ? Colors.green : Theme.of(context).accentColor,
                           icon: Container(),
-                          label: Text(_selectedIndex == 2 ? AppLocalizations.of(context)!.createEvent : AppLocalizations.of(context)!.next, style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                          label: Text(
+                            !widget.update ?
+                              _selectedIndex == 2 ? AppLocalizations.of(context)!.createEvent : AppLocalizations.of(context)!.next
+                            :
+                              _selectedIndex == 1 ? AppLocalizations.of(context)!.updateEvent : AppLocalizations.of(context)!.next,
+                            style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
                         ),
                       ),
                     ],
@@ -1758,7 +2326,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       }
     }
     if (widget.update) {
-      if(isUpdated) await _accessDatabase.updateEvent(widget.oldData!.id.toString(), titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
+      //if(isUpdated) await _accessDatabase.updateEvent(widget.oldData!.id.toString(), titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
+      await _accessDatabase.updateEvent(widget.oldData!.id.toString(), titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
     } else {
       if (!isRecurrent) {
         await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
