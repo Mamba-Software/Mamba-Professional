@@ -996,40 +996,46 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                                   brandTrainersSelected[index] = !brandTrainersSelected[index];
                                                                 });
                                                               },
-                                                              child: Column(
-                                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                                  children: [
-                                                                    CircularImage (
-                                                                        size: MediaQuery.of(context).size.width*0.23,
-                                                                        image: trainer.imageUrl,
-                                                                        color: Theme.of(context).accentColor,
-                                                                        borderWidth: 1.5,
-                                                                      ),
-                                                                    Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                                      children: [
-                                                                          Text(
-                                                                            trainer.name!,
-                                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 16),
-                                                                          ),
-                                                                          SizedBox(
-                                                                            width: MediaQuery.of(context).size.width*0.04,
-                                                                            child: Checkbox(
-                                                                              checkColor: Colors.white,
-                                                                              fillColor: MaterialStateProperty.resolveWith(getColor),
-                                                                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                                              value: brandTrainersSelected[index],
-                                                                              shape: CircleBorder(
-                                                                                  side: BorderSide.none
-                                                                              ),
-                                                                              onChanged: (bool? value) {
-                                                                              },
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                                child: Column(
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [
+                                                                      CircularImage (
+                                                                          size: MediaQuery.of(context).size.width*0.23,
+                                                                          image: trainer.imageUrl,
+                                                                          color: Theme.of(context).accentColor,
+                                                                          borderWidth: 1.5,
+                                                                        ),
+                                                                      Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                        children: [
+                                                                            Text(
+                                                                              trainer.name!,
+                                                                              style: Styles.purpleTextStyle.copyWith(fontSize: 16),
                                                                             ),
+                                                                            SizedBox(
+                                                                            width: MediaQuery.of(context).size.width*0.01,
                                                                           ),
-                                                                        ],
-                                                                      ),
-                                                                  ],
-                                                                ),
+                                                                            SizedBox(
+                                                                              width: MediaQuery.of(context).size.width*0.05,
+                                                                              child: Checkbox(
+                                                                                checkColor: Colors.white,
+                                                                                fillColor: MaterialStateProperty.resolveWith(getColor),
+                                                                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                                                value: brandTrainersSelected[index],
+                                                                                shape: CircleBorder(
+                                                                                    side: BorderSide.none
+                                                                                ),
+                                                                                onChanged: (bool? value) {
+                                                                                },
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                    ],
+                                                                  ),
+                                                              ),
                                                             );
                                                           }
                                                       ),
