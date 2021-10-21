@@ -116,6 +116,7 @@
   "addMembers": "Afegir Membres",
   "inviteCode": "Codi d'invitació",
   "copyCorrectCode": "Codi d'invitació copìat correctament",
+  "copyCorrectLocation": "Ubicació copiada correctament",
   "members": "Membres",
   "mondayLetter": "Dll",
   "tuesdarLetter": "Dm",
@@ -140,6 +141,8 @@
   "editEvent": "Editar event",
   "updateEvent": "Guardar event",
   "maxNumberClients": "Nombre màxim d'asistents",
+  "numberClientJoining": "Asistents",
+  "noClientJoining": "Sense asistents",
   "designatedTrainers": "Entrenadors assignats",
   "noTrainerSelectedError": "No hi ha cap entrenador assignat"
 }

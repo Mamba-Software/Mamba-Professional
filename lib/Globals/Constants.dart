@@ -13,6 +13,7 @@ class Constants {
   static String fotoPerfil = "assets/images/as.png";
   static String chatImage = "assets/images/chatImage.png";
   static String emptyCalendar = "assets/images/emptyCalendar.png";
+  static String emptyPeople = "assets/images/emptyPeople.png";
   static String locationImage = "assets/images/locationImage.png";
 
 }

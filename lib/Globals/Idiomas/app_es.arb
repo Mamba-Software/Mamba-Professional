@@ -482,6 +482,10 @@
   "@copyCorrectCode":{
     "description": "inviteCode text"
   },
+  "copyCorrectLocation": "Ubicaión copiada correctamente",
+  "@copyCorrectLocation":{
+    "description": "inviteCode text"
+  },
   "members": "Miembros",
   "@members":{
     "description": "Añadir Miembros text"
@@ -581,6 +585,14 @@
   },
   "maxNumberClients": "Número máximo de asistentes",
   "@maxNumberClients":{
+    "description": "addEvent text"
+  },
+  "numberClientJoining": "Asistentes",
+  "@numberClientJoining":{
+    "description": "addEvent text"
+  },
+  "noClientJoining": "Sin asistentes",
+  "@noClientJoining":{
     "description": "addEvent text"
   },
   "designatedTrainers": "Entrenadores asignados",

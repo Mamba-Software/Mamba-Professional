@@ -265,6 +265,18 @@ class FirebaseDatabaseService {
     return users;
   }
 
+  Future<List<Usuario>> getAllClientsFromBrand(String brandId) async {
+    List<Usuario> users = [];
+    QuerySnapshot querySnapshot = await _firestore.collection("Users")
+        .where("brandID", isEqualTo: brandId)
+        .where("isTrainer", isEqualTo: false)
+        .get();
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      users.add(Usuario.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return users;
+  }
+
   Future<bool> checkIfBrandExists(String brandID) async {
     var userDocRef = await _firestore.collection('Brands').doc(brandID);
     var doc = await userDocRef.get();

@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/ViewEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../GlobalVars.dart';
