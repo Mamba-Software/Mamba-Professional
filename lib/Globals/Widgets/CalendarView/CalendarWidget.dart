@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/ViewEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
@@ -129,7 +130,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   final Appointment appointment = details.appointments.first;
                   return GestureDetector(
                     onTap: () {
-                      _addEvent(appointment: appointment, updated: true);
+                      _viewEvent(appointment: appointment, updated: true);
                     },
                     child: Center(
                       child: Material(
@@ -293,6 +294,30 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           ),
         );
       });
+  }
+
+  void _viewEvent({Appointment? appointment, bool? updated, DateTime? dateTimeClicked}) {
+    showModalBottomSheet<bool>(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+        ),
+        isScrollControlled: true,
+        context: context,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        builder: (context) {
+          return Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height*0.75,
+            ),
+            padding: MediaQuery.of(context).viewInsets,
+            child: ViewEvent(
+              oldData: appointment,
+              update: updated ?? false,
+              locale: Localizations.localeOf(context),
+              initialDateTime: dateTimeClicked ?? null,
+            ),
+          );
+        });
   }
 
 }

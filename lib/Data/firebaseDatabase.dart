@@ -350,6 +350,12 @@ class FirebaseDatabaseService {
   }
 
   // Events
+    Stream<DocumentSnapshot> getSingleEventStream(String eid) {
+    return _firestore.collection("Events")
+        .doc(eid)
+        .snapshots();
+  }
+
   Stream<QuerySnapshot> getAllEventsFromBrand() {
     return _firestore.collection("Events")
         .where("brandID", isEqualTo: currentBrand.id)

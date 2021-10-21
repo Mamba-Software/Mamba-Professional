@@ -60,6 +60,9 @@ class DatabaseAccess {
   // Brands
   Stream<QuerySnapshot> getAllBrands() => _firebase.getAllBrands();
 
+  // Events
+  Stream<DocumentSnapshot> getSingleEventStream(String id) => _firebase.getSingleEventStream(id);
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //Admin
   Future<Stream<QuerySnapshot>> getAllUsers() async => await _firebase.getAllUsers();
