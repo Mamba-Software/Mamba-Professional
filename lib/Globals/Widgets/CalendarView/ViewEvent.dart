@@ -166,7 +166,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                 appBar: AppBar(
                   elevation: 0,
                   backgroundColor: Colors.transparent,
-                  toolbarHeight: MediaQuery.of(context).size.height*0.15,
+                  toolbarHeight: MediaQuery.of(context).size.height*0.08,
                   title: Text(titleController.text, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
                   centerTitle: true,
                   iconTheme: IconThemeData(
@@ -236,7 +236,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: [
-                                                  Padding(
+                                                  descriptionController.text.isNotEmpty ? Padding(
                                                       padding: EdgeInsets.only(top: 5.0),
                                                       child: new Row(
                                                         mainAxisSize: MainAxisSize.max,
@@ -267,9 +267,9 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                                           ),
                                                         ],
                                                       )
-                                                  ),
+                                                  ) : Container(),
                                                   Padding(
-                                                    padding: const EdgeInsets.only(top: 5.0),
+                                                    padding: descriptionController.text.isNotEmpty ? EdgeInsets.only(top: 5.0) : EdgeInsets.only(top: 20.0),
                                                     child: Container(
                                                       height: MediaQuery.of(context).size.height * 0.15,
                                                       width: MediaQuery.of(context).size.width * 0.90,
@@ -357,25 +357,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                                     ),
                                                   ),
                                                   Padding(
-                                                      padding: EdgeInsets.only(top: 15),
-                                                      child: new Row(
-                                                        mainAxisSize: MainAxisSize.max,
-                                                        children: <Widget>[
-                                                          new Column(
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            mainAxisSize: MainAxisSize.min,
-                                                            children: <Widget>[
-                                                              new Text(
-                                                                AppLocalizations.of(context)!.location,
-                                                                style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      )
-                                                  ),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(bottom: 0),
+                                                    padding: EdgeInsets.only(top: 5, bottom: 0),
                                                     child: new Row(
                                                       mainAxisSize: MainAxisSize.min,
                                                       children: <Widget>[
@@ -594,9 +576,10 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      //crossAxisAlignment: CrossAxisAlignment.baseline,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 15, bottom: 15),
+                          padding: const EdgeInsets.only(top: 5, bottom: 25),
                           child: FloatingActionButton.extended(
                             onPressed: () {
                             },
@@ -607,7 +590,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width*0.05,),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
+                          padding: const EdgeInsets.only(top: 5, bottom: 25, left: 20, right: 20),
                           child: FloatingActionButton.extended(
                             onPressed: () {
 
