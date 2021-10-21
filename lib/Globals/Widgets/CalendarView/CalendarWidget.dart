@@ -292,7 +292,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             initialDateTime: dateTimeClicked ?? null,
           ),
         );
-      });
+      }
+      );
   }
 
   void _viewEvent({Appointment? appointment, bool? updated, DateTime? dateTimeClicked}) {

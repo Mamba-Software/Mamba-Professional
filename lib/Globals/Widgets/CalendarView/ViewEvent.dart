@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,6 +17,7 @@ import '../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../Styles.dart';
 import '../CircularImage.dart';
+import 'AddEventDelete.dart';
 
 
 class ViewEvent extends StatefulWidget {
@@ -58,7 +60,6 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
   List<String> durations = ["0.30","1.00","1.30","2.00","2.30","3.00","3.30","4.00"];
   // Ubicació
   var ubicacionController =  TextEditingController();
-  var placeId =  currentBrand.placeId!;
   // Members Page
   List<Usuario> brandTrainersSelected = [];
   List<Usuario> brandClientsJoining = [];
@@ -135,7 +136,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
   }
 
   void getPlaceFullAddress() async {
-    placeDetails = await LocationPlacesSearch().getPlaceDetailFromId(placeId);
+    placeDetails = await LocationPlacesSearch().getPlaceDetailFromId(event!.placeId!);
     ubicacionController.text = placeDetails.fullAddress!;
     if (mounted) {
       setState(() {
@@ -164,7 +165,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                 appBar: AppBar(
                   elevation: 0,
                   backgroundColor: Colors.transparent,
-                  toolbarHeight: MediaQuery.of(context).size.height*0.08,
+                  toolbarHeight: MediaQuery.of(context).size.height*0.15,
                   title: Text(titleController.text, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
                   centerTitle: true,
                   iconTheme: IconThemeData(
@@ -243,6 +244,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                                             child: new TextFormField(
                                                               keyboardType: TextInputType.visiblePassword,
                                                               controller: descriptionController,
+                                                              readOnly: true,
                                                               minLines: 1,
                                                               maxLines: 5,
                                                               onChanged: (val) {
@@ -609,12 +611,24 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                           child: FloatingActionButton.extended(
                             onPressed: () async {
                               // DeleteDialog
-                              await _accessDatabase.deleteEvent(widget.oldData!.id.toString());
-                              Navigator.pop(context);
+                              var result = await showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteEventConfirmation);
+                                }
+                              );
+                              if (result) {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                await _accessDatabase.deleteEvent(widget.oldData!.id.toString());
+                                Navigator.pop(context);
+                              }
+
                             },
                             backgroundColor: Colors.red,
                             icon: Icon(Icons.delete_outline, color: Colors.white,),
-                            label: Text("Borrar", style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                            label: Text(AppLocalizations.of(context)!.delete, style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
                           ),
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width*0.05,),
@@ -622,11 +636,11 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                           padding: const EdgeInsets.only(top: 5, bottom: 25, left: 20, right: 20),
                           child: FloatingActionButton.extended(
                             onPressed: () {
-
+                              _editEvent();
                             },
                             backgroundColor: Colors.green,
                             icon: Icon(Icons.edit, color: Colors.white,),
-                            label: Text("Editar",
+                            label: Text(AppLocalizations.of(context)!.edit,
                               style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
                           ),
                         ),
@@ -640,116 +654,30 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
         }
     );
   }
-  /*
-  bool validateDateAndTime(DateTime startTime, double duration) {
-    // Calculating the Time to check
-    var hour = duration.toString().split(".")[0];
-    var min = duration.toStringAsFixed(2).split(".")[1];
-    var endTime =  startTime.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
-    // Computing the workshift
-    var workshift1 = currentBrand.workShift[0];
-    var workshift2 = currentBrand.workShift[1];
-    var startWorkHour = workshift1.toStringAsFixed(2).split(".")[0];
-    var startWorkMin = workshift1.toStringAsFixed(2).split(".")[1];
-    var endWorkHour = workshift2.toStringAsFixed(2).split(".")[0];
-    var endWorkMin = workshift2.toStringAsFixed(2).split(".")[1];
-    var startWorkDay =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(startWorkHour),int.parse(startWorkMin));
-    var endWorkDay =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(endWorkHour),int.parse(endWorkMin));
-    if ( // Can´t create event in the past
-       startTime.isBefore(DateTime.now())|| startTime.isAtSameMomentAs(DateTime.now()) || endTime.isBefore(DateTime.now()) || endTime.isAtSameMomentAs(DateTime.now())
-      // Can´t create event outside of working hours
-      || startTime.isBefore(startWorkDay) || endTime.isBefore(startWorkDay)
-      || startTime.isAfter(endWorkDay) || endTime.isAfter(endWorkDay)
-    ) {
-      return false;
-    } else {
-      // Can´t create event in break period of working hours
-      for (var i=2; i<currentBrand.workShift.length; i+=2) {
-        // Breaks
-        var break1 = currentBrand.workShift[i];
-        var break2 = currentBrand.workShift[i];
-        // Take the minute and the hour
-        var startBreakHour = break1.toStringAsFixed(2).split(".")[0];
-        var startBreakMin = break1.toStringAsFixed(2).split(".")[1];
-        var endBreakHour = break2.toStringAsFixed(2).split(".")[0];
-        var endBreakMin = break2.toStringAsFixed(2).split(".")[1];
-        // Date Time formatted
-        var startBreak =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(startBreakHour), int.parse(startBreakMin));
-        var endBreak =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(endBreakHour), int.parse(endBreakMin));
-        // Condition check
-        if ( ((startTime.isAfter(startBreak) || startTime.isAtSameMomentAs(startBreak)) && (startTime.isBefore(endBreak))) ||
-            ((endTime.isAfter(startBreak)) && (endTime.isBefore(endBreak) || endTime.isAtSameMomentAs(endBreak)))) {
-          return false;
-        }
-      }
-      return true;
-    }
-  }
 
-  Color getColor(Set<MaterialState> states) {
-    const Set<MaterialState> interactiveStates = <MaterialState>{
-      MaterialState.pressed,
-      MaterialState.hovered,
-      MaterialState.focused,
-    };
-    if (states.any(interactiveStates.contains)) {
-      return Colors.blue;
-    }
-    return Theme.of(context).accentColor;
-  }
-
-  Future<void> _addEvent() async {
-    setState(() {
-      isLoading = true;
-    });
-    var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
-    var selectedTrainerId = [];
-    for (var i=0; i< brandTrainers!.length; i++) {
-      if (brandTrainersSelected[i]) {
-        selectedTrainerId.add(brandTrainers![i].id);
-      }
-    }
-    if (widget.update) {
-      //if(isUpdated) await _accessDatabase.updateEvent(widget.oldData!.id.toString(), titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
-      await _accessDatabase.updateEvent(widget.oldData!.id.toString(), titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
-    } else {
-      if (!isRecurrent) {
-        await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
-      } else {
-        await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
-        var tempDate = startDate.add(Duration(days: 1));
-        var weekDay = tempDate.weekday;
-        if (_value == 1) {
-          // One Week
-          for (var i=0; i<6; i++) {
-            if(values[weekDay-1]!) {
-              await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
-            }
-            tempDate = tempDate.add(Duration(days: 1));
-            weekDay = tempDate.weekday;
-          }
-        } else if (_value == 2) {
-          // Two Weeks
-          for (var i=0; i<13; i++) {
-            if(values[weekDay-1]!) {
-              await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
-            }
-            tempDate = tempDate.add(Duration(days: 1));
-            weekDay = tempDate.weekday;
-          }
-        } else if (_value == 3) {
-          // One Month
-          for (var i=0; i<29; i++) {
-            if(values[weekDay-1]!) {
-              await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
-            }
-            tempDate = tempDate.add(Duration(days: 1));
-            weekDay = tempDate.weekday;
-          }
+  void _editEvent({Appointment? appointment, bool? updated, DateTime? dateTimeClicked}) {
+    showModalBottomSheet<bool>(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+        ),
+        isScrollControlled: true,
+        context: context,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        builder: (context) {
+          return Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height*0.88,
+            ),
+            padding: MediaQuery.of(context).viewInsets,
+            child: AddEvent(
+              oldData: widget.oldData,
+              update: true,
+              locale: Localizations.localeOf(context),
+              initialDateTime: dateTimeClicked ?? null,
+            ),
+          );
         }
-      }
-    }
-    Navigator.pop(context);
+    );
   }
-   */
 }
+

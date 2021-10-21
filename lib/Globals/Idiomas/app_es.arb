@@ -458,6 +458,10 @@
   "@delete":{
     "description": "notInBrand text"
   },
+  "edit": "Editar",
+  "@edit":{
+    "description": "notInBrand text"
+  },
   "cancel": "Cancelar",
   "@cancel":{
     "description": "Cancelar text"
@@ -581,6 +585,10 @@
   },
   "updateEvent": "Guardar evento",
   "@updateEvent":{
+    "description": "addEvent text"
+  },
+  "deleteEventConfirmation": "¿Seguro que quieres eliminar este evento?",
+  "@deleteEventConfirmation":{
     "description": "addEvent text"
   },
   "maxNumberClients": "Número máximo de asistentes",
