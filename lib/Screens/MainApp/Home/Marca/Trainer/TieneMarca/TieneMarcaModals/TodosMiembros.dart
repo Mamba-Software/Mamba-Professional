@@ -23,8 +23,8 @@ class _TodosMiembrosState extends State<TodosMiembros> {
   bool isLoading = false;
   // Boolean isUpdated
   bool isUpdated = false;
-  // Title Controller
-  var titleController = TextEditingController();
+  // Search Controller
+  var searchController = TextEditingController();
   String? titleString;
   // Description Controller
   var descriptionController = TextEditingController();
@@ -34,7 +34,10 @@ class _TodosMiembrosState extends State<TodosMiembros> {
   bool errorDate = false;
   // Members Page
   List<Usuario> allClients = [];
+  List<Usuario> filteredClients = [];
   List<Usuario> allTrainers = [];
+  List<Usuario> filteredTrainers = [];
+
 
 
   Future<void> getAllUsers() async {
@@ -122,145 +125,188 @@ class _TodosMiembrosState extends State<TodosMiembros> {
                 ),
               ),
               backgroundColor: Colors.transparent,
-              body: TabBarView(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.only(top: 20),
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: allClients.length,
-                            itemBuilder: (context, index) {
-                              Usuario user = allClients[index];
-                              return Container(
-                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    print(user.id);
-                                  },
-                                  child: Container(
-                                      height: MediaQuery.of(context).size.height*0.10,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.07),
-                                            child: CircularImage(
-                                              size: MediaQuery.of(context).size.width*0.2,
-                                              image: user.imageUrl,
-                                              color: Theme.of(context).primaryColor,
-                                              borderWidth: 1.5,
-                                            ),
-                                          ),
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                width: MediaQuery.of(context).size.width*0.30,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
+              body: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.04),
+                    child: TextFormField(
+                      controller: searchController,
+                      onChanged: (value) {
+                        filterSearchResults(value, false);
+                      },
+                      decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.search,
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(15.0)))
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(top: 0),
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: allClients.length,
+                                  itemBuilder: (context, index) {
+                                    Usuario user = allClients[index];
+                                    return Container(
+                                      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          print(user.id);
+                                        },
+                                        child: Container(
+                                            height: MediaQuery.of(context).size.height*0.10,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
+                                                  child: CircularImage(
+                                                    size: MediaQuery.of(context).size.width*0.2,
+                                                    image: user.imageUrl,
+                                                    color: Theme.of(context).primaryColor,
+                                                    borderWidth: 1.5,
+                                                  ),
+                                                ),
+                                                Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
-                                                    Text(
-                                                        user.name!,
-                                                        style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
-                                                        textAlign: TextAlign.center,
+                                                    Container(
+                                                      width: MediaQuery.of(context).size.width*0.40,
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              user.name!,
+                                                              style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                                                              textAlign: TextAlign.left,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
+                                                    ),
+
                                                   ],
                                                 ),
-                                              ),
-
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.20),
-                                            child: Icon(
-                                              Icons.arrow_forward_ios,
-                                              size: 30,
-                                              color: Theme.of(context).primaryColor,
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                  ),
-                                ),
-                              );
-                            }
-
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(top: 20),
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: allTrainers.length,
-                            itemBuilder: (context, index) {
-                              Usuario user = allTrainers[index];
-                              return Container(
-                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    print(user.id);
-                                  },
-                                  child: Container(
-                                    height: MediaQuery.of(context).size.height*0.10,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.07),
-                                          child: CircularImage(
-                                            size: MediaQuery.of(context).size.width*0.2,
-                                            image: user.imageUrl,
-                                            color: Theme.of(context).primaryColor,
-                                            borderWidth: 1.5,
-                                          ),
-                                        ),
-                                        Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              width: MediaQuery.of(context).size.width*0.30,
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    user.name!,
-                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
-                                                    textAlign: TextAlign.center,
+                                                Padding(
+                                                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.20),
+                                                  child: Icon(
+                                                    Icons.arrow_forward_ios,
+                                                    size: 30,
+                                                    color: Theme.of(context).primaryColor,
                                                   ),
-                                                ],
-                                              ),
-                                            ),
-
-                                          ],
+                                                ),
+                                              ],
+                                            )
                                         ),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.20),
-                                          child: Icon(
-                                            Icons.arrow_forward_ios,
-                                            size: 30,
-                                            color: Theme.of(context).primaryColor,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                ),
-                                ),
-                              );
-                            }
+                                      ),
+                                    );
+                                  }
 
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(top: 10),
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: allTrainers.length,
+                                  itemBuilder: (context, index) {
+                                    Usuario user = allTrainers[index];
+                                    return Container(
+                                      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          print(user.id);
+                                        },
+                                        child: Container(
+                                            height: MediaQuery.of(context).size.height*0.10,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
+                                                  child: CircularImage(
+                                                    size: MediaQuery.of(context).size.width*0.2,
+                                                    image: user.imageUrl,
+                                                    color: Theme.of(context).primaryColor,
+                                                    borderWidth: 1.5,
+                                                  ),
+                                                ),
+                                                Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                      width: MediaQuery.of(context).size.width*0.40,
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              user.name!,
+                                                              style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                                                              textAlign: TextAlign.left,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+
+                                                  ],
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.20),
+                                                  child: Icon(
+                                                    Icons.arrow_forward_ios,
+                                                    size: 30,
+                                                    color: Theme.of(context).primaryColor,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                        ),
+                                      ),
+                                    );
+                                  }
+
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
                   ),
+                ],
+              ),
             ),
           ),
     );
+  }
+
+  void filterSearchResults(String query, bool isTrainer) {
+    List<Usuario> usersFiltered = [];
+
+    if (isTrainer) {
+      if (query.isNotEmpty) {
+
+      } else {
+
+      }
+    } else {
+      if (query.isNotEmpty) {
+
+      } else {
+
+      }
+    }
   }
 
   @override
@@ -272,8 +318,3 @@ class _TodosMiembrosState extends State<TodosMiembros> {
 
 
 }
-
-
-
-
-

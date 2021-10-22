@@ -631,7 +631,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                       mainAxisSize: MainAxisSize.max,
                                       children: <Widget>[
                                         Container(
-                                          width: MediaQuery.of(context).size.width * 0.52,
+                                          width: MediaQuery.of(context).size.width * 0.53,
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             mainAxisSize: MainAxisSize.max,
@@ -736,7 +736,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
                                               Container(
-                                                width: MediaQuery.of(context).size.width * 0.52,
+                                                width: MediaQuery.of(context).size.width * 0.53,
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   mainAxisSize: MainAxisSize.max,

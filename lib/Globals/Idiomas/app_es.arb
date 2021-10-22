@@ -470,6 +470,10 @@
   "@edit":{
     "description": "notInBrand text"
   },
+  "search": "Buscar",
+  "@search":{
+    "description": "notInBrand text"
+  },
   "cancel": "Cancelar",
   "@cancel":{
     "description": "Cancelar text"

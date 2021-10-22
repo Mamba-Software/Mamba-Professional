@@ -30,7 +30,7 @@ class FirebaseDatabaseService {
       //if (authResult.user!.emailVerified) return 0;
       //else return -2;
     //}
-    else return -1;
+    else return 0;
   }
   Future<void> signOut() async {
     return await _auth.signOut();
