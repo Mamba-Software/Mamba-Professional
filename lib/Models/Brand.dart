@@ -10,10 +10,10 @@ class Brand {
   String? description;
   String? dateJoined;
   String? placeId;
+  String? address;
   double? latitude;
   double? longitude;
   var workShift;
-  int? eventsCreated;
   // Sector
   // Disponibilitat
   // Preus
@@ -28,10 +28,10 @@ class Brand {
     this.description,
     this.dateJoined,
     this.placeId,
+    this.address,
     this.latitude,
     this.longitude,
     this.workShift,
-    this.eventsCreated,
   });
 
   Map toMap(Brand brand) {
@@ -43,10 +43,10 @@ class Brand {
     data['description'] = brand.description;
     data['dateJoined'] = brand.dateJoined;
     data['placeId'] = brand.placeId;
+    data['address'] = brand.address;
     data['latitude'] = brand.latitude;
     data['longitude'] = brand.longitude;
     data['workShift'] = brand.workShift;
-    data['eventsCreated'] = brand.eventsCreated;
     return data;
   }
 
@@ -58,11 +58,10 @@ class Brand {
     this.description = mapData['description'].toString();
     this.dateJoined = mapData['dateJoined'].toString();
     this.placeId = mapData['placeId'].toString();
-    this.placeId = mapData['address'].toString();
+    this.address = mapData['address'].toString();
     this.latitude = mapData['latitude'];
     this.longitude = mapData['longitude'];
     this.workShift = mapData['workShift'];
-    this.eventsCreated = mapData['eventsCreated'];
   }
 
   Brand.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
@@ -73,10 +72,9 @@ class Brand {
     this.description = documentSnapshot.get("description").toString();
     this.dateJoined = documentSnapshot.get("dateJoined").toString();
     this.placeId = documentSnapshot.get("placeId").toString();
-    this.placeId = documentSnapshot.get("address").toString();
+    this.address = documentSnapshot.get("address").toString();
     this.latitude = documentSnapshot.get("latitude");
     this.longitude = documentSnapshot.get("longitude");
     this.workShift = documentSnapshot.get("workShift");
-    this.eventsCreated = documentSnapshot.get("eventsCreated");
   }
 }

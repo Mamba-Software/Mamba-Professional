@@ -14,9 +14,7 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 80.0),
-      child: Stack(
+    return Stack(
         children: <Widget>[
           Center(
             child: Container(
@@ -32,7 +30,6 @@ class _ChatState extends State<Chat> {
             )
           ),
         ],
-      ),
-    );
+      );
   }
 }

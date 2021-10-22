@@ -90,7 +90,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
 
   @override
   void initState() {
-    gPlace = googlePlace.GooglePlace(placesAPI);
+    gPlace = googlePlace.GooglePlace(Platform.isAndroid ? placesAPIAndroid : placesAPIIOS);
     /*
     showTopSnackBar(
       context,

@@ -35,6 +35,8 @@ class DatabaseAccess {
 
   Future<bool> checkIfBrandExists(String brandID) => _firebase.checkIfBrandExists(brandID);
   Future<Brand> getCurrentBrandDetails(String brandID) => _firebase.getCurrentBrandDetails(brandID);
+  Future<List<Usuario>> getAllTrainersFromBrand(String brandID) => _firebase.getAllTrainersFromBrand(brandID);
+  Future<List<Usuario>> getAllClientsFromBrand(String brandID) => _firebase.getAllClientsFromBrand(brandID);
 
   Future<void> updateCurrentBrandPhoto(String brandID,File image) => _firebase.updateCurrentBrandPhoto(brandID, image);
 
@@ -42,9 +44,9 @@ class DatabaseAccess {
   Future<bool> addError(String title, String description, String stepsReproduce) => _firebase.addError(title, description, stepsReproduce);
 
   // Events
-  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers) => _firebase.addEvent(brandID, title, description, year, month, day, hour, minute, duration, placeId, maxMembers);
+  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers, var selectedTrainers) => _firebase.addEvent(brandID, title, description, year, month, day, hour, minute, duration, placeId, maxMembers, selectedTrainers);
 
-  Future<void> updateEvent(String id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers) => _firebase.updateEvent(id, title, description, year, month, day, hour, minute, duration, placeId, maxMembers);
+  Future<void> updateEvent(String id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers, var selectedTrainers) => _firebase.updateEvent(id, title, description, year, month, day, hour, minute, duration, placeId, maxMembers, selectedTrainers);
 
   Future<void> deleteEvent(String id) => _firebase.deleteEvent(id);
 
@@ -53,11 +55,14 @@ class DatabaseAccess {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams
 
+  // Users
+  Stream<QuerySnapshot> getAllEventsFromBrand() => _firebase.getAllEventsFromBrand();
+
   // Brands
   Stream<QuerySnapshot> getAllBrands() => _firebase.getAllBrands();
 
   // Events
-  Stream<QuerySnapshot> getAllEventsFromBrand() => _firebase.getAllEventsFromBrand();
+  Stream<DocumentSnapshot> getSingleEventStream(String id) => _firebase.getSingleEventStream(id);
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //Admin

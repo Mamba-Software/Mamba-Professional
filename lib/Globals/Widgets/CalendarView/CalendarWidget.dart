@@ -1,11 +1,12 @@
 import 'dart:developer';
+import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/ViewEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../GlobalVars.dart';
@@ -30,8 +31,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   // Dies de la semana que el entrenador no treballa
   List<int> nonWorkDays = [];
   // Horari
-  double _startHour = currentBrand.workShift[0];
-  double _endHour = currentBrand.workShift[1];
+  double? _startHour;
+  double? _endHour;
   // Descansos
   DateTime dateJoined = DateFormat('dd-MM-yyyy').parse(currentBrand.dateJoined!);
   // Events From Brand
@@ -40,6 +41,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   @override
   void initState() {
+    _startHour = double.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
+    _endHour = double.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
     super.initState();
   }
   
@@ -47,18 +50,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.calendar, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22),),
+        title: Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
-        elevation: 8,
-        iconTheme: IconThemeData(
-          color: Colors.white, //change your color here
-        ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 25,),
           onPressed: () {
             Navigator.pop(context);
           },
-          tooltip: 'Back',
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -67,49 +65,50 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
               return LoadingViewPurple();
             }
-            //else if(snapshot.hasError) return ErrorView();
-            //else if(snapshot.connectionState == ConnectionState.waiting) return LoadingViewPurple();
-            //else if(snapshot.data!.docs.isEmpty) return EmptyTodayAndSearch(msg: AppLocalizations.of(context).translate('noEventsForThisDay'),);
             else {
               eventsList = documentsToEvents(snapshot.data!.docs);
               return SfCalendar(
+                cellEndPadding: 0,
                 view: CalendarView.week,
                 controller: _controller,
                 // Per tenir el botó de back to today
                 showDatePickerButton: false,
-                headerHeight: 50,
+                headerHeight: 45,
+                headerDateFormat: null,
                 dataSource: _getCalendarDataSource(),
                 specialRegions: _getTimeRegions(),
                 timeRegionBuilder: timeRegionBuilder,
                 firstDayOfWeek: 1,
                 showCurrentTimeIndicator: true,
+                viewHeaderHeight: 50,
                 viewHeaderStyle: ViewHeaderStyle(
-                  backgroundColor: Color(0xFFF5F5F5),
-                  dateTextStyle: Styles.purpleTextStyle.copyWith(fontSize: 14),
-                  dayTextStyle: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                  backgroundColor: Theme.of(context).backgroundColor,
+                  dateTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 14, fontWeight: FontWeight.bold),
+                  dayTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 10, fontWeight: FontWeight.bold),
                 ),
                 selectionDecoration: BoxDecoration(
                     border: Border.all(width: 0.1, color: Colors.transparent)
                 ),
                 timeSlotViewSettings: TimeSlotViewSettings(
-                    timelineAppointmentHeight: 60,
+                    timelineAppointmentHeight: 50,
                     timeIntervalHeight: 60,
-                    startHour: _startHour-1,
-                    endHour:  _endHour+1,
-                    timeFormat: 'HH:mm',
+                    timeIntervalWidth: 55,
+                    startHour: _startHour!-1,
+                    endHour:  _endHour!+1,
+                    timeFormat: 'HH',
                     dayFormat: 'E',
                     dateFormat: 'd',
-                    timeRulerSize: 45,
+                    timeRulerSize: 25,
                     nonWorkingDays: nonWorkDays,
                     minimumAppointmentDuration: Duration(minutes: 30),
                     timeTextStyle: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                      color: Theme.of(context).accentColor,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 12,
+                      color: Theme.of(context).primaryColor,
                     )
                 ),
                 headerStyle: CalendarHeaderStyle(
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.justify,
                   backgroundColor: Color(0xFFF5F5F5),
                   textStyle: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -119,7 +118,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   ),
                 ),
                 onLongPress: (details) {
-                  _addEvent(dateTimeClicked: details.date);
+                  if(details.date!.isAfter(DateTime.now())) {
+                    _addEvent(dateTimeClicked: details.date);
+                  }
                 },
                 onTap: (details) {
                   log(details.date.toString());
@@ -128,7 +129,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   final Appointment appointment = details.appointments.first;
                   return GestureDetector(
                     onTap: () {
-                      _addEvent(appointment: appointment, updated: true);
+                      _viewEvent(appointment: appointment, updated: true);
                     },
                     child: Center(
                       child: Material(
@@ -161,11 +162,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             width: 65,
             child: FloatingActionButton(
               onPressed: _addEvent,
-              backgroundColor: Color(0xFFF4AD1F),
-              tooltip: 'Add Event',
+              backgroundColor: Theme.of(context).accentColor,
               child: Icon(
                 Icons.more_time,
                 size: 30,
+                color: Theme.of(context).backgroundColor,
               ),
             ),
           ),
@@ -181,13 +182,14 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   List<TimeRegion> _getTimeRegions() {
     final List<TimeRegion> regions = <TimeRegion>[];
+    // Breaks
     for (var i=2; i < currentBrand.workShift.length ; i+=2) {
       var start = currentBrand.workShift[i];
-      var startHour = int.parse(start.toString().split(".")[0]);
-      var startMin = int.parse(start.toString().split(".")[1]);
+      var startHour = int.parse(start.toStringAsFixed(2).split(".")[0]);
+      var startMin = int.parse(start.toStringAsFixed(2).split(".")[1]);
       var end = currentBrand.workShift[i+1];
-      var endHour = int.parse(end.toString().split(".")[0]);
-      var endMin = int.parse(end.toString().split(".")[1]);
+      var endHour = int.parse(end.toStringAsFixed(2).split(".")[0]);
+      var endMin = int.parse(end.toStringAsFixed(2).split(".")[1]);
       DateTime inActiveHoursStart = DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHour, startMin, 0);
       DateTime inActiveHoursEnd = DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHour, endMin, 0);
       regions.add(TimeRegion(
@@ -199,18 +201,22 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       ));
     }
     // Hora Inactiva Matí
+    var startHourWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
+    var startMinWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[1]);
     regions.add(TimeRegion(
       enablePointerInteraction: false,
-      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, _startHour.toInt()-1, 0, 0),
-      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, _startHour.toInt(), 0, 0),
+      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS-1, 0, 0),
+      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS, startMinWS, 0),
       color: Colors.grey.withOpacity(0.3),
       recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
     ));
     // Hora Inactiva Nit
+    var endHourWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
+    var endMinWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
     regions.add(TimeRegion(
       enablePointerInteraction: false,
-      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, _endHour.toInt(), 0, 0),
-      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, _endHour.toInt()+1, 0, 0),
+      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS, endMinWS, 0),
+      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS+1, 0, 0),
       color: Colors.grey.withOpacity(0.3),
       recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
     ));
@@ -268,20 +274,50 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   void _addEvent({Appointment? appointment, bool? updated, DateTime? dateTimeClicked}) {
     showModalBottomSheet<bool>(
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-              top: Radius.circular(25.0)
-          )
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
       ),
       isScrollControlled: true,
       context: context,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       builder: (context) {
-        return AddEvent(
-          oldData: appointment,
-          update: updated ?? false,
-          locale: Localizations.localeOf(context),
-          initialDateTime: dateTimeClicked ?? null,
+        return Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height*0.88,
+          ),
+          padding: MediaQuery.of(context).viewInsets,
+          child: AddEvent(
+            oldData: appointment,
+            update: updated ?? false,
+            locale: Localizations.localeOf(context),
+            initialDateTime: dateTimeClicked ?? null,
+          ),
         );
-      });
+      }
+      );
+  }
+
+  void _viewEvent({Appointment? appointment, bool? updated, DateTime? dateTimeClicked}) {
+    showModalBottomSheet<bool>(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+        ),
+        isScrollControlled: true,
+        context: context,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        builder: (context) {
+          return Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height*0.75,
+            ),
+            padding: MediaQuery.of(context).viewInsets,
+            child: ViewEvent(
+              oldData: appointment,
+              update: updated ?? false,
+              locale: Localizations.localeOf(context),
+              initialDateTime: dateTimeClicked ?? null,
+            ),
+          );
+        });
   }
 
 }

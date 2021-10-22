@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'ChildWidget.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
@@ -51,67 +50,87 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget returnTitle (int currentIndex) {
+      if (_currentIndex == 0) {
+        return Text(AppLocalizations.of(context)!.profileBottomNav, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor , fontWeight: FontWeight.bold));
+      } else if (_currentIndex == 2) {
+        return Text(AppLocalizations.of(context)!.chatBottomNav, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor , fontWeight: FontWeight.bold));
+      } else {
+        return Image.asset(
+          Constants.logoExtendedPurple,
+          fit: BoxFit.contain,
+          height: 30,
+        );
+      }
+    }
+
     final items = <Widget>[
       Icon(Icons.person, color: Styles.white, size: 33,),
       Icon(Icons.fitness_center_rounded, color: Styles.white, size: 33,),
       Icon(Icons.chat, color: Styles.white, size: 33,),
     ];
     return Scaffold(
-          appBar: AppBar(
-            title: Image.asset(
-              Constants.logoExtended,
-              fit: BoxFit.contain,
-              height: 32,
-            ),
-            centerTitle: true,
-            elevation: 8,
-            automaticallyImplyLeading: false,
+      appBar: AppBar(
+        title: returnTitle(_currentIndex),
+        centerTitle: true,
+        shadowColor: Theme.of(context).scaffoldBackgroundColor,
+        automaticallyImplyLeading: false,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+
+        currentIndex: _currentIndex,
+        iconSize: 30,
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: AppLocalizations.of(context)!.profileBottomNav,
+            //backgroundColor: Theme.of(context).primaryColor,
           ),
-          body: Stack(
-            children: [
-              Container(
-                color: Colors.transparent,
-              ),
-              Align(
-                alignment: Alignment.topCenter,
-                child: PageView(
-                  controller: _pageController,
-                  onPageChanged: (page) {
-                    setState(() {
-                      _currentIndex = page;
-                    });
-                  },
-                  children: <Widget>[
-                    ChildWidget(number: AvailableNumber.First),
-                    ChildWidget(number: AvailableNumber.Second),
-                    ChildWidget(number: AvailableNumber.Third),
-                  ],
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: CurvedNavigationBar(
-                  index: _currentIndex,
-                  color: Styles.mainColor,
-                  backgroundColor: Colors.transparent,
-                  animationCurve: Curves.easeInOut,
-                  animationDuration: Duration(milliseconds: 200),
-                  height: 60,
-                  items: items,
-                  onTap: (index) {
-                    _currentIndex = index;
-                    _pageController.animateToPage(
-                      index,
-                      duration: Duration(milliseconds: 200),
-                      curve: Curves.linear,
-                    );
-                    setState(() {});
-                  },
-                ),
-              ),
-            ]
+          BottomNavigationBarItem(
+            icon: Icon(Icons.fitness_center_rounded),
+            label: AppLocalizations.of(context)!.brandBottomNav,
+            backgroundColor: Theme.of(context).primaryColor,
           ),
-        );
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: AppLocalizations.of(context)!.chatBottomNav,
+            backgroundColor: Theme.of(context).primaryColor,
+          ),
+        ],
+        onTap: (index) {
+          _currentIndex = index;
+          _pageController.animateToPage(
+            index,
+            duration: Duration(milliseconds: 200),
+            curve: Curves.linear,
+          );
+          setState(() {});
+        },
+        selectedItemColor: Theme.of(context).accentColor,
+        selectedLabelStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color:Theme.of(context).accentColor),
+        selectedIconTheme: IconThemeData(
+          color: Theme.of(context).accentColor
+        ),
+        unselectedItemColor: Theme.of(context).primaryColor,
+        unselectedLabelStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color:Theme.of(context).primaryColor),
+        unselectedIconTheme: IconThemeData(
+            color: Theme.of(context).primaryColor
+        ),
+      ),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (page) {
+          setState(() {
+            _currentIndex = page;
+          });
+        },
+        children: <Widget>[
+          ChildWidget(number: AvailableNumber.First),
+          ChildWidget(number: AvailableNumber.Second),
+          ChildWidget(number: AvailableNumber.Third),
+        ],
+      ),
+    );
   }
 
   @override

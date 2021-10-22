@@ -350,6 +350,10 @@
   "@baseLocation":{
     "description": "baseLocation text"
   },
+  "location": "Ubicación",
+  "@location":{
+    "description": "baseLocation text"
+  },
   "baseLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor. En caso de no tener una dirección fija, introduce una ubicación utilizada frequentemente.",
   "@baseLocationDescription":{
     "description": "baseLocation text"
@@ -454,6 +458,10 @@
   "@delete":{
     "description": "notInBrand text"
   },
+  "edit": "Editar",
+  "@edit":{
+    "description": "notInBrand text"
+  },
   "cancel": "Cancelar",
   "@cancel":{
     "description": "Cancelar text"
@@ -478,8 +486,129 @@
   "@copyCorrectCode":{
     "description": "inviteCode text"
   },
+  "copyCorrectLocation": "Ubicaión copiada correctamente",
+  "@copyCorrectLocation":{
+    "description": "inviteCode text"
+  },
   "members": "Miembros",
   "@members":{
     "description": "Añadir Miembros text"
+  },
+  "mondayLetter": "L",
+  "@mondayLetter":{
+    "description": "mondayLetter text"
+  },
+  "tuesdarLetter": "M",
+  "@tuesdarLetter":{
+    "description": "tuesdarLetter text"
+  },
+  "wednesdayLetter": "M",
+  "@wednesdayLetter":{
+    "description": "tuesdarLetter text"
+  },
+  "thursdayLetter": "J",
+  "@thursdayLetter":{
+    "description": "tuesdarLetter text"
+  },
+  "fridayLetter": "V",
+  "@fridayLetter":{
+    "description": "tuesdarLetter text"
+  },
+  "saturadayLetter": "S",
+  "@saturadayLetter":{
+    "description": "tuesdarLetter text"
+  },
+  "sundayLetter": "D",
+  "@sundayLetter":{
+    "description": "tuesdarLetter text"
+  },
+  "errorDate": "Has introducido una fecha y hora inválida",
+  "@errorDate":{
+    "description": "tuesdarLetter text"
+  },
+  "recurrentEvent": "Evento recurrente",
+  "@recurrentEvent":{
+    "description": "tuesdarLetter text"
+  },
+  "selectDayTime": "Día y hora",
+  "@selectDayTime":{
+    "description": "tuesdarLetter text"
+  },
+  "selectDuration": "Duración",
+  "@selectDuration":{
+    "description": "tuesdarLetter text"
+  },
+  "selectMembers": "Número de asistentes",
+  "@selectMembers":{
+    "description": "tuesdarLetter text"
+  },
+  "days": "Días",
+  "@days":{
+    "description": "Días text"
+  },
+  "during": "Durante",
+  "@during":{
+    "description": "Días text"
+  },
+  "thisWeek": "Solo esta semana",
+  "@thisWeek":{
+    "description": "Días text"
+  },
+  "nextTwoWeek": "Dos semanas",
+  "@nextTwoWeek":{
+    "description": "Días text"
+  },
+  "wholeMonth": "Todo el mes",
+  "@wholeMonth":{
+    "description": "Días text"
+  },
+  "until": "Hasta el {date}",
+  "@until": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "addEvent": "Añadir evento",
+  "@addEvent":{
+    "description": "addEvent text"
+  },
+  "createEvent": "Crear evento",
+  "@createEvent":{
+    "description": "addEvent text"
+  },
+  "editEvent": "Editar evento",
+  "@editEvent":{
+    "description": "addEvent text"
+  },
+  "updateEvent": "Guardar evento",
+  "@updateEvent":{
+    "description": "addEvent text"
+  },
+  "deleteEventConfirmation": "¿Seguro que quieres eliminar este evento?",
+  "@deleteEventConfirmation":{
+    "description": "addEvent text"
+  },
+  "maxNumberClients": "Número máximo de asistentes",
+  "@maxNumberClients":{
+    "description": "addEvent text"
+  },
+  "numberClientJoining": "Asistentes",
+  "@numberClientJoining":{
+    "description": "addEvent text"
+  },
+  "noClientJoining": "Sin asistentes",
+  "@noClientJoining":{
+    "description": "addEvent text"
+  },
+  "designatedTrainers": "Entrenadores asignados",
+  "@designatedTrainers":{
+    "description": "addEvent text"
+  },
+  "noTrainerSelectedError": "No hay ningún entrenador asignado",
+  "@noTrainerSelectedError":{
+    "description": "noTrainerSelectedError text"
   }
 }

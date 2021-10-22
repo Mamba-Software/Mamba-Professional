@@ -26,10 +26,10 @@ class FirebaseDatabaseService {
     });
     if (error) return -1;
     if (authResult == null) return -1;
-    if (authResult.user != null) {
-      if (authResult.user!.emailVerified) return 0;
-      else return -2;
-    }
+    //if (authResult.user != null) {
+      //if (authResult.user!.emailVerified) return 0;
+      //else return -2;
+    //}
     else return -1;
   }
   Future<void> signOut() async {
@@ -197,6 +197,7 @@ class FirebaseDatabaseService {
     });
   }
   // Brand Model Services
+
   // Add Brand
   Future<String> addBrand(String name, File image, String description, String placeId, String address, double latitude, double longitude, List<double> workShift) async {
     User? firebaseUser = await getCurrentUser();
@@ -219,7 +220,6 @@ class FirebaseDatabaseService {
       "latitude": latitude,
       "longitude": longitude,
       "workShift": workShift,
-      "eventsCreated": 0,
     }).catchError((err) {
       print(err);
       firestoreError = true;
@@ -231,12 +231,6 @@ class FirebaseDatabaseService {
     } else {
       return "Error";
     }
-  }
-
-  Future<void> updateBrandEventCreated(String brandID, int prevNumEvents) async {
-    await _firestore.collection("Brands").doc(brandID).update({
-      "eventsCreated": prevNumEvents+1,
-    });
   }
 
   Future<String> updateCurrentBrandPhoto(String brandID, File image) async {
@@ -259,6 +253,30 @@ class FirebaseDatabaseService {
     return Brand.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
 
+  Future<List<Usuario>> getAllTrainersFromBrand(String brandId) async {
+    List<Usuario> users = [];
+    QuerySnapshot querySnapshot = await _firestore.collection("Users")
+        .where("brandID", isEqualTo: brandId)
+        .where("isTrainer", isEqualTo: true)
+        .get();
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      users.add(Usuario.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return users;
+  }
+
+  Future<List<Usuario>> getAllClientsFromBrand(String brandId) async {
+    List<Usuario> users = [];
+    QuerySnapshot querySnapshot = await _firestore.collection("Users")
+        .where("brandID", isEqualTo: brandId)
+        .where("isTrainer", isEqualTo: false)
+        .get();
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      users.add(Usuario.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return users;
+  }
+
   Future<bool> checkIfBrandExists(String brandID) async {
     var userDocRef = await _firestore.collection('Brands').doc(brandID);
     var doc = await userDocRef.get();
@@ -271,7 +289,7 @@ class FirebaseDatabaseService {
 
   // Events Calendar
   // Add Event
-  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers) async {
+  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers, var selectedTrainers) async {
     var eventID = Uuid().v1();
     User? currentUser = await getCurrentUser();
     try {
@@ -289,9 +307,8 @@ class FirebaseDatabaseService {
         "placeId": placeId,
         "maxMembers": maxMembers,
         "joinedMembers": [],
+        "selectedTrainers": selectedTrainers,
       });
-
-      updateBrandEventCreated(currentBrand.id!, currentBrand.eventsCreated!);
       return eventID;
     } catch (e) {
       print(e.toString());
@@ -313,7 +330,7 @@ class FirebaseDatabaseService {
   }
   // Update Event
   // Add Event
-  Future<void> updateEvent(String? id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers) async {
+  Future<void> updateEvent(String? id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers, var selectedTrainers) async {
     try {
       await _firestore.collection("Events").doc(id).update({
         "title": title,
@@ -327,6 +344,7 @@ class FirebaseDatabaseService {
         "placeId": placeId,
         "maxMembers": maxMembers,
         "joinedMembers": [],
+        "selectedTrainers": selectedTrainers,
       });
     } catch (e) {
       print(e.toString());
@@ -344,6 +362,12 @@ class FirebaseDatabaseService {
   }
 
   // Events
+    Stream<DocumentSnapshot> getSingleEventStream(String eid) {
+    return _firestore.collection("Events")
+        .doc(eid)
+        .snapshots();
+  }
+
   Stream<QuerySnapshot> getAllEventsFromBrand() {
     return _firestore.collection("Events")
         .where("brandID", isEqualTo: currentBrand.id)
