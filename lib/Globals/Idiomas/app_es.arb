@@ -31,8 +31,16 @@
   "@client":{
     "description": "Cliente Text"
   },
+  "clients": "Clientes",
+  "@client":{
+    "description": "Cliente Text"
+  },
   "trainer": "Entrenador",
   "@trainer":{
+    "description": "Entrenador Text"
+  },
+  "trainers": "Entrenadores",
+  "@trainers":{
     "description": "Entrenador Text"
   },
   "email": "Email",
