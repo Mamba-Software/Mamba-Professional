@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
+import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -26,6 +27,9 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   Usuario? user;
   // Birthday
   int birthday = 0;
+  // Event List
+  List<Event> trainerEvent = [];
+  List<Event> clientEvent = [];
 
   // init Widget state. Loading user info.
   @override
@@ -41,6 +45,17 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
       DateTime dob = DateFormat('dd-mm-yyyy').parse(user!.dateOfBirth!);
       birthday = calculateAge(dob);
     }
+    if (user!.isTrainer!) {
+      getTrainerEventsDone();
+    } else {
+      //getClientEventsDone();
+    }
+  }
+
+  // Gets the events passed by the trainer.
+  void getTrainerEventsDone() async {
+    trainerEvent = await _accessDatabase.getAllEventsFromTrainer(widget.userID);
+    print(trainerEvent.length);
     setState(() {
       isLoading = false;
     });
@@ -167,6 +182,18 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
                   ),
                 ],
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: trainerEvent.length,
+                itemBuilder: (context,int index) {
+                  Event event = trainerEvent[index];
+                  return ListTile(
+                    title: Text(event.title!, style: Styles.purpleTextStyle,),
+                    subtitle: Text(event.description!, style: Styles.purpleTextStyle.copyWith(fontSize: 16),),
+                  );
+                },
               ),
             ],
           ),

@@ -324,6 +324,37 @@ class FirebaseDatabaseService {
     DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Events").doc(id).get();
     return Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
+  // Get All Events for Client
+  Future<List<Event>> getAllEventsFromClient(String clientid) async {
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Events")
+        //.orderBy("year", descending: true)
+        //.orderBy("month", descending: true)
+        //.orderBy("day", descending: true)
+        .where("joinedMembers", arrayContains: clientid)
+        .get();
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return events;
+  }
+  // Get All Events for Trainer
+  Future<List<Event>> getAllEventsFromTrainer(String trainerid) async {
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Events")
+        //.orderBy("year", descending: true)
+        //.orderBy("month", descending: true)
+        //.orderBy("day", descending: true)
+        .where("selectedTrainers", arrayContains: trainerid)
+        .get();
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return events;
+  }
+
   // Delete Event
   Future<void> deleteEvent(String id) async {
     try {

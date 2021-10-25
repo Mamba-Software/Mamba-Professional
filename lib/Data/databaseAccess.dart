@@ -52,6 +52,8 @@ class DatabaseAccess {
   Future<void> deleteEvent(String id) => _firebase.deleteEvent(id);
 
   Future<Event> getSingleEvent(String id) => _firebase.getSingleEvent(id);
+  Future<List<Event>> getAllEventsFromClient(String clientid) => _firebase.getAllEventsFromClient(clientid);
+  Future<List<Event>> getAllEventsFromTrainer(String trainerid) => _firebase.getAllEventsFromTrainer(trainerid);
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams
