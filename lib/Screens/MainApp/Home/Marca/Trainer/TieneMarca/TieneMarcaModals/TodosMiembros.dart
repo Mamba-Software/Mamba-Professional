@@ -6,7 +6,9 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/ProfileView.dart/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:page_transition/page_transition.dart';
 
 class TodosMiembros extends StatefulWidget {
   const TodosMiembros({Key? key}) : super(key: key);
@@ -157,7 +159,7 @@ class _TodosMiembrosState extends State<TodosMiembros> {
                                       padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
                                       child: GestureDetector(
                                         onTap: () {
-                                          print(user.id);
+                                          Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
                                         },
                                         child: Container(
                                             height: MediaQuery.of(context).size.height*0.10,
@@ -214,7 +216,7 @@ class _TodosMiembrosState extends State<TodosMiembros> {
                               ),
                             ),
                             Container(
-                              padding: EdgeInsets.only(top: 10),
+                              padding: EdgeInsets.only(top: 0),
                               child: ListView.builder(
                                   shrinkWrap: true,
                                   scrollDirection: Axis.vertical,
@@ -225,7 +227,7 @@ class _TodosMiembrosState extends State<TodosMiembros> {
                                       padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
                                       child: GestureDetector(
                                         onTap: () {
-                                          print(user.id);
+                                          Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
                                         },
                                         child: Container(
                                             height: MediaQuery.of(context).size.height*0.10,

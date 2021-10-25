@@ -76,6 +76,10 @@ class FirebaseDatabaseService {
     DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Users").doc(currentUser!.uid).get();
     return Usuario.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
+  Future<Usuario> getUserDetails(String uid) async {
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Users").doc(uid).get();
+    return Usuario.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+  }
   // User Model Services
   // Add User
   Future<int> addUser(String email, String password, String name, bool isTrainer, int gender, String idioma) async {

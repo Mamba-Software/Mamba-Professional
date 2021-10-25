@@ -367,72 +367,8 @@ class _PerfilState extends State<Perfil> {
                     children: [
                       Text("${currentUser.name}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).accentColor, fontWeight: FontWeight.bold, fontSize: 26), textAlign: TextAlign.center,),
                       Padding(
-                        padding: EdgeInsets.only(top: 16.0, bottom: 8, left: 8, right: 8),
-                        child: Container(
-                          height: MediaQuery.of(context).size.height * 0.10,
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).backgroundColor,
-                            borderRadius: BorderRadius.all(Radius.circular(15.0))
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.25,
-                                child: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 5.0),
-                                        child: Text(
-                                          "0",
-                                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 5.0),
-                                        child: Text(
-                                          "Entrenos Realizados",
-                                          style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Theme.of(context).primaryColor),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.25,
-                                child: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 5.0),
-                                        child: Text(
-                                          "0",
-                                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 5.0),
-                                        child: Text(
-                                          "Entrenos Realizados",
-                                          style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Theme.of(context).primaryColor),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: NumbersWidget(),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top:20.0, bottom: 10.0),
@@ -484,3 +420,45 @@ class _PerfilState extends State<Perfil> {
   }
 
 }
+
+class NumbersWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      buildButton(context, '4.8', 'Ranking'),
+      buildDivider(context),
+      buildButton(context, '35', 'Following'),
+      buildDivider(context),
+      buildButton(context, '50', 'Followers'),
+    ],
+  );
+
+  Widget buildDivider(BuildContext context) => Container(
+    height: 24,
+    child: VerticalDivider(color: Theme.of(context).primaryColor,),
+  );
+
+  Widget buildButton(BuildContext context, String value, String text) =>
+      MaterialButton(
+        padding: EdgeInsets.symmetric(vertical: 4),
+        onPressed: () {},
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              value,
+              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24),
+            ),
+            SizedBox(height: 2),
+            Text(
+              text,
+              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+          ],
+        ),
+      );
+}
+

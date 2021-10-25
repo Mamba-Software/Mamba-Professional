@@ -21,6 +21,7 @@ class DatabaseAccess {
   Future<bool> checkIfItsMe(String uid) => _firebase.checkIfItsMe(uid);
   Future<User?> getCurrentUser() => _firebase.getCurrentUser();
   Future<Usuario> getCurrentUserDetails() => _firebase.getCurrentUserDetails();
+  Future<Usuario> getUserDetails(String uid) => _firebase.getUserDetails(uid);
 
   Future<int> addUser(String email, String password, String name, bool isTrainer, int gender, String idioma) => _firebase.addUser(email, password, name, isTrainer, gender, idioma);
 
