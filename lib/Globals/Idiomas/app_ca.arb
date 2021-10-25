@@ -149,5 +149,7 @@
   "numberClientJoining": "Asistents",
   "noClientJoining": "Sense asistents",
   "designatedTrainers": "Entrenadors assignats",
-  "noTrainerSelectedError": "No hi ha cap entrenador assignat"
+  "noTrainerSelectedError": "No hi ha cap entrenador assignat",
+  "totalNumberEvents": "Sessions realitzades: {number}",
+  "noTrainingsDone": "Aquest usuari no ha participat en cap event"
 }

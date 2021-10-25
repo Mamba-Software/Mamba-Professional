@@ -622,5 +622,18 @@
   "noTrainerSelectedError": "No hay ningún entrenador asignado",
   "@noTrainerSelectedError":{
     "description": "noTrainerSelectedError text"
+  },
+  "totalNumberEvents": "Sesiones realizadas: {number}",
+  "@totalNumberEvents": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "noTrainingsDone": "Este usuario no ha participado en ningún evento",
+  "@noTrainingsDone": {
+    "description": "Wellcome message"
   }
 }

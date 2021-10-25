@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../Constants.dart';
 import '../../Styles.dart';
 import '../LoadingViewPurple.dart';
 
@@ -28,8 +29,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   // Birthday
   int birthday = 0;
   // Event List
-  List<Event> trainerEvent = [];
-  List<Event> clientEvent = [];
+  List<Event> listEvents = [];
 
   // init Widget state. Loading user info.
   @override
@@ -48,14 +48,20 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     if (user!.isTrainer!) {
       getTrainerEventsDone();
     } else {
-      //getClientEventsDone();
+      getClientEventsDone();
     }
   }
 
   // Gets the events passed by the trainer.
   void getTrainerEventsDone() async {
-    trainerEvent = await _accessDatabase.getAllEventsFromTrainer(widget.userID);
-    print(trainerEvent.length);
+    listEvents = await _accessDatabase.getAllEventsFromTrainer(widget.userID);
+    setState(() {
+      isLoading = false;
+    });
+  }
+  // Gets the events passed by the trainer.
+  void getClientEventsDone() async {
+    listEvents = await _accessDatabase.getAllEventsFromClient(widget.userID);
     setState(() {
       isLoading = false;
     });
@@ -77,6 +83,14 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
       }
     }
     return age;
+  }
+  // Calculate Age
+  durationToString(double duration) {
+    String temp = "";
+    temp = duration.toStringAsFixed(2);
+    var hour = temp.split(".")[0];
+    var min = temp.split(".")[1];
+    return "${hour}h ${min}m ";
   }
 
   @override
@@ -127,17 +141,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    user!.email!,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -176,24 +180,199 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     color: Theme.of(context).accentColor,
                     size: 25,
                   ),
-                  SizedBox(width: 2),
+                  user!.isTrainer! ? SizedBox(width: 4) : SizedBox(width: 2),
                   Text(
                     user!.isTrainer! ?  AppLocalizations.of(context)!.trainer : AppLocalizations.of(context)!.client,
                     style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
                   ),
                 ],
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: trainerEvent.length,
-                itemBuilder: (context,int index) {
-                  Event event = trainerEvent[index];
-                  return ListTile(
-                    title: Text(event.title!, style: Styles.purpleTextStyle,),
-                    subtitle: Text(event.description!, style: Styles.purpleTextStyle.copyWith(fontSize: 16),),
-                  );
-                },
+              const SizedBox(height: 16),
+              listEvents.length != 0 ? Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.format_list_numbered, color: Colors.grey, size: 25,),
+                        SizedBox(width: 8,),
+                        Text(
+                          AppLocalizations.of(context)!.totalNumberEvents(listEvents.length.toString()),
+                          style: TextStyle(color: Colors.grey, fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: listEvents.length,
+                    itemBuilder: (context,int index) {
+                      Event event = listEvents[index];
+                      return GestureDetector(
+                        onTap: () => {
+                          print(event.id)
+                        },
+                        child: Container(
+                          height: MediaQuery.of(context).size.height*0.15,
+                          child: new Card(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                              //side: BorderSide(color: Styles.accent, width: 0.01),
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width*0.02, MediaQuery.of(context).size.width*0.01, MediaQuery.of(context).size.width*0.02, MediaQuery.of(context).size.width*0.01),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width*0.25,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.event_available,
+                                          color: Theme.of(context).primaryColor,
+                                          size: 40,
+                                        ),
+                                        Text(
+                                          "${event.day}/${event.month}/${event.year!.substring(2, 4)}",
+                                          style: Styles.purpleTextStyle.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width*0.55,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(event.title!,style: Styles.purpleTextStyle.copyWith(fontSize: 18.0, fontWeight: FontWeight.bold),),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 8),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.timer,
+                                                        color: Colors.grey,
+                                                        size: 25,
+                                                      ),
+                                                      SizedBox(width: 2),
+                                                      Text(
+                                                        durationToString(event.duration!),
+                                                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 4),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      SizedBox(width: 4),
+                                                      Icon(
+                                                        Icons.record_voice_over,
+                                                        color: Colors.grey,
+                                                        size: 25,
+                                                      ),
+                                                      SizedBox(width: 8),
+                                                      Text(
+                                                        event.selectedTrainers.length.toString(),
+                                                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                                                      ),
+                                                      Container(
+                                                          height: 16,
+                                                          width: 32,
+                                                          child: VerticalDivider(color: Colors.grey, width: 10, thickness: 2,)
+                                                      ),
+                                                      Icon(
+                                                        Icons.directions_run,
+                                                        color: Colors.grey,
+                                                        size: 25,
+                                                      ),
+                                                      SizedBox(width: 8),
+                                                      Text(
+                                                        event.joinedMembers.length.toString(),
+                                                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                                                      ),
+                                                      Text(
+                                                        " / ",
+                                                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                                                      ),
+                                                      Text(
+                                                        event.maxMembers.toString(),
+                                                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width*0.14,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: Theme.of(context).primaryColor,
+                                          size: 25,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 10)
+                ],
+              )
+                :
+              Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(bottom: 120),
+                    height: MediaQuery.of(context).size.height*0.49,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Container(
+                            height: 150,
+                            child: Image.asset(Constants.emptyCalendar)
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.20),
+                          child: Text(AppLocalizations.of(context)!.noTrainingsDone, style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080)), textAlign: TextAlign.center,),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
