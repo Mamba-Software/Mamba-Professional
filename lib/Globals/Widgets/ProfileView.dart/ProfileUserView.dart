@@ -109,11 +109,14 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
             },
           ),
           actions: [
-            IconButton(
-              onPressed: () {
-                print("Travel to Chat");
-              } ,
-              icon: Icon(Icons.chat)
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: IconButton(
+                onPressed: () {
+                  print("Travel to Chat");
+                } ,
+                icon: Icon(Icons.chat)
+              ),
             )
           ],
         ),
@@ -231,7 +234,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
-                                    width: MediaQuery.of(context).size.width*0.25,
+                                    width: MediaQuery.of(context).size.width*0.24,
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [

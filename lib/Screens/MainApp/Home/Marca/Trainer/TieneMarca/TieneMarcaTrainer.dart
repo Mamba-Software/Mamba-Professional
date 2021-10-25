@@ -6,9 +6,11 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/CalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/ProfileView.dart/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AnadirMiembro.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/HistorialSesiones.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembros.dart';
+import 'package:page_transition/page_transition.dart';
 
 class TieneMarcaTrainer extends StatefulWidget {
   const TieneMarcaTrainer({Key? key}) : super(key: key);
@@ -56,47 +58,26 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
           });
           break;
         case 1:
-          showModalBottomSheet<bool>(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
-              ),
-              isScrollControlled: true,
-              context: context,
-              builder: (context) {
-                return TodosMiembros();
-              }
-          ).whenComplete(() =>{
-            setState(() {
-              _statusButtons[1] = !_statusButtons[1];
-            }),
-          });
+          Navigator.push(
+              context,
+              PageTransition(
+                  type: PageTransitionType.bottomToTop,
+                  child: TodosMiembros()
+              )
+          );
           break;
         case 2:
           Navigator.push(
               context,
-              CupertinoPageRoute<Null>(
-                builder: (context) => CalendarWidget(),
-                settings: RouteSettings(name: 'CalendarWidget'),
+              PageTransition(
+                  type: PageTransitionType.bottomToTop,
+                  child: CalendarWidget()
               )
           ).whenComplete(() =>
-            setState(() {
-              _statusButtons[2] = !_statusButtons[2];
-            }),
+              setState(() {
+                _statusButtons[2] = !_statusButtons[2];
+              }),
           );
-          /*
-          showModalBottomSheet(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-              isScrollControlled: true,
-              context: context,
-              builder: (context) {
-                return Calendario();
-              }).whenComplete(() => {
-            setState(() {
-              _statusButtons[2] = !_statusButtons[2];
-            })
-          });
-           */
           break;
         case 3:
           showModalBottomSheet(
