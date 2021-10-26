@@ -191,21 +191,33 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                 ],
               ),
               const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.format_list_numbered, color: Colors.grey, size: 25,),
+                    SizedBox(width: 8,),
+                    Text(
+                      AppLocalizations.of(context)!.totalNumberEvents(listEvents.length.toString()),
+                      style: TextStyle(color: Colors.grey, fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
               listEvents.length != 0 ? Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.format_list_numbered, color: Colors.grey, size: 25,),
-                        SizedBox(width: 8,),
-                        Text(
-                          AppLocalizations.of(context)!.totalNumberEvents(listEvents.length.toString()),
-                          style: TextStyle(color: Colors.grey, fontSize: 16),
-                        ),
-                      ],
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      /*
+                      Text(
+                        "HOLA",
+                        style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24),
+                      ),
+                      // Aqui hauria de ficar les dates semana a semana
+                       */
+                    ],
                   ),
                   ListView.builder(
                     shrinkWrap: true,

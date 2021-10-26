@@ -7,7 +7,8 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/ProfileView.dart/ProfileUserView.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -30,20 +31,14 @@ class _TodosMiembrosState extends State<TodosMiembros> {
   bool isUpdated = false;
   // Search Controller
   var searchController = TextEditingController();
-  String? titleString;
-  // Description Controller
-  var descriptionController = TextEditingController();
-  String? descriptionString;
-  // Starting Date and Time
-  TextEditingController startDateController = TextEditingController();
-  bool errorDate = false;
+  // Tab Bar Index Controller
+  int tabBarIndex = 0;
+
   // Members Page
   List<Usuario> allClients = [];
   List<Usuario> filteredClients = [];
   List<Usuario> allTrainers = [];
   List<Usuario> filteredTrainers = [];
-
-
 
   Future<void> getAllUsers() async {
     await getAllTrainersFromBrand();
@@ -55,10 +50,49 @@ class _TodosMiembrosState extends State<TodosMiembros> {
 
   Future<void> getAllTrainersFromBrand() async {
     allTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
+    filteredTrainers = allTrainers;
   }
 
   Future<void> getAllClientsFromBrand() async {
     allClients = await _accessDatabase.getAllClientsFromBrand(currentBrand.id!);
+    filteredClients = allClients;
+  }
+
+  void filterSearchResults(String query, bool isTrainer) {
+    List<Usuario> usersFiltered = [];
+    if (isTrainer) {
+      if (query.isNotEmpty || query != "") {
+        for (var item in allTrainers) {
+          if (item.name!.startsWith(query)) {
+            usersFiltered.add(item);
+          }
+        }
+        setState(() {
+          filteredTrainers.clear();
+          filteredTrainers.addAll(usersFiltered);
+        });
+      } else {
+        setState(() {
+          filteredTrainers = allTrainers;
+        });
+      }
+    } else {
+      if (query.isNotEmpty || query != "") {
+        for (var item in allClients) {
+          if (item.name!.startsWith(query)) {
+            usersFiltered.add(item);
+          }
+        }
+        setState(() {
+          filteredClients.clear();
+          filteredClients.addAll(usersFiltered);
+        });
+      } else {
+        setState(() {
+          filteredClients = allClients;
+        });
+      }
+    }
   }
 
   @override
@@ -76,6 +110,7 @@ class _TodosMiembrosState extends State<TodosMiembros> {
           :
       DefaultTabController(
           length: 2,
+          initialIndex: tabBarIndex,
           child: Scaffold(
             appBar: AppBar(
               elevation: 0,
@@ -110,54 +145,88 @@ class _TodosMiembrosState extends State<TodosMiembros> {
                 )
               ],
               bottom: TabBar(
-              indicator: UnderlineTabIndicator(
-                borderSide: BorderSide(width: 3.0, color:Theme.of(context).accentColor, ),
-              ),
-              tabs: [
-                Tab(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
-                        SizedBox(width: 10,),
-                        Text(AppLocalizations.of(context)!.clients, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
-                      ],
+                physics: NeverScrollableScrollPhysics(),
+                indicator: UnderlineTabIndicator(
+                  borderSide: BorderSide(width: 3.0, color:Theme.of(context).accentColor, ),
+                ),
+                onTap: (index) {
+                  tabBarIndex = index;
+                },
+                tabs: [
+                  Tab(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
+                          SizedBox(width: 10,),
+                          Text(AppLocalizations.of(context)!.clients, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Tab(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.record_voice_over, color: Theme.of(context).accentColor,),
-                        SizedBox(width: 10,),
-                        Text(AppLocalizations.of(context)!.trainers, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
-                      ],
+                  Tab(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.record_voice_over, color: Theme.of(context).accentColor,),
+                          SizedBox(width: 10,),
+                          Text(AppLocalizations.of(context)!.trainers, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
             ),
             ),
             backgroundColor: Colors.transparent,
             body: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.04),
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.02),
                   child: TextFormField(
                     controller: searchController,
                     onChanged: (value) {
-                      filterSearchResults(value, false);
+                      if (tabBarIndex == 0) {
+                        filterSearchResults(value, false);
+                      } else {
+                        filterSearchResults(value, true);
+                      }
                     },
+                    textAlign: TextAlign.left,
+                    textAlignVertical: TextAlignVertical.top,
                     decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.search,
-                        prefixIcon: Icon(Icons.search),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(15.0)))
+                      hintText: AppLocalizations.of(context)!.search,
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0))
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))
+                      ),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Colors.grey,
+                      ),
+                      suffix: IconButton(
+                        icon: Icon(
+                          Icons.clear
+                        ),
+                        onPressed: () {
+                          searchController.clear();
+                          setState(() {
+                            filteredClients = allClients;
+                            filteredTrainers = allTrainers;
+                          });
+                          //FocusScope.of(context).unfocus();
+                        },
+                        //padding: EdgeInsets.only(top: 6),
+                      ),
+                      contentPadding: EdgeInsets.only(top: -6),
                     ),
                   ),
                 ),
@@ -169,9 +238,9 @@ class _TodosMiembrosState extends State<TodosMiembros> {
                         child: ListView.builder(
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
-                            itemCount: allClients.length,
+                            itemCount: filteredClients.length,
                             itemBuilder: (context, index) {
-                              Usuario user = allClients[index];
+                              Usuario user = filteredClients[index];
                               return Container(
                                 padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
                                 child: GestureDetector(
@@ -237,9 +306,9 @@ class _TodosMiembrosState extends State<TodosMiembros> {
                         child: ListView.builder(
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
-                            itemCount: allTrainers.length,
+                            itemCount: filteredTrainers.length,
                             itemBuilder: (context, index) {
-                              Usuario user = allTrainers[index];
+                              Usuario user = filteredTrainers[index];
                               return Container(
                                 padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
                                 child: GestureDetector(
@@ -308,35 +377,11 @@ class _TodosMiembrosState extends State<TodosMiembros> {
           ),
         ),
     );
-
-
-
-  }
-
-  void filterSearchResults(String query, bool isTrainer) {
-    List<Usuario> usersFiltered = [];
-
-    if (isTrainer) {
-      if (query.isNotEmpty) {
-
-      } else {
-
-      }
-    } else {
-      if (query.isNotEmpty) {
-
-      } else {
-
-      }
-    }
   }
 
   @override
   void dispose() {
     super.dispose();
   }
-
-
-
 
 }
