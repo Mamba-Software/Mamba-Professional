@@ -151,5 +151,6 @@
   "designatedTrainers": "Entrenadors assignats",
   "noTrainerSelectedError": "No hi ha cap entrenador assignat",
   "totalNumberEvents": "Sessions realitzades: {number}",
-  "noTrainingsDone": "Aquest usuari no ha participat en cap event"
+  "noTrainingsDone": "Aquest usuari no ha participat en cap event",
+  "todaysBrandEvents": "Previst per avui"
 }

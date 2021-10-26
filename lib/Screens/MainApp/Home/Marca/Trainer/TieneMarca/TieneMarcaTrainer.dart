@@ -6,7 +6,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/CalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AnadirMiembro.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/HistorialSesiones.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembros.dart';
@@ -157,39 +157,6 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                 OutlinedButton(
                                   onPressed: () {
                                     setState(() {
-                                      _statusButtons[0] = !_statusButtons[0];
-                                      _showPerfiClientModals(0);
-                                    });
-                                  },
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.group_add, color: Colors.white, size: _iconSize,), // icon
-                                    ],
-                                  ),
-                                  style: OutlinedButton.styleFrom(
-                                    backgroundColor: Theme.of(context).accentColor,
-                                    //backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
-                                    elevation: 5,
-                                    shape: CircleBorder(),
-                                    padding: EdgeInsets.all(_globusSize),
-                                  ),
-                                ),
-                              ],
-                            )),
-                        // Ajustes Adalt Dreta
-                        Positioned(
-                            top: 0,
-                            bottom: MediaQuery.of(context).size.height*0.28,
-                            left: MediaQuery.of(context).size.width*0.45,
-                            right: 0,
-                            child: new Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                OutlinedButton(
-                                  onPressed: () {
-                                    setState(() {
                                       _statusButtons[1] = !_statusButtons[1];
                                       _showPerfiClientModals(1);
                                     });
@@ -204,6 +171,68 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                   style: OutlinedButton.styleFrom(
                                     backgroundColor: Theme.of(context).accentColor,
                                     //backgroundColor: !_statusButtons[1] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
+                                    elevation: 5,
+                                    shape: CircleBorder(),
+                                    padding: EdgeInsets.all(_globusSize),
+                                  ),
+                                ),
+                              ],
+                            )),
+                        /*
+                        new Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                OutlinedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _statusButtons[0] = !_statusButtons[0];
+                                      _showPerfiClientModals(0);
+                                    });
+                                  },
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.settings, color: Colors.white, size: _iconSize,), // icon
+                                    ],
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: Theme.of(context).accentColor,
+                                    //backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
+                                    elevation: 5,
+                                    shape: CircleBorder(),
+                                    padding: EdgeInsets.all(_globusSize),
+                                  ),
+                                ),
+                              ],
+                            )),
+                         */
+                        // Ajustes Adalt Dreta
+                        Positioned(
+                            top: 0,
+                            bottom: MediaQuery.of(context).size.height*0.28,
+                            left: MediaQuery.of(context).size.width*0.45,
+                            right: 0,
+                            child: new Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                OutlinedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _statusButtons[0] = !_statusButtons[0];
+                                      _showPerfiClientModals(0);
+                                    });
+                                  },
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.settings, color: Colors.white, size: _iconSize,), // icon
+                                    ],
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: Theme.of(context).accentColor,
+                                    //backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
                                     elevation: 5,
                                     shape: CircleBorder(),
                                     padding: EdgeInsets.all(_globusSize),
@@ -290,7 +319,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text("Próximos eventos...", style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                    Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
                   ],
                 ),
                 Container(
@@ -316,71 +345,3 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
     );
   }
 }
-
-/*
-// Feedback Abaix Esquerra
-                          Positioned(
-                              top: MediaQuery.of(context).size.height*0.35,
-                              bottom: 0,
-                              left: 0,
-                              right: MediaQuery.of(context).size.width*0.45,
-                              child: new Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  OutlinedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _statusButtons[4] = !_statusButtons[4];
-                                        _showPerfiClientModals(4);
-                                      });
-                                    },
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.payment, color: Colors.white, size: _iconSize,), // icon
-                                      ],
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      backgroundColor: !_statusButtons[4] ? Styles.mainColor : Styles.mainColorTrans,
-                                      elevation: 5,
-                                      shape: CircleBorder(),
-                                      padding: EdgeInsets.all(_globusSize),
-                                    ),
-                                  ),
-                                ],
-                              )),
-                          // Bug Abaix Dreta
-                          Positioned(
-                              top: MediaQuery.of(context).size.height*0.35,
-                              bottom: 0,
-                              left: MediaQuery.of(context).size.width*0.45,
-                              right: 0,
-                              child: new Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  OutlinedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _statusButtons[5] = !_statusButtons[5];
-                                        _showPerfiClientModals(5);
-                                      });
-                                    },
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.settings, color: Colors.white, size: _iconSize,), // icon
-                                      ],
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      backgroundColor: !_statusButtons[5] ? Styles.mainColor : Styles.mainColorTrans,
-                                      elevation: 5,
-                                      shape: CircleBorder(),
-                                      padding: EdgeInsets.all(_globusSize),
-                                    ),
-                                  ),
-                                ],
-                              )),
- */
-
