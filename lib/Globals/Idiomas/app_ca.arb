@@ -69,6 +69,7 @@
   "description": "Descripció",
   "descriptionHint": "Descriu l'error detalladament",
   "descriptionError": "Afegeix una descripció si us plau",
+  "noDescription": "No s'ha afegit cap descripció",
   "reproducteSteps": "Passos per reproduir l'error",
   "reproducteStepsHint": "Saps com podem reproduir l'error?",
   "errorSent": "Gràcies per reportar aquest error!\nNecessitem a mes gent com tu",

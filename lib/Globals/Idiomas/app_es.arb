@@ -289,6 +289,10 @@
   "@descriptionHint":{
     "description": "Descripción Text"
   },
+  "noDescription": "No se ha añadido ningna descripción",
+  "@noDescription":{
+    "description": "Descripción Text"
+  },
   "descriptionError": "Añade una descripción por favor",
   "@descriptionError":{
     "description": "Descripción Text"
