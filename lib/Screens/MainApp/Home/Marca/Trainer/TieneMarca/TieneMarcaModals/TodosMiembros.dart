@@ -8,7 +8,6 @@ import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -30,9 +29,8 @@ class _TodosMiembrosState extends State<TodosMiembros> {
   // Boolean isUpdated
   bool isUpdated = false;
   // Search Controller
-  var searchController = TextEditingController();
-  // Tab Bar Index Controller
-  int tabBarIndex = 0;
+  var searchClientsController = TextEditingController();
+  var searchTrainersController = TextEditingController();
 
   // Members Page
   List<Usuario> allClients = [];
@@ -68,8 +66,7 @@ class _TodosMiembrosState extends State<TodosMiembros> {
           }
         }
         setState(() {
-          filteredTrainers.clear();
-          filteredTrainers.addAll(usersFiltered);
+          filteredTrainers = usersFiltered;
         });
       } else {
         setState(() {
@@ -84,8 +81,7 @@ class _TodosMiembrosState extends State<TodosMiembros> {
           }
         }
         setState(() {
-          filteredClients.clear();
-          filteredClients.addAll(usersFiltered);
+          filteredClients = usersFiltered;
         });
       } else {
         setState(() {
@@ -109,273 +105,299 @@ class _TodosMiembrosState extends State<TodosMiembros> {
       Center(child: LoadingViewPurple())
           :
       DefaultTabController(
-          length: 2,
-          initialIndex: tabBarIndex,
-          child: Scaffold(
-            appBar: AppBar(
-              elevation: 0,
-              title: Text(AppLocalizations.of(context)!.members, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
-              centerTitle: true,
-              iconTheme: IconThemeData(
-                color: Styles.accent, //change your color here
-              ),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: IconButton(
-                      onPressed: () async {
-                        Clipboard.setData(new ClipboardData(text: currentBrand.id)).then((_){
-                          showTopSnackBar(
-                            context,
-                            CustomSnackBar.info(
-                              icon: Container(),
-                              iconRotationAngle: 0,
-                              backgroundColor: Styles.accent,
-                              message: AppLocalizations.of(context)!.copyCorrectCode,
-                              textStyle: Styles.whiteTextStyle,
-                            ),
-                          );
-                        });
-                      },
-                    icon: Icon(
-                      Icons.group_add,
-                      size: 30,
-                    )
-                  ),
-                )
-              ],
-              bottom: TabBar(
-                physics: NeverScrollableScrollPhysics(),
-                indicator: UnderlineTabIndicator(
-                  borderSide: BorderSide(width: 3.0, color:Theme.of(context).accentColor, ),
-                ),
-                onTap: (index) {
-                  tabBarIndex = index;
-                },
-                tabs: [
-                  Tab(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
-                          SizedBox(width: 10,),
-                          Text(AppLocalizations.of(context)!.clients, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Tab(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.record_voice_over, color: Theme.of(context).accentColor,),
-                          SizedBox(width: 10,),
-                          Text(AppLocalizations.of(context)!.trainers, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+        length: 2,
+        initialIndex: 0,
+        child: Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            title: Text(AppLocalizations.of(context)!.members, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+            centerTitle: true,
+            iconTheme: IconThemeData(
+              color: Styles.accent, //change your color here
             ),
-            ),
-            backgroundColor: Colors.transparent,
-            body: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.02),
-                  child: TextFormField(
-                    controller: searchController,
-                    onChanged: (value) {
-                      if (tabBarIndex == 0) {
-                        filterSearchResults(value, false);
-                      } else {
-                        filterSearchResults(value, true);
-                      }
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: IconButton(
+                    onPressed: () async {
+                      Clipboard.setData(new ClipboardData(text: currentBrand.id)).then((_){
+                        showTopSnackBar(
+                          context,
+                          CustomSnackBar.info(
+                            icon: Container(),
+                            iconRotationAngle: 0,
+                            backgroundColor: Styles.accent,
+                            message: AppLocalizations.of(context)!.copyCorrectCode,
+                            textStyle: Styles.whiteTextStyle,
+                          ),
+                        );
+                      });
                     },
-                    textAlign: TextAlign.left,
-                    textAlignVertical: TextAlignVertical.top,
-                    decoration: InputDecoration(
-                      hintText: AppLocalizations.of(context)!.search,
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                          borderRadius: BorderRadius.all(Radius.circular(10.0))
-                      ),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0))
-                      ),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: Colors.grey,
-                      ),
-                      suffix: IconButton(
-                        icon: Icon(
-                          Icons.clear
-                        ),
-                        onPressed: () {
-                          searchController.clear();
-                          setState(() {
-                            filteredClients = allClients;
-                            filteredTrainers = allTrainers;
-                          });
-                          //FocusScope.of(context).unfocus();
-                        },
-                        //padding: EdgeInsets.only(top: 6),
-                      ),
-                      contentPadding: EdgeInsets.only(top: -6),
+                  icon: Icon(
+                    Icons.group_add,
+                    size: 30,
+                  )
+                ),
+              )
+            ],
+            bottom: TabBar(
+              indicator: UnderlineTabIndicator(
+                borderSide: BorderSide(width: 3.0, color:Theme.of(context).accentColor, ),
+              ),
+              tabs: [
+                Tab(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
+                        SizedBox(width: 10,),
+                        Text(AppLocalizations.of(context)!.clients, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
+                      ],
                     ),
                   ),
                 ),
-                Expanded(
-                  child: TabBarView(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.only(top: 0),
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: filteredClients.length,
-                            itemBuilder: (context, index) {
-                              Usuario user = filteredClients[index];
-                              return Container(
-                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
-                                  },
-                                  child: Container(
-                                      height: MediaQuery.of(context).size.height*0.10,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
-                                            child: CircularImage(
-                                              size: MediaQuery.of(context).size.width*0.2,
-                                              image: user.imageUrl,
-                                              color: Theme.of(context).primaryColor,
-                                              borderWidth: 1.5,
-                                            ),
-                                          ),
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                width: MediaQuery.of(context).size.width*0.40,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        user.name!,
-                                                        style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                                                        textAlign: TextAlign.left,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.20),
-                                            child: Icon(
-                                              Icons.arrow_forward_ios,
-                                              size: 30,
-                                              color: Theme.of(context).primaryColor,
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                  ),
-                                ),
-                              );
-                            }
-
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(top: 0),
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: filteredTrainers.length,
-                            itemBuilder: (context, index) {
-                              Usuario user = filteredTrainers[index];
-                              return Container(
-                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
-                                  },
-                                  child: Container(
-                                      height: MediaQuery.of(context).size.height*0.10,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
-                                            child: CircularImage(
-                                              size: MediaQuery.of(context).size.width*0.2,
-                                              image: user.imageUrl,
-                                              color: Theme.of(context).primaryColor,
-                                              borderWidth: 1.5,
-                                            ),
-                                          ),
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                width: MediaQuery.of(context).size.width*0.40,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        user.name!,
-                                                        style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                                                        textAlign: TextAlign.left,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.20),
-                                            child: Icon(
-                                              Icons.arrow_forward_ios,
-                                              size: 30,
-                                              color: Theme.of(context).primaryColor,
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                  ),
-                                ),
-                              );
-                            }
-
-                        ),
-                      ),
-                    ],
+                Tab(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.record_voice_over, color: Theme.of(context).accentColor,),
+                        SizedBox(width: 10,),
+                        Text(AppLocalizations.of(context)!.trainers, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
+                      ],
+                    ),
                   ),
                 ),
               ],
-            ),
           ),
+          ),
+          backgroundColor: Colors.transparent,
+          body: TabBarView(
+                  children: [
+                    Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.02),
+                          child: TextField(
+                            controller: searchClientsController,
+                            onChanged: (value) {
+                              // Filter trainers
+                              filterSearchResults(value, false);
+                            },
+                            textAlign: TextAlign.left,
+                            decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context)!.search,
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderRadius: BorderRadius.all(Radius.circular(10.0))
+                              ),
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderRadius: BorderRadius.all(Radius.circular(10.0))
+                              ),
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: Colors.grey,
+                              ),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  searchClientsController.clear();
+                                  filterSearchResults("", false);
+                                },
+                                icon: Icon(Icons.clear, color: Colors.grey,),
+                              ),
+                              contentPadding: EdgeInsets.all(0),
+                            ),
+                          )
+                        ),
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.only(top: 0),
+                            child: ListView.builder(
+                                physics: BouncingScrollPhysics(),
+                                shrinkWrap: true,
+                                scrollDirection: Axis.vertical,
+                                itemCount: filteredClients.length,
+                                itemBuilder: (context, index) {
+                                  Usuario user = filteredClients[index];
+                                  return Container(
+                                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
+                                      },
+                                      child: Container(
+                                          height: MediaQuery.of(context).size.height*0.10,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
+                                                child: CircularImage(
+                                                  size: MediaQuery.of(context).size.width*0.2,
+                                                  image: user.imageUrl,
+                                                  color: Theme.of(context).primaryColor,
+                                                  borderWidth: 1.5,
+                                                ),
+                                              ),
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width*0.40,
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            user.name!,
+                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                                                            textAlign: TextAlign.left,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+
+                                                ],
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.20),
+                                                child: Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  size: 30,
+                                                  color: Theme.of(context).primaryColor,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.02),
+                            child: TextField(
+                              controller: searchTrainersController,
+                              onChanged: (value) {
+                                // Filter trainers
+                                filterSearchResults(value, true);
+                              },
+                              textAlign: TextAlign.left,
+                              decoration: InputDecoration(
+                                hintText: AppLocalizations.of(context)!.search,
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                ),
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                ),
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  color: Colors.grey,
+                                ),
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    searchTrainersController.clear();
+                                    filterSearchResults("", true);
+                                  },
+                                  icon: Icon(Icons.clear, color: Colors.grey,),
+                                ),
+                                contentPadding: EdgeInsets.all(0),
+                              ),
+                            )
+                        ),
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.only(top: 0),
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.vertical,
+                                itemCount: filteredTrainers.length,
+                                itemBuilder: (context, index) {
+                                  Usuario user = filteredTrainers[index];
+                                  return Container(
+                                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
+                                      },
+                                      child: Container(
+                                          height: MediaQuery.of(context).size.height*0.10,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
+                                                child: CircularImage(
+                                                  size: MediaQuery.of(context).size.width*0.2,
+                                                  image: user.imageUrl,
+                                                  color: Theme.of(context).primaryColor,
+                                                  borderWidth: 1.5,
+                                                ),
+                                              ),
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width*0.40,
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            user.name!,
+                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                                                            textAlign: TextAlign.left,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+
+                                                ],
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.20),
+                                                child: Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  size: 30,
+                                                  color: Theme.of(context).primaryColor,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
         ),
+      ),
     );
   }
 
