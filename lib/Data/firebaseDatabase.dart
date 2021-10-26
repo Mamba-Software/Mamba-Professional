@@ -252,7 +252,7 @@ class FirebaseDatabaseService {
     return result;
   }
 
-  Future<Brand> getCurrentBrandDetails(String brandID) async {
+  Future<Brand> getBrandDetails(String brandID) async {
     DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Brands").doc(brandID).get();
     return Brand.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }

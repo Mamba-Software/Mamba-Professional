@@ -4,7 +4,7 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/CalendarWidget.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AnadirMiembro.dart';
@@ -71,12 +71,11 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
               context,
               PageTransition(
                   type: PageTransitionType.bottomToTop,
-                  child: CalendarWidget()
+                  child: CalendarWidget(
+                    brandID: currentBrand.id!,
+                    canEdit: true,
+                  )
               )
-          ).whenComplete(() =>
-              setState(() {
-                _statusButtons[2] = !_statusButtons[2];
-              }),
           );
           break;
         case 3:
@@ -227,7 +226,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(Icons.settings, color: Colors.white, size: _iconSize,), // icon
+                                      Icon(Icons.notifications, color: Colors.white, size: _iconSize,), // icon
                                     ],
                                   ),
                                   style: OutlinedButton.styleFrom(
@@ -293,7 +292,8 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(Icons.today, color: Colors.white, size: _iconSize,), // icon
+                                      Icon(Icons.today, color: Colors.white, size: _iconSize,),
+                                      //Text("Calendario", style: Styles.purpleTextStyle.copyWith(color: Colors.white, fontSize: 16,), textAlign: TextAlign.center,),// icon
                                     ],
                                   ),
                                   style: OutlinedButton.styleFrom(

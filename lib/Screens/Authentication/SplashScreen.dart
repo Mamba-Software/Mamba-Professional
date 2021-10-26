@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
     //if(firebaseUser != null && firebaseUser.emailVerified) {
       currentUser = await _accessDatabase.getCurrentUserDetails();
       if (currentUser.brandID != "null") {
-        currentBrand = await _accessDatabase.getCurrentBrandDetails(currentUser.brandID!);
+        currentBrand = await _accessDatabase.getBrandDetails(currentUser.brandID!);
       }
       _getCurrentLocation();
       Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));

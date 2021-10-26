@@ -35,7 +35,7 @@ class DatabaseAccess {
   Future<String> addBrand(String name, File image, String description, String placeId, String address, double latitude, double longitude, List<double> workShift) => _firebase.addBrand(name, image, description, placeId, address, latitude, longitude, workShift);
 
   Future<bool> checkIfBrandExists(String brandID) => _firebase.checkIfBrandExists(brandID);
-  Future<Brand> getCurrentBrandDetails(String brandID) => _firebase.getCurrentBrandDetails(brandID);
+  Future<Brand> getBrandDetails(String brandID) => _firebase.getBrandDetails(brandID);
   Future<List<Usuario>> getAllTrainersFromBrand(String brandID) => _firebase.getAllTrainersFromBrand(brandID);
   Future<List<Usuario>> getAllClientsFromBrand(String brandID) => _firebase.getAllClientsFromBrand(brandID);
 

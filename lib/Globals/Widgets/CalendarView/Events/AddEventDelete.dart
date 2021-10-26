@@ -8,11 +8,11 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:weekday_selector/weekday_selector.dart';
-import '../../Constants.dart';
-import '../../GlobalVars.dart';
+import '../../../Constants.dart';
+import '../../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../Styles.dart';
-import '../CircularImage.dart';
+import '../../../Styles.dart';
+import '../../CircularImage.dart';
 
 
 class AddEvent extends StatefulWidget {
