@@ -16,6 +16,7 @@ import '../../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../Styles.dart';
 import '../../CircularImage.dart';
+import 'EditEvent.dart';
 
 
 class ViewEvent extends StatefulWidget {
@@ -148,10 +149,12 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    return isLoading ? Scaffold(
+    return isLoading ?
+    Scaffold(
       appBar: null,
       body: LoadingViewPurple(),
-    ) :
+    )
+        :
     Scaffold(
       appBar: null,
       body: Stack(
@@ -675,7 +678,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
           child: FloatingActionButton.extended(
             heroTag: null,
             onPressed: () {
-              print("Edit");
+              _editEvent(event!.id!);
             },
             backgroundColor: Colors.green,
             icon: Icon(Icons.edit, color: Colors.white,),
@@ -686,6 +689,20 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
       ) : Container(),
     );
   }
+
+  void _editEvent(String eventId) {
+    Navigator.push(
+        context,
+        PageTransition(
+          type: PageTransitionType.bottomToTop,
+          child: EditEvent(
+            eventId: eventId,
+            locale: Localizations.localeOf(context),
+          ),
+        )
+    );
+  }
+
 }
 
 /*
