@@ -498,11 +498,11 @@
   "@inviteCode":{
     "description": "inviteCode text"
   },
-  "copyCorrectCode": "Código de invitación copìado correctamente",
+  "copyCorrectCode": "Código de invitación copiado correctamente",
   "@copyCorrectCode":{
     "description": "inviteCode text"
   },
-  "copyCorrectLocation": "Ubicaión copiada correctamente",
+  "copyCorrectLocation": "Ubicación copiada correctamente",
   "@copyCorrectLocation":{
     "description": "inviteCode text"
   },

@@ -127,9 +127,9 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Container(
-                                  height: MediaQuery.of(context).size.height * 0.30,
+                                  height: MediaQuery.of(context).size.height * 0.25,
                                   child: Center(
-                                    child: CircularImage(size: MediaQuery.of(context).size.height * 0.20, image: currentBrand.logoUrl),
+                                    child: CircularImage(size: MediaQuery.of(context).size.height * 0.18, image: currentBrand.logoUrl),
                                   ),
                                 ),
                               ],

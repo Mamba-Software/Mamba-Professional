@@ -272,12 +272,13 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                           errorBorder: InputBorder.none,
                                           disabledBorder: InputBorder.none,
                                         ),
-                                        textAlign: TextAlign.left,
+                                        textAlign: TextAlign.center,
                                       ),
                                     ),
                                   ],
                                 )
                             ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
                             Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 0),
                                 child: new Row(
@@ -288,7 +289,8 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                         controller: descriptionController,
                                         readOnly: true,
                                         minLines: 1,
-                                        maxLines: 6,
+                                        maxLines: 4,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 15),
                                         decoration: InputDecoration(
                                           labelStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
                                           hintText:AppLocalizations.of(context)!.noDescription,
@@ -305,10 +307,11 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                   ],
                                 )
                             ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.035),
                             Padding(
-                              padding: EdgeInsets.only(top: 20.0),
+                              padding: EdgeInsets.only(top: 0.0),
                               child: Container(
-                                height: MediaQuery.of(context).size.height * 0.25,
+                                height: MediaQuery.of(context).size.height * 0.23,
                                 width: MediaQuery.of(context).size.width * 0.90,
                                 decoration: BoxDecoration(
                                     color: Theme.of(context).backgroundColor,
@@ -459,7 +462,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.0),
                         child: Column(
                           children: [
-                            SizedBox(height: 10,),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.03),
                             Padding(
                                 padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
                                 child: new Row(
@@ -502,7 +505,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
-                                    height: MediaQuery.of(context).size.height*0.16,
+                                    height: MediaQuery.of(context).size.height*0.13,
                                     width: MediaQuery.of(context).size.width*0.99,
                                     child: ListView.builder(
                                         shrinkWrap: true,
@@ -534,7 +537,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                                       children: [
                                                         Expanded(
                                                           child: Text(
-                                                            trainer.name!,
+                                                            splitCommonName(trainer.name!),
                                                             style: Styles.purpleTextStyle.copyWith(fontSize: 15),
                                                             textAlign: TextAlign.center,
                                                           ),
@@ -552,6 +555,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                 ],
                               ),
                             ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
                               child: new Row(
@@ -609,7 +613,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
-                                    height: MediaQuery.of(context).size.height*0.16,
+                                    height: MediaQuery.of(context).size.height*0.13,
                                     width: MediaQuery.of(context).size.width,
                                     child: ListView.builder(
                                         shrinkWrap: true,
@@ -641,7 +645,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                                       children: [
                                                         Expanded(
                                                           child: Text(
-                                                            client.name!,
+                                                            splitCommonName(client.name!),
                                                             style: Styles.purpleTextStyle.copyWith(fontSize: 15),
                                                             textAlign: TextAlign.center,
                                                           ),
@@ -659,7 +663,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                 ],
                               ),
                             ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.13),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.15),
                           ],
                         ),
                       ),
@@ -688,6 +692,11 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
         ),
       ) : Container(),
     );
+  }
+
+  String splitCommonName(String name) {
+    List<String> aux = name.split(" ");
+    return aux[0];
   }
 
   void _editEvent(String eventId) {
