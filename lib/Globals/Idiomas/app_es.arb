@@ -619,7 +619,7 @@
   "@noClientJoining":{
     "description": "addEvent text"
   },
-  "designatedTrainers": "Entrenadores asignados",
+  "designatedTrainers": "Selecciona los entrenadores",
   "@designatedTrainers":{
     "description": "addEvent text"
   },

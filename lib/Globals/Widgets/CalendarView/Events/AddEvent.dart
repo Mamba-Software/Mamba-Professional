@@ -36,7 +36,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   double updateEventTabValue = 0.50;
   TabController? _tabController;
   int _selectedIndex = 0;
-  List<bool> tabs = [true, true, true];
+  List<bool> tabs = [true, false, false];
   // Title Controller
   var titleController = TextEditingController();
   String? titleString;
@@ -315,7 +315,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.info_outlined, color: tabs[0] ? Theme.of(context).accentColor : Colors.transparent)
+                            Icon(Icons.info_outlined, color: tabs[0] ? Theme.of(context).accentColor : Colors.grey)
                           ],
                         ),
                       ),
@@ -326,7 +326,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.calendar_today_outlined, color: tabs[1] ? Theme.of(context).accentColor : Colors.transparent)
+                            Icon(Icons.calendar_today_outlined, color: tabs[1] ? Theme.of(context).accentColor : Colors.grey.withOpacity(0.2))
                           ],
                         ),
                       ),
@@ -337,7 +337,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.group, color: tabs[2] ? Theme.of(context).accentColor : Colors.transparent)
+                            Icon(Icons.group, color: tabs[2] ? Theme.of(context).accentColor : Colors.grey.withOpacity(0.2))
                           ],
                         ),
                       ),
@@ -371,13 +371,13 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                           Form(
                               key: formKeyInfo,
                               child: Padding(
-                                padding: EdgeInsets.only(left: 25.0, right: 25.0),
+                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                                 child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
                                       Padding(
-                                          padding: EdgeInsets.only(top: 25),
+                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
                                           child: new Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
@@ -423,7 +423,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           )
                                       ),
                                       Padding(
-                                          padding: EdgeInsets.only(top: 15),
+                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
                                           child: new Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
@@ -532,15 +532,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           ],
                                         ),
                                       ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          Container(
-                                              height: 120,
-                                              child: Image.asset(Constants.locationImage)
-                                          ),
-                                        ],
-                                      ),
                                     ]
                                 ),
                               ),
@@ -555,13 +546,13 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                       child: Column(
                         children: [
                           Padding(
-                                padding: EdgeInsets.only(left: 25.0, right: 25.0),
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                                 child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.only(top: 15.0),
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
                                         child: Container(
                                           height: MediaQuery.of(context).size.height * 0.15,
                                           width: MediaQuery.of(context).size.width * 0.90,
@@ -841,13 +832,13 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                       child: Column(
                         children: [
                           Padding(
-                                padding: EdgeInsets.only(left: 25.0, right: 25.0),
+                              padding: EdgeInsets.symmetric(horizontal: 0),
                                 child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Padding(
-                                          padding: EdgeInsets.only(top: 25),
+                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
                                           child: new Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
@@ -865,8 +856,79 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           )
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(top: 15),
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
                                         child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              height: MediaQuery.of(context).size.height*0.15,
+                                              width: MediaQuery.of(context).size.width,
+                                              child: ListView.builder(
+                                                  shrinkWrap: true,
+                                                  physics: AlwaysScrollableScrollPhysics(),
+                                                  scrollDirection: Axis.horizontal,
+                                                  itemCount: brandTrainers!.length,
+                                                  itemBuilder: (context, int index) {
+                                                    var trainer = brandTrainers![index];
+                                                    return GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          brandTrainersSelected[index] = !brandTrainersSelected[index];
+                                                        });
+                                                      },
+                                                      child: Padding(
+                                                        padding: !(index == 0 || index == brandTrainers!.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandTrainers!.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            CircularImage(
+                                                              size: MediaQuery.of(context).size.width*0.2,
+                                                              image: trainer.imageUrl,
+                                                              color: Theme.of(context).accentColor,
+                                                              borderWidth: 1.5,
+                                                            ),
+                                                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                                            Container(
+                                                              width: MediaQuery.of(context).size.width*0.2,
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                children: [
+                                                                  Text(
+                                                                    splitCommonName(trainer.name!),
+                                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 15),
+                                                                    textAlign: TextAlign.center,
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: MediaQuery.of(context).size.width*0.01,
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: MediaQuery.of(context).size.width*0.05,
+                                                                    child: Checkbox(
+                                                                      checkColor: Colors.white,
+                                                                      fillColor: MaterialStateProperty.resolveWith(getColor),
+                                                                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                                      value: brandTrainersSelected[index],
+                                                                      shape: CircleBorder(
+                                                                          side: BorderSide.none
+                                                                      ),
+                                                                      onChanged: (bool? value) {
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        /*
+                                        Row(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             Container(
@@ -932,9 +994,10 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                             ),
                                           ],
                                         ),
+                                         */
                                       ),
                                       errorNoTrainerSelected ? Padding(
-                                        padding: EdgeInsets.only(left: 25, right: 25, top: 10.0),
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
                                         child: Center(
                                           child: Text(
                                             AppLocalizations.of(context)!.noTrainerSelectedError,
@@ -944,7 +1007,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                         ),
                                       ) : Container(),
                                       Padding(
-                                          padding: EdgeInsets.only(top: 25),
+                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
                                           child: new Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
@@ -962,7 +1025,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           )
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(top: 10),
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           mainAxisAlignment: MainAxisAlignment.start,
@@ -1028,10 +1091,20 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                   child: FloatingActionButton.extended(
                     heroTag: null,
                     onPressed: () {
+                      if (_selectedIndex == 1) {
+                        setState(() {
+                          tabs[1] = false;
+                        });
+                      } else if (_selectedIndex == 2) {
+                        setState(() {
+                          tabs[2] = false;
+                        });
+                      }
                       _tabController!.animateTo(_selectedIndex -= 1);
                       setState(() {
                         addEventTabValue -= 0.33;
                       });
+
                     },
                     backgroundColor: Theme.of(context).primaryColor,
                     icon: Container(),
@@ -1056,6 +1129,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                           _tabController!.animateTo(_selectedIndex += 1);
                           setState(() {
                             addEventTabValue += 0.33;
+                            tabs[1] = true;
                           });
                         }
                       } else if (_selectedIndex == 1) {
@@ -1067,6 +1141,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                           _tabController!.animateTo(_selectedIndex += 1);
                           setState(() {
                             addEventTabValue += 0.33;
+                            tabs[2] = true;
                           });
                         } else {
                           setState(() {
@@ -1161,6 +1236,12 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
             ],
           ),
    */
+
+  String splitCommonName(String name) {
+    List<String> aux = name.split(" ");
+    return aux[0];
+  }
+
 
   bool validateDateAndTime(DateTime startTime, double duration) {
     // Calculating the Time to check

@@ -149,7 +149,7 @@
   "maxNumberClients": "Nombre màxim d'asistents",
   "numberClientJoining": "Asistents",
   "noClientJoining": "Sense asistents",
-  "designatedTrainers": "Entrenadors assignats",
+  "designatedTrainers": "Selecciona els entrenadors",
   "noTrainerSelectedError": "No hi ha cap entrenador assignat",
   "totalNumberEvents": "Sessions realitzades: {number}",
   "noTrainingsDone": "Aquest usuari no ha participat en cap event",

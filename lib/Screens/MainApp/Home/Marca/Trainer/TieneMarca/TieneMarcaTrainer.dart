@@ -137,7 +137,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                         ),
                         // Titol Brand
                         Positioned(
-                          top: MediaQuery.of(context).size.height*0.34,
+                          top: MediaQuery.of(context).size.height*0.31,
                           bottom: 0,
                           left: 0,
                           right: 0,
