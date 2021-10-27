@@ -643,5 +643,17 @@
   "todaysBrandEvents": "Previsto para hoy",
   "@todaysBrandEvents": {
     "description": "Wellcome message"
+  },
+  "finished": "Realizado",
+  "@finished": {
+    "description": "Wellcome message"
+  },
+  "full": "Lleno",
+  "@full": {
+    "description": "Wellcome message"
+  },
+  "available": "Disponible",
+  "@available": {
+    "description": "Wellcome message"
   }
 }

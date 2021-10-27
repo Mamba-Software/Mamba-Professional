@@ -312,6 +312,7 @@ class FirebaseDatabaseService {
         "maxMembers": maxMembers,
         "joinedMembers": [],
         "selectedTrainers": selectedTrainers,
+        "isCompleted": false,
       });
       return eventID;
     } catch (e) {

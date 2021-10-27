@@ -48,7 +48,6 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
   String? descriptionString;
   // Starting Date and Time
   String datetitle = "";
-  String de = "de";
   TextEditingController startDateController = TextEditingController();
   bool errorDate = false;
   // Duration
@@ -58,6 +57,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
   // Ubicació
   var ubicacionController =  TextEditingController();
   // Members Page
+  bool isFull = false;
   List<Usuario> brandTrainersSelected = [];
   List<Usuario> brandClientsJoining = [];
   // Form To Validate User
@@ -98,6 +98,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
     var hour = event!.duration.toString().split(".")[0];
     var min = event!.duration!.toStringAsFixed(2).split(".")[1];
     durationController.text = "${hour}h ${min}min";
+    isFull = (event!.joinedMembers!.length/event!.maxMembers == 1);
     getAllTrainersFromBrand();
     getAllClientsFromBrand();
     getPlaceFullAddress();
@@ -156,7 +157,6 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
       body: Stack(
         alignment: Alignment.topCenter,
         children: [
-          //SizedBox(height: MediaQuery.of(context).size.height*0.03),
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -208,13 +208,22 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                             ),
                           ),
                           Text(datetitle, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
+                          event!.isCompleted! ? Padding(
+                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
+                            child: Column(
+                              children: [
+                                Icon(Icons.event_available, color: Colors.green),
+                                Text(AppLocalizations.of(context)!.finished, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.green)),
+                              ],
+                            ),
+                          ) :
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
-                            child: IconButton(
-                              icon: Icon(Icons.lock_open, color: Styles.accent),
-                              onPressed: () => {
-
-                              },
+                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
+                            child: Column(
+                              children: [
+                                Icon(isFull ? Icons.lock_outline : Icons.lock_open, color: isFull ? Colors.red : Color(0xFFA8C76C)),
+                                Text(isFull ? AppLocalizations.of(context)!.full : AppLocalizations.of(context)!.available, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12, color: isFull ? Colors.red : Color(0xFFA8C76C))),
+                              ],
                             ),
                           ),
                         ],
@@ -490,7 +499,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
-                                    height: MediaQuery.of(context).size.height*0.15,
+                                    height: MediaQuery.of(context).size.height*0.16,
                                     width: MediaQuery.of(context).size.width*0.99,
                                     child: ListView.builder(
                                         shrinkWrap: true,
@@ -504,9 +513,9 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                               Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: trainer.id!)));
                                             },
                                             child: Padding(
-                                              padding: !(index == 0) ? EdgeInsets.symmetric(horizontal: 8.0) : EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0),
+                                              padding: !(index == 0 || index == brandTrainersSelected.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandTrainersSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
                                                   CircularImage(
                                                     size: MediaQuery.of(context).size.width*0.2,
@@ -515,15 +524,20 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                                     borderWidth: 1.5,
                                                   ),
                                                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Text(
-                                                        trainer.name!,
-                                                        style: Styles.purpleTextStyle.copyWith(fontSize: 15),
-                                                        textAlign: TextAlign.center,
-                                                      ),
-                                                    ],
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width*0.2,
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            trainer.name!,
+                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 15),
+                                                            textAlign: TextAlign.center,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -592,7 +606,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
-                                    height: MediaQuery.of(context).size.height*0.15,
+                                    height: MediaQuery.of(context).size.height*0.16,
                                     width: MediaQuery.of(context).size.width,
                                     child: ListView.builder(
                                         shrinkWrap: true,
@@ -606,9 +620,9 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                               Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: client.id!)));
                                             },
                                             child: Padding(
-                                              padding: !(index == 0) ? EdgeInsets.symmetric(horizontal: 8.0) : EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0),
+                                              padding: !(index == 0 || index == brandClientsJoining.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandClientsJoining.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
                                                   CircularImage(
                                                     size: MediaQuery.of(context).size.width*0.2,
@@ -617,15 +631,20 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                                     borderWidth: 1.5,
                                                   ),
                                                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Text(
-                                                        client.name!,
-                                                        style: Styles.purpleTextStyle.copyWith(fontSize: 15),
-                                                        textAlign: TextAlign.center,
-                                                      ),
-                                                    ],
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width*0.2,
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            client.name!,
+                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 15),
+                                                            textAlign: TextAlign.center,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -637,7 +656,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                 ],
                               ),
                             ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.12),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.13),
                           ],
                         ),
                       ),
@@ -649,7 +668,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
         ],
       ),
       floatingActionButton: widget.canEdit ? Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
         child: Container(
           height: 50,
           width: 100,
