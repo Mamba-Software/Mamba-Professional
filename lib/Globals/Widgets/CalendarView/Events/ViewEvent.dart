@@ -252,6 +252,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 0),
@@ -311,7 +312,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                             Padding(
                               padding: EdgeInsets.only(top: 0.0),
                               child: Container(
-                                height: MediaQuery.of(context).size.height * 0.23,
+                                height: MediaQuery.of(context).size.height * 0.25,
                                 width: MediaQuery.of(context).size.width * 0.90,
                                 decoration: BoxDecoration(
                                     color: Theme.of(context).backgroundColor,
@@ -505,7 +506,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
-                                    height: MediaQuery.of(context).size.height*0.13,
+                                    height: MediaQuery.of(context).size.height*0.14,
                                     width: MediaQuery.of(context).size.width*0.99,
                                     child: ListView.builder(
                                         shrinkWrap: true,
@@ -613,7 +614,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
-                                    height: MediaQuery.of(context).size.height*0.13,
+                                    height: MediaQuery.of(context).size.height*0.14,
                                     width: MediaQuery.of(context).size.width,
                                     child: ListView.builder(
                                         shrinkWrap: true,

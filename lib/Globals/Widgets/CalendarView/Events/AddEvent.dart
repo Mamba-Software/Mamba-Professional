@@ -498,7 +498,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                 controller: ubicacionController,
                                                 validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.enterAddressError : null,
                                                 readOnly: true,
-                                                maxLines: 2,
+                                                minLines: 1,
+                                                maxLines: 3,
                                                 onTap: () async {
                                                   final Suggestion? result = await showSearch(
                                                     context: context,
@@ -861,7 +862,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             Container(
-                                              height: MediaQuery.of(context).size.height*0.15,
+                                              height: MediaQuery.of(context).size.height*0.16,
                                               width: MediaQuery.of(context).size.width,
                                               child: ListView.builder(
                                                   shrinkWrap: true,
@@ -887,7 +888,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                               color: Theme.of(context).accentColor,
                                                               borderWidth: 1.5,
                                                             ),
-                                                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                                             Container(
                                                               width: MediaQuery.of(context).size.width*0.2,
                                                               child: Row(
