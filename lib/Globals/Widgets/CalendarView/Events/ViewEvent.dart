@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,15 +17,15 @@ import '../../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../Styles.dart';
 import '../../CircularImage.dart';
-import 'EditEvent.dart';
 
 
 class ViewEvent extends StatefulWidget {
   String eventId;
+  bool isTrainer;
   bool canEdit;
   bool canJoin;
   Locale locale;
-  ViewEvent({Key? key, required this.eventId,  required this.canEdit,  required this.canJoin, required this.locale}) : super(key: key);
+  ViewEvent({Key? key, required this.eventId,  required this.isTrainer,  required this.canEdit,  required this.canJoin, required this.locale}) : super(key: key);
 
   @override
   _ViewEventState createState() => _ViewEventState();
@@ -35,12 +36,9 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
   bool isLoading = false;
+  bool isLoadingBody = false;
   // Boolean isUpdated
-  bool isUpdated = false;
-  // Tab Controller
-  TabController? _tabController;
-  int _selectedIndex = 0;
-  List<bool> tabs = [true, true, true];
+  bool isEditing = false;
   // Title Controller
   var titleController = TextEditingController();
   String? titleString;
@@ -57,9 +55,17 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
   List<String> durations = ["0.30","1.00","1.30","2.00","2.30","3.00","3.30","4.00"];
   // Ubicació
   var ubicacionController =  TextEditingController();
+  var placeId =  currentBrand.placeId!;
+  // Participants
+  TextEditingController membersController = TextEditingController();
+  int members = 1;
+  int membersMax = 15;
   // Members Page
   bool isFull = false;
+  List<Usuario> allTrainers = [];
   List<Usuario> brandTrainersSelected = [];
+  List<bool> brandTrainersSelectedBool = [];
+  bool errorNoTrainerSelected = false;
   List<Usuario> brandClientsJoining = [];
   // Form To Validate User
   final formKeyInfo = GlobalKey<FormState>();
@@ -76,7 +82,6 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
   @override
   initState() {
     isLoading = true;
-    _tabController = TabController(length: 2, vsync: this);
     getEventInfo();
   }
 
@@ -96,9 +101,12 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
     startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(startDate);
     datetitle = DateFormat('EEEE d MMMM', widget.locale.languageCode).format(startDate);
     startDateController.text = toCapitalized(startDateController.text);
+    duration = event!.duration!.toStringAsFixed(2);
     var hour = event!.duration.toString().split(".")[0];
     var min = event!.duration!.toStringAsFixed(2).split(".")[1];
     durationController.text = "${hour}h ${min}min";
+    members = event!.maxMembers!;
+    membersController.text = "${event!.joinedMembers.length.toString()} / ${event!.maxMembers.toString()}";
     isFull = (event!.joinedMembers!.length/event!.maxMembers == 1);
     getAllTrainersFromBrand();
     getAllClientsFromBrand();
@@ -106,12 +114,15 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
   }
 
   Future<void> getAllTrainersFromBrand() async {
-    List<Usuario> allTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
+    allTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
     List<Usuario> temp = [];
     for (var i=0; i < allTrainers.length; i++) {
       var trainer = allTrainers[i];
       if (event!.selectedTrainers.contains(trainer.id)) {
         temp.add(trainer);
+        brandTrainersSelectedBool.add(true);
+      } else {
+        brandTrainersSelectedBool.add(false);
       }
     }
     if (mounted) {
@@ -143,8 +154,213 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
     if (mounted) {
       setState(() {
         isLoading = false;
+        isLoadingBody = false;
+        isEditing = false;
       });
     }
+  }
+
+  Future<void> selectSlot(ctx, type) {
+    // Initial Vars
+    var startDate = DateTime.now();
+    var title;
+    var initialDuration = 1;
+    var initialMembers = 1;
+    var totalMembers = membersMax - event!.joinedMembers.length;
+    var widgetPicker;
+    // Init for differnt types
+    if (type == 0) {
+      startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
+    } else if (type == 1) {
+      initialDuration = durations.indexWhere((element) => element == duration);
+    } else if (type == 2) {
+      initialMembers = 0;
+    }
+    // Different types of pickers
+    Widget dateTimePicker = CupertinoDatePicker(
+        mode: CupertinoDatePickerMode.dateAndTime,
+        initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
+        minimumDate: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
+        maximumDate: startDate.add(Duration(days: 365)),
+        use24hFormat: true,
+        minuteInterval: 30,
+        onDateTimeChanged: (val) {
+          setState(() {
+            startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(val);
+            startDateController.text = toCapitalized(startDateController.text);
+          });
+        }
+    );
+    Widget durationPicker = CupertinoPicker(
+        scrollController: new FixedExtentScrollController(
+            initialItem: initialDuration
+        ),
+        itemExtent: 40.0,
+        backgroundColor: Colors.transparent,
+        onSelectedItemChanged: (int index) {
+          setState(() {
+            duration = durations[index];
+            var hour = durations[index].split(".")[0];
+            var min = durations[index].split(".")[1];
+            durationController.text = "${hour}h ${min}min";
+          });
+        },
+        children: new List<Widget>.generate(
+            durations.length, (int index) {
+          var item = durations[index];
+          var hour = item.split(".")[0];
+          var min = item.split(".")[1];
+          return new Center(
+            child: new Text(
+                "${hour}h ${min}min"
+            ),
+          );
+        }
+        )
+    );
+    Widget membersPicker = CupertinoPicker(
+        scrollController: new FixedExtentScrollController(
+            initialItem: initialMembers
+        ),
+        itemExtent: 40.0,
+        backgroundColor: Colors.transparent,
+        onSelectedItemChanged: (int index) {
+          setState(() {
+            members = event!.joinedMembers.length+index;
+            membersController.text = "${event!.joinedMembers.length.toString()} / ${members.toString()}";
+          });
+        },
+        children: new List<Widget>.generate(totalMembers.toInt(), (int index) {
+          var member = event!.joinedMembers.length+index;
+          return new Center(
+            child: new Text(
+                "${member.toString()}"
+            ),
+          );
+        }
+        )
+    );
+    if (type == 0) {
+      title = AppLocalizations.of(context)!.selectDayTime;
+      widgetPicker = dateTimePicker;
+    } else if (type == 1) {
+      title = AppLocalizations.of(context)!.selectDuration;
+      widgetPicker = durationPicker;
+    } else if (type == 2) {
+      title = AppLocalizations.of(context)!.selectMembers;
+      widgetPicker = membersPicker;
+    }
+    showCupertinoModalPopup(
+        context: ctx,
+        builder: (_) => Material(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+          ),
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height*0.40,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: Text(title, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
+                    ),
+                  ],
+                ),
+                Expanded(
+                    child: widgetPicker
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0),
+                      child: TextButton(
+                          child: Text(AppLocalizations.of(context)!.entendido, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          }
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        )
+    );
+    return Future.value("");
+  }
+
+  bool validateDateAndTime(DateTime startTime, double duration) {
+    // Calculating the Time to check
+    var hour = duration.toString().split(".")[0];
+    var min = duration.toStringAsFixed(2).split(".")[1];
+    var endTime =  startTime.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
+    // Computing the workshift
+    var workshift1 = currentBrand.workShift[0];
+    var workshift2 = currentBrand.workShift[1];
+    var startWorkHour = workshift1.toStringAsFixed(2).split(".")[0];
+    var startWorkMin = workshift1.toStringAsFixed(2).split(".")[1];
+    var endWorkHour = workshift2.toStringAsFixed(2).split(".")[0];
+    var endWorkMin = workshift2.toStringAsFixed(2).split(".")[1];
+    var startWorkDay =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(startWorkHour),int.parse(startWorkMin));
+    var endWorkDay =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(endWorkHour),int.parse(endWorkMin));
+    if ( // Can´t create event in the past
+    startTime.isBefore(DateTime.now())|| startTime.isAtSameMomentAs(DateTime.now()) || endTime.isBefore(DateTime.now()) || endTime.isAtSameMomentAs(DateTime.now())
+        // Can´t create event outside of working hours
+        || startTime.isBefore(startWorkDay) || endTime.isBefore(startWorkDay)
+        || startTime.isAfter(endWorkDay) || endTime.isAfter(endWorkDay)
+    ) {
+      return false;
+    } else {
+      // Can´t create event in break period of working hours
+      for (var i=2; i<currentBrand.workShift.length; i+=2) {
+        // Breaks
+        var break1 = currentBrand.workShift[i];
+        var break2 = currentBrand.workShift[i];
+        // Take the minute and the hour
+        var startBreakHour = break1.toStringAsFixed(2).split(".")[0];
+        var startBreakMin = break1.toStringAsFixed(2).split(".")[1];
+        var endBreakHour = break2.toStringAsFixed(2).split(".")[0];
+        var endBreakMin = break2.toStringAsFixed(2).split(".")[1];
+        // Date Time formatted
+        var startBreak =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(startBreakHour), int.parse(startBreakMin));
+        var endBreak =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(endBreakHour), int.parse(endBreakMin));
+        // Condition check
+        if ( ((startTime.isAfter(startBreak) || startTime.isAtSameMomentAs(startBreak)) && (startTime.isBefore(endBreak))) ||
+            ((endTime.isAfter(startBreak)) && (endTime.isBefore(endBreak) || endTime.isAtSameMomentAs(endBreak)))) {
+          return false;
+        }
+      }
+      return true;
+    }
+  }
+
+  String splitCommonName(String name) {
+    List<String> aux = name.split(" ");
+    return aux[0];
+  }
+
+  Color getColor(Set<MaterialState> states) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed,
+      MaterialState.hovered,
+      MaterialState.focused,
+    };
+    if (states.any(interactiveStates.contains)) {
+      return Colors.blue;
+    }
+    return Theme.of(context).accentColor;
   }
 
   @override
@@ -157,6 +373,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
         :
     Scaffold(
       appBar: null,
+      resizeToAvoidBottomInset: false,
       body: Stack(
         alignment: Alignment.topCenter,
         children: [
@@ -204,13 +421,13 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
                             child: IconButton(
-                              icon: Icon(Icons.arrow_back, color: Styles.accent),
-                              onPressed: () => {
-                                Navigator.pop(context)
-                              },
+                              icon: Icon(Icons.arrow_back, color: !isEditing ? Styles.accent : Colors.white),
+                              onPressed: !isEditing ? () {
+                               Navigator.pop(context);
+                              } : null,
                             ),
                           ),
-                          Text(datetitle, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
+                          isEditing ? Text(AppLocalizations.of(context)!.editEvent, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)) : Text(datetitle, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
                           event!.isCompleted! ? Padding(
                             padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
                             child: Column(
@@ -224,8 +441,8 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                             padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
                             child: Column(
                               children: [
-                                Icon(isFull ? Icons.lock_outline : Icons.lock_open, color: isFull ? Colors.red : Color(0xFFA8C76C)),
-                                Text(isFull ? AppLocalizations.of(context)!.full : AppLocalizations.of(context)!.available, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12, color: isFull ? Colors.red : Color(0xFFA8C76C))),
+                                !isEditing ? Icon(isFull ? Icons.lock_outline : Icons.lock_open, color: isFull ? Colors.red : Color(0xFFA8C76C)) : Icon(Icons.lock_open, color: Colors.white),
+                                !isEditing ? Text(isFull ? AppLocalizations.of(context)!.full : AppLocalizations.of(context)!.available, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12, color: isFull ? Colors.red : Color(0xFFA8C76C))) : Text(AppLocalizations.of(context)!.full, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.white)),
                               ],
                             ),
                           ),
@@ -242,11 +459,12 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
             bottom: 0,
             left: 0,
             right: 0,
-            child: Container(
+            child: !isLoadingBody ? Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).scaffoldBackgroundColor,
                 ),
                 child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
                   child: Column(
                     children: [
                       Padding(
@@ -254,61 +472,139 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 0),
-                                child: new Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    new Flexible(
-                                      child: new TextField(
-                                        controller: titleController,
-                                        readOnly: true,
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
-                                        decoration: InputDecoration(
-                                          labelStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
-                                          hintText:AppLocalizations.of(context)!.noDescription,
-                                          border: InputBorder.none,
-                                          focusedBorder: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                          errorBorder: InputBorder.none,
-                                          disabledBorder: InputBorder.none,
+                            Form(
+                              key: formKeyInfo,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width*0.60,
+                                    child: Row(
+                                      children: [
+                                        isEditing ? new Expanded(
+                                          child: new TextFormField(
+                                            controller: titleController,
+                                            validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
+                                            style: Styles.purpleTextStyle.copyWith(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
+                                            decoration: InputDecoration(
+                                                labelStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                                enabledBorder: UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.grey,
+                                                        width: 1.0
+                                                    )
+                                                ),
+                                                focusedBorder: UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.grey,
+                                                        width: 1.0
+                                                    )
+                                                ),
+                                                errorBorder: UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.red,
+                                                        width: 1.0
+                                                    )
+                                                ),
+                                                disabledBorder: InputBorder.none,
+                                                contentPadding: EdgeInsets.all(0)
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ) : new Expanded(
+                                          child: new TextField(
+                                            controller: titleController,
+                                            readOnly: true,
+                                            style: Styles.purpleTextStyle.copyWith(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
+                                            decoration: InputDecoration(
+                                              labelStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                              hintText:AppLocalizations.of(context)!.noDescription,
+                                              border: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
                                         ),
-                                        textAlign: TextAlign.center,
-                                      ),
+                                      ],
                                     ),
-                                  ],
-                                )
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                            Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 0),
-                                child: new Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    new Flexible(
-                                      child: new TextFormField(
-                                        controller: descriptionController,
-                                        readOnly: true,
-                                        minLines: 1,
-                                        maxLines: 4,
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 15),
-                                        decoration: InputDecoration(
-                                          labelStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
-                                          hintText:AppLocalizations.of(context)!.noDescription,
-                                          border: InputBorder.none,
-                                          focusedBorder: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                          errorBorder: InputBorder.none,
-                                          disabledBorder: InputBorder.none,
-                                          contentPadding: EdgeInsets.all(0),
-                                        ),
-                                        textAlign: TextAlign.justify,
-                                      ),
-                                    ),
-                                  ],
-                                )
+                                  ),
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                  Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 0),
+                                      child: new Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: <Widget>[
+                                          isEditing ? new Flexible(
+                                            child: new TextFormField(
+                                              controller: descriptionController,
+                                              readOnly: true,
+                                              minLines: 1,
+                                              maxLines: 6,
+                                              style: Styles.purpleTextStyle.copyWith(fontSize: 15),
+                                              decoration: InputDecoration(
+                                                labelStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                                hintText:AppLocalizations.of(context)!.noDescription,
+                                                enabledBorder: UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.grey,
+                                                        width: 1.0
+                                                    )
+                                                ),
+                                                focusedBorder: UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.grey,
+                                                        width: 1.0
+                                                    )
+                                                ),
+                                                errorBorder: UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.red,
+                                                        width: 1.0
+                                                    )
+                                                ),
+                                                disabledBorder: InputBorder.none,
+                                              ),
+                                              textAlign: TextAlign.justify,
+                                            ),
+                                          ) : new Flexible(
+                                            child: new TextFormField(
+                                              controller: descriptionController,
+                                              readOnly: true,
+                                              minLines: 1,
+                                              maxLines: 4,
+                                              style: Styles.purpleTextStyle.copyWith(fontSize: 15),
+                                              decoration: InputDecoration(
+                                                labelStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                                hintText:AppLocalizations.of(context)!.noDescription,
+                                                border: InputBorder.none,
+                                                focusedBorder: InputBorder.none,
+                                                enabledBorder: InputBorder.none,
+                                                errorBorder: InputBorder.none,
+                                                disabledBorder: InputBorder.none,
+                                                contentPadding: EdgeInsets.all(0),
+                                              ),
+                                              textAlign: TextAlign.justify,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                  ),
+                                ],
+                              ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height*0.035),
+                            errorDate ? Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Center(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.errorDate,
+                                    style: Styles.redTextStyle.copyWith(fontSize: 13),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                            ): Container(),
                             Padding(
                               padding: EdgeInsets.only(top: 0.0),
                               child: Container(
@@ -321,41 +617,68 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                 child: Column(
                                   children: [
                                     Padding(
-                                      padding: EdgeInsets.only(left:18, top: 10.0),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
-                                          Container(
-                                              padding: EdgeInsets.symmetric(horizontal: 20),
-                                              width: MediaQuery.of(context).size.width*0.78,
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: <Widget>[
-                                                  new Flexible(
-                                                    child: TextFormField(
-                                                      controller: startDateController,
-                                                      readOnly: true,
-                                                      enabled: false,
-                                                      style: Styles.purpleTextStyle,
-                                                      decoration: InputDecoration(
-                                                        labelStyle: Styles.purpleTextStyle,
-                                                        border: InputBorder.none,
-                                                        focusedBorder: InputBorder.none,
-                                                        enabledBorder: InputBorder.none,
-                                                        errorBorder: InputBorder.none,
-                                                        disabledBorder: InputBorder.none,
+                                        padding: EdgeInsets.only(left:18, top: 10.0),
+                                        child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: <Widget>[
+                                              Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
+                                              Container(
+                                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                                  width: MediaQuery.of(context).size.width*0.78,
+                                                  child: Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: <Widget>[
+                                                      isEditing ? new Flexible(
+                                                        child: TextFormField(
+                                                          controller: startDateController,
+                                                          readOnly: true,
+                                                          onTap: () {
+                                                            if (isEditing) selectSlot(context, 0);
+                                                          },
+                                                          style: Styles.purpleTextStyle,
+                                                          decoration: InputDecoration(
+                                                            labelStyle: Styles.purpleTextStyle,
+                                                            border: InputBorder.none,
+                                                            enabledBorder: UnderlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                    color: errorDate ? Colors.red : Colors.grey,
+                                                                    width: 1.0
+                                                                )
+                                                            ),
+                                                            focusedBorder: UnderlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                    color: errorDate ? Colors.red : Colors.grey,
+                                                                    width: 1.0
+                                                                )
+                                                            ),
+                                                            disabledBorder: InputBorder.none,
+                                                          ),
+                                                          textAlign: TextAlign.start,
+                                                        ),
+                                                      ) : new Flexible(
+                                                        child: TextFormField(
+                                                          controller: startDateController,
+                                                          readOnly: true,
+                                                          enabled: false,
+                                                          style: Styles.purpleTextStyle,
+                                                          decoration: InputDecoration(
+                                                            labelStyle: Styles.purpleTextStyle,
+                                                            border: InputBorder.none,
+                                                            focusedBorder: InputBorder.none,
+                                                            enabledBorder: InputBorder.none,
+                                                            errorBorder: InputBorder.none,
+                                                            disabledBorder: InputBorder.none,
+                                                          ),
+                                                          textAlign: TextAlign.start,
+                                                        ),
                                                       ),
-                                                      textAlign: TextAlign.start,
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
+                                                    ],
+                                                  )
+                                              ),
+                                            ],
                                           ),
-                                        ],
                                       ),
-                                    ),
                                     Padding(
                                       padding: EdgeInsets.only(left:18, top: 10.0),
                                       child: Row(
@@ -370,7 +693,34 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                                 mainAxisSize: MainAxisSize.max,
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: <Widget>[
-                                                  new Flexible(
+                                                  isEditing ? new Flexible(
+                                                    child: TextFormField(
+                                                      controller: durationController,
+                                                      onTap: () {
+                                                        if (isEditing) selectSlot(context, 1);
+                                                      },
+                                                      readOnly: true,
+                                                      style: Styles.purpleTextStyle,
+                                                      decoration: InputDecoration(
+                                                        labelStyle: Styles.purpleTextStyle,
+                                                        border: InputBorder.none,
+                                                        enabledBorder: UnderlineInputBorder(
+                                                            borderSide: BorderSide(
+                                                                color: errorDate ? Colors.red : Colors.grey,
+                                                                width: 1.0
+                                                            )
+                                                        ),
+                                                        focusedBorder: UnderlineInputBorder(
+                                                            borderSide: BorderSide(
+                                                                color: errorDate ? Colors.red : Colors.grey,
+                                                                width: 1.0
+                                                            )
+                                                        ),
+                                                        disabledBorder: InputBorder.none,
+                                                      ),
+                                                      textAlign: TextAlign.start,
+                                                    ),
+                                                  ) : new Flexible(
                                                     child: TextFormField(
                                                       controller: durationController,
                                                       readOnly: true,
@@ -407,7 +757,51 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                                 mainAxisSize: MainAxisSize.max,
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: <Widget>[
-                                                  new Flexible(
+                                                  isEditing ? new Flexible(
+                                                    child: TextFormField(
+                                                      controller: ubicacionController,
+                                                      onTap: () async {
+                                                        final Suggestion? result = await showSearch(
+                                                          context: context,
+                                                          delegate: AddressSearch(),
+                                                        );
+                                                        if (result != null && result.description != "") {
+                                                          setState(() {
+                                                            ubicacionController.text = result.description;
+                                                          });
+                                                          placeId = result.placeId;
+                                                        }
+                                                      },
+                                                      readOnly: true,
+                                                      minLines: 2,
+                                                      maxLines: 3,
+                                                      style: Styles.purpleTextStyle,
+                                                      decoration: InputDecoration(
+                                                        labelStyle: Styles.purpleTextStyle,
+                                                        border: InputBorder.none,
+                                                        enabledBorder: UnderlineInputBorder(
+                                                            borderSide: BorderSide(
+                                                                color: Colors.grey,
+                                                                width: 1.0
+                                                            )
+                                                        ),
+                                                        focusedBorder: UnderlineInputBorder(
+                                                            borderSide: BorderSide(
+                                                                color: Colors.grey,
+                                                                width: 1.0
+                                                            )
+                                                        ),
+                                                        errorBorder: UnderlineInputBorder(
+                                                            borderSide: BorderSide(
+                                                                color: Colors.red,
+                                                                width: 1.0
+                                                            )
+                                                        ),
+                                                        disabledBorder: InputBorder.none,
+                                                      ),
+                                                      textAlign: TextAlign.start,
+                                                    ),
+                                                  ) : new Flexible(
                                                     child: TextFormField(
                                                       controller: ubicacionController,
                                                       readOnly: true,
@@ -505,12 +899,76 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
+                                  isEditing ? Container(
+                                    height: MediaQuery.of(context).size.height*0.16,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: AlwaysScrollableScrollPhysics(),
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: allTrainers.length,
+                                        itemBuilder: (context, int index) {
+                                          var trainer = allTrainers[index];
+                                          return GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                brandTrainersSelectedBool[index] = !brandTrainersSelectedBool[index];
+                                              });
+                                            },
+                                            child: Padding(
+                                              padding: !(index == 0 || index == allTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: allTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  CircularImage(
+                                                    size: MediaQuery.of(context).size.width*0.2,
+                                                    image: trainer.imageUrl,
+                                                    color: Theme.of(context).accentColor,
+                                                    borderWidth: 1.5,
+                                                  ),
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width*0.2,
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          splitCommonName(trainer.name!),
+                                                          style: Styles.purpleTextStyle.copyWith(fontSize: 15),
+                                                          textAlign: TextAlign.center,
+                                                        ),
+                                                        SizedBox(
+                                                          width: MediaQuery.of(context).size.width*0.01,
+                                                        ),
+                                                        SizedBox(
+                                                          width: MediaQuery.of(context).size.width*0.05,
+                                                          child: Checkbox(
+                                                            checkColor: Colors.white,
+                                                            fillColor: MaterialStateProperty.resolveWith(getColor),
+                                                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                            value: brandTrainersSelectedBool[index],
+                                                            shape: CircleBorder(
+                                                                side: BorderSide.none
+                                                            ),
+                                                            onChanged: (bool? value) {
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                    ),
+                                  ) :
                                   Container(
                                     height: MediaQuery.of(context).size.height*0.14,
                                     width: MediaQuery.of(context).size.width*0.99,
                                     child: ListView.builder(
                                         shrinkWrap: true,
-                                        physics: AlwaysScrollableScrollPhysics(),
+                                        physics: BouncingScrollPhysics(),
                                         scrollDirection: Axis.horizontal,
                                         itemCount: brandTrainersSelected.length,
                                         itemBuilder: (context, int index) {
@@ -556,6 +1014,16 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                 ],
                               ),
                             ),
+                            errorNoTrainerSelected ? Padding(
+                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                              child: Center(
+                                child: Text(
+                                  AppLocalizations.of(context)!.noTrainerSelectedError,
+                                  style: Styles.redTextStyle.copyWith(fontSize: 16),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ) : Container(),
                             SizedBox(height: MediaQuery.of(context).size.height*0.01),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
@@ -573,22 +1041,67 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                     style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
                                   ),
                                   SizedBox(width: 16),
-                                  Text(
-                                    "( "+event!.joinedMembers.length.toString(),
-                                    style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16),
-                                  ),
-                                  Text(
-                                    " / ",
-                                    style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16),
-                                  ),
-                                  Text(
-                                    event!.maxMembers.toString()+" )",
-                                    style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16),
-                                  ),
+                                  !isEditing ? Row(
+                                    children: [
+                                      Text(
+                                        "( "+event!.joinedMembers.length.toString(),
+                                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16),
+                                      ),
+                                      Text(
+                                        " / ",
+                                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16),
+                                      ),
+                                      Text(
+                                        event!.maxMembers.toString()+" )",
+                                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16),
+                                      ),
+                                    ],
+                                  ) : Container(),
                                 ],
                               ),
                             ),
-                            Padding(
+                            isEditing ? Padding(
+                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Icon(Icons.person, color: Theme.of(context).accentColor,),
+                                  Container(
+                                    padding: EdgeInsets.only(left: 20),
+                                    width: MediaQuery.of(context).size.width*0.30,
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          selectSlot(context, 2);
+                                        },
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            new Flexible(
+                                              child: TextFormField(
+                                                controller: membersController,
+                                                readOnly: true,
+                                                enabled: false,
+                                                style: Styles.purpleTextStyle,
+                                                decoration: InputDecoration(
+                                                  labelStyle: Styles.purpleTextStyle,
+                                                  border: InputBorder.none,
+                                                  focusedBorder: InputBorder.none,
+                                                  enabledBorder: InputBorder.none,
+                                                  errorBorder: InputBorder.none,
+                                                  disabledBorder: InputBorder.none,
+                                                ),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ) : Padding(
                               padding: EdgeInsets.only(top: 0),
                               child:
                               brandClientsJoining.isEmpty ?
@@ -618,7 +1131,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                     width: MediaQuery.of(context).size.width,
                                     child: ListView.builder(
                                         shrinkWrap: true,
-                                        physics: AlwaysScrollableScrollPhysics(),
+                                        physics: BouncingScrollPhysics(),
                                         scrollDirection: Axis.horizontal,
                                         itemCount: brandClientsJoining.length,
                                         itemBuilder: (context, int index) {
@@ -671,47 +1184,121 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                     ],
                   ),
                 )
-            ),
+            ) : LoadingViewPurple(),
           ),
         ],
       ),
-      floatingActionButton: widget.canEdit ? Padding(
-        padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-        child: Container(
-          height: 50,
-          width: 100,
-          child: FloatingActionButton.extended(
-            heroTag: null,
-            onPressed: () {
-              _editEvent(event!.id!);
-            },
-            backgroundColor: Colors.green,
-            icon: Icon(Icons.edit, color: Colors.white,),
-            label: Text(AppLocalizations.of(context)!.edit,
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
-          ),
-        ),
-      ) : Container(),
+      floatingActionButton: whichFloatingActionButton(),
     );
   }
 
-  String splitCommonName(String name) {
-    List<String> aux = name.split(" ");
-    return aux[0];
+  Widget whichFloatingActionButton() {
+    if(isLoadingBody) {
+      return Container();
+    } else {
+      if (widget.isTrainer) {
+        if (widget.canEdit) {
+          if (isEditing) {
+            return Padding(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+              child: Container(
+                width: MediaQuery.of(context).size.width*0.25,
+                child: FloatingActionButton.extended(
+                  heroTag: null,
+                  onPressed: () async {
+                    bool hasError = false;
+                    setState(() {
+                      errorDate = false;
+                      errorNoTrainerSelected = false;
+                    });
+                    var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
+                    if (!formKeyInfo.currentState!.validate()) {
+                      hasError = true;
+                    }
+                    if (!validateDateAndTime(startDate, double.parse(duration))) {
+                      hasError = true;
+                      setState(() {
+                        errorDate = true;
+                      });
+                    }
+                    if (!brandTrainersSelectedBool.contains(true)) {
+                      hasError = true;
+                      setState(() {
+                        errorNoTrainerSelected = true;
+                      });
+                    }
+                    if (!hasError) {
+                      setState(() {
+                        isLoadingBody = true;
+                      });
+                      var selectedTrainerId = [];
+                      for (var i=0; i< allTrainers.length; i++) {
+                        if (brandTrainersSelectedBool[i]) {
+                          selectedTrainerId.add(allTrainers[i].id);
+                        }
+                      }
+                      await _accessDatabase.updateEvent(widget.eventId, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
+                      getEventInfo();
+                    }
+                  },
+                  backgroundColor: Colors.green,
+                  icon: Icon(Icons.save_rounded, color: Colors.white,),
+                  label: Text(AppLocalizations.of(context)!.save,
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                ),
+              ),
+            );
+          } else {
+            return Padding(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+              child: Container(
+                width: MediaQuery.of(context).size.width*0.25,
+                child: FloatingActionButton.extended(
+                  heroTag: null,
+                  onPressed: () {
+                    setState(() {
+                      isEditing = true;
+                    });
+                  },
+                  backgroundColor: Colors.green,
+                  icon: Icon(Icons.edit, color: Colors.white,),
+                  label: Text(AppLocalizations.of(context)!.edit,
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                ),
+              ),
+            );
+          }
+        } else {
+          return Container();
+        }
+      } else {
+        if (widget.canJoin) {
+          return Padding(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+            child: Container(
+              width: MediaQuery.of(context).size.width*0.25,
+              child: FloatingActionButton.extended(
+                heroTag: null,
+                onPressed: () {
+                  print("Join");
+                },
+                backgroundColor: Theme.of(context).accentColor,
+                icon: Icon(Icons.add_circle_outline, color: Colors.white,),
+                label: Text("Unir-se",
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+              ),
+            ),
+          );
+        } else {
+          return Container();
+        }
+      }
+    }
+
   }
 
-  void _editEvent(String eventId) {
-    Navigator.push(
-        context,
-        PageTransition(
-          type: PageTransitionType.bottomToTop,
-          child: EditEvent(
-            eventId: eventId,
-            locale: Localizations.localeOf(context),
-          ),
-        )
-    );
-  }
+
+
 
 }
 

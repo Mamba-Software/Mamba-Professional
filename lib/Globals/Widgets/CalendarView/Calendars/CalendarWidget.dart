@@ -283,7 +283,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       double bookedCapacity = event.joinedMembers.length/event.maxMembers;
       if(bookedCapacity < 0.20) color = Colors.green;
       else if(bookedCapacity > 0.20 && bookedCapacity < 0.40) color = Color(0xFFA8C76C);
-      else if(bookedCapacity > 0.20 && bookedCapacity < 0.40) color = Color(0xFFECE014);
+      else if(bookedCapacity > 0.40 && bookedCapacity < 0.60) color = Color(0xFFECE014);
       else if(bookedCapacity > 0.60 && bookedCapacity < 0.80) color = Colors.orangeAccent;
       else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
       else if(bookedCapacity == 1) color = Colors.red;
@@ -330,6 +330,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             type: PageTransitionType.bottomToTop,
             child: ViewEvent(
               eventId: eventId,
+              isTrainer: true,
               canEdit: true,
               canJoin: false,
               locale: Localizations.localeOf(context),

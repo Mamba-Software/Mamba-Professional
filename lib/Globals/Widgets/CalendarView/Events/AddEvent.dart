@@ -98,7 +98,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     Widget dateTimePicker = CupertinoDatePicker(
       mode: CupertinoDatePickerMode.dateAndTime,
       initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-      minimumDate: startDate.subtract(Duration(days: 1)),
+      minimumDate: startDate.add(Duration(hours: 1)),
       maximumDate: startDate.add(Duration(days: 365)),
       use24hFormat: true,
       minuteInterval: 30,

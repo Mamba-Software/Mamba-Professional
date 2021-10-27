@@ -379,7 +379,6 @@ class FirebaseDatabaseService {
         "duration": duration,
         "placeId": placeId,
         "maxMembers": maxMembers,
-        "joinedMembers": [],
         "selectedTrainers": selectedTrainers,
       });
     } catch (e) {

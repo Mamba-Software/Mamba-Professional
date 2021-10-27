@@ -474,6 +474,10 @@
   "@edit":{
     "description": "notInBrand text"
   },
+  "save": "Guardar",
+  "@save":{
+    "description": "notInBrand text"
+  },
   "search": "Buscar",
   "@search":{
     "description": "notInBrand text"
