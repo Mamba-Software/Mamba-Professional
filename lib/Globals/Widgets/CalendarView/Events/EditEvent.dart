@@ -321,15 +321,14 @@ class _EditEventState extends State<EditEvent> with SingleTickerProviderStateMix
         });
       }
     }
-
     return isLoading ? Scaffold(
       appBar: null,
       body: LoadingViewPurple(),
     ) :
     Scaffold(
       appBar: AppBar(
-        elevation: 2,
-        toolbarHeight: MediaQuery.of(context).size.height*0.10,
+        elevation: 4,
+        toolbarHeight: MediaQuery.of(context).size.height*0.11,
         title: Text(AppLocalizations.of(context)!.editEvent, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
         centerTitle: true,
         iconTheme: IconThemeData(

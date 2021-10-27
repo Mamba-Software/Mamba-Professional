@@ -11,7 +11,7 @@ import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../../Styles.dart';
-import '../Events/AddEventDelete.dart';
+import '../Events/AddEvent.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalendarWidget extends StatefulWidget {
@@ -197,7 +197,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 height: 65,
                 width: 65,
                 child: FloatingActionButton(
-                  onPressed: _addEvent,
+                  onPressed: () {
+                    _addEvent();
+                  },
                   backgroundColor: Theme.of(context).accentColor,
                   child: Icon(
                     Icons.more_time,
@@ -308,29 +310,17 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     return events;
   }
 
-  void _addEvent({Appointment? appointment, bool? updated, DateTime? dateTimeClicked}) {
-    showModalBottomSheet<bool>(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
-      ),
-      isScrollControlled: true,
-      context: context,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      builder: (context) {
-        return Container(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height*0.88,
-          ),
-          padding: MediaQuery.of(context).viewInsets,
+  void _addEvent({DateTime? dateTimeClicked}) {
+    Navigator.push(
+        context,
+        PageTransition(
+          type: PageTransitionType.bottomToTop,
           child: AddEvent(
-            oldData: appointment,
-            update: updated ?? false,
             locale: Localizations.localeOf(context),
             initialDateTime: dateTimeClicked ?? null,
           ),
-        );
-      }
-      );
+        )
+    );
   }
 
   void _viewEvent(String eventId) {
