@@ -1193,7 +1193,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
   }
 
   Widget whichFloatingActionButton() {
-    if(isLoadingBody) {
+    if (isLoadingBody) {
       return Container();
     } else {
       if (widget.isTrainer) {

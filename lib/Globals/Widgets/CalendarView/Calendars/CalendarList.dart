@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
@@ -14,16 +15,15 @@ import '../../../Styles.dart';
 import '../Events/AddEvent.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class CalendarWidget extends StatefulWidget {
-  String brandID;
-  bool canEdit;
-  CalendarWidget({Key? key, required this.brandID, required this.canEdit }) : super(key: key);
+class CalendarList extends StatefulWidget {
+  List<Event> eventList;
+  CalendarList({Key? key, required this.eventList,}) : super(key: key);
 
   @override
-  _CalendarWidgetState createState() => _CalendarWidgetState();
+  _CalendarListState createState() => _CalendarListState();
 }
 
-class _CalendarWidgetState extends State<CalendarWidget> {
+class _CalendarListState extends State<CalendarList> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
@@ -40,7 +40,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   // Descansos
   DateTime dateJoined = DateTime.now();
   // Events From Brand
-  List<Event> eventsList = [];
   List<Appointment> allAppointments = <Appointment>[];
 
   @override
@@ -51,11 +50,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 
   void getBrandDetails() async {
-    _brand = await _accessDatabase.getBrandDetails(widget.brandID);
-    initCalendar();
+    _brand = await _accessDatabase.getBrandDetails(currentBrand.id!);
+    initListEvents();
   }
 
-  void initCalendar() {
+  void initListEvents() {
     dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
     _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
     _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
@@ -68,148 +67,91 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   
   @override
   Widget build(BuildContext context) {
-    return isLoading ?
-      Scaffold(
-          appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).appBarTheme.titleTextStyle,),
-            centerTitle: true,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, size: 25,),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-          body: LoadingViewPurple(),
-      )
-        :
-      Scaffold(
-          appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).appBarTheme.titleTextStyle,),
-            centerTitle: true,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, size: 25,),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-          body: StreamBuilder<QuerySnapshot>(
-              stream: _accessDatabase.getAllEventsFromBrand(_brand.id!),
-              builder: (context, snapshot) {
-                if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
-                  return LoadingViewPurple();
-                } else {
-                  eventsList = documentsToEvents(snapshot.data!.docs);
-                  return SfCalendar(
-                    cellEndPadding: 0,
-                    view: CalendarView.week,
-                    controller: _controller,
-                    showDatePickerButton: false,
-                    headerHeight: 45,
-                    headerDateFormat: null,
-                    dataSource: _getCalendarDataSource(),
-                    specialRegions: _getTimeRegions(),
-                    timeRegionBuilder: timeRegionBuilder,
-                    firstDayOfWeek: 1,
-                    showCurrentTimeIndicator: true,
-                    viewHeaderHeight: 50,
-                    viewHeaderStyle: ViewHeaderStyle(
-                      backgroundColor: Theme.of(context).backgroundColor,
-                      dateTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 14, fontWeight: FontWeight.bold),
-                      dayTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 10, fontWeight: FontWeight.bold),
-                    ),
-                    selectionDecoration: BoxDecoration(
-                        border: Border.all(width: 0.1, color: Colors.transparent)
-                    ),
-                    timeSlotViewSettings: TimeSlotViewSettings(
-                        timelineAppointmentHeight: 50,
-                        timeIntervalHeight: 60,
-                        timeIntervalWidth: 55,
-                        startHour: _startHour!-1,
-                        endHour:  _endHour!+1,
-                        timeFormat: 'HH',
-                        dayFormat: 'E',
-                        dateFormat: 'd',
-                        timeRulerSize: 25,
-                        nonWorkingDays: nonWorkDays,
-                        minimumAppointmentDuration: Duration(minutes: 30),
-                        timeTextStyle: TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 12,
-                          color: Theme.of(context).primaryColor,
-                        )
-                    ),
-                    headerStyle: CalendarHeaderStyle(
-                      textAlign: TextAlign.justify,
-                      backgroundColor: Color(0xFFF5F5F5),
-                      textStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                        letterSpacing: 4,
-                        color: Theme.of(context).accentColor,
-                      ),
-                    ),
-                    onLongPress: (details) {
-                      if (widget.canEdit) {
-                        if(details.date!.isAfter(DateTime.now())) {
-                          _addEvent(dateTimeClicked: details.date);
-                        }
-                      }
-                    },
-                    onTap: (details) {
-                      // Just for Development
-                      log(details.date.toString());
-                    },
-                    appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
-                      final Appointment appointment = details.appointments.first;
-                      return GestureDetector(
-                        onTap: () {
-                          _viewEvent(appointment.id.toString(), appointment.startTime);
-                        },
-                        child: Center(
-                          child: Material(
-                            elevation: 2,
-                            child: Container(
-                              width: details.bounds.width,
-                              height: details.bounds.height,
-                              decoration: BoxDecoration(
-                                color: appointment.color,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5),
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                }
-              }
-          ),
-          floatingActionButton: widget.canEdit ? Padding(
-              padding: const EdgeInsets.all(20.0),
+    return SfCalendar(
+      cellEndPadding: 0,
+      view: CalendarView.schedule,
+      controller: _controller,
+      showDatePickerButton: false,
+      headerHeight: 45,
+      headerDateFormat: null,
+      dataSource: _getCalendarDataSource(),
+      specialRegions: _getTimeRegions(),
+      timeRegionBuilder: timeRegionBuilder,
+      firstDayOfWeek: 1,
+      showCurrentTimeIndicator: true,
+      viewHeaderHeight: 50,
+      viewHeaderStyle: ViewHeaderStyle(
+        backgroundColor: Theme.of(context).backgroundColor,
+        dateTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 14, fontWeight: FontWeight.bold),
+        dayTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 10, fontWeight: FontWeight.bold),
+      ),
+      selectionDecoration: BoxDecoration(
+          border: Border.all(width: 0.1, color: Colors.transparent)
+      ),
+      timeSlotViewSettings: TimeSlotViewSettings(
+          timelineAppointmentHeight: 50,
+          timeIntervalHeight: 60,
+          timeIntervalWidth: 55,
+          startHour: _startHour!-1,
+          endHour:  _endHour!+1,
+          timeFormat: 'HH',
+          dayFormat: 'E',
+          dateFormat: 'd',
+          timeRulerSize: 25,
+          nonWorkingDays: nonWorkDays,
+          minimumAppointmentDuration: Duration(minutes: 30),
+          timeTextStyle: TextStyle(
+            fontWeight: FontWeight.w800,
+            fontSize: 12,
+            color: Theme.of(context).primaryColor,
+          )
+      ),
+      headerStyle: CalendarHeaderStyle(
+        textAlign: TextAlign.justify,
+        backgroundColor: Color(0xFFF5F5F5),
+        textStyle: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 24,
+          letterSpacing: 4,
+          color: Theme.of(context).accentColor,
+        ),
+      ),
+      onLongPress: (details) {
+        if(details.date!.isAfter(DateTime.now())) {
+          _addEvent(dateTimeClicked: details.date);
+        }
+      },
+      onTap: (details) {
+        // Just for Development
+        log(details.date.toString());
+      },
+      appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
+        final Appointment appointment = details.appointments.first;
+        return GestureDetector(
+          onTap: () {
+            _viewEvent(appointment.id.toString(), appointment.startTime);
+          },
+          child: Center(
+            child: Material(
+              elevation: 2,
               child: Container(
-                height: 65,
-                width: 65,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    _addEvent();
-                  },
-                  backgroundColor: Theme.of(context).accentColor,
-                  child: Icon(
-                    Icons.more_time,
-                    size: 30,
-                    color: Theme.of(context).backgroundColor,
+                width: details.bounds.width,
+                height: details.bounds.height,
+                decoration: BoxDecoration(
+                  color: appointment.color,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(5),
                   ),
                 ),
+                child: Center(
+                  child: Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                ),
               ),
-            ) : Container(), // This trailing comma makes auto-formatting nicer for build methods.
-      );
+            ),
+          ),
+        );
+      },
+    );
   }
 
   List<TimeRegion> _getTimeRegions() {
@@ -263,8 +205,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   AppointmentDataSource _getCalendarDataSource() {
     List<Appointment> tempAllAppointments = [];
-    for (var i=0; i < eventsList.length; i++) {
-      var event = eventsList[i];
+    for (var i=0; i < widget.eventList.length; i++) {
+      var event = widget.eventList[i];
       // Date Time
       var startDate =  DateTime(
         int.parse(event.year!),

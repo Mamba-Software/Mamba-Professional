@@ -84,6 +84,16 @@ flutter:
         - asset: assets/fonts/Raleway-Regular.ttf
         - asset: assets/fonts/Raleway-Bold.ttf
           weight: 700
+    - family: Summit
+      fonts:
+        - asset: assets/fonts/SummitRegular-Display.ttf
+          weight: 700
+    - family: Futura
+      fonts:
+        - asset: assets/fonts/FuturaExtraBlackFont.ttf
+          weight: 700
+
+
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

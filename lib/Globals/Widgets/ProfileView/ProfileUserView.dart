@@ -84,7 +84,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     }
     return age;
   }
-  // Calculate Age
+
   durationToString(double duration) {
     String temp = "";
     temp = duration.toStringAsFixed(2);

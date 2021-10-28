@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
         return Text(AppLocalizations.of(context)!.chatBottomNav, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor , fontWeight: FontWeight.bold));
       } else {
         return Image.asset(
-          Constants.logoExtendedPurple,
+          Constants.logoSimplePurple,
           fit: BoxFit.contain,
           height: 30,
         );

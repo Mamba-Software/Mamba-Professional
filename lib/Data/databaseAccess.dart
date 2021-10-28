@@ -54,12 +54,13 @@ class DatabaseAccess {
   Future<Event> getSingleEvent(String id) => _firebase.getSingleEvent(id);
   Future<List<Event>> getAllEventsFromClient(String clientid) => _firebase.getAllEventsFromClient(clientid);
   Future<List<Event>> getAllEventsFromTrainer(String trainerid) => _firebase.getAllEventsFromTrainer(trainerid);
+  Future<List<Event>> getAllEventsTodayBrand(String brandId) => _firebase.getAllEventsTodayBrand(brandId);
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams
 
   // Users
-  Stream<QuerySnapshot> getAllEventsFromBrand() => _firebase.getAllEventsFromBrand();
+  Stream<QuerySnapshot> getAllEventsFromBrand(String brandId) => _firebase.getAllEventsFromBrand(brandId);
 
   // Brands
   Stream<QuerySnapshot> getAllBrands() => _firebase.getAllBrands();

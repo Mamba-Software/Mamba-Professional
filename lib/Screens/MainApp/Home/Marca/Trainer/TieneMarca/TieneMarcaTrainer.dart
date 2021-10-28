@@ -4,9 +4,11 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarList.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/BrandEventsToday.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AnadirMiembro.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/HistorialSesiones.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembros.dart';
@@ -102,23 +104,24 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
     }
 
     return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 10),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  height: MediaQuery.of(context).size.height*0.4,
+                  height: MediaQuery.of(context).size.height*0.34,
                   child: new Stack(
                       alignment: Alignment.topCenter,
                       fit: StackFit.expand,
                       children: <Widget>[
                         // Logo Brand
                         Positioned(
-                            top: MediaQuery.of(context).size.height*0.07,
+                            top: MediaQuery.of(context).size.height*0.05,
                             bottom: 0,
                             left: 0,
                             right: 0,
@@ -137,17 +140,17 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                         ),
                         // Titol Brand
                         Positioned(
-                          top: MediaQuery.of(context).size.height*0.31,
+                          top: MediaQuery.of(context).size.height*0.30,
                           bottom: 0,
                           left: 0,
                           right: 0,
-                          child: Text("${currentBrand.name}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).accentColor, fontWeight: FontWeight.bold, fontSize: 26), textAlign: TextAlign.center,),
+                          child: Text("${currentBrand.name!.toUpperCase()}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 24, fontFamily: "Summit"), textAlign: TextAlign.center),
                         ),
                         // Logos Flotants
                         // Perfil Adalt Esquerra
                         Positioned(
                             top: 0,
-                            bottom: MediaQuery.of(context).size.height*0.28,
+                            bottom: MediaQuery.of(context).size.height*0.21,
                             left: 0,
                             right: MediaQuery.of(context).size.width*0.45,
                             child: new Row(
@@ -177,39 +180,10 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                 ),
                               ],
                             )),
-                        /*
-                        new Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                OutlinedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _statusButtons[0] = !_statusButtons[0];
-                                      _showPerfiClientModals(0);
-                                    });
-                                  },
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.settings, color: Colors.white, size: _iconSize,), // icon
-                                    ],
-                                  ),
-                                  style: OutlinedButton.styleFrom(
-                                    backgroundColor: Theme.of(context).accentColor,
-                                    //backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
-                                    elevation: 5,
-                                    shape: CircleBorder(),
-                                    padding: EdgeInsets.all(_globusSize),
-                                  ),
-                                ),
-                              ],
-                            )),
-                         */
                         // Ajustes Adalt Dreta
                         Positioned(
                             top: 0,
-                            bottom: MediaQuery.of(context).size.height*0.28,
+                            bottom: MediaQuery.of(context).size.height*0.21,
                             left: MediaQuery.of(context).size.width*0.45,
                             right: 0,
                             child: new Row(
@@ -241,7 +215,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                             )),
                         // Ajustes Mig Esquerra
                         Positioned(
-                            top: 0,
+                            top: MediaQuery.of(context).size.height*0.07,
                             bottom: 0,
                             left: 0,
                             right:  MediaQuery.of(context).size.width*0.70,
@@ -274,7 +248,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                             )),
                         // Ajustes Mig Dreta
                         Positioned(
-                            top: 0,
+                            top: MediaQuery.of(context).size.height*0.07,
                             bottom: 0,
                             left: MediaQuery.of(context).size.width*0.70,
                             right: 0,
@@ -312,17 +286,31 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                    Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Styles.purpleTextStyle.copyWith(color: Colors.grey), textAlign: TextAlign.center,),
                   ],
                 ),
-                Container(
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                BrandEventsToday(
+                  brandId: currentBrand.id!,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/*
+Container(
                   padding: EdgeInsets.only(bottom: 120),
                   height: MediaQuery.of(context).size.height*0.49,
                   child: Column(
@@ -337,11 +325,4 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+ */

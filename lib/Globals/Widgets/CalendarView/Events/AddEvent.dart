@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:weekday_selector/weekday_selector.dart';
-import '../../../Constants.dart';
 import '../../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../Styles.dart';
@@ -98,7 +97,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     Widget dateTimePicker = CupertinoDatePicker(
       mode: CupertinoDatePickerMode.dateAndTime,
       initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-      minimumDate: startDate.add(Duration(hours: 1)),
+      minimumDate: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
       maximumDate: startDate.add(Duration(days: 365)),
       use24hFormat: true,
       minuteInterval: 30,

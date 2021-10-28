@@ -355,6 +355,23 @@ class FirebaseDatabaseService {
     }
     return events;
   }
+  // Get All Events for Today of Brand
+  Future<List<Event>> getAllEventsTodayBrand(String brandId) async {
+    DateTime today = DateTime.now();
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Events")
+        .where("year", isEqualTo: today.year.toString())
+        .where("month", isEqualTo: today.month.toString())
+        .where("day", isEqualTo: today.day.toString())
+        .where("brandID", isEqualTo: brandId)
+        .orderBy("hour", descending: false)
+        .get();
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return events;
+  }
 
   // Delete Event
   Future<void> deleteEvent(String id) async {
@@ -403,9 +420,9 @@ class FirebaseDatabaseService {
         .snapshots();
   }
 
-  Stream<QuerySnapshot> getAllEventsFromBrand() {
+  Stream<QuerySnapshot> getAllEventsFromBrand(String brandid) {
     return _firestore.collection("Events")
-        .where("brandID", isEqualTo: currentBrand.id)
+        .where("brandID", isEqualTo: brandid)
         .snapshots();
   }
 
