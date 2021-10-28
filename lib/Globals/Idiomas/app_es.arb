@@ -659,5 +659,9 @@
   "available": "Disponible",
   "@available": {
     "description": "Wellcome message"
+  },
+  "noEvents": "Sin eventos",
+  "@noEvents": {
+    "description": "Wellcome message"
   }
 }

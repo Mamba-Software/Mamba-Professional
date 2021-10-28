@@ -265,6 +265,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     List<Appointment> tempAllAppointments = [];
     for (var i=0; i < eventsList.length; i++) {
       var event = eventsList[i];
+      print(event.minute);
       // Date Time
       var startDate =  DateTime(
         int.parse(event.year!),

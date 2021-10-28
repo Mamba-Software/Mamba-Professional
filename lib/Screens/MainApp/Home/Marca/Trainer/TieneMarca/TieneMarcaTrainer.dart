@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -290,10 +291,13 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Styles.purpleTextStyle.copyWith(color: Colors.grey), textAlign: TextAlign.center,),
+                    SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                    Text(DateFormat('d/M/y').format(DateTime.now()), style: Styles.purpleTextStyle.copyWith(color: Colors.grey), textAlign: TextAlign.center,),
                   ],
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),

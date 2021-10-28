@@ -484,7 +484,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                           child: new TextFormField(
                                             controller: titleController,
                                             validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
-                                            style: Styles.purpleTextStyle.copyWith(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
+                                            style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).accentColor, fontWeight: FontWeight.bold, fontSize: 24, fontFamily: "Summit"),
                                             decoration: InputDecoration(
                                                 labelStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
                                                 enabledBorder: UnderlineInputBorder(
@@ -514,7 +514,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                           child: new TextField(
                                             controller: titleController,
                                             readOnly: true,
-                                            style: Styles.purpleTextStyle.copyWith(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
+                                            style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).accentColor, fontWeight: FontWeight.bold, fontSize: 22, fontFamily: "Summit"),
                                             decoration: InputDecoration(
                                               labelStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
                                               hintText:AppLocalizations.of(context)!.noDescription,

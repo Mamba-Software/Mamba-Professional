@@ -157,5 +157,6 @@
   "todaysBrandEvents": "Previst per avui",
   "finished": "Realitzat",
   "full": "Ple",
-  "available": "Disponible"
+  "available": "Disponible",
+  "noEvents": "Sense events"
 }
