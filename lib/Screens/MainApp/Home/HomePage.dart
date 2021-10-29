@@ -70,14 +70,8 @@ class _HomePageState extends State<HomePage> {
       Icon(Icons.chat, color: Styles.white, size: 33,),
     ];
     return Scaffold(
-      appBar: AppBar(
-        title: returnTitle(_currentIndex),
-        centerTitle: true,
-        shadowColor: Theme.of(context).scaffoldBackgroundColor,
-        automaticallyImplyLeading: false,
-      ),
+      appBar: null,
       bottomNavigationBar: BottomNavigationBar(
-
         currentIndex: _currentIndex,
         iconSize: 30,
         items: <BottomNavigationBarItem>[
@@ -111,10 +105,10 @@ class _HomePageState extends State<HomePage> {
         selectedIconTheme: IconThemeData(
           color: Theme.of(context).accentColor
         ),
-        unselectedItemColor: Theme.of(context).primaryColor,
-        unselectedLabelStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color:Theme.of(context).primaryColor),
+        unselectedItemColor: Colors.grey,
+        unselectedLabelStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.grey),
         unselectedIconTheme: IconThemeData(
-            color: Theme.of(context).primaryColor
+            color: Colors.grey
         ),
       ),
       body: PageView(
@@ -141,6 +135,14 @@ class _HomePageState extends State<HomePage> {
 }
 
 /*
+AppBar(
+        title: returnTitle(_currentIndex),
+        centerTitle: true,
+        shadowColor: Theme.of(context).scaffoldBackgroundColor,
+        automaticallyImplyLeading: false,
+      ),
+
+
 items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.person, color: Styles.white,),

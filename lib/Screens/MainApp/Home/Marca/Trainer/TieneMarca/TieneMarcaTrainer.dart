@@ -2,11 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/BrandEventsToday.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AnadirMiembro.dart';
@@ -24,21 +26,270 @@ class TieneMarcaTrainer extends StatefulWidget {
 class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
-  // List Bool Status
-  List<bool> _statusButtons =  [false, false, false, false, false, false];
-  // Size of Icons
-  final _globusSize = 20.0;
-  final _iconSize = 40.0;
-
+  // Boolean isLoading
+  bool isLoading = false;
 
   @override
   void initState() {
+    isLoading = false;
+    initBrandHome();
     super.initState();
+  }
+
+  initBrandHome() {
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Calls a Modal Bottom Sheet every time an Icon is Tapped. It updates the page after closing only if there have been changes
+    return isLoading ?
+      Center(
+        child: LoadingViewPurple(),
+      )
+        :
+      SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height*0.30,
+              child: Stack(
+                alignment: Alignment.topCenter,
+                fit: StackFit.expand,
+                children: <Widget>[
+                  Positioned(
+                    top: 0,
+                    bottom: MediaQuery.of(context).size.height*0.15,
+                    left: 0,
+                    right: MediaQuery.of(context).size.width*0.60,
+                    child: Icon(Icons.manage_search, color: Colors.grey.withOpacity(0.5), size: 50,),
+                  ),
+                  Positioned(
+                    top: 0,
+                    bottom: MediaQuery.of(context).size.height*0.15,
+                    left: MediaQuery.of(context).size.width*0.60,
+                    right: 0,
+                    child: Icon(Icons.settings, color: Colors.grey.withOpacity(0.5), size: 50,),
+                  ),
+                  Positioned(
+                    top: MediaQuery.of(context).size.height*0.05,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.20,
+                          child: Center(
+                            child: CircularImage(size: MediaQuery.of(context).size.height * 0.16, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    top: MediaQuery.of(context).size.height*0.25,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Text("${currentBrand.name!}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                  ),
+                ]
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    PageTransition(
+                        type: PageTransitionType.bottomToTop,
+                        child: CalendarWidget(
+                          brandID: currentBrand.id!,
+                          canEdit: true,
+                        )
+                    )
+                );
+              },
+              child: Stack(
+                alignment: Alignment.bottomLeft,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.90,
+                    height: MediaQuery.of(context).size.height * 0.20,
+                    decoration: new BoxDecoration(
+                      color: Colors.black,
+                      border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                      borderRadius: new BorderRadius.all(
+                        const Radius.circular(10.0),
+                      ),
+                      image: new DecorationImage(
+                        fit: BoxFit.cover,
+                        colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                        image: Image.asset(Constants.calendarImage).image,
+                      ),
+                    ),
+                    child: Center(),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                        Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    PageTransition(
+                        type: PageTransitionType.bottomToTop,
+                        child: TodosMiembros()
+                    )
+                );
+              },
+              child: Stack(
+                alignment: Alignment.bottomLeft,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.90,
+                    height: MediaQuery.of(context).size.height * 0.20,
+                    decoration: new BoxDecoration(
+                      color: Colors.black,
+                      border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                      borderRadius: new BorderRadius.all(
+                        const Radius.circular(10.0),
+                      ),
+                      image: new DecorationImage(
+                        fit: BoxFit.cover,
+                        colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                        image: Image.asset(Constants.teamImage).image,
+                      ),
+                    ),
+                    child: Center(),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(AppLocalizations.of(context)!.members, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                        Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+
+                    },
+                    child: Stack(
+                      alignment: Alignment.bottomLeft,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.43,
+                          height: MediaQuery.of(context).size.height * 0.20,
+                          decoration: new BoxDecoration(
+                            color: Colors.black,
+                            border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                            borderRadius: new BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                            image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                              image: Image.asset(Constants.statisticsImage).image,
+                            ),
+                          ),
+                          child: Center(),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(AppLocalizations.of(context)!.historial, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                              Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                  GestureDetector(
+                    onTap: () {
+
+                    },
+                    child: Stack(
+                      alignment: Alignment.bottomLeft,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.43,
+                          height: MediaQuery.of(context).size.height * 0.20,
+                          decoration: new BoxDecoration(
+                            color: Colors.black,
+                            border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                            borderRadius: new BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                            image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                              image: Image.asset(Constants.notificationImage).image,
+                            ),
+                          ),
+                          child: Center(),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(AppLocalizations.of(context)!.notifications, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                              Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+    );
+  }
+}
+
+/*
+      // Calls a Modal Bottom Sheet every time an Icon is Tapped. It updates the page after closing only if there have been changes
     // inside the modal. Some set the isLoading to true (TusDatos, as the name needs to be updated in the UI), others don´t as it
     // can happen in the background (Settings)
     void _showPerfiClientModals(int _buttonIndex) async {
@@ -103,50 +354,8 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
       }
     }
 
-    return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height*0.34,
-                  child: new Stack(
-                      alignment: Alignment.topCenter,
-                      fit: StackFit.expand,
-                      children: <Widget>[
-                        // Logo Brand
-                        Positioned(
-                            top: MediaQuery.of(context).size.height*0.05,
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  height: MediaQuery.of(context).size.height * 0.25,
-                                  child: Center(
-                                    child: CircularImage(size: MediaQuery.of(context).size.height * 0.18, image: currentBrand.logoUrl),
-                                  ),
-                                ),
-                              ],
-                            ),
-                        ),
-                        // Titol Brand
-                        Positioned(
-                          top: MediaQuery.of(context).size.height*0.29,
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Text("${currentBrand.name!.toUpperCase()}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 24, fontFamily: "Summit"), textAlign: TextAlign.center),
-                        ),
-                        // Logos Flotants
+
+  // Logos Flotants
                         // Perfil Adalt Esquerra
                         Positioned(
                             top: 0,
@@ -280,12 +489,10 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                 ),
                               ],
                             )),
-                      ]),
-                ),
-              ],
-            ),
-          ),
-          Padding(
+
+
+
+ Padding(
             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -302,31 +509,8 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
               ],
             ),
           ),
-          false ? Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: TextButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    PageTransition(
-                        type: PageTransitionType.bottomToTop,
-                        child: MyLocations(brandId: currentBrand.id!,)
-                    )
-                );
-              },
-              child: Text("Test Locations"),
-            ),
-          ) : Container(),
-          BrandEventsToday(
-            brandId: currentBrand.id!,
-          ),
-        ],
-      ),
-    );
-  }
-}
 
-/*
+
 Container(
                   padding: EdgeInsets.only(bottom: 120),
                   height: MediaQuery.of(context).size.height*0.49,

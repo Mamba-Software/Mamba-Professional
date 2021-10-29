@@ -679,5 +679,13 @@
   "addLocation": "Añadir ubicación",
   "@addLocation": {
     "description": "Wellcome message"
+  },
+  "historial": "Historial",
+  "@historial": {
+    "description": "Wellcome message"
+  },
+  "notifications": "Notificaciones",
+  "@notifications": {
+    "description": "Wellcome message"
   }
 }

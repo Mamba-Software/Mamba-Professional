@@ -162,5 +162,7 @@
   "available": "Disponible",
   "noEvents": "Sense events",
   "myLocations": "Les meves ubicacions",
-  "addLocation": "Afegir ubicació"
+  "addLocation": "Afegir ubicació",
+  "historial": "Historial",
+  "notifications": "Notificaciones"
 }
