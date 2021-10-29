@@ -390,6 +390,10 @@
   "@clear":{
     "description": "zipCode text"
   },
+  "confirm": "Confirmar",
+  "@confirm":{
+    "description": "zipCode text"
+  },
   "back": "Atrás",
   "@back":{
     "description": "zipCode text"
@@ -609,6 +613,10 @@
   },
   "deleteEventConfirmation": "¿Seguro que quieres eliminar este evento?",
   "@deleteEventConfirmation":{
+    "description": "addEvent text"
+  },
+  "completeEventConfirmation": "¿Seguro que quieres marcar este evento como realizado? Esta acción no se podrá deshacer.",
+  "@completeEventConfirmation":{
     "description": "addEvent text"
   },
   "maxNumberClients": "Número máximo de asistentes",

@@ -302,7 +302,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
               ],
             ),
           ),
-          Padding(
+          false ? Padding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
             child: TextButton(
               onPressed: () {
@@ -316,7 +316,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
               },
               child: Text("Test Locations"),
             ),
-          ),
+          ) : Container(),
           BrandEventsToday(
             brandId: currentBrand.id!,
           ),

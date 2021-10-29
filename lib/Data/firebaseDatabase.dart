@@ -403,6 +403,13 @@ class FirebaseDatabaseService {
       print(e.toString());
     }
   }
+  // Update Event Is Completed
+  Future<void> updateEventCompleted(String id) async {
+    await _firestore.collection("Events").doc(id).update({
+      "isCompleted": true,
+    });
+  }
+
   // Update Event Participants
   // Update Event Trainers
 
