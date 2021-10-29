@@ -149,8 +149,8 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
   }
 
   void getPlaceFullAddress() async {
-    placeDetails = await LocationPlacesSearch().getPlaceDetailFromId(event!.placeId!);
-    ubicacionController.text = placeDetails.fullAddress!;
+    //placeDetails = await LocationPlacesSearch().getPlaceDetailFromId(event!.placeId!);
+    //ubicacionController.text = placeDetails.fullAddress!;
     if (mounted) {
       setState(() {
         isLoading = false;
@@ -743,6 +743,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                         ],
                                       ),
                                     ),
+                                    /*
                                     Padding(
                                       padding: EdgeInsets.only(left:18, top: 10.0),
                                       child: Row(
@@ -846,6 +847,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                         ],
                                       ),
                                     ),
+                                     */
                                   ],
                                 ),
                               ),
