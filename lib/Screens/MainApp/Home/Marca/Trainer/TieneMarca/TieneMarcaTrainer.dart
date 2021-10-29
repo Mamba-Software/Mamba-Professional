@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/BrandEventsToday.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AnadirMiembro.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/HistorialSesiones.dart';
@@ -299,6 +300,21 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
               ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    PageTransition(
+                        type: PageTransitionType.bottomToTop,
+                        child: MyLocations(brandId: currentBrand.id!,)
+                    )
+                );
+              },
+              child: Text("Test Locations"),
             ),
           ),
           BrandEventsToday(

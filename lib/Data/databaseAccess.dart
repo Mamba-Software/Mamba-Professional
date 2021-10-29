@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
+import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'firebaseDatabase.dart';
 
@@ -51,10 +52,16 @@ class DatabaseAccess {
 
   Future<void> deleteEvent(String id) => _firebase.deleteEvent(id);
 
-  Future<Event> getSingleEvent(String id) => _firebase.getSingleEvent(id);
+  Future<Event> getSingleEvent(String eventId) => _firebase.getSingleEvent(eventId);
   Future<List<Event>> getAllEventsFromClient(String clientid) => _firebase.getAllEventsFromClient(clientid);
   Future<List<Event>> getAllEventsFromTrainer(String trainerid) => _firebase.getAllEventsFromTrainer(trainerid);
   Future<List<Event>> getAllEventsTodayBrand(String brandId) => _firebase.getAllEventsTodayBrand(brandId);
+
+  // Locations
+  Future<bool> addLocation(String brandId, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) => _firebase.addLocation(brandId, placeId, description, street, streetNumber, city, zipCode, latitude, longitude);
+  Future<bool> deleteLocation(String locationId) => _firebase.deleteLocation(locationId);
+  Future<Location> getSingleLocation(String locationId) => _firebase.getSingleLocation(locationId);
+  // Get Single Location
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams
@@ -67,6 +74,9 @@ class DatabaseAccess {
 
   // Events
   Stream<DocumentSnapshot> getSingleEventStream(String id) => _firebase.getSingleEventStream(id);
+
+  // Locations
+  // Stream Brand Current Location
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //Admin

@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
+import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:uuid/uuid.dart';
 
@@ -404,6 +405,45 @@ class FirebaseDatabaseService {
   }
   // Update Event Participants
   // Update Event Trainers
+
+  // Locations
+
+  // Add Location
+  Future<bool> addLocation(String brandId, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) async {
+    var uid = Uuid().v1();
+    try {
+      await _firestore.collection("Locations").doc(uid).set({
+        "brandID": brandId,
+        "placeId": placeId,
+        "descripcion": description,
+        "street": street,
+        "streetNumber": streetNumber,
+        "city": city,
+        "zipCode": zipCode,
+        "latitude": latitude,
+        "longitude": longitude
+      });
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+  // Delete Location
+  Future<bool> deleteLocation(String locationId) async {
+    try {
+      await _firestore.collection("Locations").doc(locationId).delete();
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+  // Get Single Location
+  Future<Location> getSingleLocation(String locationId) async {
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Locations").doc(locationId).get();
+    return Location.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+  }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // STREAMS

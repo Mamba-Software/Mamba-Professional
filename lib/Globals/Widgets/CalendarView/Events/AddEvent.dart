@@ -64,7 +64,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   final values = <bool?>[false, false, false, false, false, false, false];
   int _value = 1;
   // Members Page
-  List<Usuario>? brandTrainers;
+  List<Usuario> brandTrainers = [];
   List<bool> brandTrainersSelected = [];
   bool errorNoTrainerSelected = false;
   // Form To Validate User
@@ -254,18 +254,21 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     durationController.text = "${hour}h ${min}min";
     membersController.text = "${members.toString()}";
     getAllTrainersFromBrand();
-    getPlaceFullAddress(currentBrand.placeId!);
+    //getPlaceFullAddress(currentBrand.placeId!);
   }
 
   Future<void> getAllTrainersFromBrand() async {
     brandTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
-    if (brandTrainers!.length == 1) {
+    if (brandTrainers.length == 1) {
       brandTrainersSelected.add(true);
     } else {
-      for (var i=0; i < brandTrainers!.length; i++) {
+      for (var i=0; i < brandTrainers.length; i++) {
         brandTrainersSelected.add(false);
       }
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void getPlaceFullAddress(String placeid) async {
@@ -867,11 +870,11 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                               width: MediaQuery.of(context).size.width,
                                               child: ListView.builder(
                                                   shrinkWrap: true,
-                                                  physics: AlwaysScrollableScrollPhysics(),
+                                                  physics: BouncingScrollPhysics(),
                                                   scrollDirection: Axis.horizontal,
-                                                  itemCount: brandTrainers!.length,
+                                                  itemCount: brandTrainers.length,
                                                   itemBuilder: (context, int index) {
-                                                    var trainer = brandTrainers![index];
+                                                    var trainer = brandTrainers[index];
                                                     return GestureDetector(
                                                       onTap: () {
                                                         setState(() {
@@ -879,7 +882,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                         });
                                                       },
                                                       child: Padding(
-                                                        padding: !(index == 0 || index == brandTrainers!.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandTrainers!.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                                        padding: !(index == 0 || index == brandTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                                         child: Column(
                                                           mainAxisAlignment: MainAxisAlignment.start,
                                                           children: [
@@ -1243,7 +1246,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     return aux[0];
   }
 
-
   bool validateDateAndTime(DateTime startTime, double duration) {
     // Calculating the Time to check
     var hour = duration.toString().split(".")[0];
@@ -1307,9 +1309,9 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     });
     var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
     var selectedTrainerId = [];
-    for (var i=0; i< brandTrainers!.length; i++) {
+    for (var i=0; i< brandTrainers.length; i++) {
       if (brandTrainersSelected[i]) {
-        selectedTrainerId.add(brandTrainers![i].id);
+        selectedTrainerId.add(brandTrainers[i].id);
       }
     }
     if (!isRecurrent) {

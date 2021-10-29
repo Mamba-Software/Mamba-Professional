@@ -663,5 +663,13 @@
   "noEvents": "Sin eventos",
   "@noEvents": {
     "description": "Wellcome message"
+  },
+  "myLocations": "Mis ubicaciones",
+  "@myLocations": {
+    "description": "Wellcome message"
+  },
+  "addLocation": "Añadir ubicación",
+  "@addLocation": {
+    "description": "Wellcome message"
   }
 }

@@ -158,5 +158,7 @@
   "finished": "Realitzat",
   "full": "Ple",
   "available": "Disponible",
-  "noEvents": "Sense events"
+  "noEvents": "Sense events",
+  "myLocations": "Les meves ubicacions",
+  "addLocation": "Afegir ubicació"
 }
