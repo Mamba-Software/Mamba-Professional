@@ -31,7 +31,7 @@ class Styles {
     // Primary Colors
     primaryColor: Colors.black,
     primaryColorLight: lightBlue,
-    accentColor:  red,
+    accentColor:  amber,
     // BackGround Colors
     backgroundColor: lightGrey,
     scaffoldBackgroundColor: white,
@@ -39,19 +39,19 @@ class Styles {
     brightness: Brightness.light,
     // Texts
     textTheme: TextTheme(
-      headline1: TextStyle(color: blue, fontSize: 22),
+      headline1: TextStyle(color: Colors.black, fontSize: 22),
       subtitle1: TextStyle(color: grey, fontSize: 16),
     ),
     fontFamily: "Helvetica",
     appBarTheme: AppBarTheme(
       elevation: 4.0,
-      backgroundColor: red,
+      backgroundColor: white,
       iconTheme: IconThemeData(
-        color: white
+        color: Colors.black
       ),
       titleTextStyle: TextStyle(
         fontFamily: "Helvetica",
-        color: white,
+        color: Colors.black,
         fontSize: 22.0,
         fontWeight: FontWeight.w800,
       ),

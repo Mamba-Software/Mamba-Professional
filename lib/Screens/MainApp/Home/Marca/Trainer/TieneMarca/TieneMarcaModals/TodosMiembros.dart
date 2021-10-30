@@ -112,9 +112,6 @@ class _TodosMiembrosState extends State<TodosMiembros> {
             //elevation: 0,
             title: Text(AppLocalizations.of(context)!.members, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
             centerTitle: true,
-            iconTheme: IconThemeData(
-              color: Styles.accent, //change your color here
-            ),
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
@@ -230,7 +227,7 @@ class _TodosMiembrosState extends State<TodosMiembros> {
                                     Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
                                   },
                                   child: Container(
-                                      height: MediaQuery.of(context).size.height*0.10,
+                                      height: MediaQuery.of(context).size.height*0.09,
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -338,7 +335,7 @@ class _TodosMiembrosState extends State<TodosMiembros> {
                                     Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
                                   },
                                   child: Container(
-                                      height: MediaQuery.of(context).size.height*0.10,
+                                      height: MediaQuery.of(context).size.height*0.09,
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.center,

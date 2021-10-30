@@ -476,59 +476,56 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                               key: formKeyInfo,
                               child: Column(
                                 children: [
-                                  Container(
-                                    width: MediaQuery.of(context).size.width*0.60,
-                                    child: Row(
-                                      children: [
-                                        isEditing ? new Expanded(
-                                          child: new TextFormField(
-                                            controller: titleController,
-                                            validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
-                                            style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).accentColor, fontWeight: FontWeight.bold, fontSize: 24, fontFamily: "Summit"),
-                                            decoration: InputDecoration(
-                                                labelStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
-                                                enabledBorder: UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey,
-                                                        width: 1.0
-                                                    )
-                                                ),
-                                                focusedBorder: UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey,
-                                                        width: 1.0
-                                                    )
-                                                ),
-                                                errorBorder: UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors.red,
-                                                        width: 1.0
-                                                    )
-                                                ),
-                                                disabledBorder: InputBorder.none,
-                                                contentPadding: EdgeInsets.all(0)
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ) : new Expanded(
-                                          child: new TextField(
-                                            controller: titleController,
-                                            readOnly: true,
-                                            style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).accentColor, fontWeight: FontWeight.bold, fontSize: 22, fontFamily: "Summit"),
-                                            decoration: InputDecoration(
+                                  Row(
+                                    children: [
+                                      isEditing ? new Expanded(
+                                        child: new TextFormField(
+                                          controller: titleController,
+                                          validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
+                                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 24),
+                                          decoration: InputDecoration(
                                               labelStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
-                                              hintText:AppLocalizations.of(context)!.noDescription,
-                                              border: InputBorder.none,
-                                              focusedBorder: InputBorder.none,
-                                              enabledBorder: InputBorder.none,
-                                              errorBorder: InputBorder.none,
+                                              enabledBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                      width: 1.0
+                                                  )
+                                              ),
+                                              focusedBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                      width: 1.0
+                                                  )
+                                              ),
+                                              errorBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.red,
+                                                      width: 1.0
+                                                  )
+                                              ),
                                               disabledBorder: InputBorder.none,
-                                            ),
-                                            textAlign: TextAlign.center,
+                                              contentPadding: EdgeInsets.all(0)
                                           ),
+                                          textAlign: TextAlign.left,
                                         ),
-                                      ],
-                                    ),
+                                      ) : new Expanded(
+                                        child: new TextField(
+                                          controller: titleController,
+                                          readOnly: true,
+                                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 22),
+                                          decoration: InputDecoration(
+                                            labelStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                            hintText:AppLocalizations.of(context)!.noDescription,
+                                            border: InputBorder.none,
+                                            focusedBorder: InputBorder.none,
+                                            enabledBorder: InputBorder.none,
+                                            errorBorder: InputBorder.none,
+                                            disabledBorder: InputBorder.none,
+                                          ),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                   Padding(

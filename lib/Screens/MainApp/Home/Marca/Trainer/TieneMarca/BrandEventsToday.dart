@@ -1,17 +1,22 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/Calendar1DayView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CompleteEventConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class BrandEventsToday extends StatefulWidget {
   String brandId;
-  BrandEventsToday({Key? key, required this.brandId}) : super(key: key);
+  List<Event> eventList;
+  BrandEventsToday({Key? key, required this.brandId, required this.eventList}) : super(key: key);
 
   @override
   _BrandEventsTodayState createState() => _BrandEventsTodayState();
@@ -23,24 +28,52 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
   bool isLoading = false;
-  // Brand Events Today
-  List<Event> todayEvents = [];
-
+  // Brand Object
+  Brand _brand = Brand();
+  // Calendar Controller
+  final CalendarController _controller = CalendarController();
+  // Dies de la semana que el entrenador no treballa
+  List<int> nonWorkDays = [];
+  // Horari
+  double? _startHour;
+  double? _endHour;
+  // Descansos
+  DateTime dateJoined = DateTime.now();
+  // Events From Brand
+  List<Appointment> allAppointments = <Appointment>[];
 
   @override
   void initState() {
     isLoading = true;
-    getAllEventsTodayBrand();
+    getBrandDetails();
     super.initState();
+  }
+
+  void getBrandDetails() async {
+    _brand = await _accessDatabase.getBrandDetails(widget.brandId);
+    initListEvents();
+  }
+
+  void initListEvents() {
+    dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
+    _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
+    _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
   // Gets the events passed by the trainer.
   void getAllEventsTodayBrand() async {
-    todayEvents = await _accessDatabase.getAllEventsTodayBrand(widget.brandId);
+    widget.eventList = await _accessDatabase.getAllEventsTodayBrand(widget.brandId);
     setState(() {
       isLoading = false;
     });
   }
+
+  String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
 
   durationToString(double duration) {
     String temp = "";
@@ -52,232 +85,216 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading ?
-      Container(
-        height: MediaQuery.of(context).size.height*0.40,
-        child: Center(
-          child: LoadingViewPurple(),
-        ),
-      )
-        :
-      todayEvents.length == 0 ?
-        Container(
-          height: MediaQuery.of(context).size.height*0.40,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                    height: 150,
-                    child: Image.asset(Constants.emptyCalendar)
-                ),
-                Text(AppLocalizations.of(context)!.noEvents, style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080)), textAlign: TextAlign.center,),
-              ],
-            ),
-          ),
-        )
-            :
-        Column(
-          children: [
-            Container(
-              height: 1,
-              color: !todayEvents[0].isCompleted! ? Theme.of(context).backgroundColor : Colors.green,
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: BouncingScrollPhysics(),
-              itemCount: todayEvents.length,
-              itemBuilder: (context,int index) {
-                Event event = todayEvents[index];
-                var startDate = DateTime(
-                  int.parse(event.year!),
-                  int.parse(event.month!),
-                  int.parse(event.day!),
-                  int.parse(event.hour!),
-                  int.parse(event.minute!),
-                );
-                var endDate = startDate.add(Duration(hours: event.duration!.toInt()));
-                if (event.minute! == "0") event.minute = "00";
-                var minute;
-                return Column(
-                  children: [
-                    Dismissible(
-                      direction: DismissDirection.startToEnd,
-                      key: Key(event.id!),
-                      confirmDismiss: (direction) async {
-                        var result = await showDialog(
-                            context: context,
-                            builder: (_) {
-                              return CompleteEventConfirmationDialog(text: AppLocalizations.of(context)!.completeEventConfirmation);
-                            }
-                        );
-                        if (result) {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          await _accessDatabase.updateEventCompleted(event.id!);
-                          getAllEventsTodayBrand();
-                        }
-                        return false;
-                      } ,
-                      background: Material(
-                        //elevation: 5,
-                        color: Colors.green,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(width: MediaQuery.of(context).size.width*0.10),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(Icons.playlist_add_check, color: Colors.white, size: 30,),
-                                Text(AppLocalizations.of(context)!.finished, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white)),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      child: Container(
-                        height: MediaQuery.of(context).size.height*0.13,
-                        color: event.isCompleted! ? Color(0x33e5fbe5) : endDate.isBefore(DateTime.now()) ? Color(0x5EEAE4F7) : Color(0x1AF5F5F5),
-                        child: Container(
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: MediaQuery.of(context).size.width*0.20,
-                                  child: Row(
-                                    children: [
-                                      SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.schedule,
-                                            color: event.isCompleted! ? Colors.green : Theme.of(context).primaryColor,
-                                            size: 40,
-                                          ),
-                                          Text(
-                                            "${event.hour}:${event.minute!}",
-                                            style: Styles.purpleTextStyle.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold, color: event.isCompleted! ? Colors.green : Theme.of(context).primaryColor,),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width*0.68,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Text(event.title!,style: Styles.purpleTextStyle.copyWith(fontSize: 18.0, fontWeight: FontWeight.bold, color: event.isCompleted! ? Colors.green : Theme.of(context).primaryColor ),),
-                                                ],
-                                              ),
-                                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    Icons.timer,
-                                                    color: Colors.grey,
-                                                    size: 25,
-                                                  ),
-                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                  Text(
-                                                    durationToString(event.duration!),
-                                                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                                                  ),
-                                                  Container(
-                                                      height: 16,
-                                                      width: 32,
-                                                      child: VerticalDivider(color: Colors.grey, width: 10, thickness: 2,)
-                                                  ),
-                                                  SizedBox(width: MediaQuery.of(context).size.width*0.005),
-                                                  Icon(
-                                                    Icons.record_voice_over,
-                                                    color: Colors.grey,
-                                                    size: 25,
-                                                  ),
-                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                  Text(
-                                                    event.selectedTrainers.length.toString(),
-                                                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                                                  ),
-                                                  Container(
-                                                      height: 16,
-                                                      width: 32,
-                                                      child: VerticalDivider(color: Colors.grey, width: 10, thickness: 2,)
-                                                  ),
-                                                  Icon(
-                                                    Icons.directions_run,
-                                                    color: Colors.grey,
-                                                    size: 25,
-                                                  ),
-                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                  Text(
-                                                    event.joinedMembers.length.toString(),
-                                                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                                                  ),
-                                                  Text(
-                                                    " / ",
-                                                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                                                  ),
-                                                  Text(
-                                                    event.maxMembers.toString(),
-                                                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width*0.12,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(Icons.arrow_forward_ios, size: 20,),
-                                        color: Colors.grey,
-                                        onPressed: () {
-                                          _viewEvent(event.id!, startDate);
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 1,
-                      color: !event.isCompleted! ? Theme.of(context).backgroundColor : Colors.green,
-                    ),
-                  ],
-                );
-            },
+    return Scaffold(
+      appBar: AppBar(
+        //elevation: 0,
+        title: Text(AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+        centerTitle: true,
       ),
-          ],
-        );
+      body: isLoading ?
+        LoadingViewPurple()
+            :
+        SfCalendar(
+          view: CalendarView.day,
+          headerHeight: 0,
+          viewHeaderHeight: 0,
+          dataSource: _getCalendarDataSource(),
+          specialRegions: _getTimeRegions(),
+          selectionDecoration: BoxDecoration(
+              border: Border.all(width: 0.1, color: Colors.transparent)
+          ),
+          timeSlotViewSettings: TimeSlotViewSettings(
+              timeIntervalHeight: MediaQuery.of(context).size.height*0.07,
+              timeIntervalWidth: 60,
+              startHour: _startHour!-1,
+              endHour:  _endHour!+1,
+              timeFormat: 'HH:mm',
+              dayFormat: 'E',
+              dateFormat: 'd',
+              timeRulerSize: MediaQuery.of(context).size.width*0.10,
+              nonWorkingDays: nonWorkDays,
+              minimumAppointmentDuration: Duration(minutes: 30),
+              timeTextStyle: TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 12,
+                color: Theme.of(context).primaryColor,
+              )
+          ),
+          appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
+            final Appointment appointment = details.appointments.first;
+            final Event event = getEvent(appointment.id.toString());
+            return GestureDetector(
+              onTap: () {
+                _viewEvent(appointment.id.toString(), appointment.startTime);
+              },
+              child: Center(
+                child: Material(
+                  elevation: 2,
+                  child: Container(
+                    width: details.bounds.width,
+                    height: details.bounds.height,
+                    decoration: BoxDecoration(
+                      color: appointment.color,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5),
+                      ),
+                    ),
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(event.title!, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                          Text(
+                            "-",
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                          Icon(
+                            Icons.record_voice_over,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                          Text(
+                            event.selectedTrainers.length.toString(),
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
+                          Container(
+                              height: 16,
+                              width: 32,
+                              child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
+                          ),
+                          Icon(
+                            Icons.directions_run,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                          Text(
+                            event.joinedMembers.length.toString(),
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
+                          Text(
+                            " / ",
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
+                          Text(
+                            event.maxMembers.toString(),
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  /*
+
+
+                   */
+                ),
+              ),
+            );
+          },
+        ),
+    );
+  }
+
+  List<TimeRegion> _getTimeRegions() {
+    final List<TimeRegion> regions = <TimeRegion>[];
+    // Breaks
+    for (var i=2; i < _brand.workShift.length ; i+=2) {
+      var start = _brand.workShift[i];
+      var startHour = int.parse(start.toStringAsFixed(2).split(".")[0]);
+      var startMin = int.parse(start.toStringAsFixed(2).split(".")[1]);
+      var end = _brand.workShift[i+1];
+      var endHour = int.parse(end.toStringAsFixed(2).split(".")[0]);
+      var endMin = int.parse(end.toStringAsFixed(2).split(".")[1]);
+      DateTime inActiveHoursStart = DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHour, startMin, 0);
+      DateTime inActiveHoursEnd = DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHour, endMin, 0);
+      regions.add(TimeRegion(
+        enablePointerInteraction: false,
+        startTime: inActiveHoursStart,
+        endTime: inActiveHoursEnd,
+        color: Colors.grey.withOpacity(0.3),
+        recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+      ));
+    }
+    // Hora Inactiva Matí
+    var startHourWS = int.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
+    var startMinWS = int.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[1]);
+    regions.add(TimeRegion(
+      enablePointerInteraction: false,
+      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS-1, 0, 0),
+      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS, startMinWS, 0),
+      color: Colors.grey.withOpacity(0.3),
+      recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+    ));
+    // Hora Inactiva Nit
+    var endHourWS = int.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
+    var endMinWS = int.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[1]);
+    regions.add(TimeRegion(
+      enablePointerInteraction: false,
+      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS, endMinWS, 0),
+      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS+1, 0, 0),
+      color: Colors.grey.withOpacity(0.3),
+      recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+    ));
+    return regions;
+  }
+
+  Widget timeRegionBuilder(BuildContext context, TimeRegionDetails timeRegionDetails) {
+    return Container(
+      color: Color(0x40B5B5B5),
+    );
+  }
+
+  AppointmentDataSource _getCalendarDataSource() {
+    List<Appointment> tempAllAppointments = [];
+    for (var i=0; i < widget.eventList.length; i++) {
+      var event = widget.eventList[i];
+      // Date Time
+      var startDate =  DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
+      var hour = event.duration.toString().split(".")[0];
+      var min = event.duration!.toStringAsFixed(2).split(".")[1];
+      var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
+      // Subject
+      var subject = "${event.joinedMembers.length}/${event.maxMembers}";
+      // Colors
+      var color;
+      double bookedCapacity = event.joinedMembers.length/event.maxMembers;
+      if(bookedCapacity < 0.20) color = Colors.green;
+      else if(bookedCapacity > 0.20 && bookedCapacity < 0.40) color = Color(0xFFA8C76C);
+      else if(bookedCapacity > 0.40 && bookedCapacity < 0.60) color = Color(0xFFECE014);
+      else if(bookedCapacity > 0.60 && bookedCapacity < 0.80) color = Colors.orangeAccent;
+      else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
+      else if(bookedCapacity == 1) color = Colors.red;
+      // Afegir percentatges de members al Event.
+      tempAllAppointments.add(Appointment(
+        id: event.id,
+        startTime: startDate,
+        endTime: endDate,
+        subject: subject,
+        color: color,
+        startTimeZone: '',
+        endTimeZone: '',
+      ));
+    }
+    allAppointments = tempAllAppointments;
+    return AppointmentDataSource(allAppointments);
+  }
+
+  Event getEvent(String eventId) {
+    for (var i=0; i < widget.eventList.length; i++) {
+      Event temp = widget.eventList[i];
+      if (temp.id == eventId) return temp;
+    }
+    return Event();
   }
 
   void _viewEvent(String eventId, DateTime startDate) {
@@ -288,7 +305,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
     Navigator.push(
         context,
         PageTransition(
-          type: PageTransitionType.bottomToTop,
+          type: PageTransitionType.rightToLeftWithFade,
           child: ViewEvent(
             eventId: eventId,
             isTrainer: true,
@@ -297,6 +314,18 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
             locale: Localizations.localeOf(context),
           ),
         )
-    );
+    ).whenComplete(() {
+      setState(() {
+        isLoading = true;
+      });
+      getAllEventsTodayBrand();
+    });
+  }
+
+}
+
+class AppointmentDataSource extends CalendarDataSource {
+  AppointmentDataSource(List<Appointment> source) {
+    appointments = source;
   }
 }

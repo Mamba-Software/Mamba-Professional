@@ -660,6 +660,15 @@
   "@finished": {
     "description": "Wellcome message"
   },
+  "today": "Hoy {date}",
+  "@today": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "full": "Lleno",
   "@full": {
     "description": "Wellcome message"

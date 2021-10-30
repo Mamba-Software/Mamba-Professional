@@ -10,6 +10,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocations.dart';
+import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/BrandEventsToday.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AnadirMiembro.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/HistorialSesiones.dart';
@@ -28,21 +29,29 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
   var _accessDatabase = new DatabaseAccess();
   // Boolean isLoading
   bool isLoading = false;
+  // Brand Events Today
+  List<Event> todayEvents = [];
 
   @override
   void initState() {
-    isLoading = false;
+    isLoading = true;
     initBrandHome();
     super.initState();
   }
-
+  // Init for Brand Home
   initBrandHome() {
-    Future.delayed(const Duration(milliseconds: 1000), () {
-      setState(() {
-        isLoading = false;
-      });
+    getAllEventsTodayBrand();
+  }
+
+  // Gets the events passed by the trainer.
+  void getAllEventsTodayBrand() async {
+    todayEvents = await _accessDatabase.getAllEventsTodayBrand(currentBrand.id!);
+    setState(() {
+      isLoading = false;
     });
   }
+
+  String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
 
   @override
   Widget build(BuildContext context) {
@@ -68,15 +77,15 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                       top: 0,
                       bottom: MediaQuery.of(context).size.height*0.15,
                       left: 0,
-                      right: MediaQuery.of(context).size.width*0.60,
-                      child: Icon(Icons.manage_search, color: Colors.grey.withOpacity(0.5), size: 50,),
+                      right: MediaQuery.of(context).size.width*0.70,
+                      child: Icon(Icons.manage_search, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
                     ),
                     Positioned(
                       top: 0,
                       bottom: MediaQuery.of(context).size.height*0.15,
-                      left: MediaQuery.of(context).size.width*0.60,
+                      left: MediaQuery.of(context).size.width*0.70,
                       right: 0,
-                      child: Icon(Icons.settings, color: Colors.grey.withOpacity(0.5), size: 50,),
+                      child: Icon(Icons.settings, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
                     ),
                     Positioned(
                       top: MediaQuery.of(context).size.height*0.05,
@@ -90,7 +99,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                           Container(
                             height: MediaQuery.of(context).size.height * 0.20,
                             child: Center(
-                              child: CircularImage(size: MediaQuery.of(context).size.height * 0.16, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                              child: CircularImage(size: MediaQuery.of(context).size.height * 0.18, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
                             ),
                           ),
                         ],
@@ -106,6 +115,40 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                   ]
                 ),
               ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              todayEvents.length > 0 ? GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          type: PageTransitionType.bottomToTop,
+                          child: BrandEventsToday(
+                            brandId: currentBrand.id!,
+                            eventList: todayEvents,
+                          )
+                      )
+                  );
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.90,
+                  height: MediaQuery.of(context).size.height * 0.08,
+                  decoration: new BoxDecoration(
+                    color: Theme.of(context).accentColor,
+                    border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                    borderRadius: new BorderRadius.all(
+                      const Radius.circular(10.0),
+                    ),
+                  ),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w600)),
+                      ],
+                    ),
+                  ),
+                ),
+              ) : Container(),
               SizedBox(height: MediaQuery.of(context).size.height*0.02),
               GestureDetector(
                 onTap: () {

@@ -290,9 +290,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         toolbarHeight: MediaQuery.of(context).size.height*0.11,
         title: Text(AppLocalizations.of(context)!.addEvent, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
         centerTitle: true,
-        iconTheme: IconThemeData(
-          color: Theme.of(context).primaryColor, //change your color here
-        ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Styles.accent),
           onPressed: () => {

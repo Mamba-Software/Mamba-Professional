@@ -15,15 +15,16 @@ import '../../../Styles.dart';
 import '../Events/AddEvent.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class CalendarList extends StatefulWidget {
+class Calendar1DayView extends StatefulWidget {
+  String brandId;
   List<Event> eventList;
-  CalendarList({Key? key, required this.eventList,}) : super(key: key);
+  Calendar1DayView({Key? key, required this.brandId, required this.eventList,}) : super(key: key);
 
   @override
-  _CalendarListState createState() => _CalendarListState();
+  _Calendar1DayViewState createState() => _Calendar1DayViewState();
 }
 
-class _CalendarListState extends State<CalendarList> {
+class _Calendar1DayViewState extends State<Calendar1DayView> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
@@ -50,7 +51,7 @@ class _CalendarListState extends State<CalendarList> {
   }
 
   void getBrandDetails() async {
-    _brand = await _accessDatabase.getBrandDetails(currentBrand.id!);
+    _brand = await _accessDatabase.getBrandDetails(widget.brandId);
     initListEvents();
   }
 
@@ -67,90 +68,61 @@ class _CalendarListState extends State<CalendarList> {
   
   @override
   Widget build(BuildContext context) {
-    return SfCalendar(
-      cellEndPadding: 0,
-      view: CalendarView.schedule,
-      controller: _controller,
-      showDatePickerButton: false,
-      headerHeight: 45,
-      headerDateFormat: null,
-      dataSource: _getCalendarDataSource(),
-      specialRegions: _getTimeRegions(),
-      timeRegionBuilder: timeRegionBuilder,
-      firstDayOfWeek: 1,
-      showCurrentTimeIndicator: true,
-      viewHeaderHeight: 50,
-      viewHeaderStyle: ViewHeaderStyle(
-        backgroundColor: Theme.of(context).backgroundColor,
-        dateTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 14, fontWeight: FontWeight.bold),
-        dayTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 10, fontWeight: FontWeight.bold),
-      ),
-      selectionDecoration: BoxDecoration(
-          border: Border.all(width: 0.1, color: Colors.transparent)
-      ),
-      timeSlotViewSettings: TimeSlotViewSettings(
-          timelineAppointmentHeight: 50,
-          timeIntervalHeight: 60,
-          timeIntervalWidth: 55,
-          startHour: _startHour!-1,
-          endHour:  _endHour!+1,
-          timeFormat: 'HH',
-          dayFormat: 'E',
-          dateFormat: 'd',
-          timeRulerSize: 25,
-          nonWorkingDays: nonWorkDays,
-          minimumAppointmentDuration: Duration(minutes: 30),
-          timeTextStyle: TextStyle(
-            fontWeight: FontWeight.w800,
-            fontSize: 12,
-            color: Theme.of(context).primaryColor,
-          )
-      ),
-      headerStyle: CalendarHeaderStyle(
-        textAlign: TextAlign.justify,
-        backgroundColor: Color(0xFFF5F5F5),
-        textStyle: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 24,
-          letterSpacing: 4,
-          color: Theme.of(context).accentColor,
+    return isLoading ?
+      LoadingViewPurple()
+        :
+      SfCalendar(
+        headerHeight: 0,
+        viewHeaderHeight: 0,
+        dataSource: _getCalendarDataSource(),
+        specialRegions: _getTimeRegions(),
+        selectionDecoration: BoxDecoration(
+            border: Border.all(width: 0.1, color: Colors.transparent)
         ),
-      ),
-      onLongPress: (details) {
-        if(details.date!.isAfter(DateTime.now())) {
-          _addEvent(dateTimeClicked: details.date);
-        }
-      },
-      onTap: (details) {
-        // Just for Development
-        log(details.date.toString());
-      },
-      appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
-        final Appointment appointment = details.appointments.first;
-        return GestureDetector(
-          onTap: () {
-            _viewEvent(appointment.id.toString(), appointment.startTime);
-          },
-          child: Center(
-            child: Material(
-              elevation: 2,
-              child: Container(
-                width: details.bounds.width,
-                height: details.bounds.height,
-                decoration: BoxDecoration(
-                  color: appointment.color,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(5),
+        timeSlotViewSettings: TimeSlotViewSettings(
+            timelineAppointmentHeight: 50,
+            timeIntervalHeight: 60,
+            timeIntervalWidth: 55,
+            startHour: _startHour!-1,
+            endHour:  _endHour!+1,
+            timeFormat: 'HH',
+            dayFormat: 'E',
+            dateFormat: 'd',
+            timeRulerSize: 25,
+            nonWorkingDays: nonWorkDays,
+            minimumAppointmentDuration: Duration(minutes: 30),
+            timeTextStyle: TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 12,
+              color: Theme.of(context).primaryColor,
+            )
+        ),
+        appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
+          final Appointment appointment = details.appointments.first;
+          return GestureDetector(
+            onTap: () {
+              _viewEvent(appointment.id.toString(), appointment.startTime);
+            },
+            child: Center(
+              child: Material(
+                elevation: 2,
+                child: Container(
+                  width: details.bounds.width,
+                  height: details.bounds.height,
+                  decoration: BoxDecoration(
+                    color: appointment.color,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(5),
+                    ),
                   ),
-                ),
-                child: Center(
-                  child: Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                  child: Center(
+                    child: Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
     );
   }
 
@@ -244,27 +216,6 @@ class _CalendarListState extends State<CalendarList> {
     return AppointmentDataSource(allAppointments);
   }
 
-  List<Event> documentsToEvents(List<DocumentSnapshot> documents) {
-    List<Event> events = [];
-    for(int i = 0; i < documents.length; i++) {
-      events.add(Event.fromObject(documents[i], documents[i].id));
-    }
-    return events;
-  }
-
-  void _addEvent({DateTime? dateTimeClicked}) {
-    Navigator.push(
-        context,
-        PageTransition(
-          type: PageTransitionType.bottomToTop,
-          child: AddEvent(
-            locale: Localizations.localeOf(context),
-            initialDateTime: dateTimeClicked ?? null,
-          ),
-        )
-    );
-  }
-
   void _viewEvent(String eventId, DateTime startDate) {
       bool canEdit = true;
       if (startDate.isBefore(DateTime.now())) {
@@ -273,7 +224,7 @@ class _CalendarListState extends State<CalendarList> {
       Navigator.push(
         context,
         PageTransition(
-            type: PageTransitionType.bottomToTop,
+            type: PageTransitionType.rightToLeftWithFade,
             child: ViewEvent(
               eventId: eventId,
               isTrainer: true,
