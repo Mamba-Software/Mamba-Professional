@@ -135,7 +135,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.25,
+                      top: MediaQuery.of(context).size.height*0.26,
                       bottom: 0,
                       left: 0,
                       right: 0,
@@ -355,6 +355,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                   ],
                 ),
               ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
             ],
           ),
     ),

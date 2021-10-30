@@ -696,5 +696,17 @@
   "notifications": "Notificaciones",
   "@notifications": {
     "description": "Wellcome message"
+  },
+  "mySessions": "Mis sesiones",
+  "@mySessions": {
+    "description": "Wellcome message"
+  },
+  "planSessions": "Planifica más sesiones",
+  "@planSessions": {
+    "description": "Wellcome message"
+  },
+  "myProgress": "Control y seguimiento",
+  "@myProgress": {
+    "description": "Wellcome message"
   }
 }

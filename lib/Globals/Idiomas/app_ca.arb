@@ -165,5 +165,8 @@
   "myLocations": "Les meves ubicacions",
   "addLocation": "Afegir ubicació",
   "historial": "Historial",
-  "notifications": "Notificaciones"
+  "notifications": "Notificaciones",
+  "mySessions": "Les meves sessions",
+  "planSessions": "Planifica más sessions",
+  "myProgress": "Control y seguimient"
 }
