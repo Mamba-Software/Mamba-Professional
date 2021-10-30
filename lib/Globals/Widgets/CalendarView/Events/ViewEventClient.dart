@@ -1190,7 +1190,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     } else {
       if (widget.canJoin && !isFull) {
         return Padding(
-          padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
           child: Container(
             width: MediaQuery.of(context).size.width*0.25,
             child: FloatingActionButton.extended(

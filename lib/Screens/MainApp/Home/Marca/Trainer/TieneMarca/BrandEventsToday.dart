@@ -301,13 +301,13 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
     }
     Navigator.push(
         context,
-        PageTransition(
-          type: PageTransitionType.rightToLeftWithFade,
-          child: ViewEventTrainer(
+        CupertinoPageRoute<Null>(
+          builder: (context) => ViewEventTrainer(
             eventId: eventId,
             canEdit: canEdit,
             locale: Localizations.localeOf(context),
           ),
+          settings: RouteSettings(name: 'AdminTool'),
         )
     ).whenComplete(() {
       setState(() {

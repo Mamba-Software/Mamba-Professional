@@ -1187,11 +1187,11 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
       if (widget.canEdit) {
         if (isEditing) {
           return Padding(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
             child: Container(
-              width: MediaQuery.of(context).size.width*0.60,
+              width: MediaQuery.of(context).size.width*0.65,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   FloatingActionButton.extended(
                     heroTag: null,
@@ -1216,6 +1216,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                     label: Text(AppLocalizations.of(context)!.delete,
                       style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
                   ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.01,),
                   FloatingActionButton.extended(
                     heroTag: null,
                     onPressed: () async {
@@ -1265,7 +1266,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
           );
         } else {
           return Padding(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
             child: Container(
               width: MediaQuery.of(context).size.width*0.25,
               child: FloatingActionButton.extended(
