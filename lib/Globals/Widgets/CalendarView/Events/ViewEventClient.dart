@@ -19,19 +19,17 @@ import '../../../Styles.dart';
 import '../../CircularImage.dart';
 
 
-class ViewEvent extends StatefulWidget {
+class ViewEventClient extends StatefulWidget {
   String eventId;
-  bool isTrainer;
-  bool canEdit;
   bool canJoin;
   Locale locale;
-  ViewEvent({Key? key, required this.eventId,  required this.isTrainer,  required this.canEdit,  required this.canJoin, required this.locale}) : super(key: key);
+  ViewEventClient({Key? key, required this.eventId, required this.canJoin, required this.locale}) : super(key: key);
 
   @override
-  _ViewEventState createState() => _ViewEventState();
+  _ViewEventClientState createState() => _ViewEventClientState();
 }
 
-class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMixin{
+class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProviderStateMixin{
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
@@ -428,14 +426,9 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                             ),
                           ),
                           isEditing ? Text(AppLocalizations.of(context)!.editEvent, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)) : Text(datetitle, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
-                          event!.isCompleted! ? Padding(
-                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
-                            child: Column(
-                              children: [
-                                Icon(Icons.event_available, color: Colors.green),
-                                Text(AppLocalizations.of(context)!.finished, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.green)),
-                              ],
-                            ),
+                          !widget.canJoin ? Padding(
+                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.06, left: MediaQuery.of(context).size.width*0.06),
+                            child: Container(),
                           ) :
                           Padding(
                             padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
@@ -1176,7 +1169,7 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
                                 ],
                               ),
                             ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.15),
+                            widget.canJoin ? SizedBox(height: MediaQuery.of(context).size.height*0.15) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           ],
                         ),
                       ),
@@ -1195,102 +1188,25 @@ class _ViewEventState extends State<ViewEvent> with SingleTickerProviderStateMix
     if (isLoadingBody) {
       return Container();
     } else {
-      if (widget.isTrainer) {
-        if (widget.canEdit) {
-          if (isEditing) {
-            return Padding(
-              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-              child: Container(
-                width: MediaQuery.of(context).size.width*0.25,
-                child: FloatingActionButton.extended(
-                  heroTag: null,
-                  onPressed: () async {
-                    bool hasError = false;
-                    setState(() {
-                      errorDate = false;
-                      errorNoTrainerSelected = false;
-                    });
-                    var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
-                    if (!formKeyInfo.currentState!.validate()) {
-                      hasError = true;
-                    }
-                    if (!validateDateAndTime(startDate, double.parse(duration))) {
-                      hasError = true;
-                      setState(() {
-                        errorDate = true;
-                      });
-                    }
-                    if (!brandTrainersSelectedBool.contains(true)) {
-                      hasError = true;
-                      setState(() {
-                        errorNoTrainerSelected = true;
-                      });
-                    }
-                    if (!hasError) {
-                      setState(() {
-                        isLoadingBody = true;
-                      });
-                      var selectedTrainerId = [];
-                      for (var i=0; i< allTrainers.length; i++) {
-                        if (brandTrainersSelectedBool[i]) {
-                          selectedTrainerId.add(allTrainers[i].id);
-                        }
-                      }
-                      await _accessDatabase.updateEvent(widget.eventId, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
-                      getEventInfo();
-                    }
-                  },
-                  backgroundColor: Colors.green,
-                  icon: Icon(Icons.save_rounded, color: Colors.white,),
-                  label: Text(AppLocalizations.of(context)!.save,
-                    style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
-                ),
-              ),
-            );
-          } else {
-            return Padding(
-              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-              child: Container(
-                width: MediaQuery.of(context).size.width*0.25,
-                child: FloatingActionButton.extended(
-                  heroTag: null,
-                  onPressed: () {
-                    setState(() {
-                      isEditing = true;
-                    });
-                  },
-                  backgroundColor: Colors.green,
-                  icon: Icon(Icons.edit, color: Colors.white,),
-                  label: Text(AppLocalizations.of(context)!.edit,
-                    style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
-                ),
-              ),
-            );
-          }
-        } else {
-          return Container();
-        }
-      } else {
-        if (widget.canJoin) {
-          return Padding(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-            child: Container(
-              width: MediaQuery.of(context).size.width*0.25,
-              child: FloatingActionButton.extended(
-                heroTag: null,
-                onPressed: () {
-                  print("Join");
-                },
-                backgroundColor: Theme.of(context).accentColor,
-                icon: Icon(Icons.add_circle_outline, color: Colors.white,),
-                label: Text("Unir-se",
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
-              ),
+      if (widget.canJoin && !isFull) {
+        return Padding(
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+          child: Container(
+            width: MediaQuery.of(context).size.width*0.25,
+            child: FloatingActionButton.extended(
+              heroTag: null,
+              onPressed: () {
+                print("Join");
+              },
+              backgroundColor: Theme.of(context).accentColor,
+              icon: Icon(Icons.add_circle_outline, color: Colors.white,),
+              label: Text("Unir-se",
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
             ),
-          );
-        } else {
-          return Container();
-        }
+          ),
+        );
+      } else {
+        return Container();
       }
     }
 

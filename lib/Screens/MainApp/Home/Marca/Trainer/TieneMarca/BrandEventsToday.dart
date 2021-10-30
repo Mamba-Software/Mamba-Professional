@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/Calendar1DayView.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEvent.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CompleteEventConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
@@ -306,11 +304,9 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
         context,
         PageTransition(
           type: PageTransitionType.rightToLeftWithFade,
-          child: ViewEvent(
+          child: ViewEventTrainer(
             eventId: eventId,
-            isTrainer: true,
             canEdit: canEdit,
-            canJoin: false,
             locale: Localizations.localeOf(context),
           ),
         )

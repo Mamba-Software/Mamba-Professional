@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEvent.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
@@ -14,16 +14,16 @@ import '../../../Styles.dart';
 import '../Events/AddEvent.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class CalendarWidget extends StatefulWidget {
+class CalendarWidgetTrainer extends StatefulWidget {
   String brandID;
   bool canEdit;
-  CalendarWidget({Key? key, required this.brandID, required this.canEdit }) : super(key: key);
+  CalendarWidgetTrainer({Key? key, required this.brandID, required this.canEdit }) : super(key: key);
 
   @override
-  _CalendarWidgetState createState() => _CalendarWidgetState();
+  _CalendarWidgetTrainerState createState() => _CalendarWidgetTrainerState();
 }
 
-class _CalendarWidgetState extends State<CalendarWidget> {
+class _CalendarWidgetTrainerState extends State<CalendarWidgetTrainer> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
@@ -332,11 +332,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         context,
         PageTransition(
             type: PageTransitionType.bottomToTop,
-            child: ViewEvent(
+            child: ViewEventTrainer(
               eventId: eventId,
-              isTrainer: true,
               canEdit: canEdit,
-              canJoin: false,
               locale: Localizations.localeOf(context),
             ),
         )

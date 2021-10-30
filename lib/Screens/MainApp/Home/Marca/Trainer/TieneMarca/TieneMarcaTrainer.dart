@@ -5,7 +5,7 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidget.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
@@ -73,19 +73,48 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                   alignment: Alignment.topCenter,
                   fit: StackFit.expand,
                   children: <Widget>[
+                    /*
+                    // Fons difuminat
+                    Positioned(
+                      top: MediaQuery.of(context).size.height*0.0,
+                      bottom: MediaQuery.of(context).size.height*0.09,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width*0.5,
+                            height: MediaQuery.of(context).size.height,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(MediaQuery.of(context).size.width*0.50),),
+                              color: Theme.of(context).accentColor.withOpacity(0.05),
+                            ),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width*0.5,
+                            height: MediaQuery.of(context).size.height*0.50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(bottomRight: Radius.circular(MediaQuery.of(context).size.width*0.50),),
+                              color: Theme.of(context).accentColor.withOpacity(0.15),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                     */
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.15,
+                      bottom: MediaQuery.of(context).size.height*0.10,
                       left: 0,
-                      right: MediaQuery.of(context).size.width*0.70,
-                      child: Icon(Icons.manage_search, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                      right: MediaQuery.of(context).size.width*0.60,
+                      child: Icon(Icons.manage_search, color: Colors.black.withOpacity(0.5), size: 50,),
                     ),
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.15,
-                      left: MediaQuery.of(context).size.width*0.70,
+                      bottom: MediaQuery.of(context).size.height*0.10,
+                      left: MediaQuery.of(context).size.width*0.60,
                       right: 0,
-                      child: Icon(Icons.settings, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                      child: Icon(Icons.settings, color: Colors.black.withOpacity(0.5), size: 50,),
                     ),
                     Positioned(
                       top: MediaQuery.of(context).size.height*0.05,
@@ -156,7 +185,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                       context,
                       PageTransition(
                           type: PageTransitionType.bottomToTop,
-                          child: CalendarWidget(
+                          child: CalendarWidgetTrainer(
                             brandID: currentBrand.id!,
                             canEdit: true,
                           )
