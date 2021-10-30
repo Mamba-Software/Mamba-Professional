@@ -68,7 +68,9 @@ class DatabaseAccess {
   // Streams
 
   // Users
+  Stream<QuerySnapshot> getAllEventsFromUser(String userid, bool isTrainer) => _firebase.getAllEventsFromUser(userid, isTrainer);
   Stream<QuerySnapshot> getAllEventsFromBrand(String brandId) => _firebase.getAllEventsFromBrand(brandId);
+  Stream<QuerySnapshot> getAllEventsTodayBrandStream(String brandId) => _firebase.getAllEventsTodayBrandStream(brandId);
 
   // Brands
   Stream<QuerySnapshot> getAllBrands() => _firebase.getAllBrands();

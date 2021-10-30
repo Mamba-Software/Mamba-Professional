@@ -701,6 +701,10 @@
   "@mySessions": {
     "description": "Wellcome message"
   },
+  "mySchedule": "Mi agenda",
+  "@mySchedule": {
+    "description": "Wellcome message"
+  },
   "planSessions": "Planifica más sesiones",
   "@planSessions": {
     "description": "Wellcome message"

@@ -346,9 +346,9 @@ class FirebaseDatabaseService {
     List<Event> events = [];
     QuerySnapshot querySnapshot = await _firestore
         .collection("Events")
-        //.orderBy("year", descending: true)
-        //.orderBy("month", descending: true)
-        //.orderBy("day", descending: true)
+        .orderBy("year", descending: true)
+        .orderBy("month", descending: true)
+        .orderBy("day", descending: true)
         .where("selectedTrainers", arrayContains: trainerid)
         .get();
     for(int i = 0; i < querySnapshot.docs.length; i++) {
@@ -461,16 +461,45 @@ class FirebaseDatabaseService {
   }
 
   // Events
-    Stream<DocumentSnapshot> getSingleEventStream(String eid) {
-    return _firestore.collection("Events")
-        .doc(eid)
-        .snapshots();
+  Stream<DocumentSnapshot> getSingleEventStream(String eid) {
+  return _firestore.collection("Events")
+      .doc(eid)
+      .snapshots();
   }
-
   Stream<QuerySnapshot> getAllEventsFromBrand(String brandid) {
     return _firestore.collection("Events")
         .where("brandID", isEqualTo: brandid)
         .snapshots();
+  }
+  Stream<QuerySnapshot> getAllEventsTodayBrandStream(String brandId) {
+    DateTime today = DateTime.now();
+    return _firestore
+        .collection("Events")
+        .where("year", isEqualTo: today.year.toString())
+        .where("month", isEqualTo: today.month.toString())
+        .where("day", isEqualTo: today.day.toString())
+        .where("brandID", isEqualTo: brandId)
+        .orderBy("hour", descending: false)
+        .snapshots();
+  }
+  Stream<QuerySnapshot> getAllEventsFromUser(String userid, bool isTrainer) {
+    if (isTrainer) {
+      return _firestore
+          .collection("Events")
+          .where("selectedTrainers", arrayContains: userid)
+          .orderBy("year", descending: true)
+          .orderBy("month", descending: true)
+          .orderBy("day", descending: true)
+          .snapshots();
+    } else {
+      return _firestore
+          .collection("Events")
+          .where("joinedMembers", arrayContains: userid)
+          .orderBy("year", descending: true)
+          .orderBy("month", descending: true)
+          .orderBy("day", descending: true)
+          .snapshots();
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

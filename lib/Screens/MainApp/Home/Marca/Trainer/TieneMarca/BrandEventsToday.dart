@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -44,27 +45,22 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
   @override
   void initState() {
     isLoading = true;
-    initListEvents();
+    getBrandDetails();
     super.initState();
   }
 
-  Future<void> initListEvents() async {
+  void getBrandDetails() async {
     _brand = await _accessDatabase.getBrandDetails(widget.brandId);
-    todayEvents = await _accessDatabase.getAllEventsTodayBrand(widget.brandId);
+    initListEvents();
+  }
+
+  Future<void> initListEvents() async {
     _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
     _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
     Future.delayed(const Duration(milliseconds: 1000), () {
       setState(() {
         isLoading = false;
       });
-    });
-  }
-
-  // Gets the events of today.
-  Future<void> getAllEventsTodayBrand() async {
-    todayEvents = await _accessDatabase.getAllEventsTodayBrand(widget.brandId);
-    setState(() {
-      isLoading = false;
     });
   }
 
@@ -80,15 +76,137 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return isLoading ?
+    Scaffold(
       appBar: AppBar(
         //elevation: 0,
         title: Text(AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
         centerTitle: true,
       ),
-      body: isLoading ?
-        LoadingViewPurple()
-            :
+      body: LoadingViewPurple(),
+    )
+        :
+    Scaffold(
+      appBar: AppBar(
+        //elevation: 0,
+        title: Text(AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+        centerTitle: true,
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: _accessDatabase.getAllEventsTodayBrandStream(_brand.id!),
+          builder: (context, snapshot) {
+            if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
+              return LoadingViewPurple();
+            } else {
+              todayEvents = documentsToEvents(snapshot.data!.docs);
+              return SfCalendar(
+                view: CalendarView.day,
+                minDate: DateTime(dateJoined.year, dateJoined.month, dateJoined.day, _startHour!.toInt()-1,0),
+                maxDate: DateTime(dateJoined.year, dateJoined.month, dateJoined.day, _endHour!.toInt()+1,0),
+                headerHeight: 0,
+                viewHeaderHeight: 0,
+                dataSource: _getCalendarDataSource(),
+                specialRegions: _getTimeRegions(),
+                selectionDecoration: BoxDecoration(
+                    border: Border.all(width: 0.1, color: Colors.transparent)
+                ),
+                timeSlotViewSettings: TimeSlotViewSettings(
+                    timeIntervalHeight: MediaQuery.of(context).size.height*0.07,
+                    timeIntervalWidth: 60,
+                    startHour: _startHour!-1,
+                    endHour:  _endHour!+1,
+                    timeFormat: 'HH:mm',
+                    dayFormat: 'E',
+                    dateFormat: 'd',
+                    timeRulerSize: MediaQuery.of(context).size.width*0.10,
+                    nonWorkingDays: nonWorkDays,
+                    minimumAppointmentDuration: Duration(minutes: 30),
+                    timeTextStyle: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 12,
+                      color: Theme.of(context).primaryColor,
+                    )
+                ),
+                appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
+                  final Appointment appointment = details.appointments.first;
+                  final Event event = getEvent(appointment.id.toString());
+                  return GestureDetector(
+                    onTap: () {
+                      _viewEvent(appointment.id.toString(), appointment.startTime);
+                    },
+                    child: Center(
+                      child: Material(
+                        elevation: 2,
+                        child: Container(
+                          width: details.bounds.width,
+                          height: details.bounds.height,
+                          decoration: BoxDecoration(
+                            color: appointment.color,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(5),
+                            ),
+                          ),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(event.title!, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                Text(
+                                  "-",
+                                  style: TextStyle(color: Colors.white, fontSize: 14),
+                                ),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                Icon(
+                                  Icons.record_voice_over,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                Text(
+                                  event.selectedTrainers.length.toString(),
+                                  style: TextStyle(color: Colors.white, fontSize: 14),
+                                ),
+                                Container(
+                                    height: 16,
+                                    width: 32,
+                                    child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
+                                ),
+                                Icon(
+                                  Icons.directions_run,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                Text(
+                                  event.joinedMembers.length.toString(),
+                                  style: TextStyle(color: Colors.white, fontSize: 14),
+                                ),
+                                Text(
+                                  " / ",
+                                  style: TextStyle(color: Colors.white, fontSize: 14),
+                                ),
+                                Text(
+                                  event.maxMembers.toString(),
+                                  style: TextStyle(color: Colors.white, fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        /*
+
+
+                   */
+                      ),
+                    ),
+                  );
+                },
+              );
+            }
+          }
+      ),
+          /*
         SfCalendar(
           view: CalendarView.day,
           minDate: DateTime(dateJoined.year, dateJoined.month, dateJoined.day, _startHour!.toInt()-1,0),
@@ -193,7 +311,17 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
             );
           },
         ),
+
+           */
     );
+  }
+
+  List<Event> documentsToEvents(List<DocumentSnapshot> documents) {
+    List<Event> events = [];
+    for(int i = 0; i < documents.length; i++) {
+      events.add(Event.fromObject(documents[i], documents[i].id));
+    }
+    return events;
   }
 
   List<TimeRegion> _getTimeRegions() {
@@ -300,21 +428,16 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
       canEdit = false;
     }
     Navigator.push(
-        context,
-        CupertinoPageRoute<Null>(
-          builder: (context) => ViewEventTrainer(
+      context,
+      PageTransition(
+          type: PageTransitionType.bottomToTop,
+          child: ViewEventTrainer(
             eventId: eventId,
             canEdit: canEdit,
             locale: Localizations.localeOf(context),
-          ),
-          settings: RouteSettings(name: 'AdminTool'),
-        )
-    ).whenComplete(() {
-      setState(() {
-        isLoading = true;
-      });
-      getAllEventsTodayBrand();
-    });
+          )
+      )
+    );
   }
 
 }
