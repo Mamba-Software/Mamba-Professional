@@ -152,8 +152,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                       PageTransition(
                           type: PageTransitionType.bottomToTop,
                           child: BrandEventsToday(
-                            brandId: currentBrand.id!,
-                            eventList: todayEvents,
+                            brandId: currentBrand.id!
                           )
                       )
                   );

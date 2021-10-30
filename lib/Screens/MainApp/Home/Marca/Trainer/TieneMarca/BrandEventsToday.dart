@@ -13,8 +13,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class BrandEventsToday extends StatefulWidget {
   String brandId;
-  List<Event> eventList;
-  BrandEventsToday({Key? key, required this.brandId, required this.eventList}) : super(key: key);
+  BrandEventsToday({Key? key, required this.brandId}) : super(key: key);
 
   @override
   _BrandEventsTodayState createState() => _BrandEventsTodayState();
@@ -37,23 +36,21 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
   double? _endHour;
   // Descansos
   DateTime dateJoined = DateTime.now();
+  // Brand Events Today
+  List<Event> todayEvents = [];
   // Events From Brand
   List<Appointment> allAppointments = <Appointment>[];
 
   @override
   void initState() {
     isLoading = true;
-    getBrandDetails();
+    initListEvents();
     super.initState();
   }
 
-  void getBrandDetails() async {
+  Future<void> initListEvents() async {
     _brand = await _accessDatabase.getBrandDetails(widget.brandId);
-    initListEvents();
-  }
-
-  void initListEvents() {
-    dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
+    todayEvents = await _accessDatabase.getAllEventsTodayBrand(widget.brandId);
     _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
     _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
     Future.delayed(const Duration(milliseconds: 1000), () {
@@ -63,9 +60,9 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
     });
   }
 
-  // Gets the events passed by the trainer.
-  void getAllEventsTodayBrand() async {
-    widget.eventList = await _accessDatabase.getAllEventsTodayBrand(widget.brandId);
+  // Gets the events of today.
+  Future<void> getAllEventsTodayBrand() async {
+    todayEvents = await _accessDatabase.getAllEventsTodayBrand(widget.brandId);
     setState(() {
       isLoading = false;
     });
@@ -94,6 +91,8 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
             :
         SfCalendar(
           view: CalendarView.day,
+          minDate: DateTime(dateJoined.year, dateJoined.month, dateJoined.day, _startHour!.toInt()-1,0),
+          maxDate: DateTime(dateJoined.year, dateJoined.month, dateJoined.day, _endHour!.toInt()+1,0),
           headerHeight: 0,
           viewHeaderHeight: 0,
           dataSource: _getCalendarDataSource(),
@@ -248,8 +247,8 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
 
   AppointmentDataSource _getCalendarDataSource() {
     List<Appointment> tempAllAppointments = [];
-    for (var i=0; i < widget.eventList.length; i++) {
-      var event = widget.eventList[i];
+    for (var i=0; i < todayEvents.length; i++) {
+      var event = todayEvents[i];
       // Date Time
       var startDate =  DateTime(
         int.parse(event.year!),
@@ -288,8 +287,8 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
   }
 
   Event getEvent(String eventId) {
-    for (var i=0; i < widget.eventList.length; i++) {
-      Event temp = widget.eventList[i];
+    for (var i=0; i < todayEvents.length; i++) {
+      Event temp = todayEvents[i];
       if (temp.id == eventId) return temp;
     }
     return Event();
