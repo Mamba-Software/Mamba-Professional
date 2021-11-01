@@ -152,7 +152,12 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                             brandId: currentBrand.id!
                           )
                       )
-                  );
+                  ).whenComplete(() {
+                    setState(() {
+                      isLoading = true;
+                      initBrandHome();
+                    });
+                  });;
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.90,
@@ -186,7 +191,12 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                             canEdit: true,
                           )
                       )
-                  );
+                  ).whenComplete(() {
+                    setState(() {
+                      isLoading = true;
+                      initBrandHome();
+                    });
+                  });
                 },
                 child: Stack(
                   alignment: Alignment.bottomLeft,
@@ -231,7 +241,12 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                           type: PageTransitionType.bottomToTop,
                           child: TodosMiembros()
                       )
-                  );
+                  ).whenComplete(() {
+                    setState(() {
+                      isLoading = true;
+                      initBrandHome();
+                    });
+                  });
                 },
                 child: Stack(
                   alignment: Alignment.bottomLeft,
