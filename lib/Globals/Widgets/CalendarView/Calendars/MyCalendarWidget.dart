@@ -12,6 +12,7 @@ import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import '../../../Constants.dart';
 import '../../../Styles.dart';
 import '../Events/AddEvent.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -68,13 +69,23 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
       });
     });
   }
-  
+
+  Event getEvent(String eventId) {
+    for (var i=0; i < eventsList.length; i++) {
+      Event temp = eventsList[i];
+      if (temp.id == eventId) return temp;
+    }
+    return Event();
+  }
+
+  String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
+
   @override
   Widget build(BuildContext context) {
     return isLoading ?
       Scaffold(
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).appBarTheme.titleTextStyle,),
+            title: Text(AppLocalizations.of(context)!.mySchedule, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
             leading: IconButton(
               icon: Icon(Icons.arrow_back, size: 25,),
@@ -88,7 +99,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
         :
       Scaffold(
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).appBarTheme.titleTextStyle,),
+            title: Text(AppLocalizations.of(context)!.mySchedule, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
             leading: IconButton(
               icon: Icon(Icons.arrow_back, size: 25,),
@@ -100,6 +111,11 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
               IconButton(
                 icon: Icon(!asList ? Icons.list : Icons.calendar_today_outlined , size: 25,),
                 onPressed: () {
+                  if (!asList) {
+                    _controller.view = CalendarView.schedule;
+                  } else {
+                    _controller.view = CalendarView.week;
+                  }
                   setState(() {
                     asList = !asList;
                   });
@@ -114,124 +130,21 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                   return LoadingViewPurple();
                 } else {
                   eventsList = documentsToEvents(snapshot.data!.docs);
-                  if (!asList) {
-                    return SfCalendar(
-                      cellEndPadding: 0,
-                      view: CalendarView.week,
-                      controller: _controller,
-                      showDatePickerButton: false,
-                      headerHeight: 45,
-                      headerDateFormat: null,
-                      dataSource: _getCalendarDataSource(),
-                      specialRegions: _getTimeRegions(),
-                      timeRegionBuilder: timeRegionBuilder,
-                      firstDayOfWeek: 1,
-                      showCurrentTimeIndicator: true,
-                      viewHeaderHeight: 50,
-                      viewHeaderStyle: ViewHeaderStyle(
-                        backgroundColor: Theme.of(context).backgroundColor,
-                        dateTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 14, fontWeight: FontWeight.bold),
-                        dayTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 10, fontWeight: FontWeight.bold),
-                      ),
-                      selectionDecoration: BoxDecoration(
-                          border: Border.all(width: 0.1, color: Colors.transparent)
-                      ),
-                      timeSlotViewSettings: TimeSlotViewSettings(
-                          timelineAppointmentHeight: 50,
-                          timeIntervalHeight: 60,
-                          timeIntervalWidth: 55,
-                          startHour: _startHour!-1,
-                          endHour:  _endHour!+1,
-                          timeFormat: 'HH',
-                          dayFormat: 'E',
-                          dateFormat: 'd',
-                          timeRulerSize: 25,
-                          nonWorkingDays: nonWorkDays,
-                          minimumAppointmentDuration: Duration(minutes: 30),
-                          timeTextStyle: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 12,
-                            color: Theme.of(context).primaryColor,
-                          )
-                      ),
-                      headerStyle: CalendarHeaderStyle(
-                        textAlign: TextAlign.justify,
-                        backgroundColor: Color(0xFFF5F5F5),
-                        textStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
-                          letterSpacing: 4,
-                          color: Theme.of(context).accentColor,
-                        ),
-                      ),
-                      appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
-                        final Appointment appointment = details.appointments.first;
-                        return GestureDetector(
-                          onTap: () {
-                            _viewEvent(appointment.id.toString(), appointment.startTime);
-                          },
-                          child: Center(
-                            child: Material(
-                              elevation: 2,
-                              child: Container(
-                                width: details.bounds.width,
-                                height: details.bounds.height,
-                                decoration: BoxDecoration(
-                                  color: appointment.color,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(5),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  } else {
-                    return SfCalendar(
+                  return SfCalendar(
                       cellEndPadding: 0,
                       view: CalendarView.schedule,
                       controller: _controller,
-                      showDatePickerButton: false,
-                      headerHeight: 45,
-                      headerDateFormat: null,
+                      showDatePickerButton: true,
                       dataSource: _getCalendarDataSource(),
                       specialRegions: _getTimeRegions(),
                       timeRegionBuilder: timeRegionBuilder,
                       firstDayOfWeek: 1,
                       showCurrentTimeIndicator: true,
-                      viewHeaderHeight: 50,
-                      viewHeaderStyle: ViewHeaderStyle(
-                        backgroundColor: Theme.of(context).backgroundColor,
-                        dateTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 14, fontWeight: FontWeight.bold),
-                        dayTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 10, fontWeight: FontWeight.bold),
-                      ),
                       selectionDecoration: BoxDecoration(
                           border: Border.all(width: 0.1, color: Colors.transparent)
                       ),
-                      timeSlotViewSettings: TimeSlotViewSettings(
-                          timelineAppointmentHeight: 50,
-                          timeIntervalHeight: 60,
-                          timeIntervalWidth: 55,
-                          startHour: _startHour!-1,
-                          endHour:  _endHour!+1,
-                          timeFormat: 'HH',
-                          dayFormat: 'E',
-                          dateFormat: 'd',
-                          timeRulerSize: 25,
-                          nonWorkingDays: nonWorkDays,
-                          minimumAppointmentDuration: Duration(minutes: 30),
-                          timeTextStyle: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 12,
-                            color: Theme.of(context).primaryColor,
-                          )
-                      ),
-                      headerStyle: CalendarHeaderStyle(
+                    headerHeight: MediaQuery.of(context).size.height*0.05,
+                    headerStyle: CalendarHeaderStyle(
                         textAlign: TextAlign.justify,
                         backgroundColor: Color(0xFFF5F5F5),
                         textStyle: TextStyle(
@@ -241,35 +154,162 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                           color: Theme.of(context).accentColor,
                         ),
                       ),
-                      appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
-                        final Appointment appointment = details.appointments.first;
-                        return GestureDetector(
-                          onTap: () {
-                            _viewEvent(appointment.id.toString(), appointment.startTime);
-                          },
-                          child: Center(
-                            child: Material(
-                              elevation: 2,
-                              child: Container(
-                                width: details.bounds.width,
-                                height: details.bounds.height,
-                                decoration: BoxDecoration(
-                                  color: appointment.color,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(5),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                      viewHeaderHeight: 50,
+                      viewHeaderStyle: ViewHeaderStyle(
+                        backgroundColor: Theme.of(context).backgroundColor,
+                        dateTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 14, fontWeight: FontWeight.bold),
+                        dayTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 10, fontWeight: FontWeight.bold),
+                      ),
+                      timeSlotViewSettings: TimeSlotViewSettings(
+                        timelineAppointmentHeight: 50,
+                        timeIntervalHeight: 60,
+                        timeIntervalWidth: 55,
+                        startHour: _startHour!-1,
+                        endHour:  _endHour!+1,
+                        timeFormat: 'HH',
+                        dayFormat: 'E',
+                        dateFormat: 'd',
+                        timeRulerSize: 25,
+                        nonWorkingDays: nonWorkDays,
+                        minimumAppointmentDuration: Duration(minutes: 30),
+                        timeTextStyle: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 12,
+                          color: Theme.of(context).primaryColor,
+                        )
+                      ),
+                      scheduleViewSettings: ScheduleViewSettings(
+                          hideEmptyScheduleWeek: true,
+                          appointmentItemHeight: -1,
+                          monthHeaderSettings: MonthHeaderSettings(
+                            height: MediaQuery.of(context).size.height*0.05,
+                          ),
+                          weekHeaderSettings: WeekHeaderSettings(
+                              startDateFormat: 'dd/MM',
+                              endDateFormat: 'dd/MM/yy',
+                              height: MediaQuery.of(context).size.height*0.03,
+                              textAlign: TextAlign.start,
+                              weekTextStyle: Styles.purpleTextStyle.copyWith(color: Colors.grey)
+                          ),
+                      ),
+                      scheduleViewMonthHeaderBuilder: (BuildContext buildContext, ScheduleViewMonthHeaderDetails details) {
+                        return Container(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Text(
+                                  toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(details.date)),
+                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.start,
                                 ),
                               ),
-                            ),
+                            ],
                           ),
                         );
                       },
+                      appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
+                        final Appointment appointment = details.appointments.first;
+                        final DateTime today = DateTime.now();
+                        bool isCompleted = appointment.endTime.isBefore(today);
+                        final Event event = getEvent(appointment.id.toString());
+                        if (_controller.view == CalendarView.schedule) {
+                          return GestureDetector(
+                            onTap: () {
+                              _viewEvent(appointment.id.toString(), appointment.startTime);
+                            },
+                            child: Center(
+                              child: Material(
+                                elevation: 2,
+                                child: Container(
+                                  width: details.bounds.width,
+                                  height: details.bounds.height,
+                                  decoration: BoxDecoration(
+                                    color: isCompleted ? Theme.of(context).accentColor : appointment.color,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(5),
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(event.title!, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),),
+                                      SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                      Text(
+                                        "-",
+                                        style: TextStyle(color: Colors.white, fontSize: 14),
+                                      ),
+                                      SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                      Icon(
+                                        Icons.record_voice_over,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                      SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                      Text(
+                                        event.selectedTrainers.length.toString(),
+                                        style: TextStyle(color: Colors.white, fontSize: 14),
+                                      ),
+                                      Container(
+                                          height: 16,
+                                          width: 32,
+                                          child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
+                                      ),
+                                      Icon(
+                                        Icons.directions_run,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                      SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                      Text(
+                                        event.joinedMembers.length.toString(),
+                                        style: TextStyle(color: Colors.white, fontSize: 14),
+                                      ),
+                                      Text(
+                                        " / ",
+                                        style: TextStyle(color: Colors.white, fontSize: 14),
+                                      ),
+                                      Text(
+                                        event.maxMembers.toString(),
+                                        style: TextStyle(color: Colors.white, fontSize: 14),
+                                      ),
+                                    ],
+                                  ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        } else {
+                          return GestureDetector(
+                            onTap: () {
+                              _viewEvent(appointment.id.toString(), appointment.startTime);
+                            },
+                            child: Center(
+                              child: Material(
+                                elevation: 2,
+                                child: Container(
+                                  width: details.bounds.width,
+                                  height: details.bounds.height,
+                                  decoration: BoxDecoration(
+                                    color: isCompleted ? Theme.of(context).accentColor : appointment.color,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(5),
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      },
                     );
-                  }
-
                 }
               }
           ), // This trailing comma makes auto-formatting nicer for build methods.
@@ -388,17 +428,17 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
   }
 
   void _viewEvent(String eventId, DateTime startDate) {
-      bool canJoin = true;
+      bool canEdit = true;
       if (startDate.isBefore(DateTime.now())) {
-        canJoin = false;
+        canEdit = false;
       }
       Navigator.push(
         context,
         PageTransition(
             type: PageTransitionType.bottomToTop,
-            child: ViewEventClient(
+            child: ViewEventTrainer(
               eventId: eventId,
-              canJoin: canJoin,
+              canEdit: canEdit,
               locale: Localizations.localeOf(context),
             ),
         )

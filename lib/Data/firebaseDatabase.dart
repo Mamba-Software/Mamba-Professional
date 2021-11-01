@@ -495,9 +495,9 @@ class FirebaseDatabaseService {
       return _firestore
           .collection("Events")
           .where("joinedMembers", arrayContains: userid)
-          .orderBy("year", descending: true)
-          .orderBy("month", descending: true)
-          .orderBy("day", descending: true)
+          .orderBy("year", descending: false)
+          .orderBy("month", descending: false)
+          .orderBy("day", descending: false)
           .snapshots();
     }
   }

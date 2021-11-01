@@ -9,11 +9,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/Calen
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocations.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/BrandEventsToday.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AnadirMiembro.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/HistorialSesiones.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembros.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -106,15 +103,15 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                       top: 0,
                       bottom: MediaQuery.of(context).size.height*0.10,
                       left: 0,
-                      right: MediaQuery.of(context).size.width*0.60,
-                      child: Icon(Icons.manage_search, color: Colors.black.withOpacity(0.5), size: 50,),
+                      right: MediaQuery.of(context).size.width*0.65,
+                      child: Icon(Icons.manage_search, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
                     ),
                     Positioned(
                       top: 0,
                       bottom: MediaQuery.of(context).size.height*0.10,
-                      left: MediaQuery.of(context).size.width*0.60,
+                      left: MediaQuery.of(context).size.width*0.65,
                       right: 0,
-                      child: Icon(Icons.settings, color: Colors.black.withOpacity(0.5), size: 50,),
+                      child: Icon(Icons.settings, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
                     ),
                     Positioned(
                       top: MediaQuery.of(context).size.height*0.05,

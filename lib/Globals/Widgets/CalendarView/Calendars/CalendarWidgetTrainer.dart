@@ -105,7 +105,7 @@ class _CalendarWidgetTrainerState extends State<CalendarWidgetTrainer> {
                     cellEndPadding: 0,
                     view: CalendarView.week,
                     controller: _controller,
-                    showDatePickerButton: false,
+                    showDatePickerButton: true,
                     headerHeight: 45,
                     headerDateFormat: null,
                     dataSource: _getCalendarDataSource(),
