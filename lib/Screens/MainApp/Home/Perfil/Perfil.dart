@@ -9,9 +9,12 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/MyCalendarWidget.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
@@ -33,25 +36,30 @@ class _PerfilState extends State<Perfil> {
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
   bool isLoading = false;
-  // List Bool Status
-  List<bool> _statusButtons =  [false, false, false, false];
-  // Size of Icons
-  final _globusSize = 20.0;
-  final _iconSize = 45.0;
+  // Brand Events Today
+  List<Event> todayEvents = [];
   // Image Picker
   var _image;
-  // IdiomaChanged Settings Modal
-  var _isSaved;
-  var _isUpdated;
 
-  // init Widget state. Loading user info.
   @override
   void initState() {
+    isLoading = true;
+    initProfileHome();
     super.initState();
   }
+  // Init for Brand Home
+  initProfileHome() {
+    getUser();
+    getUserEventsToday();
+  }
+
   // Gets the user info from firebase.
   void getUser() async {
     currentUser = await _accessDatabase.getCurrentUserDetails();
+  }
+  // Gets user events today.
+  void getUserEventsToday() async {
+    todayEvents = await _accessDatabase.getAllEventsTodayUser(currentUser.id!, currentUser.isTrainer!);
     setState(() {
       isLoading = false;
     });
@@ -80,106 +88,15 @@ class _PerfilState extends State<Perfil> {
     }
   }
 
+  durationToString(double duration) {
+    String temp = "";
+    temp = duration.toStringAsFixed(2);
+    var hour = temp.split(".")[0];
+    var min = temp.split(".")[1];
+    return "${hour}h ${min}m ";
+  }
+
   Widget build(BuildContext context) {
-    // Calls a Modal Bottom Sheet every time an Icon is Tapped. It updates the page after closing only if there have been changes
-    // inside the modal. Some set the isLoading to true (TusDatos, as the name needs to be updated in the UI), others don´t as it
-    // can happen in the background (Settings)
-    void _showPerfiClientModals(int _buttonIndex) async {
-      _isSaved = false;
-      _isUpdated = false;
-      switch (_buttonIndex) {
-        case 0:
-          showModalBottomSheet<bool>(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-            isScrollControlled: true,
-            context: context,
-            builder: (context) {
-              return TusDatos(
-                isUpdated: (bool) {
-                  _isUpdated = bool!;
-                }
-              );
-            }
-          ).whenComplete(() =>{
-            if(_isUpdated){
-              setState(() {
-                isLoading = true;
-                getUser();
-              }),
-            },
-            setState(() {
-            _statusButtons[0] = !_statusButtons[0];
-            })
-          });
-          break;
-        case 1:
-          showModalBottomSheet<bool>(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-              isScrollControlled: true,
-              context: context,
-              builder: (context) {
-                return Settings(
-                  isSaved: (bool) {
-                    _isSaved = bool!;
-                  },
-                  isUpdated: (bool) {
-                   _isUpdated = bool!;
-                  }
-                );
-              }
-          ).whenComplete(() =>{
-            if(_isUpdated){
-              setState(() {
-                isLoading = true;
-                getUser();
-              }),
-            },
-            if(!_isSaved){
-              Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!)),
-            },
-            setState(() {
-              _statusButtons[1] = !_statusButtons[1];
-            }),
-          });
-          break;
-        case 2:
-          showModalBottomSheet(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-              isScrollControlled: true,
-              context: context,
-              builder: (context) {
-                return FeedBack();
-              }).whenComplete(() => {
-                setState(() {
-                  _statusButtons[2] = !_statusButtons[2];
-                })
-              });
-          break;
-        case 3:
-          showModalBottomSheet(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-              isScrollControlled: true,
-              context: context,
-              builder: (context) {
-                return ReportBug();
-              }).whenComplete(() => {
-                setState(() {
-                  _statusButtons[3] = !_statusButtons[3];
-                })
-              });
-          break;
-        default:
-          showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return Container();
-              });
-      }
-    }
 
     return isLoading ?
       Center(
@@ -245,7 +162,203 @@ class _PerfilState extends State<Perfil> {
                     ]
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.04),
+              SizedBox(height: todayEvents.length != 0 ? MediaQuery.of(context).size.height*0.02 : MediaQuery.of(context).size.height*0.04),
+              todayEvents.length != 0 ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.06),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 20,), textAlign: TextAlign.start),
+                        Row(
+                          children: [
+                            Text(todayEvents.length.toString(), style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 18, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
+                            SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                            Text(AppLocalizations.of(context)!.events, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 18, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
+                            SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                            Icon(
+                              Icons.swap_horiz,
+                              color: Colors.black,
+                              size: 20,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  Container(
+                    height: MediaQuery.of(context).size.height*0.20,
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: BouncingScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: todayEvents.length,
+                        itemBuilder: (context, int index) {
+                          var event = todayEvents[index];
+                          return GestureDetector(
+                                onTap: () {
+                                  bool canEdit = true;
+                                  DateTime startDate = DateTime(
+                                    int.parse(event.year!),
+                                    int.parse(event.month!),
+                                    int.parse(event.day!),
+                                    int.parse(event.hour!),
+                                    int.parse(event.minute!),
+                                  );
+                                  if (startDate.isBefore(DateTime.now())) {
+                                    canEdit = false;
+                                  }
+                                  if (currentUser.isTrainer!) {
+                                    Navigator.push(
+                                      context,
+                                      PageTransition(
+                                          type: PageTransitionType.bottomToTop,
+                                          child: ViewEventTrainer(
+                                            eventId: event.id!,
+                                            canEdit: canEdit,
+                                            locale: Localizations.localeOf(context),
+                                          )
+                                      )
+                                    ).whenComplete(() {
+                                      setState(() {
+                                        isLoading = true;
+                                        initProfileHome();
+                                      });
+                                    });
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        PageTransition(
+                                            type: PageTransitionType.bottomToTop,
+                                            child: ViewEventClient(
+                                              eventId: event.id!,
+                                              canJoin: true,
+                                              locale: Localizations.localeOf(context),
+                                            )
+                                        )
+                                    ).whenComplete(() {
+                                      setState(() {
+                                        isLoading = true;
+                                        initProfileHome();
+                                      });
+                                    });
+                                  }
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                  child: Stack(
+                                    alignment: Alignment.bottomLeft,
+                                    children: [
+                                      Container(
+                                        height: MediaQuery.of(context).size.height * 0.20,
+                                        width: MediaQuery.of(context).size.width * 0.90,
+                                        decoration: new BoxDecoration(
+                                          color: Theme.of(context).accentColor,
+                                          border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                                          borderRadius: new BorderRadius.all(
+                                            const Radius.circular(10.0),
+                                          ),
+                                          image: new DecorationImage(
+                                            fit: BoxFit.cover,
+                                            colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                                            image: Image.asset(Constants.eventBackground).image,
+                                          ),
+                                        ),
+                                        child: Center(),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(event.title!, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                                            SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.schedule,
+                                                  color: Colors.white,
+                                                  size: 20,
+                                                ),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                Text(
+                                                  event.hour.toString(),
+                                                  style: TextStyle(color: Colors.white, fontSize: 14),
+                                                ),
+                                                Text(
+                                                  ":",
+                                                  style: TextStyle(color: Colors.white, fontSize: 14),
+                                                ),
+                                                Text(
+                                                  event.minute=="0" ? "00" : event.minute.toString(),
+                                                  style: TextStyle(color: Colors.white, fontSize: 14),
+                                                ),
+                                                Container(
+                                                    height: 16,
+                                                    width: 32,
+                                                    child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
+                                                ),
+                                                Icon(
+                                                  Icons.timer,
+                                                  color: Colors.white,
+                                                  size: 20,
+                                                ),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                Text(
+                                                  durationToString(event.duration!),
+                                                  style: TextStyle(color: Colors.white, fontSize: 14),
+                                                ),
+                                                Container(
+                                                    height: 16,
+                                                    width: 32,
+                                                    child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
+                                                ),
+                                                Icon(
+                                                  Icons.record_voice_over,
+                                                  color: Colors.white,
+                                                  size: 20,
+                                                ),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                Text(
+                                                  event.selectedTrainers.length.toString(),
+                                                  style: TextStyle(color: Colors.white, fontSize: 14),
+                                                ),
+                                                Container(
+                                                    height: 16,
+                                                    width: 32,
+                                                    child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
+                                                ),
+                                                Icon(
+                                                  Icons.directions_run,
+                                                  color: Colors.white,
+                                                  size: 20,
+                                                ),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                Text(
+                                                  event.joinedMembers.length.toString(),
+                                                  style: TextStyle(color: Colors.white, fontSize: 14),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                        }
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                ],
+              ) : Container(),
               GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -256,7 +369,12 @@ class _PerfilState extends State<Perfil> {
                             brandID: currentBrand.id!,
                           )
                       )
-                  );
+                  ).whenComplete(() {
+                    setState(() {
+                      isLoading = true;
+                      initProfileHome();
+                    });
+                  });
                 },
                 child: Stack(
                   alignment: Alignment.bottomLeft,
@@ -304,7 +422,12 @@ class _PerfilState extends State<Perfil> {
                             canEdit: true,
                           )
                       )
-                  );
+                  ).whenComplete(() {
+                    setState(() {
+                      isLoading = true;
+                      initProfileHome();
+                    });
+                  });
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.90,
@@ -328,7 +451,7 @@ class _PerfilState extends State<Perfil> {
                   ),
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.04),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
               GestureDetector(
                 onTap: () {
 

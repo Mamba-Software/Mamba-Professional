@@ -61,7 +61,7 @@ class _TodosMiembrosState extends State<TodosMiembros> {
     if (isTrainer) {
       if (query.isNotEmpty || query != "") {
         for (var item in allTrainers) {
-          if (item.name!.startsWith(query)) {
+          if (item.name!.toLowerCase().startsWith(query)) {
             usersFiltered.add(item);
           }
         }
@@ -76,7 +76,7 @@ class _TodosMiembrosState extends State<TodosMiembros> {
     } else {
       if (query.isNotEmpty || query != "") {
         for (var item in allClients) {
-          if (item.name!.startsWith(query)) {
+          if (item.name!.toLowerCase().startsWith(query)) {
             usersFiltered.add(item);
           }
         }
@@ -182,7 +182,7 @@ class _TodosMiembrosState extends State<TodosMiembros> {
                         controller: searchClientsController,
                         onChanged: (value) {
                           // Filter trainers
-                          filterSearchResults(value, false);
+                          filterSearchResults(value.toLowerCase(), false);
                         },
                         textAlign: TextAlign.left,
                         decoration: InputDecoration(
@@ -291,7 +291,7 @@ class _TodosMiembrosState extends State<TodosMiembros> {
                           controller: searchTrainersController,
                           onChanged: (value) {
                             // Filter trainers
-                            filterSearchResults(value, true);
+                            filterSearchResults(value.toLowerCase(), true);
                           },
                           textAlign: TextAlign.left,
                           decoration: InputDecoration(

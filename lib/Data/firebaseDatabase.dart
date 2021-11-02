@@ -374,6 +374,36 @@ class FirebaseDatabaseService {
     return events;
   }
 
+  // Get All Events for User Today
+  Future<List<Event>> getAllEventsTodayUser(String userid, bool isTrainer) async {
+    DateTime today = DateTime.now();
+    List<Event> events = [];
+    QuerySnapshot querySnapshot;
+    if (isTrainer) {
+      querySnapshot = await _firestore
+          .collection("Events")
+          .where("year", isEqualTo: today.year.toString())
+          .where("month", isEqualTo: today.month.toString())
+          .where("day", isEqualTo: today.day.toString())
+          .where("selectedTrainers", arrayContains: userid)
+          .orderBy("hour", descending: false)
+          .get();
+    } else {
+      querySnapshot = await _firestore
+          .collection("Events")
+          .where("year", isEqualTo: today.year.toString())
+          .where("month", isEqualTo: today.month.toString())
+          .where("day", isEqualTo: today.day.toString())
+          .where("joinedMembers", arrayContains: userid)
+          .orderBy("hour", descending: false)
+          .get();
+    }
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return events;
+  }
+
   // Delete Event
   Future<void> deleteEvent(String id) async {
     try {

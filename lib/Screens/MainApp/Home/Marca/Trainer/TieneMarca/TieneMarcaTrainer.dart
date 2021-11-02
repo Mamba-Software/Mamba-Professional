@@ -157,7 +157,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                       isLoading = true;
                       initBrandHome();
                     });
-                  });;
+                  });
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.90,

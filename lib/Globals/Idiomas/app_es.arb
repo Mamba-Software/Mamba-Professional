@@ -712,5 +712,10 @@
   "myProgress": "Control y seguimiento",
   "@myProgress": {
     "description": "Wellcome message"
+  },
+  "events": "Eventos",
+  "@events": {
+    "description": "Wellcome message"
   }
+
 }
