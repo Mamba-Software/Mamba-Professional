@@ -6,7 +6,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/MyCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
@@ -15,13 +14,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
-import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/Settings.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:provider/provider.dart';
-import 'PerfilModals/FeedBack.dart';
-import 'PerfilModals/ReportBug.dart';
-import 'PerfilModals/Settings.dart';
-import 'PerfilModals/TusDatos.dart';
 
 // Profile page for each user.
 class Perfil extends StatefulWidget {
@@ -128,7 +122,23 @@ class _PerfilState extends State<Perfil> {
                         bottom: MediaQuery.of(context).size.height*0.10,
                         left: MediaQuery.of(context).size.width*0.65,
                         right: 0,
-                        child: Icon(Icons.settings, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                        child: IconButton(
+                          icon: Icon(Icons.settings, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                PageTransition(
+                                    type: PageTransitionType.bottomToTop,
+                                    child: Settings(),
+                                )
+                            ).whenComplete(() {
+                              setState(() {
+                                isLoading = true;
+                                initProfileHome();
+                              });
+                            });
+                          },
+                        ),
                       ),
                       Positioned(
                         top: MediaQuery.of(context).size.height*0.05,

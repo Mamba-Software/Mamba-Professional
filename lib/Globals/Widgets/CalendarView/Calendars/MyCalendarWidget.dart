@@ -414,19 +414,6 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
     return events;
   }
 
-  void _addEvent({DateTime? dateTimeClicked}) {
-    Navigator.push(
-        context,
-        PageTransition(
-          type: PageTransitionType.bottomToTop,
-          child: AddEvent(
-            locale: Localizations.localeOf(context),
-            initialDateTime: dateTimeClicked ?? null,
-          ),
-        )
-    );
-  }
-
   void _viewEvent(String eventId, DateTime startDate) {
       bool canEdit = true;
       if (startDate.isBefore(DateTime.now())) {
