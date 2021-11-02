@@ -452,6 +452,28 @@ class FirebaseDatabaseService {
     return Location.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
 
+  //Questions
+
+  // Add Question
+  Future<String> addQuestion(String? question, String? type, var options) async {
+    var questionID = Uuid().v1();
+    User? currentUser = await getCurrentUser();
+    bool firestoreError = false;
+    var uid = Uuid().v1();
+    try {
+      await _firestore.collection("Questions").doc(questionID).set({
+        "creatorID": currentUser!.uid,
+        "question": question,
+        "type": type,
+        "options": options,
+      });
+      return questionID;
+    } catch (e) {
+      print(e.toString());
+      return "Error";
+    }
+  }
+
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // STREAMS
 

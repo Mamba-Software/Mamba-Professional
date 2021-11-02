@@ -64,6 +64,8 @@ class DatabaseAccess {
   Future<Location> getSingleLocation(String locationId) => _firebase.getSingleLocation(locationId);
   // Get Single Location
 
+  //Questions
+  Future<String> addQuestion(String? question, String? type, String? options) => _firebase.addQuestion(question, type, options);
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams
 

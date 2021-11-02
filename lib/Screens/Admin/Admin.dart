@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Admin/AdminTool.dart';
+import 'package:mamba_castelldefels/Screens/Admin/FeedBack.dart';
 
 
 class Admin extends StatefulWidget {
@@ -58,8 +59,8 @@ class _AdminState extends State<Admin> {
           ),
           backgroundColor: Colors.white,
           body: ListView.builder(
-            itemBuilder: (context,int index) => EachList(this.Names[index]),
             itemCount: this.Names.length,
+            itemBuilder: (context,int index) => EachList(this.Names[index], index),
           ),
       );
   }
@@ -67,7 +68,8 @@ class _AdminState extends State<Admin> {
 
 class EachList extends StatelessWidget{
   final String name;
-  EachList(this.name);
+  final int index;
+  EachList(this.name, this.index);
   @override
   Widget build(BuildContext context) {
     return new Card(
@@ -82,15 +84,38 @@ class EachList extends StatelessWidget{
         title: Text(name,style: TextStyle(fontSize: 20.0),),
         subtitle: Text("Admin Tool"),
         onTap: (){
-          Navigator.push(
-              context,
-              CupertinoPageRoute<Null>(
-                builder: (context) => AdminTool(title: name),
-                settings: RouteSettings(name: 'AdminTool'),
-              )
-          );
+          this.returnPage(this.index, context);
+
         },
       ),
     );
+  }
+
+  returnPage(int index, BuildContext context)
+  {
+    switch(index)
+    {
+      case 0:
+        Navigator.push(
+            context,
+            CupertinoPageRoute<Null>(
+              builder: (context) => AdminTool(title: name),
+              settings: RouteSettings(name: 'AdminTool'),
+            )
+        );
+        break;
+
+      case 2:
+        Navigator.push(
+            context,
+            CupertinoPageRoute<Null>(
+              builder: (context) => FeedBack(title: name),
+              settings: RouteSettings(name: 'FeedBack'),
+            )
+        );
+        break;
+
+    }
+
   }
 }
