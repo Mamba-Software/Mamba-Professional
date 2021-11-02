@@ -4,13 +4,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetTrainer.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/MyCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'PerfilModals/FeedBack.dart';
 import 'PerfilModals/ReportBug.dart';
@@ -179,247 +182,197 @@ class _PerfilState extends State<Perfil> {
     }
 
     return isLoading ?
-      LoadingView()
+      Center(
+        child: LoadingViewPurple()
+      )
         :
-      SingleChildScrollView(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: new Container(
-                    height: MediaQuery.of(context).size.height*0.5,
-                    //padding: EdgeInsets.only(top: 25.0, bottom: 25.0, right: 25.0, left: 25.0),
-                    child: new Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          height: MediaQuery.of(context).size.height*0.5,
-                          child: new Stack(
-                              alignment: Alignment.center,
-                              fit: StackFit.expand,
-                              children: <Widget>[
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Container(
-                                      height: MediaQuery.of(context).size.height * 0.4,
-                                      child: Center(
-                                        child: isLoading ?
-                                        CircularProgressIndicator() :
-                                        CircularImage(size: MediaQuery.of(context).size.height * 0.3, image: currentUser.imageUrl, file: _image,),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Positioned(
-                                    top: MediaQuery.of(context).size.height*0.25,
-                                    bottom: 0,
-                                    left: 0,
-                                    right: MediaQuery.of(context).size.width*0.23,
-                                    child: new Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        SizedBox.fromSize(
-                                          size: Size(50, 50), // button width and height
-                                          child: ClipOval(
-                                            child: Material(
-                                              color: Styles.mainColor, // button color
-                                              child: InkWell(
-                                                onTap: () async {
-                                                  getImage();
-                                                  setState(() {});
-                                                },
-                                                child: Icon(Icons.image_outlined, color: Colors.white, size: 30,), // icon
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                ),
-                                // Logos Flotants
-                                // Perfil Adalt Esquerra
-                                Positioned(
-                                    top: 0,
-                                    bottom: MediaQuery.of(context).size.height*0.35,
-                                    left: 0,
-                                    right: MediaQuery.of(context).size.width*0.60,
-                                    child: new Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        OutlinedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              _statusButtons[0] = !_statusButtons[0];
-                                              _showPerfiClientModals(0);
-                                            });
-                                          },
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Icon( Icons.person, color: Colors.white, size: _iconSize,),
-                                            ],
-                                          ),
-                                          style: OutlinedButton.styleFrom(
-                                            backgroundColor: !_statusButtons[0] ? Styles.mainColor : Styles.mainColorTrans,
-                                            elevation: 5,
-                                            shape: CircleBorder(),
-                                            padding: EdgeInsets.all(_globusSize),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                                // Ajustes Adalt Dreta
-                                Positioned(
-                                    top: 0,
-                                    bottom: MediaQuery.of(context).size.height*0.35,
-                                    left: MediaQuery.of(context).size.width*0.60,
-                                    right: 0,
-                                    child: new Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        OutlinedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              _statusButtons[1] = !_statusButtons[1];
-                                              _showPerfiClientModals(1);
-                                            });
-                                          },
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Icon(Icons.settings, color: Colors.white, size: _iconSize,), // icon
-                                            ],
-                                          ),
-                                          style: OutlinedButton.styleFrom(
-                                            backgroundColor: !_statusButtons[1] ? Styles.mainColor : Styles.mainColorTrans,
-                                            elevation: 5,
-                                            shape: CircleBorder(),
-                                            padding: EdgeInsets.all(_globusSize),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                                // Feedback Abaix Esquerra
-                                Positioned(
-                                    top: MediaQuery.of(context).size.height*0.35,
-                                    bottom: 0,
-                                    left: 0,
-                                    right: MediaQuery.of(context).size.width*0.60,
-                                    child: new Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        OutlinedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              _statusButtons[2] = !_statusButtons[2];
-                                              _showPerfiClientModals(2);
-                                            });
-                                          },
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Icon(Icons.help_outline, color: Colors.white, size: _iconSize,), // icon
-                                            ],
-                                          ),
-                                          style: OutlinedButton.styleFrom(
-                                            backgroundColor: !_statusButtons[2] ? Styles.mainColor : Styles.mainColorTrans,
-                                            elevation: 5,
-                                            shape: CircleBorder(),
-                                            padding: EdgeInsets.all(_globusSize),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                                // Bug Abaix Dreta
-                                Positioned(
-                                    top: MediaQuery.of(context).size.height*0.35,
-                                    bottom: 0,
-                                    left: MediaQuery.of(context).size.width*0.60,
-                                    right: 0,
-                                    child: new Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        OutlinedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              _statusButtons[3] = !_statusButtons[3];
-                                              _showPerfiClientModals(3);
-                                            });
-                                          },
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Icon(Icons.report_problem_outlined, color: Colors.white, size: _iconSize,), // icon
-                                            ],
-                                          ),
-                                          style: OutlinedButton.styleFrom(
-                                            backgroundColor: !_statusButtons[3] ? Styles.mainColor : Styles.mainColorTrans,
-                                            elevation: 5,
-                                            shape: CircleBorder(),
-                                            padding: EdgeInsets.all(_globusSize),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                              ]),
+      Scaffold(
+        appBar: null,
+        body: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height*0.30,
+                child: Stack(
+                    alignment: Alignment.topCenter,
+                    fit: StackFit.expand,
+                    children: <Widget>[
+                      Positioned(
+                        top: 0,
+                        bottom: MediaQuery.of(context).size.height*0.10,
+                        left: 0,
+                        right: MediaQuery.of(context).size.width*0.65,
+                        child: Icon(Icons.help_outline, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                      ),
+                      Positioned(
+                        top: 0,
+                        bottom: MediaQuery.of(context).size.height*0.10,
+                        left: MediaQuery.of(context).size.width*0.65,
+                        right: 0,
+                        child: Icon(Icons.settings, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                      ),
+                      Positioned(
+                        top: MediaQuery.of(context).size.height*0.05,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.20,
+                              child: Center(
+                                child: CircularImage(size: MediaQuery.of(context).size.height * 0.18, image: currentUser.imageUrl, file: _image, color: Theme.of(context).accentColor, borderWidth: 2,),
+                              ),
+                            ),
+                          ],
                         ),
+                      ),
+                      Positioned(
+                        top: MediaQuery.of(context).size.height*0.26,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Row(
+                          children: [
+                            Expanded(child: Text("${currentUser.name!}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center)),
+                          ],
+                        ),
+                      ),
+                    ]
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.04),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          type: PageTransitionType.bottomToTop,
+                          child: MyCalendarWidget(
+                            brandID: currentBrand.id!,
+                          )
+                      )
+                  );
+                },
+                child: Stack(
+                  alignment: Alignment.bottomLeft,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.90,
+                      height: MediaQuery.of(context).size.height * 0.20,
+                      decoration: new BoxDecoration(
+                        color: Colors.black,
+                        border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                        borderRadius: new BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
+                        image: new DecorationImage(
+                          fit: BoxFit.cover,
+                          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                          image: Image.asset(Constants.mySessionsImage).image,
+                        ),
+                      ),
+                      child: Center(),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(AppLocalizations.of(context)!.mySchedule, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                          Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          type: PageTransitionType.bottomToTop,
+                          child: CalendarWidgetTrainer(
+                            brandID: currentBrand.id!,
+                            canEdit: true,
+                          )
+                      )
+                  );
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.90,
+                  height: MediaQuery.of(context).size.height * 0.08,
+                  decoration: new BoxDecoration(
+                    color: Theme.of(context).accentColor,
+                    border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                    borderRadius: new BorderRadius.all(
+                      const Radius.circular(10.0),
+                    ),
+                  ),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.add, color: Colors.white, size: 30,),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                        Text(AppLocalizations.of(context)!.planSessions, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w600)),
                       ],
                     ),
                   ),
                 ),
-                new Container(
-                  //padding: EdgeInsets.only(top: 25.0, bottom: 25.0, right: 25.0, left: 25.0),
-                  child: new Column(
-                    children: [
-                      Text("${currentUser.name}", style: Styles.purpleTextStyle.copyWith(fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
-                      Padding(
-                        padding: const EdgeInsets.only(top:20.0, bottom: 10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(AppLocalizations.of(context)!.memberSince(currentUser.dateJoined!), style: Styles.purpleTextStyle.copyWith(fontSize: 16)),
-                          ],
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.04),
+              GestureDetector(
+                onTap: () {
+
+                },
+                child: Stack(
+                  alignment: Alignment.bottomLeft,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.90,
+                      height: MediaQuery.of(context).size.height * 0.20,
+                      decoration: new BoxDecoration(
+                        color: Colors.black,
+                        border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                        borderRadius: new BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
+                        image: new DecorationImage(
+                          fit: BoxFit.cover,
+                          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                          image: Image.asset(Constants.myProgressImage).image,
                         ),
                       ),
-                      currentUser.brandID != "null" ? Container(
-                        padding: EdgeInsets.all(0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(currentUser.isTrainer! ? AppLocalizations.of(context)!.trainerOf : AppLocalizations.of(context)!.clientOf, style: Styles.purpleTextStyle.copyWith(fontSize: 16)),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 5),
-                              child: Text(currentBrand.name!, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold,)),
-                            ),
-                            CircularImage(size: MediaQuery.of(context).size.height * 0.07, image: currentBrand.logoUrl, borderWidth: 1.5,),
-                          ],
-                        ),
-                      ) : Container(
-                        padding: EdgeInsets.all(0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(AppLocalizations.of(context)!.notInBrand, style: Styles.purpleTextStyle.copyWith(fontSize: 16)),
-                          ],
-                        ),
+                      child: Center(),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(AppLocalizations.of(context)!.myProgress, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                          Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            ],
+          ),
+        ),
       );
+
   }
 
   @override
@@ -428,3 +381,274 @@ class _PerfilState extends State<Perfil> {
   }
 
 }
+
+/*
+ Padding(
+                padding: const EdgeInsets.all(0),
+                child: new Container(
+                  height: MediaQuery.of(context).size.height*0.40,
+                  //padding: EdgeInsets.only(top: 25.0, bottom: 25.0, right: 25.0, left: 25.0),
+                  child: new Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        height: MediaQuery.of(context).size.height*0.40,
+                        child: new Stack(
+                            alignment: Alignment.center,
+                            //fit: StackFit.,
+                            children: <Widget>[
+                              Positioned(
+                                top: 0,
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    GestureDetector(
+                                      child: Container(
+                                        child: Center(
+                                          child: isLoading ?
+                                          CircularProgressIndicator() :
+                                          CircularImage(size: MediaQuery.of(context).size.height * 0.22, image: currentUser.imageUrl, file: _image, color: Theme.of(context).accentColor, borderWidth: 1.5,),
+                                        ),
+                                      ),
+                                      onTap: () async {
+                                        getImage();
+                                        setState(() {});
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              // Logos Flotants
+                              // Perfil Adalt Esquerra
+                              Positioned(
+                                  top: 0,
+                                  bottom: MediaQuery.of(context).size.height*0.25,
+                                  left: 0,
+                                  right: MediaQuery.of(context).size.width*0.60,
+                                  child: new Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      OutlinedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            _statusButtons[0] = !_statusButtons[0];
+                                            _showPerfiClientModals(0);
+                                          });
+                                        },
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon( Icons.person, color: Colors.white, size: _iconSize,),
+                                          ],
+                                        ),
+                                        style: OutlinedButton.styleFrom(
+                                          backgroundColor: Theme.of(context).accentColor,
+                                          //backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
+                                          elevation: 5,
+                                          shape: CircleBorder(),
+                                          padding: EdgeInsets.all(_globusSize),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                              // Ajustes Adalt Dreta
+                              Positioned(
+                                  top: 0,
+                                  bottom: MediaQuery.of(context).size.height*0.25,
+                                  left: MediaQuery.of(context).size.width*0.60,
+                                  right: 0,
+                                  child: new Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      OutlinedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            _statusButtons[1] = !_statusButtons[1];
+                                            _showPerfiClientModals(1);
+                                          });
+                                        },
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.settings, color: Colors.white, size: _iconSize,), // icon
+                                          ],
+                                        ),
+                                        style: OutlinedButton.styleFrom(
+                                          backgroundColor: Theme.of(context).accentColor,
+                                          //backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
+                                          elevation: 5,
+                                          shape: CircleBorder(),
+                                          padding: EdgeInsets.all(_globusSize),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                              // Feedback Abaix Esquerra
+                              Positioned(
+                                  top: MediaQuery.of(context).size.height*0.25,
+                                  bottom: 0,
+                                  left: 0,
+                                  right: MediaQuery.of(context).size.width*0.60,
+                                  child: new Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      OutlinedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            _statusButtons[2] = !_statusButtons[2];
+                                            _showPerfiClientModals(2);
+                                          });
+                                        },
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.help_outline, color: Colors.white, size: _iconSize,), // icon
+                                          ],
+                                        ),
+                                        style: OutlinedButton.styleFrom(
+                                          backgroundColor: Theme.of(context).accentColor,
+                                          //backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
+                                          elevation: 5,
+                                          shape: CircleBorder(),
+                                          padding: EdgeInsets.all(_globusSize),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                              // Bug Abaix Dreta
+                              Positioned(
+                                  top: MediaQuery.of(context).size.height*0.25,
+                                  bottom: 0,
+                                  left: MediaQuery.of(context).size.width*0.60,
+                                  right: 0,
+                                  child: new Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      OutlinedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            _statusButtons[3] = !_statusButtons[3];
+                                            _showPerfiClientModals(3);
+                                          });
+                                        },
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.report_problem_outlined, color: Colors.white, size: _iconSize,), // icon
+                                          ],
+                                        ),
+                                        style: OutlinedButton.styleFrom(
+                                          backgroundColor: Theme.of(context).accentColor,
+                                          //backgroundColor: !_statusButtons[0] ? Theme.of(context).primaryColor : Theme.of(context).primaryColorLight,
+                                          elevation: 5,
+                                          shape: CircleBorder(),
+                                          padding: EdgeInsets.all(_globusSize),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                            ]),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              new Container(
+                //padding: EdgeInsets.only(top: 25.0, bottom: 25.0, right: 25.0, left: 25.0),
+                child: new Column(
+                  children: [
+                    Text("${currentUser.name}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).accentColor, fontWeight: FontWeight.bold, fontSize: 26), textAlign: TextAlign.center,),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: NumbersWidget(),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top:20.0, bottom: 10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(AppLocalizations.of(context)!.memberSince(currentUser.dateJoined!), style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16)),
+                        ],
+                      ),
+                    ),
+                    currentUser.brandID != "null" ? Container(
+                      padding: EdgeInsets.all(0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(currentUser.isTrainer! ? AppLocalizations.of(context)!.trainerOf : AppLocalizations.of(context)!.clientOf, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16)),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, fontWeight: FontWeight.bold)),
+                          ),
+                          //CircularImage(size: MediaQuery.of(context).size.height * 0.07, image: currentBrand.logoUrl, borderWidth: 1.5, color: Theme.of(context).accentColor,),
+                        ],
+                      ),
+                    ) : Container(
+                      padding: EdgeInsets.all(0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(AppLocalizations.of(context)!.notInBrand, style: Styles.purpleTextStyle.copyWith(fontSize: 16)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+ */
+
+class NumbersWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      buildButton(context, '4.8', 'Ranking'),
+      buildDivider(context),
+      buildButton(context, '35', 'Following'),
+      buildDivider(context),
+      buildButton(context, '50', 'Followers'),
+    ],
+  );
+
+  Widget buildDivider(BuildContext context) => Container(
+    height: 24,
+    child: VerticalDivider(color: Theme.of(context).primaryColor,),
+  );
+
+  Widget buildButton(BuildContext context, String value, String text) =>
+      MaterialButton(
+        padding: EdgeInsets.symmetric(vertical: 4),
+        onPressed: () {},
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              value,
+              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24),
+            ),
+            SizedBox(height: 2),
+            Text(
+              text,
+              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+          ],
+        ),
+      );
+}
+

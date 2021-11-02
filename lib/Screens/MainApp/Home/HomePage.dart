@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
-import 'ChildWidget.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'Chat/Chat.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'Marca/Marca.dart';
+import 'Perfil/Perfil.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
@@ -25,14 +25,6 @@ class _HomePageState extends State<HomePage> {
   bool isLoading = false;
   // Index of Bottom Navigation Bar
   int _currentIndex = 1;
-  // Page Controller
-  PageController _pageController = PageController(
-    initialPage: 1,
-  );
-  // Child widget for the Page controller.
-  Widget childWidget = ChildWidget(
-    number: AvailableNumber.Second,
-  );
 
   @override
   void initState() {
@@ -51,77 +43,68 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final items = <Widget>[
-      Icon(Icons.person, color: Styles.white, size: 33,),
-      Icon(Icons.fitness_center_rounded, color: Styles.white, size: 33,),
-      Icon(Icons.chat, color: Styles.white, size: 33,),
+    final navBarTabs = [
+      Perfil(),
+      Marca(),
+      Chat(),
     ];
     return Scaffold(
-          appBar: AppBar(
-            title: Image.asset(
-              Constants.logoExtended,
-              fit: BoxFit.contain,
-              height: 32,
-            ),
-            centerTitle: true,
-            elevation: 8,
-            automaticallyImplyLeading: false,
+      appBar: null,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        iconSize: 30,
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: AppLocalizations.of(context)!.profileBottomNav,
+            //backgroundColor: Theme.of(context).primaryColor,
           ),
-          body: Stack(
-            children: [
-              Container(
-                color: Colors.transparent,
-              ),
-              Align(
-                alignment: Alignment.topCenter,
-                child: PageView(
-                  controller: _pageController,
-                  onPageChanged: (page) {
-                    setState(() {
-                      _currentIndex = page;
-                    });
-                  },
-                  children: <Widget>[
-                    ChildWidget(number: AvailableNumber.First),
-                    ChildWidget(number: AvailableNumber.Second),
-                    ChildWidget(number: AvailableNumber.Third),
-                  ],
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: CurvedNavigationBar(
-                  index: _currentIndex,
-                  color: Styles.mainColor,
-                  backgroundColor: Colors.transparent,
-                  animationCurve: Curves.easeInOut,
-                  animationDuration: Duration(milliseconds: 200),
-                  height: 60,
-                  items: items,
-                  onTap: (index) {
-                    _currentIndex = index;
-                    _pageController.animateToPage(
-                      index,
-                      duration: Duration(milliseconds: 200),
-                      curve: Curves.linear,
-                    );
-                    setState(() {});
-                  },
-                ),
-              ),
-            ]
+          BottomNavigationBarItem(
+            icon: Icon(Icons.fitness_center_rounded),
+            label: AppLocalizations.of(context)!.brandBottomNav,
+            backgroundColor: Theme.of(context).primaryColor,
           ),
-        );
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: AppLocalizations.of(context)!.chatBottomNav,
+            backgroundColor: Theme.of(context).primaryColor,
+          ),
+        ],
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        selectedItemColor: Theme.of(context).accentColor,
+        selectedLabelStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color:Theme.of(context).accentColor),
+        selectedIconTheme: IconThemeData(
+          color: Theme.of(context).accentColor
+        ),
+        unselectedItemColor: Colors.grey,
+        unselectedLabelStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.grey),
+        unselectedIconTheme: IconThemeData(
+            color: Colors.grey
+        ),
+      ),
+      body: navBarTabs[_currentIndex],
+    );
   }
 
   @override
   void dispose() {
-    _pageController.dispose();
     super.dispose();
   }
 }
 
 /*
+AppBar(
+        title: returnTitle(_currentIndex),
+        centerTitle: true,
+        shadowColor: Theme.of(context).scaffoldBackgroundColor,
+        automaticallyImplyLeading: false,
+      ),
+
+
 items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.person, color: Styles.white,),

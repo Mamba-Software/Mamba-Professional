@@ -31,8 +31,16 @@
   "@client":{
     "description": "Cliente Text"
   },
+  "clients": "Clientes",
+  "@client":{
+    "description": "Cliente Text"
+  },
   "trainer": "Entrenador",
   "@trainer":{
+    "description": "Entrenador Text"
+  },
+  "trainers": "Entrenadores",
+  "@trainers":{
     "description": "Entrenador Text"
   },
   "email": "Email",
@@ -281,6 +289,10 @@
   "@descriptionHint":{
     "description": "Descripción Text"
   },
+  "noDescription": "No se ha añadido ningna descripción",
+  "@noDescription":{
+    "description": "Descripción Text"
+  },
   "descriptionError": "Añade una descripción por favor",
   "@descriptionError":{
     "description": "Descripción Text"
@@ -350,6 +362,10 @@
   "@baseLocation":{
     "description": "baseLocation text"
   },
+  "location": "Ubicación",
+  "@location":{
+    "description": "baseLocation text"
+  },
   "baseLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor. En caso de no tener una dirección fija, introduce una ubicación utilizada frequentemente.",
   "@baseLocationDescription":{
     "description": "baseLocation text"
@@ -372,6 +388,10 @@
   },
   "clear": "Limpiar",
   "@clear":{
+    "description": "zipCode text"
+  },
+  "confirm": "Confirmar",
+  "@confirm":{
     "description": "zipCode text"
   },
   "back": "Atrás",
@@ -454,6 +474,18 @@
   "@delete":{
     "description": "notInBrand text"
   },
+  "edit": "Editar",
+  "@edit":{
+    "description": "notInBrand text"
+  },
+  "save": "Guardar",
+  "@save":{
+    "description": "notInBrand text"
+  },
+  "search": "Buscar",
+  "@search":{
+    "description": "notInBrand text"
+  },
   "cancel": "Cancelar",
   "@cancel":{
     "description": "Cancelar text"
@@ -474,12 +506,211 @@
   "@inviteCode":{
     "description": "inviteCode text"
   },
-  "copyCorrectCode": "Código de invitación copìado correctamente",
+  "copyCorrectCode": "Código de invitación copiado correctamente",
   "@copyCorrectCode":{
+    "description": "inviteCode text"
+  },
+  "copyCorrectLocation": "Ubicación copiada correctamente",
+  "@copyCorrectLocation":{
     "description": "inviteCode text"
   },
   "members": "Miembros",
   "@members":{
     "description": "Añadir Miembros text"
+  },
+  "mondayLetter": "L",
+  "@mondayLetter":{
+    "description": "mondayLetter text"
+  },
+  "tuesdarLetter": "M",
+  "@tuesdarLetter":{
+    "description": "tuesdarLetter text"
+  },
+  "wednesdayLetter": "M",
+  "@wednesdayLetter":{
+    "description": "tuesdarLetter text"
+  },
+  "thursdayLetter": "J",
+  "@thursdayLetter":{
+    "description": "tuesdarLetter text"
+  },
+  "fridayLetter": "V",
+  "@fridayLetter":{
+    "description": "tuesdarLetter text"
+  },
+  "saturadayLetter": "S",
+  "@saturadayLetter":{
+    "description": "tuesdarLetter text"
+  },
+  "sundayLetter": "D",
+  "@sundayLetter":{
+    "description": "tuesdarLetter text"
+  },
+  "errorDate": "Has introducido una fecha y hora inválida",
+  "@errorDate":{
+    "description": "tuesdarLetter text"
+  },
+  "recurrentEvent": "Evento recurrente",
+  "@recurrentEvent":{
+    "description": "tuesdarLetter text"
+  },
+  "selectDayTime": "Día y hora",
+  "@selectDayTime":{
+    "description": "tuesdarLetter text"
+  },
+  "selectDuration": "Duración",
+  "@selectDuration":{
+    "description": "tuesdarLetter text"
+  },
+  "selectMembers": "Número de asistentes",
+  "@selectMembers":{
+    "description": "tuesdarLetter text"
+  },
+  "days": "Días",
+  "@days":{
+    "description": "Días text"
+  },
+  "during": "Durante",
+  "@during":{
+    "description": "Días text"
+  },
+  "thisWeek": "Solo esta semana",
+  "@thisWeek":{
+    "description": "Días text"
+  },
+  "nextTwoWeek": "Dos semanas",
+  "@nextTwoWeek":{
+    "description": "Días text"
+  },
+  "wholeMonth": "Todo el mes",
+  "@wholeMonth":{
+    "description": "Días text"
+  },
+  "until": "Hasta el {date}",
+  "@until": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "addEvent": "Añadir evento",
+  "@addEvent":{
+    "description": "addEvent text"
+  },
+  "createEvent": "Crear evento",
+  "@createEvent":{
+    "description": "addEvent text"
+  },
+  "editEvent": "Editar evento",
+  "@editEvent":{
+    "description": "addEvent text"
+  },
+  "updateEvent": "Guardar evento",
+  "@updateEvent":{
+    "description": "addEvent text"
+  },
+  "deleteEventConfirmation": "¿Seguro que quieres eliminar este evento?",
+  "@deleteEventConfirmation":{
+    "description": "addEvent text"
+  },
+  "completeEventConfirmation": "¿Seguro que quieres marcar este evento como realizado? Esta acción no se podrá deshacer.",
+  "@completeEventConfirmation":{
+    "description": "addEvent text"
+  },
+  "maxNumberClients": "Número máximo de asistentes",
+  "@maxNumberClients":{
+    "description": "addEvent text"
+  },
+  "numberClientJoining": "Asistentes",
+  "@numberClientJoining":{
+    "description": "addEvent text"
+  },
+  "noClientJoining": "Sin asistentes",
+  "@noClientJoining":{
+    "description": "addEvent text"
+  },
+  "designatedTrainers": "Selecciona los entrenadores",
+  "@designatedTrainers":{
+    "description": "addEvent text"
+  },
+  "noTrainerSelectedError": "No hay ningún entrenador asignado",
+  "@noTrainerSelectedError":{
+    "description": "noTrainerSelectedError text"
+  },
+  "totalNumberEvents": "Sesiones realizadas: {number}",
+  "@totalNumberEvents": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "noTrainingsDone": "Este usuario no ha participado en ningún evento",
+  "@noTrainingsDone": {
+    "description": "Wellcome message"
+  },
+  "todaysBrandEvents": "Previsto para hoy",
+  "@todaysBrandEvents": {
+    "description": "Wellcome message"
+  },
+  "finished": "Realizado",
+  "@finished": {
+    "description": "Wellcome message"
+  },
+  "today": "Hoy {date}",
+  "@today": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "full": "Lleno",
+  "@full": {
+    "description": "Wellcome message"
+  },
+  "available": "Disponible",
+  "@available": {
+    "description": "Wellcome message"
+  },
+  "noEvents": "Sin eventos",
+  "@noEvents": {
+    "description": "Wellcome message"
+  },
+  "myLocations": "Mis ubicaciones",
+  "@myLocations": {
+    "description": "Wellcome message"
+  },
+  "addLocation": "Añadir ubicación",
+  "@addLocation": {
+    "description": "Wellcome message"
+  },
+  "historial": "Historial",
+  "@historial": {
+    "description": "Wellcome message"
+  },
+  "notifications": "Notificaciones",
+  "@notifications": {
+    "description": "Wellcome message"
+  },
+  "mySessions": "Mis sesiones",
+  "@mySessions": {
+    "description": "Wellcome message"
+  },
+  "mySchedule": "Mi agenda",
+  "@mySchedule": {
+    "description": "Wellcome message"
+  },
+  "planSessions": "Planifica más sesiones",
+  "@planSessions": {
+    "description": "Wellcome message"
+  },
+  "myProgress": "Control y seguimiento",
+  "@myProgress": {
+    "description": "Wellcome message"
   }
 }

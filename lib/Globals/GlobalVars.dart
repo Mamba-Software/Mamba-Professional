@@ -6,7 +6,8 @@ import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 // API Keys
-var placesAPI = "AIzaSyBjUcoI0sYFY9H8mb2n0IoBv26GxnPTRgs";
+var placesAPIAndroid = "AIzaSyBjUcoI0sYFY9H8mb2n0IoBv26GxnPTRgs";
+var placesAPIIOS = "AIzaSyAYFglgzIMLYXB9XQPaZ977MKUMseCJCvY";
 
 // User & Brand Global Variables
 var currentUser = Usuario();
@@ -15,7 +16,3 @@ var currentBrand = Brand();
 // Current User Location
 Position? currentPosition;
 String? currentAddress;
-
-// Global All Events
-var allEvents = <Event>[];
-List<Appointment> allAppointments = <Appointment>[];

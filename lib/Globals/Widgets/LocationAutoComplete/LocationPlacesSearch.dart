@@ -8,17 +8,19 @@ class Place {
   String? street;
   String? city;
   String? zipCode;
+  String? fullAddress;
 
   Place({
     this.streetNumber,
     this.street,
     this.city,
     this.zipCode,
+    this.fullAddress,
   });
 
   @override
   String toString() {
-    return 'Place(streetNumber: $streetNumber, street: $street, city: $city, zipCode: $zipCode)';
+    return 'Place(streetNumber: $streetNumber, street: $street, city: $city, zipCode: $zipCode, fullAddress: $fullAddress)';
   }
 }
 
@@ -38,8 +40,8 @@ class LocationPlacesSearch {
 
   LocationPlacesSearch();
 
-  static final String androidKey = placesAPI;
-  static final String iosKey = 'YOUR_API_KEY_HERE';
+  static final String androidKey = placesAPIAndroid;
+  static final String iosKey = placesAPIIOS;
   final apiKey = Platform.isAndroid ? androidKey : iosKey;
 
   Future<List<Suggestion>> fetchSuggestions(String input) async {
@@ -71,7 +73,6 @@ class LocationPlacesSearch {
 
     if (response.statusCode == 200) {
       final result = json.decode(response.body);
-
       if (result['status'] == 'OK') {
         final components =
         result['result']['address_components'] as List<dynamic>;
@@ -79,17 +80,21 @@ class LocationPlacesSearch {
         final place = Place();
         components.forEach((c) {
           final List type = c['types'];
-          if (type.contains('street_number')) {
-            place.streetNumber = c['long_name'];
-          }
           if (type.contains('route')) {
             place.street = c['long_name'];
+            place.fullAddress = "${c['long_name']},";
+          }
+          if (type.contains('street_number')) {
+            place.streetNumber = c['long_name'];
+            place.fullAddress = "${place.fullAddress} ${c['long_name']},";
           }
           if (type.contains('locality')) {
             place.city = c['long_name'];
+            place.fullAddress = "${place.fullAddress} ${c['long_name']},";
           }
           if (type.contains('postal_code')) {
             place.zipCode = c['long_name'];
+            place.fullAddress = "${place.fullAddress} ${c['long_name']}";
           }
         });
         return place;

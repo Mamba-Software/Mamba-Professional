@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
@@ -15,6 +16,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+    systemNavigationBarColor: Colors.black,
+    systemNavigationBarIconBrightness: Brightness.light,
+  ));
   runApp(
     MultiProvider(
       providers: [
@@ -36,7 +44,7 @@ class Mamba extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: Constants.appName,
-            theme: Styles.appTheme,
+            theme: Styles.lightTheme,
             locale: language.idioma,
             supportedLocales: Idiomas.all,
             localizationsDelegates: [

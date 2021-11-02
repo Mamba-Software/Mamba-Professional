@@ -6,9 +6,21 @@ class Constants {
   // Constant Assets
   static String logoExtended = "assets/images/ExtendedWhite.png";
   static String logoExtendedYellow = "assets/images/ExtendedYellow.png";
+  static String logoExtendedPurple = "assets/images/ExtendedPurple.png";
   static String logoSimple = "assets/images/SimpleWhite.png";
   static String logoSimpleYellow = "assets/images/SimpleYellow.png";
   static String logoSimplePurple = "assets/images/SimplePurple.png";
   static String fotoPerfil = "assets/images/as.png";
+  static String chatImage = "assets/images/chatImage.png";
+  static String emptyCalendar = "assets/images/emptyCalendar.png";
+  static String emptyPeople = "assets/images/emptyPeople.png";
+  static String eventBackground = "assets/images/Eventbackground.jpg";
+  static String locationImage = "assets/images/locationImage.png";
+  static String teamImage = "assets/images/teamImage.jpg";
+  static String statisticsImage = "assets/images/statisticsImage.jpg";
+  static String calendarImage = "assets/images/calendarImage.jpg";
+  static String notificationImage = "assets/images/notificationImage.jpg";
+  static String mySessionsImage = "assets/images/mySessionsImage.jpg";
+  static String myProgressImage = "assets/images/myProgressImage.jpg";
 
 }

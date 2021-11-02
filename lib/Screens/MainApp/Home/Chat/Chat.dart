@@ -1,5 +1,7 @@
 // Flutter Libs
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 
 class Chat extends StatefulWidget {
@@ -12,8 +14,22 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: LoadingViewPurple(),
-    );
+    return Stack(
+        children: <Widget>[
+          Center(
+            child: Container(
+                width: 300,
+                height: 300,
+                child: Image.asset(Constants.chatImage)
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 200.0),
+              child: Text("¡No has empezado ningún chat!", style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080)), textAlign: TextAlign.center,),
+            )
+          ),
+        ],
+      );
   }
 }
