@@ -14,6 +14,13 @@ class Constants {
   static String chatImage = "assets/images/chatImage.png";
   static String emptyCalendar = "assets/images/emptyCalendar.png";
   static String emptyPeople = "assets/images/emptyPeople.png";
+  static String eventBackground = "assets/images/Eventbackground.jpg";
   static String locationImage = "assets/images/locationImage.png";
+  static String teamImage = "assets/images/teamImage.jpg";
+  static String statisticsImage = "assets/images/statisticsImage.jpg";
+  static String calendarImage = "assets/images/calendarImage.jpg";
+  static String notificationImage = "assets/images/notificationImage.jpg";
+  static String mySessionsImage = "assets/images/mySessionsImage.jpg";
+  static String myProgressImage = "assets/images/myProgressImage.jpg";
 
 }

@@ -19,9 +19,9 @@ void main() async {
   SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.light,
-    systemNavigationBarColor: Colors.transparent,
-    systemNavigationBarIconBrightness: Brightness.dark,
+    statusBarIconBrightness: Brightness.dark,
+    systemNavigationBarColor: Colors.black,
+    systemNavigationBarIconBrightness: Brightness.light,
   ));
   runApp(
     MultiProvider(

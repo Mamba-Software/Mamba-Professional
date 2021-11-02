@@ -274,7 +274,7 @@ class BrandList extends StatelessWidget {
 }
 
 
-class BrandTile extends StatelessWidget{
+class BrandTile extends StatelessWidget {
   final Brand brand;
   BrandTile(this.brand);
 

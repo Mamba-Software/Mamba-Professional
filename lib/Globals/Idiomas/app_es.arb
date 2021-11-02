@@ -31,8 +31,16 @@
   "@client":{
     "description": "Cliente Text"
   },
+  "clients": "Clientes",
+  "@client":{
+    "description": "Cliente Text"
+  },
   "trainer": "Entrenador",
   "@trainer":{
+    "description": "Entrenador Text"
+  },
+  "trainers": "Entrenadores",
+  "@trainers":{
     "description": "Entrenador Text"
   },
   "email": "Email",
@@ -281,6 +289,10 @@
   "@descriptionHint":{
     "description": "Descripción Text"
   },
+  "noDescription": "No se ha añadido ningna descripción",
+  "@noDescription":{
+    "description": "Descripción Text"
+  },
   "descriptionError": "Añade una descripción por favor",
   "@descriptionError":{
     "description": "Descripción Text"
@@ -378,6 +390,10 @@
   "@clear":{
     "description": "zipCode text"
   },
+  "confirm": "Confirmar",
+  "@confirm":{
+    "description": "zipCode text"
+  },
   "back": "Atrás",
   "@back":{
     "description": "zipCode text"
@@ -462,6 +478,14 @@
   "@edit":{
     "description": "notInBrand text"
   },
+  "save": "Guardar",
+  "@save":{
+    "description": "notInBrand text"
+  },
+  "search": "Buscar",
+  "@search":{
+    "description": "notInBrand text"
+  },
   "cancel": "Cancelar",
   "@cancel":{
     "description": "Cancelar text"
@@ -482,11 +506,11 @@
   "@inviteCode":{
     "description": "inviteCode text"
   },
-  "copyCorrectCode": "Código de invitación copìado correctamente",
+  "copyCorrectCode": "Código de invitación copiado correctamente",
   "@copyCorrectCode":{
     "description": "inviteCode text"
   },
-  "copyCorrectLocation": "Ubicaión copiada correctamente",
+  "copyCorrectLocation": "Ubicación copiada correctamente",
   "@copyCorrectLocation":{
     "description": "inviteCode text"
   },
@@ -591,6 +615,10 @@
   "@deleteEventConfirmation":{
     "description": "addEvent text"
   },
+  "completeEventConfirmation": "¿Seguro que quieres marcar este evento como realizado? Esta acción no se podrá deshacer.",
+  "@completeEventConfirmation":{
+    "description": "addEvent text"
+  },
   "maxNumberClients": "Número máximo de asistentes",
   "@maxNumberClients":{
     "description": "addEvent text"
@@ -603,12 +631,86 @@
   "@noClientJoining":{
     "description": "addEvent text"
   },
-  "designatedTrainers": "Entrenadores asignados",
+  "designatedTrainers": "Selecciona los entrenadores",
   "@designatedTrainers":{
     "description": "addEvent text"
   },
   "noTrainerSelectedError": "No hay ningún entrenador asignado",
   "@noTrainerSelectedError":{
     "description": "noTrainerSelectedError text"
+  },
+  "totalNumberEvents": "Sesiones realizadas: {number}",
+  "@totalNumberEvents": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "noTrainingsDone": "Este usuario no ha participado en ningún evento",
+  "@noTrainingsDone": {
+    "description": "Wellcome message"
+  },
+  "todaysBrandEvents": "Previsto para hoy",
+  "@todaysBrandEvents": {
+    "description": "Wellcome message"
+  },
+  "finished": "Realizado",
+  "@finished": {
+    "description": "Wellcome message"
+  },
+  "today": "Hoy {date}",
+  "@today": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "full": "Lleno",
+  "@full": {
+    "description": "Wellcome message"
+  },
+  "available": "Disponible",
+  "@available": {
+    "description": "Wellcome message"
+  },
+  "noEvents": "Sin eventos",
+  "@noEvents": {
+    "description": "Wellcome message"
+  },
+  "myLocations": "Mis ubicaciones",
+  "@myLocations": {
+    "description": "Wellcome message"
+  },
+  "addLocation": "Añadir ubicación",
+  "@addLocation": {
+    "description": "Wellcome message"
+  },
+  "historial": "Historial",
+  "@historial": {
+    "description": "Wellcome message"
+  },
+  "notifications": "Notificaciones",
+  "@notifications": {
+    "description": "Wellcome message"
+  },
+  "mySessions": "Mis sesiones",
+  "@mySessions": {
+    "description": "Wellcome message"
+  },
+  "mySchedule": "Mi agenda",
+  "@mySchedule": {
+    "description": "Wellcome message"
+  },
+  "planSessions": "Planifica más sesiones",
+  "@planSessions": {
+    "description": "Wellcome message"
+  },
+  "myProgress": "Control y seguimiento",
+  "@myProgress": {
+    "description": "Wellcome message"
   }
 }

@@ -10,7 +10,7 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/InformationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/InformationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
@@ -631,7 +631,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                       mainAxisSize: MainAxisSize.max,
                                       children: <Widget>[
                                         Container(
-                                          width: MediaQuery.of(context).size.width * 0.52,
+                                          width: MediaQuery.of(context).size.width * 0.53,
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             mainAxisSize: MainAxisSize.max,
@@ -736,7 +736,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
                                               Container(
-                                                width: MediaQuery.of(context).size.width * 0.52,
+                                                width: MediaQuery.of(context).size.width * 0.53,
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   mainAxisSize: MainAxisSize.max,

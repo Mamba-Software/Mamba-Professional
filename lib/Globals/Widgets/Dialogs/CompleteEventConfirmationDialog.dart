@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../Styles.dart';
+import '../../Styles.dart';
 
-class DeleteConfirmationDialog extends StatelessWidget {
+class CompleteEventConfirmationDialog extends StatelessWidget {
   final String text;
-  const DeleteConfirmationDialog({Key? key, required this.text}) : super(key: key);
+  const CompleteEventConfirmationDialog({Key? key, required this.text}) : super(key: key);
 
 
   @override
@@ -27,21 +27,21 @@ class DeleteConfirmationDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
-                  child: Flexible(
-                    child: Text(text, style: Styles.purpleTextStyle.copyWith(fontSize: 16, height: 1.5), textAlign: TextAlign.center,),
+                Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
+                      child: Text(text, style: Styles.purpleTextStyle.copyWith(fontSize: 16, height: 1.5), textAlign: TextAlign.center,),
+                    ),
                   ),
-                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       FloatingActionButton.extended(
-                        label: Text(AppLocalizations.of(context)!.delete),
-                        icon: Icon(Icons.delete_outline),
-                        backgroundColor: Colors.red,
+                        label: Text(AppLocalizations.of(context)!.confirm),
+                        icon: Icon(Icons.done_outline),
+                        backgroundColor: Colors.green,
                         foregroundColor: Styles.white,
                         onPressed: () {
                           Navigator.pop(context, true);
@@ -67,14 +67,14 @@ class DeleteConfirmationDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox.fromSize(
-                      size: Size(70, 70), // button width and height
+                      size: Size(80, 80), // button width and height
                       child: ClipOval(
                         child: Material(
-                          color: Colors.red, // button color
+                          color: Colors.green, // button color
                           child: InkWell(
                             onTap: () async {
                             },
-                            child: Icon(Icons.priority_high, color: Colors.white, size: 45,), // icon
+                            child: Icon(Icons.event_available, color: Colors.white, size: 45,), // icon
                           ),
                         ),
                       ),

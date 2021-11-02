@@ -4,7 +4,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
-import 'Client/MarcaClient.dart';
+import 'Client/SinMarcaClient.dart';
 import 'Trainer/MarcaTrainer.dart';
 import 'Trainer/SinMarca/SinMarcaTrainer.dart';
 
@@ -28,7 +28,6 @@ class _MarcaState extends State<Marca> {
     return currentUser.isTrainer! ?
         MarcaTrainer()
           :
-        MarcaClient()
-      ;
+        SinMarcaClient();
   }
 }

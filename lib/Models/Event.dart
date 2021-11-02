@@ -17,7 +17,7 @@ class Event {
   int? maxMembers;
   var joinedMembers;
   var selectedTrainers;
-  //var assignedTrainers;
+  bool? isCompleted;
 
   Event({
     this.id,
@@ -35,6 +35,7 @@ class Event {
     this.maxMembers,
     this.joinedMembers,
     this.selectedTrainers,
+    this.isCompleted,
   });
 
   Event.fromMap(Map<String, dynamic> mapData, String documentId) {
@@ -53,6 +54,7 @@ class Event {
     this.maxMembers = mapData['maxMembers'];
     this.joinedMembers = mapData['joinedMembers'];
     this.selectedTrainers = mapData['selectedTrainers'];
+    this.isCompleted = mapData['isCompleted'];
   }
 
 
@@ -72,5 +74,6 @@ class Event {
     this.maxMembers = documentSnapshot.get("maxMembers");
     this.joinedMembers = documentSnapshot.get("joinedMembers");
     this.selectedTrainers = documentSnapshot.get("selectedTrainers");
+    this.isCompleted = documentSnapshot.get("isCompleted");
   }
 }

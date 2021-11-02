@@ -13,7 +13,7 @@ class LoadingViewPurple extends StatelessWidget {
             width: MediaQuery.of(context).size.width * 0.14,
             height: MediaQuery.of(context).size.height * 0.07,
             child: CircularProgressIndicator(
-              color: Styles.accent,
+              color: Theme.of(context).accentColor,
             ),
           ),
         ),
@@ -22,7 +22,7 @@ class LoadingViewPurple extends StatelessWidget {
             width: MediaQuery.of(context).size.width * 0.07,
             height: MediaQuery.of(context).size.height * 0.07,
             child: Image(
-                  image: AssetImage(Constants.logoSimplePurple)
+                  image: AssetImage(Constants.logoSimpleYellow)
               ),
             ),
           ),

@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
+import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:uuid/uuid.dart';
 
@@ -30,7 +31,7 @@ class FirebaseDatabaseService {
       //if (authResult.user!.emailVerified) return 0;
       //else return -2;
     //}
-    else return -1;
+    else return 0;
   }
   Future<void> signOut() async {
     return await _auth.signOut();
@@ -74,6 +75,10 @@ class FirebaseDatabaseService {
   Future<Usuario> getCurrentUserDetails() async {
     User? currentUser = await getCurrentUser();
     DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Users").doc(currentUser!.uid).get();
+    return Usuario.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+  }
+  Future<Usuario> getUserDetails(String uid) async {
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Users").doc(uid).get();
     return Usuario.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
   // User Model Services
@@ -248,7 +253,7 @@ class FirebaseDatabaseService {
     return result;
   }
 
-  Future<Brand> getCurrentBrandDetails(String brandID) async {
+  Future<Brand> getBrandDetails(String brandID) async {
     DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Brands").doc(brandID).get();
     return Brand.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
@@ -308,6 +313,7 @@ class FirebaseDatabaseService {
         "maxMembers": maxMembers,
         "joinedMembers": [],
         "selectedTrainers": selectedTrainers,
+        "isCompleted": false,
       });
       return eventID;
     } catch (e) {
@@ -320,6 +326,54 @@ class FirebaseDatabaseService {
     DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Events").doc(id).get();
     return Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
+  // Get All Events for Client
+  Future<List<Event>> getAllEventsFromClient(String clientid) async {
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Events")
+        //.orderBy("year", descending: true)
+        //.orderBy("month", descending: true)
+        //.orderBy("day", descending: true)
+        .where("joinedMembers", arrayContains: clientid)
+        .get();
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return events;
+  }
+  // Get All Events for Trainer
+  Future<List<Event>> getAllEventsFromTrainer(String trainerid) async {
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Events")
+        .orderBy("year", descending: true)
+        .orderBy("month", descending: true)
+        .orderBy("day", descending: true)
+        .where("selectedTrainers", arrayContains: trainerid)
+        .get();
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return events;
+  }
+  // Get All Events for Today of Brand
+  Future<List<Event>> getAllEventsTodayBrand(String brandId) async {
+    DateTime today = DateTime.now();
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Events")
+        .where("year", isEqualTo: today.year.toString())
+        .where("month", isEqualTo: today.month.toString())
+        .where("day", isEqualTo: today.day.toString())
+        .where("brandID", isEqualTo: brandId)
+        .orderBy("hour", descending: false)
+        .get();
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return events;
+  }
+
   // Delete Event
   Future<void> deleteEvent(String id) async {
     try {
@@ -343,15 +397,60 @@ class FirebaseDatabaseService {
         "duration": duration,
         "placeId": placeId,
         "maxMembers": maxMembers,
-        "joinedMembers": [],
         "selectedTrainers": selectedTrainers,
       });
     } catch (e) {
       print(e.toString());
     }
   }
+  // Update Event Is Completed
+  Future<void> updateEventCompleted(String id) async {
+    await _firestore.collection("Events").doc(id).update({
+      "isCompleted": true,
+    });
+  }
+
   // Update Event Participants
   // Update Event Trainers
+
+  // Locations
+
+  // Add Location
+  Future<bool> addLocation(String brandId, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) async {
+    var uid = Uuid().v1();
+    try {
+      await _firestore.collection("Locations").doc(uid).set({
+        "brandID": brandId,
+        "placeId": placeId,
+        "descripcion": description,
+        "street": street,
+        "streetNumber": streetNumber,
+        "city": city,
+        "zipCode": zipCode,
+        "latitude": latitude,
+        "longitude": longitude
+      });
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+  // Delete Location
+  Future<bool> deleteLocation(String locationId) async {
+    try {
+      await _firestore.collection("Locations").doc(locationId).delete();
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+  // Get Single Location
+  Future<Location> getSingleLocation(String locationId) async {
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Locations").doc(locationId).get();
+    return Location.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+  }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // STREAMS
@@ -362,16 +461,45 @@ class FirebaseDatabaseService {
   }
 
   // Events
-    Stream<DocumentSnapshot> getSingleEventStream(String eid) {
+  Stream<DocumentSnapshot> getSingleEventStream(String eid) {
+  return _firestore.collection("Events")
+      .doc(eid)
+      .snapshots();
+  }
+  Stream<QuerySnapshot> getAllEventsFromBrand(String brandid) {
     return _firestore.collection("Events")
-        .doc(eid)
+        .where("brandID", isEqualTo: brandid)
         .snapshots();
   }
-
-  Stream<QuerySnapshot> getAllEventsFromBrand() {
-    return _firestore.collection("Events")
-        .where("brandID", isEqualTo: currentBrand.id)
+  Stream<QuerySnapshot> getAllEventsTodayBrandStream(String brandId) {
+    DateTime today = DateTime.now();
+    return _firestore
+        .collection("Events")
+        .where("year", isEqualTo: today.year.toString())
+        .where("month", isEqualTo: today.month.toString())
+        .where("day", isEqualTo: today.day.toString())
+        .where("brandID", isEqualTo: brandId)
+        .orderBy("hour", descending: false)
         .snapshots();
+  }
+  Stream<QuerySnapshot> getAllEventsFromUser(String userid, bool isTrainer) {
+    if (isTrainer) {
+      return _firestore
+          .collection("Events")
+          .where("selectedTrainers", arrayContains: userid)
+          .orderBy("year", descending: true)
+          .orderBy("month", descending: true)
+          .orderBy("day", descending: true)
+          .snapshots();
+    } else {
+      return _firestore
+          .collection("Events")
+          .where("joinedMembers", arrayContains: userid)
+          .orderBy("year", descending: false)
+          .orderBy("month", descending: false)
+          .orderBy("day", descending: false)
+          .snapshots();
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

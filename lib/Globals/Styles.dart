@@ -29,7 +29,7 @@ class Styles {
   // Theme Data
   static ThemeData lightTheme = ThemeData(
     // Primary Colors
-    primaryColor: blue,
+    primaryColor: Colors.black,
     primaryColorLight: lightBlue,
     accentColor:  amber,
     // BackGround Colors
@@ -39,7 +39,7 @@ class Styles {
     brightness: Brightness.light,
     // Texts
     textTheme: TextTheme(
-      headline1: TextStyle(color: blue, fontSize: 22),
+      headline1: TextStyle(color: Colors.black, fontSize: 22),
       subtitle1: TextStyle(color: grey, fontSize: 16),
     ),
     fontFamily: "Helvetica",
@@ -47,11 +47,11 @@ class Styles {
       elevation: 4.0,
       backgroundColor: white,
       iconTheme: IconThemeData(
-        color: blue
+        color: Colors.black
       ),
       titleTextStyle: TextStyle(
         fontFamily: "Helvetica",
-        color: blue,
+        color: Colors.black,
         fontSize: 22.0,
         fontWeight: FontWeight.w800,
       ),
@@ -66,7 +66,7 @@ class Styles {
   );
 
   // Text Style
-  static TextStyle purpleTextStyle = TextStyle(color: accent, fontSize: 18);
+  static TextStyle purpleTextStyle = TextStyle(color: Colors.black, fontSize: 18);
   static const whiteTextStyle = TextStyle(color: white, fontSize: 18);
   static const redTextStyle = TextStyle(color: red, fontSize: 20);
 

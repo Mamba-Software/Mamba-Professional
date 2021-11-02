@@ -42,6 +42,7 @@ dependencies:
   syncfusion_flutter_calendar: ^19.2.62
   top_snackbar_flutter: ^1.0.1
   weekday_selector: ^1.0.0
+  page_transition: "^1.1.6"
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -83,6 +84,16 @@ flutter:
         - asset: assets/fonts/Raleway-Regular.ttf
         - asset: assets/fonts/Raleway-Bold.ttf
           weight: 700
+    - family: Summit
+      fonts:
+        - asset: assets/fonts/SummitRegular-Display.ttf
+          weight: 700
+    - family: Futura
+      fonts:
+        - asset: assets/fonts/FuturaExtraBlackFont.ttf
+          weight: 700
+
+
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
