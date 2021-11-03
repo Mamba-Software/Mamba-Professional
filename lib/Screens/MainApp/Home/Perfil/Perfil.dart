@@ -181,12 +181,12 @@ class _PerfilState extends State<Perfil> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 20,), textAlign: TextAlign.start),
+                        Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 16,), textAlign: TextAlign.start),
                         Row(
                           children: [
-                            Text(todayEvents.length.toString(), style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 18, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
+                            Text(todayEvents.length.toString(), style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 16, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
                             SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                            Text(AppLocalizations.of(context)!.events, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 18, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
+                            Text(AppLocalizations.of(context)!.events, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 16, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
                             SizedBox(width: MediaQuery.of(context).size.width*0.01),
                             Icon(
                               Icons.swap_horiz,
@@ -198,7 +198,7 @@ class _PerfilState extends State<Perfil> {
                       ],
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   Container(
                     height: MediaQuery.of(context).size.height*0.20,
                     width: MediaQuery.of(context).size.width,
@@ -263,22 +263,30 @@ class _PerfilState extends State<Perfil> {
                                   child: Stack(
                                     alignment: Alignment.bottomLeft,
                                     children: [
-                                      Container(
-                                        height: MediaQuery.of(context).size.height * 0.20,
-                                        width: MediaQuery.of(context).size.width * 0.90,
-                                        decoration: new BoxDecoration(
-                                          color: Theme.of(context).accentColor,
-                                          border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                                      Card(
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(color: Theme.of(context).primaryColor, width: 1),
                                           borderRadius: new BorderRadius.all(
                                             const Radius.circular(10.0),
                                           ),
-                                          image: new DecorationImage(
-                                            fit: BoxFit.cover,
-                                            colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
-                                            image: Image.asset(Constants.eventBackground).image,
-                                          ),
                                         ),
-                                        child: Center(),
+                                        shadowColor: Colors.red,
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.height * 0.20,
+                                          width: MediaQuery.of(context).size.width * 0.90,
+                                          decoration: new BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius: new BorderRadius.all(
+                                              const Radius.circular(10.0),
+                                            ),
+                                            image: new DecorationImage(
+                                              fit: BoxFit.cover,
+                                              colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstATop),
+                                              image: Image.asset(Constants.eventBackground).image,
+                                            ),
+                                          ),
+                                          child: Center(),
+                                        ),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
@@ -366,7 +374,7 @@ class _PerfilState extends State<Perfil> {
                         }
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 ],
               ) : Container(),
               GestureDetector(

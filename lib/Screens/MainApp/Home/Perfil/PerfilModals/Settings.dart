@@ -7,6 +7,8 @@ import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/TusDatos.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
@@ -52,54 +54,75 @@ class _SettingsState extends State<Settings> {
         isUpdated = false;
       }
     }
-    /*
-    MaterialButton(
-                      onPressed: isUpdated ? () async => {
-                        setState(() {
-                          isSaved = true;
-                          //widget.isSaved(isSaved);
-                          //widget.isUpdated(isUpdated);
-                          if (!(_isPrivate == null)) {
-                            currentUser.isPrivate = _isPrivate;
-                          };
-                          if (idiomaChanged) {
-                            currentUser.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
-                            currentUser.previousIdioma = "";
-                          };
-                          isLoading = true;
-                          _idiomaChanged.currentState!.resetIdiomaChanged();
-                          idiomaChanged = false;
-                        }),
-                        await _accessDatabase.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!),
-
-                        Navigator.pop(context),
-                      } : null,
-                      color: isUpdated ? Colors.green : Colors.transparent,
-                      child: Icon(Icons.save, color: isUpdated ? Colors.white : Styles.accentLight),
-                      padding: EdgeInsets.all(15),
-                      shape: CircleBorder(),
-                    ),
-     */
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settings, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 25,),
-          onPressed: () {
+          onPressed: () async {
+            if (isUpdated) {
+              setState(() {
+                isSaved = true;
+                if (!(_isPrivate == null)) {
+                  currentUser.isPrivate = _isPrivate;
+                };
+                if (idiomaChanged) {
+                  currentUser.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
+                  currentUser.previousIdioma = "";
+                };
+                _idiomaChanged.currentState!.resetIdiomaChanged();
+                idiomaChanged = false;
+              });
+              await _accessDatabase.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!);
+            }
             Navigator.pop(context);
-          },
+            },
         ),
       ),
       body: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.05),
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      AppLocalizations.of(context)!.yourInfo,
+                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.rightToLeftWithFade,
+                              child: TusDatos(),
+                            )
+                        );
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.edit_outlined, color: Theme.of(context).primaryColor),
+                          SizedBox(width: 10),
+                          Text(
+                            AppLocalizations.of(context)!.editYourInfo,
+                            style: Styles.purpleTextStyle,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                  ],
+                ),
                 !(currentUser.isTrainer!) ? Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,7 +141,7 @@ class _SettingsState extends State<Settings> {
                         });
                       },
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.04),
                   ],
                 ) : Container(),
                 Column(
@@ -136,7 +159,7 @@ class _SettingsState extends State<Settings> {
                         idiomaChanged = bool!;
                       },
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.04),
                   ],
                 ),
                 TextButton(

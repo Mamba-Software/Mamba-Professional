@@ -316,7 +316,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(AppLocalizations.of(context)!.historial, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                                Text(AppLocalizations.of(context)!.historial, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.005),
                                 Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
                               ],
@@ -355,7 +355,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(AppLocalizations.of(context)!.notifications, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                                Text(AppLocalizations.of(context)!.notifications, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.005),
                                 Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
                               ],

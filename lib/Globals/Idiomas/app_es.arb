@@ -115,6 +115,10 @@
   "@createAccount":{
     "createAccount": "Cambiar Text"
   },
+  "gender": "Sexo",
+  "@gender":{
+    "description": "Otros Text "
+  },
   "male": "Hombre",
   "@male":{
     "description": "Hombre Text "
@@ -715,6 +719,14 @@
   },
   "events": "Eventos",
   "@events": {
+    "description": "Wellcome message"
+  },
+  "yourInfo": "Tus datos",
+  "@yourInfo": {
+    "description": "Wellcome message"
+  },
+  "editYourInfo": "Edita tu información personal",
+  "@editYourInfo": {
     "description": "Wellcome message"
   }
 

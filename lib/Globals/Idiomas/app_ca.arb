@@ -28,6 +28,7 @@
   "newUser": "No estàs registrat? Crea un compte",
   "alreadyUser": "Tens un compte? Inicia Sessió",
   "createAccount": "Crea el teu compte",
+  "gender": "Sexe",
   "male": "Home",
   "female": "Dona",
   "transgender": "Altres",
@@ -170,5 +171,8 @@
   "mySchedule": "La meva agenda",
   "planSessions": "Planifica más sessions",
   "myProgress": "Control y seguimient",
-  "events": "Events"
+  "events": "Events",
+  "yourInfo": "Les teves dades",
+  "editYourInfo": "Edita la teva informació personal"
+
 }
