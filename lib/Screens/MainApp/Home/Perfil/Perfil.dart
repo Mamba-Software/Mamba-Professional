@@ -383,6 +383,47 @@ class _PerfilState extends State<Perfil> {
                       context,
                       PageTransition(
                           type: PageTransitionType.bottomToTop,
+                          child: CalendarWidgetTrainer(
+                            brandID: currentBrand.id!,
+                            canEdit: true,
+                          )
+                      )
+                  ).whenComplete(() {
+                    setState(() {
+                      isLoading = true;
+                      initProfileHome();
+                    });
+                  });
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.90,
+                  height: MediaQuery.of(context).size.height * 0.08,
+                  decoration: new BoxDecoration(
+                    color: Theme.of(context).accentColor,
+                    border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                    borderRadius: new BorderRadius.all(
+                      const Radius.circular(10.0),
+                    ),
+                  ),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.add, color: Colors.white, size: 30,),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                        Text(AppLocalizations.of(context)!.planSessions, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w600)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          type: PageTransitionType.bottomToTop,
                           child: MyCalendarWidget(
                             brandID: currentBrand.id!,
                           )
@@ -426,47 +467,6 @@ class _PerfilState extends State<Perfil> {
                       ),
                     ),
                   ],
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.02),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      PageTransition(
-                          type: PageTransitionType.bottomToTop,
-                          child: CalendarWidgetTrainer(
-                            brandID: currentBrand.id!,
-                            canEdit: true,
-                          )
-                      )
-                  ).whenComplete(() {
-                    setState(() {
-                      isLoading = true;
-                      initProfileHome();
-                    });
-                  });
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.90,
-                  height: MediaQuery.of(context).size.height * 0.08,
-                  decoration: new BoxDecoration(
-                    color: Theme.of(context).accentColor,
-                    border: Border.all(color: Theme.of(context).accentColor, width: 1),
-                    borderRadius: new BorderRadius.all(
-                      const Radius.circular(10.0),
-                    ),
-                  ),
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.add, color: Colors.white, size: 30,),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.04),
-                        Text(AppLocalizations.of(context)!.planSessions, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w600)),
-                      ],
-                    ),
-                  ),
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.02),
