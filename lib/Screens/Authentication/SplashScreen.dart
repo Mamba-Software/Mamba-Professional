@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Admin/Admin.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
@@ -52,6 +53,8 @@ class _SplashScreenState extends State<SplashScreen> {
       currentUser = await _accessDatabase.getCurrentUserDetails();
       if (currentUser.brandID != "null") {
         currentBrand = await _accessDatabase.getBrandDetails(currentUser.brandID!);
+      } else {
+        currentBrand = Brand();
       }
       _getCurrentLocation();
       Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));

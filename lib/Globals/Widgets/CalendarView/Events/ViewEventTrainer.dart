@@ -1189,7 +1189,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
           return Padding(
             padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
             child: Container(
-              width: MediaQuery.of(context).size.width*0.65,
+              width: MediaQuery.of(context).size.width*0.70,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

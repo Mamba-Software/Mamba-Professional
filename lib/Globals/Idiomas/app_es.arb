@@ -200,6 +200,10 @@
   "@info":{
     "description": "Información Text"
   },
+  "personlize": "Personalización",
+  "@personlize":{
+    "description": "Información Text"
+  },
   "settings": "Ajustes",
   "@settings":{
     "description": "Ajustes Text"
@@ -728,6 +732,29 @@
   "editYourInfo": "Edita tu información personal",
   "@editYourInfo": {
     "description": "Wellcome message"
+  },
+  "editYourPhoto": "Edita tu foto de perfil",
+  "@editYourPhoto": {
+    "description": "Wellcome message"
+  },
+  "editBrandInfo": "Edita la información de la marca",
+  "@editBrandInfo": {
+    "description": "Wellcome message"
+  },
+  "addBrandPhotos": "Añade fotos para la marca",
+  "@addBrandPhotos": {
+    "description": "Wellcome message"
+  },
+  "exitBrand": "Abandonar marca",
+  "@exitBrand": {
+    "description": "Wellcome message"
+  },
+  "exitBrandConfirm": "¿Seguro que quieres abandonar esta marca?",
+  "@exitBrandConfirm": {
+    "description": "Wellcome message"
+  },
+  "deleteBrand": "Eliminar marca",
+  "@deleteBrand": {
+    "description": "Wellcome message"
   }
-
 }

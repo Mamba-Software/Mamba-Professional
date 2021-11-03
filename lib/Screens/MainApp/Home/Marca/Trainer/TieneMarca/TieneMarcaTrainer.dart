@@ -14,6 +14,8 @@ import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarc
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembros.dart';
 import 'package:page_transition/page_transition.dart';
 
+import 'SettingsBrand.dart';
+
 class TieneMarcaTrainer extends StatefulWidget {
   const TieneMarcaTrainer({Key? key}) : super(key: key);
 
@@ -111,7 +113,23 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                       bottom: MediaQuery.of(context).size.height*0.10,
                       left: MediaQuery.of(context).size.width*0.65,
                       right: 0,
-                      child: Icon(Icons.settings, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                      child: IconButton(
+                        icon: Icon(Icons.settings, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                  type: PageTransitionType.bottomToTop,
+                                  child: SettingsBrand(),
+                              )
+                          ).whenComplete(() {
+                            setState(() {
+                              isLoading = true;
+                              initBrandHome();
+                            });
+                          });
+                        },
+                      ),
                     ),
                     Positioned(
                       top: MediaQuery.of(context).size.height*0.05,

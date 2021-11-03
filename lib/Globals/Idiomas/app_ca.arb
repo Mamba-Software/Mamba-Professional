@@ -47,6 +47,7 @@
   "letsGo": "Som-hi!",
   "alreadyCreatedFirm": "Tens un codi d'invitació a una marca?",
   "info": "Informació",
+  "personlize": "Personalització",
   "settings": "Configuració",
   "sessions": "Sessions",
   "stats": "Anàlisi",
@@ -173,6 +174,14 @@
   "myProgress": "Control y seguimient",
   "events": "Events",
   "yourInfo": "Les teves dades",
-  "editYourInfo": "Edita la teva informació personal"
-
+  "editYourInfo": "Edita la teva informació personal",
+  "editYourPhoto": "Edita la teva foto de perfil",
+  "editBrandInfo": "Edita la informació de la marca",
+  "addBrandPhotos": "Afegeix fotos per la marca",
+  "exitBrand": "Abandonar marca",
+  "exitBrandConfirm": "Segur que vols abandonar aquesta marca?",
+  "@exitBrandConfirm": {
+    "description": "Wellcome message"
+  },
+  "deleteBrand": "Eliminar marca"
 }

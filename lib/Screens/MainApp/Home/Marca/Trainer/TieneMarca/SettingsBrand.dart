@@ -3,22 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/TusDatos.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 
-class Settings extends StatefulWidget {
-  const Settings({Key? key}) : super(key: key);
+class SettingsBrand extends StatefulWidget {
+  const SettingsBrand({Key? key}) : super(key: key);
   @override
-  _SettingsState createState() => _SettingsState();
+  _SettingsBrandState createState() => _SettingsBrandState();
 }
 
-class _SettingsState extends State<Settings> {
+class _SettingsBrandState extends State<SettingsBrand> {
 
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
@@ -93,7 +96,7 @@ class _SettingsState extends State<Settings> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      AppLocalizations.of(context)!.yourInfo,
+                      AppLocalizations.of(context)!.info,
                       style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -113,24 +116,7 @@ class _SettingsState extends State<Settings> {
                           Icon(Icons.edit_outlined, color: Theme.of(context).primaryColor),
                           SizedBox(width: 10),
                           Text(
-                            AppLocalizations.of(context)!.editYourInfo,
-                            style: Styles.purpleTextStyle,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    TextButton(
-                      onPressed: () {
-
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(Icons.face_retouching_natural, color: Theme.of(context).primaryColor),
-                          SizedBox(width: 10),
-                          Text(
-                            AppLocalizations.of(context)!.editYourPhoto,
+                            AppLocalizations.of(context)!.editBrandInfo,
                             style: Styles.purpleTextStyle,
                           ),
                         ],
@@ -139,66 +125,71 @@ class _SettingsState extends State<Settings> {
                     SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   ],
                 ),
-                !(currentUser.isTrainer!) ? Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.typeProfile,
-                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    ProfileTypeWidget(
-                      key: _typeProfileKey,
-                      user: currentUser,
-                      selectedProfileTypeChanged: (isPrivate) {
-                        setState(() {
-                          _isPrivate = isPrivate;
-                        });
-                      },
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                  ],
-                ) : Container(),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      AppLocalizations.of(context)!.language,
+                      AppLocalizations.of(context)!.personlize,
                       style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    LanguagePickerWidget(
-                      key: _idiomaChanged,
-                      idiomaChanged: (bool) {
-                        idiomaChanged = bool!;
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.rightToLeftWithFade,
+                              child: TusDatos(),
+                            )
+                        );
                       },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.photo_library, color: Theme.of(context).primaryColor),
+                          SizedBox(width: 10),
+                          Text(
+                            AppLocalizations.of(context)!.addBrandPhotos,
+                            style: Styles.purpleTextStyle,
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   ],
                 ),
                 TextButton(
                   onPressed: () async {
-                    _accessDatabase.signOut().then((value) =>
-                        Navigator.pushAndRemoveUntil(
+                    // DeleteDialog
+                    var result = await showDialog(
+                        context: context,
+                        builder: (_) {
+                          return ConfirmationDialog(text: AppLocalizations.of(context)!.exitBrandConfirm);
+                        }
+                    );
+                    if (result) {
+                      await _accessDatabase.leaveCurrentUserBrand();
+                      Navigator.pop(context);
+                      Navigator.pushReplacement(
                           context,
                           CupertinoPageRoute<Null>(
-                            builder: (context) => Login(),
-                            settings: RouteSettings(name: 'Login'),
-                          ),
-                              (_) => false,
-                        )
-                    );
+                            builder: (context) =>
+                                SplashScreen(),
+                            settings: RouteSettings(
+                                name: 'SplashScreen'),
+                          )
+                      );
+                    }
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Icon(Icons.logout_outlined, color: Theme.of(context).primaryColor),
+                      Icon(Icons.logout_outlined, color: Colors.red),
                       SizedBox(width: 10),
                       Text(
-                        AppLocalizations.of(context)!.closeSession,
-                        style: Styles.purpleTextStyle,
+                        AppLocalizations.of(context)!.exitBrand,
+                        style: Styles.purpleTextStyle.copyWith(color: Colors.red),
                       ),
                     ],
                   ),
@@ -219,7 +210,7 @@ class _SettingsState extends State<Settings> {
                       Icon(Icons.delete_outline, color: Colors.red),
                       SizedBox(width: 10),
                       Text(
-                        AppLocalizations.of(context)!.deleteAccount,
+                        AppLocalizations.of(context)!.deleteBrand,
                         style: Styles.purpleTextStyle.copyWith(color: Colors.red),
                       ),
                     ],

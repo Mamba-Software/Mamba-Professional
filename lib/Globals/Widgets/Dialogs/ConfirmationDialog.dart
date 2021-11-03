@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../Styles.dart';
 
-class DeleteConfirmationDialog extends StatelessWidget {
+class ConfirmationDialog extends StatelessWidget {
   final String text;
-  const DeleteConfirmationDialog({Key? key, required this.text}) : super(key: key);
+  const ConfirmationDialog({Key? key, required this.text}) : super(key: key);
 
 
   @override
@@ -29,8 +29,12 @@ class DeleteConfirmationDialog extends StatelessWidget {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
-                  child: Flexible(
-                    child: Text(text, style: Styles.purpleTextStyle.copyWith(fontSize: 16, height: 1.5), textAlign: TextAlign.center,),
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(text, style: Styles.purpleTextStyle.copyWith(fontSize: 16, height: 1.5), textAlign: TextAlign.center,),
+                      ),
+                    ],
                   ),
                 ),
                 Padding(
@@ -39,9 +43,9 @@ class DeleteConfirmationDialog extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       FloatingActionButton.extended(
-                        label: Text(AppLocalizations.of(context)!.delete),
-                        icon: Icon(Icons.delete_outline),
-                        backgroundColor: Colors.red,
+                        label: Text(AppLocalizations.of(context)!.confirm),
+                        icon: Icon(Icons.check_circle_outline),
+                        backgroundColor: Theme.of(context).accentColor,
                         foregroundColor: Styles.white,
                         onPressed: () {
                           Navigator.pop(context, true);
@@ -70,7 +74,7 @@ class DeleteConfirmationDialog extends StatelessWidget {
                       size: Size(70, 70), // button width and height
                       child: ClipOval(
                         child: Material(
-                          color: Colors.red, // button color
+                          color: Theme.of(context).accentColor, // button color
                           child: InkWell(
                             onTap: () async {
                             },

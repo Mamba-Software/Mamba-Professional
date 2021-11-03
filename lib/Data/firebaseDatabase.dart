@@ -201,6 +201,15 @@ class FirebaseDatabaseService {
       "previousIdioma": previousIdioma,
     });
   }
+
+  Future<void> leaveCurrentUserBrand() async {
+    User? currentUser = await getCurrentUser();
+    await _firestore.collection("Users").doc(currentUser!.uid).update({
+      "brandID": null,
+    }).catchError((err) {
+      print(err);
+    });
+  }
   // Brand Model Services
 
   // Add Brand
