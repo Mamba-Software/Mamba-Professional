@@ -200,7 +200,7 @@ class _PerfilState extends State<Perfil> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   Container(
-                    height: MediaQuery.of(context).size.height*0.20,
+                    height: MediaQuery.of(context).size.height*0.25,
                     width: MediaQuery.of(context).size.width,
                     child: ListView.builder(
                         shrinkWrap: true,
@@ -272,7 +272,7 @@ class _PerfilState extends State<Perfil> {
                                         ),
                                         shadowColor: Colors.red,
                                         child: Container(
-                                          height: MediaQuery.of(context).size.height * 0.20,
+                                          height: MediaQuery.of(context).size.height * 0.25,
                                           width: MediaQuery.of(context).size.width * 0.90,
                                           decoration: new BoxDecoration(
                                             color: Colors.black,
@@ -405,16 +405,19 @@ class _PerfilState extends State<Perfil> {
                       const Radius.circular(10.0),
                     ),
                   ),
-                  child: Center(
-                    child: Row(
+                  child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.add, color: Colors.white, size: 30,),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.04),
-                        Text(AppLocalizations.of(context)!.planSessions, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400)),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.09,
+                          child: Icon(Icons.add, color: Colors.white, size: 30,)
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.69,
+                          child: Center(child: Text(AppLocalizations.of(context)!.planSessions, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400))),
+                        ),
                       ],
                     ),
-                  ),
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.02),

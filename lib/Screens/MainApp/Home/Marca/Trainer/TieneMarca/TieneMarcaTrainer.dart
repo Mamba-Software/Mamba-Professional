@@ -187,13 +187,18 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                       const Radius.circular(10.0),
                     ),
                   ),
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400)),
-                      ],
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                          width: MediaQuery.of(context).size.width * 0.09,
+                          child: Icon(Icons.calendar_today_outlined, color: Colors.white, size: 30,)
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.69,
+                        child: Center(child: Text(AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400)),),
+                      ),
+                    ],
                   ),
                 ),
               ) : Container(),
