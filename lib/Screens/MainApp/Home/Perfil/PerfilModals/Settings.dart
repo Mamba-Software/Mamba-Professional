@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
@@ -180,16 +181,25 @@ class _SettingsState extends State<Settings> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    _accessDatabase.signOut().then((value) =>
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          CupertinoPageRoute<Null>(
-                            builder: (context) => Login(),
-                            settings: RouteSettings(name: 'Login'),
-                          ),
-                              (_) => false,
-                        )
+                    var result = await showDialog(
+                        context: context,
+                        builder: (_) {
+                          return ConfirmationDialog(text: AppLocalizations.of(context)!.closeSessionConfirmation);
+                        }
                     );
+                    if (result) {
+                      _accessDatabase.signOut().then((value) =>
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            CupertinoPageRoute<Null>(
+                              builder: (context) => Login(),
+                              settings: RouteSettings(name: 'Login'),
+                            ),
+                                (_) => false,
+                          )
+                      );
+                    }
+
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,

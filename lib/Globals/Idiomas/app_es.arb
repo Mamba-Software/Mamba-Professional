@@ -249,6 +249,10 @@
   "@closeSession":{
     "description": "Cerrar sesión Text"
   },
+  "closeSessionConfirmation": "¿Estás seguro que quieres cerrar tu sesión actual?",
+  "@closeSessionConfirmation":{
+    "description": "Cerrar sesión Text"
+  },
   "deleteAccount": "Eliminar cuenta",
   "@deleteAccount":{
     "description": "Cerrar sesión Text"
@@ -739,6 +743,10 @@
   },
   "editBrandInfo": "Edita la información de la marca",
   "@editBrandInfo": {
+    "description": "Wellcome message"
+  },
+  "editBrandLogo": "Edita el logo de la marca",
+  "@editBrandLogo": {
     "description": "Wellcome message"
   },
   "addBrandPhotos": "Añade fotos para la marca",

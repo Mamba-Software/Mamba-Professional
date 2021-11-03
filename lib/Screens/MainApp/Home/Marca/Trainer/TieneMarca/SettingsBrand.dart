@@ -4,7 +4,6 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
@@ -122,6 +121,29 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         ],
                       ),
                     ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.rightToLeftWithFade,
+                              child: TusDatos(),
+                            )
+                        );
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.photo_camera_back, color: Theme.of(context).primaryColor),
+                          SizedBox(width: 10),
+                          Text(
+                            AppLocalizations.of(context)!.editBrandLogo,
+                            style: Styles.purpleTextStyle,
+                          ),
+                        ],
+                      ),
+                    ),
                     SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   ],
                 ),
@@ -159,7 +181,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   ],
                 ),
-                TextButton(
+                currentUser.id == currentBrand.adminID ? TextButton(
                   onPressed: () async {
                     // DeleteDialog
                     var result = await showDialog(
@@ -193,9 +215,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                       ),
                     ],
                   ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                TextButton(
+                ) : TextButton(
                   onPressed: () async {
                     showDialog(
                         context: context,

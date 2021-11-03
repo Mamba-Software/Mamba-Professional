@@ -172,7 +172,7 @@ class _PerfilState extends State<Perfil> {
                     ]
                 ),
               ),
-              SizedBox(height: todayEvents.length != 0 ? MediaQuery.of(context).size.height*0.02 : MediaQuery.of(context).size.height*0.04),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
               todayEvents.length != 0 ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -411,7 +411,7 @@ class _PerfilState extends State<Perfil> {
                       children: [
                         Icon(Icons.add, color: Colors.white, size: 30,),
                         SizedBox(width: MediaQuery.of(context).size.width*0.04),
-                        Text(AppLocalizations.of(context)!.planSessions, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w600)),
+                        Text(AppLocalizations.of(context)!.planSessions, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400)),
                       ],
                     ),
                   ),
