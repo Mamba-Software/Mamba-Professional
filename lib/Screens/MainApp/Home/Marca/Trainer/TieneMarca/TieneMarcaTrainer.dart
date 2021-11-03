@@ -173,7 +173,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w600)),
+                        Text(AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400)),
                       ],
                     ),
                   ),
@@ -212,7 +212,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                         ),
                         image: new DecorationImage(
                           fit: BoxFit.cover,
-                          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
                           image: Image.asset(Constants.calendarImage).image,
                         ),
                       ),
@@ -262,7 +262,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                         ),
                         image: new DecorationImage(
                           fit: BoxFit.cover,
-                          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
                           image: Image.asset(Constants.teamImage).image,
                         ),
                       ),
@@ -305,7 +305,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                               ),
                               image: new DecorationImage(
                                 fit: BoxFit.cover,
-                                colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                                colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
                                 image: Image.asset(Constants.statisticsImage).image,
                               ),
                             ),
@@ -344,7 +344,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                               ),
                               image: new DecorationImage(
                                 fit: BoxFit.cover,
-                                colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                                colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
                                 image: Image.asset(Constants.notificationImage).image,
                               ),
                             ),

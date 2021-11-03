@@ -177,7 +177,7 @@ class _PerfilState extends State<Perfil> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.06),
+                    padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -259,7 +259,7 @@ class _PerfilState extends State<Perfil> {
                                   }
                                 },
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
                                   child: Stack(
                                     alignment: Alignment.bottomLeft,
                                     children: [
@@ -408,7 +408,7 @@ class _PerfilState extends State<Perfil> {
                         ),
                         image: new DecorationImage(
                           fit: BoxFit.cover,
-                          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
                           image: Image.asset(Constants.mySessionsImage).image,
                         ),
                       ),
@@ -488,7 +488,7 @@ class _PerfilState extends State<Perfil> {
                         ),
                         image: new DecorationImage(
                           fit: BoxFit.cover,
-                          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+                          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
                           image: Image.asset(Constants.myProgressImage).image,
                         ),
                       ),
