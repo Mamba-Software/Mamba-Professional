@@ -139,7 +139,7 @@ class _MyLocationsState extends State<MyLocations> {
                 builder: (context, snapshot) {
                   if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
                     return Container(
-                        height: MediaQuery.of(context).size.height*0.8,
+                        height: MediaQuery.of(context).size.height*0.65,
                         child: Center(
                             child: LoadingViewPurple()
                         )
