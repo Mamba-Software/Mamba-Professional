@@ -287,11 +287,11 @@ class _DeleteDialogState extends State<DeleteDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top: 25, bottom: 10.0),
-                  child: Text(AppLocalizations.of(context)!.wantDeleteUser, style: Styles.redTextStyle.copyWith(color: Colors.red, fontSize: 22, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                  padding: const EdgeInsets.only(top: 15, bottom: 10.0),
+                  child: Text(AppLocalizations.of(context)!.wantDeleteUser, style: Styles.redTextStyle.copyWith(color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
                 ),
                 Flexible(
-                  child: Text("${AppLocalizations.of(context)!.writeDeleteUser} ", style: Styles.purpleTextStyle.copyWith(fontSize: 16), textAlign: TextAlign.center,),
+                  child: Text("${AppLocalizations.of(context)!.writeDeleteUser} ", style: Styles.purpleTextStyle.copyWith(fontSize: 16, height: 1.5), textAlign: TextAlign.center,),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, left: 15, right: 15),
@@ -387,7 +387,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                       FloatingActionButton.extended(
                         icon: Icon(Icons.cancel_outlined, size: 30,),
                         label: Text(AppLocalizations.of(context)!.cancel),
-                        backgroundColor: Styles.accent,
+                        backgroundColor: Theme.of(context).primaryColor,
                         foregroundColor: Styles.white,
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -399,12 +399,12 @@ class _DeleteDialogState extends State<DeleteDialog> {
               ],
             ),
             Positioned(
-                top: -90,
+                top: -83,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox.fromSize(
-                      size: Size(100, 100), // button width and height
+                      size: Size(80, 80), // button width and height
                       child: ClipOval(
                         child: Material(
                           color: Colors.red, // button color
@@ -412,7 +412,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             onTap: () async {
                               setState(() {});
                             },
-                            child: Icon(Icons.warning, color: Colors.white, size: 60,), // icon
+                            child: Icon(Icons.delete_outline, color: Colors.white, size: 45,), // icon
                           ),
                         ),
                       ),

@@ -200,7 +200,7 @@ class _PerfilState extends State<Perfil> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   Container(
-                    height: MediaQuery.of(context).size.height*0.25,
+                    height: MediaQuery.of(context).size.height*0.28,
                     width: MediaQuery.of(context).size.width,
                     child: ListView.builder(
                         shrinkWrap: true,
@@ -272,7 +272,7 @@ class _PerfilState extends State<Perfil> {
                                         ),
                                         shadowColor: Colors.red,
                                         child: Container(
-                                          height: MediaQuery.of(context).size.height * 0.25,
+                                          height: MediaQuery.of(context).size.height * 0.28,
                                           width: MediaQuery.of(context).size.width * 0.90,
                                           decoration: new BoxDecoration(
                                             color: Colors.black,
