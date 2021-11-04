@@ -133,6 +133,7 @@ class _MyLocationsState extends State<MyLocations> {
               height: 1,
               color: Theme.of(context).primaryColor,
             ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
             StreamBuilder<QuerySnapshot>(
                 stream: _accessDatabase.getAllLocationsBrand(currentBrand.id!),
                 builder: (context, snapshot) {
@@ -173,6 +174,7 @@ class _MyLocationsState extends State<MyLocations> {
                   }
                 }
             ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
           ],
         ),
       ),
