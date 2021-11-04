@@ -5,6 +5,7 @@ class Location {
   String? id;
   String? brandID;
   String? placeId;
+  bool? isBaseLocation;
   String? description;
   String? street;
   String? streetNumber;
@@ -17,6 +18,7 @@ class Location {
     this.id,
     this.brandID,
     this.placeId,
+    this.isBaseLocation,
     this.description,
     this.street,
     this.streetNumber,
@@ -30,6 +32,7 @@ class Location {
     this.id = documentId;
     this.brandID = mapData['brandID'].toString();
     this.placeId = mapData['placeId'].toString();
+    this.isBaseLocation = mapData['isBaseLocation'];
     this.description = mapData['description'].toString();
     this.street = mapData['street'].toString();
     this.streetNumber = mapData['streetNumber'].toString();
@@ -44,6 +47,7 @@ class Location {
     this.id = documentId;
     this.brandID = documentSnapshot.get("brandID").toString();
     this.placeId = documentSnapshot.get("placeId").toString();
+    this.isBaseLocation = documentSnapshot.get("isBaseLocation");
     this.description = documentSnapshot.get("description").toString();
     this.street = documentSnapshot.get("street").toString();
     this.streetNumber = documentSnapshot.get("streetNumber").toString();

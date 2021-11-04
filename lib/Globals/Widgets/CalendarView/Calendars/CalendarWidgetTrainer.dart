@@ -306,6 +306,7 @@ class _CalendarWidgetTrainerState extends State<CalendarWidgetTrainer> {
     List<Event> events = [];
     for(int i = 0; i < documents.length; i++) {
       events.add(Event.fromObject(documents[i], documents[i].id));
+      print(events[i].toString());
     }
     return events;
   }

@@ -463,7 +463,8 @@ class FirebaseDatabaseService {
       await _firestore.collection("Locations").doc(uid).set({
         "brandID": brandId,
         "placeId": placeId,
-        "descripcion": description,
+        "isBaseLocation": false,
+        "description": description,
         "street": street,
         "streetNumber": streetNumber,
         "city": city,
@@ -543,8 +544,17 @@ class FirebaseDatabaseService {
     }
   }
 
+  // Locations
+  // Brands
+  Stream<QuerySnapshot> getAllLocationsBrand(String brandId) {
+    return _firestore
+        .collection("Locations")
+        .where("brandID", isEqualTo: brandId)
+        .snapshots();
+  }
+
+
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // get brews stream
   Future<Stream<QuerySnapshot>> getAllUsers() async {
     return _firestore.collection("Users")
         .snapshots();
