@@ -701,7 +701,7 @@
   "@addLocation": {
     "description": "Wellcome message"
   },
-  "historial": "Historial",
+  "historial": "Control",
   "@historial": {
     "description": "Wellcome message"
   },
@@ -731,6 +731,10 @@
   },
   "yourInfo": "Tus datos",
   "@yourInfo": {
+    "description": "Wellcome message"
+  },
+  "yourBrand": "Tu marca",
+  "@yourBrand": {
     "description": "Wellcome message"
   },
   "editYourInfo": "Edita tu información personal",

@@ -4,16 +4,17 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocations.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/TusDatos.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 
+import 'EditBrandInfo.dart';
 import 'EditLogoPage.dart';
 
 class SettingsBrand extends StatefulWidget {
@@ -47,16 +48,6 @@ class _SettingsBrandState extends State<SettingsBrand> {
 
   @override
   Widget build(BuildContext context) {
-    // Checking if there has been a change that has not been saved.
-    if (!isLoading) {
-      if (_isPrivate != currentUser.isPrivate! && _isPrivate != null) {
-        isUpdated = true;
-      } else if (idiomaChanged) {
-        isUpdated = true;
-      } else {
-        isUpdated = false;
-      }
-    }
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settings, style: Theme.of(context).appBarTheme.titleTextStyle,),
@@ -64,23 +55,8 @@ class _SettingsBrandState extends State<SettingsBrand> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 25,),
           onPressed: () async {
-            if (isUpdated) {
-              setState(() {
-                isSaved = true;
-                if (!(_isPrivate == null)) {
-                  currentUser.isPrivate = _isPrivate;
-                };
-                if (idiomaChanged) {
-                  currentUser.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
-                  currentUser.previousIdioma = "";
-                };
-                _idiomaChanged.currentState!.resetIdiomaChanged();
-                idiomaChanged = false;
-              });
-              await _accessDatabase.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!);
-            }
             Navigator.pop(context);
-            },
+          },
         ),
       ),
       body: SingleChildScrollView(
@@ -103,7 +79,13 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     TextButton(
                       onPressed: () {
-
+                        Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.rightToLeftWithFade,
+                              child: EditBrandInfo(),
+                            )
+                        );
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -143,7 +125,15 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     TextButton(
                       onPressed: () {
-
+                        Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.rightToLeftWithFade,
+                              child: MyLocations(
+                                brandId: currentBrand.id!,
+                              ),
+                            )
+                        );
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -160,7 +150,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   ],
                 ),
-                Column(
+                false ? Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -171,13 +161,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.rightToLeftWithFade,
-                              child: TusDatos(),
-                            )
-                        );
+
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -193,7 +177,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   ],
-                ),
+                ) : Container(),
                 currentUser.id == currentBrand.adminID ? TextButton(
                   onPressed: () async {
                     // DeleteDialog
