@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.d
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/EditPhotoPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/TusDatos.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
@@ -123,7 +124,13 @@ class _SettingsState extends State<Settings> {
                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     TextButton(
                       onPressed: () {
-
+                        Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.rightToLeftWithFade,
+                              child: EditPhotoPage(),
+                            )
+                        );
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,

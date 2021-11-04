@@ -58,29 +58,6 @@ class _PerfilState extends State<Perfil> {
       isLoading = false;
     });
   }
-  // Selects image from Gallery and updates in firebase.
-  Future getImage() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    setState(() {
-      _image = File(image!.path);
-    });
-    retrieveLostData();
-    await _accessDatabase.updateCurrentUserPhoto(_image);
-    getUser();
-  }
-  // Retrieve lost data of Gallery if it crashes becasue of Android.
-  Future<void> retrieveLostData() async {
-    final LostDataResponse response =
-    await ImagePicker().retrieveLostData();
-    if (response == null) {
-      return;
-    }
-    if (response.file != null) {
-      setState(() {
-        _image = response.file;
-      });
-    }
-  }
 
   durationToString(double duration) {
     String temp = "";

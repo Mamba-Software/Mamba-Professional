@@ -14,6 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 
+import 'EditLogoPage.dart';
+
 class SettingsBrand extends StatefulWidget {
   const SettingsBrand({Key? key}) : super(key: key);
   @override
@@ -101,13 +103,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.rightToLeftWithFade,
-                              child: TusDatos(),
-                            )
-                        );
+
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -128,7 +124,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                             context,
                             PageTransition(
                               type: PageTransitionType.rightToLeftWithFade,
-                              child: TusDatos(),
+                              child: EditLogoPage(),
                             )
                         );
                       },
@@ -139,6 +135,23 @@ class _SettingsBrandState extends State<SettingsBrand> {
                           SizedBox(width: 10),
                           Text(
                             AppLocalizations.of(context)!.editBrandLogo,
+                            style: Styles.purpleTextStyle,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    TextButton(
+                      onPressed: () {
+
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor),
+                          SizedBox(width: 10),
+                          Text(
+                            AppLocalizations.of(context)!.myLocations,
                             style: Styles.purpleTextStyle,
                           ),
                         ],

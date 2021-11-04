@@ -75,11 +75,11 @@ class _TusDatosState extends State<TusDatos> {
     }
     // Checking if there has been a change that has not been saved.
     if (!isLoading) {
-      if (nombreCompletoTemp != currentUser.name!) {
+      if (nombreCompletoTemp != currentUser.name! && nombreCompletoTemp != "") {
         isUpdated = true;
-      } else if (genderTemp != currentUser.gender) {
+      } else if (genderTemp != currentUser.gender! && genderTemp != null) {
         isUpdated = true;
-      } else if (selectedDateTemp != selectedDate) {
+      } else if (selectedDateTemp != selectedDate && selectedDateTemp != null) {
         isUpdated = true;
       } else {
         isUpdated = false;
@@ -120,25 +120,25 @@ class _TusDatosState extends State<TusDatos> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 25,),
           onPressed: () async {
+            if (_formKey.currentState!.validate()) {
               if (isUpdated) {
-                if(_formKey.currentState!.validate()){
-                  if (nombreCompletoTemp.isNotEmpty) {
-                    currentUser.name = nombreCompletoTemp;
-                  };
-                  if (!(genderTemp == null)) {
-                    currentUser.gender = genderTemp;
-                  };
-                  if (!(selectedDateTemp == null)) {
-                    currentUser.dateOfBirth = dateToString(selectedDateTemp);
-                  };
-                  setState(() {
-                    isLoading = true;
-                  });
-                  await _accessDatabase.updateCurrentUserDatosPerifl(currentUser.name!, currentUser.gender!, currentUser.dateOfBirth!);
-                  Navigator.pop(context);
-                }
+                if (nombreCompletoTemp.isNotEmpty) {
+                  currentUser.name = nombreCompletoTemp;
+                };
+                if (!(genderTemp == null)) {
+                  currentUser.gender = genderTemp;
+                };
+                if (!(selectedDateTemp == null)) {
+                  currentUser.dateOfBirth = dateToString(selectedDateTemp);
+                };
+                setState(() {
+                  isLoading = true;
+                });
+                await _accessDatabase.updateCurrentUserDatosPerifl(
+                currentUser.name!, currentUser.gender!, currentUser.dateOfBirth!);
               }
-
+              Navigator.pop(context);
+            }
           },
         ),
       ),

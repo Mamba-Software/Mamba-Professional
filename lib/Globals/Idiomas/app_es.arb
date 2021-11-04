@@ -737,8 +737,12 @@
   "@editYourInfo": {
     "description": "Wellcome message"
   },
-  "editYourPhoto": "Edita tu foto de perfil",
+  "editYourPhoto": "Edita tu imagen de perfil",
   "@editYourPhoto": {
+    "description": "Wellcome message"
+  },
+  "uploadPhoto": "Subir imagen",
+  "@uploadPhoto": {
     "description": "Wellcome message"
   },
   "editBrandInfo": "Edita la información de la marca",
@@ -749,7 +753,7 @@
   "@editBrandLogo": {
     "description": "Wellcome message"
   },
-  "addBrandPhotos": "Añade fotos para la marca",
+  "addBrandPhotos": "Añade imagenes para la marca",
   "@addBrandPhotos": {
     "description": "Wellcome message"
   },

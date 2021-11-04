@@ -172,18 +172,20 @@ class FirebaseDatabaseService {
       return 1;
     }
   }
-  Future<void> updateCurrentUserPhoto(File image) async {
+  Future<String> updateCurrentUserPhoto(File image) async {
     User? firebaseUser = await getCurrentUser();
+    String imageURL = "";
     var storageRef = await _firebaseStorage.ref().child("userPics/" + firebaseUser!.uid + ".png");
     var uploadTask= storageRef.putFile(image);
-    uploadTask.whenComplete(() async {
+    await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
+        imageURL = value;
         await _firestore.collection("Users").doc(firebaseUser.uid).update({
           "imageUrl": value,
         });
-        currentUser.imageUrl = value;
       });
     });
+    return imageURL;
   }
   Future<void> updateCurrentUserDatosPerifl(String name, int gender, String? dateOfBirth) async {
     User? currentUser = await getCurrentUser();

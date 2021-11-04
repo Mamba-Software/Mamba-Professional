@@ -14,7 +14,7 @@ import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarc
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembros.dart';
 import 'package:page_transition/page_transition.dart';
 
-import 'SettingsBrand.dart';
+import 'TieneMarcaModals/SettingsBrand.dart';
 
 class TieneMarcaTrainer extends StatefulWidget {
   const TieneMarcaTrainer({Key? key}) : super(key: key);
@@ -39,7 +39,13 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
   }
   // Init for Brand Home
   initBrandHome() {
+    getBrand();
     getAllEventsTodayBrand();
+  }
+
+  // Gets the user info from firebase.
+  void getBrand() async {
+    currentBrand = await _accessDatabase.getBrandDetails(currentBrand.id!);
   }
 
   // Gets the events passed by the trainer.

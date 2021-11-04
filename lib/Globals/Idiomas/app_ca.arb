@@ -176,10 +176,11 @@
   "events": "Events",
   "yourInfo": "Les teves dades",
   "editYourInfo": "Edita la teva informació personal",
-  "editYourPhoto": "Edita la teva foto de perfil",
+  "editYourPhoto": "Edita la teva imatge de perfil",
+  "uploadPhoto": "Puja imatge",
   "editBrandInfo": "Edita la informació de la marca",
   "editBrandLogo": "Edita el logo de la marca",
-  "addBrandPhotos": "Afegeix fotos per la marca",
+  "addBrandPhotos": "Afegeix imatges per la marca",
   "exitBrand": "Abandonar marca",
   "exitBrandConfirm": "Segur que vols abandonar aquesta marca?",
   "@exitBrandConfirm": {
