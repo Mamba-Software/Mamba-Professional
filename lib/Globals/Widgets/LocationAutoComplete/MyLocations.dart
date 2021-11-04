@@ -81,8 +81,8 @@ class _MyLocationsState extends State<MyLocations> {
         body: Column(
           children: [
             Padding(
-                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02, horizontal: MediaQuery.of(context).size.width*0.02),
-                child: TextField(
+                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02),
+                child: ListTile(
                   onTap: () async {
                     // Generate a new token here
                     // TODO: Have a look at generating session token for Google Places API
@@ -115,6 +115,18 @@ class _MyLocationsState extends State<MyLocations> {
                       print(isOkay);
                     }
                   },
+                  leading: Icon(
+                    Icons.add_location,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  title: Text(
+                    AppLocalizations.of(context)!.addLocation,
+                    style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                  ),
+                ),
+                /*
+                TextField(
+
                   readOnly: true,
                   textAlign: TextAlign.left,
                   decoration: InputDecoration(
@@ -128,6 +140,8 @@ class _MyLocationsState extends State<MyLocations> {
                     contentPadding: EdgeInsets.only(top: 15),
                   ),
                 )
+
+                 */
             ),
             Container(
               height: 1,
