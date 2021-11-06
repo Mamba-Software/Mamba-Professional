@@ -1,6 +1,10 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
@@ -18,13 +22,14 @@ import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:uuid/uuid.dart';
 
 class RegistrarMarca extends StatefulWidget {
-  const RegistrarMarca({Key? key}) : super(key: key);
+  Locale? locale;
+  RegistrarMarca({Key? key, this.locale}) : super(key: key);
 
   @override
   _RegistrarMarcaState createState() => _RegistrarMarcaState();
 }
 
-class _RegistrarMarcaState extends State<RegistrarMarca> {
+class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProviderStateMixin {
   // DataBase Access
   var _accessDatabase = new DatabaseAccess();
   // Google APIS
@@ -39,8 +44,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
   String nameBrand = "";
   String description = "";
   var nameBrandController = TextEditingController();
-  var ubicacionController =  TextEditingController();
-  var descriptionController =  TextEditingController();
+  //var ubicacionController =  TextEditingController();
+  //var descriptionController =  TextEditingController();
   // Image Picker
   bool errorImage = false;
   var _image;
@@ -65,7 +70,197 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
   List<int> removedIndex = [];
   int breakLimit = 6;
 
+  // ADAPTAR CREAR MARCA
+  // Tab Controller
+  double addEventTabValue = 0.25;
+  TabController? _tabController;
+  int _selectedIndex = 0;
+  List<bool> tabs = [true, false, false, false];
+  // Title Controller
+  var titleController = TextEditingController();
+  String? titleString;
+  // Description Controller
+  var descriptionController = TextEditingController();
+  String? descriptionString;
+  // Starting Date and Time
+  TextEditingController startDateController = TextEditingController();
+  bool errorDate = false;
+  // Duration
+  TextEditingController durationController = TextEditingController();
+  String duration = "1.00";
+  List<String> durations = ["0.30","1.00","1.30","2.00","2.30","3.00","3.30","4.00"];
+  // Ubicació
+  var ubicacionController =  TextEditingController();
+  //var placeId =  currentBrand.placeId!;
+  // Participants
+  TextEditingController membersController = TextEditingController();
+  int members = 1;
+  int membersMax = 15;
+  // Evento Recurrente
+  bool isRecurrent = false;
+  var oneWeek;
+  var twoWeek;
+  var oneMonth;
+  final values = <bool?>[false, false, false, false, false, false, false];
+  int _value = 1;
+  // Members Page
+  List<Usuario> brandTrainers = [];
+  List<bool> brandTrainersSelected = [];
+  bool errorNoTrainerSelected = false;
+  // Form To Validate User
+  final formKeyInfo = GlobalKey<FormState>();
+  final formKeyTime = GlobalKey<FormState>();
+  final formKeyMembers = GlobalKey<FormState>();
+  // Event Retrieved From BD
+  var event;
+  var placeDetails;
 
+  String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
+  String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
+
+  Future<void> selectSlot(ctx, type) {
+    // Initial Vars
+    var startDate = DateTime.now();
+    var title;
+    var initialDuration = 1;
+    var initialMembers = 1;
+    var widgetPicker;
+    // Init for differnt types
+    if (type == 0) {
+      startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale!.languageCode).parse(undoCapitalized(startDateController.text));
+    } else if (type == 1) {
+      initialDuration = durations.indexWhere((element) => element == duration);
+    } else if (type == 2) {
+      initialMembers = members-1;
+    }
+    // Different types of pickers
+    Widget dateTimePicker = CupertinoDatePicker(
+        mode: CupertinoDatePickerMode.dateAndTime,
+        initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
+        minimumDate: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
+        maximumDate: startDate.add(Duration(days: 365)),
+        use24hFormat: true,
+        minuteInterval: 30,
+        onDateTimeChanged: (val) {
+          setState(() {
+            startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale!.languageCode).format(val);
+            startDateController.text = toCapitalized(startDateController.text);
+            oneWeek = val.add(Duration(days: 7));
+            twoWeek = val.add(Duration(days: 14));
+            oneMonth= val.add(Duration(days: 30));
+          });
+        }
+    );
+    Widget durationPicker = CupertinoPicker(
+        scrollController: new FixedExtentScrollController(
+            initialItem: initialDuration
+        ),
+        itemExtent: 40.0,
+        backgroundColor: Colors.transparent,
+        onSelectedItemChanged: (int index) {
+          setState(() {
+            duration = durations[index];
+            var hour = durations[index].split(".")[0];
+            var min = durations[index].split(".")[1];
+            durationController.text = "${hour}h ${min}min";
+          });
+        },
+        children: new List<Widget>.generate(
+            durations.length, (int index) {
+          var item = durations[index];
+          var hour = item.split(".")[0];
+          var min = item.split(".")[1];
+          return new Center(
+            child: new Text(
+                "${hour}h ${min}min"
+            ),
+          );
+        }
+        )
+    );
+    Widget membersPicker = CupertinoPicker(
+        scrollController: new FixedExtentScrollController(
+            initialItem: initialMembers
+        ),
+        itemExtent: 40.0,
+        backgroundColor: Colors.transparent,
+        onSelectedItemChanged: (int index) {
+          setState(() {
+            members = index+1;
+            membersController.text = "${members.toString()}";
+          });
+        },
+        children: new List<Widget>.generate(
+            membersMax, (int index) {
+          var member = index+1;
+          return new Center(
+            child: new Text(
+                "${member.toString()}"
+            ),
+          );
+        }
+        )
+    );
+    if (type == 0) {
+      title = AppLocalizations.of(context)!.selectDayTime;
+      widgetPicker = dateTimePicker;
+    } else if (type == 1) {
+      title = AppLocalizations.of(context)!.selectDuration;
+      widgetPicker = durationPicker;
+    } else if (type == 2) {
+      title = AppLocalizations.of(context)!.selectMembers;
+      widgetPicker = membersPicker;
+    }
+    showCupertinoModalPopup(
+        context: ctx,
+        builder: (_) => Material(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+          ),
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height*0.40,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: Text(title, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
+                    ),
+                  ],
+                ),
+                Expanded(
+                    child: widgetPicker
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0),
+                      child: TextButton(
+                          child: Text(AppLocalizations.of(context)!.entendido, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          }
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        )
+    );
+    return Future.value("");
+  }
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
@@ -91,6 +286,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
 
   @override
   void initState() {
+    _tabController = TabController(length: 4, vsync: this);
     gPlace = googlePlace.GooglePlace(Platform.isAndroid ? placesAPIAndroid : placesAPIIOS);
     /*
     showTopSnackBar(
@@ -116,7 +312,370 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return isLoading ?
+    Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.createBrand, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22),),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, size: 25,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: LoadingViewPurple(),
+    ) :
+    Scaffold(
+      appBar: AppBar(
+        toolbarHeight: MediaQuery.of(context).size.height*0.13,
+        title: Column(
+          children: [
+            Text(AppLocalizations.of(context)!.createBrand, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+          ],
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => {
+            Navigator.pop(context)
+          },
+        ),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(0),
+          child: IgnorePointer(
+              child: Column(
+                children: [
+                  TabBar(
+                    controller: _tabController,
+                    indicatorColor: Theme.of(context).scaffoldBackgroundColor,
+                    onTap: (index) {
+                      _selectedIndex = index;
+                    },
+                    tabs: [
+                      Tab(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.fitness_center_rounded, color: tabs[0] ? Theme.of(context).accentColor : Colors.grey)
+                            ],
+                          ),
+                        ),
+                      ),
+                      Tab(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.info_outlined, color: tabs[1] ? Theme.of(context).accentColor : Colors.grey.withOpacity(0.2))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Tab(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.location_on_outlined, color: tabs[2] ? Theme.of(context).accentColor : Colors.grey.withOpacity(0.2))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Tab(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.calendar_today_outlined, color: tabs[3] ? Theme.of(context).accentColor : Colors.grey.withOpacity(0.2))
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  LinearProgressIndicator(
+                    value: addEventTabValue,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    color: Theme.of(context).accentColor,
+                  ),
+                ],
+              )
+          ),
+        ),
+
+      ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      resizeToAvoidBottomInset: false,
+      body: Column(
+        children: [
+          Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                physics: NeverScrollableScrollPhysics(),
+                children: [
+                  Scaffold(
+                    body: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.30,
+                              child: Center(
+                                child: _image == null ?
+                                OutlinedButton(
+                                  onPressed: getImage,
+                                  child: Column(
+                                    children: [
+                                      new Icon(
+                                        Icons.image,
+                                        color: Theme.of(context).primaryColor,
+                                        size: 50.0,
+                                      ),
+                                    ],
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    side: BorderSide(
+                                        color: errorImage ? Colors.red : Theme.of(context).primaryColor,
+                                        width: 1.5
+                                    ),
+                                    backgroundColor: Colors.white,
+                                    elevation: 10,
+                                    shape: CircleBorder(),
+                                    padding: EdgeInsets.only(left: 100, right: 100, top: 100),
+                                  ),
+                                ) :
+                                GestureDetector(
+                                  onTap: getImage,
+                                  child: Stack(
+                                    children: <Widget>[
+                                      Center(
+                                          child: Container(
+                                              width: MediaQuery.of(context).size.width*0.35,
+                                              decoration: new BoxDecoration(
+                                                border: Border.all(
+                                                  width: 1.5,
+                                                  color: Styles.accent,
+                                                  style: BorderStyle.solid,
+                                                ),
+                                                shape: BoxShape.circle,
+                                                image: new DecorationImage(
+                                                  image: FileImage(_image),
+                                                  fit: BoxFit.fitWidth,
+                                                ),
+                                              )
+                                          )
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.name,
+                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                ),
+                                Flexible(
+                                  child: new TextFormField(
+                                    controller: nameBrandController,
+                                    validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
+                                    onChanged: (val) {
+                                      setState(() => {
+                                        nameBrand = val
+                                      });
+                                    },
+                                    decoration: InputDecoration(
+                                      hintText: AppLocalizations.of(context)!.nameCompletoError,
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: Styles.accent),
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: Styles.accent),
+                                      ),
+
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                    ),
+                    resizeToAvoidBottomInset: false,
+                  ),
+                  Scaffold(
+                    body: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Icon(Icons.info_outlined),
+                          ],
+                        )
+                    ),
+                    resizeToAvoidBottomInset: false,
+                  ),
+                  Scaffold(
+                    body: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Icon(Icons.location_on_outlined),
+                          ],
+                        )
+                    ),
+                    resizeToAvoidBottomInset: false,
+                  ),
+                  Scaffold(
+                    body: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Icon(Icons.calendar_today_outlined),
+                          ],
+                        )
+                    ),
+                    resizeToAvoidBottomInset: false,
+                  ),
+                ],
+              )
+          ),
+        ],
+      ),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.01),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _selectedIndex != 0 ? Padding(
+              padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01, left: MediaQuery.of(context).size.width*0.09),
+              child: Container(
+                height: 50,
+                child: FloatingActionButton.extended(
+                  heroTag: null,
+                  onPressed: () {
+                    if (_selectedIndex == 1) {
+                      setState(() {
+                        tabs[1] = false;
+                      });
+                    } else if (_selectedIndex == 2) {
+                      setState(() {
+                        tabs[2] = false;
+                      });
+                    } else if (_selectedIndex == 3) {
+                      setState(() {
+                        tabs[3] = false;
+                      });
+                    }
+                    _tabController!.animateTo(_selectedIndex -= 1);
+                    setState(() {
+                      addEventTabValue -= 0.25;
+                    });
+                  },
+                  backgroundColor: Theme.of(context).primaryColor,
+                  icon: Container(),
+                  label: Text(AppLocalizations.of(context)!.back, style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                ),
+              ),
+            ) :  Padding(
+              padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01, left: MediaQuery.of(context).size.width*0.09),
+              child: Container(
+                height: 50,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.01),
+              child: Container(
+                height: 50,
+                child: FloatingActionButton.extended(
+                  heroTag: null,
+                  onPressed: () {
+                    if (_selectedIndex == 0) {
+                      //if (formKeyInfo.currentState!.validate()){
+                        _tabController!.animateTo(_selectedIndex += 1);
+                        setState(() {
+                          addEventTabValue += 0.25;
+                          tabs[1] = true;
+                        });
+                      //}
+                    } else if (_selectedIndex == 1) {
+                      _tabController!.animateTo(_selectedIndex += 1);
+                      setState(() {
+                        addEventTabValue += 0.25;
+                        tabs[2] = true;
+                      });
+                    } else if (_selectedIndex == 2) {
+                      _tabController!.animateTo(_selectedIndex += 1);
+                      setState(() {
+                        addEventTabValue += 0.25;
+                        tabs[3] = true;
+                      });
+                    } else if (_selectedIndex == 3) {
+
+                    }
+                  },
+                  backgroundColor: _selectedIndex == 2 ? Colors.green : Theme.of(context).accentColor,
+                  icon: Container(),
+                  label: Text(
+                    _selectedIndex == 2 ? AppLocalizations.of(context)!.createEvent : AppLocalizations.of(context)!.next,
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<TimeOfDay> _selectTime(TimeOfDay time) async {
+    final TimeOfDay? newTime = await showTimePicker(
+      context: context,
+      initialTime: time,
+      initialEntryMode: TimePickerEntryMode.input,
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData(
+            colorScheme: ColorScheme.light().copyWith(
+              primary: Colors.amber,
+            ),
+          ),
+          child: MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              // Using 12-Hour format
+                alwaysUse24HourFormat: true),
+            // If you want 24-Hour format, just change alwaysUse24HourFormat to true
+            child: child!)
+        );
+      }
+    );
+    if (newTime != null) {
+      return newTime;
+    } else {
+      return time;
+    }
+  }
+
+  void getDetails(String placeId) async {
+    var result = await gPlace!.details.get(placeId);
+    if (result != null && result.result != null && mounted) {
+      detailsResult = result.result;
+      latitude = detailsResult!.geometry!.location!.lat!;
+      longitude = detailsResult!.geometry!.location!.lng!;
+    }
+  }
+
+}
+
+/*
+return Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.createBrand, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22),),
           centerTitle: true,
@@ -912,48 +1471,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
           )
         )
     );
-  }
 
-  Future<TimeOfDay> _selectTime(TimeOfDay time) async {
-    final TimeOfDay? newTime = await showTimePicker(
-      context: context,
-      initialTime: time,
-      initialEntryMode: TimePickerEntryMode.input,
-      builder: (context, child) {
-        return Theme(
-          data: ThemeData(
-            colorScheme: ColorScheme.light().copyWith(
-              primary: Colors.amber,
-            ),
-          ),
-          child: MediaQuery(
-            data: MediaQuery.of(context).copyWith(
-              // Using 12-Hour format
-                alwaysUse24HourFormat: true),
-            // If you want 24-Hour format, just change alwaysUse24HourFormat to true
-            child: child!)
-        );
-      }
-    );
-    if (newTime != null) {
-      return newTime;
-    } else {
-      return time;
-    }
-  }
 
-  void getDetails(String placeId) async {
-    var result = await gPlace!.details.get(placeId);
-    if (result != null && result.result != null && mounted) {
-      detailsResult = result.result;
-      latitude = detailsResult!.geometry!.location!.lat!;
-      longitude = detailsResult!.geometry!.location!.lng!;
-    }
-  }
 
-}
-
-/*
 editInfo ? Padding(
                   padding: EdgeInsets.symmetric(horizontal: 2),
                   child: Container(

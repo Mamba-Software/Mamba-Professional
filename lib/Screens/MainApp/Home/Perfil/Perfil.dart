@@ -166,7 +166,7 @@ class _PerfilState extends State<Perfil> {
                             Text(AppLocalizations.of(context)!.events, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 16, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
                             SizedBox(width: MediaQuery.of(context).size.width*0.01),
                             Icon(
-                              Icons.swap_horiz,
+                              Icons.swipe,
                               color: Colors.black,
                               size: 20,
                             ),
