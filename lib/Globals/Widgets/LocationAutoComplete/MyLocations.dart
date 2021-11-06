@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../GlobalVars.dart';
 import 'AddressSearch.dart';
@@ -85,16 +86,16 @@ class _MyLocationsState extends State<MyLocations> {
                 child: ListTile(
                   onTap: () async {
                     // Generate a new token here
-                    // TODO: Have a look at generating session token for Google Places API
+                    final sessionToken = Uuid().v4();
                     final Suggestion? result = await showSearch(
                       context: context,
-                      delegate: AddressSearch(),
+                      delegate: AddressSearch(sessionToken),
                     );
                     // We have a result for our locations search
                     if (result != null) {
                       Location location = Location();
                       location.placeId = result.placeId;
-                      final placeDetails = await LocationPlacesSearch().getPlaceDetailFromId(location.placeId!);
+                      final placeDetails = await LocationPlacesSearch(sessionToken).getPlaceDetailFromId(location.placeId!);
                       // Get the information on Strings
                       if(placeDetails.street!=null) location.street = placeDetails.street!;
                       if(placeDetails.streetNumber!=null) location.streetNumber = placeDetails.streetNumber!; else location.streetNumber="N/A";

@@ -38,15 +38,16 @@ class Suggestion {
 
 class LocationPlacesSearch {
 
-  LocationPlacesSearch();
-
   static final String androidKey = placesAPIAndroid;
   static final String iosKey = placesAPIIOS;
   final apiKey = Platform.isAndroid ? androidKey : iosKey;
+  final sessionToken;
+
+  LocationPlacesSearch(this.sessionToken);
 
   Future<List<Suggestion>> fetchSuggestions(String input) async {
     final request =
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=address&key=$apiKey';
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=address&key=$apiKey&sessiontoken=$sessionToken';
     final response = await http.get(Uri.parse(request));
 
     if (response.statusCode == 200) {
@@ -68,7 +69,7 @@ class LocationPlacesSearch {
 
   Future<Place> getPlaceDetailFromId(String placeId) async {
     final request =
-        'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=address_component&key=$apiKey';
+        'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=address_component&key=$apiKey&sessiontoken=$sessionToken';
     final response = await http.get(Uri.parse(request));
 
     if (response.statusCode == 200) {

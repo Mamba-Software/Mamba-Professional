@@ -15,6 +15,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
+import 'package:uuid/uuid.dart';
 
 class RegistrarMarca extends StatefulWidget {
   const RegistrarMarca({Key? key}) : super(key: key);
@@ -330,13 +331,14 @@ class _RegistrarMarcaState extends State<RegistrarMarca> {
                                               readOnly: true,
                                               onTap: () async {
                                                 // generate a new token here
+                                                final sessionToken = Uuid().v4();
                                                 final Suggestion? result = await showSearch(
                                                   context: context,
-                                                  delegate: AddressSearch(),
+                                                  delegate: AddressSearch(sessionToken),
                                                 );
                                                 // This will change the text displayed in the TextFormField
                                                 if (result != null) {
-                                                  final placeDetails = await LocationPlacesSearch().getPlaceDetailFromId(result.placeId);
+                                                  final placeDetails = await LocationPlacesSearch(sessionToken).getPlaceDetailFromId(result.placeId);
                                                   getDetails(result.placeId);
                                                   setState(() {
                                                     ubicacionController.text = result.description;

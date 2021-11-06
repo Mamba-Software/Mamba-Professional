@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'LocationPlacesSearch.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddressSearch extends SearchDelegate<Suggestion> {
 
-  LocationPlacesSearch apiClient = LocationPlacesSearch();
+  String? sessionToken;
+  LocationPlacesSearch? apiClient;
 
-  AddressSearch() {}
+  AddressSearch(this.sessionToken) {
+    apiClient = LocationPlacesSearch(sessionToken);
+  }
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -39,7 +41,7 @@ class AddressSearch extends SearchDelegate<Suggestion> {
   @override
   Widget buildSuggestions(BuildContext context) {
     return FutureBuilder<List<Suggestion>>(
-      future: query == "" ? null : apiClient.fetchSuggestions(query),
+      future: query == "" ? null : apiClient!.fetchSuggestions(query),
       builder: (context, snapshot) => query == '' ?
         Container(
           padding: EdgeInsets.all(16.0),
