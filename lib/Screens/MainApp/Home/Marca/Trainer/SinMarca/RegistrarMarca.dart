@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -50,6 +51,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
   bool errorImage = false;
   var _image;
   // Ubicación
+  Location location = Location();
+  bool hasLocation = false;
   String _streetNumber = '';
   String _street = '';
   String _city = '';
@@ -349,9 +352,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                   TabBar(
                     controller: _tabController,
                     indicatorColor: Theme.of(context).scaffoldBackgroundColor,
-                    onTap: (index) {
-                      _selectedIndex = index;
-                    },
                     tabs: [
                       Tab(
                         child: Align(
@@ -359,7 +359,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.fitness_center_rounded, color: tabs[0] ? Theme.of(context).accentColor : Colors.grey)
+                              Icon(Icons.image, color: tabs[0] ? Theme.of(context).accentColor : Colors.grey)
                             ],
                           ),
                         ),
@@ -420,129 +420,349 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                 physics: NeverScrollableScrollPhysics(),
                 children: [
                   Scaffold(
-                    body: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              height: MediaQuery.of(context).size.height * 0.30,
-                              child: Center(
-                                child: _image == null ?
-                                OutlinedButton(
-                                  onPressed: getImage,
-                                  child: Column(
-                                    children: [
-                                      new Icon(
-                                        Icons.image,
-                                        color: Theme.of(context).primaryColor,
-                                        size: 50.0,
-                                      ),
-                                    ],
-                                  ),
-                                  style: OutlinedButton.styleFrom(
-                                    side: BorderSide(
-                                        color: errorImage ? Colors.red : Theme.of(context).primaryColor,
-                                        width: 1.5
+                    resizeToAvoidBottomInset: true,
+                    body: SingleChildScrollView(
+                      physics: BouncingScrollPhysics(),
+                      child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.logo,
+                                style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              Container(
+                                height: MediaQuery.of(context).size.height * 0.30,
+                                child: Center(
+                                  child: _image == null ?
+                                  OutlinedButton(
+                                    onPressed: getImage,
+                                    child: Column(
+                                      children: [
+                                        new Icon(
+                                          Icons.image,
+                                          color: Theme.of(context).primaryColor,
+                                          size: 40.0,
+                                        ),
+                                      ],
                                     ),
-                                    backgroundColor: Colors.white,
-                                    elevation: 10,
-                                    shape: CircleBorder(),
-                                    padding: EdgeInsets.only(left: 100, right: 100, top: 100),
-                                  ),
-                                ) :
-                                GestureDetector(
-                                  onTap: getImage,
-                                  child: Stack(
-                                    children: <Widget>[
-                                      Center(
-                                          child: Container(
-                                              width: MediaQuery.of(context).size.width*0.35,
-                                              decoration: new BoxDecoration(
-                                                border: Border.all(
-                                                  width: 1.5,
-                                                  color: Styles.accent,
-                                                  style: BorderStyle.solid,
-                                                ),
-                                                shape: BoxShape.circle,
-                                                image: new DecorationImage(
-                                                  image: FileImage(_image),
-                                                  fit: BoxFit.fitWidth,
-                                                ),
-                                              )
-                                          )
+                                    style: OutlinedButton.styleFrom(
+                                      side: BorderSide(
+                                          color: errorImage ? Colors.red : Theme.of(context).primaryColor,
+                                          width: 1.5
                                       ),
-                                    ],
+                                      backgroundColor: Colors.white,
+                                      elevation: 10,
+                                      shape: CircleBorder(),
+                                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.10, right: MediaQuery.of(context).size.height * 0.10, top: MediaQuery.of(context).size.height * 0.13),
+                                    ),
+                                  ) :
+                                  GestureDetector(
+                                    onTap: getImage,
+                                    child: Container(
+                                        height: MediaQuery.of(context).size.height * 0.26,
+                                        decoration: new BoxDecoration(
+                                          border: Border.all(
+                                            width: 1.5,
+                                            color: Styles.accent,
+                                            style: BorderStyle.solid,
+                                          ),
+                                          shape: BoxShape.circle,
+                                          image: new DecorationImage(
+                                            image: FileImage(_image),
+                                            fit: BoxFit.fitHeight,
+                                          ),
+                                        )
+                                    )
                                   ),
                                 ),
                               ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.name,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                ),
-                                Flexible(
-                                  child: new TextFormField(
-                                    controller: nameBrandController,
-                                    validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
-                                    onChanged: (val) {
-                                      setState(() => {
-                                        nameBrand = val
-                                      });
-                                    },
-                                    decoration: InputDecoration(
-                                      hintText: AppLocalizations.of(context)!.nameCompletoError,
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(color: Styles.accent),
-                                      ),
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(color: Styles.accent),
-                                      ),
-
-                                    ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                              Text(
+                                AppLocalizations.of(context)!.name,
+                                style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              Flexible(
+                                child: new TextFormField(
+                                  controller: nameBrandController,
+                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
+                                  style: Styles.purpleTextStyle.copyWith(fontSize: 26, fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.center,
+                                  decoration: InputDecoration(
+                                    hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 18, color: Colors.grey, fontWeight: FontWeight.normal),
+                                    hintText: AppLocalizations.of(context)!.nameBrandError,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        )
+                              ),
+                            ],
+                          )
+                      ),
                     ),
-                    resizeToAvoidBottomInset: false,
                   ),
                   Scaffold(
+                    resizeToAvoidBottomInset: true,
                     body: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Icon(Icons.info_outlined),
-                          ],
-                        )
+                      physics: BouncingScrollPhysics(),
+                      child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.description,
+                                style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              Flexible(
+                                child: new TextFormField(
+                                    controller: descriptionController,
+                                    validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
+                                    minLines: 1,
+                                    maxLines: 6,
+                                    decoration: InputDecoration(
+                                      hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                      hintText: AppLocalizations.of(context)!.descriptionError,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                    ),
+                                ),
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                              Text(
+                                AppLocalizations.of(context)!.maxNumberClients,
+                                style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              GestureDetector(
+                                  onTap: () {
+                                    selectSlot(context, 2);
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      new Flexible(
+                                        child: TextFormField(
+                                          controller: membersController,
+                                          maxLines: 2,
+                                          readOnly: true,
+                                          enabled: false,
+                                          style: Styles.purpleTextStyle,
+                                          decoration: InputDecoration(
+                                            hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                            hintText: AppLocalizations.of(context)!.maxNumberClientsError,
+                                            labelStyle: Styles.purpleTextStyle,
+                                            border: InputBorder.none,
+                                            focusedBorder: InputBorder.none,
+                                            enabledBorder: InputBorder.none,
+                                            errorBorder: InputBorder.none,
+                                            disabledBorder: InputBorder.none,
+                                          ),
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                              ),
+                            ],
+                          )
+                      ),
                     ),
-                    resizeToAvoidBottomInset: false,
                   ),
                   Scaffold(
+                    resizeToAvoidBottomInset: true,
                     body: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Icon(Icons.location_on_outlined),
-                          ],
-                        )
+                      physics: BouncingScrollPhysics(),
+                      child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.baseLocation,
+                                style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              ListTile(
+                                onTap: () async {
+                                  // Generate a new token here
+                                  final sessionToken = Uuid().v4();
+                                  final Suggestion? result = await showSearch(
+                                    context: context,
+                                    delegate: AddressSearch(sessionToken),
+                                  );
+                                  // We have a result for our locations search
+                                  if (result != null) {
+                                    location.placeId = result.placeId;
+                                    final placeDetails = await LocationPlacesSearch(sessionToken).getPlaceDetailFromId(location.placeId!);
+                                    // Get the information on Strings
+                                    if(placeDetails.street!=null) location.street = placeDetails.street!;
+                                    if(placeDetails.streetNumber!=null) location.streetNumber = placeDetails.streetNumber!; else location.streetNumber="N/A";
+                                    if(placeDetails.city!=null) location.city = placeDetails.city!;
+                                    if(placeDetails.zipCode!=null) location.zipCode = placeDetails.zipCode!; else location.zipCode="N/A";
+                                    //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
+                                    // Build Correct Description
+                                    location.description = "${location.street} ${location.streetNumber}, ${location.city}, ${location.zipCode}";
+                                    // Get Latitude/Longitude
+                                    var temp = await gPlace!.details.get(location.placeId!);
+                                    if (temp != null && temp.result != null && mounted) {
+                                      detailsResult = temp.result;
+                                      location.latitude = detailsResult!.geometry!.location!.lat!;
+                                      location.longitude = detailsResult!.geometry!.location!.lng!;
+                                    }
+                                    setState(() {
+                                      hasLocation = true;
+                                    });
+                                    // Save location to DataBase
+                                    //bool isOkay = await _accessDatabase.addLocation(widget.brandId, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
+                                    //print(isOkay);
+                                  } else {
+                                    setState(() {
+                                      hasLocation = false;
+                                    });
+                                  }
+                                },
+                                title: hasLocation ? Text(
+                                  location.description!,
+                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                ) : Text(
+                                  AppLocalizations.of(context)!.enterAddressError,
+                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                ),
+
+                                leading: Icon(
+                                  Icons.add_location,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                              hasLocation ?
+                              Column(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.streetName,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(location.street!, style: Styles.purpleTextStyle.copyWith(fontSize: 16),)
+                                    ],
+                                  ),
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.streetNumber,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(location.streetNumber!, style: Styles.purpleTextStyle.copyWith(fontSize: 16),)
+                                    ],
+                                  ),
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.city,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(location.city!, style: Styles.purpleTextStyle.copyWith(fontSize: 16),)
+                                    ],
+                                  ),
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.zipCode,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(location.zipCode!, style: Styles.purpleTextStyle.copyWith(fontSize: 16),)
+                                    ],
+                                  ),
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${AppLocalizations.of(context)!.latitude}: ",
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(location.latitude!.toString(), style: Styles.purpleTextStyle.copyWith(fontSize: 16),)
+                                    ],
+                                  ),
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${AppLocalizations.of(context)!.longitud}: ",
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(location.longitude!.toString(), style: Styles.purpleTextStyle.copyWith(fontSize: 16),)
+                                    ],
+                                  ),
+                                ],
+                              ) : Container(),
+                            ],
+                          )
+                      ),
                     ),
-                    resizeToAvoidBottomInset: false,
                   ),
                   Scaffold(
+                    resizeToAvoidBottomInset: true,
                     body: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Icon(Icons.calendar_today_outlined),
-                          ],
-                        )
+                      physics: BouncingScrollPhysics(),
+                      child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.description,
+                                style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              Flexible(
+                                child: new TextFormField(
+                                  controller: descriptionController,
+                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
+                                  minLines: 1,
+                                  maxLines: 6,
+                                  decoration: InputDecoration(
+                                    hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                    hintText: AppLocalizations.of(context)!.descriptionError,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                      ),
                     ),
-                    resizeToAvoidBottomInset: false,
                   ),
                 ],
               )
@@ -598,13 +818,11 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                   heroTag: null,
                   onPressed: () {
                     if (_selectedIndex == 0) {
-                      //if (formKeyInfo.currentState!.validate()){
                         _tabController!.animateTo(_selectedIndex += 1);
                         setState(() {
                           addEventTabValue += 0.25;
                           tabs[1] = true;
                         });
-                      //}
                     } else if (_selectedIndex == 1) {
                       _tabController!.animateTo(_selectedIndex += 1);
                       setState(() {
@@ -621,10 +839,10 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
 
                     }
                   },
-                  backgroundColor: _selectedIndex == 2 ? Colors.green : Theme.of(context).accentColor,
+                  backgroundColor: _selectedIndex == 3 ? Colors.green : Theme.of(context).accentColor,
                   icon: Container(),
                   label: Text(
-                    _selectedIndex == 2 ? AppLocalizations.of(context)!.createEvent : AppLocalizations.of(context)!.next,
+                    _selectedIndex == 3 ? AppLocalizations.of(context)!.createBrand : AppLocalizations.of(context)!.next,
                     style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
                 ),
               ),

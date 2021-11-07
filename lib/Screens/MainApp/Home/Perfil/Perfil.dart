@@ -150,345 +150,349 @@ class _PerfilState extends State<Perfil> {
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.02),
-              todayEvents.length != 0 ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              currentBrand.id != null ? Column(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 16,), textAlign: TextAlign.start),
-                        Row(
+                  todayEvents.length != 0 ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(todayEvents.length.toString(), style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 16, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
-                            SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                            Text(AppLocalizations.of(context)!.events, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 16, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
-                            SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                            Icon(
-                              Icons.swipe,
-                              color: Colors.black,
-                              size: 20,
+                            Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 16,), textAlign: TextAlign.start),
+                            Row(
+                              children: [
+                                Text(todayEvents.length.toString(), style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 16, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                Text(AppLocalizations.of(context)!.events, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 16, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                Icon(
+                                  Icons.swipe,
+                                  color: Colors.black,
+                                  size: 20,
+                                ),
+                              ],
                             ),
                           ],
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                      Container(
+                        height: MediaQuery.of(context).size.height*0.28,
+                        width: MediaQuery.of(context).size.width,
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: BouncingScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: todayEvents.length,
+                            itemBuilder: (context, int index) {
+                              var event = todayEvents[index];
+                              return GestureDetector(
+                                    onTap: () {
+                                      bool canEdit = true;
+                                      DateTime startDate = DateTime(
+                                        int.parse(event.year!),
+                                        int.parse(event.month!),
+                                        int.parse(event.day!),
+                                        int.parse(event.hour!),
+                                        int.parse(event.minute!),
+                                      );
+                                      if (startDate.isBefore(DateTime.now())) {
+                                        canEdit = false;
+                                      }
+                                      if (currentUser.isTrainer!) {
+                                        Navigator.push(
+                                          context,
+                                          PageTransition(
+                                              type: PageTransitionType.bottomToTop,
+                                              child: ViewEventTrainer(
+                                                eventId: event.id!,
+                                                canEdit: canEdit,
+                                                locale: Localizations.localeOf(context),
+                                              )
+                                          )
+                                        ).whenComplete(() {
+                                          setState(() {
+                                            isLoading = true;
+                                            initProfileHome();
+                                          });
+                                        });
+                                      } else {
+                                        Navigator.push(
+                                            context,
+                                            PageTransition(
+                                                type: PageTransitionType.bottomToTop,
+                                                child: ViewEventClient(
+                                                  eventId: event.id!,
+                                                  canJoin: true,
+                                                  locale: Localizations.localeOf(context),
+                                                )
+                                            )
+                                        ).whenComplete(() {
+                                          setState(() {
+                                            isLoading = true;
+                                            initProfileHome();
+                                          });
+                                        });
+                                      }
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
+                                      child: Stack(
+                                        alignment: Alignment.bottomLeft,
+                                        children: [
+                                          Card(
+                                            shape: RoundedRectangleBorder(
+                                              side: BorderSide(color: Theme.of(context).primaryColor, width: 1),
+                                              borderRadius: new BorderRadius.all(
+                                                const Radius.circular(10.0),
+                                              ),
+                                            ),
+                                            shadowColor: Colors.red,
+                                            child: Container(
+                                              height: MediaQuery.of(context).size.height * 0.28,
+                                              width: MediaQuery.of(context).size.width * 0.90,
+                                              decoration: new BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius: new BorderRadius.all(
+                                                  const Radius.circular(10.0),
+                                                ),
+                                                image: new DecorationImage(
+                                                  fit: BoxFit.cover,
+                                                  colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstATop),
+                                                  image: Image.asset(Constants.eventBackground).image,
+                                                ),
+                                              ),
+                                              child: Center(),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(event.title!, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                                                SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.schedule,
+                                                      color: Colors.white,
+                                                      size: 20,
+                                                    ),
+                                                    SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                    Text(
+                                                      event.hour.toString(),
+                                                      style: TextStyle(color: Colors.white, fontSize: 14),
+                                                    ),
+                                                    Text(
+                                                      ":",
+                                                      style: TextStyle(color: Colors.white, fontSize: 14),
+                                                    ),
+                                                    Text(
+                                                      event.minute=="0" ? "00" : event.minute.toString(),
+                                                      style: TextStyle(color: Colors.white, fontSize: 14),
+                                                    ),
+                                                    Container(
+                                                        height: 16,
+                                                        width: 32,
+                                                        child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
+                                                    ),
+                                                    Icon(
+                                                      Icons.timer,
+                                                      color: Colors.white,
+                                                      size: 20,
+                                                    ),
+                                                    SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                    Text(
+                                                      durationToString(event.duration!),
+                                                      style: TextStyle(color: Colors.white, fontSize: 14),
+                                                    ),
+                                                    Container(
+                                                        height: 16,
+                                                        width: 32,
+                                                        child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
+                                                    ),
+                                                    Icon(
+                                                      Icons.record_voice_over,
+                                                      color: Colors.white,
+                                                      size: 20,
+                                                    ),
+                                                    SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                    Text(
+                                                      event.selectedTrainers.length.toString(),
+                                                      style: TextStyle(color: Colors.white, fontSize: 14),
+                                                    ),
+                                                    Container(
+                                                        height: 16,
+                                                        width: 32,
+                                                        child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
+                                                    ),
+                                                    Icon(
+                                                      Icons.directions_run,
+                                                      color: Colors.white,
+                                                      size: 20,
+                                                    ),
+                                                    SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                    Text(
+                                                      event.joinedMembers.length.toString(),
+                                                      style: TextStyle(color: Colors.white, fontSize: 14),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                            }
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                    ],
+                  ) : Container(),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          PageTransition(
+                              type: PageTransitionType.bottomToTop,
+                              child: CalendarWidgetTrainer(
+                                brandID: currentBrand.id!,
+                                canEdit: true,
+                              )
+                          )
+                      ).whenComplete(() {
+                        setState(() {
+                          isLoading = true;
+                          initProfileHome();
+                        });
+                      });
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.90,
+                      height: MediaQuery.of(context).size.height * 0.08,
+                      decoration: new BoxDecoration(
+                        color: Theme.of(context).accentColor,
+                        border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                        borderRadius: new BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                              width: MediaQuery.of(context).size.width * 0.09,
+                              child: Icon(Icons.add, color: Colors.white, size: 30,)
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.69,
+                            child: Center(child: Text(AppLocalizations.of(context)!.planSessions, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400))),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          PageTransition(
+                              type: PageTransitionType.bottomToTop,
+                              child: MyCalendarWidget(
+                                brandID: currentBrand.id!,
+                              )
+                          )
+                      ).whenComplete(() {
+                        setState(() {
+                          isLoading = true;
+                          initProfileHome();
+                        });
+                      });
+                    },
+                    child: Stack(
+                      alignment: Alignment.bottomLeft,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.90,
+                          height: MediaQuery.of(context).size.height * 0.20,
+                          decoration: new BoxDecoration(
+                            color: Colors.black,
+                            border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                            borderRadius: new BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                            image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
+                              image: Image.asset(Constants.mySessionsImage).image,
+                            ),
+                          ),
+                          child: Center(),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(AppLocalizations.of(context)!.mySchedule, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                              Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                  Container(
-                    height: MediaQuery.of(context).size.height*0.28,
-                    width: MediaQuery.of(context).size.width,
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: BouncingScrollPhysics(),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: todayEvents.length,
-                        itemBuilder: (context, int index) {
-                          var event = todayEvents[index];
-                          return GestureDetector(
-                                onTap: () {
-                                  bool canEdit = true;
-                                  DateTime startDate = DateTime(
-                                    int.parse(event.year!),
-                                    int.parse(event.month!),
-                                    int.parse(event.day!),
-                                    int.parse(event.hour!),
-                                    int.parse(event.minute!),
-                                  );
-                                  if (startDate.isBefore(DateTime.now())) {
-                                    canEdit = false;
-                                  }
-                                  if (currentUser.isTrainer!) {
-                                    Navigator.push(
-                                      context,
-                                      PageTransition(
-                                          type: PageTransitionType.bottomToTop,
-                                          child: ViewEventTrainer(
-                                            eventId: event.id!,
-                                            canEdit: canEdit,
-                                            locale: Localizations.localeOf(context),
-                                          )
-                                      )
-                                    ).whenComplete(() {
-                                      setState(() {
-                                        isLoading = true;
-                                        initProfileHome();
-                                      });
-                                    });
-                                  } else {
-                                    Navigator.push(
-                                        context,
-                                        PageTransition(
-                                            type: PageTransitionType.bottomToTop,
-                                            child: ViewEventClient(
-                                              eventId: event.id!,
-                                              canJoin: true,
-                                              locale: Localizations.localeOf(context),
-                                            )
-                                        )
-                                    ).whenComplete(() {
-                                      setState(() {
-                                        isLoading = true;
-                                        initProfileHome();
-                                      });
-                                    });
-                                  }
-                                },
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
-                                  child: Stack(
-                                    alignment: Alignment.bottomLeft,
-                                    children: [
-                                      Card(
-                                        shape: RoundedRectangleBorder(
-                                          side: BorderSide(color: Theme.of(context).primaryColor, width: 1),
-                                          borderRadius: new BorderRadius.all(
-                                            const Radius.circular(10.0),
-                                          ),
-                                        ),
-                                        shadowColor: Colors.red,
-                                        child: Container(
-                                          height: MediaQuery.of(context).size.height * 0.28,
-                                          width: MediaQuery.of(context).size.width * 0.90,
-                                          decoration: new BoxDecoration(
-                                            color: Colors.black,
-                                            borderRadius: new BorderRadius.all(
-                                              const Radius.circular(10.0),
-                                            ),
-                                            image: new DecorationImage(
-                                              fit: BoxFit.cover,
-                                              colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstATop),
-                                              image: Image.asset(Constants.eventBackground).image,
-                                            ),
-                                          ),
-                                          child: Center(),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(event.title!, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
-                                            SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  Icons.schedule,
-                                                  color: Colors.white,
-                                                  size: 20,
-                                                ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Text(
-                                                  event.hour.toString(),
-                                                  style: TextStyle(color: Colors.white, fontSize: 14),
-                                                ),
-                                                Text(
-                                                  ":",
-                                                  style: TextStyle(color: Colors.white, fontSize: 14),
-                                                ),
-                                                Text(
-                                                  event.minute=="0" ? "00" : event.minute.toString(),
-                                                  style: TextStyle(color: Colors.white, fontSize: 14),
-                                                ),
-                                                Container(
-                                                    height: 16,
-                                                    width: 32,
-                                                    child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
-                                                ),
-                                                Icon(
-                                                  Icons.timer,
-                                                  color: Colors.white,
-                                                  size: 20,
-                                                ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Text(
-                                                  durationToString(event.duration!),
-                                                  style: TextStyle(color: Colors.white, fontSize: 14),
-                                                ),
-                                                Container(
-                                                    height: 16,
-                                                    width: 32,
-                                                    child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
-                                                ),
-                                                Icon(
-                                                  Icons.record_voice_over,
-                                                  color: Colors.white,
-                                                  size: 20,
-                                                ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Text(
-                                                  event.selectedTrainers.length.toString(),
-                                                  style: TextStyle(color: Colors.white, fontSize: 14),
-                                                ),
-                                                Container(
-                                                    height: 16,
-                                                    width: 32,
-                                                    child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
-                                                ),
-                                                Icon(
-                                                  Icons.directions_run,
-                                                  color: Colors.white,
-                                                  size: 20,
-                                                ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Text(
-                                                  event.joinedMembers.length.toString(),
-                                                  style: TextStyle(color: Colors.white, fontSize: 14),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                        }
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  GestureDetector(
+                    onTap: () {
+
+                    },
+                    child: Stack(
+                      alignment: Alignment.bottomLeft,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.90,
+                          height: MediaQuery.of(context).size.height * 0.20,
+                          decoration: new BoxDecoration(
+                            color: Colors.black,
+                            border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                            borderRadius: new BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                            image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
+                              image: Image.asset(Constants.myProgressImage).image,
+                            ),
+                          ),
+                          child: Center(),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(AppLocalizations.of(context)!.myProgress, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                              Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 ],
               ) : Container(),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      PageTransition(
-                          type: PageTransitionType.bottomToTop,
-                          child: CalendarWidgetTrainer(
-                            brandID: currentBrand.id!,
-                            canEdit: true,
-                          )
-                      )
-                  ).whenComplete(() {
-                    setState(() {
-                      isLoading = true;
-                      initProfileHome();
-                    });
-                  });
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.90,
-                  height: MediaQuery.of(context).size.height * 0.08,
-                  decoration: new BoxDecoration(
-                    color: Theme.of(context).accentColor,
-                    border: Border.all(color: Theme.of(context).accentColor, width: 1),
-                    borderRadius: new BorderRadius.all(
-                      const Radius.circular(10.0),
-                    ),
-                  ),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.09,
-                          child: Icon(Icons.add, color: Colors.white, size: 30,)
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.69,
-                          child: Center(child: Text(AppLocalizations.of(context)!.planSessions, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400))),
-                        ),
-                      ],
-                    ),
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.02),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      PageTransition(
-                          type: PageTransitionType.bottomToTop,
-                          child: MyCalendarWidget(
-                            brandID: currentBrand.id!,
-                          )
-                      )
-                  ).whenComplete(() {
-                    setState(() {
-                      isLoading = true;
-                      initProfileHome();
-                    });
-                  });
-                },
-                child: Stack(
-                  alignment: Alignment.bottomLeft,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.90,
-                      height: MediaQuery.of(context).size.height * 0.20,
-                      decoration: new BoxDecoration(
-                        color: Colors.black,
-                        border: Border.all(color: Theme.of(context).accentColor, width: 1),
-                        borderRadius: new BorderRadius.all(
-                          const Radius.circular(10.0),
-                        ),
-                        image: new DecorationImage(
-                          fit: BoxFit.cover,
-                          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
-                          image: Image.asset(Constants.mySessionsImage).image,
-                        ),
-                      ),
-                      child: Center(),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(AppLocalizations.of(context)!.mySchedule, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                          Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.02),
-              GestureDetector(
-                onTap: () {
-
-                },
-                child: Stack(
-                  alignment: Alignment.bottomLeft,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.90,
-                      height: MediaQuery.of(context).size.height * 0.20,
-                      decoration: new BoxDecoration(
-                        color: Colors.black,
-                        border: Border.all(color: Theme.of(context).accentColor, width: 1),
-                        borderRadius: new BorderRadius.all(
-                          const Radius.circular(10.0),
-                        ),
-                        image: new DecorationImage(
-                          fit: BoxFit.cover,
-                          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
-                          image: Image.asset(Constants.myProgressImage).image,
-                        ),
-                      ),
-                      child: Center(),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(AppLocalizations.of(context)!.myProgress, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                          Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.02),
             ],
           ),
         ),

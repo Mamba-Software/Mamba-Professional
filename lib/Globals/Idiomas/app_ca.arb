@@ -34,6 +34,7 @@
   "transgender": "Altres",
   "nameCompleto": "Nom complet",
   "nameCompletoError": "Escriu el teu nom",
+  "nameBrandError": "Escriu el nom de la teva marca",
   "register": "Registra't",
   "sameEmail": "Ja existeix un usuari amb aquest email",
   "registerError": "Hem rebut un error. Torni a provar",
@@ -81,7 +82,7 @@
   "camera": "Càmara",
   "change": "Canviar",
   "welcomeMes": "¡Benvingut a Mamba {name}!",
-  "createBrand": "Crea la teva Marca",
+  "createBrand": "Crea la teva marca",
   "addCode": "Afegir Codi",
   "trainersZone": "Altres entrenadors a la teva zona:",
   "loading": "Cargant...",
@@ -89,12 +90,14 @@
   "basicInfo": "Informació Bàsica",
   "canEdit": "Tota la informació podrà ser editada més endavant",
   "location": "Ubicació",
-  "baseLocation": "Ubicació Base",
+  "baseLocation": "Ubicació base",
   "baseLocationDescription": "Aquesta és l'ubicació que utilitzarem per localitzar la teva marca al mapa perque els clients puguin trobar-te a prop seu. En cas de no tenir adreça fixe, introduiex una ubicació utilitzada frequentment.",
   "streetName": "Carrer: ",
   "streetNumber": "Número: ",
   "city": "Ciutat: ",
   "zipCode": "Codi Postal: ",
+  "latitude": "Latitut",
+  "longitud": "Longitut",
   "clear": "Netejar",
   "confirm": "Confirmar",
   "back": "Enrere",
@@ -153,6 +156,7 @@
   "deleteEventConfirmation": "Estàs segur que vols borrar aquest event?",
   "completeEventConfirmation": "Estàs segur que vols marcar aquest event com a realitzat? Aquesta acció no es podrà desfer.",
   "maxNumberClients": "Nombre màxim d'asistents",
+  "maxNumberClientsError": "Introdueix el nombre màxim d'asistents en sessions de la teva marca",
   "numberClientJoining": "Asistents",
   "noClientJoining": "Sense asistents",
   "designatedTrainers": "Selecciona els entrenadors",
@@ -187,5 +191,6 @@
   "@exitBrandConfirm": {
     "description": "Wellcome message"
   },
-  "deleteBrand": "Eliminar marca"
+  "deleteBrand": "Eliminar marca",
+  "logo": "Logo"
 }

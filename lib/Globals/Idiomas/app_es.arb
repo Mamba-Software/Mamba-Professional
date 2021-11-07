@@ -143,6 +143,10 @@
   "@nameCompletoError":{
     "description": "LogIn Text "
   },
+  "nameBrandError": "Escribe el nombre de tu marca",
+  "@nameBrandError":{
+    "description": "LogIn Text "
+  },
   "register": "Regístrate",
   "@register":{
     "description": "Regístrate Text "
@@ -346,7 +350,7 @@
       }
     }
   },
-  "createBrand": "Crea tu Marca",
+  "createBrand": "Crea tu marca",
   "@createBrand":{
     "description": "createBrand Text"
   },
@@ -370,7 +374,7 @@
   "@canEdit":{
     "description": "basicInfo text"
   },
-  "baseLocation": "Ubicación Base",
+  "baseLocation": "Ubicación base",
   "@baseLocation":{
     "description": "baseLocation text"
   },
@@ -396,6 +400,14 @@
   },
   "zipCode": "Código Postal: ",
   "@zipCode":{
+    "description": "zipCode text"
+  },
+  "latitude": "Latitud",
+  "@latitude":{
+    "description": "zipCode text"
+  },
+  "longitud": "Longitud",
+  "@longitud":{
     "description": "zipCode text"
   },
   "clear": "Limpiar",
@@ -635,6 +647,10 @@
   "@maxNumberClients":{
     "description": "addEvent text"
   },
+  "maxNumberClientsError": "Introduce el número máximo de asistentes en sesiones de tu marca",
+  "@maxNumberClientsError":{
+    "description": "addEvent text"
+  },
   "numberClientJoining": "Asistentes",
   "@numberClientJoining":{
     "description": "addEvent text"
@@ -771,6 +787,10 @@
   },
   "deleteBrand": "Eliminar marca",
   "@deleteBrand": {
+    "description": "Wellcome message"
+  },
+  "logo": "Logo",
+  "@logo": {
     "description": "Wellcome message"
   }
 }
