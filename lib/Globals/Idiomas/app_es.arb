@@ -590,6 +590,10 @@
   "@selectMembers":{
     "description": "tuesdarLetter text"
   },
+  "selectTime": "Hora",
+  "@selectTime":{
+    "description": "tuesdarLetter text"
+  },
   "days": "Días",
   "@days":{
     "description": "Días text"

@@ -60,6 +60,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                             context,
                             CupertinoPageRoute<Null>(
                               builder: (context) => RegistrarMarca(
+                                locale: Localizations.localeOf(context),
                               ),
                               settings: RouteSettings(name: 'RegistrarMarca'),
                             )
