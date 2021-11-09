@@ -180,7 +180,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   ],
                 ) : Container(),
-                currentUser.id == currentBrand.adminID ? TextButton(
+                currentUser.id != currentBrand.adminID ? TextButton(
                   onPressed: () async {
                     // DeleteDialog
                     var result = await showDialog(

@@ -319,7 +319,7 @@ class FirebaseDatabaseService {
 
   // Events Calendar
   // Add Event
-  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers, var selectedTrainers) async {
+  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) async {
     var eventID = Uuid().v1();
     User? currentUser = await getCurrentUser();
     try {
@@ -334,7 +334,7 @@ class FirebaseDatabaseService {
         "hour": hour,
         "minute": minute,
         "duration": duration,
-        "placeId": placeId,
+        "locationId": locationId,
         "maxMembers": maxMembers,
         "joinedMembers": [],
         "selectedTrainers": selectedTrainers,

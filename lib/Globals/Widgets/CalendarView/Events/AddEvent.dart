@@ -5,7 +5,10 @@ import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/Locatio
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocationsSelect.dart';
+import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import '../../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -42,6 +45,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   // Description Controller
   var descriptionController = TextEditingController();
   String? descriptionString;
+  // Location
+  Location location = Location();
   // Starting Date and Time
   TextEditingController startDateController = TextEditingController();
   bool errorDate = false;
@@ -253,7 +258,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     durationController.text = "${hour}h ${min}min";
     membersController.text = "${members.toString()}";
     getAllTrainersFromBrand();
-    //getPlaceFullAddress(currentBrand.placeId!);
+    getLocation(currentBrand.baseLocation!);
   }
 
   Future<void> getAllTrainersFromBrand() async {
@@ -270,9 +275,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     });
   }
 
-  void getPlaceFullAddress(String placeid) async {
-    //placeDetails = await LocationPlacesSearch().getPlaceDetailFromId(placeid);
-    //ubicacionController.text = placeDetails.fullAddress!;
+  void getLocation(String locationId) async {
+    location = await _accessDatabase.getSingleLocation(locationId);
     setState(() {
       isLoading = false;
     });
@@ -486,53 +490,38 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                             ],
                                           )
                                       ),
-                                      /*
                                       Padding(
-                                        padding: EdgeInsets.only(bottom: 0),
-                                        child: new Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            Expanded(
-                                              child: TextFormField(
-                                                controller: ubicacionController,
-                                                validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.enterAddressError : null,
-                                                readOnly: true,
-                                                minLines: 1,
-                                                maxLines: 3,
-                                                onTap: () async {
-                                                  final Suggestion? result = await showSearch(
-                                                    context: context,
-                                                    delegate: AddressSearch(),
-                                                  );
-                                                  if (result != null && result.description != "") {
-                                                    setState(() {
-                                                      ubicacionController.text = result.description;
-                                                    });
-                                                    placeId = result.placeId;
-                                                  }
-                                                },
-                                                style: Styles.purpleTextStyle,
-                                                decoration: InputDecoration(
-                                                  icon: Container(
-                                                    width: 10,
-                                                    height: 10,
-                                                    child: Icon(
-                                                      Icons.location_on_outlined,
-                                                      color: Theme.of(context).accentColor,
-                                                      size: 28,
-                                                    ),
+                                        padding: EdgeInsets.only(top: 15.0),
+                                        child: ListTile(
+                                          leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: 25,),
+                                          title: Text(
+                                              location.description!,
+                                              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor)
+                                          ),
+                                          trailing: Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: 25,),
+                                          onTap: () async {
+                                            setState(() {
+                                              isLoading = true;
+                                            });
+                                            var result = await Navigator.push(
+                                                context,
+                                                PageTransition(
+                                                  type: PageTransitionType.rightToLeftWithFade,
+                                                  child: MyLocationsSelect(
+                                                    brandId: currentBrand.id!,
                                                   ),
-                                                  hintText: AppLocalizations.of(context)!.enterAddress,
-                                                  hintStyle: Styles.purpleTextStyle,
-                                                  border: InputBorder.none,
-                                                  contentPadding: EdgeInsets.only(left: 18.0, top: 18),
-                                                ),
-                                              ),
-                                            )
-                                          ],
+                                                )
+                                            );
+                                            if (result != null) {
+                                              getLocation(result);
+                                            } else {
+                                              setState(() {
+                                                isLoading = false;
+                                              });
+                                            }
+                                          },
                                         ),
                                       ),
-                                       */
                                     ]
                                 ),
                               ),
@@ -1311,16 +1300,16 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       }
     }
     if (!isRecurrent) {
-      await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), "placeId", members, selectedTrainerId);
+      await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
     } else {
-      await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), "placeId", members, selectedTrainerId);
+      await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
       var tempDate = startDate.add(Duration(days: 1));
       var weekDay = tempDate.weekday;
       if (_value == 1) {
         // One Week
         for (var i=0; i<6; i++) {
           if(values[weekDay-1]!) {
-            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), "placeId", members, selectedTrainerId);
+            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;
@@ -1329,7 +1318,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         // Two Weeks
         for (var i=0; i<13; i++) {
           if(values[weekDay-1]!) {
-            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), "placeId", members, selectedTrainerId);
+            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;
@@ -1338,7 +1327,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         // One Month
         for (var i=0; i<29; i++) {
           if(values[weekDay-1]!) {
-            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), "placeId", members, selectedTrainerId);
+            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;

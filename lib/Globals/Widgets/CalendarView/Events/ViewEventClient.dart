@@ -6,8 +6,10 @@ import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/Locatio
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocationsSelect.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
+import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -51,8 +53,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   TextEditingController durationController = TextEditingController();
   String duration = "1.00";
   List<String> durations = ["0.30","1.00","1.30","2.00","2.30","3.00","3.30","4.00"];
-  // Ubicació
-  var ubicacionController =  TextEditingController();
+  // Location
+  Location location = Location();
   // Participants
   TextEditingController membersController = TextEditingController();
   int members = 1;
@@ -107,7 +109,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     isFull = (event!.joinedMembers!.length/event!.maxMembers == 1);
     getAllTrainersFromBrand();
     getAllClientsFromBrand();
-    getPlaceFullAddress();
+    getLocation(event!.locationId!);
   }
 
   Future<void> getAllTrainersFromBrand() async {
@@ -145,9 +147,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     }
   }
 
-  void getPlaceFullAddress() async {
-    //placeDetails = await LocationPlacesSearch().getPlaceDetailFromId(event!.placeId!);
-    //ubicacionController.text = placeDetails.fullAddress!;
+  void getLocation(String locationId) async {
+    location = await _accessDatabase.getSingleLocation(locationId);
     if (mounted) {
       setState(() {
         isLoading = false;
@@ -732,7 +733,6 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                         ],
                                       ),
                                     ),
-                                    /*
                                     Padding(
                                       padding: EdgeInsets.only(left:18, top: 10.0),
                                       child: Row(
@@ -741,102 +741,40 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                         children: <Widget>[
                                           Icon(Icons.location_on_outlined, color: Theme.of(context).accentColor, size: 30,),
                                           Container(
-                                              padding: EdgeInsets.only(left: 15),
-                                              width: MediaQuery.of(context).size.width*0.77,
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  isEditing ? new Flexible(
-                                                    child: TextFormField(
-                                                      controller: ubicacionController,
-                                                      onTap: () async {
-                                                        final Suggestion? result = await showSearch(
-                                                          context: context,
-                                                          delegate: AddressSearch(),
-                                                        );
-                                                        if (result != null && result.description != "") {
-                                                          setState(() {
-                                                            ubicacionController.text = result.description;
-                                                          });
-                                                          placeId = result.placeId;
-                                                        }
-                                                      },
-                                                      readOnly: true,
-                                                      minLines: 2,
-                                                      maxLines: 3,
-                                                      style: Styles.purpleTextStyle,
-                                                      decoration: InputDecoration(
-                                                        labelStyle: Styles.purpleTextStyle,
-                                                        border: InputBorder.none,
-                                                        enabledBorder: UnderlineInputBorder(
-                                                            borderSide: BorderSide(
-                                                                color: Colors.grey,
-                                                                width: 1.0
-                                                            )
-                                                        ),
-                                                        focusedBorder: UnderlineInputBorder(
-                                                            borderSide: BorderSide(
-                                                                color: Colors.grey,
-                                                                width: 1.0
-                                                            )
-                                                        ),
-                                                        errorBorder: UnderlineInputBorder(
-                                                            borderSide: BorderSide(
-                                                                color: Colors.red,
-                                                                width: 1.0
-                                                            )
-                                                        ),
-                                                        disabledBorder: InputBorder.none,
+                                            padding: EdgeInsets.only(left: 15),
+                                            width: MediaQuery.of(context).size.width*0.77,
+                                            child: ListTile(
+                                              contentPadding: EdgeInsets.all(0),
+                                              title: Text(
+                                                  location.description!,
+                                                  style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor)
+                                              ),
+                                              onTap: isEditing ? () async {
+                                                setState(() {
+                                                  isLoading = true;
+                                                });
+                                                var result = await Navigator.push(
+                                                    context,
+                                                    PageTransition(
+                                                      type: PageTransitionType.rightToLeftWithFade,
+                                                      child: MyLocationsSelect(
+                                                        brandId: currentBrand.id!,
                                                       ),
-                                                      textAlign: TextAlign.start,
-                                                    ),
-                                                  ) : new Flexible(
-                                                    child: TextFormField(
-                                                      controller: ubicacionController,
-                                                      readOnly: true,
-                                                      minLines: 2,
-                                                      maxLines: 3,
-                                                      style: Styles.purpleTextStyle,
-                                                      decoration: InputDecoration(
-                                                        labelStyle: Styles.purpleTextStyle,
-                                                        border: InputBorder.none,
-                                                        focusedBorder: InputBorder.none,
-                                                        enabledBorder: InputBorder.none,
-                                                        errorBorder: InputBorder.none,
-                                                        disabledBorder: InputBorder.none,
-                                                        suffixIcon: IconButton(
-                                                          onPressed: () async {
-                                                            Clipboard.setData(new ClipboardData(text: ubicacionController.text)).then((_){
-                                                              showTopSnackBar(
-                                                                context,
-                                                                CustomSnackBar.info(
-                                                                  icon: Container(),
-                                                                  iconRotationAngle: 0,
-                                                                  backgroundColor: Theme.of(context).accentColor,
-                                                                  message: AppLocalizations.of(context)!.copyCorrectLocation,
-                                                                  textStyle: Styles.whiteTextStyle,
-                                                                ),
-                                                              );
-                                                            });
-                                                          },
-                                                          icon: Icon(
-                                                            Icons.copy,
-                                                            color: Theme.of(context).accentColor,
-                                                            size: 28,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      textAlign: TextAlign.start,
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
+                                                    )
+                                                );
+                                                if (result != null) {
+                                                  getLocation(result);
+                                                } else {
+                                                  setState(() {
+                                                    isLoading = false;
+                                                  });
+                                                }
+                                              } : null,
+                                            ),
                                           ),
                                         ],
                                       ),
                                     ),
-                                     */
                                   ],
                                 ),
                               ),
