@@ -49,7 +49,6 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
   List<String> durations = ["0.30","1.00","1.30","2.00","2.30","3.00","3.30","4.00"];
   // Ubicació
   var ubicacionController =  TextEditingController();
-  var placeId =  currentBrand.placeId!;
   // Participants
   TextEditingController membersController = TextEditingController();
   int members = 1;
@@ -1251,7 +1250,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                             selectedTrainerId.add(allTrainers[i].id);
                           }
                         }
-                        await _accessDatabase.updateEvent(widget.eventId, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
+                        await _accessDatabase.updateEvent(widget.eventId, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), "placeId", members, selectedTrainerId);
                         getEventInfo();
                       }
                     },

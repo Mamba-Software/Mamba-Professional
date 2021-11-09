@@ -215,7 +215,7 @@ class FirebaseDatabaseService {
   // Brand Model Services
 
   // Add Brand
-  Future<String> addBrand(String name, File image, String description, String placeId, String address, double latitude, double longitude, List<double> workShift, int maxMembers) async {
+  Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) async {
     User? firebaseUser = await getCurrentUser();
     bool firestoreError = false;
     var uid = Uuid().v4();
@@ -231,10 +231,7 @@ class FirebaseDatabaseService {
       "name": name,
       "description": description,
       "dateJoined": formatted,
-      "placeId": placeId,
-      "address": address,
-      "latitude": latitude,
-      "longitude": longitude,
+      "baseLocation": null,
       "workShift": workShift,
       "maxMembers": maxMembers,
     }).catchError((err) {
@@ -264,6 +261,22 @@ class FirebaseDatabaseService {
     });
     return result;
   }
+
+  Future<void> updateBrandInfo(String brandID, String name, String description, int maxMembers, List<double> workShift) async {
+    await _firestore.collection("Brands").doc(brandID).update({
+      "name": name,
+      "description": description,
+      "maxMembers": maxMembers,
+      "workShift": workShift,
+    });
+  }
+
+  Future<void> updateBrandBaseLocation(String brandID, String locationID) async {
+    await _firestore.collection("Brands").doc(brandID).update({
+      "baseLocation": locationID
+    });
+  }
+
 
   Future<Brand> getBrandDetails(String brandID) async {
     DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Brands").doc(brandID).get();
@@ -458,7 +471,7 @@ class FirebaseDatabaseService {
   // Locations
 
   // Add Location
-  Future<bool> addLocation(String brandId, bool isBaseLocation, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) async {
+  Future<String> addLocation(String brandId, bool isBaseLocation, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) async {
     var uid = Uuid().v1();
     try {
       await _firestore.collection("Locations").doc(uid).set({
@@ -473,10 +486,10 @@ class FirebaseDatabaseService {
         "latitude": latitude,
         "longitude": longitude
       });
-      return true;
+      return uid;
     } catch (e) {
       print(e.toString());
-      return false;
+      return "Error";
     }
   }
   // Delete Location

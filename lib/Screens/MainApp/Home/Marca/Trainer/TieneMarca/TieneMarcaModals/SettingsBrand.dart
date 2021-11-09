@@ -83,7 +83,9 @@ class _SettingsBrandState extends State<SettingsBrand> {
                             context,
                             PageTransition(
                               type: PageTransitionType.rightToLeftWithFade,
-                              child: EditBrandInfo(),
+                              child: EditBrandInfo(
+                                locale: Localizations.localeOf(context),
+                              ),
                             )
                         );
                       },
@@ -204,10 +206,10 @@ class _SettingsBrandState extends State<SettingsBrand> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Icon(Icons.delete_outline, color: Colors.red),
+                      Icon(Icons.logout, color: Colors.red),
                       SizedBox(width: 10),
                       Text(
-                        AppLocalizations.of(context)!.deleteBrand,
+                        AppLocalizations.of(context)!.exitBrand,
                         style: Styles.purpleTextStyle.copyWith(color: Colors.red),
                       ),
                     ],

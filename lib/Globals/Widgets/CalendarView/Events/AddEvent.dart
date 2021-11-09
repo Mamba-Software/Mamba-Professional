@@ -51,7 +51,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   List<String> durations = ["0.30","1.00","1.30","2.00","2.30","3.00","3.30","4.00"];
   // Ubicació
   var ubicacionController =  TextEditingController();
-  var placeId =  currentBrand.placeId!;
   // Participants
   TextEditingController membersController = TextEditingController();
   int members = 1;
@@ -1312,16 +1311,16 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       }
     }
     if (!isRecurrent) {
-      await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
+      await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), "placeId", members, selectedTrainerId);
     } else {
-      await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
+      await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), "placeId", members, selectedTrainerId);
       var tempDate = startDate.add(Duration(days: 1));
       var weekDay = tempDate.weekday;
       if (_value == 1) {
         // One Week
         for (var i=0; i<6; i++) {
           if(values[weekDay-1]!) {
-            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
+            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), "placeId", members, selectedTrainerId);
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;
@@ -1330,7 +1329,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         // Two Weeks
         for (var i=0; i<13; i++) {
           if(values[weekDay-1]!) {
-            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
+            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), "placeId", members, selectedTrainerId);
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;
@@ -1339,7 +1338,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         // One Month
         for (var i=0; i<29; i++) {
           if(values[weekDay-1]!) {
-            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
+            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), "placeId", members, selectedTrainerId);
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;

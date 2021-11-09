@@ -53,7 +53,6 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   List<String> durations = ["0.30","1.00","1.30","2.00","2.30","3.00","3.30","4.00"];
   // Ubicació
   var ubicacionController =  TextEditingController();
-  var placeId =  currentBrand.placeId!;
   // Participants
   TextEditingController membersController = TextEditingController();
   int members = 1;

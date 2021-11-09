@@ -112,8 +112,7 @@ class _MyLocationsState extends State<MyLocations> {
                         location.longitude = detailsResult!.geometry!.location!.lng!;
                       }
                       // Save location to DataBase
-                      bool isOkay = await _accessDatabase.addLocation(widget.brandId, false, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
-                      print(isOkay);
+                      await _accessDatabase.addLocation(widget.brandId, false, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
                     }
                   },
                   leading: Icon(
