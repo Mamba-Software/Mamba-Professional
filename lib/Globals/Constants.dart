@@ -22,5 +22,6 @@ class Constants {
   static String notificationImage = "assets/images/notificationImage.jpg";
   static String mySessionsImage = "assets/images/mySessionsImage.jpg";
   static String myProgressImage = "assets/images/myProgressImage.jpg";
+  static String createBrand = "assets/images/createBrand.png";
 
 }

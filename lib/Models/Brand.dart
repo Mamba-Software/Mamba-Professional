@@ -14,6 +14,7 @@ class Brand {
   double? latitude;
   double? longitude;
   var workShift;
+  int? maxMembers;
   // Sector
   // Disponibilitat
   // Preus
@@ -32,6 +33,7 @@ class Brand {
     this.latitude,
     this.longitude,
     this.workShift,
+    this.maxMembers,
   });
 
   Map toMap(Brand brand) {
@@ -47,6 +49,7 @@ class Brand {
     data['latitude'] = brand.latitude;
     data['longitude'] = brand.longitude;
     data['workShift'] = brand.workShift;
+    data['maxMembers'] = brand.maxMembers;
     return data;
   }
 
@@ -62,6 +65,7 @@ class Brand {
     this.latitude = mapData['latitude'];
     this.longitude = mapData['longitude'];
     this.workShift = mapData['workShift'];
+    this.maxMembers = mapData['maxMembers'];
   }
 
   Brand.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
@@ -76,5 +80,6 @@ class Brand {
     this.latitude = documentSnapshot.get("latitude");
     this.longitude = documentSnapshot.get("longitude");
     this.workShift = documentSnapshot.get("workShift");
+    this.maxMembers = documentSnapshot.get("maxMembers");
   }
 }

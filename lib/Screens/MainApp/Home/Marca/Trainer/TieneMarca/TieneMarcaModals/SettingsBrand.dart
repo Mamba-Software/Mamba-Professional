@@ -204,10 +204,10 @@ class _SettingsBrandState extends State<SettingsBrand> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Icon(Icons.logout_outlined, color: Colors.red),
+                      Icon(Icons.delete_outline, color: Colors.red),
                       SizedBox(width: 10),
                       Text(
-                        AppLocalizations.of(context)!.exitBrand,
+                        AppLocalizations.of(context)!.deleteBrand,
                         style: Styles.purpleTextStyle.copyWith(color: Colors.red),
                       ),
                     ],

@@ -354,6 +354,26 @@
   "@createBrand":{
     "description": "createBrand Text"
   },
+  "createBrandTitle": "Aquí puedes crear tu propia marca en cuatro simples pasos:",
+  "@createBrandTitle":{
+    "description": "createBrand Text"
+  },
+  "createBrandPortada": "Añade el nombre y el logo",
+  "@createBrandPortada":{
+    "description": "createBrand Text"
+  },
+  "createBrandInfo": "Introduce una descripción",
+  "@createBrandInfo":{
+    "description": "createBrand Text"
+  },
+  "createBrandLocation": "Situa tu marca en el mapa",
+  "@createBrandLocation":{
+    "description": "createBrand Text"
+  },
+  "createBrandTime": "Define tu horario laboral",
+  "@createBrandTime":{
+    "description": "createBrand Text"
+  },
   "addCode": "Añadir Código",
   "@addCode":{
     "description": "createBrand Text"

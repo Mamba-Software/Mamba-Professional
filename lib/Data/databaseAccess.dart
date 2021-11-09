@@ -35,7 +35,7 @@ class DatabaseAccess {
   Future<void> leaveCurrentUserBrand() => _firebase.leaveCurrentUserBrand();
 
   // Brands
-  Future<String> addBrand(String name, File image, String description, String placeId, String address, double latitude, double longitude, List<double> workShift) => _firebase.addBrand(name, image, description, placeId, address, latitude, longitude, workShift);
+  Future<String> addBrand(String name, File image, String description, String placeId, String address, double latitude, double longitude, List<double> workShift, int maxMembers) => _firebase.addBrand(name, image, description, placeId, address, latitude, longitude, workShift, maxMembers);
 
   Future<bool> checkIfBrandExists(String brandID) => _firebase.checkIfBrandExists(brandID);
   Future<Brand> getBrandDetails(String brandID) => _firebase.getBrandDetails(brandID);
@@ -62,7 +62,7 @@ class DatabaseAccess {
   Future<List<Event>> getAllEventsTodayUser(String userid, bool isTrainer) => _firebase.getAllEventsTodayUser(userid, isTrainer);
 
   // Locations
-  Future<bool> addLocation(String brandId, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) => _firebase.addLocation(brandId, placeId, description, street, streetNumber, city, zipCode, latitude, longitude);
+  Future<bool> addLocation(String brandId, bool isBaseLocation, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) => _firebase.addLocation(brandId, isBaseLocation, placeId, description, street, streetNumber, city, zipCode, latitude, longitude);
   Future<bool> deleteLocation(String locationId) => _firebase.deleteLocation(locationId);
   Future<Location> getSingleLocation(String locationId) => _firebase.getSingleLocation(locationId);
   // Get Single Location

@@ -112,7 +112,7 @@ class _MyLocationsState extends State<MyLocations> {
                         location.longitude = detailsResult!.geometry!.location!.lng!;
                       }
                       // Save location to DataBase
-                      bool isOkay = await _accessDatabase.addLocation(widget.brandId, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
+                      bool isOkay = await _accessDatabase.addLocation(widget.brandId, false, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
                       print(isOkay);
                     }
                   },
@@ -125,24 +125,6 @@ class _MyLocationsState extends State<MyLocations> {
                     style: Styles.purpleTextStyle.copyWith(fontSize: 16),
                   ),
                 ),
-                /*
-                TextField(
-
-                  readOnly: true,
-                  textAlign: TextAlign.left,
-                  decoration: InputDecoration(
-                    hintText: AppLocalizations.of(context)!.addLocation,
-                    hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
-                    border: InputBorder.none,
-                    prefixIcon: Icon(
-                      Icons.add_location,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    contentPadding: EdgeInsets.only(top: 15),
-                  ),
-                )
-
-                 */
             ),
             Container(
               height: 1,
@@ -168,22 +150,41 @@ class _MyLocationsState extends State<MyLocations> {
                         itemCount: locationList.length,
                         itemBuilder: (context, index) {
                           Location location = locationList[index];
-                          return ListTile(
-                            leading: Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: 25,),
-                            title: Text(
-                              location.description!,
-                              style: Styles.purpleTextStyle.copyWith(fontSize: 16)
-                            ),
-                            trailing: IconButton(
-                              onPressed: () {
-                                _accessDatabase.deleteLocation(location.id!);
-                              },
-                              icon: Icon(Icons.delete_outline, color: Colors.red, size: 25,),
-                            ),
-                            onTap: () {
+                          if (location.isBaseLocation!) {
+                            return ListTile(
+                              leading: Icon(Icons.home_filled, color: Theme.of(context).accentColor, size: 25,),
+                              title: Text(
+                                  location.description!,
+                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).accentColor)
+                              ),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  // _accessDatabase.deleteLocation(location.id!);
+                                },
+                                icon: Icon(Icons.edit, color: Theme.of(context).accentColor, size: 25,),
+                              ),
+                              onTap: () {
 
-                            },
-                          );
+                              },
+                            );
+                          } else {
+                            return ListTile(
+                              leading: Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: 25,),
+                              title: Text(
+                                  location.description!,
+                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16)
+                              ),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  _accessDatabase.deleteLocation(location.id!);
+                                },
+                                icon: Icon(Icons.delete_outline, color: Colors.red, size: 25,),
+                              ),
+                              onTap: () {
+
+                              },
+                            );
+                          }
                         }
                     );
                   }

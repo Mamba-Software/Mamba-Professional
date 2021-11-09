@@ -215,7 +215,7 @@ class FirebaseDatabaseService {
   // Brand Model Services
 
   // Add Brand
-  Future<String> addBrand(String name, File image, String description, String placeId, String address, double latitude, double longitude, List<double> workShift) async {
+  Future<String> addBrand(String name, File image, String description, String placeId, String address, double latitude, double longitude, List<double> workShift, int maxMembers) async {
     User? firebaseUser = await getCurrentUser();
     bool firestoreError = false;
     var uid = Uuid().v4();
@@ -236,6 +236,7 @@ class FirebaseDatabaseService {
       "latitude": latitude,
       "longitude": longitude,
       "workShift": workShift,
+      "maxMembers": maxMembers,
     }).catchError((err) {
       print(err);
       firestoreError = true;
@@ -457,13 +458,13 @@ class FirebaseDatabaseService {
   // Locations
 
   // Add Location
-  Future<bool> addLocation(String brandId, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) async {
+  Future<bool> addLocation(String brandId, bool isBaseLocation, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) async {
     var uid = Uuid().v1();
     try {
       await _firestore.collection("Locations").doc(uid).set({
         "brandID": brandId,
         "placeId": placeId,
-        "isBaseLocation": false,
+        "isBaseLocation": isBaseLocation,
         "description": description,
         "street": street,
         "streetNumber": streetNumber,
