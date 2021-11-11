@@ -290,8 +290,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     ) :
     Scaffold(
       appBar: AppBar(
-        toolbarHeight: MediaQuery.of(context).size.height*0.11,
-        title: Text(AppLocalizations.of(context)!.addEvent, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+        toolbarHeight: MediaQuery.of(context).size.height*0.14,
+        title: Text(AppLocalizations.of(context)!.addEvent),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Styles.accent),
@@ -536,21 +536,23 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                       child: Column(
                         children: [
                           Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.05),
                                 child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.max,
                                     children: [
                                       Padding(
                                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
                                         child: Container(
-                                          height: MediaQuery.of(context).size.height * 0.15,
+                                          height: MediaQuery.of(context).size.height * 0.20,
                                           width: MediaQuery.of(context).size.width * 0.90,
                                           decoration: BoxDecoration(
                                               color: Theme.of(context).backgroundColor,
                                               borderRadius: BorderRadius.all(Radius.circular(15.0))
                                           ),
                                           child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.max,
                                             children: [
                                               Padding(
                                                 padding: EdgeInsets.only(left:18, top: 10.0),
@@ -809,6 +811,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           ),
                                         ],
                                       ) : Container(),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.10)
                                     ]
                                 )
                             ),
@@ -851,7 +854,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             Container(
-                                              height: MediaQuery.of(context).size.height*0.16,
+                                              height: MediaQuery.of(context).size.height*0.20,
                                               width: MediaQuery.of(context).size.width,
                                               child: ListView.builder(
                                                   shrinkWrap: true,
@@ -869,7 +872,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                       child: Padding(
                                                         padding: !(index == 0 || index == brandTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                                         child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          mainAxisAlignment: MainAxisAlignment.center,
                                                           children: [
                                                             CircularImage(
                                                               size: MediaQuery.of(context).size.width*0.2,

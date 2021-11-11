@@ -82,7 +82,7 @@ class _PerfilState extends State<Perfil> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                height: MediaQuery.of(context).size.height*0.30,
+                height: MediaQuery.of(context).size.height*0.32,
                 child: Stack(
                     alignment: Alignment.topCenter,
                     fit: StackFit.expand,
@@ -142,14 +142,14 @@ class _PerfilState extends State<Perfil> {
                         right: 0,
                         child: Row(
                           children: [
-                            Expanded(child: Text("${currentUser.name!}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center)),
+                            Expanded(child: Text("${currentUser.name!}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center)),
                           ],
                         ),
                       ),
                     ]
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              SizedBox(height: MediaQuery.of(context).size.height*0.04),
               Column(
                 children: [
                   todayEvents.length != 0 ? Column(
@@ -160,7 +160,7 @@ class _PerfilState extends State<Perfil> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 22,), textAlign: TextAlign.start),
+                            Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 18,), textAlign: TextAlign.start),
                             Row(
                               children: [
                                 Text(todayEvents.length.toString(), style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 16, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
@@ -177,7 +177,7 @@ class _PerfilState extends State<Perfil> {
                           ],
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
                       Container(
                         height: MediaQuery.of(context).size.height*0.28,
                         width: MediaQuery.of(context).size.width,
@@ -295,7 +295,8 @@ class _PerfilState extends State<Perfil> {
                                                 mainAxisAlignment: MainAxisAlignment.end,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Text(event.title!, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                                                  Text(event.title!,
+                                                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                                                   SizedBox(height: MediaQuery.of(context).size.height*0.005),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -376,7 +377,7 @@ class _PerfilState extends State<Perfil> {
                             }
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
                     ],
                   ) : Container(),
                   currentBrand.id != null ? GestureDetector(
@@ -430,7 +431,7 @@ class _PerfilState extends State<Perfil> {
                       ),
                     ),
                   ) : Container(),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -504,8 +505,8 @@ class _PerfilState extends State<Perfil> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(AppLocalizations.of(context)!.mySchedule, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
-                                SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                                Text(AppLocalizations.of(context)!.mySchedule, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                 Text(AppLocalizations.of(context)!.myScheduleText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
                               ],
                             ),
@@ -514,7 +515,7 @@ class _PerfilState extends State<Perfil> {
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
                   GestureDetector(
                     onTap: () {
 
@@ -575,8 +576,8 @@ class _PerfilState extends State<Perfil> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(AppLocalizations.of(context)!.myProgress, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
-                                SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                                Text(AppLocalizations.of(context)!.myProgress, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                 Text(AppLocalizations.of(context)!.myProgressText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.white.withOpacity(0.5))),
                               ],
                             ),
@@ -585,7 +586,7 @@ class _PerfilState extends State<Perfil> {
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
                 ],
               ),
             ],

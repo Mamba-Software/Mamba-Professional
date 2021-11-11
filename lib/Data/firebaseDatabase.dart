@@ -594,7 +594,7 @@ class FirebaseDatabaseService {
     }
   }
   // Update Event
-  Future<void> updateEvent(String? id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers, var selectedTrainers) async {
+  Future<void> updateEvent(String? id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) async {
     try {
       await _firestore.collection("Events").doc(id).update({
         "title": title,
@@ -605,7 +605,7 @@ class FirebaseDatabaseService {
         "hour": hour,
         "minute": minute,
         "duration": duration,
-        "placeId": placeId,
+        "locationId": locationId,
         "maxMembers": maxMembers,
         "selectedTrainers": selectedTrainers,
       });

@@ -105,7 +105,15 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
     isFull = (event!.joinedMembers!.length/event!.maxMembers == 1);
     getAllTrainersFromBrand();
     getAllClientsFromBrand();
-    getLocation(event!.locationId!);
+    await getLocation(event!.locationId!);
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+        isLoadingBody = false;
+        isEditing = false;
+      });
+    }
+
   }
 
   Future<void> getAllTrainersFromBrand() async {
@@ -143,15 +151,11 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
     }
   }
 
-  void getLocation(String locationId) async {
-    location = await _accessDatabase.getSingleLocation(locationId);
-    if (mounted) {
-      setState(() {
-        isLoading = false;
-        isLoadingBody = false;
-        isEditing = false;
-      });
-    }
+  Future<void> getLocation(String locationId) async {
+    var temp = await _accessDatabase.getSingleLocation(locationId);
+    setState(() {
+      location = temp;
+    });
   }
 
   Future<void> selectSlot(ctx, type) {
@@ -594,7 +598,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                             Padding(
                               padding: EdgeInsets.only(top: 0.0),
                               child: Container(
-                                height: MediaQuery.of(context).size.height * 0.25,
+                                height: MediaQuery.of(context).size.height * 0.30,
                                 width: MediaQuery.of(context).size.width * 0.90,
                                 decoration: BoxDecoration(
                                     color: Theme.of(context).backgroundColor,
@@ -749,6 +753,8 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                                         style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor)
                                                     ),
                                                     onTap: isEditing ? () async {
+                                                      print("1");
+                                                      print(location.description!);
                                                       setState(() {
                                                         isLoading = true;
                                                       });
@@ -762,7 +768,13 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                                           )
                                                       );
                                                       if (result != null) {
-                                                        getLocation(result);
+                                                        print("Hola 1");
+                                                        await getLocation(result);
+                                                        setState(() {
+                                                          isLoading = false;
+                                                        });
+                                                        print("2");
+                                                        print(location.description!);
                                                       } else {
                                                         setState(() {
                                                           isLoading = false;
@@ -838,7 +850,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   isEditing ? Container(
-                                    height: MediaQuery.of(context).size.height*0.16,
+                                    height: MediaQuery.of(context).size.height*0.20,
                                     width: MediaQuery.of(context).size.width,
                                     child: ListView.builder(
                                         shrinkWrap: true,
@@ -902,7 +914,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                     ),
                                   ) :
                                   Container(
-                                    height: MediaQuery.of(context).size.height*0.14,
+                                    height: MediaQuery.of(context).size.height*0.20,
                                     width: MediaQuery.of(context).size.width*0.99,
                                     child: ListView.builder(
                                         shrinkWrap: true,
@@ -918,7 +930,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                             child: Padding(
                                               padding: !(index == 0 || index == brandTrainersSelected.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandTrainersSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   CircularImage(
                                                     size: MediaQuery.of(context).size.width*0.2,
@@ -1065,7 +1077,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
-                                    height: MediaQuery.of(context).size.height*0.14,
+                                    height: MediaQuery.of(context).size.height*0.20,
                                     width: MediaQuery.of(context).size.width,
                                     child: ListView.builder(
                                         shrinkWrap: true,
@@ -1081,7 +1093,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                             child: Padding(
                                               padding: !(index == 0 || index == brandClientsJoining.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandClientsJoining.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   CircularImage(
                                                     size: MediaQuery.of(context).size.width*0.2,
@@ -1201,7 +1213,8 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                             selectedTrainerId.add(allTrainers[i].id);
                           }
                         }
-                        await _accessDatabase.updateEvent(widget.eventId, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), "placeId", members, selectedTrainerId);
+                        print(location.id);
+                        await _accessDatabase.updateEvent(widget.eventId, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
                         getEventInfo();
                       }
                     },
