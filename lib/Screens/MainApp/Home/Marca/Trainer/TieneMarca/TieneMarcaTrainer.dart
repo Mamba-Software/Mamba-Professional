@@ -413,7 +413,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                 ),
                                 image: new DecorationImage(
                                   fit: BoxFit.cover,
-                                  //colorFilter: new ColorFilter.mode(Colors.black.withOpacity(1), BlendMode.dstATop),
+                                  colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
                                   image: Image.asset(Constants.statisticsImage).image,
                                 ),
                               ),
@@ -423,7 +423,6 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                               width: MediaQuery.of(context).size.width * 0.43,
                               height: MediaQuery.of(context).size.height * 0.20,
                               decoration: new BoxDecoration(
-                                color: Colors.white,
                                 gradient: LinearGradient(
                                     begin: FractionalOffset.topCenter,
                                     end: FractionalOffset.bottomCenter,
@@ -448,7 +447,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(AppLocalizations.of(context)!.historial, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                                  Text(AppLocalizations.of(context)!.historial, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 18, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                                   //SizedBox(height: MediaQuery.of(context).size.height*0.005),
                                   //Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
                                 ],
@@ -484,7 +483,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                 ),
                                 image: new DecorationImage(
                                   fit: BoxFit.cover,
-                                  //colorFilter: new ColorFilter.mode(Colors.black.withOpacity(1), BlendMode.dstATop),
+                                  colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
                                   image: Image.asset(Constants.notificationImage).image,
                                 ),
                               ),
@@ -519,7 +518,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(AppLocalizations.of(context)!.notifications, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                                  Text(AppLocalizations.of(context)!.notifications, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 18, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                                   //SizedBox(height: MediaQuery.of(context).size.height*0.005),
                                   //Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
                                 ],
