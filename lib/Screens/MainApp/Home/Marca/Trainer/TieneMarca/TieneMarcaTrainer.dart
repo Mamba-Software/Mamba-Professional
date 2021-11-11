@@ -183,28 +183,36 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                     });
                   });
                 },
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.90,
-                  height: MediaQuery.of(context).size.height * 0.08,
-                  decoration: new BoxDecoration(
-                    color: Theme.of(context).accentColor,
-                    border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                child: Material(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
                     borderRadius: new BorderRadius.all(
                       const Radius.circular(10.0),
                     ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                          width: MediaQuery.of(context).size.width * 0.09,
-                          child: Icon(Icons.calendar_today_outlined, color: Colors.white, size: 30,)
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.90,
+                    height: MediaQuery.of(context).size.height * 0.08,
+                    decoration: new BoxDecoration(
+                      color: Theme.of(context).accentColor,
+                      border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                      borderRadius: new BorderRadius.all(
+                        const Radius.circular(10.0),
                       ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.69,
-                        child: Center(child: Text(AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400)),),
-                      ),
-                    ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            width: MediaQuery.of(context).size.width * 0.09,
+                            child: Icon(Icons.calendar_today_outlined, color: Colors.white, size: 30,)
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.69,
+                          child: Center(child: Text(AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400)),),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ) : Container(),
@@ -227,38 +235,70 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                     });
                   });
                 },
-                child: Stack(
-                  alignment: Alignment.bottomLeft,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.90,
-                      height: MediaQuery.of(context).size.height * 0.20,
-                      decoration: new BoxDecoration(
-                        color: Colors.black,
-                        border: Border.all(color: Theme.of(context).accentColor, width: 1),
-                        borderRadius: new BorderRadius.all(
-                          const Radius.circular(10.0),
+                child: Material(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.all(
+                      const Radius.circular(10.0),
+                    ),
+                  ),
+                  child: Stack(
+                    alignment: Alignment.bottomLeft,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.90,
+                        height: MediaQuery.of(context).size.height * 0.20,
+                        decoration: new BoxDecoration(
+                          color: Colors.transparent,
+                          border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                          borderRadius: new BorderRadius.all(
+                            const Radius.circular(10.0),
+                          ),
+                          image: new DecorationImage(
+                            fit: BoxFit.cover,
+                            //colorFilter: new ColorFilter.mode(Colors.black.withOpacity(1), BlendMode.dstATop),
+                            image: Image.asset(Constants.calendarImage).image,
+                          ),
                         ),
-                        image: new DecorationImage(
-                          fit: BoxFit.cover,
-                          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
-                          image: Image.asset(Constants.calendarImage).image,
+                        child: Center(),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.90,
+                        height: MediaQuery.of(context).size.height * 0.20,
+                        decoration: new BoxDecoration(
+                          color: Colors.white,
+                          gradient: LinearGradient(
+                              begin: FractionalOffset.topCenter,
+                              end: FractionalOffset.bottomCenter,
+                              colors: [
+                                Colors.grey.withOpacity(0.0),
+                                Colors.black,
+                              ],
+                              stops: [
+                                0.0,
+                                0.75
+                              ]
+                          ),
+                          border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                          borderRadius: new BorderRadius.all(
+                            const Radius.circular(10.0),
+                          ),
+                        ),
+                        child: Center(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                            Text(AppLocalizations.of(context)!.calendarBrandText(currentBrand.name!), style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                          ],
                         ),
                       ),
-                      child: Center(),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                          Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.02),
@@ -277,38 +317,70 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                     });
                   });
                 },
-                child: Stack(
-                  alignment: Alignment.bottomLeft,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.90,
-                      height: MediaQuery.of(context).size.height * 0.20,
-                      decoration: new BoxDecoration(
-                        color: Colors.black,
-                        border: Border.all(color: Theme.of(context).accentColor, width: 1),
-                        borderRadius: new BorderRadius.all(
-                          const Radius.circular(10.0),
+                child: Material(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.all(
+                      const Radius.circular(10.0),
+                    ),
+                  ),
+                  child: Stack(
+                    alignment: Alignment.bottomLeft,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.90,
+                        height: MediaQuery.of(context).size.height * 0.20,
+                        decoration: new BoxDecoration(
+                          color: Colors.transparent,
+                          border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                          borderRadius: new BorderRadius.all(
+                            const Radius.circular(10.0),
+                          ),
+                          image: new DecorationImage(
+                            fit: BoxFit.cover,
+                            //colorFilter: new ColorFilter.mode(Colors.black.withOpacity(1), BlendMode.dstATop),
+                            image: Image.asset(Constants.teamImage).image,
+                          ),
                         ),
-                        image: new DecorationImage(
-                          fit: BoxFit.cover,
-                          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
-                          image: Image.asset(Constants.teamImage).image,
+                        child: Center(),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.90,
+                        height: MediaQuery.of(context).size.height * 0.20,
+                        decoration: new BoxDecoration(
+                          color: Colors.white,
+                          gradient: LinearGradient(
+                              begin: FractionalOffset.topCenter,
+                              end: FractionalOffset.bottomCenter,
+                              colors: [
+                                Colors.grey.withOpacity(0.0),
+                                Colors.black,
+                              ],
+                              stops: [
+                                0.0,
+                                0.75
+                              ]
+                          ),
+                          border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                          borderRadius: new BorderRadius.all(
+                            const Radius.circular(10.0),
+                          ),
+                        ),
+                        child: Center(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(AppLocalizations.of(context)!.members, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                            Text(AppLocalizations.of(context)!.membersBrandText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                          ],
                         ),
                       ),
-                      child: Center(),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(AppLocalizations.of(context)!.members, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                          Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.02),
@@ -320,38 +392,70 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                       onTap: () {
 
                       },
-                      child: Stack(
-                        alignment: Alignment.bottomLeft,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.43,
-                            height: MediaQuery.of(context).size.height * 0.20,
-                            decoration: new BoxDecoration(
-                              color: Colors.black,
-                              border: Border.all(color: Theme.of(context).accentColor, width: 1),
-                              borderRadius: new BorderRadius.all(
-                                const Radius.circular(10.0),
+                      child: Material(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.all(
+                            const Radius.circular(10.0),
+                          ),
+                        ),
+                        child: Stack(
+                          alignment: Alignment.bottomLeft,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.43,
+                              height: MediaQuery.of(context).size.height * 0.20,
+                              decoration: new BoxDecoration(
+                                color: Colors.transparent,
+                                border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                                borderRadius: new BorderRadius.all(
+                                  const Radius.circular(10.0),
+                                ),
+                                image: new DecorationImage(
+                                  fit: BoxFit.cover,
+                                  //colorFilter: new ColorFilter.mode(Colors.black.withOpacity(1), BlendMode.dstATop),
+                                  image: Image.asset(Constants.statisticsImage).image,
+                                ),
                               ),
-                              image: new DecorationImage(
-                                fit: BoxFit.cover,
-                                colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
-                                image: Image.asset(Constants.statisticsImage).image,
+                              child: Center(),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.43,
+                              height: MediaQuery.of(context).size.height * 0.20,
+                              decoration: new BoxDecoration(
+                                color: Colors.white,
+                                gradient: LinearGradient(
+                                    begin: FractionalOffset.topCenter,
+                                    end: FractionalOffset.bottomCenter,
+                                    colors: [
+                                      Colors.grey.withOpacity(0.0),
+                                      Colors.black,
+                                    ],
+                                    stops: [
+                                      0.0,
+                                      0.75
+                                    ]
+                                ),
+                                border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                                borderRadius: new BorderRadius.all(
+                                  const Radius.circular(10.0),
+                                ),
+                              ),
+                              child: Center(),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(AppLocalizations.of(context)!.historial, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                                  //SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                                  //Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                                ],
                               ),
                             ),
-                            child: Center(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(AppLocalizations.of(context)!.historial, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18, fontFamily: "Helvetica"), textAlign: TextAlign.center),
-                                SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                                Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(width: MediaQuery.of(context).size.width*0.04),
@@ -359,38 +463,70 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                       onTap: () {
 
                       },
-                      child: Stack(
-                        alignment: Alignment.bottomLeft,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.43,
-                            height: MediaQuery.of(context).size.height * 0.20,
-                            decoration: new BoxDecoration(
-                              color: Colors.black,
-                              border: Border.all(color: Theme.of(context).accentColor, width: 1),
-                              borderRadius: new BorderRadius.all(
-                                const Radius.circular(10.0),
+                      child: Material(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.all(
+                            const Radius.circular(10.0),
+                          ),
+                        ),
+                        child: Stack(
+                          alignment: Alignment.bottomLeft,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.43,
+                              height: MediaQuery.of(context).size.height * 0.20,
+                              decoration: new BoxDecoration(
+                                color: Colors.transparent,
+                                border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                                borderRadius: new BorderRadius.all(
+                                  const Radius.circular(10.0),
+                                ),
+                                image: new DecorationImage(
+                                  fit: BoxFit.cover,
+                                  //colorFilter: new ColorFilter.mode(Colors.black.withOpacity(1), BlendMode.dstATop),
+                                  image: Image.asset(Constants.notificationImage).image,
+                                ),
                               ),
-                              image: new DecorationImage(
-                                fit: BoxFit.cover,
-                                colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
-                                image: Image.asset(Constants.notificationImage).image,
+                              child: Center(),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.43,
+                              height: MediaQuery.of(context).size.height * 0.20,
+                              decoration: new BoxDecoration(
+                                color: Colors.white,
+                                gradient: LinearGradient(
+                                    begin: FractionalOffset.topCenter,
+                                    end: FractionalOffset.bottomCenter,
+                                    colors: [
+                                      Colors.grey.withOpacity(0.0),
+                                      Colors.black,
+                                    ],
+                                    stops: [
+                                      0.0,
+                                      0.75
+                                    ]
+                                ),
+                                border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                                borderRadius: new BorderRadius.all(
+                                  const Radius.circular(10.0),
+                                ),
+                              ),
+                              child: Center(),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(AppLocalizations.of(context)!.notifications, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                                  //SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                                  //Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                                ],
                               ),
                             ),
-                            child: Center(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(AppLocalizations.of(context)!.notifications, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18, fontFamily: "Helvetica"), textAlign: TextAlign.center),
-                                SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                                Text(currentBrand.name!, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ],

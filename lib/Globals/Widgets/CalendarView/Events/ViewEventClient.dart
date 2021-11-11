@@ -735,43 +735,56 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                     ),
                                     Padding(
                                       padding: EdgeInsets.only(left:18, top: 10.0),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          Icon(Icons.location_on_outlined, color: Theme.of(context).accentColor, size: 30,),
-                                          Container(
-                                            padding: EdgeInsets.only(left: 15),
-                                            width: MediaQuery.of(context).size.width*0.77,
-                                            child: ListTile(
-                                              contentPadding: EdgeInsets.all(0),
-                                              title: Text(
-                                                  location.description!,
-                                                  style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor)
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: <Widget>[
+                                              Icon(Icons.location_on_outlined, color: Theme.of(context).accentColor, size: 30,),
+                                              Container(
+                                                padding: EdgeInsets.only(left: 15),
+                                                width: MediaQuery.of(context).size.width*0.77,
+                                                child: ListTile(
+                                                  contentPadding: EdgeInsets.all(0),
+                                                  title: Text(
+                                                      location.description!,
+                                                      style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor)
+                                                  ),
+                                                  onTap: isEditing ? () async {
+                                                    setState(() {
+                                                      isLoading = true;
+                                                    });
+                                                    var result = await Navigator.push(
+                                                        context,
+                                                        PageTransition(
+                                                          type: PageTransitionType.rightToLeftWithFade,
+                                                          child: MyLocationsSelect(
+                                                            brandId: currentBrand.id!,
+                                                          ),
+                                                        )
+                                                    );
+                                                    if (result != null) {
+                                                      getLocation(result);
+                                                    } else {
+                                                      setState(() {
+                                                        isLoading = false;
+                                                      });
+                                                    }
+                                                  } : null,
+                                                ),
                                               ),
-                                              onTap: isEditing ? () async {
-                                                setState(() {
-                                                  isLoading = true;
-                                                });
-                                                var result = await Navigator.push(
-                                                    context,
-                                                    PageTransition(
-                                                      type: PageTransitionType.rightToLeftWithFade,
-                                                      child: MyLocationsSelect(
-                                                        brandId: currentBrand.id!,
-                                                      ),
-                                                    )
-                                                );
-                                                if (result != null) {
-                                                  getLocation(result);
-                                                } else {
-                                                  setState(() {
-                                                    isLoading = false;
-                                                  });
-                                                }
-                                              } : null,
-                                            ),
+                                            ],
                                           ),
+                                          isEditing ? Padding(
+                                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.11, top:MediaQuery.of(context).size.width*0.01),
+                                            child: Container(
+                                              height: 1,
+                                              width: MediaQuery.of(context).size.width*0.68,
+                                              color: Colors.grey,
+                                            ),
+                                          ) : Container(),
                                         ],
                                       ),
                                     ),

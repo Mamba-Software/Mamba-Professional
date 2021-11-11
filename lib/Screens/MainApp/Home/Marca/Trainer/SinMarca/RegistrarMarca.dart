@@ -345,27 +345,26 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                  Container(
-                    height: MediaQuery.of(context).size.height*0.12,
-                    width: MediaQuery.of(context).size.height*0.12,
-                    child: FloatingActionButton.extended(
-                      heroTag: null,
-                      onPressed: () async {
-                        setState(() {
-                          isFirstTime = false;
-                        });
-                      },
-                      backgroundColor: Theme.of(context).accentColor,
-                      icon: Container(),
-                      label: Text(
-                        AppLocalizations.of(context)!.letsGo,
-                        style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
+        ),
+        floatingActionButton: Padding(
+          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.01),
+          child: FloatingActionButton.extended(
+            heroTag: null,
+            onPressed: () async {
+              setState(() {
+                isFirstTime = false;
+              });
+            },
+            backgroundColor: Theme.of(context).accentColor,
+            icon: Container(),
+            label: Text(
+              AppLocalizations.of(context)!.letsGo,
+              style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white, fontWeight: FontWeight.w500),
+            ),
+          ),
         ),
       )
         :

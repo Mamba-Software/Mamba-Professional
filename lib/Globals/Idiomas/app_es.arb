@@ -490,6 +490,15 @@
   "@calendar":{
     "description": "disponibilidad text"
   },
+  "calendarBrandText": "Mira todas las sesiones de {brand}",
+  "@calendarBrandText": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
   "next": "Siguiente",
   "@next":{
     "description": "Siguiente text"
@@ -561,6 +570,10 @@
   "members": "Miembros",
   "@members":{
     "description": "Añadir Miembros text"
+  },
+  "membersBrandText": "Entrenadores y clientes todos aquí",
+  "@membersBrandText": {
+    "description": "Wellcome message"
   },
   "mondayLetter": "L",
   "@mondayLetter":{
@@ -757,12 +770,20 @@
   "@mySchedule": {
     "description": "Wellcome message"
   },
+  "myScheduleText": "Mira todas tus sesiones",
+  "@myScheduleText": {
+    "description": "Wellcome message"
+  },
   "planSessions": "Planifica más sesiones",
   "@planSessions": {
     "description": "Wellcome message"
   },
   "myProgress": "Control y seguimiento",
   "@myProgress": {
+    "description": "Wellcome message"
+  },
+  "myProgressText": "¿Quieres ver tu progreso?",
+  "@myProgressText": {
     "description": "Wellcome message"
   },
   "events": "Eventos",
