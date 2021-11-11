@@ -4,6 +4,7 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocations.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
@@ -48,7 +49,13 @@ class _SettingsBrandState extends State<SettingsBrand> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return isLoading ?
+      Scaffold(
+        appBar: null,
+        body: LoadingViewPurple(),
+      )
+        :
+      Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settings, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
@@ -217,12 +224,28 @@ class _SettingsBrandState extends State<SettingsBrand> {
                   ),
                 ) : TextButton(
                   onPressed: () async {
-                    showDialog(
+                    var result = await showDialog(
                         context: context,
                         builder: (_) {
                           return DeleteBrandDialog();
                         }
                     );
+                    print(result);
+                    if (result) {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      await _accessDatabase.deleteBrand(currentBrand.id!);
+                      Navigator.pushReplacement(
+                          context,
+                          CupertinoPageRoute<Null>(
+                            builder: (context) =>
+                                SplashScreen(),
+                            settings: RouteSettings(
+                                name: 'SplashScreen'),
+                          )
+                      );
+                    }
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -344,19 +367,9 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
                         icon: Icon(Icons.delete_outline),
                         backgroundColor: canDelete ? Colors.red : Colors.red[100],
                         foregroundColor: Styles.white,
-                        onPressed: () async {
-                          await _accessDatabase.deleteBrand(currentBrand.id!);
-                          Navigator.pop(context);
-                          Navigator.pushReplacement(
-                              context,
-                              CupertinoPageRoute<Null>(
-                                builder: (context) =>
-                                    SplashScreen(),
-                                settings: RouteSettings(
-                                    name: 'SplashScreen'),
-                              )
-                          );
-                        },
+                        onPressed: canDelete ? () async  {
+                          Navigator.pop(context, true);
+                        } : null,
                       ),
                       FloatingActionButton.extended(
                         icon: Icon(Icons.cancel_outlined, size: 30,),
@@ -364,7 +377,7 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
                         backgroundColor: Theme.of(context).primaryColor,
                         foregroundColor: Styles.white,
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          Navigator.pop(context, false);
                         },
                       ),
                     ],
