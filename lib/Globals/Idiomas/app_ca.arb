@@ -177,6 +177,8 @@
   "full": "Ple",
   "available": "Disponible",
   "noEvents": "Sense events",
+  "noMembersFound": "No hem trobat cap membre",
+  "myLocations": "Les meves ubicacions",
   "myLocations": "Les meves ubicacions",
   "addLocation": "Afegir ubicació",
   "historial": "Control",
@@ -202,5 +204,7 @@
     "description": "Wellcome message"
   },
   "deleteBrand": "Eliminar marca",
+  "deleteBrandConfirmation": "Segur que vols eliminar la teva marca?",
+  "writeDeleteBrand": "Escriu el nom de la teva marca per confirmar aquesta acció:",
   "logo": "Logo"
 }

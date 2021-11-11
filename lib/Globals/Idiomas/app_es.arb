@@ -746,6 +746,10 @@
   "@noEvents": {
     "description": "Wellcome message"
   },
+  "noMembersFound": "No hemos encontrado ningún miembro",
+  "@noMembersFound": {
+    "description": "Wellcome message"
+  },
   "myLocations": "Mis ubicaciones",
   "@myLocations": {
     "description": "Wellcome message"
@@ -831,6 +835,14 @@
     "description": "Wellcome message"
   },
   "deleteBrand": "Eliminar marca",
+  "@deleteBrand": {
+    "description": "Wellcome message"
+  },
+  "deleteBrandConfirmation": "¿Seguro que quieres eliminar tu marca?",
+  "@deleteBrandConfirmation": {
+    "description": "Wellcome message"
+  },
+  "writeDeleteBrand": "Escribe el nombre de tu marca para confirmar esta acción:",
   "@deleteBrand": {
     "description": "Wellcome message"
   },

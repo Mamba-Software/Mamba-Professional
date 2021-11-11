@@ -32,7 +32,7 @@ class DatabaseAccess {
   Future<void> updateCurrentUserDatosPerifl(String name, int gender, String dateOfBirth) => _firebase.updateCurrentUserDatosPerifl(name, gender, dateOfBirth);
   Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma, String previousIdioma) => _firebase.updateCurrentUserSettingsPerifl(isPrivate, idioma, previousIdioma);
 
-  Future<void> leaveCurrentUserBrand() => _firebase.leaveCurrentUserBrand();
+  Future<void> leaveBrand(String uid) => _firebase.leaveBrand(uid);
 
   // Brands
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) => _firebase.addBrand(name, image, description, workShift, maxMembers);
@@ -41,6 +41,8 @@ class DatabaseAccess {
   Future<Brand> getBrandDetails(String brandID) => _firebase.getBrandDetails(brandID);
   Future<List<Usuario>> getAllTrainersFromBrand(String brandID) => _firebase.getAllTrainersFromBrand(brandID);
   Future<List<Usuario>> getAllClientsFromBrand(String brandID) => _firebase.getAllClientsFromBrand(brandID);
+
+  Future<void> deleteBrand(String brandId) => _firebase.deleteBrand(brandId);
 
   Future<String> updateCurrentBrandPhoto(String brandID, File image) => _firebase.updateCurrentBrandPhoto(brandID, image);
   Future<void> updateBrandInfo(String brandID, String name,String description, int maxMembers, List<double> workShift) => _firebase.updateBrandInfo(brandID, name, description, maxMembers, workShift);
@@ -56,21 +58,28 @@ class DatabaseAccess {
   Future<void> updateEventCompleted(String id) => _firebase.updateEventCompleted(id);
 
   Future<void> deleteEvent(String id) => _firebase.deleteEvent(id);
-  Future<void> deleteUserFromAllEvents(String uid, bool isTrainer) => _firebase.deleteUserFromAllEvents(uid, isTrainer);
+  Future<void> deleteBrandEvents(String brandId) => _firebase.deleteBrandEvents(brandId);
+  Future<void> deleteUserFromAllBrandEvents(String uid, String brandId, bool isTrainer) => _firebase.deleteUserFromAllBrandEvents(uid, brandId, isTrainer);
 
   Future<bool> joinEvent(String eid, String uid, bool isTrainer) => _firebase.joinEvent(eid, uid, isTrainer);
   Future<bool> leaveEvent(String eid, String uid, bool isTrainer) => _firebase.leaveEvent(eid, uid, isTrainer);
 
 
   Future<Event> getSingleEvent(String eventId) => _firebase.getSingleEvent(eventId);
+
   Future<List<Event>> getAllEventsFromClient(String clientid) => _firebase.getAllEventsFromClient(clientid);
   Future<List<Event>> getAllEventsFromTrainer(String trainerid) => _firebase.getAllEventsFromTrainer(trainerid);
+
+  Future<List<Event>> getAllClientEventsFromBrand(String clientid, String brandId) => _firebase.getAllClientEventsFromBrand(clientid, brandId);
+  Future<List<Event>> getAllTrainerEventsFromBrand(String trainerid, String brandId) => _firebase.getAllTrainerEventsFromBrand(trainerid, brandId);
+
   Future<List<Event>> getAllEventsTodayBrand(String brandId) => _firebase.getAllEventsTodayBrand(brandId);
   Future<List<Event>> getAllEventsTodayUser(String userid, bool isTrainer) => _firebase.getAllEventsTodayUser(userid, isTrainer);
 
   // Locations
   Future<String> addLocation(String brandId, bool isBaseLocation, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) => _firebase.addLocation(brandId, isBaseLocation, placeId, description, street, streetNumber, city, zipCode, latitude, longitude);
   Future<bool> deleteLocation(String locationId) => _firebase.deleteLocation(locationId);
+  Future<void> deleteBrandLocations(String brandId) => _firebase.deleteBrandLocations(brandId);
   Future<Location> getSingleLocation(String locationId) => _firebase.getSingleLocation(locationId);
   // Get Single Location
 

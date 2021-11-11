@@ -204,9 +204,8 @@ class FirebaseDatabaseService {
     });
   }
 
-  Future<void> leaveCurrentUserBrand() async {
-    User? currentUser = await getCurrentUser();
-    await _firestore.collection("Users").doc(currentUser!.uid).update({
+  Future<void> leaveBrand(String uid) async {
+    await _firestore.collection("Users").doc(uid).update({
       "brandID": null,
     }).catchError((err) {
       print(err);
@@ -245,6 +244,22 @@ class FirebaseDatabaseService {
     } else {
       return "Error";
     }
+  }
+
+  Future<void> deleteBrand(String brandId) async {
+    // Delete All Events from Brand
+    await this.deleteBrandEvents(brandId);
+    // Delete All Locations from Brand
+    await this.deleteBrandLocations(brandId);
+    // Get All Brand Users
+    List<Usuario> brandUsers = await this.getAllClientsFromBrand(brandId);
+    brandUsers.addAll(await this.getAllTrainersFromBrand(brandId));
+    // All Users Leave Brand
+    for (var i=0; i < brandUsers.length; i++) {
+      await this.leaveBrand(brandUsers[i].id!);
+    }
+    // Delete Brand
+    await _firestore.collection("Brands").doc(brandId).delete();
   }
 
   Future<String> updateCurrentBrandPhoto(String brandID, File image) async {
@@ -356,9 +371,9 @@ class FirebaseDatabaseService {
     List<Event> events = [];
     QuerySnapshot querySnapshot = await _firestore
         .collection("Events")
-        //.orderBy("year", descending: true)
-        //.orderBy("month", descending: true)
-        //.orderBy("day", descending: true)
+        .orderBy("year", descending: true)
+        .orderBy("month", descending: true)
+        .orderBy("day", descending: true)
         .where("joinedMembers", arrayContains: clientid)
         .get();
     for(int i = 0; i < querySnapshot.docs.length; i++) {
@@ -380,7 +395,41 @@ class FirebaseDatabaseService {
       events.add(Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
     return events;
+  }// Get All Events for Client
+
+  // Get All Events for Client
+  Future<List<Event>> getAllClientEventsFromBrand(String clientid, String brandId) async {
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Events")
+        .orderBy("year", descending: true)
+        .orderBy("month", descending: true)
+        .orderBy("day", descending: true)
+        .where("brandID", arrayContains: brandId)
+        .where("joinedMembers", arrayContains: clientid)
+        .get();
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return events;
   }
+  // Get All Events for Trainer
+  Future<List<Event>> getAllTrainerEventsFromBrand(String trainerid, String brandId) async {
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Events")
+        .orderBy("year", descending: true)
+        .orderBy("month", descending: true)
+        .orderBy("day", descending: true)
+        .where("brandID", arrayContains: brandId)
+        .where("selectedTrainers", arrayContains: trainerid)
+        .get();
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return events;
+  }
+
   // Get All Events for Today of Brand
   Future<List<Event>> getAllEventsTodayBrand(String brandId) async {
     DateTime today = DateTime.now();
@@ -435,17 +484,31 @@ class FirebaseDatabaseService {
       print(e.toString());
     }
   }
-  // Delete Event
-  Future<void> deleteUserFromAllEvents(String uid, bool isTrainer) async {
+  // Delete All Brand Events
+  Future<void> deleteBrandEvents(String brandId) async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection("Events")
+          .where("brandID", isEqualTo: brandId)
+          .get();
+      for(int i = 0; i < querySnapshot.docs.length; i++) {
+        await this.deleteEvent(querySnapshot.docs[i].id);
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+  // Delete User from All Existing Events
+  Future<void> deleteUserFromAllBrandEvents(String uid, String brandId, bool isTrainer) async {
     List<Event> userEvents = [];
     if (isTrainer) {
-      userEvents = await this.getAllEventsFromTrainer(uid);
+      userEvents = await this.getAllTrainerEventsFromBrand(uid, brandId);
       for (var i=0; i < userEvents.length; i++) {
         Event event = userEvents[i];
         await this.leaveEvent(event.id!, uid, true);
       }
     } else {
-      userEvents = await this.getAllEventsFromClient(uid);
+      userEvents = await this.getAllClientEventsFromBrand(uid, brandId);
       for (var i=0; i < userEvents.length; i++) {
         Event event = userEvents[i];
         await this.leaveEvent(event.id!, uid, true);
@@ -592,6 +655,24 @@ class FirebaseDatabaseService {
     } catch (e) {
       print(e.toString());
       return false;
+    }
+  }
+  // Delete Location
+  Future<void> deleteBrandLocations(String brandId) async {
+    try {
+      try {
+        QuerySnapshot querySnapshot = await _firestore
+            .collection("Locations")
+            .where("brandID", isEqualTo: brandId)
+            .get();
+        for(int i = 0; i < querySnapshot.docs.length; i++) {
+          await this.deleteLocation(querySnapshot.docs[i].id);
+        }
+      } catch (e) {
+        print(e.toString());
+      }
+    } catch (e) {
+      print(e.toString());
     }
   }
   // Get Single Location

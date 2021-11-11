@@ -190,8 +190,8 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         }
                     );
                     if (result) {
-                      await _accessDatabase.deleteUserFromAllEvents(currentUser.id!, currentUser.isTrainer!);
-                      await _accessDatabase.leaveCurrentUserBrand();
+                      await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
+                      await _accessDatabase.leaveBrand(currentUser.id!);
                       Navigator.pop(context);
                       Navigator.pushReplacement(
                           context,
@@ -220,7 +220,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     showDialog(
                         context: context,
                         builder: (_) {
-                          return DeleteDialog();
+                          return DeleteBrandDialog();
                         }
                     );
                   },
@@ -244,14 +244,14 @@ class _SettingsBrandState extends State<SettingsBrand> {
   }
 }
 
-class DeleteDialog extends StatefulWidget {
-  const DeleteDialog({Key? key}) : super(key: key);
+class DeleteBrandDialog extends StatefulWidget {
+  const DeleteBrandDialog({Key? key}) : super(key: key);
 
   @override
   _DeleteDialogState createState() => _DeleteDialogState();
 }
 
-class _DeleteDialogState extends State<DeleteDialog> {
+class _DeleteDialogState extends State<DeleteBrandDialog> {
 
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
@@ -289,10 +289,10 @@ class _DeleteDialogState extends State<DeleteDialog> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 25, bottom: 10.0),
-                  child: Text(AppLocalizations.of(context)!.wantDeleteUser, style: Styles.redTextStyle.copyWith(color: Colors.red, fontSize: 22, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context)!.deleteBrandConfirmation, style: Styles.redTextStyle.copyWith(color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
                 ),
                 Flexible(
-                  child: Text("${AppLocalizations.of(context)!.writeDeleteUser} ", style: Styles.purpleTextStyle.copyWith(fontSize: 16), textAlign: TextAlign.center,),
+                  child: Text("${AppLocalizations.of(context)!.writeDeleteBrand} ", style: Styles.purpleTextStyle.copyWith(fontSize: 16), textAlign: TextAlign.center,),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, left: 15, right: 15),
@@ -301,13 +301,12 @@ class _DeleteDialogState extends State<DeleteDialog> {
                     children: <Widget>[
                       new Flexible(
                         child: new TextFormField(
-                          obscureText: !_passwordVisible,
                           controller: deleteController,
                           onChanged: (val) {
                             setState(() => {
                               deleteTemp = val
                             });
-                            if (val.length < 6) {
+                            if (deleteTemp != currentBrand.name) {
                               setState(() => {
                                 canDelete = false
                               });
@@ -319,8 +318,8 @@ class _DeleteDialogState extends State<DeleteDialog> {
                           },
                           style: Styles.redTextStyle.copyWith(fontSize: 14),
                           decoration: InputDecoration(
-                            hintText: AppLocalizations.of(context)!.passworRepeat,
-                            hintStyle: Styles.redTextStyle.copyWith(fontSize: 14, color: Colors.red),
+                            hintText: currentBrand.name,
+                            hintStyle: Styles.redTextStyle.copyWith(fontSize: 14, color: Colors.red.withOpacity(0.5)),
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.red, width: 1),
                               borderRadius: BorderRadius.circular(10.0),
@@ -329,33 +328,12 @@ class _DeleteDialogState extends State<DeleteDialog> {
                               borderSide: BorderSide(color: Colors.red, width: 1),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            suffixIcon: Padding(
-                                padding: EdgeInsets.all(0.0),
-                                child: IconButton(
-                                    icon: Icon(
-                                      // Based on passwordVisible state choose the icon
-                                        _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                        color: Styles.red
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _passwordVisible = !_passwordVisible;
-                                      });
-                                    }
-                                )
-                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                wrongPassword ? Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20.0, left: 10, right: 10),
-                    child: Text("${AppLocalizations.of(context)!.passwordNotSameError} ", style: Styles.redTextStyle.copyWith(fontSize: 16), textAlign: TextAlign.center,),
-                  ),
-                ) : Container(),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),
                   child: Row(
@@ -367,28 +345,23 @@ class _DeleteDialogState extends State<DeleteDialog> {
                         backgroundColor: canDelete ? Colors.red : Colors.red[100],
                         foregroundColor: Styles.white,
                         onPressed: () async {
-                          // Delete Function
-                          var result = await _accessDatabase.deleteUser(deleteTemp);
-                          if (!result) {
-                            setState(() {
-                              wrongPassword = true;
-                            });
-                          } else {
-                            Navigator.pushAndRemoveUntil(
+                          await _accessDatabase.deleteBrand(currentBrand.id!);
+                          Navigator.pop(context);
+                          Navigator.pushReplacement(
                               context,
                               CupertinoPageRoute<Null>(
-                                builder: (context) => Login(),
-                                settings: RouteSettings(name: 'Login'),
-                              ),
-                                  (_) => false,
-                            );
-                          }
+                                builder: (context) =>
+                                    SplashScreen(),
+                                settings: RouteSettings(
+                                    name: 'SplashScreen'),
+                              )
+                          );
                         },
                       ),
                       FloatingActionButton.extended(
                         icon: Icon(Icons.cancel_outlined, size: 30,),
                         label: Text(AppLocalizations.of(context)!.cancel),
-                        backgroundColor: Styles.accent,
+                        backgroundColor: Theme.of(context).primaryColor,
                         foregroundColor: Styles.white,
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -413,7 +386,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             onTap: () async {
                               setState(() {});
                             },
-                            child: Icon(Icons.warning, color: Colors.white, size: 60,), // icon
+                            child: Icon(Icons.delete_outline_outlined, color: Colors.white, size: 60,), // icon
                           ),
                         ),
                       ),

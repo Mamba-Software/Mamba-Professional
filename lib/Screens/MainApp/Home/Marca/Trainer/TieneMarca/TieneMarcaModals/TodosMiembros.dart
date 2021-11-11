@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
@@ -210,77 +212,93 @@ class _TodosMiembrosState extends State<TodosMiembros> {
                         ),
                       )
                     ),
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.only(top: 0),
-                        child: ListView.builder(
-                            physics: BouncingScrollPhysics(),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: filteredClients.length,
-                            itemBuilder: (context, index) {
-                              Usuario user = filteredClients[index];
-                              return Container(
-                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
-                                  },
-                                  child: Container(
-                                      height: MediaQuery.of(context).size.height*0.09,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
-                                            child: CircularImage(
-                                              size: MediaQuery.of(context).size.width*0.2,
-                                              image: user.imageUrl,
-                                              color: Theme.of(context).primaryColor,
-                                              borderWidth: 1.5,
-                                            ),
-                                          ),
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                    filteredClients.length != 0 ?
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.only(top: 0),
+                          child: ListView.builder(
+                              physics: BouncingScrollPhysics(),
+                              shrinkWrap: true,
+                              scrollDirection: Axis.vertical,
+                              itemCount: filteredClients.length,
+                              itemBuilder: (context, index) {
+                                Usuario user = filteredClients[index];
+                                return Container(
+                                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
+                                      },
+                                      child: Container(
+                                          height: MediaQuery.of(context).size.height*0.09,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.max,
                                             children: [
-                                              Container(
-                                                width: MediaQuery.of(context).size.width*0.40,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        user.name!,
-                                                        style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                                                        textAlign: TextAlign.left,
-                                                      ),
-                                                    ),
-                                                  ],
+                                              Padding(
+                                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
+                                                child: CircularImage(
+                                                  size: MediaQuery.of(context).size.width*0.2,
+                                                  image: user.imageUrl,
+                                                  color: Theme.of(context).primaryColor,
+                                                  borderWidth: 1.5,
                                                 ),
                                               ),
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width*0.40,
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            user.name!,
+                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                                                            textAlign: TextAlign.left,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
 
+                                                ],
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.20),
+                                                child: Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  size: 30,
+                                                  color: Theme.of(context).primaryColor,
+                                                ),
+                                              ),
                                             ],
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.20),
-                                            child: Icon(
-                                              Icons.arrow_forward_ios,
-                                              size: 30,
-                                              color: Theme.of(context).primaryColor,
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                  ),
-                                ),
-                              );
-                            }
+                                          )
+                                      ),
+                                    ),
+                                  );
+                              }
+                          ),
+                        ),
+                      ) :
+                      Padding(
+                        padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.10,),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Container(
+                                width: MediaQuery.of(context).size.width*0.50,
+                                child: Image.asset(Constants.emptyCalendar)
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                            Text(AppLocalizations.of(context)!.noMembersFound, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey), textAlign: TextAlign.center,),
+                          ],
 
                         ),
                       ),
-                    ),
                   ],
                 ),
                 Column(
