@@ -596,7 +596,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                 ),
                             ): Container(),
                             Padding(
-                              padding: EdgeInsets.only(top: 0.0),
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.005),
                               child: Container(
                                 height: MediaQuery.of(context).size.height * 0.30,
                                 width: MediaQuery.of(context).size.width * 0.90,
@@ -605,197 +605,184 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                     borderRadius: BorderRadius.all(Radius.circular(15.0))
                                 ),
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Padding(
-                                        padding: EdgeInsets.only(left:18, top: 10.0),
-                                        child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
-                                              Container(
-                                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                                  width: MediaQuery.of(context).size.width*0.78,
-                                                  child: Row(
-                                                    mainAxisSize: MainAxisSize.max,
-                                                    children: <Widget>[
-                                                      isEditing ? new Flexible(
-                                                        child: TextFormField(
-                                                          controller: startDateController,
-                                                          readOnly: true,
-                                                          onTap: () {
-                                                            if (isEditing) selectSlot(context, 0);
-                                                          },
-                                                          style: Styles.purpleTextStyle,
-                                                          decoration: InputDecoration(
-                                                            labelStyle: Styles.purpleTextStyle,
-                                                            border: InputBorder.none,
-                                                            enabledBorder: UnderlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    color: errorDate ? Colors.red : Colors.grey,
-                                                                    width: 1.0
-                                                                )
-                                                            ),
-                                                            focusedBorder: UnderlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    color: errorDate ? Colors.red : Colors.grey,
-                                                                    width: 1.0
-                                                                )
-                                                            ),
-                                                            disabledBorder: InputBorder.none,
-                                                          ),
-                                                          textAlign: TextAlign.start,
-                                                        ),
-                                                      ) : new Flexible(
-                                                        child: TextFormField(
-                                                          controller: startDateController,
-                                                          readOnly: true,
-                                                          enabled: false,
-                                                          style: Styles.purpleTextStyle,
-                                                          decoration: InputDecoration(
-                                                            labelStyle: Styles.purpleTextStyle,
-                                                            border: InputBorder.none,
-                                                            focusedBorder: InputBorder.none,
-                                                            enabledBorder: InputBorder.none,
-                                                            errorBorder: InputBorder.none,
-                                                            disabledBorder: InputBorder.none,
-                                                          ),
-                                                          textAlign: TextAlign.start,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  )
-                                              ),
-                                            ],
-                                          ),
-                                      ),
-                                    Padding(
-                                      padding: EdgeInsets.only(left:18, top: 10.0),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          Icon(Icons.timer, color: Theme.of(context).accentColor,),
-                                          Container(
-                                              padding: EdgeInsets.only(left: 20),
-                                              width: MediaQuery.of(context).size.width*0.30,
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  isEditing ? new Flexible(
-                                                    child: TextFormField(
-                                                      controller: durationController,
-                                                      onTap: () {
-                                                        if (isEditing) selectSlot(context, 1);
-                                                      },
-                                                      readOnly: true,
-                                                      style: Styles.purpleTextStyle,
-                                                      decoration: InputDecoration(
-                                                        labelStyle: Styles.purpleTextStyle,
-                                                        border: InputBorder.none,
-                                                        enabledBorder: UnderlineInputBorder(
-                                                            borderSide: BorderSide(
-                                                                color: errorDate ? Colors.red : Colors.grey,
-                                                                width: 1.0
-                                                            )
-                                                        ),
-                                                        focusedBorder: UnderlineInputBorder(
-                                                            borderSide: BorderSide(
-                                                                color: errorDate ? Colors.red : Colors.grey,
-                                                                width: 1.0
-                                                            )
-                                                        ),
-                                                        disabledBorder: InputBorder.none,
-                                                      ),
-                                                      textAlign: TextAlign.start,
-                                                    ),
-                                                  ) : new Flexible(
-                                                    child: TextFormField(
-                                                      controller: durationController,
-                                                      readOnly: true,
-                                                      enabled: false,
-                                                      style: Styles.purpleTextStyle,
-                                                      decoration: InputDecoration(
-                                                        labelStyle: Styles.purpleTextStyle,
-                                                        border: InputBorder.none,
-                                                        focusedBorder: InputBorder.none,
-                                                        enabledBorder: InputBorder.none,
-                                                        errorBorder: InputBorder.none,
-                                                        disabledBorder: InputBorder.none,
-                                                      ),
-                                                      textAlign: TextAlign.start,
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(left:18, top: 10.0),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Icon(Icons.location_on_outlined, color: Theme.of(context).accentColor, size: 30,),
-                                              Container(
-                                                  padding: EdgeInsets.only(left: 15),
-                                                  width: MediaQuery.of(context).size.width*0.77,
-                                                  child: ListTile(
-                                                    contentPadding: EdgeInsets.all(0),
-                                                    title: Text(
-                                                        location.description!,
-                                                        style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor)
-                                                    ),
-                                                    onTap: isEditing ? () async {
-                                                      print("1");
-                                                      print(location.description!);
-                                                      setState(() {
-                                                        isLoading = true;
-                                                      });
-                                                      var result = await Navigator.push(
-                                                          context,
-                                                          PageTransition(
-                                                            type: PageTransitionType.rightToLeftWithFade,
-                                                            child: MyLocationsSelect(
-                                                              brandId: currentBrand.id!,
-                                                            ),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
+                                        Container(
+                                            padding: EdgeInsets.symmetric(horizontal: 20),
+                                            width: MediaQuery.of(context).size.width*0.77,
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: <Widget>[
+                                                isEditing ? new Flexible(
+                                                  child: TextFormField(
+                                                    controller: startDateController,
+                                                    readOnly: true,
+                                                    onTap: () {
+                                                      if (isEditing) selectSlot(context, 0);
+                                                    },
+                                                    style: Styles.purpleTextStyle,
+                                                    decoration: InputDecoration(
+                                                      labelStyle: Styles.purpleTextStyle,
+                                                      border: InputBorder.none,
+                                                      enabledBorder: UnderlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: errorDate ? Colors.red : Colors.grey,
+                                                              width: 1.0
                                                           )
-                                                      );
-                                                      if (result != null) {
-                                                        print("Hola 1");
-                                                        await getLocation(result);
-                                                        setState(() {
-                                                          isLoading = false;
-                                                        });
-                                                        print("2");
-                                                        print(location.description!);
-                                                      } else {
-                                                        setState(() {
-                                                          isLoading = false;
-                                                        });
-                                                      }
-                                                    } : null,
+                                                      ),
+                                                      focusedBorder: UnderlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: errorDate ? Colors.red : Colors.grey,
+                                                              width: 1.0
+                                                          )
+                                                      ),
+                                                      disabledBorder: InputBorder.none,
+                                                    ),
+                                                    textAlign: TextAlign.start,
                                                   ),
-                                              ),
-                                            ],
-                                          ),
-                                          isEditing ? Padding(
-                                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.11, top:MediaQuery.of(context).size.width*0.01),
-                                            child: Container(
-                                              height: 1,
-                                              width: MediaQuery.of(context).size.width*0.68,
-                                              color: Colors.grey,
-                                            ),
-                                          ) : Container(),
-                                        ],
-                                      ),
+                                                ) : new Flexible(
+                                                  child: TextFormField(
+                                                    controller: startDateController,
+                                                    readOnly: true,
+                                                    enabled: false,
+                                                    style: Styles.purpleTextStyle,
+                                                    decoration: InputDecoration(
+                                                      labelStyle: Styles.purpleTextStyle,
+                                                      border: InputBorder.none,
+                                                      focusedBorder: InputBorder.none,
+                                                      enabledBorder: InputBorder.none,
+                                                      errorBorder: InputBorder.none,
+                                                      disabledBorder: InputBorder.none,
+                                                    ),
+                                                    textAlign: TextAlign.start,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                        ),
+                                      ],
                                     ),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Icon(Icons.timer, color: Theme.of(context).accentColor,),
+                                        Container(
+                                            padding: EdgeInsets.only(left: 20),
+                                            width: MediaQuery.of(context).size.width*0.77,
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: <Widget>[
+                                                isEditing ? new Flexible(
+                                                  child: TextFormField(
+                                                    controller: durationController,
+                                                    onTap: () {
+                                                      if (isEditing) selectSlot(context, 1);
+                                                    },
+                                                    readOnly: true,
+                                                    style: Styles.purpleTextStyle,
+                                                    decoration: InputDecoration(
+                                                      labelStyle: Styles.purpleTextStyle,
+                                                      border: InputBorder.none,
+                                                      enabledBorder: UnderlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: errorDate ? Colors.red : Colors.grey,
+                                                              width: 1.0
+                                                          )
+                                                      ),
+                                                      focusedBorder: UnderlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: errorDate ? Colors.red : Colors.grey,
+                                                              width: 1.0
+                                                          )
+                                                      ),
+                                                      disabledBorder: InputBorder.none,
+                                                    ),
+                                                    textAlign: TextAlign.start,
+                                                  ),
+                                                ) : new Flexible(
+                                                  child: TextFormField(
+                                                    controller: durationController,
+                                                    readOnly: true,
+                                                    enabled: false,
+                                                    style: Styles.purpleTextStyle,
+                                                    decoration: InputDecoration(
+                                                      labelStyle: Styles.purpleTextStyle,
+                                                      border: InputBorder.none,
+                                                      focusedBorder: InputBorder.none,
+                                                      enabledBorder: InputBorder.none,
+                                                      errorBorder: InputBorder.none,
+                                                      disabledBorder: InputBorder.none,
+                                                    ),
+                                                    textAlign: TextAlign.start,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Icon(Icons.location_on_outlined, color: Theme.of(context).accentColor, size: 30,),
+                                        Container(
+                                          padding: EdgeInsets.only(left: 15),
+                                          width: MediaQuery.of(context).size.width*0.77,
+                                          child: ListTile(
+                                            contentPadding: EdgeInsets.all(0),
+                                            title: Text(
+                                                location.description!,
+                                                style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor)
+                                            ),
+                                            onTap: isEditing ? () async {
+                                              print("1");
+                                              print(location.description!);
+                                              setState(() {
+                                                isLoading = true;
+                                              });
+                                              var result = await Navigator.push(
+                                                  context,
+                                                  PageTransition(
+                                                    type: PageTransitionType.rightToLeftWithFade,
+                                                    child: MyLocationsSelect(
+                                                      brandId: currentBrand.id!,
+                                                    ),
+                                                  )
+                                              );
+                                              if (result != null) {
+                                                print("Hola 1");
+                                                await getLocation(result);
+                                                setState(() {
+                                                  isLoading = false;
+                                                });
+                                                print("2");
+                                                print(location.description!);
+                                              } else {
+                                                setState(() {
+                                                  isLoading = false;
+                                                });
+                                              }
+                                            } : null,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    isEditing ? Padding(
+                                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, top:MediaQuery.of(context).size.width*0.01),
+                                      child: Container(
+                                        height: 1,
+                                        width: MediaQuery.of(context).size.width*0.68,
+                                        color: Colors.grey,
+                                      ),
+                                    ) : Container(),
                                   ],
                                 ),
                               ),
