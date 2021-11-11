@@ -190,6 +190,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         }
                     );
                     if (result) {
+                      await _accessDatabase.deleteUserFromAllEvents(currentUser.id!, currentUser.isTrainer!);
                       await _accessDatabase.leaveCurrentUserBrand();
                       Navigator.pop(context);
                       Navigator.pushReplacement(

@@ -56,6 +56,11 @@ class DatabaseAccess {
   Future<void> updateEventCompleted(String id) => _firebase.updateEventCompleted(id);
 
   Future<void> deleteEvent(String id) => _firebase.deleteEvent(id);
+  Future<void> deleteUserFromAllEvents(String uid, bool isTrainer) => _firebase.deleteUserFromAllEvents(uid, isTrainer);
+
+  Future<bool> joinEvent(String eid, String uid, bool isTrainer) => _firebase.joinEvent(eid, uid, isTrainer);
+  Future<bool> leaveEvent(String eid, String uid, bool isTrainer) => _firebase.leaveEvent(eid, uid, isTrainer);
+
 
   Future<Event> getSingleEvent(String eventId) => _firebase.getSingleEvent(eventId);
   Future<List<Event>> getAllEventsFromClient(String clientid) => _firebase.getAllEventsFromClient(clientid);

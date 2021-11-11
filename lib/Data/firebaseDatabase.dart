@@ -398,7 +398,6 @@ class FirebaseDatabaseService {
     }
     return events;
   }
-
   // Get All Events for User Today
   Future<List<Event>> getAllEventsTodayUser(String userid, bool isTrainer) async {
     DateTime today = DateTime.now();
@@ -428,7 +427,6 @@ class FirebaseDatabaseService {
     }
     return events;
   }
-
   // Delete Event
   Future<void> deleteEvent(String id) async {
     try {
@@ -437,8 +435,102 @@ class FirebaseDatabaseService {
       print(e.toString());
     }
   }
+  // Delete Event
+  Future<void> deleteUserFromAllEvents(String uid, bool isTrainer) async {
+    List<Event> userEvents = [];
+    if (isTrainer) {
+      userEvents = await this.getAllEventsFromTrainer(uid);
+      for (var i=0; i < userEvents.length; i++) {
+        Event event = userEvents[i];
+        await this.leaveEvent(event.id!, uid, true);
+      }
+    } else {
+      userEvents = await this.getAllEventsFromClient(uid);
+      for (var i=0; i < userEvents.length; i++) {
+        Event event = userEvents[i];
+        await this.leaveEvent(event.id!, uid, true);
+      }
+    }
+  }
+  // Get a Event Trainers
+  Future<List<String>> getEventTrainers(String eid) async {
+    List<String> participants = [];
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Events").doc(eid).get();
+    Event event =  Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+    for(int i = 0; i < event.selectedTrainers.length; i++) {
+      participants.add(event.selectedTrainers[i]);
+    }
+    return participants;
+  }
+  // Get a Event Clients
+  Future<List<String>> getEventClients(String eid) async {
+    List<String> participants = [];
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Events").doc(eid).get();
+    Event event =  Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+    for(int i = 0; i < event.joinedMembers.length; i++) {
+      participants.add(event.joinedMembers[i]);
+    }
+    return participants;
+  }
+  // Update Event Trainers
+  Future<bool> updateEventTrainers(String eid, var selectedTrainers) async {
+    try {
+      await _firestore.collection("Events").doc(eid).update({
+        "selectedTrainers": selectedTrainers,
+      });
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+  // Update Event Trainers
+  Future<bool> updateEventClients(String eid, var joinedMembers) async {
+    try {
+      await _firestore.collection("Events").doc(eid).update({
+        "joinedMembers": joinedMembers,
+      });
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+  // Join an Event
+  Future<bool> joinEvent(String eid, String uid, bool isTrainer) async {
+    try {
+      if (isTrainer) {
+
+      } else {
+
+      }
+      return true;
+    } catch (e) {
+      print(e.toString());
+    }
+    return false;
+  }
+  // Leave an Event
+  Future<bool> leaveEvent(String eid, String uid, bool isTrainer) async {
+    bool isFound = false;
+    List<String> eventTrainers = [];
+    if (isTrainer) {
+      eventTrainers = await this.getEventTrainers(eid);
+      for (var i=0; i < eventTrainers.length; i++) {
+        String trainerid = eventTrainers[i];
+        if (trainerid == uid) {
+          isFound = true;
+          eventTrainers.removeAt(i);
+          break;
+        }
+      }
+      if (isFound) await this.updateEventTrainers(eid, eventTrainers);
+      return isFound;
+    } else {
+      return isFound;
+    }
+  }
   // Update Event
-  // Add Event
   Future<void> updateEvent(String? id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers, var selectedTrainers) async {
     try {
       await _firestore.collection("Events").doc(id).update({
