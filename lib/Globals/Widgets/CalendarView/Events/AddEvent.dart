@@ -542,7 +542,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
                                       Container(
-                                        height: MediaQuery.of(context).size.height * 0.20,
+                                        height: MediaQuery.of(context).size.height * 0.22,
                                         width: MediaQuery.of(context).size.width * 0.90,
                                         decoration: BoxDecoration(
                                             color: Theme.of(context).backgroundColor,
