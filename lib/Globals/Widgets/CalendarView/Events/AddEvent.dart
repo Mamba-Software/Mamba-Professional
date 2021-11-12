@@ -291,7 +291,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     Scaffold(
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height*0.14,
-        title: Text(AppLocalizations.of(context)!.addEvent),
+        title: Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Styles.accent),
@@ -541,101 +541,95 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-                                        child: Container(
-                                          height: MediaQuery.of(context).size.height * 0.20,
-                                          width: MediaQuery.of(context).size.width * 0.90,
-                                          decoration: BoxDecoration(
-                                              color: Theme.of(context).backgroundColor,
-                                              borderRadius: BorderRadius.all(Radius.circular(15.0))
-                                          ),
+                                      Container(
+                                        height: MediaQuery.of(context).size.height * 0.20,
+                                        width: MediaQuery.of(context).size.width * 0.90,
+                                        decoration: BoxDecoration(
+                                            color: Theme.of(context).backgroundColor,
+                                            borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.05, horizontal: MediaQuery.of(context).size.width*0.05),
                                           child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             mainAxisSize: MainAxisSize.max,
                                             children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(left:18, top: 10.0),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.max,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
-                                                    Container(
-                                                      padding: EdgeInsets.symmetric(horizontal: 20),
-                                                      width: MediaQuery.of(context).size.width*0.70,
-                                                      child: GestureDetector(
-                                                          onTap: () {
-                                                            selectSlot(context, 0);
-                                                          },
-                                                          child: Row(
-                                                            mainAxisSize: MainAxisSize.max,
-                                                            children: <Widget>[
-                                                              new Flexible(
-                                                                child: TextFormField(
-                                                                  controller: startDateController,
-                                                                  readOnly: true,
-                                                                  enabled: false,
-                                                                  style: Styles.purpleTextStyle,
-                                                                  decoration: InputDecoration(
-                                                                    labelStyle: Styles.purpleTextStyle,
-                                                                    border: InputBorder.none,
-                                                                    focusedBorder: InputBorder.none,
-                                                                    enabledBorder: InputBorder.none,
-                                                                    errorBorder: InputBorder.none,
-                                                                    disabledBorder: InputBorder.none,
-                                                                  ),
-                                                                  textAlign: TextAlign.start,
+                                              Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
+                                                  Container(
+                                                    padding: EdgeInsets.symmetric(horizontal: 20),
+                                                    width: MediaQuery.of(context).size.width*0.70,
+                                                    child: GestureDetector(
+                                                        onTap: () {
+                                                          selectSlot(context, 0);
+                                                        },
+                                                        child: Row(
+                                                          mainAxisSize: MainAxisSize.max,
+                                                          children: <Widget>[
+                                                            new Flexible(
+                                                              child: TextFormField(
+                                                                controller: startDateController,
+                                                                readOnly: true,
+                                                                enabled: false,
+                                                                style: Styles.purpleTextStyle,
+                                                                decoration: InputDecoration(
+                                                                  labelStyle: Styles.purpleTextStyle,
+                                                                  border: InputBorder.none,
+                                                                  focusedBorder: InputBorder.none,
+                                                                  enabledBorder: InputBorder.none,
+                                                                  errorBorder: InputBorder.none,
+                                                                  disabledBorder: InputBorder.none,
                                                                 ),
+                                                                textAlign: TextAlign.start,
                                                               ),
-                                                            ],
-                                                          )
-                                                      ),
+                                                            ),
+                                                          ],
+                                                        )
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
-                                              Padding(
-                                                padding: EdgeInsets.only(left:18, top: 10.0),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.max,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Icon(Icons.timer, color: Theme.of(context).accentColor,),
-                                                    Container(
-                                                      padding: EdgeInsets.only(left: 20),
-                                                      width: MediaQuery.of(context).size.width*0.30,
-                                                      child: GestureDetector(
-                                                          onTap: () {
-                                                            selectSlot(context, 1);
-                                                          },
-                                                          child: Row(
-                                                            mainAxisSize: MainAxisSize.max,
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            children: <Widget>[
-                                                              new Flexible(
-                                                                child: TextFormField(
-                                                                  controller: durationController,
-                                                                  readOnly: true,
-                                                                  enabled: false,
-                                                                  style: Styles.purpleTextStyle,
-                                                                  decoration: InputDecoration(
-                                                                    labelStyle: Styles.purpleTextStyle,
-                                                                    border: InputBorder.none,
-                                                                    focusedBorder: InputBorder.none,
-                                                                    enabledBorder: InputBorder.none,
-                                                                    errorBorder: InputBorder.none,
-                                                                    disabledBorder: InputBorder.none,
-                                                                  ),
-                                                                  textAlign: TextAlign.start,
+                                              Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Icon(Icons.timer, color: Theme.of(context).accentColor,),
+                                                  Container(
+                                                    padding: EdgeInsets.only(left: 20),
+                                                    width: MediaQuery.of(context).size.width*0.30,
+                                                    child: GestureDetector(
+                                                        onTap: () {
+                                                          selectSlot(context, 1);
+                                                        },
+                                                        child: Row(
+                                                          mainAxisSize: MainAxisSize.max,
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            new Flexible(
+                                                              child: TextFormField(
+                                                                controller: durationController,
+                                                                readOnly: true,
+                                                                enabled: false,
+                                                                style: Styles.purpleTextStyle,
+                                                                decoration: InputDecoration(
+                                                                  labelStyle: Styles.purpleTextStyle,
+                                                                  border: InputBorder.none,
+                                                                  focusedBorder: InputBorder.none,
+                                                                  enabledBorder: InputBorder.none,
+                                                                  errorBorder: InputBorder.none,
+                                                                  disabledBorder: InputBorder.none,
                                                                 ),
+                                                                textAlign: TextAlign.start,
                                                               ),
-                                                            ],
-                                                          )
-                                                      ),
+                                                            ),
+                                                          ],
+                                                        )
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),

@@ -115,10 +115,10 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
                     timeIntervalWidth: 60,
                     startHour: _startHour!-1,
                     endHour:  _endHour!+1,
-                    timeFormat: 'HH:mm',
+                    timeFormat: 'HH',
                     dayFormat: 'E',
                     dateFormat: 'd',
-                    timeRulerSize: MediaQuery.of(context).size.width*0.10,
+                    timeRulerSize: 25,
                     nonWorkingDays: nonWorkDays,
                     minimumAppointmentDuration: Duration(minutes: 30),
                     timeTextStyle: TextStyle(
@@ -393,10 +393,10 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
       // Colors
       var color;
       double bookedCapacity = event.joinedMembers.length/event.maxMembers;
-      if(bookedCapacity < 0.20) color = Colors.green;
-      else if(bookedCapacity > 0.20 && bookedCapacity < 0.40) color = Color(0xFFA8C76C);
-      else if(bookedCapacity > 0.40 && bookedCapacity < 0.60) color = Color(0xFFECE014);
-      else if(bookedCapacity > 0.60 && bookedCapacity < 0.80) color = Colors.orangeAccent;
+      if(bookedCapacity <= 0.20) color = Colors.green;
+      else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = Color(0xFFA8C76C);
+      else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = Color(0xFFECE014);
+      else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) color = Colors.orangeAccent;
       else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
       else if(bookedCapacity == 1) color = Colors.red;
       // Afegir percentatges de members al Event.
