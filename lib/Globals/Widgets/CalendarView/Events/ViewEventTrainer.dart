@@ -152,7 +152,11 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
   }
 
   Future<void> getLocation(String locationId) async {
-    var temp = await _accessDatabase.getSingleLocation(locationId);
+    print("locationId");
+    print(locationId);
+    location = await _accessDatabase.getSingleLocation(locationId);
+    print(location.id);
+    var temp = location;
     setState(() {
       location = temp;
     });

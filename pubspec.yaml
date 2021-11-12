@@ -43,11 +43,19 @@ dependencies:
   top_snackbar_flutter: ^1.0.1
   weekday_selector: ^1.0.0
   page_transition: "^1.1.6"
+  flutter_launcher_icons: ^0.9.2
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+
+flutter_icons:
+  #  Images Path
+  image_path: "assets/images/logoIcon.png"
+  # Platforms
+  android: true
+  ios: true
 
 dev_dependencies:
   flutter_test:
