@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -142,7 +140,7 @@ class _PerfilState extends State<Perfil> {
                         right: 0,
                         child: Row(
                           children: [
-                            Expanded(child: Text("${currentUser.name!}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center)),
+                            Expanded(child: Text("${currentUser.name!}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center)),
                           ],
                         ),
                       ),
@@ -160,7 +158,7 @@ class _PerfilState extends State<Perfil> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 18,), textAlign: TextAlign.start),
+                            Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 23,), textAlign: TextAlign.start),
                             Row(
                               children: [
                                 Text(todayEvents.length.toString(), style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 16, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
@@ -377,7 +375,7 @@ class _PerfilState extends State<Perfil> {
                             }
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.04),
                     ],
                   ) : Container(),
                   currentBrand.id != null ? GestureDetector(
@@ -431,7 +429,7 @@ class _PerfilState extends State<Perfil> {
                       ),
                     ),
                   ) : Container(),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -470,7 +468,6 @@ class _PerfilState extends State<Perfil> {
                               ),
                               image: new DecorationImage(
                                 fit: BoxFit.cover,
-                                //colorFilter: new ColorFilter.mode(Colors.black.withOpacity(1), BlendMode.dstATop),
                                 image: Image.asset(Constants.mySessionsImage).image,
                               ),
                             ),
@@ -515,7 +512,7 @@ class _PerfilState extends State<Perfil> {
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
                   GestureDetector(
                     onTap: () {
 
@@ -586,7 +583,7 @@ class _PerfilState extends State<Perfil> {
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
                 ],
               ),
             ],

@@ -165,7 +165,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                   ]
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              SizedBox(height: MediaQuery.of(context).size.height*0.04),
               todayEvents.length > 0 ? GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -216,7 +216,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                   ),
                 ),
               ) : Container(),
-              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              SizedBox(height: MediaQuery.of(context).size.height*0.04),
               GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -291,7 +291,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                            Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                             SizedBox(height: MediaQuery.of(context).size.height*0.005),
                             Text(AppLocalizations.of(context)!.calendarBrandText(currentBrand.name!), style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
                           ],
@@ -301,7 +301,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                   ),
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              SizedBox(height: MediaQuery.of(context).size.height*0.04),
               GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -373,7 +373,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(AppLocalizations.of(context)!.members, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                            Text(AppLocalizations.of(context)!.members, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                             SizedBox(height: MediaQuery.of(context).size.height*0.005),
                             Text(AppLocalizations.of(context)!.membersBrandText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
                           ],
@@ -383,7 +383,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                   ),
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              SizedBox(height: MediaQuery.of(context).size.height*0.04),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                 child: Row(
@@ -531,7 +531,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                   ],
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              SizedBox(height: MediaQuery.of(context).size.height*0.04),
             ],
           ),
     ),
