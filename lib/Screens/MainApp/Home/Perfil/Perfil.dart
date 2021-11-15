@@ -134,7 +134,7 @@ class _PerfilState extends State<Perfil> {
                         ),
                       ),
                       Positioned(
-                        top: MediaQuery.of(context).size.height*0.26,
+                        top: MediaQuery.of(context).size.height*0.28,
                         bottom: 0,
                         left: 0,
                         right: 0,
@@ -157,7 +157,7 @@ class _PerfilState extends State<Perfil> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 20,), textAlign: TextAlign.start),
-                        Row(
+                        todayEvents.length > 1 ? Row(
                           children: [
                             Text(todayEvents.length.toString(), style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 16, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
                             SizedBox(width: MediaQuery.of(context).size.width*0.01),
@@ -169,7 +169,7 @@ class _PerfilState extends State<Perfil> {
                               size: 20,
                             ),
                           ],
-                        ),
+                        ) : Container(),
                       ],
                     ),
                   ),
@@ -376,58 +376,62 @@ class _PerfilState extends State<Perfil> {
                   SizedBox(height: MediaQuery.of(context).size.height*0.04),
                 ],
               ) : Container(),
-              currentBrand.id != null ? GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      PageTransition(
-                          type: PageTransitionType.bottomToTop,
-                          child: CalendarWidgetTrainer(
-                            brandID: currentBrand.id!,
-                            canEdit: true,
+              currentBrand.id != null ? Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          PageTransition(
+                              type: PageTransitionType.bottomToTop,
+                              child: CalendarWidgetTrainer(
+                                brandID: currentBrand.id!,
+                                canEdit: true,
+                              )
                           )
-                      )
-                  ).whenComplete(() {
-                    setState(() {
-                      isLoading = true;
-                      initProfileHome();
-                    });
-                  });
-                },
-                child: Material(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.all(
-                      const Radius.circular(10.0),
-                    ),
-                  ),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.90,
-                    height: MediaQuery.of(context).size.height * 0.08,
-                    decoration: new BoxDecoration(
-                      color: Theme.of(context).accentColor,
-                      border: Border.all(color: Theme.of(context).accentColor, width: 1),
-                      borderRadius: new BorderRadius.all(
-                        const Radius.circular(10.0),
+                      ).whenComplete(() {
+                        setState(() {
+                          isLoading = true;
+                          initProfileHome();
+                        });
+                      });
+                    },
+                    child: Material(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.90,
+                        height: MediaQuery.of(context).size.height * 0.08,
+                        decoration: new BoxDecoration(
+                          color: Theme.of(context).accentColor,
+                          border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                          borderRadius: new BorderRadius.all(
+                            const Radius.circular(10.0),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                                width: MediaQuery.of(context).size.width * 0.09,
+                                child: Icon(Icons.add, color: Colors.white, size: 30,)
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.69,
+                              child: Center(child: Text(AppLocalizations.of(context)!.planSessions, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400))),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                            width: MediaQuery.of(context).size.width * 0.09,
-                            child: Icon(Icons.add, color: Colors.white, size: 30,)
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.69,
-                          child: Center(child: Text(AppLocalizations.of(context)!.planSessions, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400))),
-                        ),
-                      ],
-                    ),
                   ),
-                ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                ],
               ) : Container(),
-              SizedBox(height: MediaQuery.of(context).size.height*0.04),
               GestureDetector(
                 onTap: () {
                   Navigator.push(

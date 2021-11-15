@@ -156,7 +156,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.26,
+                      top: MediaQuery.of(context).size.height*0.28,
                       bottom: 0,
                       left: 0,
                       right: 0,

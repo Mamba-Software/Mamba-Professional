@@ -84,7 +84,7 @@
   "welcomeMes": "¡Benvingut a Mamba {name}!",
   "createBrand": "Crea la teva marca",
   "createBrandTitle": "Aquí pots crear la teva marca en quatre simples passos:",
-  "createBrandPortada": "Afegeix el nom y el logo",
+  "createBrandPortada": "Afegeix el nom i el logo",
   "createBrandInfo": "Introdueix una descripció",
   "createBrandLocation": "Situa la teva marca en el mapa",
   "createBrandTime": "Defineix el teu horari laboral",

@@ -125,7 +125,7 @@ class _TodosMiembrosState extends State<TodosMiembros> {
                           CustomSnackBar.info(
                             icon: Container(),
                             iconRotationAngle: 0,
-                            backgroundColor: Styles.accent,
+                            backgroundColor: Theme.of(context).accentColor,
                             message: AppLocalizations.of(context)!.copyCorrectCode,
                             textStyle: Styles.whiteTextStyle,
                           ),

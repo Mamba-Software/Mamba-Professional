@@ -51,6 +51,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  SizedBox(height: MediaQuery.of(context).size.height*0.05),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: FloatingActionButton.extended(
