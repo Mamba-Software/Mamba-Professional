@@ -54,7 +54,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
   // Participants
   TextEditingController membersController = TextEditingController();
   int members = 1;
-  int membersMax = 15;
+  int membersMax = currentBrand.maxMembers!;
   // Members Page
   bool isFull = false;
   List<Usuario> allTrainers = [];
@@ -155,7 +155,6 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
     print("locationId");
     print(locationId);
     location = await _accessDatabase.getSingleLocation(locationId);
-    print(location.id);
     var temp = location;
     setState(() {
       location = temp;
@@ -168,7 +167,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
     var title;
     var initialDuration = 1;
     var initialMembers = 1;
-    var totalMembers = membersMax - event!.joinedMembers.length;
+    var totalMembers = (membersMax) - event!.joinedMembers.length;
     var widgetPicker;
     // Init for differnt types
     if (type == 0) {
@@ -228,12 +227,12 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
         backgroundColor: Colors.transparent,
         onSelectedItemChanged: (int index) {
           setState(() {
-            members = event!.joinedMembers.length+index;
+            members = event!.joinedMembers.length+index+1;
             membersController.text = "${event!.joinedMembers.length.toString()} / ${members.toString()}";
           });
         },
         children: new List<Widget>.generate(totalMembers.toInt(), (int index) {
-          var member = event!.joinedMembers.length+index;
+          var member = event!.joinedMembers.length+index+1;
           return new Center(
             child: new Text(
                 "${member.toString()}"
@@ -732,56 +731,60 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                         ),
                                       ],
                                     ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Icon(Icons.location_on_outlined, color: Theme.of(context).accentColor, size: 30,),
-                                        Container(
-                                          padding: EdgeInsets.only(left: 15),
-                                          width: MediaQuery.of(context).size.width*0.70,
-                                          child: ListTile(
-                                            contentPadding: EdgeInsets.all(0),
-                                            title: Text(
-                                                location.description!,
-                                                style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor)
+                                    Column(
+                                      children: [
+                                        Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Icon(Icons.location_on_outlined, color: Theme.of(context).accentColor, size: 30,),
+                                            Container(
+                                              padding: EdgeInsets.only(left: 15),
+                                              width: MediaQuery.of(context).size.width*0.70,
+                                              child: ListTile(
+                                                contentPadding: EdgeInsets.all(0),
+                                                title: Text(
+                                                    location.description!,
+                                                    style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor)
+                                                ),
+                                                onTap: isEditing ? () async {
+                                                  setState(() {
+                                                    isLoading = true;
+                                                  });
+                                                  var result = await Navigator.push(
+                                                      context,
+                                                      PageTransition(
+                                                        type: PageTransitionType.rightToLeftWithFade,
+                                                        child: MyLocationsSelect(
+                                                          brandId: currentBrand.id!,
+                                                        ),
+                                                      )
+                                                  );
+                                                  if (result != null) {
+                                                    await getLocation(result);
+                                                    setState(() {
+                                                      isLoading = false;
+                                                    });
+                                                  } else {
+                                                    setState(() {
+                                                      isLoading = false;
+                                                    });
+                                                  }
+                                                } : null,
+                                              ),
                                             ),
-                                            onTap: isEditing ? () async {
-                                              setState(() {
-                                                isLoading = true;
-                                              });
-                                              var result = await Navigator.push(
-                                                  context,
-                                                  PageTransition(
-                                                    type: PageTransitionType.rightToLeftWithFade,
-                                                    child: MyLocationsSelect(
-                                                      brandId: currentBrand.id!,
-                                                    ),
-                                                  )
-                                              );
-                                              if (result != null) {
-                                                await getLocation(result);
-                                                setState(() {
-                                                  isLoading = false;
-                                                });
-                                              } else {
-                                                setState(() {
-                                                  isLoading = false;
-                                                });
-                                              }
-                                            } : null,
-                                          ),
+                                          ],
                                         ),
+                                        isEditing ? Padding(
+                                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, top:MediaQuery.of(context).size.width*0.01),
+                                          child: Container(
+                                            height: 1,
+                                            width: MediaQuery.of(context).size.width*0.68,
+                                            color: Colors.grey,
+                                          ),
+                                        ) : Container(),
                                       ],
                                     ),
-                                    isEditing ? Padding(
-                                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, top:MediaQuery.of(context).size.width*0.01),
-                                      child: Container(
-                                        height: 1,
-                                        width: MediaQuery.of(context).size.width*0.68,
-                                        color: Colors.grey,
-                                      ),
-                                    ) : Container(),
                                   ],
                                 ),
                               ),
@@ -837,7 +840,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                 children: [
                                   isEditing ? Container(
                                     height: MediaQuery.of(context).size.height*0.20,
-                                    width: MediaQuery.of(context).size.width,
+                                    width: MediaQuery.of(context).size.width*0.99,
                                     child: ListView.builder(
                                         shrinkWrap: true,
                                         physics: AlwaysScrollableScrollPhysics(),
@@ -854,7 +857,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                             child: Padding(
                                               padding: !(index == 0 || index == allTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: allTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   CircularImage(
                                                     size: MediaQuery.of(context).size.width*0.2,
