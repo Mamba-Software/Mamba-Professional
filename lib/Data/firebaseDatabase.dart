@@ -561,35 +561,44 @@ class FirebaseDatabaseService {
   }
   // Join an Event
   Future<bool> joinEvent(String eid, String uid, bool isTrainer) async {
-    try {
-      if (isTrainer) {
-
-      } else {
-
-      }
+    Event event = await this.getSingleEvent(eid);
+    if (event.joinedMembers.length < event.maxMembers) {
+      List<String> eventUsers = [];
+      eventUsers = await this.getEventClients(eid);
+      eventUsers.add(uid);
+      await this.updateEventClients(eid, eventUsers);
       return true;
-    } catch (e) {
-      print(e.toString());
+    } else {
+      return false;
     }
-    return false;
   }
   // Leave an Event
   Future<bool> leaveEvent(String eid, String uid, bool isTrainer) async {
     bool isFound = false;
-    List<String> eventTrainers = [];
+    List<String> eventUsers = [];
     if (isTrainer) {
-      eventTrainers = await this.getEventTrainers(eid);
-      for (var i=0; i < eventTrainers.length; i++) {
-        String trainerid = eventTrainers[i];
+      eventUsers = await this.getEventTrainers(eid);
+      for (var i=0; i < eventUsers.length; i++) {
+        String trainerid = eventUsers[i];
         if (trainerid == uid) {
           isFound = true;
-          eventTrainers.removeAt(i);
+          eventUsers.removeAt(i);
           break;
         }
       }
-      if (isFound) await this.updateEventTrainers(eid, eventTrainers);
+      if (isFound) await this.updateEventTrainers(eid, eventUsers);
       return isFound;
     } else {
+      eventUsers = await this.getEventClients(eid);
+      for (var i=0; i < eventUsers.length; i++) {
+        String trainerid = eventUsers[i];
+        if (trainerid == uid) {
+          isFound = true;
+          eventUsers.removeAt(i);
+          break;
+        }
+      }
+      if (isFound) await this.updateEventClients(eid, eventUsers);
       return isFound;
     }
   }

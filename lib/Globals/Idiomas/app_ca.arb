@@ -182,7 +182,6 @@
   "noEvents": "Sense events",
   "noMembersFound": "No hem trobat cap membre",
   "myLocations": "Les meves ubicacions",
-  "myLocations": "Les meves ubicacions",
   "addLocation": "Afegir ubicació",
   "historial": "Control",
   "notifications": "Notificaciones",
@@ -203,11 +202,19 @@
   "addBrandPhotos": "Afegeix imatges per la marca",
   "exitBrand": "Abandonar marca",
   "exitBrandConfirm": "Segur que vols abandonar aquesta marca?",
-  "@exitBrandConfirm": {
-    "description": "Wellcome message"
-  },
   "deleteBrand": "Eliminar marca",
   "deleteBrandConfirmation": "Segur que vols eliminar la teva marca?",
   "writeDeleteBrand": "Escriu el nom de la teva marca per confirmar aquesta acció:",
-  "logo": "Logo"
+  "logo": "Logo",
+  "noEventsToday": "No tens res previst per avui ...",
+  "planNewEvent": "Reservar una sessió",
+  "calendarBrandTextClient": "Reserva una sessió amb {brand}",
+  "@calendarBrandTextClient": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  }
 }

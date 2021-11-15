@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/MyCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
@@ -388,7 +389,21 @@ class _TrainerState extends State<Trainer> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.04),
               ],
-            ) : Container(),
+            ) : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(AppLocalizations.of(context)!.noEventsToday, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 20,), textAlign: TextAlign.start),
+                    ],
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              ],
+            ),
             Column(
               children: [
                 GestureDetector(
@@ -1475,8 +1490,22 @@ class _ClientState extends State<Client> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.04),
               ],
-            ) : Container(),
-            currentBrand.id != null ? Column(
+            ) : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(AppLocalizations.of(context)!.noEventsToday, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 20,), textAlign: TextAlign.start),
+                    ],
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              ],
+            ),
+            Column(
               children: [
                 GestureDetector(
                   onTap: () {
@@ -1484,9 +1513,8 @@ class _ClientState extends State<Client> {
                         context,
                         PageTransition(
                             type: PageTransitionType.bottomToTop,
-                            child: CalendarWidgetTrainer(
+                            child: CalendarWidgetClient(
                               brandID: currentBrand.id!,
-                              canEdit: true,
                             )
                         )
                     ).whenComplete(() {
@@ -1522,7 +1550,7 @@ class _ClientState extends State<Client> {
                           ),
                           Container(
                             width: MediaQuery.of(context).size.width * 0.69,
-                            child: Center(child: Text(AppLocalizations.of(context)!.planSessions, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400))),
+                            child: Center(child: Text(AppLocalizations.of(context)!.planNewEvent, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400))),
                           ),
                         ],
                       ),
@@ -1531,7 +1559,7 @@ class _ClientState extends State<Client> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.04),
               ],
-            ) : Container(),
+            ),
             GestureDetector(
               onTap: () {
                 Navigator.push(

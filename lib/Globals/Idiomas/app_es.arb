@@ -855,11 +855,28 @@
     "description": "Wellcome message"
   },
   "writeDeleteBrand": "Escribe el nombre de tu marca para confirmar esta acción:",
-  "@deleteBrand": {
+  "@writeDeleteBrand": {
     "description": "Wellcome message"
   },
   "logo": "Logo",
   "@logo": {
     "description": "Wellcome message"
+  },
+  "noEventsToday": "No tienes nada previsto para hoy ...",
+  "@noEventsToday": {
+    "description": "Wellcome message"
+  },
+  "planNewEvent": "Reservar una sesión",
+  "@planNewEvent": {
+    "description": "Wellcome message"
+  },
+  "calendarBrandTextClient": "Reserva una sesión con {brand}",
+  "@calendarBrandTextClient": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
   }
 }
