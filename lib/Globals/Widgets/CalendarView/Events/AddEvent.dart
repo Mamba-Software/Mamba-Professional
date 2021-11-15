@@ -59,7 +59,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   // Participants
   TextEditingController membersController = TextEditingController();
   int members = 1;
-  int membersMax = 15;
+  int membersMax = currentBrand.maxMembers!;
   // Evento Recurrente
   bool isRecurrent = false;
   var oneWeek;
@@ -542,7 +542,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
                                       Container(
-                                        height: MediaQuery.of(context).size.height * 0.22,
+                                        height: MediaQuery.of(context).size.height * 0.20,
                                         width: MediaQuery.of(context).size.width * 0.90,
                                         decoration: BoxDecoration(
                                             color: Theme.of(context).backgroundColor,
@@ -551,7 +551,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                         child: Padding(
                                           padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.05, horizontal: MediaQuery.of(context).size.width*0.05),
                                           child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                                             mainAxisSize: MainAxisSize.max,
                                             children: [
                                               Row(

@@ -283,20 +283,19 @@ class _TodosMiembrosState extends State<TodosMiembros> {
                           ),
                         ),
                       ) :
-                      Padding(
-                        padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.10,),
+                      Expanded(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Container(
-                                width: MediaQuery.of(context).size.width*0.50,
+                                width: MediaQuery.of(context).size.width*0.30,
                                 child: Image.asset(Constants.emptyCalendar)
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height*0.005),
                             Text(AppLocalizations.of(context)!.noMembersFound, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey), textAlign: TextAlign.center,),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.12),
                           ],
-
                         ),
                       ),
                   ],

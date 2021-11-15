@@ -428,7 +428,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                               } : null,
                             ),
                           ),
-                          isEditing ? Text(AppLocalizations.of(context)!.editEvent, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)) : Text(datetitle, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
+                          isEditing ? Text(AppLocalizations.of(context)!.editEvent, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)) : Text(datetitle, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16)),
                           !widget.canEdit ? Padding(
                             padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.06, left: MediaQuery.of(context).size.width*0.06),
                             child: Container(),
@@ -532,7 +532,6 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                           isEditing ? new Flexible(
                                             child: new TextFormField(
                                               controller: descriptionController,
-                                              readOnly: true,
                                               minLines: 1,
                                               maxLines: 6,
                                               style: Styles.purpleTextStyle.copyWith(fontSize: 15),
