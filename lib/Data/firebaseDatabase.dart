@@ -647,6 +647,27 @@ class FirebaseDatabaseService {
       return "Error";
     }
   }
+  // Update Location
+  Future<void> updateLocation(String locationID, String brandId, bool isBaseLocation, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) async {
+    var uid = Uuid().v1();
+    try {
+      await _firestore.collection("Locations").doc(locationID).update({
+        "brandID": brandId,
+        "placeId": placeId,
+        "isBaseLocation": isBaseLocation,
+        "description": description,
+        "street": street,
+        "streetNumber": streetNumber,
+        "city": city,
+        "zipCode": zipCode,
+        "latitude": latitude,
+        "longitude": longitude
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   // Delete Location
   Future<bool> deleteLocation(String locationId) async {
     try {

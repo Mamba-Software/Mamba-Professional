@@ -41,17 +41,20 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
   }
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
+    return Scaffold(
+      appBar: null,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+              SizedBox(height: MediaQuery.of(context).size.height*0.05),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: MediaQuery.of(context).size.height*0.05),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: FloatingActionButton.extended(
@@ -67,158 +70,155 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                             )
                         );
                       },
-                      icon: Icon(Icons.add_circle, size: 40,),
+                      icon: Icon(Icons.add, size: 40, color: Colors.white,),
                       label: Text(AppLocalizations.of(context)!.createBrand, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),),
                     ),
                   ),
-                  !codigoClicked ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: FloatingActionButton.extended(
-                      onPressed: () {
-                        setState(() {
-                          codigoClicked = !codigoClicked;
-                        });
-                      },
-                      backgroundColor: Colors.green,
-                      icon: Icon(Icons.qr_code_outlined, size: 40,),
-                      label: Text(AppLocalizations.of(context)!.addCode,
-                        style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ) : Padding(
-                      padding: EdgeInsets.all(8),
-                      child: new Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          Flexible(
-                            child: Material(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(13)
-                              ),
-                              elevation: 5,
-                              child: new TextFormField(
-                                controller: _codigoController,
-                                onChanged: (val) {
-                                  setState(() {
-                                    codigoError = false;
-                                    _codigo = val;
-                                  });
-                                },
-                                decoration: InputDecoration(
-                                  hintText: AppLocalizations.of(context)!.codigo,
-                                  hintStyle: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
-                                    borderRadius: BorderRadius.circular(13.0),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
-                                    borderRadius: BorderRadius.circular(13.0),
-                                  ),
-                                ),
-                                style: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                          !isLoadingCodigo ?
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 15.0),
-                                  child: FloatingActionButton(
-                                    child: Icon(Icons.login),
-                                    backgroundColor: Colors.green,
-                                    foregroundColor: Styles.white,
-                                    onPressed: () async {
-                                      if(_codigo == null || _codigo=="") {
-                                        setState(() {
-                                          codigoError = true;
-                                        });
-                                      } else {
-                                        setState(() {
-                                          isLoadingCodigo = true;
-                                        });
-                                        var result = await _accessDatabase.checkIfBrandExists(_codigo);
-                                        if (!result) {
-                                          setState(() {
-                                            isLoadingCodigo = false;
-                                            codigoError = true;
-                                          });
-                                        } else {
-                                          await _accessDatabase
-                                              .updateCurrentUserBrand(
-                                              _codigo);
-                                          Navigator.pushReplacement(
-                                              context,
-                                              CupertinoPageRoute<Null>(
-                                                builder: (context) =>
-                                                    SplashScreen(),
-                                                settings: RouteSettings(
-                                                    name: 'SplashScreen'),
-                                              )
-                                          );
-                                        }
-                                      }
-                                    },
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 5.0),
-                                  child: FloatingActionButton(
-                                    heroTag: null,
-                                    child: Icon(Icons.close),
-                                    backgroundColor: Colors.red,
-                                    foregroundColor: Styles.white,
-                                    onPressed: () async {
-                                      setState(() {
-                                        codigoClicked = !codigoClicked;
-                                        codigoError = false;
-                                        _codigoController.text = "";
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ) :
-                            SizedBox(
-                              width: 130,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  FloatingActionButton(
-                                    heroTag: null,
-                                    child: SizedBox(
-                                      width: 100,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(18.0),
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                          strokeWidth: 2,
-                                        ),
-                                      ),
-                                    ),
-                                    backgroundColor: Colors.orangeAccent,
-                                    foregroundColor: Styles.white,
-                                    onPressed: false ? () {} : null
-                                  ),
-                                ],
-                              ),
-                            ),
-                        ],
-                      )
-                  ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 12.0),
-                child: Text(AppLocalizations.of(context)!.trainersZone, style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              !codigoClicked ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FloatingActionButton.extended(
+                  onPressed: () {
+                    setState(() {
+                      codigoClicked = !codigoClicked;
+                    });
+                  },
+                  backgroundColor: Colors.green,
+                  icon: Icon(Icons.qr_code_outlined, size: 40,color: Colors.white,),
+                  label: Text(AppLocalizations.of(context)!.addCode,
+                    style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ) : Padding(
+                  padding: EdgeInsets.all(8),
+                  child: new Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Flexible(
+                        child: Material(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(13)
+                          ),
+                          elevation: 5,
+                          child: new TextFormField(
+                            controller: _codigoController,
+                            onChanged: (val) {
+                              setState(() {
+                                codigoError = false;
+                                _codigo = val;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context)!.codigo,
+                              hintStyle: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
+                                borderRadius: BorderRadius.circular(13.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
+                                borderRadius: BorderRadius.circular(13.0),
+                              ),
+                            ),
+                            style: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      !isLoadingCodigo ?
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 15.0),
+                            child: FloatingActionButton(
+                              child: Icon(Icons.login),
+                              backgroundColor: Colors.green,
+                              foregroundColor: Styles.white,
+                              onPressed: () async {
+                                if(_codigo == null || _codigo=="") {
+                                  setState(() {
+                                    codigoError = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    isLoadingCodigo = true;
+                                  });
+                                  var result = await _accessDatabase.checkIfBrandExists(_codigo);
+                                  if (!result) {
+                                    setState(() {
+                                      isLoadingCodigo = false;
+                                      codigoError = true;
+                                    });
+                                  } else {
+                                    await _accessDatabase
+                                        .updateCurrentUserBrand(
+                                        _codigo);
+                                    Navigator.pushReplacement(
+                                        context,
+                                        CupertinoPageRoute<Null>(
+                                          builder: (context) =>
+                                              SplashScreen(),
+                                          settings: RouteSettings(
+                                              name: 'SplashScreen'),
+                                        )
+                                    );
+                                  }
+                                }
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 5.0),
+                            child: FloatingActionButton(
+                              heroTag: null,
+                              child: Icon(Icons.close),
+                              backgroundColor: Colors.red,
+                              foregroundColor: Styles.white,
+                              onPressed: () async {
+                                setState(() {
+                                  codigoClicked = !codigoClicked;
+                                  codigoError = false;
+                                  _codigoController.text = "";
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ) :
+                      SizedBox(
+                        width: 130,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            FloatingActionButton(
+                                heroTag: null,
+                                child: SizedBox(
+                                  width: 100,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(18.0),
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                ),
+                                backgroundColor: Colors.orangeAccent,
+                                foregroundColor: Styles.white,
+                                onPressed: false ? () {} : null
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
               ),
-              BrandList(),
             ],
           ),
-        )
+        ],
+      ),
     );
   }
 }

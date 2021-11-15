@@ -167,8 +167,36 @@ class _MyLocationsState extends State<MyLocations> {
                                   style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).accentColor)
                               ),
                               trailing: IconButton(
-                                onPressed: () {
-                                  // _accessDatabase.deleteLocation(location.id!);
+                                onPressed: () async {
+                                  // Generate a new token here
+                                  final sessionToken = Uuid().v4();
+                                  final Suggestion? result = await showSearch(
+                                    context: context,
+                                    delegate: AddressSearch(sessionToken),
+                                  );
+                                  // We have a result for our locations search
+                                  if (result != null) {
+                                    Location loc = Location();
+                                    loc.placeId = result.placeId;
+                                    final placeDetails = await LocationPlacesSearch(sessionToken).getPlaceDetailFromId(loc.placeId!);
+                                    // Get the information on Strings
+                                    if(placeDetails.street!=null) loc.street = placeDetails.street!;
+                                    if(placeDetails.streetNumber!=null) loc.streetNumber = placeDetails.streetNumber!; else loc.streetNumber="N/A";
+                                    if(placeDetails.city!=null) loc.city = placeDetails.city!;
+                                    if(placeDetails.zipCode!=null) loc.zipCode = placeDetails.zipCode!; else loc.zipCode="N/A";
+                                    //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
+                                    // Build Correct Description
+                                    loc.description = "${loc.street} ${loc.streetNumber}, ${loc.city}, ${loc.zipCode}";
+                                    // Get Latitude/Longitude
+                                    var temp = await gPlace!.details.get(loc.placeId!);
+                                    if (temp != null && temp.result != null && mounted) {
+                                      detailsResult = temp.result;
+                                      loc.latitude = detailsResult!.geometry!.location!.lat!;
+                                      loc.longitude = detailsResult!.geometry!.location!.lng!;
+                                    }
+                                    // Save location to DataBase
+                                    await _accessDatabase.updateLocation(location.id!,widget.brandId, true, loc.placeId!, loc.description!, loc.street!, loc.streetNumber!, loc.city!, loc.zipCode!, loc.latitude!, loc.longitude!);
+                                  }
                                 },
                                 icon: Icon(Icons.edit, color: Theme.of(context).accentColor, size: 25,),
                               ),

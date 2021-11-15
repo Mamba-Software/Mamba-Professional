@@ -266,17 +266,17 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
   Widget build(BuildContext context) {
     return isLoading ?
       Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.createBrand, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 25,),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.createBrand, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, size: 25,),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
         ),
-      ),
-      body: LoadingViewPurple(),
+        body: LoadingViewPurple(),
     )
         :
       isFirstTime ?
@@ -296,14 +296,14 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
           child: Padding(
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     AppLocalizations.of(context)!.createBrandTitle,
                     style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
                   ListTile(
                     leading: Icon(
                       Icons.image_outlined,
@@ -345,26 +345,26 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.01),
+                    child: FloatingActionButton.extended(
+                      heroTag: null,
+                      onPressed: () async {
+                        setState(() {
+                          isFirstTime = false;
+                        });
+                      },
+                      backgroundColor: Theme.of(context).accentColor,
+                      icon: Container(),
+                      label: Text(
+                        AppLocalizations.of(context)!.letsGo,
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white, fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-        ),
-        floatingActionButton: Padding(
-          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.01),
-          child: FloatingActionButton.extended(
-            heroTag: null,
-            onPressed: () async {
-              setState(() {
-                isFirstTime = false;
-              });
-            },
-            backgroundColor: Theme.of(context).accentColor,
-            icon: Container(),
-            label: Text(
-              AppLocalizations.of(context)!.letsGo,
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white, fontWeight: FontWeight.w500),
-            ),
-          ),
         ),
       )
         :
