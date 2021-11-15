@@ -138,22 +138,20 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
   Future<void> getAllClientsFromBrand() async {
     List<Usuario> allClients = await _accessDatabase.getAllClientsFromBrand(currentBrand.id!);
     List<Usuario> temp = [];
+    print(event!.joinedMembers[0]);
     for (var i=0; i < allClients.length; i++) {
       var client = allClients[i];
       if (event!.joinedMembers.contains(client.id)) {
         temp.add(client);
       }
     }
-    if (mounted) {
-      setState(() {
-        brandClientsJoining = temp;
-      });
-    }
+
+    setState(() {
+      brandClientsJoining = temp;
+    });
   }
 
   Future<void> getLocation(String locationId) async {
-    print("locationId");
-    print(locationId);
     location = await _accessDatabase.getSingleLocation(locationId);
     var temp = location;
     setState(() {
