@@ -263,12 +263,14 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
 
   Future<void> getAllTrainersFromBrand() async {
     brandTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
-    if (brandTrainers.length == 1) {
-      brandTrainersSelected.add(true);
-    } else {
-      for (var i=0; i < brandTrainers.length; i++) {
+    for (var i=0; i < brandTrainers.length; i++) {
+      Usuario trainer = brandTrainers[i];
+      if (trainer.id == currentUser.id) {
+        brandTrainersSelected.add(true);
+      } else {
         brandTrainersSelected.add(false);
       }
+
     }
     setState(() {
       isLoading = false;
@@ -898,6 +900,9 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                                           side: BorderSide.none
                                                                       ),
                                                                       onChanged: (bool? value) {
+                                                                        setState(() {
+                                                                          brandTrainersSelected[index] = !brandTrainersSelected[index];
+                                                                        });
                                                                       },
                                                                     ),
                                                                   ),

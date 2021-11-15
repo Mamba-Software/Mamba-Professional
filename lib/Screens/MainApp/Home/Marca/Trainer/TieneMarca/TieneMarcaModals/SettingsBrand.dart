@@ -200,7 +200,6 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     if (result) {
                       await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
                       await _accessDatabase.leaveBrand(currentUser.id!);
-                      currentBrand = Brand();
                       Navigator.pop(context);
                       Navigator.pushReplacement(
                           context,
@@ -211,6 +210,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                                 name: 'SplashScreen'),
                           )
                       );
+                      currentBrand = Brand();
                     }
                   },
                   child: Row(

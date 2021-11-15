@@ -11,6 +11,10 @@
   "@brandBottomNav":{
     "description": "Marca Text"
   },
+  "notificationsBottomNav": "Notificaciones",
+  "@notificationsBottomNav":{
+    "description": "Notificaciones Text"
+  },
   "chatBottomNav": "Chat",
   "@chatBottomNav":{
   "description": "Chat Text"
@@ -143,6 +147,10 @@
   "@nameCompletoError":{
     "description": "LogIn Text "
   },
+  "nameBrand": "Nombre de tu marca",
+  "@nameBrand":{
+    "description": "LogIn Text "
+  },
   "nameBrandError": "Escribe el nombre de tu marca",
   "@nameBrandError":{
     "description": "LogIn Text "
@@ -216,8 +224,12 @@
   "@sessions":{
     "description": "Sesiones Text"
   },
-  "stats": "Análisis",
+  "stats": "Control y Análisis",
   "@stats":{
+    "description": "Análisis Text"
+  },
+  "statsBrandText": "Gestiona toda tu marca desde un mismo lugar",
+  "@statsBrandText":{
     "description": "Análisis Text"
   },
   "feedback": "Feedback",

@@ -524,7 +524,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                   ),
                                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                   Text(
-                                    AppLocalizations.of(context)!.name,
+                                    AppLocalizations.of(context)!.nameBrand,
                                     style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: MediaQuery.of(context).size.height*0.01),

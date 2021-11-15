@@ -886,6 +886,9 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                                                 side: BorderSide.none
                                                             ),
                                                             onChanged: (bool? value) {
+                                                              setState(() {
+                                                                brandTrainersSelectedBool[index] = !brandTrainersSelectedBool[index];
+                                                              });
                                                             },
                                                           ),
                                                         ),
