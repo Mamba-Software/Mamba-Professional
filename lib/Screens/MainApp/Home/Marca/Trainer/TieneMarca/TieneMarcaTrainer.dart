@@ -73,7 +73,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                height: MediaQuery.of(context).size.height*0.30,
+                height: MediaQuery.of(context).size.height*0.32,
                 child: Stack(
                   alignment: Alignment.topCenter,
                   fit: StackFit.expand,
@@ -166,57 +166,61 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.04),
-              todayEvents.length > 0 ? GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      PageTransition(
-                          type: PageTransitionType.bottomToTop,
-                          child: BrandEventsToday(
-                            brandId: currentBrand.id!
+              todayEvents.length > 0 ? Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          PageTransition(
+                              type: PageTransitionType.bottomToTop,
+                              child: BrandEventsToday(
+                                brandId: currentBrand.id!
+                              )
                           )
-                      )
-                  ).whenComplete(() {
-                    setState(() {
-                      isLoading = true;
-                      initBrandHome();
-                    });
-                  });
-                },
-                child: Material(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.all(
-                      const Radius.circular(10.0),
-                    ),
-                  ),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.90,
-                    height: MediaQuery.of(context).size.height * 0.08,
-                    decoration: new BoxDecoration(
-                      color: Theme.of(context).accentColor,
-                      border: Border.all(color: Theme.of(context).accentColor, width: 1),
-                      borderRadius: new BorderRadius.all(
-                        const Radius.circular(10.0),
+                      ).whenComplete(() {
+                        setState(() {
+                          isLoading = true;
+                          initBrandHome();
+                        });
+                      });
+                    },
+                    child: Material(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.90,
+                        height: MediaQuery.of(context).size.height * 0.08,
+                        decoration: new BoxDecoration(
+                          color: Theme.of(context).accentColor,
+                          border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                          borderRadius: new BorderRadius.all(
+                            const Radius.circular(10.0),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                                width: MediaQuery.of(context).size.width * 0.09,
+                                child: Icon(Icons.calendar_today_outlined, color: Colors.white, size: 30,)
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.69,
+                              child: Center(child: Text(AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400)),),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                            width: MediaQuery.of(context).size.width * 0.09,
-                            child: Icon(Icons.calendar_today_outlined, color: Colors.white, size: 30,)
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.69,
-                          child: Center(child: Text(AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400)),),
-                        ),
-                      ],
-                    ),
                   ),
-                ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                ],
               ) : Container(),
-              SizedBox(height: MediaQuery.of(context).size.height*0.04),
               GestureDetector(
                 onTap: () {
                   Navigator.push(

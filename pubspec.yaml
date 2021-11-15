@@ -52,7 +52,7 @@ dependencies:
 
 flutter_icons:
   #  Images Path
-  image_path: "assets/images/launcher_icons/locoIconTest.png"
+  image_path: "assets/images/launcher_icons/logoIcon.jpg"
   # Platforms
   android: true
   ios: true
