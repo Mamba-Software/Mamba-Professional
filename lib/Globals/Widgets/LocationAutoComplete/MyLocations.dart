@@ -97,15 +97,16 @@ class _MyLocationsState extends State<MyLocations> {
                   onTap: () async {
                     // Generate a new token here
                     final sessionToken = Uuid().v4();
+                    final language = currentUser.idioma;
                     final Suggestion? result = await showSearch(
                       context: context,
-                      delegate: AddressSearch(sessionToken),
+                      delegate: AddressSearch(sessionToken, language!),
                     );
                     // We have a result for our locations search
                     if (result != null) {
                       Location location = Location();
                       location.placeId = result.placeId;
-                      final placeDetails = await LocationPlacesSearch(sessionToken).getPlaceDetailFromId(location.placeId!);
+                      final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(location.placeId!);
                       // Get the information on Strings
                       if(placeDetails.street!=null) location.street = placeDetails.street!;
                       if(placeDetails.streetNumber!=null) location.streetNumber = placeDetails.streetNumber!; else location.streetNumber="N/A";
@@ -170,15 +171,16 @@ class _MyLocationsState extends State<MyLocations> {
                                 onPressed: () async {
                                   // Generate a new token here
                                   final sessionToken = Uuid().v4();
+                                  final language = currentUser.idioma;
                                   final Suggestion? result = await showSearch(
                                     context: context,
-                                    delegate: AddressSearch(sessionToken),
+                                    delegate: AddressSearch(sessionToken, language!),
                                   );
                                   // We have a result for our locations search
                                   if (result != null) {
                                     Location loc = Location();
                                     loc.placeId = result.placeId;
-                                    final placeDetails = await LocationPlacesSearch(sessionToken).getPlaceDetailFromId(loc.placeId!);
+                                    final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(loc.placeId!);
                                     // Get the information on Strings
                                     if(placeDetails.street!=null) loc.street = placeDetails.street!;
                                     if(placeDetails.streetNumber!=null) loc.streetNumber = placeDetails.streetNumber!; else loc.streetNumber="N/A";

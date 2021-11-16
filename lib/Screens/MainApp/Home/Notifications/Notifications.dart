@@ -18,14 +18,13 @@ class _NotificationsState extends State<Notifications> {
         children: <Widget>[
           Center(
             child: Container(
-                width: 300,
-                height: 300,
+                height: MediaQuery.of(context).size.height*0.20,
                 child: Image.asset(Constants.notificationImage)
             ),
           ),
           Center(
             child: Padding(
-              padding: const EdgeInsets.only(top: 200.0),
+              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.20),
               child: Text("¡No tienes ninguna notificación!", style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080)), textAlign: TextAlign.center,),
             )
           ),

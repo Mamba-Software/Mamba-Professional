@@ -4,11 +4,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddressSearch extends SearchDelegate<Suggestion> {
 
-  String? sessionToken;
   LocationPlacesSearch? apiClient;
 
-  AddressSearch(this.sessionToken) {
-    apiClient = LocationPlacesSearch(sessionToken);
+  AddressSearch(String sessionToken, String language) {
+    apiClient = LocationPlacesSearch(sessionToken, language);
   }
 
   @override

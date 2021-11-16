@@ -41,13 +41,19 @@ class LocationPlacesSearch {
   static final String androidKey = placesAPIAndroid;
   static final String iosKey = placesAPIIOS;
   final apiKey = Platform.isAndroid ? androidKey : iosKey;
-  final sessionToken;
+  var sessionToken;
+  var language;
+  var latitude = currentPosition!.latitude;
+  var longitude = currentPosition!.longitude;
+  var radius = 10000;
 
-  LocationPlacesSearch(this.sessionToken);
+  LocationPlacesSearch(String sessionToken, String language) {
+    this.sessionToken = sessionToken;
+    this.language = language;
+  }
 
   Future<List<Suggestion>> fetchSuggestions(String input) async {
-    final request =
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=address&key=$apiKey&sessiontoken=$sessionToken';
+    final request = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&location=$latitude,$longitude&radius=$radius&language=$language&types=address&key=$apiKey&sessiontoken=$sessionToken';
     final response = await http.get(Uri.parse(request));
 
     if (response.statusCode == 200) {

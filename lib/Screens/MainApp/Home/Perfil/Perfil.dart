@@ -401,7 +401,7 @@ class _TrainerState extends State<Trainer> {
                     ],
                   ),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                SizedBox(height: MediaQuery.of(context).size.height*0.04),
               ],
             ),
             Column(
@@ -1502,7 +1502,7 @@ class _ClientState extends State<Client> {
                     ],
                   ),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                SizedBox(height: MediaQuery.of(context).size.height*0.04),
               ],
             ),
             Column(

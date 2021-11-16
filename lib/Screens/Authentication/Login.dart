@@ -37,7 +37,7 @@ class _LoginState extends State<Login> {
     return ScaffoldMessenger(
           key: scaffoldMessengerKey,
           child: Scaffold(
-            resizeToAvoidBottomInset: true,
+            resizeToAvoidBottomInset: false,
             backgroundColor: Theme.of(context).accentColor,
             body: isLoading ?
             Stack(
