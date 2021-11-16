@@ -61,6 +61,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   int membersMax = currentBrand.maxMembers!;
   // Members Page
   bool isFull = false;
+  bool isJoined = false;
   List<Usuario> allTrainers = [];
   List<Usuario> brandTrainersSelected = [];
   List<bool> brandTrainersSelectedBool = [];
@@ -145,10 +146,16 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     for (var i=0; i < allClients.length; i++) {
       var client = allClients[i];
       if (event!.joinedMembers.contains(client.id)) {
-        temp.add(client);
+        if (client.id == currentUser.id!) {
+          temp.insert(0, client);
+          setState(() {
+            isJoined = true;
+          });
+        } else {
+          temp.add(client);
+        }
       }
     }
-
     setState(() {
       brandClientsJoining = temp;
     });
@@ -430,6 +437,10 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                             ),
                           ),
                           isEditing ? Text(AppLocalizations.of(context)!.editEvent, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)) : Text(datetitle, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16)),
+                          !widget.canJoin ? Padding(
+                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.06, left: MediaQuery.of(context).size.width*0.06),
+                            child: Container(),
+                          ) :
                           Padding(
                             padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
                             child: Column(
@@ -1135,22 +1146,65 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
       return Container();
     } else {
       if (widget.canJoin && !isFull) {
-        return Padding(
-          padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
-          child: Container(
-            width: MediaQuery.of(context).size.width*0.25,
-            child: FloatingActionButton.extended(
-              heroTag: null,
-              onPressed: () {
-                print("Join");
-              },
-              backgroundColor: Theme.of(context).accentColor,
-              icon: Icon(Icons.add_circle_outline, color: Colors.white,),
-              label: Text("Unir-se",
-                style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+        if (!isJoined) {
+          return Padding(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+            child: Container(
+              width: MediaQuery.of(context).size.width*0.40,
+              child: FloatingActionButton.extended(
+                heroTag: null,
+                onPressed: () async {
+                  // Join Event
+                  setState(() {
+                    isLoadingBody = true;
+                  });
+                  bool hasJoined = await _accessDatabase.joinEvent(event!.id!, currentUser.id!);
+                  if (hasJoined) {
+                    getEventInfo();
+                    setState(() {
+                      isJoined = true;
+                      isLoadingBody = false;
+                    });
+                  }
+                },
+                backgroundColor: Theme.of(context).accentColor,
+                icon: Icon(Icons.add_circle_outline, color: Colors.white,),
+                label: Text(
+                  AppLocalizations.of(context)!.joinEvent,
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+              ),
             ),
-          ),
-        );
+          );
+        } else {
+          return Padding(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+            child: Container(
+              width: MediaQuery.of(context).size.width*0.45,
+              child: FloatingActionButton.extended(
+                heroTag: null,
+                onPressed: () async {
+                  // Join Event
+                  setState(() {
+                    isLoadingBody = true;
+                  });
+                  bool hasJoined = await _accessDatabase.leaveEvent(event!.id!, currentUser.id!, false);
+                  if (hasJoined) {
+                    getEventInfo();
+                    setState(() {
+                      isJoined = true;
+                      isLoadingBody = false;
+                    });
+                  }
+                },
+                backgroundColor: Colors.red,
+                icon: Icon(Icons.cancel_outlined, color: Colors.white,),
+                label: Text(
+                  AppLocalizations.of(context)!.leaveEvent,
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+              ),
+            ),
+          );
+        }
       } else {
         return Container();
       }

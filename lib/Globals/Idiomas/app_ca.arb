@@ -209,12 +209,6 @@
   "noEventsToday": "No tens res previst per avui ...",
   "planNewEvent": "Reservar una sessió",
   "calendarBrandTextClient": "Reserva una sessió amb {brand}",
-  "@calendarBrandTextClient": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "brand": {
-        "type": "String"
-      }
-    }
-  }
+  "joinEvent": "Reservar sessió",
+  "leaveEvent": "Abandonar sessió"
 }

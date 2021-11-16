@@ -878,5 +878,13 @@
         "type": "String"
       }
     }
+  },
+  "joinEvent": "Reservar sesión",
+  "@joinEvent": {
+    "description": "Wellcome message"
+  },
+  "leaveEvent": "Abandonar sesión",
+  "@leaveEvent": {
+    "description": "Wellcome message"
   }
 }

@@ -560,7 +560,7 @@ class FirebaseDatabaseService {
     }
   }
   // Join an Event
-  Future<bool> joinEvent(String eid, String uid, bool isTrainer) async {
+  Future<bool> joinEvent(String eid, String uid) async {
     Event event = await this.getSingleEvent(eid);
     if (event.joinedMembers.length < event.maxMembers) {
       List<String> eventUsers = [];
