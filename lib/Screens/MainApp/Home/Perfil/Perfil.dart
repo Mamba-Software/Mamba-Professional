@@ -104,7 +104,7 @@ class _TrainerState extends State<Trainer> {
                       bottom: MediaQuery.of(context).size.height*0.10,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.65,
-                      child: Icon(Icons.help_outline, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                      child: Icon(Icons.help_outline, color: Colors.black, size: 50,),
                     ),
                     Positioned(
                       top: 0,
@@ -112,7 +112,7 @@ class _TrainerState extends State<Trainer> {
                       left: MediaQuery.of(context).size.width*0.65,
                       right: 0,
                       child: IconButton(
-                        icon: Icon(Icons.settings, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                        icon: Icon(Icons.settings, color: Colors.black, size: 50,),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -632,7 +632,7 @@ class _TrainerState extends State<Trainer> {
                       bottom: MediaQuery.of(context).size.height*0.10,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.65,
-                      child: Icon(Icons.help_outline, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                      child: Icon(Icons.help_outline, color: Colors.black, size: 50,),
                     ),
                     Positioned(
                       top: 0,
@@ -640,7 +640,7 @@ class _TrainerState extends State<Trainer> {
                       left: MediaQuery.of(context).size.width*0.65,
                       right: 0,
                       child: IconButton(
-                        icon: Icon(Icons.settings, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                        icon: Icon(Icons.settings, color: Colors.black, size: 50,),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -1129,8 +1129,8 @@ class _TrainerState extends State<Trainer> {
 
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Profile page for a trainer user.
 class Client extends StatefulWidget {
   const Client({Key? key}) : super(key: key);
 
@@ -1195,25 +1195,25 @@ class _ClientState extends State<Client> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              height: MediaQuery.of(context).size.height*0.32,
+              height: MediaQuery.of(context).size.height*0.35,
               child: Stack(
                   alignment: Alignment.topCenter,
                   fit: StackFit.expand,
                   children: <Widget>[
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.10,
+                      bottom: MediaQuery.of(context).size.height*0.15,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.65,
-                      child: Icon(Icons.help_outline, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                      child: Icon(Icons.help_outline, color: Colors.black, size: 50,),
                     ),
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.10,
+                      bottom: MediaQuery.of(context).size.height*0.15,
                       left: MediaQuery.of(context).size.width*0.65,
                       right: 0,
                       child: IconButton(
-                        icon: Icon(Icons.settings, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                        icon: Icon(Icons.settings, color: Colors.black, size: 50,),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -1231,7 +1231,7 @@ class _ClientState extends State<Client> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.05,
+                      top: MediaQuery.of(context).size.height*0.03,
                       bottom: 0,
                       left: 0,
                       right: 0,
@@ -1249,13 +1249,91 @@ class _ClientState extends State<Client> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.28,
+                      top: MediaQuery.of(context).size.height*0.17,
                       bottom: 0,
                       left: 0,
                       right: 0,
                       child: Row(
                         children: [
                           Expanded(child: Text("${currentUser.name!}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center)),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      top: MediaQuery.of(context).size.height*0.30,
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Material(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.all(
+                                const Radius.circular(10.0),
+                              ),
+                            ),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.60,
+                              height: MediaQuery.of(context).size.height * 0.06,
+                              decoration: new BoxDecoration(
+                                color: Colors.transparent,
+                                border: Border.all(color: Theme.of(context).primaryColor, width: 1),
+                                borderRadius: new BorderRadius.all(
+                                  const Radius.circular(10.0),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Container(
+                                    height: MediaQuery.of(context).size.height * 0.06,
+                                    width: MediaQuery.of(context).size.width * 0.20,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        Text(
+                                          "9",
+                                          style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                                        ),
+                                        SizedBox(height: 2),
+                                        Text(
+                                          "sesions totals",
+                                          style: Styles.purpleTextStyle.copyWith(fontSize: 12),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.05,
+                                    height: MediaQuery.of(context).size.height * 0.03,
+                                    child: VerticalDivider(color: Theme.of(context).primaryColor,),
+                                  ),
+                                  Container(
+                                    height: MediaQuery.of(context).size.height * 0.06,
+                                    width: MediaQuery.of(context).size.width * 0.20,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        Text(
+                                          "9",
+                                          style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                                        ),
+                                        SizedBox(height: 2),
+                                        Text(
+                                          "sesions totals",
+                                          style: Styles.purpleTextStyle.copyWith(fontSize: 12),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -1727,3 +1805,4 @@ class _ClientState extends State<Client> {
   }
 
 }
+
