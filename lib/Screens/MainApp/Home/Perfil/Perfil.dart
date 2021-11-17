@@ -1195,21 +1195,21 @@ class _ClientState extends State<Client> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              height: MediaQuery.of(context).size.height*0.35,
+              height: MediaQuery.of(context).size.height*0.45,
               child: Stack(
                   alignment: Alignment.topCenter,
                   fit: StackFit.expand,
                   children: <Widget>[
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.15,
+                      bottom: MediaQuery.of(context).size.height*0.28,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.65,
                       child: Icon(Icons.help_outline, color: Colors.black, size: 50,),
                     ),
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.15,
+                      bottom: MediaQuery.of(context).size.height*0.28,
                       left: MediaQuery.of(context).size.width*0.65,
                       right: 0,
                       child: IconButton(
@@ -1231,7 +1231,7 @@ class _ClientState extends State<Client> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.03,
+                      top: MediaQuery.of(context).size.height*0.08,
                       bottom: 0,
                       left: 0,
                       right: 0,
@@ -1240,27 +1240,27 @@ class _ClientState extends State<Client> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Container(
-                            height: MediaQuery.of(context).size.height * 0.20,
+                            height: MediaQuery.of(context).size.height * 0.23,
                             child: Center(
-                              child: CircularImage(size: MediaQuery.of(context).size.height * 0.18, image: currentUser.imageUrl, file: _image, color: Theme.of(context).accentColor, borderWidth: 2,),
+                              child: CircularImage(size: MediaQuery.of(context).size.height * 0.23, image: currentUser.imageUrl, file: _image, color: Theme.of(context).accentColor, borderWidth: 2,),
                             ),
                           ),
                         ],
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.17,
+                      top: MediaQuery.of(context).size.height*0.28 ,
                       bottom: 0,
                       left: 0,
                       right: 0,
                       child: Row(
                         children: [
-                          Expanded(child: Text("${currentUser.name!}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center)),
+                          Expanded(child: Text("${currentUser.name!}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 24, fontFamily: "Helvetica"), textAlign: TextAlign.center)),
                         ],
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.30,
+                      top: MediaQuery.of(context).size.height*0.40,
                       bottom: 0,
                       left: 0,
                       right: 0,
@@ -1268,18 +1268,18 @@ class _ClientState extends State<Client> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Material(
-                            elevation: 4,
+                            //elevation: 4,
                             shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.all(
                                 const Radius.circular(10.0),
                               ),
                             ),
                             child: Container(
-                              width: MediaQuery.of(context).size.width * 0.60,
-                              height: MediaQuery.of(context).size.height * 0.06,
+                              width: MediaQuery.of(context).size.width * 0.50,
+                              height: MediaQuery.of(context).size.height * 0.10,
                               decoration: new BoxDecoration(
-                                color: Colors.transparent,
-                                border: Border.all(color: Theme.of(context).primaryColor, width: 1),
+                                color: Colors.white,
+                                //border: Border.all(color: Theme.of(context).primaryColor, width: 1),
                                 borderRadius: new BorderRadius.all(
                                   const Radius.circular(10.0),
                                 ),
@@ -1288,7 +1288,7 @@ class _ClientState extends State<Client> {
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Container(
-                                    height: MediaQuery.of(context).size.height * 0.06,
+                                    height: MediaQuery.of(context).size.height * 0.10,
                                     width: MediaQuery.of(context).size.width * 0.20,
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -1312,7 +1312,7 @@ class _ClientState extends State<Client> {
                                     child: VerticalDivider(color: Theme.of(context).primaryColor,),
                                   ),
                                   Container(
-                                    height: MediaQuery.of(context).size.height * 0.06,
+                                    height: MediaQuery.of(context).size.height * 0.10,
                                     width: MediaQuery.of(context).size.width * 0.20,
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -1368,7 +1368,7 @@ class _ClientState extends State<Client> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 Container(
-                  height: MediaQuery.of(context).size.height*0.28,
+                  height: MediaQuery.of(context).size.height*0.23,
                   width: MediaQuery.of(context).size.width,
                   child: ListView.builder(
                       shrinkWrap: true,
@@ -1571,6 +1571,7 @@ class _ClientState extends State<Client> {
             ) : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
                   child: Row(
