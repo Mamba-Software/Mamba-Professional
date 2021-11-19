@@ -98,6 +98,8 @@
   "basicInfo": "Informació Bàsica",
   "canEdit": "Tota la informació podrà ser editada més endavant",
   "location": "Ubicació",
+  "locations": "Ubicacions",
+  "locationsBrandText": "Descobreix totes les nostres ubicacions",
   "baseLocation": "Ubicació base",
   "baseLocationDescription": "Aquesta és l'ubicació que utilitzarem per localitzar la teva marca al mapa perque els clients puguin trobar-te a prop seu. En cas de no tenir adreça fixe, introduiex una ubicació utilitzada frequentment.",
   "streetName": "Carrer: ",
@@ -210,5 +212,7 @@
   "planNewEvent": "Reservar una sessió",
   "calendarBrandTextClient": "Reserva una sessió amb {brand}",
   "joinEvent": "Reservar sessió",
-  "leaveEvent": "Abandonar sessió"
+  "leaveEvent": "Abandonar sessió",
+  "allEvents": "sessions totals",
+  "monthEvents": "sessions aquest mes"
 }

@@ -414,6 +414,14 @@
   "@location":{
     "description": "baseLocation text"
   },
+  "locations": "Ubicaciones",
+  "@locations":{
+    "description": "baseLocation text"
+  },
+  "locationsBrandText": "Descubre todas nuestras ubicaciones",
+  "@locationsBrandText":{
+    "description": "baseLocation text"
+  },
   "baseLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor. En caso de no tener una dirección fija, introduce una ubicación utilizada frequentemente.",
   "@baseLocationDescription":{
     "description": "baseLocation text"
@@ -885,6 +893,14 @@
   },
   "leaveEvent": "Abandonar sesión",
   "@leaveEvent": {
+    "description": "Wellcome message"
+  },
+  "allEvents": "sesiones totales",
+  "@allEvents": {
+    "description": "Wellcome message"
+  },
+  "monthEvents": "sesiones este mes",
+  "@monthEvents": {
     "description": "Wellcome message"
   }
 }

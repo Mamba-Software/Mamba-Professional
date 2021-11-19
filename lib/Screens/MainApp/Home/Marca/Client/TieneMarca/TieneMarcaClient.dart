@@ -10,6 +10,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/Calen
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/BrandLocations.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/BrandEventsToday.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembros.dart';
@@ -337,6 +338,90 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                             Text(AppLocalizations.of(context)!.members, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                             SizedBox(height: MediaQuery.of(context).size.height*0.005),
                             Text(AppLocalizations.of(context)!.membersBrandText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.04),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          type: PageTransitionType.bottomToTop,
+                          child: BrandLocations(
+                            brandId: currentBrand.id!,
+                          )
+                      )
+                  ).whenComplete(() {
+                    setState(() {
+                      isLoading = true;
+                      initBrandHome();
+                    });
+                  });
+                },
+                child: Material(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.all(
+                      const Radius.circular(10.0),
+                    ),
+                  ),
+                  child: Stack(
+                    alignment: Alignment.bottomLeft,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.90,
+                        height: MediaQuery.of(context).size.height * 0.20,
+                        decoration: new BoxDecoration(
+                          color: Colors.transparent,
+                          border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                          borderRadius: new BorderRadius.all(
+                            const Radius.circular(10.0),
+                          ),
+                          image: new DecorationImage(
+                            fit: BoxFit.cover,
+                            //colorFilter: new ColorFilter.mode(Colors.black.withOpacity(1), BlendMode.dstATop),
+                            image: Image.asset(Constants.myLocationsImage).image,
+                          ),
+                        ),
+                        child: Center(),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.90,
+                        height: MediaQuery.of(context).size.height * 0.20,
+                        decoration: new BoxDecoration(
+                          color: Colors.white,
+                          gradient: LinearGradient(
+                              begin: FractionalOffset.topCenter,
+                              end: FractionalOffset.bottomCenter,
+                              colors: [
+                                Colors.grey.withOpacity(0.0),
+                                Colors.black,
+                              ],
+                              stops: [
+                                0.0,
+                                0.75
+                              ]
+                          ),
+                          border: Border.all(color: Theme.of(context).accentColor, width: 1),
+                          borderRadius: new BorderRadius.all(
+                            const Radius.circular(10.0),
+                          ),
+                        ),
+                        child: Center(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(AppLocalizations.of(context)!.locations, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                            Text(AppLocalizations.of(context)!.locationsBrandText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
                           ],
                         ),
                       ),
