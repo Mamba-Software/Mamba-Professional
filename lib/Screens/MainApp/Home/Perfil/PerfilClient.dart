@@ -159,7 +159,7 @@ class _PerfilClientState extends State<PerfilClient> {
                               ),
                             ),
                             child: Container(
-                              width: MediaQuery.of(context).size.width * 0.66,
+                              width: MediaQuery.of(context).size.width * 0.81,
                               height: MediaQuery.of(context).size.height * 0.10,
                               decoration: new BoxDecoration(
                                 color: Colors.white,
@@ -169,11 +169,11 @@ class _PerfilClientState extends State<PerfilClient> {
                                 ),
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Container(
                                     height: MediaQuery.of(context).size.height * 0.10,
-                                    width: MediaQuery.of(context).size.width * 0.28,
+                                    width: MediaQuery.of(context).size.width * 0.38,
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       mainAxisSize: MainAxisSize.max,
@@ -198,7 +198,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                   ),
                                   Container(
                                     height: MediaQuery.of(context).size.height * 0.10,
-                                    width: MediaQuery.of(context).size.width * 0.28,
+                                    width: MediaQuery.of(context).size.width * 0.38,
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       mainAxisSize: MainAxisSize.max,
@@ -235,7 +235,7 @@ class _PerfilClientState extends State<PerfilClient> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 20,), textAlign: TextAlign.start),
+                      Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 23,), textAlign: TextAlign.start),
                       todayEvents.length > 1 ? Row(
                         children: [
                           Text(todayEvents.length.toString(), style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 16, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
@@ -599,7 +599,7 @@ class _PerfilClientState extends State<PerfilClient> {
                         children: [
                           Text(AppLocalizations.of(context)!.mySchedule, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                          Text(AppLocalizations.of(context)!.myScheduleText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                          Text(AppLocalizations.of(context)!.myScheduleText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 14, color: Colors.grey[200])),
                         ],
                       ),
                     ),
@@ -670,7 +670,7 @@ class _PerfilClientState extends State<PerfilClient> {
                         children: [
                           Text(AppLocalizations.of(context)!.myProgress, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                          Text(AppLocalizations.of(context)!.myProgressText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.white.withOpacity(0.5))),
+                          Text(AppLocalizations.of(context)!.myProgressText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 14, color: Colors.white.withOpacity(0.5))),
                         ],
                       ),
                     ),

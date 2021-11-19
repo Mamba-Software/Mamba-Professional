@@ -11,7 +11,7 @@
   "@brandBottomNav":{
     "description": "Marca Text"
   },
-  "notificationsBottomNav": "Notificaciones",
+  "notificationsBottomNav": "Alertas",
   "@notificationsBottomNav":{
     "description": "Notificaciones Text"
   },

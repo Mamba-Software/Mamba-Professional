@@ -13,8 +13,10 @@ import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/BrandLocations.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/BrandEventsToday.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembros.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembrosTrainer.dart';
 import 'package:page_transition/page_transition.dart';
+
+import 'TodosMiembrosClient.dart';
 
 class TieneMarcaClient extends StatefulWidget {
   const TieneMarcaClient({Key? key}) : super(key: key);
@@ -83,7 +85,11 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                       bottom: MediaQuery.of(context).size.height*0.10,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.65,
-                      child: Icon(Icons.manage_search, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                      child: IconButton(
+                        icon: Icon(Icons.explore_outlined, color: Theme.of(context).primaryColor, size: 50,),
+                        onPressed: () {
+                        },
+                      ),
                     ),
                     Positioned(
                       top: 0,
@@ -91,7 +97,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                       left: MediaQuery.of(context).size.width*0.65,
                       right: 0,
                       child: IconButton(
-                        icon: Icon(Icons.info_outlined, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                        icon: Icon(Icons.info_outlined, color: Theme.of(context).primaryColor, size: 50,),
                         onPressed: () {
                         },
                       ),
@@ -270,7 +276,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                       context,
                       PageTransition(
                           type: PageTransitionType.bottomToTop,
-                          child: TodosMiembros()
+                          child: TodosMiembrosClient()
                       )
                   ).whenComplete(() {
                     setState(() {

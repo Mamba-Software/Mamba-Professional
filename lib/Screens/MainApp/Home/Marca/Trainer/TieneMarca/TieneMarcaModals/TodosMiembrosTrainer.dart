@@ -15,14 +15,14 @@ import 'package:page_transition/page_transition.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
-class TodosMiembros extends StatefulWidget {
-  const TodosMiembros({Key? key}) : super(key: key);
+class TodosMiembrosTrainer extends StatefulWidget {
+  const TodosMiembrosTrainer({Key? key}) : super(key: key);
 
   @override
-  _TodosMiembrosState createState() => _TodosMiembrosState();
+  _TodosMiembrosTrainerState createState() => _TodosMiembrosTrainerState();
 }
 
-class _TodosMiembrosState extends State<TodosMiembros> {
+class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
 
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();

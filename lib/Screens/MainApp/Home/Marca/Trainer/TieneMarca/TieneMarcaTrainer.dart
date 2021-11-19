@@ -11,7 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/BrandEventsToday.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembros.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembrosTrainer.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'TieneMarcaModals/SettingsBrand.dart';
@@ -313,7 +313,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                       context,
                       PageTransition(
                           type: PageTransitionType.bottomToTop,
-                          child: TodosMiembros()
+                          child: TodosMiembrosTrainer()
                       )
                   ).whenComplete(() {
                     setState(() {
@@ -391,18 +391,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
               SizedBox(height: MediaQuery.of(context).size.height*0.04),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      PageTransition(
-                          type: PageTransitionType.bottomToTop,
-                          child: TodosMiembros()
-                      )
-                  ).whenComplete(() {
-                    setState(() {
-                      isLoading = true;
-                      initBrandHome();
-                    });
-                  });
+
                 },
                 child: Material(
                   elevation: 4,
