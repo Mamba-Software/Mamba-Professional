@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../Styles.dart';
 
-class CompleteEventConfirmationDialog extends StatelessWidget {
+class LeaveConfirmationDialog extends StatelessWidget {
   final String text;
-  const CompleteEventConfirmationDialog({Key? key, required this.text}) : super(key: key);
+  const LeaveConfirmationDialog({Key? key, required this.text}) : super(key: key);
 
 
   @override
@@ -14,7 +14,7 @@ class CompleteEventConfirmationDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.all(20),
       child: Container(
-        padding: EdgeInsets.only(top: 40, bottom: 10, left: 20, right: 20),
+        padding: EdgeInsets.only(top: 40, bottom: 10, left: 10, right: 10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Colors.white
@@ -27,30 +27,36 @@ class CompleteEventConfirmationDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
-                      child: Text(text, style: Styles.purpleTextStyle.copyWith(fontSize: 16, height: 1.5), textAlign: TextAlign.center,),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 24.0, right: 10, left: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(text, style: Styles.purpleTextStyle.copyWith(fontSize: 16, height: 1.5), textAlign: TextAlign.center,),
+                      ),
+                    ],
                   ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       FloatingActionButton.extended(
-                        label: Text(AppLocalizations.of(context)!.confirm),
-                        icon: Icon(Icons.done_outline),
-                        backgroundColor: Colors.green,
+                        label: Text(AppLocalizations.of(context)!.leave),
+                        icon: Icon(Icons.check_circle_outline),
+                        backgroundColor: Colors.red,
                         foregroundColor: Styles.white,
                         onPressed: () {
                           Navigator.pop(context, true);
                         },
                       ),
+                      SizedBox(width: MediaQuery.of(context).size.width*0.01),
                       FloatingActionButton.extended(
                         icon: Icon(Icons.cancel_outlined, size: 30,),
                         label: Text(AppLocalizations.of(context)!.cancel),
-                        backgroundColor: Styles.accent,
+                        backgroundColor: Theme.of(context).primaryColor,
                         foregroundColor: Styles.white,
                         onPressed: () async {
                           Navigator.pop(context, false);
@@ -67,14 +73,14 @@ class CompleteEventConfirmationDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox.fromSize(
-                      size: Size(80, 80), // button width and height
+                      size: Size(70, 70), // button width and height
                       child: ClipOval(
                         child: Material(
-                          color: Colors.green, // button color
+                          color: Colors.red, // button color
                           child: InkWell(
                             onTap: () async {
                             },
-                            child: Icon(Icons.event_available, color: Colors.white, size: 45,), // icon
+                            child: Icon(Icons.event_busy_outlined, color: Colors.white, size: 40,), // icon
                           ),
                         ),
                       ),

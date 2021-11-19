@@ -571,6 +571,14 @@
   "@entendido":{
     "description": "Cancelar text"
   },
+  "book": "Reservar",
+  "@book":{
+    "description": "Cancelar text"
+  },
+  "leave": "Abandonar",
+  "@leave":{
+    "description": "Cancelar text"
+  },
   "addMembers": "Añadir Miembros",
   "@addMembers":{
     "description": "Añadir Miembros text"
@@ -891,8 +899,16 @@
   "@joinEvent": {
     "description": "Wellcome message"
   },
+  "joinEventConfirmation": "¿Estás seguro que quieres reservar una plaza para esta sessión?\n\nLos organizadores recibirán una notificación.",
+  "@joinEventConfirmation": {
+    "description": "Wellcome message"
+  },
   "leaveEvent": "Abandonar sesión",
   "@leaveEvent": {
+    "description": "Wellcome message"
+  },
+  "leaveEventConfirmation": "¿Estás seguro que quieres cancelar tu reserva para esta sessión?\n\nLos organizadores recibirán una notificación.",
+  "@leaveEventConfirmation": {
     "description": "Wellcome message"
   },
   "allEvents": "sesiones totales",

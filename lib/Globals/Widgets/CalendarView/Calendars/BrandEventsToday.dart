@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
@@ -423,21 +425,36 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
   }
 
   void _viewEvent(String eventId, DateTime startDate) {
-    bool canEdit = true;
+    bool canAction = true;
     if (startDate.isBefore(DateTime.now())) {
-      canEdit = false;
+      canAction = false;
     }
-    Navigator.push(
-      context,
-      PageTransition(
-          type: PageTransitionType.bottomToTop,
-          child: ViewEventTrainer(
-            eventId: eventId,
-            canEdit: canEdit,
-            locale: Localizations.localeOf(context),
+    if (currentUser.isTrainer!) {
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.bottomToTop,
+              child: ViewEventTrainer(
+                eventId: eventId,
+                canEdit: canAction,
+                locale: Localizations.localeOf(context),
+              )
           )
-      )
-    );
+      );
+    } else {
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.bottomToTop,
+              child: ViewEventClient(
+                eventId: eventId,
+                canJoin: canAction,
+                locale: Localizations.localeOf(context),
+              )
+          )
+      );
+    }
+
   }
 
 }

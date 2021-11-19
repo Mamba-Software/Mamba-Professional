@@ -71,6 +71,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
           physics: BouncingScrollPhysics(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
                 height: MediaQuery.of(context).size.height*0.32,
@@ -297,7 +298,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                           children: [
                             Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                             SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                            Text(AppLocalizations.of(context)!.calendarBrandText(currentBrand.name!), style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                            Text(AppLocalizations.of(context)!.calendarBrandText(currentBrand.name!), style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 14, color: Colors.grey[200])),
                           ],
                         ),
                       ),
@@ -379,7 +380,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                           children: [
                             Text(AppLocalizations.of(context)!.members, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                             SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                            Text(AppLocalizations.of(context)!.membersBrandText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                            Text(AppLocalizations.of(context)!.membersBrandText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 14, color: Colors.grey[200])),
                           ],
                         ),
                       ),
@@ -390,7 +391,18 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
               SizedBox(height: MediaQuery.of(context).size.height*0.04),
               GestureDetector(
                 onTap: () {
-                  
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          type: PageTransitionType.bottomToTop,
+                          child: TodosMiembros()
+                      )
+                  ).whenComplete(() {
+                    setState(() {
+                      isLoading = true;
+                      initBrandHome();
+                    });
+                  });
                 },
                 child: Material(
                   elevation: 4,
@@ -450,7 +462,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                           children: [
                             Text(AppLocalizations.of(context)!.stats, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                             SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                            Text(AppLocalizations.of(context)!.statsBrandText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.white.withOpacity(0.5))),
+                            Text(AppLocalizations.of(context)!.statsBrandText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 14, color: Colors.white.withOpacity(0.5))),
                           ],
                         ),
                       ),

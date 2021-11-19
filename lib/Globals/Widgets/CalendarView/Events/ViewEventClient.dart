@@ -1,5 +1,9 @@
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/JoinConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/LeaveConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
@@ -1145,8 +1149,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     if (isLoadingBody) {
       return Container();
     } else {
-      if (widget.canJoin && !isFull) {
-        if (!isJoined) {
+      if (widget.canJoin) {
+        if (!isJoined && !isFull) {
           return Padding(
             padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
             child: Container(
@@ -1154,20 +1158,28 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
               child: FloatingActionButton.extended(
                 heroTag: null,
                 onPressed: () async {
-                  // Join Event
-                  setState(() {
-                    isLoadingBody = true;
-                  });
-                  bool hasJoined = await _accessDatabase.joinEvent(event!.id!, currentUser.id!);
-                  if (hasJoined) {
-                    getEventInfo();
+                  var result = await showDialog(
+                      context: context,
+                      builder: (_) {
+                        return JoinConfirmationDialog(text: AppLocalizations.of(context)!.joinEventConfirmation);
+                      }
+                  );
+                  if (result) {
+                    // Join Event
                     setState(() {
-                      isJoined = true;
-                      isLoadingBody = false;
+                      isLoadingBody = true;
                     });
+                    bool hasJoined = await _accessDatabase.joinEvent(event!.id!, currentUser.id!);
+                    if (hasJoined) {
+                      getEventInfo();
+                      setState(() {
+                        isJoined = true;
+                        isLoadingBody = false;
+                      });
+                    }
                   }
                 },
-                backgroundColor: Theme.of(context).accentColor,
+                backgroundColor: Colors.green,
                 icon: Icon(Icons.add_circle_outline, color: Colors.white,),
                 label: Text(
                   AppLocalizations.of(context)!.joinEvent,
@@ -1183,17 +1195,25 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
               child: FloatingActionButton.extended(
                 heroTag: null,
                 onPressed: () async {
-                  // Join Event
-                  setState(() {
-                    isLoadingBody = true;
-                  });
-                  bool hasJoined = await _accessDatabase.leaveEvent(event!.id!, currentUser.id!, false);
-                  if (hasJoined) {
-                    getEventInfo();
+                  var result = await showDialog(
+                      context: context,
+                      builder: (_) {
+                        return LeaveConfirmationDialog(text: AppLocalizations.of(context)!.leaveEventConfirmation);
+                      }
+                  );
+                  if (result) {
+                    // Leave Event
                     setState(() {
-                      isJoined = true;
-                      isLoadingBody = false;
+                      isLoadingBody = true;
                     });
+                    bool hasJoined = await _accessDatabase.leaveEvent(event!.id!, currentUser.id!, false);
+                    if (hasJoined) {
+                      getEventInfo();
+                      setState(() {
+                        isJoined = false;
+                        isLoadingBody = false;
+                      });
+                    }
                   }
                 },
                 backgroundColor: Colors.red,

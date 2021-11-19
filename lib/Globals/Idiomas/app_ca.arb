@@ -137,6 +137,8 @@
   "cancel": "Cancel·lar",
   "close": "Tancar",
   "entendido": "Entesos",
+  "book": "Reservar",
+  "leave": "Abandonar",
   "addMembers": "Afegir Membres",
   "inviteCode": "Codi d'invitació",
   "copyCorrectCode": "Codi d'invitació copiat correctament",
@@ -212,7 +214,9 @@
   "planNewEvent": "Reservar una sessió",
   "calendarBrandTextClient": "Reserva una sessió amb {brand}",
   "joinEvent": "Reservar sessió",
+  "joinEventConfirmation": "Estàs segur que vols reservar un lloc per aquesta sessió?\n\nEls organitzadors rebràn una notificació al respecte",
   "leaveEvent": "Abandonar sessió",
+  "leaveEventConfirmation": "Estàs segur que vols cancel·lar la teva reserva en aquesta sessió?\n\nEls organitzadors rebràn una notificació al respecte",
   "allEvents": "sessions totals",
   "monthEvents": "sessions aquest mes"
 }

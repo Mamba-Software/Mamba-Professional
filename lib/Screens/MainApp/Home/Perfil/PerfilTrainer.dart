@@ -256,7 +256,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 Container(
-                  height: MediaQuery.of(context).size.height*0.28,
+                  height: MediaQuery.of(context).size.height*0.23,
                   width: MediaQuery.of(context).size.width,
                   child: ListView.builder(
                       shrinkWrap: true,
@@ -794,7 +794,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 Container(
-                  height: MediaQuery.of(context).size.height*0.28,
+                  height: MediaQuery.of(context).size.height*0.23,
                   width: MediaQuery.of(context).size.width,
                   child: ListView.builder(
                       shrinkWrap: true,
