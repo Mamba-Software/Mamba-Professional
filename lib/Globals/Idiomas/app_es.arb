@@ -51,7 +51,7 @@
   "@email":{
     "description": "Email Text"
   },
-  "emailError": "Escribe tu email",
+  "emailError": "Escribe tu email porfavor",
   "@emailError":{
     "description": "Email Error Text"
   },

@@ -39,15 +39,7 @@ class _RegisterState extends State<Register> {
           key: scaffoldMessengerKey,
           child: Scaffold(
             appBar: AppBar(
-              title: Text(
-                AppLocalizations.of(context)!.createAccount,
-                style: TextStyle(
-                  fontFamily: "Helvetica",
-                  color: Colors.white,
-                  fontSize: 22.0,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
+              title: Text(AppLocalizations.of(context)!.createAccount, style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(color: Colors.white),),
               centerTitle: true,
               elevation: 0,
               iconTheme: IconThemeData(
@@ -262,7 +254,7 @@ class _RegisterState extends State<Register> {
         ),
       ),
       backgroundColor: Colors.white,
-      duration: Duration(seconds: 3),
+      duration: Duration(seconds: 5),
     );
     scaffoldMessengerKey.currentState!.showSnackBar(snackbar);
   }

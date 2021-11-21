@@ -260,12 +260,14 @@ class _LoginState extends State<Login> {
         value,
         textAlign: TextAlign.center,
         style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
-            fontFamily: "Raleway"),
+          fontFamily: "Helvetica",
+          color: Colors.black,
+          fontSize: 16.0,
+          //fontWeight: FontWeight.w800,
+        ),
       ),
-      backgroundColor: Styles.accent,
-      duration: Duration(seconds: 3),
+      backgroundColor: Colors.white,
+      duration: Duration(seconds: 5),
     );
     scaffoldMessengerKey.currentState!.showSnackBar(snackbar);
   }
