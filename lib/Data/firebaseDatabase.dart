@@ -82,6 +82,58 @@ class FirebaseDatabaseService {
     return Usuario.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
   // User Model Services
+  // Register User
+  Future<int> registerUser(String email, String password, String idioma) async {
+    bool authError = false;
+    bool firestoreError = false;
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final String formatted = formatter.format(now);
+    UserCredential? authResult = await _auth
+        .createUserWithEmailAndPassword(
+        email: email,
+        password: password)
+        .then((userCredential) async {
+          if(userCredential != null && userCredential.user != null) {
+            await _firestore
+                .collection("Users")
+                .doc(userCredential.user!.uid)
+                .set({
+              "name": null,
+              "nick": null,
+              "email": email,
+              "imageUrl": null,
+              "isFirst": true,
+              "isTrainer": null,
+              "isPrivate": true,
+              "gender": null,
+              "dateJoined": formatted,
+              "dateOfBirth": null,
+              "idioma": idioma,
+              "previousIdioma": null,
+              "brandID": null,
+              "isAdmin": false,
+            })
+            .catchError((err) {
+              print(err);
+              firestoreError = true;
+            });
+            await userCredential.user!.sendEmailVerification();
+          }
+          return userCredential;
+      }).catchError((err) {
+        print(err);
+        authError = true;
+      });
+
+    if (authResult != null && authResult.user != null) {
+      if (authError) return -1;
+      else if (firestoreError) return -2;
+      else return 0;
+    } else {
+      return -1;
+    }
+  }
   // Add User
   Future<int> addUser(String email, String password, String name, bool isTrainer, int gender, String idioma) async {
     bool authError = false;

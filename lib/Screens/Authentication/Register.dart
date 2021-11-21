@@ -21,34 +21,17 @@ class _RegisterState extends State<Register> {
   var _accessDatabase = new DatabaseAccess();
   // Password Visible
   bool isLoading = false;
-  // Password Visible
-  bool _passwordVisible = false;
-  // isTrainer?
-  bool? isTrainer;
-  bool? isTrainerTemp;
-  bool errorType = false;
-  String errorTypeText = '';
   // Scaffold Messenger Key
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   // FormVariables
   final _formKey = GlobalKey<FormState>();
-  String name = '';
-  String? nameTemp;
+  // Email
   String email = '';
   String? emailTemp;
+  // Password
+  bool _passwordVisible = false;
   String password1 = '';
   String password2 = '';
-
-  // Gender Widget value
-  int? gender;
-  var genderTemp;
-  bool errorGender = false;
-  String errorGenderText = '';
-  void updateGender(int newGender) {
-    setState(() {
-      gender = newGender;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +39,15 @@ class _RegisterState extends State<Register> {
           key: scaffoldMessengerKey,
           child: Scaffold(
             appBar: AppBar(
-              title: Text(AppLocalizations.of(context)!.createAccount),
+              title: Text(
+                AppLocalizations.of(context)!.createAccount,
+                style: TextStyle(
+                  fontFamily: "Helvetica",
+                  color: Colors.white,
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
               centerTitle: true,
               elevation: 0,
               iconTheme: IconThemeData(
@@ -64,32 +55,221 @@ class _RegisterState extends State<Register> {
               ),
               backgroundColor: Theme.of(context).accentColor,
             ),
-            backgroundColor: Styles.mainColor,
-            body: isLoading ?
-            Stack(
-              children: <Widget>[
-                Center(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.14,
-                    height: MediaQuery.of(context).size.height * 0.07,
-                    child: CircularProgressIndicator(
-                      color: Styles.white,
+            backgroundColor: Theme.of(context).accentColor,
+            body: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.height*0.03),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.emailError,
+                              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.left,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        TextFormField(
+                            keyboardType: TextInputType.emailAddress,
+                            validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.emailError : null,
+                            onChanged: (val) {
+                              setState(() => email = val);
+                            },
+                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+                            decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.email,
+                                prefixIcon:  Padding(
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Icon(
+                                    Icons.email_outlined,
+                                    color: Theme.of(context).primaryColor,
+                                  ), // icon is 48px widget.
+                                )
+                            )
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(context)!.passwordError,
+                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        TextFormField(
+                            validator: (val) => val!.length < 6 ? AppLocalizations.of(context)!.passwordError : null,
+                            onChanged: (val) {
+                              setState(() => password1 = val);
+                            },
+                            obscureText: !_passwordVisible,
+                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+                            decoration: Styles.textFromInputDecoration.copyWith(
+                                labelText: AppLocalizations.of(context)!.password,
+                                suffixIcon: Padding(
+                                    padding: EdgeInsets.all(0.0),
+                                    child: IconButton(
+                                        icon: Icon(
+                                          // Based on passwordVisible state choose the icon
+                                            _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                            color: Theme.of(context).primaryColor,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _passwordVisible = !_passwordVisible;
+                                          });
+                                        }
+                                    )
+                                ),
+                                prefixIcon:  Padding(
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Icon(
+                                    Icons.vpn_key_outlined,
+                                    color: Theme.of(context).primaryColor,
+                                  ), // icon is 48px widget.
+                                )
+                            )
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        TextFormField(
+                            validator: (val) => val == password1 ? null : AppLocalizations.of(context)!.passwordNotSameError,
+                            onChanged: (val) {
+                              setState(() => password2 = val);
+                            },
+                            obscureText: !_passwordVisible,
+                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+                            decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.passworRepeat,
+                                suffixIcon: Padding(
+                                    padding: EdgeInsets.all(0.0),
+                                    child: IconButton(
+                                        icon: Icon(
+                                          // Based on passwordVisible state choose the icon
+                                            _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _passwordVisible = !_passwordVisible;
+                                          });
+                                        }
+                                    )
+                                ),
+                                prefixIcon:  Padding(
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Icon(
+                                    Icons.vpn_key_outlined,
+                                    color: Theme.of(context).primaryColor,
+                                  ), // icon is 48px widget.
+                                )
+                            )
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                        Material(
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                          ),
+                          child: Container(
+                            height: MediaQuery.of(context).size.height*0.07,
+                            width: MediaQuery.of(context).size.width*0.50,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: !isLoading ? TextButton(
+                              onPressed: () async {
+                                if(_formKey.currentState!.validate()){
+                                  emailTemp = email;
+                                  onSignUpButtonPressed();
+                                }
+                              },
+                              child: Text(
+                                AppLocalizations.of(context)!.register,
+                                style: Styles.purpleTextStyle.copyWith(fontSize: 23),
+                              ),
+                            ) : Center(
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.06,
+                                height: MediaQuery.of(context).size.height * 0.03,
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context).primaryColor,
+                                  strokeWidth: 2.5,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                Center(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.07,
-                    height: MediaQuery.of(context).size.height * 0.07,
-                    child: Image(
-                        image: AssetImage(Constants.logoSimple)
-                    ),
-                  ),
-                ),
-              ],
-            )
-                :
-            SingleChildScrollView(
+              ),
+          ),
+        );
+
+  }
+
+  void onSignUpButtonPressed() {
+    setState(() {
+      isLoading = true;
+    });
+    signUp();
+  }
+
+  void signUp() async{
+      var result =  await _accessDatabase.registerUser(email, password1, Localizations.localeOf(context).languageCode);
+      if (result == 0) {
+        setState(() {
+          isLoading = false;
+        });
+        showInSnackBar(AppLocalizations.of(context)!.validate);
+        Future.delayed(Duration(seconds: 5), () async {
+          Navigator.pop(context);
+        });
+      } else if (result == -1) {
+        setState(() {
+          isLoading = false;
+        });
+        showInSnackBar(AppLocalizations.of(context)!.sameEmail);
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        showInSnackBar(AppLocalizations.of(context)!.registerError);
+      }
+  }
+
+  void showInSnackBar(String value) {
+    final snackbar = new SnackBar(
+      content: new Text(
+        value,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontFamily: "Helvetica",
+          color: Colors.black,
+          fontSize: 16.0,
+          //fontWeight: FontWeight.w800,
+        ),
+      ),
+      backgroundColor: Colors.white,
+      duration: Duration(seconds: 3),
+    );
+    scaffoldMessengerKey.currentState!.showSnackBar(snackbar);
+  }
+}
+
+/*
+SingleChildScrollView(
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -304,64 +484,8 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
               ),
-          ),
-        );
+ */
 
-  }
-
-  void onSignUpButtonPressed() {
-    setState(() {
-      isLoading = true;
-    });
-    signUp();
-  }
-
-  void signUp() async{
-    try {
-      var result =  await _accessDatabase.addUser(email, password1, name, isTrainer!, gender!, Localizations.localeOf(context).languageCode);
-      if(result == 0) {
-        setState(() {
-          isLoading = false;
-        });
-        showInSnackBar(AppLocalizations.of(context)!.validate);
-        Future.delayed(Duration(seconds: 4), () async {
-          Navigator.pop(context);
-        });
-      } else if (result == -1) {
-        setState(() {
-          isLoading = false;
-        });
-        showInSnackBar(AppLocalizations.of(context)!.sameEmail);
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-        showInSnackBar(AppLocalizations.of(context)!.registerError);
-      }
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      showInSnackBar(AppLocalizations.of(context)!.sameEmail);
-    }
-  }
-
-  void showInSnackBar(String value) {
-    final snackbar = new SnackBar(
-      content: new Text(
-        value,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
-            fontFamily: "Raleway"),
-      ),
-      backgroundColor: Styles.accent,
-      duration: Duration(seconds: 3),
-    );
-    scaffoldMessengerKey.currentState!.showSnackBar(snackbar);
-  }
-}
 
 class UserTypeWidget extends StatefulWidget {
   final ValueChanged<bool> selectedProfileTypeChanged;

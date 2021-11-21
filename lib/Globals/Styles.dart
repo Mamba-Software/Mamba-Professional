@@ -74,20 +74,20 @@ class Styles {
   static var textFromInputDecoration = InputDecoration(
     labelStyle: purpleTextStyle,
     enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: accent, width: 2.5),
-      borderRadius: BorderRadius.circular(13.0),
+      borderSide: BorderSide(color: Colors.black, width: 2.5),
+      borderRadius: BorderRadius.circular(10.0),
     ),
     focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: accent, width: 2.5),
-      borderRadius: BorderRadius.circular(13.0),
+      borderSide: BorderSide(color: Colors.black, width: 2.5),
+      borderRadius: BorderRadius.circular(10.0),
     ),
     errorBorder: OutlineInputBorder(
       borderSide: BorderSide(color: red, width: 2.5),
-      borderRadius: BorderRadius.circular(13.0),
+      borderRadius: BorderRadius.circular(10.0),
     ),
     focusedErrorBorder: OutlineInputBorder(
       borderSide: BorderSide(color: red, width: 2.5),
-      borderRadius: BorderRadius.circular(13.0),
+      borderRadius: BorderRadius.circular(10.0),
     ),
   );
 }
