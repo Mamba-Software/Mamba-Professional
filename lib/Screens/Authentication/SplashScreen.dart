@@ -7,10 +7,12 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Admin/Admin.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/FirstTime.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/FirstTimeWrapper.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
 import 'package:provider/provider.dart';
@@ -79,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Navigator.pushReplacement(
               context,
               CupertinoPageRoute<Null>(
-                builder: (context) => FirstTimeWrapper(),
+                builder: (context) => FirstTime(),
                 settings: RouteSettings(name: 'FirstTimeWrapper'),
               )
           );
@@ -123,33 +125,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Styles.mainColor,
-        body: Stack(
-          children: <Widget>[
-            Center(
-              child: SizedBox(
-                //width: MediaQuery.of(context).size.width * 0.14,
-                width: 50,
-                //height: MediaQuery.of(context).size.height * 0.07,
-                height: 50,
-                child: CircularProgressIndicator(
-                  color: Styles.white,
-                 ),
-                ),
-              ),
-              Center(
-                child: SizedBox(
-                  //width: MediaQuery.of(context).size.width * 0.07,
-                  width: 25,
-                  //height: MediaQuery.of(context).size.height * 0.07,
-                  height: 25,
-                  child: Image(
-                    image: AssetImage(Constants.logoSimple)
-                    ),
-                  ),
-              ),
-          ],
-        )
+      appBar: null,
+      body: LoadingViewPurple(),
     );
 
   }
