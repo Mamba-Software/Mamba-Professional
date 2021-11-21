@@ -479,69 +479,6 @@ SingleChildScrollView(
  */
 
 
-class UserTypeWidget extends StatefulWidget {
-  final ValueChanged<bool> selectedProfileTypeChanged;
-  final bool? isTrainer;
-  UserTypeWidget({Key? key, required this.selectedProfileTypeChanged, required this.isTrainer}) : super(key: key);
-
-  @override
-  _UserTypeWidgetState createState() => _UserTypeWidgetState();
-}
-
-class _UserTypeWidgetState extends State<UserTypeWidget> {
-  bool firstBuild = true;
-  var _isTrainer;
-
-  @override
-  Widget build(BuildContext context) {
-    if (firstBuild) {
-      _isTrainer = widget.isTrainer;
-      firstBuild = false;
-    }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        _icon(false, text: AppLocalizations.of(context)!.client, icon: Icons.directions_run),
-        _icon(true, text: AppLocalizations.of(context)!.trainer, icon: Icons.record_voice_over),
-      ],
-    );
-  }
-  Widget _icon(bool index, {required String text, required IconData icon}) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: InkResponse(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 45,
-                color: _isTrainer == index ? Colors.white : Styles.accent,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(
-                    text,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
-                      color: _isTrainer == index ? Colors.white : Styles.accent
-                    )
-                ),
-              ),
-            ],
-          ),
-          onTap: () => {
-            setState(() {
-              _isTrainer = index;
-              widget.selectedProfileTypeChanged(_isTrainer);
-            }),
-          },
-        ),
-    );
-  }
-}
 
 class GenderWidget extends StatefulWidget {
   final ValueChanged<int> selectedGenderChanged;

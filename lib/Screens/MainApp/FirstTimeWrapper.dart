@@ -94,7 +94,7 @@ class _FirstTimeWrapperState extends State<FirstTimeWrapper> {
                       child: Image.asset(Constants.logoExtended)),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Text(AppLocalizations.of(context)!.wellcome(splitCommonName(currentUser.name!)),
+                    child: Text(AppLocalizations.of(context)!.wellcome,
                       style: Styles.purpleTextStyle.copyWith(fontSize: 23, fontWeight:FontWeight.bold),
                       textAlign: TextAlign.center,),
                   ),

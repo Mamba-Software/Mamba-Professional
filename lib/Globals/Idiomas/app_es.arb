@@ -35,12 +35,20 @@
   "@client":{
     "description": "Cliente Text"
   },
+  "clientDescription": "Busca la marca que mejor se adapta a ti, contacta con entrenadores, reserva sesiones ...",
+  "@clientDescription":{
+    "description": "Entrenador Text"
+  },
   "clients": "Clientes",
-  "@client":{
+  "@clients":{
     "description": "Cliente Text"
   },
   "trainer": "Entrenador",
   "@trainer":{
+    "description": "Entrenador Text"
+  },
+  "trainerDescription": "Podrás crear tu propia marca o unirte a una ya existente, planificarás sesiones, reclutarás a nuevos clientes ...",
+  "@trainerDescription":{
     "description": "Entrenador Text"
   },
   "trainers": "Entrenadores",
@@ -139,6 +147,14 @@
   "@name":{
     "description": "Nombre"
   },
+  "nickname": "Alias",
+  "@nickname":{
+    "description": "Nombre"
+  },
+  "nicknameError": "Introduce tu alias por favor",
+  "@nicknameError":{
+    "description": "LogIn Text "
+  },
   "nameCompleto": "Nombre completo",
   "@nameCompleto":{
     "description": "Nombre Completo Text "
@@ -175,14 +191,13 @@
   "@registerTypeError":{
     "description": "Regístrate Gender Error Text "
   },
-  "wellcome": "¡Hola {username}!",
+  "wellcome": "Bienvenido",
   "@wellcome": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "username": {
-        "type": "String"
-      }
-    }
+    "description": "Wellcome message"
+  },
+  "wellcomeMessage": "¡Gracias por descargar Mamba!\n\nAntes de empezar a usar nuestra plataforma, por favor complete la siguiente información para configurar su perfil.",
+  "@wellcomeMessage": {
+    "description": "Wellcome message"
   },
   "alreadyCreatedClient": "¿Formas parte de una marca de entreno personal?",
   "@alreadyCreatedClient":{
@@ -398,7 +413,7 @@
   "@loading":{
     "description": "loading text"
   },
-  "basicInfo": "Información Básica",
+  "basicInfo": "Información básica",
   "@basicInfo":{
     "description": "basicInfo text"
   },
@@ -523,6 +538,10 @@
   "@next":{
     "description": "Siguiente text"
   },
+  "finish": "Finalizar",
+  "@finish":{
+    "description": "Siguiente text"
+  },
   "brandNotFound": "No encontramos esta Marca. Por favor asegúrate que has introducido el cógido correctamente",
   "@brandNotFound":{
     "description": "disponibilidad text"
@@ -585,6 +604,14 @@
   },
   "inviteCode": "Código de invitación",
   "@inviteCode":{
+    "description": "inviteCode text"
+  },
+  "inviteCodeError": "Escribe el código de invitación porfavor",
+  "@inviteCodeError":{
+    "description": "inviteCode text"
+  },
+  "inviteCodeOptional": "¿No tienes ningún código de invitación? ¡No te preocupes! Finaliza el proceso de bienvenida para ver todas las marcas dentro MAMBA.",
+  "@inviteCodeOptional":{
     "description": "inviteCode text"
   },
   "copyCorrectCode": "Código de invitación copiado correctamente",
@@ -832,6 +859,14 @@
   },
   "editYourInfo": "Edita tu información personal",
   "@editYourInfo": {
+    "description": "Wellcome message"
+  },
+  "profilePhoto": "Foto de perfil",
+  "@profilePhoto": {
+    "description": "Wellcome message"
+  },
+  "profilePhotoOptional": "En caso que no quieras escoger tu foto de perfil en este momento, puedes saltarte este paso.",
+  "@profilePhotoOptional": {
     "description": "Wellcome message"
   },
   "editYourPhoto": "Edita tu imagen de perfil",

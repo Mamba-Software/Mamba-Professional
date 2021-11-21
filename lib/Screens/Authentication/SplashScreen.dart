@@ -81,7 +81,9 @@ class _SplashScreenState extends State<SplashScreen> {
           Navigator.pushReplacement(
               context,
               CupertinoPageRoute<Null>(
-                builder: (context) => FirstTime(),
+                builder: (context) => FirstTime(
+                  locale: Localizations.localeOf(context),
+                ),
                 settings: RouteSettings(name: 'FirstTimeWrapper'),
               )
           );
