@@ -70,16 +70,20 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     });
     bool result = await _accessDatabase.checkIfAliasExists(nick);
     if (result) {
-      setState(() {
-        nickOkay = true;
-        nickUsed = false;
-        isSearchAlias = false;
+      Future.delayed(Duration(milliseconds: 500), () async {
+        setState(() {
+          nickOkay = true;
+          nickUsed = false;
+          isSearchAlias = false;
+        });
       });
     } else {
-      setState(() {
-        nickOkay = false;
-        nickUsed = true;
-        isSearchAlias = false;
+      Future.delayed(Duration(milliseconds: 500), () async {
+        setState(() {
+          nickOkay = false;
+          nickUsed = true;
+          isSearchAlias = false;
+        });
       });
     }
   }
@@ -344,6 +348,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                         child: Form(
                           key: _formKey,
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(height: MediaQuery.of(context).size.height*0.04),
                               Row(
@@ -357,19 +362,38 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                 ],
                               ),
                               SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                              TextFormField(
-                                  controller: nameController,
-                                  keyboardType: TextInputType.name,
-                                  validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nameCompletoError : null,
-                                  style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
-                                  decoration: InputDecoration(
-                                    hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
-                                    hintText: AppLocalizations.of(context)!.nameCompletoError,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                  ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.85,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextFormField(
+                                        controller: nameController,
+                                        keyboardType: TextInputType.name,
+                                        validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nameCompletoError : null,
+                                        style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
+                                        decoration: InputDecoration(
+                                          hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                          hintText: AppLocalizations.of(context)!.nameCompletoError,
+                                          enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey,
+                                                  width: 1.0
+                                              )
+                                          ),
+                                          focusedBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey,
+                                                  width: 1.0
+                                              )
+                                          ),
+                                          errorBorder: InputBorder.none,
+                                          disabledBorder: InputBorder.none,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                               SizedBox(height: MediaQuery.of(context).size.height*0.02),
                               Row(
@@ -384,29 +408,44 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                               ),
                               SizedBox(height: MediaQuery.of(context).size.height*0.01),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Expanded(
-                                    child: TextFormField(
-                                      controller: nickController,
-                                      keyboardType: TextInputType.name,
-                                      validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nicknameError : null,
-                                      onChanged: (val) {
-                                        nick = val;
-                                        checkIfNickExists(nick);
-                                      },
-                                      style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
-                                      decoration: InputDecoration(
-                                        hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
-                                        hintText: "@${undoCapitalized(AppLocalizations.of(context)!.name)}",
-                                        enabledBorder: InputBorder.none,
-                                        errorBorder: InputBorder.none,
-                                        disabledBorder: InputBorder.none,
-                                        focusedBorder: InputBorder.none,
-                                      ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.85,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: TextFormField(
+                                            controller: nickController,
+                                            keyboardType: TextInputType.name,
+                                            validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nicknameError : null,
+                                            onChanged: (val) {
+                                              nick = val;
+                                              checkIfNickExists(nick);
+                                            },
+                                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
+                                            decoration: InputDecoration(
+                                              hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                              hintText: "@${undoCapitalized(AppLocalizations.of(context)!.name)}",
+                                              enabledBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                      width: 1.0
+                                                  )
+                                              ),
+                                              focusedBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                      width: 1.0
+                                                  )
+                                              ),
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
                                   isSearchAlias ? Center(
                                     child: SizedBox(
                                       width: MediaQuery.of(context).size.width * 0.05,
@@ -419,28 +458,38 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                   ) : Container(),
                                 ],
                               ),
-                              nickOkay && !nickUsed && nickController.text.isNotEmpty ? Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                              nickOkay && !nickUsed && nickController.text.isNotEmpty ? Column(
                                 children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.nicknameAvailable,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 14),
-                                    textAlign: TextAlign.left,
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.nicknameAvailable,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                      Icon(Icons.check, size: 25, color: Colors.green,),
+                                    ],
                                   ),
-                                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                  Icon(Icons.check, size: 25, color: Colors.green,),
                                 ],
                               ) : Container(),
-                              !nickOkay && nickUsed && nickController.text.isNotEmpty ? Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                              !nickOkay && nickUsed && nickController.text.isNotEmpty ? Column(
                                 children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.nicknameOcuppied,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 14),
-                                    textAlign: TextAlign.left,
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.nicknameOcuppied,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                      Icon(Icons.close, size: 25, color: Colors.red,),
+                                    ],
                                   ),
-                                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                  Icon(Icons.close, size: 25, color: Colors.red,),
                                 ],
                               ) : Container(),
                               SizedBox(height: MediaQuery.of(context).size.height*0.02),
