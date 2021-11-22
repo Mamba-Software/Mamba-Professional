@@ -51,11 +51,14 @@ dependencies:
   cupertino_icons: ^1.0.2
 
 flutter_icons:
-  #  Images Path
-  image_path: "assets/images/launcher_icons/logoIcon.jpg"
   # Platforms
   android: true
   ios: true
+  #  Images Path
+  image_path_ios: "assets/images/launcher_icons/logoIcon.jpg"
+  image_path_android: "assets/images/launcher_icons/logoIcon.jpg"
+  adaptive_icon_background: "assets/images/launcher_icons/logo_background.png"
+  adaptive_icon_foreground: "assets/images/launcher_icons/logo_foreground.png"
 
 dev_dependencies:
   flutter_test:
