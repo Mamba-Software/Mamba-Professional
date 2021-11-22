@@ -220,6 +220,38 @@
   "@reporting":{
     "description": "Errores Text"
   },
+  "feedbackSent": "¡Gracias por darnos tu opinión!\nNecesitamos a más gente como tú",
+  "@feedbackSent":{
+    "description": "Feedback Sent Text"
+  },
+  "feedbackNotSent": "Algo ha ido mal\nNo se han enviado las respuestas",
+  "@feedbackSent":{
+    "description": "Feedback Not Sent Text"
+  },
+  "feedbackAnswered": "Ya has respondido al Feedback de\nesta semana",
+  "@feedbackAnswered":{
+    "description": "Feedback Answered Text"
+  },
+  "feedbackNotAnswered": "Ayúdanos a mejorar respondiendo el Feedbak de esta semana\n¿A qué esperas?",
+  "@feedbackNotAnswered":{
+    "description": "Feedback Not Answered Text"
+  },
+  "responderFeedback": "!Vamos!",
+  "@responderFeedback":{
+    "description": "Feedback Lets go Text"
+  },
+  "finishedFeedback": "Has terminado",
+  "@finishedFeedback":{
+    "description": "Feedback Finsihed Text"
+  },
+  "finishedFeedbackSubtitle": "!Gracias por tu tiempo!",
+  "@finishedFeedbackSubtitle":{
+    "description": "Feedback Finsihed subtitle Text"
+  },
+  "sendFeedback": "Enviar",
+  "@sendFeedback":{
+    "description": "Feedback Text Enviar"
+  },
   "memberSince": "Miembro desde {dateJoined}",
   "@memberSince": {
     "description": "Member Since message",

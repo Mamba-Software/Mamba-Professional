@@ -3,7 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
+import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
+import 'package:mamba_castelldefels/Models/Question.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'firebaseDatabase.dart';
 
@@ -65,7 +67,18 @@ class DatabaseAccess {
   // Get Single Location
 
   //Questions
-  Future<String> addQuestion(String? question, String? type, String? options) => _firebase.addQuestion(question, type, options);
+  Future<Question> getOneQuestion(String? id) => _firebase.getOneQuestion(id);
+  Future<String> addQuestion(String? questionCat, String? questionSpn, String? type) => _firebase.addQuestion(questionCat, questionSpn, type);
+  //Future<List<Question>> getAllQuestionsByType(String type) => _firebase.getAllQuestionsByType(type);
+
+  //GroupOfQuestions
+  Future<String> addGroupOfQuestions(String? questionOne, String? questionTwo, String? questionThree, String? questionFour) => _firebase.addGroupOfQuestions(questionOne, questionTwo, questionThree, questionFour);
+  Future<GroupOfQuestions> getActiveGroupOfQuestions() => _firebase.getActiveGroupOfQuestions();
+
+  //Answers
+  Future<String> addAnswers(String? groupOfQuestionsID, String? answerOne, String? answerTwo, String? answerThree, String? answerFour) => _firebase.addAnswers(groupOfQuestionsID, answerOne, answerTwo, answerThree, answerFour);
+  Future<bool> checkIfAnswersExist(String? groupOfQuestionsID) => _firebase.checkIfAnswersExist(groupOfQuestionsID);
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams
 
@@ -82,6 +95,10 @@ class DatabaseAccess {
 
   // Locations
   // Stream Brand Current Location
+
+  //Questions
+  Stream<QuerySnapshot> getAllQuestions() => _firebase.getAllQuestions();
+
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //Admin

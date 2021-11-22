@@ -6,7 +6,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Admin/AdminTool.dart';
-import 'package:mamba_castelldefels/Screens/Admin/FeedBack.dart';
+import 'package:mamba_castelldefels/Screens/Admin/AdminFeedBack.dart';
+
+import '../MainApp/Home/Perfil/PerfilModals/UserFeedBack.dart';
 
 
 class Admin extends StatefulWidget {
@@ -105,12 +107,16 @@ class EachList extends StatelessWidget{
         );
         break;
 
+      case 1:
+
+        break;
+
       case 2:
         Navigator.push(
             context,
             CupertinoPageRoute<Null>(
-              builder: (context) => FeedBack(title: name),
-              settings: RouteSettings(name: 'FeedBack'),
+              builder: (context) => AdminFeedBack(title: name),
+              settings: RouteSettings(name: 'AdminFeedBack'),
             )
         );
         break;

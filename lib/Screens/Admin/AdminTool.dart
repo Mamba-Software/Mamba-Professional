@@ -9,17 +9,16 @@ import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
-
 class AdminTool extends StatefulWidget {
   final String title;
-  const AdminTool({Key? key,required this.title}) : super(key: key);
+
+  const AdminTool({Key? key, required this.title}) : super(key: key);
 
   @override
   _AdminToolState createState() => _AdminToolState();
 }
 
 class _AdminToolState extends State<AdminTool> {
-
   //DataBase Access
   var _accessDatabase = new DatabaseAccess();
   List<Usuario> usersListTrainer = [];
@@ -38,15 +37,14 @@ class _AdminToolState extends State<AdminTool> {
     super.initState();
     isLoading = true;
     getUsersList();
-
   }
 
   Future<void> getUsersList() async {
     Stream<QuerySnapshot> snapshot = await _accessDatabase.getAllUsers();
-     await snapshot.forEach((field) async {
+    await snapshot.forEach((field) async {
       field.docs.asMap().forEach((index, value) {
         var user = Usuario.fromObject(field.docs[index], field.docs[index].id);
-        if(user.isTrainer!) {
+        if (user.isTrainer!) {
           usersListTrainer.add(user);
         } else {
           usersListClient.add(user);
@@ -69,14 +67,15 @@ class _AdminToolState extends State<AdminTool> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
+        title: Text(widget.title,
+            style: Styles.whiteTextStyle
+                .copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
         centerTitle: true,
         elevation: 10,
         iconTheme: IconThemeData(
           color: Colors.white, //change your color here
         ),
       ),
-
       backgroundColor: Colors.white,
       body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -85,7 +84,7 @@ class _AdminToolState extends State<AdminTool> {
           children: [
             Container(
               constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height*0.70,
+                maxHeight: MediaQuery.of(context).size.height * 0.70,
               ),
               padding: MediaQuery.of(context).viewInsets,
               child: DefaultTabController(
@@ -107,8 +106,8 @@ class _AdminToolState extends State<AdminTool> {
                             hintText: "Search",
                             prefixIcon: Icon(Icons.search),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(15.0)))
-                        ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15.0)))),
                       ),
                     ),
                     centerTitle: true,
@@ -123,9 +122,18 @@ class _AdminToolState extends State<AdminTool> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.record_voice_over, color: Styles.accent,),
-                                SizedBox(width: 10,),
-                                Text(AppLocalizations.of(context)!.trainer, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                                Icon(
+                                  Icons.record_voice_over,
+                                  color: Styles.accent,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  AppLocalizations.of(context)!.trainer,
+                                  style: Styles.purpleTextStyle
+                                      .copyWith(fontWeight: FontWeight.bold),
+                                ),
                               ],
                             ),
                           ),
@@ -136,9 +144,18 @@ class _AdminToolState extends State<AdminTool> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.directions_run, color: Styles.accent,),
-                                SizedBox(width: 10,),
-                                Text(AppLocalizations.of(context)!.client, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                                Icon(
+                                  Icons.directions_run,
+                                  color: Styles.accent,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  AppLocalizations.of(context)!.client,
+                                  style: Styles.purpleTextStyle
+                                      .copyWith(fontWeight: FontWeight.bold),
+                                ),
                               ],
                             ),
                           ),
@@ -150,44 +167,40 @@ class _AdminToolState extends State<AdminTool> {
                   body: TabBarView(
                     controller: tabViewController,
                     children: [
-                      isLoading ?
-                      LoadingView()
-                          :
-                      Column(
-                        children: [
-                          ListView.builder(
-                            itemCount: usersListTrainer.length,
-                            itemBuilder: (context, int index) {
-                              //filterClientTrainer(true);
-                              return UserTile(usersListTrainer[index]);
-                            },
-                            shrinkWrap: true,
-                          ),
-                        ],
-                      ),
-                      isLoading ?
-                      LoadingView()
-                          :
-                      Column(
-                        children: [
-                          ListView.builder(
-                            itemCount: usersListClient.length,
-                            itemBuilder: (context, int index) {
-                              //filterClientTrainer(false);
-                              return UserTile(usersListClient[index]);
-                            },
-                            shrinkWrap: true,
-                          ),
-                        ],
-                      ),
+                      isLoading
+                          ? LoadingView()
+                          : Column(
+                              children: [
+                                ListView.builder(
+                                  itemCount: usersListTrainer.length,
+                                  itemBuilder: (context, int index) {
+                                    //filterClientTrainer(true);
+                                    return UserTile(usersListTrainer[index]);
+                                  },
+                                  shrinkWrap: true,
+                                ),
+                              ],
+                            ),
+                      isLoading
+                          ? LoadingView()
+                          : Column(
+                              children: [
+                                ListView.builder(
+                                  itemCount: usersListClient.length,
+                                  itemBuilder: (context, int index) {
+                                    //filterClientTrainer(false);
+                                    return UserTile(usersListClient[index]);
+                                  },
+                                  shrinkWrap: true,
+                                ),
+                              ],
+                            ),
                     ],
                   ),
                 ),
               ),
             ),
-
-          ]
-        ),
+          ]),
     );
   }
 
@@ -295,7 +308,7 @@ class _AdminToolState extends State<AdminTool> {
 
   List<Usuario> documentsToUsers(List<DocumentSnapshot> documents) {
     List<Usuario> users = [];
-    for(int i = 0; i < documents.length; i++) {
+    for (int i = 0; i < documents.length; i++) {
       users.add(Usuario.fromObject(documents[i], documents[i].id));
     }
     return users;
@@ -333,17 +346,16 @@ class _AdminToolState extends State<AdminTool> {
 
   }*/
 
-
   void filterSearchResults(String query) {
-
     List<Usuario> usersFiltered = [];
     List<Usuario> usersToAnalyze = [];
 
-    if(filtredByTrainerClient == false) usersToAnalyze = usersListTrainer;
-    else usersToAnalyze = usersListTrainer;
+    if (filtredByTrainerClient == false)
+      usersToAnalyze = usersListTrainer;
+    else
+      usersToAnalyze = usersListTrainer;
 
     if (query.isNotEmpty) {
-
       for (var item in usersToAnalyze) {
         if (item.name!.startsWith(query)) {
           usersFiltered.add(item);
@@ -355,16 +367,11 @@ class _AdminToolState extends State<AdminTool> {
       usersListClient.addAll(usersFiltered);
 
       return;
-    }
-
-    else {
-
+    } else {
       filteredBySearcher = false;
       usersListClient.clear();
       usersListClient.addAll(fullusersListTrainer);
-
     }
-
   }
 
   void refresh() {
@@ -375,25 +382,30 @@ class _AdminToolState extends State<AdminTool> {
       editingController.text = "";
     });
   }
-
 }
 
-
-
-class UserTile extends StatelessWidget{
+class UserTile extends StatelessWidget {
   final Usuario user;
+
   UserTile(this.user);
+
   @override
   Widget build(BuildContext context) {
     return new Card(
       margin: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0.0),
       child: ListTile(
-        leading: CircularImage(size: MediaQuery.of(context).size.width*0.15, image: user.imageUrl, borderWidth: 3, color: Colors.red),
+        leading: CircularImage(
+            size: MediaQuery.of(context).size.width * 0.15,
+            image: user.imageUrl,
+            borderWidth: 3,
+            color: Colors.red),
         trailing: Icon(Icons.east),
-        title: Text(user.name!,style: TextStyle(fontSize: 20.0),),
+        title: Text(
+          user.name!,
+          style: TextStyle(fontSize: 20.0),
+        ),
         subtitle: Text("Admin Tool"),
-        onTap: (){
-        },
+        onTap: () {},
       ),
     );
   }

@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/UserFeedBack.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'PerfilModals/FeedBack.dart';
@@ -204,7 +205,23 @@ class _PerfilState extends State<Perfil> {
                         bottom: MediaQuery.of(context).size.height*0.10,
                         left: 0,
                         right: MediaQuery.of(context).size.width*0.65,
-                        child: Icon(Icons.help_outline, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                        child: IconButton(
+                          icon: Icon(Icons.help_outline, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                PageTransition(
+                                  type: PageTransitionType.bottomToTop,
+                                  child: FeedBack(),
+                                )
+                            ).whenComplete(() {
+                              setState(() {
+                                //isLoading = true;
+                                //initProfileHome();
+                              });
+                            });
+                          },
+                        ),
                       ),
                       Positioned(
                         top: 0,

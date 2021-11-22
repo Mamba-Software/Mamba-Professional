@@ -6,32 +6,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Question {
   String? id;
   String? creatorID;
-  String? question;
+  String? questionCat;
+  String? questionSpn;
   String? type;
-  var options;
 
   Question({
     this.id,
     this.creatorID,
-    this.question,
+    this.questionCat,
+    this.questionSpn,
     this.type,
-    this.options,
   });
 
   Question.fromMap(Map<String, dynamic> mapData, String documentId) {
     this.id = documentId;
     this.creatorID = mapData['creatorID'].toString();
-    this.question = mapData['question'].toString();
+    this.questionCat = mapData['questionCat'].toString();
+    this.questionSpn = mapData['questionSpn'].toString();
     this.type = mapData['type'].toString();
-    this.options = mapData['options'];
   }
 
 
   Question.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
     this.id = documentId;
     this.creatorID = documentSnapshot.get("creatorID").toString();
-    this.question = documentSnapshot.get("question").toString();
+    this.questionCat = documentSnapshot.get("questionCat").toString();
+    this.questionSpn = documentSnapshot.get("questionSpn").toString();
     this.type = documentSnapshot.get("type").toString();
-    this.options = documentSnapshot.get("options");
   }
 }
