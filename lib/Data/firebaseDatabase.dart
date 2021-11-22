@@ -134,6 +134,18 @@ class FirebaseDatabaseService {
       return -1;
     }
   }
+  // Check If Alias Exists
+  Future<bool> checkIfAliasExists(String nickname) async {
+    bool result = true;
+    QuerySnapshot querySnapshot = await _firestore.collection("Users").get();
+    for (var doc in querySnapshot.docs) {
+      if (doc.get('nick') == nickname) {
+        result = false;
+        break;
+      }
+    }
+    return result;
+  }
   // Add User
   Future<int> addUser(String email, String password, String name, bool isTrainer, int gender, String idioma) async {
     bool authError = false;
@@ -185,6 +197,7 @@ class FirebaseDatabaseService {
       return -1;
     }
   }
+
   // Add Error/ Report Bug
   Future<bool> addError(String title, String description, [String? stepsReproduce]) async {
     var uid = Uuid().v1();

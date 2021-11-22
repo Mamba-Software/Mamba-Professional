@@ -155,6 +155,14 @@
   "@nicknameError":{
     "description": "LogIn Text "
   },
+  "nicknameAvailable": "Este alias está disponible",
+  "@nicknameAvailable":{
+    "description": "LogIn Text "
+  },
+  "nicknameOcuppied": "Este alias ya está cogido",
+  "@nicknameOcuppied":{
+    "description": "LogIn Text "
+  },
   "nameCompleto": "Nombre completo",
   "@nameCompleto":{
     "description": "Nombre Completo Text "
@@ -191,7 +199,7 @@
   "@registerTypeError":{
     "description": "Regístrate Gender Error Text "
   },
-  "wellcome": "Bienvenido",
+  "wellcome": "Bienvenido/a",
   "@wellcome": {
     "description": "Wellcome message"
   },

@@ -24,8 +24,8 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
   bool isLoading = false;
-  // Boolean isUpdated
-  bool isUpdated = false;
+  // Form Key
+  final _formKey = GlobalKey<FormState>();
   // Tab Controller
   double addEventTabValue = 0.20;
   TabController? _tabController;
@@ -36,6 +36,9 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
   // Nick Controller
   var nickController = TextEditingController();
   String nick = "";
+  bool isSearchAlias = false;
+  bool nickOkay = false;
+  bool nickUsed = false;
   // Date Of Birth
   TextEditingController startDateController = TextEditingController();
   String nullDate = "";
@@ -60,6 +63,26 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
 
   String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
   String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
+
+  Future<void> checkIfNickExists(String nick) async {
+    setState(() {
+      isSearchAlias = true;
+    });
+    bool result = await _accessDatabase.checkIfAliasExists(nick);
+    if (result) {
+      setState(() {
+        nickOkay = true;
+        nickUsed = false;
+        isSearchAlias = false;
+      });
+    } else {
+      setState(() {
+        nickOkay = false;
+        nickUsed = true;
+        isSearchAlias = false;
+      });
+    }
+  }
 
   Future<void> selectSlot(ctx, type) {
     // Initial Vars
@@ -318,118 +341,177 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                   body: SingleChildScrollView(
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                        child: Column(
-                          children: [
-                            SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.name,
-                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                            TextFormField(
-                                controller: nameController,
-                                keyboardType: TextInputType.name,
-                                validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.emailError : null,
-                                style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
-                                decoration: InputDecoration(
-                                  hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
-                                  hintText: AppLocalizations.of(context)!.nameCompletoError,
-                                  enabledBorder: InputBorder.none,
-                                  errorBorder: InputBorder.none,
-                                  disabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.nickname,
-                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                            TextFormField(
-                              controller: nickController,
-                              keyboardType: TextInputType.name,
-                              validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nicknameError : null,
-                              style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
-                              decoration: InputDecoration(
-                                hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
-                                hintText: "@${undoCapitalized(AppLocalizations.of(context)!.name)}",
-                                enabledBorder: InputBorder.none,
-                                errorBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.name,
+                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ],
                               ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.dateOfBirth,
-                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                            GestureDetector(
-                                onTap: () {
-                                  selectSlot(context, 0);
-                                },
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    new Flexible(
-                                      child: TextFormField(
-                                        controller: startDateController,
-                                        readOnly: true,
-                                        enabled: false,
-                                        style: startDateController.text == nullDate ? Theme.of(context).textTheme.headline1!.copyWith(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w600) : Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          focusedBorder: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                          errorBorder: InputBorder.none,
-                                          disabledBorder: InputBorder.none,
-                                        ),
-                                        textAlign: TextAlign.start,
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              TextFormField(
+                                  controller: nameController,
+                                  keyboardType: TextInputType.name,
+                                  validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nameCompletoError : null,
+                                  style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
+                                  decoration: InputDecoration(
+                                    hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                    hintText: AppLocalizations.of(context)!.nameCompletoError,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                  ),
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.nickname,
+                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: nickController,
+                                      keyboardType: TextInputType.name,
+                                      validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nicknameError : null,
+                                      onChanged: (val) {
+                                        nick = val;
+                                        checkIfNickExists(nick);
+                                      },
+                                      style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
+                                      decoration: InputDecoration(
+                                        hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                        hintText: "@${undoCapitalized(AppLocalizations.of(context)!.name)}",
+                                        enabledBorder: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        disabledBorder: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
                                       ),
                                     ),
-                                  ],
-                                )
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.gender,
-                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.left,
+                                  ),
+                                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                                  isSearchAlias ? Center(
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width * 0.05,
+                                      height: MediaQuery.of(context).size.height * 0.025,
+                                      child: CircularProgressIndicator(
+                                        color: Theme.of(context).primaryColor,
+                                        strokeWidth: 2.5,
+                                      ),
+                                    ),
+                                  ) : Container(),
+                                ],
+                              ),
+                              nickOkay && !nickUsed && nickController.text.isNotEmpty ? Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.nicknameAvailable,
+                                    style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                  Icon(Icons.check, size: 25, color: Colors.green,),
+                                ],
+                              ) : Container(),
+                              !nickOkay && nickUsed && nickController.text.isNotEmpty ? Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.nicknameOcuppied,
+                                    style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                  Icon(Icons.close, size: 25, color: Colors.red,),
+                                ],
+                              ) : Container(),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.dateOfBirth,
+                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              GestureDetector(
+                                  onTap: () {
+                                    selectSlot(context, 0);
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      new Flexible(
+                                        child: TextFormField(
+                                          controller: startDateController,
+                                          readOnly: true,
+                                          enabled: false,
+                                          style: startDateController.text == nullDate ? Theme.of(context).textTheme.headline1!.copyWith(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w300) : Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
+                                          decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            focusedBorder: InputBorder.none,
+                                            enabledBorder: InputBorder.none,
+                                            errorBorder: InputBorder.none,
+                                            disabledBorder: InputBorder.none,
+                                          ),
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.gender,
+                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              GenderWidget(
+                                  genderTemp: genderTemp,
+                                  selectedGenderChanged: (gender) {
+                                    updateGender(gender);
+                                  }
+                              ),
+                              errorGender ? Padding(
+                                padding: EdgeInsets.only(left: 0, right: 0, top: 2.0),
+                                child: Center(
+                                  child: Text(
+                                    errorGenderText,
+                                    style: Styles.redTextStyle.copyWith(fontSize: 12),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                              ],
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                            GenderWidget(
-                                genderTemp: genderTemp,
-                                selectedGenderChanged: (gender) {
-                                  updateGender(gender);
-                                }
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                          ],
+                              ) : Container(),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                            ],
+                          ),
                         ),
                       )
                   ),
@@ -751,11 +833,13 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                           tabs[1] = true;
                         });
                       } else if (_selectedIndex == 1) {
-                        _tabController!.animateTo(_selectedIndex += 1);
-                        setState(() {
-                          addEventTabValue += 0.20;
-                          tabs[2] = true;
-                        });
+                        if (validateInformation()) {
+                          _tabController!.animateTo(_selectedIndex += 1);
+                          setState(() {
+                            addEventTabValue += 0.20;
+                            tabs[2] = true;
+                          });
+                        }
                       } else if (_selectedIndex == 2) {
                         _tabController!.animateTo(_selectedIndex += 1);
                         setState(() {
@@ -784,10 +868,28 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     );
   }
 
-  String splitCommonName(String name) {
-    List<String> aux = name.split(" ");
-    return aux[0];
-  }
+ bool validateInformation() {
+   if (!_formKey.currentState!.validate()) {
+     return false;
+   }
+   if (nickUsed) {
+     return false;
+   }
+   if (startDateController.text == nullDate) {
+     return false;
+   }
+   if (gender == null) {
+     setState(() {
+       errorGender = true;
+       errorGenderText = AppLocalizations.of(context)!.registerGenderError;
+     });
+   } else {
+     setState(() {
+       errorGender = false;
+     });
+   };
+   return true;
+ }
 
   Color getColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
@@ -809,7 +911,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
       );
     } else if (tabs[0] && tabs[1] && !tabs[2] && !tabs[3] && !tabs[4]) {
       return Text(
-        AppLocalizations.of(context)!.basicInfo,
+        AppLocalizations.of(context)!.yourInfo,
         style: Theme.of(context).appBarTheme.titleTextStyle,
       );
     } else if (tabs[0] && tabs[1] && tabs[2] && !tabs[3] && !tabs[4]) {
