@@ -50,7 +50,14 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
 
   Future<void> getAllTrainersFromBrand() async {
     allTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
-    filteredTrainers = allTrainers;
+    for (var i=0; i< allTrainers.length; i++) {
+      Usuario trainer = allTrainers[i];
+      if (trainer.id == currentUser.id) {
+        filteredTrainers.insert(0, trainer);
+      } else {
+        filteredTrainers.add(trainer);
+      }
+    }
   }
 
   Future<void> getAllClientsFromBrand() async {

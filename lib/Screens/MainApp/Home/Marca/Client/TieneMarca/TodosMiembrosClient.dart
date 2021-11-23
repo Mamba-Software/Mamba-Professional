@@ -58,10 +58,14 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
     allClients = await _accessDatabase.getAllClientsFromBrand(currentBrand.id!);
     for (var i=0; i< allClients.length; i++) {
       Usuario client = allClients[i];
-      if (client.isPrivate!) {
-        privateUsers.add(client);
+      if (client.id == currentUser.id) {
+        filteredClients.insert(0, client);
       } else {
-        filteredClients.add(client);
+        if (client.isPrivate!) {
+          privateUsers.add(client);
+        } else {
+          filteredClients.add(client);
+        }
       }
     }
     filteredClients.addAll(privateUsers);
@@ -345,64 +349,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                               itemCount: filteredClients.length,
                               itemBuilder: (context, index) {
                                 Usuario user = filteredClients[index];
-                                if (!user.isPrivate!) {
-                                  return Container(
-                                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
-                                      },
-                                      child: Container(
-                                          height: MediaQuery.of(context).size.height*0.09,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
-                                                child: CircularImage(
-                                                  size: MediaQuery.of(context).size.width*0.2,
-                                                  image: user.imageUrl,
-                                                  color: Theme.of(context).primaryColor,
-                                                  borderWidth: 1.5,
-                                                ),
-                                              ),
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                    width: MediaQuery.of(context).size.width*0.40,
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      children: [
-                                                        Expanded(
-                                                          child: Text(
-                                                            user.name!,
-                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                                                            textAlign: TextAlign.left,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-
-                                                ],
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.20),
-                                                child: Icon(
-                                                  Icons.arrow_forward_ios,
-                                                  size: 30,
-                                                  color: Theme.of(context).primaryColor,
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                    ),
-                                  );  
-                                } else {
+                                if (user.isPrivate! && user.id != currentUser.id) {
                                   return Container(
                                     padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
                                     child: GestureDetector(
@@ -452,6 +399,63 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                                   Icons.arrow_forward_ios,
                                                   size: 30,
                                                   color: Theme.of(context).primaryColor.withOpacity(0.3),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  return Container(
+                                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
+                                      },
+                                      child: Container(
+                                          height: MediaQuery.of(context).size.height*0.09,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
+                                                child: CircularImage(
+                                                  size: MediaQuery.of(context).size.width*0.2,
+                                                  image: user.imageUrl,
+                                                  color: Theme.of(context).primaryColor,
+                                                  borderWidth: 1.5,
+                                                ),
+                                              ),
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width*0.40,
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            user.name!,
+                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                                                            textAlign: TextAlign.left,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+
+                                                ],
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.20),
+                                                child: Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  size: 30,
+                                                  color: Theme.of(context).primaryColor,
                                                 ),
                                               ),
                                             ],

@@ -210,8 +210,8 @@ class _LoginState extends State<Login> {
   }
 
   void signIn() async {
-    try {
       int result = await _accessDatabase.signIn(email, password);
+      print(result);
       if (result == 0) {
         Navigator.pushReplacement(
             context,
@@ -220,19 +220,18 @@ class _LoginState extends State<Login> {
               settings: RouteSettings(name: 'SplashScreen'),
             )
         );
-      } else if(result == -2) {
+      } else if (result == -1) {
+        setState(() {
+          isLoading = false;
+          email = emailTemp;
+        });
+        showInSnackBar(AppLocalizations.of(context)!.loginError);
+      } else if (result == -2) {
         setState(() {
           isLoading = false;
         });
         showInSnackBar(AppLocalizations.of(context)!.validateError);
       }
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-        email = emailTemp;
-      });
-      showInSnackBar(AppLocalizations.of(context)!.loginError);
-    }
   }
 
   // Actions to do when login and register
