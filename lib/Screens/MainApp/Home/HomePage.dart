@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'Chat/Chat.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -24,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   // Boolean Loading
   bool isLoading = false;
   // Index of Bottom Navigation Bar
-  int _currentIndex = 1;
+  int _currentIndex = 0;
 
   @override
   void initState() {
@@ -46,13 +47,14 @@ class _HomePageState extends State<HomePage> {
     final navBarTabs = [
       Perfil(),
       Marca(),
+      Notifications(),
       Chat(),
     ];
     return Scaffold(
       appBar: null,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        iconSize: 30,
+        iconSize: 32,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -62,6 +64,11 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.fitness_center_rounded),
             label: AppLocalizations.of(context)!.brandBottomNav,
+            backgroundColor: Theme.of(context).primaryColor,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_rounded),
+            label: AppLocalizations.of(context)!.notificationsBottomNav,
             backgroundColor: Theme.of(context).primaryColor,
           ),
           BottomNavigationBarItem(
@@ -76,12 +83,12 @@ class _HomePageState extends State<HomePage> {
           });
         },
         selectedItemColor: Theme.of(context).accentColor,
-        selectedLabelStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color:Theme.of(context).accentColor),
+        selectedLabelStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color:Theme.of(context).accentColor, fontSize: 13),
         selectedIconTheme: IconThemeData(
           color: Theme.of(context).accentColor
         ),
         unselectedItemColor: Colors.grey,
-        unselectedLabelStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.grey),
+        unselectedLabelStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.grey, fontSize: 13),
         unselectedIconTheme: IconThemeData(
             color: Colors.grey
         ),

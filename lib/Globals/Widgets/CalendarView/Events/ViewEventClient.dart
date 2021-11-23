@@ -1,13 +1,19 @@
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/JoinConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/LeaveConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocationsSelect.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
+import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -29,7 +35,7 @@ class ViewEventClient extends StatefulWidget {
   _ViewEventClientState createState() => _ViewEventClientState();
 }
 
-class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProviderStateMixin{
+class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProviderStateMixin {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
@@ -51,15 +57,15 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   TextEditingController durationController = TextEditingController();
   String duration = "1.00";
   List<String> durations = ["0.30","1.00","1.30","2.00","2.30","3.00","3.30","4.00"];
-  // Ubicació
-  var ubicacionController =  TextEditingController();
-  var placeId =  currentBrand.placeId!;
+  // Location
+  Location location = Location();
   // Participants
   TextEditingController membersController = TextEditingController();
   int members = 1;
-  int membersMax = 15;
+  int membersMax = currentBrand.maxMembers!;
   // Members Page
   bool isFull = false;
+  bool isJoined = false;
   List<Usuario> allTrainers = [];
   List<Usuario> brandTrainersSelected = [];
   List<bool> brandTrainersSelectedBool = [];
@@ -108,7 +114,15 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     isFull = (event!.joinedMembers!.length/event!.maxMembers == 1);
     getAllTrainersFromBrand();
     getAllClientsFromBrand();
-    getPlaceFullAddress();
+    await getLocation(event!.locationId!);
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+        isLoadingBody = false;
+        isEditing = false;
+      });
+    }
+
   }
 
   Future<void> getAllTrainersFromBrand() async {
@@ -136,26 +150,27 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     for (var i=0; i < allClients.length; i++) {
       var client = allClients[i];
       if (event!.joinedMembers.contains(client.id)) {
-        temp.add(client);
+        if (client.id == currentUser.id!) {
+          temp.insert(0, client);
+          setState(() {
+            isJoined = true;
+          });
+        } else {
+          temp.add(client);
+        }
       }
     }
-    if (mounted) {
-      setState(() {
-        brandClientsJoining = temp;
-      });
-    }
+    setState(() {
+      brandClientsJoining = temp;
+    });
   }
 
-  void getPlaceFullAddress() async {
-    //placeDetails = await LocationPlacesSearch().getPlaceDetailFromId(event!.placeId!);
-    //ubicacionController.text = placeDetails.fullAddress!;
-    if (mounted) {
-      setState(() {
-        isLoading = false;
-        isLoadingBody = false;
-        isEditing = false;
-      });
-    }
+  Future<void> getLocation(String locationId) async {
+    location = await _accessDatabase.getSingleLocation(locationId);
+    var temp = location;
+    setState(() {
+      location = temp;
+    });
   }
 
   Future<void> selectSlot(ctx, type) {
@@ -164,7 +179,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     var title;
     var initialDuration = 1;
     var initialMembers = 1;
-    var totalMembers = membersMax - event!.joinedMembers.length;
+    var totalMembers = (membersMax) - event!.joinedMembers.length;
     var widgetPicker;
     // Init for differnt types
     if (type == 0) {
@@ -224,12 +239,12 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
         backgroundColor: Colors.transparent,
         onSelectedItemChanged: (int index) {
           setState(() {
-            members = event!.joinedMembers.length+index;
+            members = event!.joinedMembers.length+index+1;
             membersController.text = "${event!.joinedMembers.length.toString()} / ${members.toString()}";
           });
         },
         children: new List<Widget>.generate(totalMembers.toInt(), (int index) {
-          var member = event!.joinedMembers.length+index;
+          var member = event!.joinedMembers.length+index+1;
           return new Center(
             child: new Text(
                 "${member.toString()}"
@@ -419,13 +434,13 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
                             child: IconButton(
-                              icon: Icon(Icons.arrow_back, color: !isEditing ? Styles.accent : Colors.white),
+                              icon: Icon(Icons.arrow_back, color: !isEditing ? Theme.of(context).primaryColor : Colors.white),
                               onPressed: !isEditing ? () {
-                               Navigator.pop(context);
+                                Navigator.pop(context);
                               } : null,
                             ),
                           ),
-                          isEditing ? Text(AppLocalizations.of(context)!.editEvent, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)) : Text(datetitle, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
+                          isEditing ? Text(AppLocalizations.of(context)!.editEvent, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)) : Text(datetitle, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16)),
                           !widget.canJoin ? Padding(
                             padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.06, left: MediaQuery.of(context).size.width*0.06),
                             child: Container(),
@@ -529,7 +544,6 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                           isEditing ? new Flexible(
                                             child: new TextFormField(
                                               controller: descriptionController,
-                                              readOnly: true,
                                               minLines: 1,
                                               maxLines: 6,
                                               style: Styles.purpleTextStyle.copyWith(fontSize: 15),
@@ -588,256 +602,200 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                             errorDate ? Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: Center(
-                                  child: Text(
-                                    AppLocalizations.of(context)!.errorDate,
-                                    style: Styles.redTextStyle.copyWith(fontSize: 13),
-                                    textAlign: TextAlign.center,
-                                  ),
+                                child: Text(
+                                  AppLocalizations.of(context)!.errorDate,
+                                  style: Styles.redTextStyle.copyWith(fontSize: 13),
+                                  textAlign: TextAlign.center,
                                 ),
+                              ),
                             ): Container(),
-                            Padding(
-                              padding: EdgeInsets.only(top: 0.0),
-                              child: Container(
-                                height: MediaQuery.of(context).size.height * 0.25,
-                                width: MediaQuery.of(context).size.width * 0.90,
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).backgroundColor,
-                                    borderRadius: BorderRadius.all(Radius.circular(15.0))
-                                ),
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.30,
+                              width: MediaQuery.of(context).size.width * 0.90,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).backgroundColor,
+                                  borderRadius: BorderRadius.all(Radius.circular(15.0))
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.05),
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Padding(
-                                        padding: EdgeInsets.only(left:18, top: 10.0),
-                                        child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
-                                              Container(
-                                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                                  width: MediaQuery.of(context).size.width*0.78,
-                                                  child: Row(
-                                                    mainAxisSize: MainAxisSize.max,
-                                                    children: <Widget>[
-                                                      isEditing ? new Flexible(
-                                                        child: TextFormField(
-                                                          controller: startDateController,
-                                                          readOnly: true,
-                                                          onTap: () {
-                                                            if (isEditing) selectSlot(context, 0);
-                                                          },
-                                                          style: Styles.purpleTextStyle,
-                                                          decoration: InputDecoration(
-                                                            labelStyle: Styles.purpleTextStyle,
-                                                            border: InputBorder.none,
-                                                            enabledBorder: UnderlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    color: errorDate ? Colors.red : Colors.grey,
-                                                                    width: 1.0
-                                                                )
-                                                            ),
-                                                            focusedBorder: UnderlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    color: errorDate ? Colors.red : Colors.grey,
-                                                                    width: 1.0
-                                                                )
-                                                            ),
-                                                            disabledBorder: InputBorder.none,
-                                                          ),
-                                                          textAlign: TextAlign.start,
-                                                        ),
-                                                      ) : new Flexible(
-                                                        child: TextFormField(
-                                                          controller: startDateController,
-                                                          readOnly: true,
-                                                          enabled: false,
-                                                          style: Styles.purpleTextStyle,
-                                                          decoration: InputDecoration(
-                                                            labelStyle: Styles.purpleTextStyle,
-                                                            border: InputBorder.none,
-                                                            focusedBorder: InputBorder.none,
-                                                            enabledBorder: InputBorder.none,
-                                                            errorBorder: InputBorder.none,
-                                                            disabledBorder: InputBorder.none,
-                                                          ),
-                                                          textAlign: TextAlign.start,
-                                                        ),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
+                                        Container(
+                                            padding: EdgeInsets.symmetric(horizontal: 20),
+                                            width: MediaQuery.of(context).size.width*0.70,
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: <Widget>[
+                                                isEditing ? new Flexible(
+                                                  child: TextFormField(
+                                                    controller: startDateController,
+                                                    readOnly: true,
+                                                    onTap: () {
+                                                      if (isEditing) selectSlot(context, 0);
+                                                    },
+                                                    style: Styles.purpleTextStyle,
+                                                    decoration: InputDecoration(
+                                                      labelStyle: Styles.purpleTextStyle,
+                                                      border: InputBorder.none,
+                                                      enabledBorder: UnderlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: errorDate ? Colors.red : Colors.grey,
+                                                              width: 1.0
+                                                          )
                                                       ),
-                                                    ],
-                                                  )
-                                              ),
-                                            ],
-                                          ),
-                                      ),
-                                    Padding(
-                                      padding: EdgeInsets.only(left:18, top: 10.0),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          Icon(Icons.timer, color: Theme.of(context).accentColor,),
-                                          Container(
-                                              padding: EdgeInsets.only(left: 20),
-                                              width: MediaQuery.of(context).size.width*0.30,
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  isEditing ? new Flexible(
-                                                    child: TextFormField(
-                                                      controller: durationController,
-                                                      onTap: () {
-                                                        if (isEditing) selectSlot(context, 1);
-                                                      },
-                                                      readOnly: true,
-                                                      style: Styles.purpleTextStyle,
-                                                      decoration: InputDecoration(
-                                                        labelStyle: Styles.purpleTextStyle,
-                                                        border: InputBorder.none,
-                                                        enabledBorder: UnderlineInputBorder(
-                                                            borderSide: BorderSide(
-                                                                color: errorDate ? Colors.red : Colors.grey,
-                                                                width: 1.0
-                                                            )
-                                                        ),
-                                                        focusedBorder: UnderlineInputBorder(
-                                                            borderSide: BorderSide(
-                                                                color: errorDate ? Colors.red : Colors.grey,
-                                                                width: 1.0
-                                                            )
-                                                        ),
-                                                        disabledBorder: InputBorder.none,
+                                                      focusedBorder: UnderlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: errorDate ? Colors.red : Colors.grey,
+                                                              width: 1.0
+                                                          )
                                                       ),
-                                                      textAlign: TextAlign.start,
+                                                      disabledBorder: InputBorder.none,
                                                     ),
-                                                  ) : new Flexible(
-                                                    child: TextFormField(
-                                                      controller: durationController,
-                                                      readOnly: true,
-                                                      enabled: false,
-                                                      style: Styles.purpleTextStyle,
-                                                      decoration: InputDecoration(
-                                                        labelStyle: Styles.purpleTextStyle,
-                                                        border: InputBorder.none,
-                                                        focusedBorder: InputBorder.none,
-                                                        enabledBorder: InputBorder.none,
-                                                        errorBorder: InputBorder.none,
-                                                        disabledBorder: InputBorder.none,
-                                                      ),
-                                                      textAlign: TextAlign.start,
-                                                    ),
+                                                    textAlign: TextAlign.start,
                                                   ),
-                                                ],
-                                              )
-                                          ),
-                                        ],
-                                      ),
+                                                ) : new Flexible(
+                                                  child: TextFormField(
+                                                    controller: startDateController,
+                                                    readOnly: true,
+                                                    enabled: false,
+                                                    style: Styles.purpleTextStyle,
+                                                    decoration: InputDecoration(
+                                                      labelStyle: Styles.purpleTextStyle,
+                                                      border: InputBorder.none,
+                                                      focusedBorder: InputBorder.none,
+                                                      enabledBorder: InputBorder.none,
+                                                      errorBorder: InputBorder.none,
+                                                      disabledBorder: InputBorder.none,
+                                                    ),
+                                                    textAlign: TextAlign.start,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                        ),
+                                      ],
                                     ),
-                                    /*
-                                    Padding(
-                                      padding: EdgeInsets.only(left:18, top: 10.0),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          Icon(Icons.location_on_outlined, color: Theme.of(context).accentColor, size: 30,),
-                                          Container(
+                                    Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Icon(Icons.timer, color: Theme.of(context).accentColor,),
+                                        Container(
+                                            padding: EdgeInsets.only(left: 20),
+                                            width: MediaQuery.of(context).size.width*0.70,
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: <Widget>[
+                                                isEditing ? new Flexible(
+                                                  child: TextFormField(
+                                                    controller: durationController,
+                                                    onTap: () {
+                                                      if (isEditing) selectSlot(context, 1);
+                                                    },
+                                                    readOnly: true,
+                                                    style: Styles.purpleTextStyle,
+                                                    decoration: InputDecoration(
+                                                      labelStyle: Styles.purpleTextStyle,
+                                                      border: InputBorder.none,
+                                                      enabledBorder: UnderlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: errorDate ? Colors.red : Colors.grey,
+                                                              width: 1.0
+                                                          )
+                                                      ),
+                                                      focusedBorder: UnderlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: errorDate ? Colors.red : Colors.grey,
+                                                              width: 1.0
+                                                          )
+                                                      ),
+                                                      disabledBorder: InputBorder.none,
+                                                    ),
+                                                    textAlign: TextAlign.start,
+                                                  ),
+                                                ) : new Flexible(
+                                                  child: TextFormField(
+                                                    controller: durationController,
+                                                    readOnly: true,
+                                                    enabled: false,
+                                                    style: Styles.purpleTextStyle,
+                                                    decoration: InputDecoration(
+                                                      labelStyle: Styles.purpleTextStyle,
+                                                      border: InputBorder.none,
+                                                      focusedBorder: InputBorder.none,
+                                                      enabledBorder: InputBorder.none,
+                                                      errorBorder: InputBorder.none,
+                                                      disabledBorder: InputBorder.none,
+                                                    ),
+                                                    textAlign: TextAlign.start,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Icon(Icons.location_on_outlined, color: Theme.of(context).accentColor, size: 30,),
+                                            Container(
                                               padding: EdgeInsets.only(left: 15),
-                                              width: MediaQuery.of(context).size.width*0.77,
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  isEditing ? new Flexible(
-                                                    child: TextFormField(
-                                                      controller: ubicacionController,
-                                                      onTap: () async {
-                                                        final Suggestion? result = await showSearch(
-                                                          context: context,
-                                                          delegate: AddressSearch(),
-                                                        );
-                                                        if (result != null && result.description != "") {
-                                                          setState(() {
-                                                            ubicacionController.text = result.description;
-                                                          });
-                                                          placeId = result.placeId;
-                                                        }
-                                                      },
-                                                      readOnly: true,
-                                                      minLines: 2,
-                                                      maxLines: 3,
-                                                      style: Styles.purpleTextStyle,
-                                                      decoration: InputDecoration(
-                                                        labelStyle: Styles.purpleTextStyle,
-                                                        border: InputBorder.none,
-                                                        enabledBorder: UnderlineInputBorder(
-                                                            borderSide: BorderSide(
-                                                                color: Colors.grey,
-                                                                width: 1.0
-                                                            )
+                                              width: MediaQuery.of(context).size.width*0.70,
+                                              child: ListTile(
+                                                contentPadding: EdgeInsets.all(0),
+                                                title: Text(
+                                                    location.description!,
+                                                    style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor)
+                                                ),
+                                                onTap: isEditing ? () async {
+                                                  setState(() {
+                                                    isLoading = true;
+                                                  });
+                                                  var result = await Navigator.push(
+                                                      context,
+                                                      PageTransition(
+                                                        type: PageTransitionType.rightToLeftWithFade,
+                                                        child: MyLocationsSelect(
+                                                          brandId: currentBrand.id!,
                                                         ),
-                                                        focusedBorder: UnderlineInputBorder(
-                                                            borderSide: BorderSide(
-                                                                color: Colors.grey,
-                                                                width: 1.0
-                                                            )
-                                                        ),
-                                                        errorBorder: UnderlineInputBorder(
-                                                            borderSide: BorderSide(
-                                                                color: Colors.red,
-                                                                width: 1.0
-                                                            )
-                                                        ),
-                                                        disabledBorder: InputBorder.none,
-                                                      ),
-                                                      textAlign: TextAlign.start,
-                                                    ),
-                                                  ) : new Flexible(
-                                                    child: TextFormField(
-                                                      controller: ubicacionController,
-                                                      readOnly: true,
-                                                      minLines: 2,
-                                                      maxLines: 3,
-                                                      style: Styles.purpleTextStyle,
-                                                      decoration: InputDecoration(
-                                                        labelStyle: Styles.purpleTextStyle,
-                                                        border: InputBorder.none,
-                                                        focusedBorder: InputBorder.none,
-                                                        enabledBorder: InputBorder.none,
-                                                        errorBorder: InputBorder.none,
-                                                        disabledBorder: InputBorder.none,
-                                                        suffixIcon: IconButton(
-                                                          onPressed: () async {
-                                                            Clipboard.setData(new ClipboardData(text: ubicacionController.text)).then((_){
-                                                              showTopSnackBar(
-                                                                context,
-                                                                CustomSnackBar.info(
-                                                                  icon: Container(),
-                                                                  iconRotationAngle: 0,
-                                                                  backgroundColor: Theme.of(context).accentColor,
-                                                                  message: AppLocalizations.of(context)!.copyCorrectLocation,
-                                                                  textStyle: Styles.whiteTextStyle,
-                                                                ),
-                                                              );
-                                                            });
-                                                          },
-                                                          icon: Icon(
-                                                            Icons.copy,
-                                                            color: Theme.of(context).accentColor,
-                                                            size: 28,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      textAlign: TextAlign.start,
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
+                                                      )
+                                                  );
+                                                  if (result != null) {
+                                                    await getLocation(result);
+                                                    setState(() {
+                                                      isLoading = false;
+                                                    });
+                                                  } else {
+                                                    setState(() {
+                                                      isLoading = false;
+                                                    });
+                                                  }
+                                                } : null,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        isEditing ? Padding(
+                                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, top:MediaQuery.of(context).size.width*0.01),
+                                          child: Container(
+                                            height: 1,
+                                            width: MediaQuery.of(context).size.width*0.68,
+                                            color: Colors.grey,
                                           ),
-                                        ],
-                                      ),
+                                        ) : Container(),
+                                      ],
                                     ),
-                                     */
                                   ],
                                 ),
                               ),
@@ -869,22 +827,22 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                 )
                             ),
                             Padding(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.record_voice_over,
-                                      color: Theme.of(context).accentColor,
-                                      size: 25,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text(
-                                      AppLocalizations.of(context)!.trainers,
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
-                                    ),
-                                  ],
-                                ),
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.record_voice_over,
+                                    color: Theme.of(context).accentColor,
+                                    size: 25,
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    AppLocalizations.of(context)!.trainers,
+                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
+                                  ),
+                                ],
+                              ),
                             ),
                             Padding(
                               padding: EdgeInsets.only(top: 0),
@@ -892,8 +850,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   isEditing ? Container(
-                                    height: MediaQuery.of(context).size.height*0.16,
-                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height*0.20,
+                                    width: MediaQuery.of(context).size.width*0.99,
                                     child: ListView.builder(
                                         shrinkWrap: true,
                                         physics: AlwaysScrollableScrollPhysics(),
@@ -910,7 +868,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                             child: Padding(
                                               padding: !(index == 0 || index == allTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: allTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   CircularImage(
                                                     size: MediaQuery.of(context).size.width*0.2,
@@ -942,6 +900,9 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                                 side: BorderSide.none
                                                             ),
                                                             onChanged: (bool? value) {
+                                                              setState(() {
+                                                                brandTrainersSelectedBool[index] = !brandTrainersSelectedBool[index];
+                                                              });
                                                             },
                                                           ),
                                                         ),
@@ -956,7 +917,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                     ),
                                   ) :
                                   Container(
-                                    height: MediaQuery.of(context).size.height*0.14,
+                                    height: MediaQuery.of(context).size.height*0.20,
                                     width: MediaQuery.of(context).size.width*0.99,
                                     child: ListView.builder(
                                         shrinkWrap: true,
@@ -972,7 +933,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                             child: Padding(
                                               padding: !(index == 0 || index == brandTrainersSelected.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandTrainersSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   CircularImage(
                                                     size: MediaQuery.of(context).size.width*0.2,
@@ -1119,7 +1080,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
-                                    height: MediaQuery.of(context).size.height*0.14,
+                                    height: MediaQuery.of(context).size.height*0.20,
                                     width: MediaQuery.of(context).size.width,
                                     child: ListView.builder(
                                         shrinkWrap: true,
@@ -1135,7 +1096,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                             child: Padding(
                                               padding: !(index == 0 || index == brandClientsJoining.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandClientsJoining.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   CircularImage(
                                                     size: MediaQuery.of(context).size.width*0.2,
@@ -1188,501 +1149,86 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     if (isLoadingBody) {
       return Container();
     } else {
-      if (widget.canJoin && !isFull) {
-        return Padding(
-          padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
-          child: Container(
-            width: MediaQuery.of(context).size.width*0.25,
-            child: FloatingActionButton.extended(
-              heroTag: null,
-              onPressed: () {
-                print("Join");
-              },
-              backgroundColor: Theme.of(context).accentColor,
-              icon: Icon(Icons.add_circle_outline, color: Colors.white,),
-              label: Text("Unir-se",
-                style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+      if (widget.canJoin) {
+        if (!isJoined && !isFull) {
+          return Padding(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+            child: Container(
+              width: MediaQuery.of(context).size.width*0.40,
+              child: FloatingActionButton.extended(
+                heroTag: null,
+                onPressed: () async {
+                  var result = await showDialog(
+                      context: context,
+                      builder: (_) {
+                        return JoinConfirmationDialog(text: AppLocalizations.of(context)!.joinEventConfirmation);
+                      }
+                  );
+                  if (result) {
+                    // Join Event
+                    setState(() {
+                      isLoadingBody = true;
+                    });
+                    bool hasJoined = await _accessDatabase.joinEvent(event!.id!, currentUser.id!);
+                    if (hasJoined) {
+                      getEventInfo();
+                      setState(() {
+                        isJoined = true;
+                        isLoadingBody = false;
+                      });
+                    }
+                  }
+                },
+                backgroundColor: Colors.green,
+                icon: Icon(Icons.add_circle_outline, color: Colors.white,),
+                label: Text(
+                  AppLocalizations.of(context)!.joinEvent,
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+              ),
             ),
-          ),
-        );
+          );
+        } else {
+          return Padding(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+            child: Container(
+              width: MediaQuery.of(context).size.width*0.45,
+              child: FloatingActionButton.extended(
+                heroTag: null,
+                onPressed: () async {
+                  var result = await showDialog(
+                      context: context,
+                      builder: (_) {
+                        return LeaveConfirmationDialog(text: AppLocalizations.of(context)!.leaveEventConfirmation);
+                      }
+                  );
+                  if (result) {
+                    // Leave Event
+                    setState(() {
+                      isLoadingBody = true;
+                    });
+                    bool hasJoined = await _accessDatabase.leaveEvent(event!.id!, currentUser.id!, false);
+                    if (hasJoined) {
+                      getEventInfo();
+                      setState(() {
+                        isJoined = false;
+                        isLoadingBody = false;
+                      });
+                    }
+                  }
+                },
+                backgroundColor: Colors.red,
+                icon: Icon(Icons.cancel_outlined, color: Colors.white,),
+                label: Text(
+                  AppLocalizations.of(context)!.leaveEvent,
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+              ),
+            ),
+          );
+        }
       } else {
         return Container();
       }
     }
-
   }
-
-
-
-
 }
 
-/*
-Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            //crossAxisAlignment: CrossAxisAlignment.baseline,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 5, bottom: 25),
-                child: FloatingActionButton.extended(
-                  onPressed: () async {
-                    // DeleteDialog
-                    var result = await showDialog(
-                        context: context,
-                        builder: (_) {
-                          return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteEventConfirmation);
-                        }
-                    );
-                    if (result) {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      await _accessDatabase.deleteEvent(widget.eventId);
-                      Navigator.pop(context);
-                    }
-
-                  },
-                  backgroundColor: Colors.red,
-                  icon: Icon(Icons.delete_outline, color: Colors.white,),
-                  label: Text(AppLocalizations.of(context)!.delete, style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
-                ),
-              ),
-              SizedBox(width: MediaQuery.of(context).size.width*0.05,),
-              Padding(
-                padding: const EdgeInsets.only(top: 5, bottom: 25, left: 20, right: 20),
-                child: FloatingActionButton.extended(
-                  onPressed: () {
-                    print("Edit");
-                  },
-                  backgroundColor: Colors.green,
-                  icon: Icon(Icons.edit, color: Colors.white,),
-                  label: Text(AppLocalizations.of(context)!.edit,
-                    style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
-                ),
-              ),
-            ],
-          ),
-
-  void _editEvent({Appointment? appointment, bool? updated, DateTime? dateTimeClicked}) {
-    showModalBottomSheet<bool>(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
-        ),
-        isScrollControlled: true,
-        context: context,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        builder: (context) {
-          return Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height*0.88,
-            ),
-            padding: MediaQuery.of(context).viewInsets,
-            child: AddEvent(
-              oldData: widget.oldData,
-              update: true,
-              locale: Localizations.localeOf(context),
-              initialDateTime: dateTimeClicked ?? null,
-            ),
-          );
-        }
-    );
-  }
-
-  */
-/*
-
-  Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height*0.80,
-            ),
-            child: Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    Scaffold(
-                      body: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              Container(
-                                constraints: BoxConstraints(
-                                  minHeight: MediaQuery.of(context).size.height*0.50,
-                                ),
-                                child: Form(
-                                  key: formKeyInfo,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 25.0, right: 25.0),
-                                    child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          descriptionController.text.isNotEmpty ? Padding(
-                                              padding: EdgeInsets.only(top: 5.0),
-                                              child: new Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: <Widget>[
-                                                  new Flexible(
-                                                    child: new TextFormField(
-                                                      keyboardType: TextInputType.visiblePassword,
-                                                      controller: descriptionController,
-                                                      readOnly: true,
-                                                      minLines: 1,
-                                                      maxLines: 5,
-                                                      onChanged: (val) {
-                                                        setState(() {
-                                                          descriptionString = val;
-                                                        });
-                                                      },
-                                                      style: Styles.purpleTextStyle,
-                                                      decoration: InputDecoration(
-                                                        labelStyle: Styles.purpleTextStyle,
-                                                        hintText:AppLocalizations.of(context)!.descriptionError,
-                                                        border: InputBorder.none,
-                                                        focusedBorder: InputBorder.none,
-                                                        enabledBorder: InputBorder.none,
-                                                        errorBorder: InputBorder.none,
-                                                        disabledBorder: InputBorder.none,
-                                                      ),
-                                                      textAlign: TextAlign.justify,
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                          ) : Container(),
-                                          Padding(
-                                            padding: descriptionController.text.isNotEmpty ? EdgeInsets.only(top: 5.0) : EdgeInsets.only(top: 20.0),
-                                            child: Container(
-                                              height: MediaQuery.of(context).size.height * 0.15,
-                                              width: MediaQuery.of(context).size.width * 0.90,
-                                              decoration: BoxDecoration(
-                                                  color: Theme.of(context).backgroundColor,
-                                                  borderRadius: BorderRadius.all(Radius.circular(15.0))
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  Padding(
-                                                    padding: EdgeInsets.only(left:18, top: 10.0),
-                                                    child: Row(
-                                                      mainAxisSize: MainAxisSize.max,
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      children: <Widget>[
-                                                        Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
-                                                        Container(
-                                                            padding: EdgeInsets.symmetric(horizontal: 20),
-                                                            width: MediaQuery.of(context).size.width*0.70,
-                                                            child: Row(
-                                                              mainAxisSize: MainAxisSize.max,
-                                                              children: <Widget>[
-                                                                new Flexible(
-                                                                  child: TextFormField(
-                                                                    controller: startDateController,
-                                                                    readOnly: true,
-                                                                    enabled: false,
-                                                                    style: Styles.purpleTextStyle,
-                                                                    decoration: InputDecoration(
-                                                                      labelStyle: Styles.purpleTextStyle,
-                                                                      border: InputBorder.none,
-                                                                      focusedBorder: InputBorder.none,
-                                                                      enabledBorder: InputBorder.none,
-                                                                      errorBorder: InputBorder.none,
-                                                                      disabledBorder: InputBorder.none,
-                                                                    ),
-                                                                    textAlign: TextAlign.start,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            )
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(left:18, top: 10.0),
-                                                    child: Row(
-                                                      mainAxisSize: MainAxisSize.max,
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      children: <Widget>[
-                                                        Icon(Icons.timer, color: Theme.of(context).accentColor,),
-                                                        Container(
-                                                            padding: EdgeInsets.only(left: 20),
-                                                            width: MediaQuery.of(context).size.width*0.30,
-                                                            child: Row(
-                                                              mainAxisSize: MainAxisSize.max,
-                                                              mainAxisAlignment: MainAxisAlignment.start,
-                                                              children: <Widget>[
-                                                                new Flexible(
-                                                                  child: TextFormField(
-                                                                    controller: durationController,
-                                                                    readOnly: true,
-                                                                    enabled: false,
-                                                                    style: Styles.purpleTextStyle,
-                                                                    decoration: InputDecoration(
-                                                                      labelStyle: Styles.purpleTextStyle,
-                                                                      border: InputBorder.none,
-                                                                      focusedBorder: InputBorder.none,
-                                                                      enabledBorder: InputBorder.none,
-                                                                      errorBorder: InputBorder.none,
-                                                                      disabledBorder: InputBorder.none,
-                                                                    ),
-                                                                    textAlign: TextAlign.start,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            )
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(top: 5, bottom: 0),
-                                            child: new Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                Expanded(
-                                                  child: TextFormField(
-                                                    controller: ubicacionController,
-                                                    validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.enterAddressError : null,
-                                                    readOnly: true,
-                                                    maxLines: 2,
-                                                    onTap: null,
-                                                    style: Styles.purpleTextStyle,
-                                                    decoration: InputDecoration(
-                                                      icon: Container(
-                                                        width: 10,
-                                                        height: 10,
-                                                        child: Icon(
-                                                          Icons.location_on_outlined,
-                                                          color: Theme.of(context).accentColor,
-                                                          size: 28,
-                                                        ),
-                                                      ),
-                                                      hintText: AppLocalizations.of(context)!.enterAddress,
-                                                      hintStyle: Styles.purpleTextStyle,
-                                                      border: InputBorder.none,
-                                                      contentPadding: EdgeInsets.only(left: 18.0, top: 18),
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              SizedBox(width: MediaQuery.of(context).size.width*0.05,),
-                                              FloatingActionButton(
-                                                child: Icon(Icons.copy),
-                                                elevation: 0,
-                                                backgroundColor: Theme.of(context).accentColor,
-                                                foregroundColor: Styles.white,
-                                                onPressed: () async {
-                                                  Clipboard.setData(new ClipboardData(text: ubicacionController.text)).then((_){
-                                                    showTopSnackBar(
-                                                      context,
-                                                      CustomSnackBar.info(
-                                                        icon: Container(),
-                                                        iconRotationAngle: 0,
-                                                        backgroundColor: Theme.of(context).primaryColor,
-                                                        message: AppLocalizations.of(context)!.copyCorrectLocation,
-                                                        textStyle: Styles.whiteTextStyle,
-                                                      ),
-                                                    );
-                                                  });
-                                                },
-                                              ),
-                                              Container(
-                                                  height: 120,
-                                                  child: Image.asset(Constants.locationImage)
-                                              ),
-                                            ],
-                                          ),
-                                        ]
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                      ),
-                      resizeToAvoidBottomInset: false,
-                    ),
-                    Scaffold(
-                      body: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              Container(
-                                constraints: BoxConstraints(
-                                  minHeight: MediaQuery.of(context).size.height*0.50,
-                                ),
-                                child: Padding(
-                                    padding: EdgeInsets.only(left: 25.0, right: 25.0),
-                                    child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                              padding: EdgeInsets.only(top: 20),
-                                              child: new Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: <Widget>[
-                                                  new Column(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: <Widget>[
-                                                      new Text(
-                                                        AppLocalizations.of(context)!.designatedTrainers,
-                                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              )
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(top: 15),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                Container(
-                                                  height: MediaQuery.of(context).size.height*0.15,
-                                                  width: MediaQuery.of(context).size.width*0.87,
-                                                  child: ListView.builder(
-                                                      shrinkWrap: true,
-                                                      physics: AlwaysScrollableScrollPhysics(),
-                                                      scrollDirection: Axis.horizontal,
-                                                      itemCount: brandTrainersSelected.length,
-                                                      itemBuilder: (context, int index) {
-                                                        var trainer = brandTrainersSelected[index];
-                                                        return Padding(
-                                                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                          child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                            children: [
-                                                              CircularImage(
-                                                                size: MediaQuery.of(context).size.width*0.2,
-                                                                image: trainer.imageUrl,
-                                                                color: Theme.of(context).accentColor,
-                                                                borderWidth: 1.5,
-                                                              ),
-                                                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                                              Row(
-                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                children: [
-                                                                  Text(
-                                                                    trainer.name!,
-                                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 15),
-                                                                    textAlign: TextAlign.center,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        );
-                                                      }
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                              padding: EdgeInsets.only(top: 25),
-                                              child: new Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: <Widget>[
-                                                  new Column(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: <Widget>[
-                                                      new Text(
-                                                        AppLocalizations.of(context)!.numberClientJoining,
-                                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              )
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(top: 15),
-                                            child:
-                                            brandClientsJoining.isEmpty ?
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Column(
-                                                  children: [
-                                                    Container(
-                                                        height: 100,
-                                                        child: Image.asset(Constants.emptyPeople)
-                                                    ),
-                                                    Text(
-                                                      AppLocalizations.of(context)!.noClientJoining,
-                                                      style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080), fontSize: 14),
-                                                      textAlign: TextAlign.center,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ) :
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                Container(
-                                                  height: MediaQuery.of(context).size.height*0.15,
-                                                  width: MediaQuery.of(context).size.width*0.87,
-                                                  child: ListView.builder(
-                                                      shrinkWrap: true,
-                                                      physics: AlwaysScrollableScrollPhysics(),
-                                                      scrollDirection: Axis.horizontal,
-                                                      itemCount: brandClientsJoining.length,
-                                                      itemBuilder: (context, int index) {
-                                                        var client = brandClientsJoining[index];
-                                                        return Padding(
-                                                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                          child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                            children: [
-                                                              CircularImage(
-                                                                size: MediaQuery.of(context).size.width*0.2,
-                                                                image: client.imageUrl,
-                                                                color: Theme.of(context).accentColor,
-                                                                borderWidth: 1.5,
-                                                              ),
-                                                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                                              Row(
-                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                children: [
-                                                                  Text(
-                                                                    client.name!,
-                                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 15),
-                                                                    textAlign: TextAlign.center,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        );
-                                                      }
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ]
-                                    )
-                                ),
-                              ),
-                            ],
-                          )
-                      ),
-                      resizeToAvoidBottomInset: false,
-                    ),
-                  ],
-                )
-            ),
-          ),
-
-
- */

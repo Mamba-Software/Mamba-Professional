@@ -19,8 +19,12 @@ class Constants {
   static String teamImage = "assets/images/teamImage.jpg";
   static String statisticsImage = "assets/images/statisticsImage.jpg";
   static String calendarImage = "assets/images/calendarImage.jpg";
-  static String notificationImage = "assets/images/notificationImage.jpg";
+  static String notificationImage = "assets/images/notificationImage.png";
   static String mySessionsImage = "assets/images/mySessionsImage.jpg";
   static String myProgressImage = "assets/images/myProgressImage.jpg";
-
+  static String myLocationsImage = "assets/images/myLocationsImage.jpg";
+  static String createBrand = "assets/images/createBrand.png";
+  static String wellcomeImage = "assets/images/wellcomeImage.png";
+  static String personalTrainerImage = "assets/images/personalTrainerImage.png";
+  static String clientImage = "assets/images/clientImage.png";
 }

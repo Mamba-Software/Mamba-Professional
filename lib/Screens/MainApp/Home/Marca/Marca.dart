@@ -3,8 +3,9 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/MarcaClient.dart';
 
-import 'Client/SinMarcaClient.dart';
+import 'Client/SinMarca/SinMarcaClient.dart';
 import 'Trainer/MarcaTrainer.dart';
 import 'Trainer/SinMarca/SinMarcaTrainer.dart';
 
@@ -28,6 +29,6 @@ class _MarcaState extends State<Marca> {
     return currentUser.isTrainer! ?
         MarcaTrainer()
           :
-        SinMarcaClient();
+        MarcaClient();
   }
 }

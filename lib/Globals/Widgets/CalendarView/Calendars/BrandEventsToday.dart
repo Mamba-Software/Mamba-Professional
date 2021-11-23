@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
@@ -115,10 +117,10 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
                     timeIntervalWidth: 60,
                     startHour: _startHour!-1,
                     endHour:  _endHour!+1,
-                    timeFormat: 'HH:mm',
+                    timeFormat: 'HH',
                     dayFormat: 'E',
                     dateFormat: 'd',
-                    timeRulerSize: MediaQuery.of(context).size.width*0.10,
+                    timeRulerSize: 25,
                     nonWorkingDays: nonWorkDays,
                     minimumAppointmentDuration: Duration(minutes: 30),
                     timeTextStyle: TextStyle(
@@ -393,10 +395,10 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
       // Colors
       var color;
       double bookedCapacity = event.joinedMembers.length/event.maxMembers;
-      if(bookedCapacity < 0.20) color = Colors.green;
-      else if(bookedCapacity > 0.20 && bookedCapacity < 0.40) color = Color(0xFFA8C76C);
-      else if(bookedCapacity > 0.40 && bookedCapacity < 0.60) color = Color(0xFFECE014);
-      else if(bookedCapacity > 0.60 && bookedCapacity < 0.80) color = Colors.orangeAccent;
+      if(bookedCapacity <= 0.20) color = Colors.green;
+      else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = Color(0xFFA8C76C);
+      else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = Color(0xFFECE014);
+      else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) color = Colors.orangeAccent;
       else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
       else if(bookedCapacity == 1) color = Colors.red;
       // Afegir percentatges de members al Event.
@@ -423,21 +425,36 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
   }
 
   void _viewEvent(String eventId, DateTime startDate) {
-    bool canEdit = true;
+    bool canAction = true;
     if (startDate.isBefore(DateTime.now())) {
-      canEdit = false;
+      canAction = false;
     }
-    Navigator.push(
-      context,
-      PageTransition(
-          type: PageTransitionType.bottomToTop,
-          child: ViewEventTrainer(
-            eventId: eventId,
-            canEdit: canEdit,
-            locale: Localizations.localeOf(context),
+    if (currentUser.isTrainer!) {
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.bottomToTop,
+              child: ViewEventTrainer(
+                eventId: eventId,
+                canEdit: canAction,
+                locale: Localizations.localeOf(context),
+              )
           )
-      )
-    );
+      );
+    } else {
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.bottomToTop,
+              child: ViewEventClient(
+                eventId: eventId,
+                canJoin: canAction,
+                locale: Localizations.localeOf(context),
+              )
+          )
+      );
+    }
+
   }
 
 }

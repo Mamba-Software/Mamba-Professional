@@ -26,43 +26,65 @@ class DatabaseAccess {
   Future<Usuario> getCurrentUserDetails() => _firebase.getCurrentUserDetails();
   Future<Usuario> getUserDetails(String uid) => _firebase.getUserDetails(uid);
 
+  Future<int> registerUser(String email, String password, String idioma) => _firebase.registerUser(email, password, idioma);
+  Future<bool> checkIfAliasExists(String alias) => _firebase.checkIfAliasExists(alias);
   Future<int> addUser(String email, String password, String name, bool isTrainer, int gender, String idioma) => _firebase.addUser(email, password, name, isTrainer, gender, idioma);
 
   Future<void> updateCurrentUserFirstTime() => _firebase.updateCurrentUserFirstTime();
   Future<int> updateCurrentUserBrand(String brandID) => _firebase.updateCurrentUserBrand(brandID);
-  Future<void> updateCurrentUserPhoto(File image) => _firebase.updateCurrentUserPhoto(image);
+  Future<String> updateCurrentUserPhoto(File image) => _firebase.updateCurrentUserPhoto(image);
   Future<void> updateCurrentUserDatosPerifl(String name, int gender, String dateOfBirth) => _firebase.updateCurrentUserDatosPerifl(name, gender, dateOfBirth);
   Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma, String previousIdioma) => _firebase.updateCurrentUserSettingsPerifl(isPrivate, idioma, previousIdioma);
 
+  Future<void> leaveBrand(String uid) => _firebase.leaveBrand(uid);
+
   // Brands
-  Future<String> addBrand(String name, File image, String description, String placeId, String address, double latitude, double longitude, List<double> workShift) => _firebase.addBrand(name, image, description, placeId, address, latitude, longitude, workShift);
+  Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) => _firebase.addBrand(name, image, description, workShift, maxMembers);
 
   Future<bool> checkIfBrandExists(String brandID) => _firebase.checkIfBrandExists(brandID);
   Future<Brand> getBrandDetails(String brandID) => _firebase.getBrandDetails(brandID);
   Future<List<Usuario>> getAllTrainersFromBrand(String brandID) => _firebase.getAllTrainersFromBrand(brandID);
   Future<List<Usuario>> getAllClientsFromBrand(String brandID) => _firebase.getAllClientsFromBrand(brandID);
 
-  Future<void> updateCurrentBrandPhoto(String brandID,File image) => _firebase.updateCurrentBrandPhoto(brandID, image);
+  Future<void> deleteBrand(String brandId) => _firebase.deleteBrand(brandId);
+
+  Future<String> updateCurrentBrandPhoto(String brandID, File image) => _firebase.updateCurrentBrandPhoto(brandID, image);
+  Future<void> updateBrandInfo(String brandID, String name,String description, int maxMembers, List<double> workShift) => _firebase.updateBrandInfo(brandID, name, description, maxMembers, workShift);
+  Future<void> updateBrandBaseLocation(String brandID, String locationID) => _firebase.updateBrandBaseLocation(brandID, locationID);
 
   // Errors
   Future<bool> addError(String title, String description, String stepsReproduce) => _firebase.addError(title, description, stepsReproduce);
 
   // Events
-  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers, var selectedTrainers) => _firebase.addEvent(brandID, title, description, year, month, day, hour, minute, duration, placeId, maxMembers, selectedTrainers);
+  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.addEvent(brandID, title, description, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);
 
-  Future<void> updateEvent(String id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? placeId, int? maxMembers, var selectedTrainers) => _firebase.updateEvent(id, title, description, year, month, day, hour, minute, duration, placeId, maxMembers, selectedTrainers);
+  Future<void> updateEvent(String id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.updateEvent(id, title, description, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);
   Future<void> updateEventCompleted(String id) => _firebase.updateEventCompleted(id);
 
   Future<void> deleteEvent(String id) => _firebase.deleteEvent(id);
+  Future<void> deleteBrandEvents(String brandId) => _firebase.deleteBrandEvents(brandId);
+  Future<void> deleteUserFromAllBrandEvents(String uid, String brandId, bool isTrainer) => _firebase.deleteUserFromAllBrandEvents(uid, brandId, isTrainer);
+
+  Future<bool> joinEvent(String eid, String uid) => _firebase.joinEvent(eid, uid);
+  Future<bool> leaveEvent(String eid, String uid, bool isTrainer) => _firebase.leaveEvent(eid, uid, isTrainer);
+
 
   Future<Event> getSingleEvent(String eventId) => _firebase.getSingleEvent(eventId);
+
   Future<List<Event>> getAllEventsFromClient(String clientid) => _firebase.getAllEventsFromClient(clientid);
   Future<List<Event>> getAllEventsFromTrainer(String trainerid) => _firebase.getAllEventsFromTrainer(trainerid);
+
+  Future<List<Event>> getAllClientEventsFromBrand(String clientid, String brandId) => _firebase.getAllClientEventsFromBrand(clientid, brandId);
+  Future<List<Event>> getAllTrainerEventsFromBrand(String trainerid, String brandId) => _firebase.getAllTrainerEventsFromBrand(trainerid, brandId);
+
   Future<List<Event>> getAllEventsTodayBrand(String brandId) => _firebase.getAllEventsTodayBrand(brandId);
+  Future<List<Event>> getAllEventsTodayUser(String userid, bool isTrainer) => _firebase.getAllEventsTodayUser(userid, isTrainer);
 
   // Locations
-  Future<bool> addLocation(String brandId, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) => _firebase.addLocation(brandId, placeId, description, street, streetNumber, city, zipCode, latitude, longitude);
+  Future<String> addLocation(String brandId, bool isBaseLocation, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) => _firebase.addLocation(brandId, isBaseLocation, placeId, description, street, streetNumber, city, zipCode, latitude, longitude);
+  Future<void> updateLocation(String locationId, String brandId, bool isBaseLocation, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) => _firebase.updateLocation(locationId, brandId, isBaseLocation, placeId, description, street, streetNumber, city, zipCode, latitude, longitude);
   Future<bool> deleteLocation(String locationId) => _firebase.deleteLocation(locationId);
+  Future<void> deleteBrandLocations(String brandId) => _firebase.deleteBrandLocations(brandId);
   Future<Location> getSingleLocation(String locationId) => _firebase.getSingleLocation(locationId);
   // Get Single Location
 
@@ -94,7 +116,7 @@ class DatabaseAccess {
   Stream<DocumentSnapshot> getSingleEventStream(String id) => _firebase.getSingleEventStream(id);
 
   // Locations
-  // Stream Brand Current Location
+  Stream<QuerySnapshot> getAllLocationsBrand(String brandId) => _firebase.getAllLocationsBrand(brandId);
 
   //Questions
   Stream<QuerySnapshot> getAllQuestions() => _firebase.getAllQuestions();

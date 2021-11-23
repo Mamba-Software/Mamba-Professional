@@ -6,6 +6,7 @@ class Usuario {
   String? id;
   String? email;
   String? name;
+  String? nick;
   String? imageUrl;
   bool? isFirst;
   bool? isTrainer;
@@ -22,6 +23,7 @@ class Usuario {
     this.id,
     this.email,
     this.name,
+    this.nick,
     this.imageUrl,
     this.isFirst,
     this.isTrainer,
@@ -39,6 +41,7 @@ class Usuario {
     var data = Map<String, dynamic>();
     data['email'] = user.email;
     data['name'] = user.name;
+    data['nick'] = user.nick;
     data['imageUrl'] = user.imageUrl;
     data['isFirst'] = user.isFirst;
     data['isTrainer'] = user.isTrainer;
@@ -57,6 +60,7 @@ class Usuario {
     this.id = documentId;
     this.email = mapData['email'].toString();
     this.name = mapData['name'].toString();
+    this.nick = mapData['nick'].toString();
     this.imageUrl = mapData['imageUrl'].toString();
     this.isFirst = mapData['isFirst'];
     this.isTrainer = mapData['isTrainer'];
@@ -74,6 +78,7 @@ class Usuario {
     this.id = documentId;
     this.email = documentSnapshot.get("email").toString();
     this.name = documentSnapshot.get("name").toString();
+    this.nick = documentSnapshot.get("nick").toString();
     this.imageUrl = documentSnapshot.get("imageUrl").toString();
     this.isFirst = documentSnapshot.get("isFirst");
     this.isTrainer = documentSnapshot.get("isTrainer");

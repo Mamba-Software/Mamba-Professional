@@ -385,10 +385,10 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
       // Colors
       var color;
       double bookedCapacity = event.joinedMembers.length/event.maxMembers;
-      if(bookedCapacity < 0.20) color = Colors.green;
-      else if(bookedCapacity > 0.20 && bookedCapacity < 0.40) color = Color(0xFFA8C76C);
-      else if(bookedCapacity > 0.40 && bookedCapacity < 0.60) color = Color(0xFFECE014);
-      else if(bookedCapacity > 0.60 && bookedCapacity < 0.80) color = Colors.orangeAccent;
+      if(bookedCapacity <= 0.20) color = Colors.green;
+      else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = Color(0xFFA8C76C);
+      else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = Color(0xFFECE014);
+      else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) color = Colors.orangeAccent;
       else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
       else if(bookedCapacity == 1) color = Colors.red;
       // Afegir percentatges de members al Event.
@@ -412,19 +412,6 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
       events.add(Event.fromObject(documents[i], documents[i].id));
     }
     return events;
-  }
-
-  void _addEvent({DateTime? dateTimeClicked}) {
-    Navigator.push(
-        context,
-        PageTransition(
-          type: PageTransitionType.bottomToTop,
-          child: AddEvent(
-            locale: Localizations.localeOf(context),
-            initialDateTime: dateTimeClicked ?? null,
-          ),
-        )
-    );
   }
 
   void _viewEvent(String eventId, DateTime startDate) {

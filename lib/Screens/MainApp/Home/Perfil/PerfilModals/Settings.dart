@@ -2,19 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/EditPhotoPage.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/TusDatos.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 
 class Settings extends StatefulWidget {
-  final ValueChanged<bool?> isSaved;
-  final ValueChanged<bool?> isUpdated;
-  const Settings({Key? key, required this.isSaved, required this.isUpdated}) : super(key: key);
+  const Settings({Key? key}) : super(key: key);
   @override
   _SettingsState createState() => _SettingsState();
 }
@@ -41,13 +42,6 @@ class _SettingsState extends State<Settings> {
   void initState() {
     super.initState();
   }
-  // Gets user info.
-  void getUser() async {
-    currentUser = await _accessDatabase.getCurrentUserDetails();
-    setState(() {
-      isLoading = false;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,220 +55,197 @@ class _SettingsState extends State<Settings> {
         isUpdated = false;
       }
     }
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height*0.86,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.settings, style: Theme.of(context).appBarTheme.titleTextStyle,),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, size: 25,),
+          onPressed: () async {
+            if (isUpdated) {
+              setState(() {
+                isSaved = true;
+                if (!(_isPrivate == null)) {
+                  currentUser.isPrivate = _isPrivate;
+                };
+                if (idiomaChanged) {
+                  currentUser.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
+                  currentUser.previousIdioma = "";
+                };
+                _idiomaChanged.currentState!.resetIdiomaChanged();
+                idiomaChanged = false;
+              });
+              await _accessDatabase.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!);
+            }
+            Navigator.pop(context);
+            },
+        ),
       ),
-      padding: MediaQuery.of(context).viewInsets,
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back, color: Styles.accent),
-                    onPressed: () => {
-                      isSaved = false,
-                      widget.isSaved(isSaved),
-                      Navigator.pop(context)
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 30.0),
-                    child: Text(AppLocalizations.of(context)!.settings, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
-                  ),
-                  MaterialButton(
-                    onPressed: isUpdated ? () async => {
-                      setState(() {
-                        isSaved = true;
-                        widget.isSaved(isSaved);
-                        widget.isUpdated(isUpdated);
-                        if (!(_isPrivate == null)) {
-                          currentUser.isPrivate = _isPrivate;
-                        };
-                        if (idiomaChanged) {
-                          currentUser.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
-                          currentUser.previousIdioma = "";
-                        };
-                        isLoading = true;
-                        _idiomaChanged.currentState!.resetIdiomaChanged();
-                        idiomaChanged = false;
-                      }),
-                      await _accessDatabase.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!),
-
-                      Navigator.pop(context),
-                    } : null,
-                    color: isUpdated ? Colors.green : Colors.transparent,
-                    child: Icon(Icons.save, color: isUpdated ? Colors.white : Styles.accentLight),
-                    padding: EdgeInsets.all(15),
-                    shape: CircleBorder(),
-                  ),
-                ],
-              ),
-              isLoading ?
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  child: LoadingView()
-                )
-                  :
-                new Container(
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: 25.0),
-                    child : new Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+      body: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      AppLocalizations.of(context)!.yourInfo,
+                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.rightToLeftWithFade,
+                              child: TusDatos(),
+                            )
+                        );
+                      },
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          !(currentUser.isTrainer!) ? Padding(
-                              padding: EdgeInsets.only(
-                                  left: 25.0, right: 25.0, top: 25.0),
-                              child: new Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  new Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      new Text(
-                                        AppLocalizations.of(context)!.typeProfile,
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              )) : Container(),
-                          !(currentUser.isTrainer!) ? Padding(
-                              padding: EdgeInsets.only(
-                                  left: 25.0, right: 25.0, top: 12.0),
-                              child: ProfileTypeWidget(
-                                key: _typeProfileKey,
-                                user: currentUser,
-                                selectedProfileTypeChanged: (isPrivate) {
-                                  setState(() {
-                                    _isPrivate = isPrivate;
-                                  });
-                                },
-                              )
-                          ) : Container(),
-                          Padding(
-                              padding: EdgeInsets.only(
-                                  left: 25.0, right: 25.0, top: 12.0),
-                              child: new Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  new Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      new Text(
-                                        AppLocalizations.of(context)!.language,
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              )),
-                          Padding(
-                              padding: EdgeInsets.only(
-                                  left: 25.0, right: 25.0, top: 12.0, bottom: 12.0),
-                              child: LanguagePickerWidget(
-                                  key: _idiomaChanged,
-                                  idiomaChanged: (bool) {
-                                    idiomaChanged = bool!;
-                                  },
-                              )
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: 25.0, right: 25.0, top: 12.0, bottom: 12.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  height: 50,
-                                  width: 250,
-                                  decoration: BoxDecoration(
-                                      color: Styles.accent, borderRadius: BorderRadius.circular(20)
-                                  ),
-                                  child: TextButton(
-                                    onPressed: () async {
-                                      _accessDatabase.signOut().then((value) =>
-                                          Navigator.pushAndRemoveUntil(
-                                            context,
-                                            CupertinoPageRoute<Null>(
-                                              builder: (context) => Login(),
-                                              settings: RouteSettings(name: 'Login'),
-                                            ),
-                                                (_) => false,
-                                          )
-                                      );
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.logout_outlined, color: Styles.white),
-                                        SizedBox(width: 10),
-                                        Text(
-                                          AppLocalizations.of(context)!.closeSession,
-                                          style: Styles.whiteTextStyle,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: 25.0, right: 25.0, top: 12.0, bottom: 12.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  height: 50,
-                                  width: 250,
-                                  decoration: BoxDecoration(
-                                      color: Colors.red, borderRadius: BorderRadius.circular(20)
-                                  ),
-                                  child: TextButton(
-                                    onPressed: () async {
-                                      showDialog(
-                                        context: context,
-                                        builder: (_) {
-                                          return DeleteDialog();
-                                        }
-                                      );
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.delete_outline, color: Styles.white),
-                                        SizedBox(width: 10),
-                                        Text(
-                                          AppLocalizations.of(context)!.deleteAccount,
-                                          style: Styles.whiteTextStyle,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                        children: [
+                          Icon(Icons.edit_outlined, color: Theme.of(context).primaryColor),
+                          SizedBox(width: 10),
+                          Text(
+                            AppLocalizations.of(context)!.editYourInfo,
+                            style: Styles.purpleTextStyle,
                           ),
                         ],
                       ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.rightToLeftWithFade,
+                              child: EditPhotoPage(),
+                            )
+                        );
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.face_retouching_natural, color: Theme.of(context).primaryColor),
+                          SizedBox(width: 10),
+                          Text(
+                            AppLocalizations.of(context)!.editYourPhoto,
+                            style: Styles.purpleTextStyle,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  ],
+                ),
+                !(currentUser.isTrainer!) ? Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.typeProfile,
+                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    ProfileTypeWidget(
+                      key: _typeProfileKey,
+                      user: currentUser,
+                      selectedProfileTypeChanged: (isPrivate) {
+                        setState(() {
+                          _isPrivate = isPrivate;
+                        });
+                      },
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  ],
+                ) : Container(),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      AppLocalizations.of(context)!.language,
+                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    LanguagePickerWidget(
+                      key: _idiomaChanged,
+                      idiomaChanged: (bool) {
+                        idiomaChanged = bool!;
+                      },
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  ],
+                ),
+                TextButton(
+                  onPressed: () async {
+                    var result = await showDialog(
+                        context: context,
+                        builder: (_) {
+                          return ConfirmationDialog(text: AppLocalizations.of(context)!.closeSessionConfirmation);
+                        }
+                    );
+                    if (result) {
+                      _accessDatabase.signOut().then((value) =>
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            CupertinoPageRoute<Null>(
+                              builder: (context) => Login(),
+                              settings: RouteSettings(name: 'Login'),
+                            ),
+                                (_) => false,
+                          )
+                      );
+                    }
+
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(Icons.logout_outlined, color: Theme.of(context).primaryColor),
+                      SizedBox(width: 10),
+                      Text(
+                        AppLocalizations.of(context)!.closeSession,
+                        style: Styles.purpleTextStyle,
+                      ),
+                    ],
                   ),
                 ),
-            ],
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                TextButton(
+                  onPressed: () async {
+                    showDialog(
+                        context: context,
+                        builder: (_) {
+                          return DeleteDialog();
+                        }
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(Icons.delete_outline, color: Colors.red),
+                      SizedBox(width: 10),
+                      Text(
+                        AppLocalizations.of(context)!.deleteAccount,
+                        style: Styles.purpleTextStyle.copyWith(color: Colors.red),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
     );
   }
 }
@@ -323,11 +294,11 @@ class _DeleteDialogState extends State<DeleteDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top: 25, bottom: 10.0),
-                  child: Text(AppLocalizations.of(context)!.wantDeleteUser, style: Styles.redTextStyle.copyWith(color: Colors.red, fontSize: 22, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                  padding: const EdgeInsets.only(top: 15, bottom: 10.0),
+                  child: Text(AppLocalizations.of(context)!.wantDeleteUser, style: Styles.redTextStyle.copyWith(color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
                 ),
                 Flexible(
-                  child: Text("${AppLocalizations.of(context)!.writeDeleteUser} ", style: Styles.purpleTextStyle.copyWith(fontSize: 16), textAlign: TextAlign.center,),
+                  child: Text("${AppLocalizations.of(context)!.writeDeleteUser} ", style: Styles.purpleTextStyle.copyWith(fontSize: 16, height: 1.5), textAlign: TextAlign.center,),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, left: 15, right: 15),
@@ -423,7 +394,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                       FloatingActionButton.extended(
                         icon: Icon(Icons.cancel_outlined, size: 30,),
                         label: Text(AppLocalizations.of(context)!.cancel),
-                        backgroundColor: Styles.accent,
+                        backgroundColor: Theme.of(context).primaryColor,
                         foregroundColor: Styles.white,
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -435,12 +406,12 @@ class _DeleteDialogState extends State<DeleteDialog> {
               ],
             ),
             Positioned(
-                top: -90,
+                top: -83,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox.fromSize(
-                      size: Size(100, 100), // button width and height
+                      size: Size(80, 80), // button width and height
                       child: ClipOval(
                         child: Material(
                           color: Colors.red, // button color
@@ -448,7 +419,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             onTap: () async {
                               setState(() {});
                             },
-                            child: Icon(Icons.warning, color: Colors.white, size: 60,), // icon
+                            child: Icon(Icons.delete_outline, color: Colors.white, size: 45,), // icon
                           ),
                         ),
                       ),
@@ -488,34 +459,33 @@ class _ProfileTypeWidgetState extends State<ProfileTypeWidget> {
       firstBuild = false;
     }
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _icon(true, text: AppLocalizations.of(context)!.typeProfilePrivate, icon: Icons.visibility_off_outlined),
+        SizedBox(width: MediaQuery.of(context).size.width*0.10),
         _icon(false, text: AppLocalizations.of(context)!.typeProfilePublic, icon: Icons.visibility_outlined),
       ],
     );
   }
   Widget _icon(bool index, {required String text, required IconData icon}) {
-    return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SizedBox.fromSize(
+    return SizedBox.fromSize(
           size: Size(85, 85), // button width and height
           child: ClipOval(
             child: Material(
-              color: isPrivate == index ? Styles.accentLight : null, // button color
+              color: isPrivate == index ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor,
               child: InkWell(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
                       icon,
-                      size: 38,
-                      color: Styles.accent,
+                      size: 30,
+                      color: Theme.of(context).primaryColor,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Styles.accent)),
+                      child: Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Theme.of(context).primaryColor)),
                     ),
                   ],
                 ),
@@ -528,8 +498,7 @@ class _ProfileTypeWidgetState extends State<ProfileTypeWidget> {
               ),
             ),
           ),
-        )
-    );
+        );
   }
 }
 
@@ -553,39 +522,31 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
     _locale = languageProvider.idioma;
     allLocales = Idiomas.all;
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          margin: EdgeInsets.symmetric(vertical: 0.0, horizontal: 5.0),
-          height: 80,
-          child: ListView.builder(
-            shrinkWrap: true,
-            scrollDirection:  Axis.horizontal,
-            itemCount: allLocales.length,
-            itemBuilder: (context, index) {
-              return _iconLocale(allLocales[index], context);
-            },
-          ),
-        ),
+        _iconLocale(allLocales[0], context),
+        SizedBox(width: MediaQuery.of(context).size.width*0.10),
+        _iconLocale(allLocales[1], context),
       ],
     );
   }
   Widget _iconLocale(Locale locale, BuildContext context ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-      child: SizedBox.fromSize(
+    return SizedBox.fromSize(
           size: Size(85, 85), // button width and height
           child: ClipOval(
             child: Material(
-              color: _locale == locale ? Styles.accentLight : null, // button color
+              color: _locale == locale ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, // button color
               child: InkWell(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(locale.languageCode.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: Styles.accent)),
+                      child: Text(
+                          locale.languageCode.toUpperCase(),
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: Theme.of(context).primaryColor)
+                      ),
                     ),
                   ],
                 ),
@@ -604,7 +565,6 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
               ),
             ),
           ),
-      ),
-    );
+      );
   }
 }

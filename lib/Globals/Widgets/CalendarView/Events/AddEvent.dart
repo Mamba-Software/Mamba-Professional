@@ -5,7 +5,10 @@ import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/Locatio
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocationsSelect.dart';
+import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import '../../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -42,6 +45,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   // Description Controller
   var descriptionController = TextEditingController();
   String? descriptionString;
+  // Location
+  Location location = Location();
   // Starting Date and Time
   TextEditingController startDateController = TextEditingController();
   bool errorDate = false;
@@ -51,11 +56,10 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   List<String> durations = ["0.30","1.00","1.30","2.00","2.30","3.00","3.30","4.00"];
   // Ubicació
   var ubicacionController =  TextEditingController();
-  var placeId =  currentBrand.placeId!;
   // Participants
   TextEditingController membersController = TextEditingController();
   int members = 1;
-  int membersMax = 15;
+  int membersMax = currentBrand.maxMembers!;
   // Evento Recurrente
   bool isRecurrent = false;
   var oneWeek;
@@ -254,26 +258,27 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     durationController.text = "${hour}h ${min}min";
     membersController.text = "${members.toString()}";
     getAllTrainersFromBrand();
-    //getPlaceFullAddress(currentBrand.placeId!);
+    getLocation(currentBrand.baseLocation!);
   }
 
   Future<void> getAllTrainersFromBrand() async {
     brandTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
-    if (brandTrainers.length == 1) {
-      brandTrainersSelected.add(true);
-    } else {
-      for (var i=0; i < brandTrainers.length; i++) {
+    for (var i=0; i < brandTrainers.length; i++) {
+      Usuario trainer = brandTrainers[i];
+      if (trainer.id == currentUser.id) {
+        brandTrainersSelected.add(true);
+      } else {
         brandTrainersSelected.add(false);
       }
+
     }
     setState(() {
       isLoading = false;
     });
   }
 
-  void getPlaceFullAddress(String placeid) async {
-    //placeDetails = await LocationPlacesSearch().getPlaceDetailFromId(placeid);
-    //ubicacionController.text = placeDetails.fullAddress!;
+  void getLocation(String locationId) async {
+    location = await _accessDatabase.getSingleLocation(locationId);
     setState(() {
       isLoading = false;
     });
@@ -287,8 +292,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     ) :
     Scaffold(
       appBar: AppBar(
-        toolbarHeight: MediaQuery.of(context).size.height*0.11,
-        title: Text(AppLocalizations.of(context)!.addEvent, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+        toolbarHeight: MediaQuery.of(context).size.height*0.14,
+        title: Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Styles.accent),
@@ -487,53 +492,38 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                             ],
                                           )
                                       ),
-                                      /*
                                       Padding(
-                                        padding: EdgeInsets.only(bottom: 0),
-                                        child: new Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            Expanded(
-                                              child: TextFormField(
-                                                controller: ubicacionController,
-                                                validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.enterAddressError : null,
-                                                readOnly: true,
-                                                minLines: 1,
-                                                maxLines: 3,
-                                                onTap: () async {
-                                                  final Suggestion? result = await showSearch(
-                                                    context: context,
-                                                    delegate: AddressSearch(),
-                                                  );
-                                                  if (result != null && result.description != "") {
-                                                    setState(() {
-                                                      ubicacionController.text = result.description;
-                                                    });
-                                                    placeId = result.placeId;
-                                                  }
-                                                },
-                                                style: Styles.purpleTextStyle,
-                                                decoration: InputDecoration(
-                                                  icon: Container(
-                                                    width: 10,
-                                                    height: 10,
-                                                    child: Icon(
-                                                      Icons.location_on_outlined,
-                                                      color: Theme.of(context).accentColor,
-                                                      size: 28,
-                                                    ),
+                                        padding: EdgeInsets.only(top: 15.0),
+                                        child: ListTile(
+                                          leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: 25,),
+                                          title: Text(
+                                              location.description!,
+                                              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor)
+                                          ),
+                                          trailing: Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: 25,),
+                                          onTap: () async {
+                                            setState(() {
+                                              isLoading = true;
+                                            });
+                                            var result = await Navigator.push(
+                                                context,
+                                                PageTransition(
+                                                  type: PageTransitionType.rightToLeftWithFade,
+                                                  child: MyLocationsSelect(
+                                                    brandId: currentBrand.id!,
                                                   ),
-                                                  hintText: AppLocalizations.of(context)!.enterAddress,
-                                                  hintStyle: Styles.purpleTextStyle,
-                                                  border: InputBorder.none,
-                                                  contentPadding: EdgeInsets.only(left: 18.0, top: 18),
-                                                ),
-                                              ),
-                                            )
-                                          ],
+                                                )
+                                            );
+                                            if (result != null) {
+                                              getLocation(result);
+                                            } else {
+                                              setState(() {
+                                                isLoading = false;
+                                              });
+                                            }
+                                          },
                                         ),
                                       ),
-                                       */
                                     ]
                                 ),
                               ),
@@ -548,104 +538,100 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                       child: Column(
                         children: [
                           Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.05),
                                 child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.max,
                                     children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-                                        child: Container(
-                                          height: MediaQuery.of(context).size.height * 0.15,
-                                          width: MediaQuery.of(context).size.width * 0.90,
-                                          decoration: BoxDecoration(
-                                              color: Theme.of(context).backgroundColor,
-                                              borderRadius: BorderRadius.all(Radius.circular(15.0))
-                                          ),
+                                      Container(
+                                        height: MediaQuery.of(context).size.height * 0.20,
+                                        width: MediaQuery.of(context).size.width * 0.90,
+                                        decoration: BoxDecoration(
+                                            color: Theme.of(context).backgroundColor,
+                                            borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.05, horizontal: MediaQuery.of(context).size.width*0.05),
                                           child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                            mainAxisSize: MainAxisSize.max,
                                             children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(left:18, top: 10.0),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.max,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
-                                                    Container(
-                                                      padding: EdgeInsets.symmetric(horizontal: 20),
-                                                      width: MediaQuery.of(context).size.width*0.70,
-                                                      child: GestureDetector(
-                                                          onTap: () {
-                                                            selectSlot(context, 0);
-                                                          },
-                                                          child: Row(
-                                                            mainAxisSize: MainAxisSize.max,
-                                                            children: <Widget>[
-                                                              new Flexible(
-                                                                child: TextFormField(
-                                                                  controller: startDateController,
-                                                                  readOnly: true,
-                                                                  enabled: false,
-                                                                  style: Styles.purpleTextStyle,
-                                                                  decoration: InputDecoration(
-                                                                    labelStyle: Styles.purpleTextStyle,
-                                                                    border: InputBorder.none,
-                                                                    focusedBorder: InputBorder.none,
-                                                                    enabledBorder: InputBorder.none,
-                                                                    errorBorder: InputBorder.none,
-                                                                    disabledBorder: InputBorder.none,
-                                                                  ),
-                                                                  textAlign: TextAlign.start,
+                                              Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
+                                                  Container(
+                                                    padding: EdgeInsets.symmetric(horizontal: 20),
+                                                    width: MediaQuery.of(context).size.width*0.70,
+                                                    child: GestureDetector(
+                                                        onTap: () {
+                                                          selectSlot(context, 0);
+                                                        },
+                                                        child: Row(
+                                                          mainAxisSize: MainAxisSize.max,
+                                                          children: <Widget>[
+                                                            new Flexible(
+                                                              child: TextFormField(
+                                                                controller: startDateController,
+                                                                readOnly: true,
+                                                                enabled: false,
+                                                                style: Styles.purpleTextStyle,
+                                                                decoration: InputDecoration(
+                                                                  labelStyle: Styles.purpleTextStyle,
+                                                                  border: InputBorder.none,
+                                                                  focusedBorder: InputBorder.none,
+                                                                  enabledBorder: InputBorder.none,
+                                                                  errorBorder: InputBorder.none,
+                                                                  disabledBorder: InputBorder.none,
                                                                 ),
+                                                                textAlign: TextAlign.start,
                                                               ),
-                                                            ],
-                                                          )
-                                                      ),
+                                                            ),
+                                                          ],
+                                                        )
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
-                                              Padding(
-                                                padding: EdgeInsets.only(left:18, top: 10.0),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.max,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Icon(Icons.timer, color: Theme.of(context).accentColor,),
-                                                    Container(
-                                                      padding: EdgeInsets.only(left: 20),
-                                                      width: MediaQuery.of(context).size.width*0.30,
-                                                      child: GestureDetector(
-                                                          onTap: () {
-                                                            selectSlot(context, 1);
-                                                          },
-                                                          child: Row(
-                                                            mainAxisSize: MainAxisSize.max,
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            children: <Widget>[
-                                                              new Flexible(
-                                                                child: TextFormField(
-                                                                  controller: durationController,
-                                                                  readOnly: true,
-                                                                  enabled: false,
-                                                                  style: Styles.purpleTextStyle,
-                                                                  decoration: InputDecoration(
-                                                                    labelStyle: Styles.purpleTextStyle,
-                                                                    border: InputBorder.none,
-                                                                    focusedBorder: InputBorder.none,
-                                                                    enabledBorder: InputBorder.none,
-                                                                    errorBorder: InputBorder.none,
-                                                                    disabledBorder: InputBorder.none,
-                                                                  ),
-                                                                  textAlign: TextAlign.start,
+                                              Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Icon(Icons.timer, color: Theme.of(context).accentColor,),
+                                                  Container(
+                                                    padding: EdgeInsets.only(left: 20),
+                                                    width: MediaQuery.of(context).size.width*0.30,
+                                                    child: GestureDetector(
+                                                        onTap: () {
+                                                          selectSlot(context, 1);
+                                                        },
+                                                        child: Row(
+                                                          mainAxisSize: MainAxisSize.max,
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            new Flexible(
+                                                              child: TextFormField(
+                                                                controller: durationController,
+                                                                readOnly: true,
+                                                                enabled: false,
+                                                                style: Styles.purpleTextStyle,
+                                                                decoration: InputDecoration(
+                                                                  labelStyle: Styles.purpleTextStyle,
+                                                                  border: InputBorder.none,
+                                                                  focusedBorder: InputBorder.none,
+                                                                  enabledBorder: InputBorder.none,
+                                                                  errorBorder: InputBorder.none,
+                                                                  disabledBorder: InputBorder.none,
                                                                 ),
+                                                                textAlign: TextAlign.start,
                                                               ),
-                                                            ],
-                                                          )
-                                                      ),
+                                                            ),
+                                                          ],
+                                                        )
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
@@ -821,6 +807,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           ),
                                         ],
                                       ) : Container(),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.10)
                                     ]
                                 )
                             ),
@@ -863,7 +850,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             Container(
-                                              height: MediaQuery.of(context).size.height*0.16,
+                                              height: MediaQuery.of(context).size.height*0.20,
                                               width: MediaQuery.of(context).size.width,
                                               child: ListView.builder(
                                                   shrinkWrap: true,
@@ -881,7 +868,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                       child: Padding(
                                                         padding: !(index == 0 || index == brandTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                                         child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          mainAxisAlignment: MainAxisAlignment.center,
                                                           children: [
                                                             CircularImage(
                                                               size: MediaQuery.of(context).size.width*0.2,
@@ -913,6 +900,9 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                                           side: BorderSide.none
                                                                       ),
                                                                       onChanged: (bool? value) {
+                                                                        setState(() {
+                                                                          brandTrainersSelected[index] = !brandTrainersSelected[index];
+                                                                        });
                                                                       },
                                                                     ),
                                                                   ),
@@ -1312,16 +1302,16 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       }
     }
     if (!isRecurrent) {
-      await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
+      await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
     } else {
-      await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
+      await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
       var tempDate = startDate.add(Duration(days: 1));
       var weekDay = tempDate.weekday;
       if (_value == 1) {
         // One Week
         for (var i=0; i<6; i++) {
           if(values[weekDay-1]!) {
-            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
+            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;
@@ -1330,7 +1320,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         // Two Weeks
         for (var i=0; i<13; i++) {
           if(values[weekDay-1]!) {
-            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
+            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;
@@ -1339,7 +1329,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         // One Month
         for (var i=0; i<29; i++) {
           if(values[weekDay-1]!) {
-            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), placeId, members, selectedTrainerId);
+            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;

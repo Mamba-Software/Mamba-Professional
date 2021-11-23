@@ -14,7 +14,7 @@ class DeleteConfirmationDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.all(20),
       child: Container(
-        padding: EdgeInsets.only(top: 40, bottom: 10, left: 20, right: 20),
+        padding: EdgeInsets.only(top: 40, bottom: 10, left: 10, right: 10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Colors.white
@@ -27,9 +27,9 @@ class DeleteConfirmationDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 24.0),
-                  child: Flexible(
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 24.0, right: 10, left: 10),
                     child: Text(text, style: Styles.purpleTextStyle.copyWith(fontSize: 16, height: 1.5), textAlign: TextAlign.center,),
                   ),
                 ),
@@ -47,10 +47,11 @@ class DeleteConfirmationDialog extends StatelessWidget {
                           Navigator.pop(context, true);
                         },
                       ),
+                      SizedBox(width: MediaQuery.of(context).size.width*0.01),
                       FloatingActionButton.extended(
                         icon: Icon(Icons.cancel_outlined, size: 30,),
                         label: Text(AppLocalizations.of(context)!.cancel),
-                        backgroundColor: Styles.accent,
+                        backgroundColor: Theme.of(context).primaryColor,
                         foregroundColor: Styles.white,
                         onPressed: () async {
                           Navigator.pop(context, false);

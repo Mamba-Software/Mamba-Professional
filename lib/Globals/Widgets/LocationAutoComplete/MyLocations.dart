@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
@@ -6,7 +8,9 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
+import 'package:uuid/uuid.dart';
 
+import '../../GlobalVars.dart';
 import 'AddressSearch.dart';
 import 'LocationPlacesSearch.dart';
 
@@ -30,6 +34,8 @@ class _MyLocationsState extends State<MyLocations> {
   // Search Controller
   var searchClientsController = TextEditingController();
   var searchTrainersController = TextEditingController();
+  // Locations From Brand
+  List<Location> locationList = [];
 
   Future<void> getAllLocations() async {
     setState(() {
@@ -40,7 +46,26 @@ class _MyLocationsState extends State<MyLocations> {
   @override
   initState() {
     isLoading = true;
+    gPlace = googlePlace.GooglePlace(Platform.isAndroid ? placesAPIAndroid : placesAPIIOS);
     getAllLocations();
+  }
+
+  List<Location> documentsToLocations(List<DocumentSnapshot> documents) {
+    List<Location> locations = [];
+    for(int i = 0; i < documents.length; i++) {
+      Location location = Location.fromObject(documents[i], documents[i].id);
+      if (location.isBaseLocation!) {
+        locations.add(location);
+        break;
+      }
+    }
+    for(int i = 0; i < documents.length; i++) {
+      Location location = Location.fromObject(documents[i], documents[i].id);
+      if (!location.isBaseLocation!) {
+        locations.add(location);
+      }
+    }
+    return locations;
   }
 
   @override
@@ -63,68 +88,148 @@ class _MyLocationsState extends State<MyLocations> {
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.myLocations, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
           centerTitle: true,
-          iconTheme: IconThemeData(
-            color: Styles.accent, //change your color here
-          ),
         ),
         body: Column(
           children: [
             Padding(
-                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02, horizontal: MediaQuery.of(context).size.width*0.02),
-                child: TextField(
+                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02),
+                child: ListTile(
                   onTap: () async {
                     // Generate a new token here
-                    // TODO: Have a look at generating session token for Google Places API
+                    final sessionToken = Uuid().v4();
+                    final language = currentUser.idioma;
                     final Suggestion? result = await showSearch(
                       context: context,
-                      delegate: AddressSearch(),
+                      delegate: AddressSearch(sessionToken, language!),
                     );
                     // We have a result for our locations search
                     if (result != null) {
                       Location location = Location();
                       location.placeId = result.placeId;
-                      final placeDetails = await LocationPlacesSearch().getPlaceDetailFromId(location.placeId!);
+                      final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(location.placeId!);
                       // Get the information on Strings
                       if(placeDetails.street!=null) location.street = placeDetails.street!;
                       if(placeDetails.streetNumber!=null) location.streetNumber = placeDetails.streetNumber!; else location.streetNumber="N/A";
                       if(placeDetails.city!=null) location.city = placeDetails.city!;
                       if(placeDetails.zipCode!=null) location.zipCode = placeDetails.zipCode!; else location.zipCode="N/A";
-                      if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
+                      //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
+                      // Build Correct Description
+                      location.description = "${location.street} ${location.streetNumber}, ${location.city}, ${location.zipCode}";
                       // Get Latitude/Longitude
                       var temp = await gPlace!.details.get(location.placeId!);
                       if (temp != null && temp.result != null && mounted) {
                         detailsResult = temp.result;
                         location.latitude = detailsResult!.geometry!.location!.lat!;
-                        location.latitude = detailsResult!.geometry!.location!.lng!;
+                        location.longitude = detailsResult!.geometry!.location!.lng!;
                       }
                       // Save location to DataBase
-                      bool isOkay = await _accessDatabase.addLocation(widget.brandId, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
+                      await _accessDatabase.addLocation(widget.brandId, false, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
                     }
                   },
-                  readOnly: true,
-                  textAlign: TextAlign.left,
-                  decoration: InputDecoration(
-                    hintText: AppLocalizations.of(context)!.addLocation,
-                    hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
-                    border: InputBorder.none,
-                    prefixIcon: Icon(
-                      Icons.add_location,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    contentPadding: EdgeInsets.only(top: 15),
+                  leading: Icon(
+                    Icons.add_location,
+                    color: Theme.of(context).primaryColor,
                   ),
-                )
+                  title: Text(
+                    AppLocalizations.of(context)!.addLocation,
+                    style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                  ),
+                ),
             ),
             Container(
               height: 1,
               color: Theme.of(context).primaryColor,
             ),
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.only(top: 0),
-                child: Container(),
-              ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            StreamBuilder<QuerySnapshot>(
+                stream: _accessDatabase.getAllLocationsBrand(currentBrand.id!),
+                builder: (context, snapshot) {
+                  if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
+                    return Container(
+                        height: MediaQuery.of(context).size.height*0.65,
+                        child: Center(
+                            child: LoadingViewPurple()
+                        )
+                    );
+                  } else {
+                    locationList = documentsToLocations(snapshot.data!.docs);
+                    return ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: locationList.length,
+                        itemBuilder: (context, index) {
+                          Location location = locationList[index];
+                          if (location.isBaseLocation!) {
+                            return ListTile(
+                              leading: Icon(Icons.home_filled, color: Theme.of(context).accentColor, size: 25,),
+                              title: Text(
+                                  location.description!,
+                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).accentColor)
+                              ),
+                              trailing: IconButton(
+                                onPressed: () async {
+                                  // Generate a new token here
+                                  final sessionToken = Uuid().v4();
+                                  final language = currentUser.idioma;
+                                  final Suggestion? result = await showSearch(
+                                    context: context,
+                                    delegate: AddressSearch(sessionToken, language!),
+                                  );
+                                  // We have a result for our locations search
+                                  if (result != null) {
+                                    Location loc = Location();
+                                    loc.placeId = result.placeId;
+                                    final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(loc.placeId!);
+                                    // Get the information on Strings
+                                    if(placeDetails.street!=null) loc.street = placeDetails.street!;
+                                    if(placeDetails.streetNumber!=null) loc.streetNumber = placeDetails.streetNumber!; else loc.streetNumber="N/A";
+                                    if(placeDetails.city!=null) loc.city = placeDetails.city!;
+                                    if(placeDetails.zipCode!=null) loc.zipCode = placeDetails.zipCode!; else loc.zipCode="N/A";
+                                    //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
+                                    // Build Correct Description
+                                    loc.description = "${loc.street} ${loc.streetNumber}, ${loc.city}, ${loc.zipCode}";
+                                    // Get Latitude/Longitude
+                                    var temp = await gPlace!.details.get(loc.placeId!);
+                                    if (temp != null && temp.result != null && mounted) {
+                                      detailsResult = temp.result;
+                                      loc.latitude = detailsResult!.geometry!.location!.lat!;
+                                      loc.longitude = detailsResult!.geometry!.location!.lng!;
+                                    }
+                                    // Save location to DataBase
+                                    await _accessDatabase.updateLocation(location.id!,widget.brandId, true, loc.placeId!, loc.description!, loc.street!, loc.streetNumber!, loc.city!, loc.zipCode!, loc.latitude!, loc.longitude!);
+                                  }
+                                },
+                                icon: Icon(Icons.edit, color: Theme.of(context).accentColor, size: 25,),
+                              ),
+                              onTap: () {
+
+                              },
+                            );
+                          } else {
+                            return ListTile(
+                              leading: Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: 25,),
+                              title: Text(
+                                  location.description!,
+                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16)
+                              ),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  _accessDatabase.deleteLocation(location.id!);
+                                },
+                                icon: Icon(Icons.delete_outline, color: Colors.red, size: 25,),
+                              ),
+                              onTap: () {
+
+                              },
+                            );
+                          }
+                        }
+                    );
+                  }
+                }
             ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
           ],
         ),
       ),
@@ -132,71 +237,7 @@ class _MyLocationsState extends State<MyLocations> {
   }
 
   /*
-   ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    itemCount: filteredClients.length,
-                    itemBuilder: (context, index) {
-                      Usuario user = filteredClients[index];
-                      return Container(
-                        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
-                          },
-                          child: Container(
-                              height: MediaQuery.of(context).size.height*0.10,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
-                                    child: CircularImage(
-                                      size: MediaQuery.of(context).size.width*0.2,
-                                      image: user.imageUrl,
-                                      color: Theme.of(context).primaryColor,
-                                      borderWidth: 1.5,
-                                    ),
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: MediaQuery.of(context).size.width*0.40,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                user.name!,
-                                                style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                                                textAlign: TextAlign.left,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
 
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.20),
-                                    child: Icon(
-                                      Icons.arrow_forward_ios,
-                                      size: 30,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                                ],
-                              )
-                          ),
-                        ),
-                      );
-                    }
-                ),
    */
 
   @override

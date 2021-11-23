@@ -135,6 +135,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                 style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24),
               ),
               const SizedBox(height: 4),
+              /*
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -144,6 +145,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                   ),
                 ],
               ),
+               */
               const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

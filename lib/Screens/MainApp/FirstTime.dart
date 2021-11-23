@@ -1,0 +1,1051 @@
+import 'dart:io';
+
+import 'package:image_picker/image_picker.dart';
+import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+class FirstTime extends StatefulWidget {
+  Locale locale;
+
+  FirstTime({Key? key, required this.locale}) : super(key: key);
+
+  @override
+  _FirstTimeState createState() => _FirstTimeState();
+}
+
+class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMixin{
+  // Acceso a Base de Datos
+  var _accessDatabase = new DatabaseAccess();
+  // Boolean Loading
+  bool isLoading = false;
+  // Form Key
+  final _formKey = GlobalKey<FormState>();
+  // Tab Controller
+  double addEventTabValue = 0.20;
+  TabController? _tabController;
+  int _selectedIndex = 0;
+  List<bool> tabs = [true, false, false, false, false];
+  // Title Controller
+  var nameController = TextEditingController();
+  // Nick Controller
+  var nickController = TextEditingController();
+  String nick = "";
+  bool isSearchAlias = false;
+  bool nickOkay = false;
+  bool nickUsed = false;
+  // Date Of Birth
+  TextEditingController startDateController = TextEditingController();
+  String nullDate = "";
+  // Gender Widget value
+  int? gender;
+  var genderTemp;
+  bool errorGender = false;
+  String errorGenderText = '';
+  void updateGender(int newGender) {
+    setState(() {
+      gender = newGender;
+    });
+  }
+  // Profile Image
+  var _image;
+  bool errorImage = false;
+  // Type of Users
+  int _value = 0;
+  // Invite Code
+  var codeController = TextEditingController();
+  String code = "";
+
+  String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
+  String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
+
+  Future<void> checkIfNickExists(String nick) async {
+    setState(() {
+      isSearchAlias = true;
+    });
+    bool result = await _accessDatabase.checkIfAliasExists(nick);
+    if (result) {
+      Future.delayed(Duration(milliseconds: 500), () async {
+        setState(() {
+          nickOkay = true;
+          nickUsed = false;
+          isSearchAlias = false;
+        });
+      });
+    } else {
+      Future.delayed(Duration(milliseconds: 500), () async {
+        setState(() {
+          nickOkay = false;
+          nickUsed = true;
+          isSearchAlias = false;
+        });
+      });
+    }
+  }
+
+  Future<void> selectSlot(ctx, type) {
+    // Initial Vars
+    var startDate = DateTime.now();
+    var title;
+    var widgetPicker;
+    // Different types of pickers
+    Widget dateTimePicker = CupertinoDatePicker(
+      mode: CupertinoDatePickerMode.date,
+      initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
+      minimumDate: startDate.subtract(Duration(days: 365*80)),
+      maximumDate: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
+      minimumYear: 1941,
+      maximumYear: 2021,
+      use24hFormat: true,
+      onDateTimeChanged: (val) {
+        setState(() {
+          startDateController.text = DateFormat('dd/MM/yyyy', widget.locale.languageCode).format(val);
+          //startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
+        });
+      }
+    );
+
+    if (type == 0) {
+      title = AppLocalizations.of(context)!.selectDateOfBirth;
+      widgetPicker = dateTimePicker;
+    }
+    showCupertinoModalPopup(
+      context: ctx,
+      builder: (_) => Material(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+        ),
+        child: Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height*0.40,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                      child: Text(title, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20), textAlign: TextAlign.center,)
+                  ),
+                ],
+              ),
+              Expanded(
+                child: widgetPicker
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 0),
+                    child: TextButton(
+                      child: Text(AppLocalizations.of(context)!.entendido, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                      }
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            ],
+          ),
+        ),
+      )
+    );
+    return Future.value("");
+  }
+
+  // Selects image from Gallery and updates in firebase.
+  Future getImage() async {
+    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    setState(() {
+      _image = File(image!.path);
+    });
+    retrieveLostData();
+  }
+  // Retrieve lost data of Gallery if it crashes becasue of Android.
+  Future<void> retrieveLostData() async {
+    final LostDataResponse response =
+    await ImagePicker().retrieveLostData();
+    if (response == null) {
+      return;
+    }
+    if (response.file != null) {
+      setState(() {
+        _image = response.file;
+      });
+    }
+  }
+
+  @override
+  initState() {
+    //isLoading = true;
+    _tabController = TabController(length: 5, vsync: this);
+    var startDate = DateTime.now();
+    startDate = DateTime(
+      startDate.year,
+      startDate.month,
+      startDate.day,
+      0,
+      0,
+    );
+    startDateController.text = DateFormat('dd/MM/yyyy', widget.locale.languageCode).format(startDate);
+    nullDate = startDateController.text;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isLoading ? Scaffold(
+      appBar: null,
+      body: LoadingViewPurple(),
+    ) :
+    Scaffold(
+      appBar: AppBar(
+        toolbarHeight: MediaQuery.of(context).size.height*0.14,
+        title: getTitle(),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(0),
+          child: IgnorePointer(
+            child: Column(
+              children: [
+                TabBar(
+                  controller: _tabController,
+                  indicatorColor: Theme.of(context).scaffoldBackgroundColor,
+                  onTap: (index) {
+                    _selectedIndex = index;
+                  },
+                  tabs: [
+                    Tab(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.login_outlined, color: tabs[0] ? Theme.of(context).accentColor : Colors.white)
+                          ],
+                        ),
+                      ),
+                    ),
+                    Tab(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.info_outlined, color: tabs[1] ? Theme.of(context).accentColor : Colors.white)
+                          ],
+                        ),
+                      ),
+                    ),
+                    Tab(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.image_outlined, color: tabs[2] ? Theme.of(context).accentColor : Colors.white)
+                          ],
+                        ),
+                      ),
+                    ),
+                    Tab(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.fitness_center_rounded, color: tabs[3] ? Theme.of(context).accentColor : Colors.white)
+                          ],
+                        ),
+                      ),
+                    ),
+                    Tab(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.qr_code_outlined, color: tabs[4] ? Theme.of(context).accentColor : Colors.white)
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                LinearProgressIndicator(
+                  value: addEventTabValue,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  color: Theme.of(context).accentColor,
+                ),
+              ],
+            )
+          ),
+        ),
+
+      ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      resizeToAvoidBottomInset: false,
+      body: Column(
+        children: [
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                Scaffold(
+                  resizeToAvoidBottomInset: false,
+                  body: SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                        child: Column(
+                          children: [
+                            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.wellcomeMessage,
+                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w400),
+                                    textAlign: TextAlign.justify,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                    height: MediaQuery.of(context).size.height*0.20,
+                                    child: Image.asset(Constants.wellcomeImage)
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                          ],
+                        ),
+                      )
+                  ),
+                ),
+                Scaffold(
+                  body: SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.name,
+                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.85,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextFormField(
+                                        controller: nameController,
+                                        keyboardType: TextInputType.name,
+                                        validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nameCompletoError : null,
+                                        style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
+                                        decoration: InputDecoration(
+                                          hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                          hintText: AppLocalizations.of(context)!.nameCompletoError,
+                                          enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey,
+                                                  width: 1.0
+                                              )
+                                          ),
+                                          focusedBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey,
+                                                  width: 1.0
+                                              )
+                                          ),
+                                          errorBorder: InputBorder.none,
+                                          disabledBorder: InputBorder.none,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.nickname,
+                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.85,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: TextFormField(
+                                            controller: nickController,
+                                            keyboardType: TextInputType.name,
+                                            validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nicknameError : null,
+                                            onChanged: (val) {
+                                              nick = val;
+                                              checkIfNickExists(nick);
+                                            },
+                                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
+                                            decoration: InputDecoration(
+                                              hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                              hintText: "@${undoCapitalized(AppLocalizations.of(context)!.name)}",
+                                              enabledBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                      width: 1.0
+                                                  )
+                                              ),
+                                              focusedBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                      width: 1.0
+                                                  )
+                                              ),
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  isSearchAlias ? Center(
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width * 0.05,
+                                      height: MediaQuery.of(context).size.height * 0.025,
+                                      child: CircularProgressIndicator(
+                                        color: Theme.of(context).primaryColor,
+                                        strokeWidth: 2.5,
+                                      ),
+                                    ),
+                                  ) : Container(),
+                                ],
+                              ),
+                              nickOkay && !nickUsed && nickController.text.isNotEmpty ? Column(
+                                children: [
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.nicknameAvailable,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                      Icon(Icons.check, size: 25, color: Colors.green,),
+                                    ],
+                                  ),
+                                ],
+                              ) : Container(),
+                              !nickOkay && nickUsed && nickController.text.isNotEmpty ? Column(
+                                children: [
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.nicknameOcuppied,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                      Icon(Icons.close, size: 25, color: Colors.red,),
+                                    ],
+                                  ),
+                                ],
+                              ) : Container(),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.dateOfBirth,
+                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              GestureDetector(
+                                  onTap: () {
+                                    selectSlot(context, 0);
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      new Flexible(
+                                        child: TextFormField(
+                                          controller: startDateController,
+                                          readOnly: true,
+                                          enabled: false,
+                                          style: startDateController.text == nullDate ? Theme.of(context).textTheme.headline1!.copyWith(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w300) : Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
+                                          decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            focusedBorder: InputBorder.none,
+                                            enabledBorder: InputBorder.none,
+                                            errorBorder: InputBorder.none,
+                                            disabledBorder: InputBorder.none,
+                                          ),
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.gender,
+                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              GenderWidget(
+                                  genderTemp: genderTemp,
+                                  selectedGenderChanged: (gender) {
+                                    updateGender(gender);
+                                  }
+                              ),
+                              errorGender ? Padding(
+                                padding: EdgeInsets.only(left: 0, right: 0, top: 2.0),
+                                child: Center(
+                                  child: Text(
+                                    errorGenderText,
+                                    style: Styles.redTextStyle.copyWith(fontSize: 12),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ) : Container(),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                            ],
+                          ),
+                        ),
+                      )
+                  ),
+                  resizeToAvoidBottomInset: false,
+                ),
+                Scaffold(
+                  body: SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                        child: Column(
+                          children: [
+                            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.profilePhoto,
+                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.30,
+                              child: Center(
+                                child: _image == null ?
+                                OutlinedButton(
+                                  onPressed: getImage,
+                                  child: Column(
+                                    //mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      new Icon(
+                                        Icons.face,
+                                        color: Theme.of(context).primaryColor,
+                                        size: 30.0,
+                                      ),
+                                    ],
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    side: BorderSide(
+                                        color: errorImage ? Colors.red : Theme.of(context).primaryColor,
+                                        width: 1.5
+                                    ),
+                                    backgroundColor: Colors.white,
+                                    elevation: 10,
+                                    shape: CircleBorder(),
+                                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.10, right: MediaQuery.of(context).size.height * 0.10, top: MediaQuery.of(context).size.height * 0.13),
+                                  ),
+                                ) :
+                                GestureDetector(
+                                    onTap: getImage,
+                                    child: Container(
+                                        height: MediaQuery.of(context).size.height * 0.26,
+                                        decoration: new BoxDecoration(
+                                          border: Border.all(
+                                            width: 1.5,
+                                            color: Theme.of(context).accentColor,
+                                            style: BorderStyle.solid,
+                                          ),
+                                          shape: BoxShape.circle,
+                                          image: new DecorationImage(
+                                            image: FileImage(_image),
+                                            fit: BoxFit.fitHeight,
+                                          ),
+                                        )
+                                    )
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.profilePhotoOptional,
+                                    style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                          ],
+                        ),
+                      )
+                  ),
+                  resizeToAvoidBottomInset: false,
+                ),
+                Scaffold(
+                  body: SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                        child: Column(
+                          children: [
+                            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                            ListTile(
+                              dense: true,
+                              contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                              title: Padding(
+                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
+                                child: Text(
+                                  AppLocalizations.of(context)!.trainer,
+                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              subtitle: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      AppLocalizations.of(context)!.trainerDescription,
+                                      style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: Colors.grey), textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              leading: Radio(
+                                value: 1,
+                                groupValue: _value,
+                                activeColor: Theme.of(context).accentColor,
+                                fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _value = int.parse(value.toString());
+                                  });
+                                },
+                              ),
+                              trailing: Icon(
+                                Icons.record_voice_over,
+                                size: 30,
+                                color: _value == 1 ? Theme.of(context).accentColor : Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                    height: MediaQuery.of(context).size.height*0.15,
+                                    child: Image.asset(Constants.personalTrainerImage)
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                            ListTile(
+                              dense: true,
+                              contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                              title: Padding(
+                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
+                                child: Text(
+                                  AppLocalizations.of(context)!.client,
+                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              subtitle: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      AppLocalizations.of(context)!.clientDescription,
+                                      style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: Colors.grey), textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              leading: Radio(
+                                value: 2,
+                                groupValue: _value,
+                                activeColor: Theme.of(context).accentColor,
+                                fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _value = int.parse(value.toString());
+                                  });
+                                },
+                              ),
+                              trailing: Icon(
+                                Icons.directions_run,
+                                size: 30,
+                                color: _value == 2 ? Theme.of(context).accentColor : Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                    height: MediaQuery.of(context).size.height*0.15,
+                                    child: Image.asset(Constants.clientImage)
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                          ],
+                        ),
+                      )
+                  ),
+                  resizeToAvoidBottomInset: false,
+                ),
+                Scaffold(
+                  body: SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                        child: Column(
+                          children: [
+                            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.alreadyCreatedFirm,
+                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                            TextFormField(
+                              controller: codeController,
+                              keyboardType: TextInputType.name,
+                              validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.inviteCodeError : null,
+                              style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+                              decoration: InputDecoration(
+                                hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                hintText: AppLocalizations.of(context)!.inviteCodeError,
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey)
+                                ),
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey)
+                                ),
+                              ),
+
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.inviteCodeOptional,
+                                    style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                          ],
+                        ),
+                      )
+                  ),
+                  resizeToAvoidBottomInset: false,
+                ),
+              ],
+            )
+          ),
+        ],
+      ),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.01),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _selectedIndex != 0 ? Padding(
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01, left: MediaQuery.of(context).size.width*0.09),
+                child: Container(
+                  height: 50,
+                  child: FloatingActionButton.extended(
+                    heroTag: null,
+                    onPressed: () {
+                      if (_selectedIndex == 1) {
+                        setState(() {
+                          tabs[1] = false;
+                        });
+                      } else if (_selectedIndex == 2) {
+                        setState(() {
+                          tabs[2] = false;
+                        });
+                      } else if (_selectedIndex == 3) {
+                        setState(() {
+                          tabs[3] = false;
+                        });
+                      } else if (_selectedIndex == 4) {
+                        setState(() {
+                          tabs[4] = false;
+                        });
+                      }
+                      _tabController!.animateTo(_selectedIndex -= 1);
+                      setState(() {
+                        addEventTabValue -= 0.20;
+                      });
+
+                    },
+                    backgroundColor: Theme.of(context).primaryColor,
+                    icon: Container(),
+                    label: Text(AppLocalizations.of(context)!.back, style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                  ),
+                ),
+              ) :  Padding(
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01, left: MediaQuery.of(context).size.width*0.09),
+                child: Container(
+                  height: 50,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.01),
+                child: Container(
+                  height: 50,
+                  child: FloatingActionButton.extended(
+                    heroTag: null,
+                    onPressed: () {
+                      if (_selectedIndex == 0) {
+                        _tabController!.animateTo(_selectedIndex += 1);
+                        setState(() {
+                          addEventTabValue += 0.20;
+                          tabs[1] = true;
+                        });
+                      } else if (_selectedIndex == 1) {
+                        if (validateInformation()) {
+                          _tabController!.animateTo(_selectedIndex += 1);
+                          setState(() {
+                            addEventTabValue += 0.20;
+                            tabs[2] = true;
+                          });
+                        }
+                      } else if (_selectedIndex == 2) {
+                        _tabController!.animateTo(_selectedIndex += 1);
+                        setState(() {
+                          addEventTabValue += 0.20;
+                          tabs[3] = true;
+                        });
+                      } else if (_selectedIndex == 3) {
+                        _tabController!.animateTo(_selectedIndex += 1);
+                        setState(() {
+                          addEventTabValue += 0.20;
+                          tabs[4] = true;
+                        });
+                      }
+                    },
+                    backgroundColor: _selectedIndex == 4 ? Colors.green : Theme.of(context).accentColor,
+                    icon: Container(),
+                    label: Text(
+                      _selectedIndex == 4 ? AppLocalizations.of(context)!.finish : AppLocalizations.of(context)!.next,
+                      style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                  ),
+                ),
+              ),
+            ],
+          ),
+      ),
+    );
+  }
+
+ bool validateInformation() {
+   if (!_formKey.currentState!.validate()) {
+     return false;
+   }
+   if (nickUsed) {
+     return false;
+   }
+   if (startDateController.text == nullDate) {
+     return false;
+   }
+   if (gender == null) {
+     setState(() {
+       errorGender = true;
+       errorGenderText = AppLocalizations.of(context)!.registerGenderError;
+     });
+   } else {
+     setState(() {
+       errorGender = false;
+     });
+   };
+   return true;
+ }
+
+  Color getColor(Set<MaterialState> states) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed,
+      MaterialState.hovered,
+      MaterialState.focused,
+    };
+    if (states.any(interactiveStates.contains)) {
+      return Colors.blue;
+    }
+    return Theme.of(context).accentColor;
+  }
+
+  Widget getTitle() {
+    if (tabs[0] && !tabs[1] && !tabs[2] && !tabs[3] && !tabs[4]) {
+      return Text(
+        AppLocalizations.of(context)!.wellcome,
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    } else if (tabs[0] && tabs[1] && !tabs[2] && !tabs[3] && !tabs[4]) {
+      return Text(
+        AppLocalizations.of(context)!.yourInfo,
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    } else if (tabs[0] && tabs[1] && tabs[2] && !tabs[3] && !tabs[4]) {
+      return Text(
+        AppLocalizations.of(context)!.uploadPhoto,
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    } else if (tabs[0] && tabs[1] && tabs[2] && tabs[3] && !tabs[4]) {
+      return Text(
+        AppLocalizations.of(context)!.typeProfile,
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    } else if (tabs[0] && tabs[1] && tabs[2] && tabs[3] && tabs[4]) {
+      return Text(
+        AppLocalizations.of(context)!.inviteCode,
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    } else {
+      return Text(AppLocalizations.of(context)!.wellcome, style: Theme.of(context).appBarTheme.titleTextStyle,);
+    }
+  }
+
+}
+
+
+class GenderWidget extends StatefulWidget {
+  final ValueChanged<int> selectedGenderChanged;
+  final int? genderTemp;
+  GenderWidget({Key? key, required this.selectedGenderChanged, required this.genderTemp}) : super(key: key);
+
+  @override
+  _GenderWidgetState createState() => _GenderWidgetState();
+}
+
+class _GenderWidgetState extends State<GenderWidget> {
+  bool firstBuild = true;
+  var gender;
+
+  @override
+  Widget build(BuildContext context) {
+    if (firstBuild) {
+      if(widget.genderTemp != null) gender = widget.genderTemp;
+      firstBuild = false;
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _icon(0, text: AppLocalizations.of(context)!.male, icon: Icons.male_outlined),
+        _icon(1, text: AppLocalizations.of(context)!.female, icon: Icons.female_outlined),
+        _icon(2, text: AppLocalizations.of(context)!.transgender, icon: Icons.transgender_outlined),
+      ],
+    );
+  }
+  Widget _icon(int index, {required String text, required IconData icon}) {
+    return SizedBox.fromSize(
+      size: Size(90, 90), // button width and height
+      child: ClipOval(
+        child: Material(
+          color: gender == index ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor,
+          child: InkWell(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 30,
+                  color: Theme.of(context).primaryColor,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Theme.of(context).primaryColor)),
+                ),
+              ],
+            ),
+            onTap: () => {
+              setState(() {
+                gender = index;
+                widget.selectedGenderChanged(gender);
+              }),
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+}

@@ -13,7 +13,7 @@ class Event {
   String? hour;
   String? minute;
   double? duration;
-  String? placeId;
+  String? locationId;
   int? maxMembers;
   var joinedMembers;
   var selectedTrainers;
@@ -31,7 +31,7 @@ class Event {
     this.hour,
     this.minute,
     this.duration,
-    this.placeId,
+    this.locationId,
     this.maxMembers,
     this.joinedMembers,
     this.selectedTrainers,
@@ -50,7 +50,7 @@ class Event {
     this.hour = mapData['hour'].toString();
     this.minute = mapData['minute'].toString();
     this.duration = mapData['duration'];
-    this.placeId = mapData['placeId'].toString();
+    this.locationId = mapData['locationId'].toString();
     this.maxMembers = mapData['maxMembers'];
     this.joinedMembers = mapData['joinedMembers'];
     this.selectedTrainers = mapData['selectedTrainers'];
@@ -70,7 +70,7 @@ class Event {
     this.hour = documentSnapshot.get("hour").toString();
     this.minute = documentSnapshot.get("minute").toString();
     this.duration = documentSnapshot.get("duration");
-    this.placeId = documentSnapshot.get("placeId").toString();
+    this.locationId = documentSnapshot.get("locationId").toString();
     this.maxMembers = documentSnapshot.get("maxMembers");
     this.joinedMembers = documentSnapshot.get("joinedMembers");
     this.selectedTrainers = documentSnapshot.get("selectedTrainers");

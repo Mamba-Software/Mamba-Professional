@@ -37,163 +37,170 @@ class _LoginState extends State<Login> {
     return ScaffoldMessenger(
           key: scaffoldMessengerKey,
           child: Scaffold(
-            resizeToAvoidBottomInset: true,
+            resizeToAvoidBottomInset: false,
             backgroundColor: Theme.of(context).accentColor,
-            body: isLoading ?
-            Stack(
-              children: <Widget>[
-                Center(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.14,
-                    height: MediaQuery.of(context).size.height * 0.07,
-                    child: CircularProgressIndicator(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                    ),
-                  ),
-                ),
-                Center(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.07,
-                    height: MediaQuery.of(context).size.height * 0.07,
-                    child: Image(
-                        image: AssetImage(Constants.logoSimple)
-                    ),
-                  ),
-                ),
-              ],
-            )
-                :
-            Center(
+            body: Center(
               child: SingleChildScrollView(
                 child: Form(
                   key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(top: 16.0),
-                        width: 200,
-                        height: 100,
-                        child: Image.asset(Constants.logoExtended)
-                      ),
-                      Padding(
-                          padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 13.0, bottom: 0.0),
-                          child: TextFormField(
-                              keyboardType: TextInputType.emailAddress,
-                              initialValue: emailTemp,
-                              validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
-                              onChanged: (val) {
-                                setState(() {
-                                  email = val;
-                                });
-                              },
-                              style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                              decoration: Styles.textFromInputDecoration.copyWith(
-                                labelText: AppLocalizations.of(context)!.email,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                        Container(
+                          padding: EdgeInsets.only(top: 16.0),
+                          width: MediaQuery.of(context).size.width*0.50,
+                          child: Image.asset(Constants.logoExtended)
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                        TextFormField(
+                          keyboardType: TextInputType.emailAddress,
+                          initialValue: emailTemp,
+                          validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
+                          onChanged: (val) {
+                            setState(() {
+                              email = val;
+                            });
+                          },
+                          style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.w600),
+                          decoration: Styles.textFromInputDecoration.copyWith(
+                              labelText: AppLocalizations.of(context)!.email,
+                              prefixIcon:  Padding(
+                                padding: EdgeInsets.all(0.0),
+                                child: Icon(
+                                    Icons.email_outlined,
+                                    color: Theme.of(context).primaryColor
+                                ), // icon is 48px widget.
+                              )
+                          ),
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        TextFormField(
+                            validator: (val) => val!.length < 6 ? AppLocalizations.of(context)!.passwordError : null,
+                            onChanged: (val) {
+                              setState(() {
+                                password = val;
+                              });
+                            },
+                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.w600),
+                            obscureText: !_passwordVisible,
+                            decoration: Styles.textFromInputDecoration.copyWith(
+                                labelText: AppLocalizations.of(context)!.password,
+                                suffixIcon: Padding(
+                                    padding: EdgeInsets.all(0.0),
+                                    child: IconButton(
+                                        icon: Icon(
+                                          // Based on passwordVisible state choose the icon
+                                            _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                            color: Theme.of(context).primaryColor
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _passwordVisible = !_passwordVisible;
+                                          });
+                                        }
+                                    )
+                                ),
                                 prefixIcon:  Padding(
                                   padding: EdgeInsets.all(0.0),
                                   child: Icon(
-                                    Icons.email_outlined,
-                                    color: Theme.of(context).primaryColor
+                                    Icons.vpn_key_outlined,
+                                    color: Theme.of(context).primaryColor,
                                   ), // icon is 48px widget.
                                 )
-                              ),
-                          )
-                      ),
-                      Padding(
-                          padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0, bottom: 0),
-                          child: TextFormField(
-                              validator: (val) => val!.length < 6 ? AppLocalizations.of(context)!.passwordError : null,
-                              onChanged: (val) {
-                                setState(() {
-                                  password = val;
-                                });
-                              },
-                              style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                              obscureText: !_passwordVisible,
-                              decoration: Styles.textFromInputDecoration.copyWith(
-                                  labelText: AppLocalizations.of(context)!.password,
-                                  suffixIcon: Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: IconButton(
-                                          icon: Icon(
-                                            // Based on passwordVisible state choose the icon
-                                              _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                              color: Theme.of(context).primaryColor
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              _passwordVisible = !_passwordVisible;
-                                            });
-                                          }
-                                      )
-                                  ),
-                                  prefixIcon:  Padding(
-                                    padding: EdgeInsets.all(0.0),
-                                    child: Icon(
-                                      Icons.vpn_key_outlined,
-                                      color: Styles.accent,
-                                    ), // icon is 48px widget.
-                                  )
-                              )
-                          )
-                      ),
-                      TextButton(
-                        onPressed: (){
-                          if(email.isEmpty) {
-                            showInSnackBar(AppLocalizations.of(context)!.emailError);
-                          } else {
-                            if(emailValidator(email)){
-                              _accessDatabase.resetPassword(email);
-                              showInSnackBar(AppLocalizations.of(context)!.validatePassword);
+                            )
+                        ),
+                        TextButton(
+                          onPressed: (){
+                            if(email.isEmpty) {
+                              showInSnackBar(AppLocalizations.of(context)!.emailError);
                             } else {
-                              showInSnackBar(AppLocalizations.of(context)!.validateEmail);
-                            }
-                          }
-                        },
-                        child: Text(
-                          AppLocalizations.of(context)!.forgotPassword,
-                          style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor, fontSize: 18),
-                        ),
-                      ),
-                      Container(
-                        height: 50,
-                        width: 250,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(20)
-                        ),
-                        child: TextButton(
-                          onPressed: () async {
-                            if(_formKey.currentState!.validate()){
-                              emailTemp = email;
-                              onSignInButtonPressed();
+                              if(emailValidator(email)){
+                                _accessDatabase.resetPassword(email);
+                                showInSnackBar(AppLocalizations.of(context)!.validatePassword);
+                              } else {
+                                showInSnackBar(AppLocalizations.of(context)!.validateEmail);
+                              }
                             }
                           },
                           child: Text(
-                            AppLocalizations.of(context)!.login,
-                            style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor, fontSize: 24),
+                            AppLocalizations.of(context)!.forgotPassword,
+                            style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor, fontSize: 18),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 16.0),
-                        child: TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  CupertinoPageRoute<Null>(
-                                    builder: (context) => Register(),
-                                    settings: RouteSettings(name: 'Register'),
-                                  )
-                              );
-                            },
-                            child: Text(
-                              AppLocalizations.of(context)!.newUser,
-                              style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor, fontSize: 18),
-                            )
+                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                        Material(
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                          ),
+                          child: Container(
+                            height: MediaQuery.of(context).size.height*0.07,
+                            width: MediaQuery.of(context).size.width*0.50,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: !isLoading ? TextButton(
+                              onPressed: () async {
+                                if(_formKey.currentState!.validate()){
+                                  emailTemp = email;
+                                  onSignInButtonPressed();
+                                }
+                              },
+                              child: Text(
+                                AppLocalizations.of(context)!.login,
+                                style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor, fontSize: 23),
+                              ),
+                            ) : Center(
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.06,
+                                height: MediaQuery.of(context).size.height * 0.03,
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  strokeWidth: 2.5,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                        Material(
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                          ),
+                          child: Container(
+                            height: MediaQuery.of(context).size.height*0.07,
+                            width: MediaQuery.of(context).size.width*0.50,
+                            decoration: BoxDecoration(
+                                color: Colors.white, borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    CupertinoPageRoute<Null>(
+                                      builder: (context) => Register(),
+                                      settings: RouteSettings(name: 'Register'),
+                                    )
+                                );
+                              },
+                              child: Text(
+                                AppLocalizations.of(context)!.register,
+                                style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 23),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -253,15 +260,16 @@ class _LoginState extends State<Login> {
         value,
         textAlign: TextAlign.center,
         style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
-            fontFamily: "Raleway"),
+          fontFamily: "Helvetica",
+          color: Colors.black,
+          fontSize: 16.0,
+          //fontWeight: FontWeight.w800,
+        ),
       ),
-      backgroundColor: Styles.accent,
-      duration: Duration(seconds: 3),
+      backgroundColor: Colors.white,
+      duration: Duration(seconds: 5),
     );
     scaffoldMessengerKey.currentState!.showSnackBar(snackbar);
   }
-
 
 }

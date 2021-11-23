@@ -11,6 +11,10 @@
   "@brandBottomNav":{
     "description": "Marca Text"
   },
+  "notificationsBottomNav": "Alertas",
+  "@notificationsBottomNav":{
+    "description": "Notificaciones Text"
+  },
   "chatBottomNav": "Chat",
   "@chatBottomNav":{
   "description": "Chat Text"
@@ -31,12 +35,20 @@
   "@client":{
     "description": "Cliente Text"
   },
+  "clientDescription": "Busca la marca que mejor se adapta a ti, contacta con entrenadores, reserva sesiones ...",
+  "@clientDescription":{
+    "description": "Entrenador Text"
+  },
   "clients": "Clientes",
-  "@client":{
+  "@clients":{
     "description": "Cliente Text"
   },
   "trainer": "Entrenador",
   "@trainer":{
+    "description": "Entrenador Text"
+  },
+  "trainerDescription": "Podrás crear tu propia marca o unirte a una ya existente, planificarás sesiones, reclutarás a nuevos clientes ...",
+  "@trainerDescription":{
     "description": "Entrenador Text"
   },
   "trainers": "Entrenadores",
@@ -47,7 +59,7 @@
   "@email":{
     "description": "Email Text"
   },
-  "emailError": "Escribe tu email",
+  "emailError": "Escribe tu email porfavor",
   "@emailError":{
     "description": "Email Error Text"
   },
@@ -115,6 +127,10 @@
   "@createAccount":{
     "createAccount": "Cambiar Text"
   },
+  "gender": "Sexo",
+  "@gender":{
+    "description": "Otros Text "
+  },
   "male": "Hombre",
   "@male":{
     "description": "Hombre Text "
@@ -131,12 +147,36 @@
   "@name":{
     "description": "Nombre"
   },
+  "nickname": "Alias",
+  "@nickname":{
+    "description": "Nombre"
+  },
+  "nicknameError": "Introduce tu alias por favor",
+  "@nicknameError":{
+    "description": "LogIn Text "
+  },
+  "nicknameAvailable": "Este alias está disponible",
+  "@nicknameAvailable":{
+    "description": "LogIn Text "
+  },
+  "nicknameOcuppied": "Este alias ya está cogido",
+  "@nicknameOcuppied":{
+    "description": "LogIn Text "
+  },
   "nameCompleto": "Nombre completo",
   "@nameCompleto":{
     "description": "Nombre Completo Text "
   },
   "nameCompletoError": "Escribe tu nombre",
   "@nameCompletoError":{
+    "description": "LogIn Text "
+  },
+  "nameBrand": "Nombre de tu marca",
+  "@nameBrand":{
+    "description": "LogIn Text "
+  },
+  "nameBrandError": "Escribe el nombre de tu marca",
+  "@nameBrandError":{
     "description": "LogIn Text "
   },
   "register": "Regístrate",
@@ -159,14 +199,13 @@
   "@registerTypeError":{
     "description": "Regístrate Gender Error Text "
   },
-  "wellcome": "¡Hola {username}!",
+  "wellcome": "Bienvenido/a",
   "@wellcome": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "username": {
-        "type": "String"
-      }
-    }
+    "description": "Wellcome message"
+  },
+  "wellcomeMessage": "¡Gracias por descargar Mamba!\n\nAntes de empezar a usar nuestra plataforma, por favor complete la siguiente información para configurar su perfil.",
+  "@wellcomeMessage": {
+    "description": "Wellcome message"
   },
   "alreadyCreatedClient": "¿Formas parte de una marca de entreno personal?",
   "@alreadyCreatedClient":{
@@ -196,6 +235,10 @@
   "@info":{
     "description": "Información Text"
   },
+  "personlize": "Personalización",
+  "@personlize":{
+    "description": "Información Text"
+  },
   "settings": "Ajustes",
   "@settings":{
     "description": "Ajustes Text"
@@ -204,8 +247,12 @@
   "@sessions":{
     "description": "Sesiones Text"
   },
-  "stats": "Análisis",
+  "stats": "Control y Análisis",
   "@stats":{
+    "description": "Análisis Text"
+  },
+  "statsBrandText": "Gestiona toda tu marca desde un mismo lugar",
+  "@statsBrandText":{
     "description": "Análisis Text"
   },
   "feedback": "Feedback",
@@ -271,6 +318,10 @@
   },
   "closeSession": "Cerrar sesión",
   "@closeSession":{
+    "description": "Cerrar sesión Text"
+  },
+  "closeSessionConfirmation": "¿Estás seguro que quieres cerrar tu sesión actual?",
+  "@closeSessionConfirmation":{
     "description": "Cerrar sesión Text"
   },
   "deleteAccount": "Eliminar cuenta",
@@ -366,8 +417,28 @@
       }
     }
   },
-  "createBrand": "Crea tu Marca",
+  "createBrand": "Crea tu marca",
   "@createBrand":{
+    "description": "createBrand Text"
+  },
+  "createBrandTitle": "Aquí puedes crear tu propia marca en cuatro simples pasos:",
+  "@createBrandTitle":{
+    "description": "createBrand Text"
+  },
+  "createBrandPortada": "Añade el nombre y el logo",
+  "@createBrandPortada":{
+    "description": "createBrand Text"
+  },
+  "createBrandInfo": "Introduce una descripción",
+  "@createBrandInfo":{
+    "description": "createBrand Text"
+  },
+  "createBrandLocation": "Situa tu marca en el mapa",
+  "@createBrandLocation":{
+    "description": "createBrand Text"
+  },
+  "createBrandTime": "Define tu horario laboral",
+  "@createBrandTime":{
     "description": "createBrand Text"
   },
   "addCode": "Añadir Código",
@@ -382,7 +453,7 @@
   "@loading":{
     "description": "loading text"
   },
-  "basicInfo": "Información Básica",
+  "basicInfo": "Información básica",
   "@basicInfo":{
     "description": "basicInfo text"
   },
@@ -390,12 +461,20 @@
   "@canEdit":{
     "description": "basicInfo text"
   },
-  "baseLocation": "Ubicación Base",
+  "baseLocation": "Ubicación base",
   "@baseLocation":{
     "description": "baseLocation text"
   },
   "location": "Ubicación",
   "@location":{
+    "description": "baseLocation text"
+  },
+  "locations": "Ubicaciones",
+  "@locations":{
+    "description": "baseLocation text"
+  },
+  "locationsBrandText": "Descubre todas nuestras ubicaciones",
+  "@locationsBrandText":{
     "description": "baseLocation text"
   },
   "baseLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor. En caso de no tener una dirección fija, introduce una ubicación utilizada frequentemente.",
@@ -416,6 +495,14 @@
   },
   "zipCode": "Código Postal: ",
   "@zipCode":{
+    "description": "zipCode text"
+  },
+  "latitude": "Latitud",
+  "@latitude":{
+    "description": "zipCode text"
+  },
+  "longitud": "Longitud",
+  "@longitud":{
     "description": "zipCode text"
   },
   "clear": "Limpiar",
@@ -478,8 +565,21 @@
   "@calendar":{
     "description": "disponibilidad text"
   },
+  "calendarBrandText": "Mira todas las sesiones de {brand}",
+  "@calendarBrandText": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
   "next": "Siguiente",
   "@next":{
+    "description": "Siguiente text"
+  },
+  "finish": "Finalizar",
+  "@finish":{
     "description": "Siguiente text"
   },
   "brandNotFound": "No encontramos esta Marca. Por favor asegúrate que has introducido el cógido correctamente",
@@ -530,12 +630,28 @@
   "@entendido":{
     "description": "Cancelar text"
   },
+  "book": "Reservar",
+  "@book":{
+    "description": "Cancelar text"
+  },
+  "leave": "Abandonar",
+  "@leave":{
+    "description": "Cancelar text"
+  },
   "addMembers": "Añadir Miembros",
   "@addMembers":{
     "description": "Añadir Miembros text"
   },
   "inviteCode": "Código de invitación",
   "@inviteCode":{
+    "description": "inviteCode text"
+  },
+  "inviteCodeError": "Escribe el código de invitación porfavor",
+  "@inviteCodeError":{
+    "description": "inviteCode text"
+  },
+  "inviteCodeOptional": "¿No tienes ningún código de invitación? ¡No te preocupes! Finaliza el proceso de bienvenida para ver todas las marcas dentro MAMBA.",
+  "@inviteCodeOptional":{
     "description": "inviteCode text"
   },
   "copyCorrectCode": "Código de invitación copiado correctamente",
@@ -549,6 +665,10 @@
   "members": "Miembros",
   "@members":{
     "description": "Añadir Miembros text"
+  },
+  "membersBrandText": "Entrenadores y clientes todos aquí",
+  "@membersBrandText": {
+    "description": "Wellcome message"
   },
   "mondayLetter": "L",
   "@mondayLetter":{
@@ -596,6 +716,10 @@
   },
   "selectMembers": "Número de asistentes",
   "@selectMembers":{
+    "description": "tuesdarLetter text"
+  },
+  "selectTime": "Hora",
+  "@selectTime":{
     "description": "tuesdarLetter text"
   },
   "days": "Días",
@@ -653,6 +777,10 @@
   },
   "maxNumberClients": "Número máximo de asistentes",
   "@maxNumberClients":{
+    "description": "addEvent text"
+  },
+  "maxNumberClientsError": "Introduce el número máximo de asistentes en sesiones de tu marca",
+  "@maxNumberClientsError":{
     "description": "addEvent text"
   },
   "numberClientJoining": "Asistentes",
@@ -713,6 +841,10 @@
   "@noEvents": {
     "description": "Wellcome message"
   },
+  "noMembersFound": "No hemos encontrado ningún miembro",
+  "@noMembersFound": {
+    "description": "Wellcome message"
+  },
   "myLocations": "Mis ubicaciones",
   "@myLocations": {
     "description": "Wellcome message"
@@ -721,7 +853,7 @@
   "@addLocation": {
     "description": "Wellcome message"
   },
-  "historial": "Historial",
+  "historial": "Control",
   "@historial": {
     "description": "Wellcome message"
   },
@@ -737,12 +869,129 @@
   "@mySchedule": {
     "description": "Wellcome message"
   },
+  "myScheduleText": "Mira todas tus sesiones",
+  "@myScheduleText": {
+    "description": "Wellcome message"
+  },
   "planSessions": "Planifica más sesiones",
   "@planSessions": {
     "description": "Wellcome message"
   },
   "myProgress": "Control y seguimiento",
   "@myProgress": {
+    "description": "Wellcome message"
+  },
+  "myProgressText": "¿Quieres ver tu progreso?",
+  "@myProgressText": {
+    "description": "Wellcome message"
+  },
+  "events": "Eventos",
+  "@events": {
+    "description": "Wellcome message"
+  },
+  "yourInfo": "Tus datos",
+  "@yourInfo": {
+    "description": "Wellcome message"
+  },
+  "yourBrand": "Tu marca",
+  "@yourBrand": {
+    "description": "Wellcome message"
+  },
+  "editYourInfo": "Edita tu información personal",
+  "@editYourInfo": {
+    "description": "Wellcome message"
+  },
+  "profilePhoto": "Foto de perfil",
+  "@profilePhoto": {
+    "description": "Wellcome message"
+  },
+  "profilePhotoOptional": "En caso que no quieras escoger tu foto de perfil en este momento, puedes saltarte este paso.",
+  "@profilePhotoOptional": {
+    "description": "Wellcome message"
+  },
+  "editYourPhoto": "Edita tu imagen de perfil",
+  "@editYourPhoto": {
+    "description": "Wellcome message"
+  },
+  "uploadPhoto": "Subir imagen",
+  "@uploadPhoto": {
+    "description": "Wellcome message"
+  },
+  "editBrandInfo": "Edita la información de la marca",
+  "@editBrandInfo": {
+    "description": "Wellcome message"
+  },
+  "editBrandLogo": "Edita el logo de la marca",
+  "@editBrandLogo": {
+    "description": "Wellcome message"
+  },
+  "addBrandPhotos": "Añade imagenes para la marca",
+  "@addBrandPhotos": {
+    "description": "Wellcome message"
+  },
+  "exitBrand": "Abandonar marca",
+  "@exitBrand": {
+    "description": "Wellcome message"
+  },
+  "exitBrandConfirm": "¿Seguro que quieres abandonar esta marca?",
+  "@exitBrandConfirm": {
+    "description": "Wellcome message"
+  },
+  "deleteBrand": "Eliminar marca",
+  "@deleteBrand": {
+    "description": "Wellcome message"
+  },
+  "deleteBrandConfirmation": "¿Seguro que quieres eliminar tu marca?",
+  "@deleteBrandConfirmation": {
+    "description": "Wellcome message"
+  },
+  "writeDeleteBrand": "Escribe el nombre de tu marca para confirmar esta acción:",
+  "@writeDeleteBrand": {
+    "description": "Wellcome message"
+  },
+  "logo": "Logo",
+  "@logo": {
+    "description": "Wellcome message"
+  },
+  "noEventsToday": "No tienes nada previsto para hoy ...",
+  "@noEventsToday": {
+    "description": "Wellcome message"
+  },
+  "planNewEvent": "Reservar una sesión",
+  "@planNewEvent": {
+    "description": "Wellcome message"
+  },
+  "calendarBrandTextClient": "Reserva una sesión con {brand}",
+  "@calendarBrandTextClient": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "joinEvent": "Reservar sesión",
+  "@joinEvent": {
+    "description": "Wellcome message"
+  },
+  "joinEventConfirmation": "¿Estás seguro que quieres reservar una plaza para esta sessión?\n\nLos organizadores recibirán una notificación.",
+  "@joinEventConfirmation": {
+    "description": "Wellcome message"
+  },
+  "leaveEvent": "Abandonar sesión",
+  "@leaveEvent": {
+    "description": "Wellcome message"
+  },
+  "leaveEventConfirmation": "¿Estás seguro que quieres cancelar tu reserva para esta sessión?\n\nLos organizadores recibirán una notificación.",
+  "@leaveEventConfirmation": {
+    "description": "Wellcome message"
+  },
+  "allEvents": "sesiones totales",
+  "@allEvents": {
+    "description": "Wellcome message"
+  },
+  "monthEvents": "sesiones este mes",
+  "@monthEvents": {
     "description": "Wellcome message"
   }
 }
