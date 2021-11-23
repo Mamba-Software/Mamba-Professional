@@ -228,7 +228,7 @@ class _AdminFeedBackState extends State<AdminFeedBack> {
                                     setState(() {
                                       this.displayQuestion1 =
                                           newQuestion!.questionCat;
-                                          this.questionOne = newQuestion!.id!;
+                                          this.questionOne = newQuestion.id!;
                                     });
                                   },
                                 ),
@@ -252,7 +252,7 @@ class _AdminFeedBackState extends State<AdminFeedBack> {
                                     setState(() {
                                       this.displayQuestion2 =
                                           newQuestion!.questionCat;
-                                      this.questionTwo = newQuestion!.id!;
+                                      this.questionTwo = newQuestion.id!;
                                     });
                                   },
                                 ),
@@ -276,7 +276,7 @@ class _AdminFeedBackState extends State<AdminFeedBack> {
                                     setState(() {
                                       this.displayQuestion3 =
                                           newQuestion!.questionCat;
-                                      this.questionThree = newQuestion!.id!;
+                                      this.questionThree = newQuestion.id!;
                                     });
                                   },
                                 ),
@@ -300,7 +300,7 @@ class _AdminFeedBackState extends State<AdminFeedBack> {
                                     setState(() {
                                       this.displayQuestion4 =
                                           newQuestion!.questionCat;
-                                      this.questionFour = newQuestion!.id!;
+                                      this.questionFour = newQuestion.id!;
                                     });
                                   },
                                 ),

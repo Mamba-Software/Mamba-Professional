@@ -272,7 +272,7 @@
     "description": "Feedback Sent Text"
   },
   "feedbackNotSent": "Algo ha ido mal\nNo se han enviado las respuestas",
-  "@feedbackSent":{
+  "@feedbackNotSent":{
     "description": "Feedback Not Sent Text"
   },
   "feedbackAnswered": "Ya has respondido al Feedback de\nesta semana",

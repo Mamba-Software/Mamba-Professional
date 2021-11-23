@@ -116,7 +116,7 @@ class _FeedBackState extends State<FeedBack> {
                                 Navigator.push(
                                     context,
                                     PageTransition(
-                                      type: PageTransitionType.bottomToTop,
+                                      type: PageTransitionType.rightToLeftWithFade,
                                       child: ReportBug(),
                                     )).whenComplete(() {
                                   setState(() {

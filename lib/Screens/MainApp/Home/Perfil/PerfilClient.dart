@@ -15,6 +15,8 @@ import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/Settings.dart';
 import 'package:page_transition/page_transition.dart';
 
+import 'PerfilModals/FeedBack.dart';
+
 class PerfilClient extends StatefulWidget {
   const PerfilClient({Key? key}) : super(key: key);
 
@@ -89,7 +91,23 @@ class _PerfilClientState extends State<PerfilClient> {
                       bottom: MediaQuery.of(context).size.height*0.28,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.65,
-                      child: Icon(Icons.help_outline, color: Colors.black, size: 50,),
+                      child: IconButton(
+                        icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 50,),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.bottomToTop,
+                                child: FeedBack(),
+                              )
+                          ).whenComplete(() {
+                            setState(() {
+                              isLoading = true;
+                              initProfileHome();
+                            });
+                          });
+                        },
+                      ),
                     ),
                     Positioned(
                       top: 0,
@@ -97,7 +115,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       left: MediaQuery.of(context).size.width*0.65,
                       right: 0,
                       child: IconButton(
-                        icon: Icon(Icons.settings, color: Colors.black, size: 50,),
+                        icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: 50,),
                         onPressed: () {
                           Navigator.push(
                               context,
