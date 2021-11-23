@@ -203,7 +203,11 @@
   "@wellcome": {
     "description": "Wellcome message"
   },
-  "wellcomeMessage": "¡Gracias por descargar Mamba!\n\nAntes de empezar a usar nuestra plataforma, por favor complete la siguiente información para configurar su perfil.",
+  "thankyouDownload": "¡Gracias por descargar MAMBA!",
+  "@thankyouDownload": {
+    "description": "Wellcome message"
+  },
+  "wellcomeMessage": "Antes de empezar a usar nuestra plataforma, por favor complete la siguiente información para configurar su perfil.",
   "@wellcomeMessage": {
     "description": "Wellcome message"
   },
@@ -582,6 +586,10 @@
   "@finish":{
     "description": "Siguiente text"
   },
+  "brandFound": "¡Marca encontrada!",
+  "@brandFound":{
+    "description": "disponibilidad text"
+  },
   "brandNotFound": "No encontramos esta Marca. Por favor asegúrate que has introducido el cógido correctamente",
   "@brandNotFound":{
     "description": "disponibilidad text"
@@ -646,7 +654,7 @@
   "@inviteCode":{
     "description": "inviteCode text"
   },
-  "inviteCodeError": "Escribe el código de invitación porfavor",
+  "inviteCodeError": "Copia el código de invitación por favor",
   "@inviteCodeError":{
     "description": "inviteCode text"
   },

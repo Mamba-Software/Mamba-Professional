@@ -4,11 +4,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
 
 class FirstTime extends StatefulWidget {
   Locale locale;
@@ -42,11 +44,10 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
   // Date Of Birth
   TextEditingController startDateController = TextEditingController();
   String nullDate = "";
+  bool errorDate = false;
   // Gender Widget value
   int? gender;
-  var genderTemp;
   bool errorGender = false;
-  String errorGenderText = '';
   void updateGender(int newGender) {
     setState(() {
       gender = newGender;
@@ -57,9 +58,14 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
   bool errorImage = false;
   // Type of Users
   int _value = 0;
+  bool errorType = false;
   // Invite Code
   var codeController = TextEditingController();
   String code = "";
+  bool isSearchBrand = false;
+  Brand brand = Brand();
+  bool brandOkay = false;
+  bool brandNotFound = false;
 
   String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
   String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
@@ -83,6 +89,34 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
           nickOkay = false;
           nickUsed = true;
           isSearchAlias = false;
+        });
+      });
+    }
+  }
+
+  Future<void> checkIfBrandExists(String brandId) async {
+    bool result = false;
+    setState(() {
+      isSearchBrand = true;
+    });
+    if (brandId.isNotEmpty) {
+      result = await _accessDatabase.checkIfBrandExists(brandId);
+    }
+    if (result) {
+      brand = await _accessDatabase.getBrandDetails(brandId);
+      Future.delayed(Duration(milliseconds: 500), () async {
+        setState(() {
+          brandOkay = true;
+          brandNotFound = false;
+          isSearchBrand = false;
+        });
+      });
+    } else {
+      Future.delayed(Duration(milliseconds: 500), () async {
+        setState(() {
+          brandOkay = false;
+          brandNotFound = true;
+          isSearchBrand = false;
         });
       });
     }
@@ -318,6 +352,19 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                               children: [
                                 Expanded(
                                   child: Text(
+                                    AppLocalizations.of(context)!.thankyouDownload,
+                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.justify,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Text(
                                     AppLocalizations.of(context)!.wellcomeMessage,
                                     style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w400),
                                     textAlign: TextAlign.justify,
@@ -375,6 +422,12 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                         decoration: InputDecoration(
                                           hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
                                           hintText: AppLocalizations.of(context)!.nameCompletoError,
+                                          border: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey,
+                                                  width: 1.0
+                                              )
+                                          ),
                                           enabledBorder: UnderlineInputBorder(
                                               borderSide: BorderSide(
                                                   color: Colors.grey,
@@ -387,7 +440,12 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                                   width: 1.0
                                               )
                                           ),
-                                          errorBorder: InputBorder.none,
+                                          errorBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.red,
+                                                  width: 1.0
+                                              )
+                                          ),
                                           disabledBorder: InputBorder.none,
                                         ),
                                       ),
@@ -426,6 +484,12 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                             decoration: InputDecoration(
                                               hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
                                               hintText: "@${undoCapitalized(AppLocalizations.of(context)!.name)}",
+                                              border: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                      width: 1.0
+                                                  )
+                                              ),
                                               enabledBorder: UnderlineInputBorder(
                                                   borderSide: BorderSide(
                                                       color: Colors.grey,
@@ -438,7 +502,12 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                                       width: 1.0
                                                   )
                                               ),
-                                              errorBorder: InputBorder.none,
+                                              errorBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.red,
+                                                      width: 1.0
+                                                  )
+                                              ),
                                               disabledBorder: InputBorder.none,
                                             ),
                                           ),
@@ -507,6 +576,10 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                               GestureDetector(
                                   onTap: () {
                                     selectSlot(context, 0);
+                                    FocusScopeNode currentFocus = FocusScope.of(context);
+                                    if (!currentFocus.hasPrimaryFocus) {
+                                      currentFocus.unfocus();
+                                    }
                                   },
                                   child: Row(
                                     mainAxisSize: MainAxisSize.max,
@@ -530,6 +603,21 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                     ],
                                   )
                               ),
+                              errorDate ? Column(
+                                children: [
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.selectDateOfBirth,
+                                        style: Styles.redTextStyle.copyWith(fontSize: 14),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ) : Container(),
                               SizedBox(height: MediaQuery.of(context).size.height*0.02),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -543,20 +631,25 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                               ),
                               SizedBox(height: MediaQuery.of(context).size.height*0.01),
                               GenderWidget(
-                                  genderTemp: genderTemp,
+                                  genderTemp: gender,
                                   selectedGenderChanged: (gender) {
                                     updateGender(gender);
                                   }
                               ),
-                              errorGender ? Padding(
-                                padding: EdgeInsets.only(left: 0, right: 0, top: 2.0),
-                                child: Center(
-                                  child: Text(
-                                    errorGenderText,
-                                    style: Styles.redTextStyle.copyWith(fontSize: 12),
-                                    textAlign: TextAlign.center,
+                              errorGender ? Column(
+                                children: [
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.registerGenderError,
+                                        style: Styles.redTextStyle.copyWith(fontSize: 14),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ],
                                   ),
-                                ),
+                                ],
                               ) : Container(),
                               SizedBox(height: MediaQuery.of(context).size.height*0.04),
                             ],
@@ -751,6 +844,21 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                 ),
                               ],
                             ),
+                            errorType ? Column(
+                              children: [
+                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.registerTypeError,
+                                      style: Styles.redTextStyle.copyWith(fontSize: 14),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ) : Container(),
                             SizedBox(height: MediaQuery.of(context).size.height*0.04),
                           ],
                         ),
@@ -778,26 +886,119 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                               ],
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                            TextFormField(
-                              controller: codeController,
-                              keyboardType: TextInputType.name,
-                              validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.inviteCodeError : null,
-                              style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
-                              decoration: InputDecoration(
-                                hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
-                                hintText: AppLocalizations.of(context)!.inviteCodeError,
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey)
+                            Row(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width * 0.85,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextFormField(
+                                          controller: codeController,
+                                          keyboardType: TextInputType.name,
+                                          validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.inviteCodeError : null,
+                                          onChanged: (val) {
+                                            code = val;
+                                            checkIfBrandExists(code);
+                                          },
+                                          style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+                                          decoration: InputDecoration(
+                                            hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                            hintText: AppLocalizations.of(context)!.inviteCodeError,
+                                            enabledBorder: UnderlineInputBorder(
+                                                borderSide: BorderSide(color: Colors.grey)
+                                            ),
+                                            errorBorder: InputBorder.none,
+                                            disabledBorder: InputBorder.none,
+                                            focusedBorder: UnderlineInputBorder(
+                                                borderSide: BorderSide(color: Colors.grey)
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                errorBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey)
-                                ),
-                              ),
-
+                                isSearchBrand ? Center(
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.05,
+                                    height: MediaQuery.of(context).size.height * 0.025,
+                                    child: CircularProgressIndicator(
+                                      color: Theme.of(context).primaryColor,
+                                      strokeWidth: 2.5,
+                                    ),
+                                  ),
+                                ) : Container(),
+                              ],
                             ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.20),
+                            Container(
+                              height: MediaQuery.of(context).size.height*0.20,
+                              child: Column(
+                                children: [
+                                  brandOkay && !brandNotFound && codeController.text.isNotEmpty ? Column(
+                                    children: [
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            AppLocalizations.of(context)!.brandFound,
+                                            style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                          SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                          Icon(Icons.check, size: 25, color: Colors.green,),
+                                        ],
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          CircularImage(
+                                            size: MediaQuery.of(context).size.width*0.2,
+                                            image: brand.logoUrl,
+                                            color: Theme.of(context).accentColor,
+                                            borderWidth: 1.5,
+                                          ),
+                                          SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                                          Expanded(
+                                            child: Text(
+                                              brand.name!,
+                                              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ) : Container(),
+                                  !brandOkay && brandNotFound && codeController.text.isNotEmpty ? Column(
+                                    children: [
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                      Container(
+                                        width: MediaQuery.of(context).size.width * 0.90,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                AppLocalizations.of(context)!.brandNotFound,
+                                                style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                                textAlign: TextAlign.left,
+                                              ),
+                                            ),
+                                            SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                            Icon(Icons.close, size: 25, color: Colors.red,),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ) : Container(),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.02),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -850,6 +1051,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                         setState(() {
                           tabs[4] = false;
                         });
+                        validateTypeOfUser();
                       }
                       _tabController!.animateTo(_selectedIndex -= 1);
                       setState(() {
@@ -896,11 +1098,13 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                           tabs[3] = true;
                         });
                       } else if (_selectedIndex == 3) {
-                        _tabController!.animateTo(_selectedIndex += 1);
-                        setState(() {
-                          addEventTabValue += 0.20;
-                          tabs[4] = true;
-                        });
+                        if (validateTypeOfUser()) {
+                          _tabController!.animateTo(_selectedIndex += 1);
+                          setState(() {
+                            addEventTabValue += 0.20;
+                            tabs[4] = true;
+                          });
+                        }
                       }
                     },
                     backgroundColor: _selectedIndex == 4 ? Colors.green : Theme.of(context).accentColor,
@@ -917,28 +1121,54 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     );
   }
 
- bool validateInformation() {
-   if (!_formKey.currentState!.validate()) {
-     return false;
+  bool validateInformation() {
+   bool result = true;
+    if (!_formKey.currentState!.validate()) {
+      result = false;
    }
    if (nickUsed) {
-     return false;
+     result = false;
    }
    if (startDateController.text == nullDate) {
-     return false;
+     setState(() {
+       errorDate = true;
+     });
+     result = false;
+   }
+   if (startDateController.text != nullDate) {
+     setState(() {
+       errorDate = false;
+     });
    }
    if (gender == null) {
      setState(() {
        errorGender = true;
-       errorGenderText = AppLocalizations.of(context)!.registerGenderError;
      });
-   } else {
+     result = false;
+   }
+   if (gender != null) {
      setState(() {
        errorGender = false;
      });
-   };
-   return true;
+   }
+   return result;
  }
+
+  bool validateTypeOfUser() {
+    bool result = true;
+    if (_value == 0) {
+      setState(() {
+        errorType = true;
+      });
+      result = false;
+    }
+    if (_value != 0) {
+      setState(() {
+        errorType = false;
+      });
+    }
+    return result;
+  }
 
   Color getColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
