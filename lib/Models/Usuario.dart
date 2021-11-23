@@ -8,6 +8,7 @@ class Usuario {
   String? name;
   String? nick;
   String? imageUrl;
+  String? noImageUrl;
   bool? isFirst;
   bool? isTrainer;
   bool? isPrivate;
@@ -25,6 +26,7 @@ class Usuario {
     this.name,
     this.nick,
     this.imageUrl,
+    this.noImageUrl,
     this.isFirst,
     this.isTrainer,
     this.isPrivate,
@@ -43,6 +45,7 @@ class Usuario {
     data['name'] = user.name;
     data['nick'] = user.nick;
     data['imageUrl'] = user.imageUrl;
+    data['noImageUrl'] = user.noImageUrl;
     data['isFirst'] = user.isFirst;
     data['isTrainer'] = user.isTrainer;
     data['isPrivate'] = user.isPrivate;
@@ -62,6 +65,7 @@ class Usuario {
     this.name = mapData['name'].toString();
     this.nick = mapData['nick'].toString();
     this.imageUrl = mapData['imageUrl'].toString();
+    this.noImageUrl = mapData['noImageUrl'].toString();
     this.isFirst = mapData['isFirst'];
     this.isTrainer = mapData['isTrainer'];
     this.isPrivate = mapData['isPrivate'];
@@ -80,6 +84,7 @@ class Usuario {
     this.name = documentSnapshot.get("name").toString();
     this.nick = documentSnapshot.get("nick").toString();
     this.imageUrl = documentSnapshot.get("imageUrl").toString();
+    this.noImageUrl = documentSnapshot.get("noImageUrl").toString();
     this.isFirst = documentSnapshot.get("isFirst");
     this.isTrainer = documentSnapshot.get("isTrainer");
     this.isPrivate = documentSnapshot.get("isPrivate");

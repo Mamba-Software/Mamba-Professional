@@ -35,8 +35,7 @@ class _TusDatosState extends State<TusDatos> {
   final _genderKey = GlobalKey<_GenderWidgetState>();
 
   // Date of Birth
-  var selectedDate;
-  var selectedDateTemp;
+  TextEditingController startDateController = TextEditingController();
 
   // Boolean isUpdated
   bool isUpdated = false;
@@ -46,32 +45,93 @@ class _TusDatosState extends State<TusDatos> {
     super.initState();
   }
 
+  Future<void> selectSlot(ctx, type) {
+    // Initial Vars
+    var startDate = DateTime.now();
+    var title;
+    var widgetPicker;
+    if (type == 0) {
+      startDate = DateFormat('dd-MM-yyyy', Localizations.localeOf(context).languageCode).parse(startDateController.text);
+    }
+    // Different types of pickers
+    Widget dateTimePicker = CupertinoDatePicker(
+        mode: CupertinoDatePickerMode.date,
+        initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
+        minimumDate: startDate.subtract(Duration(days: 365*80)),
+        maximumDate: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
+        minimumYear: 1941,
+        maximumYear: 2021,
+        use24hFormat: true,
+        onDateTimeChanged: (val) {
+          setState(() {
+            startDateController.text = DateFormat('dd-MM-yyyy', Localizations.localeOf(context).languageCode).format(val);
+          });
+        }
+    );
+
+    if (type == 0) {
+      title = AppLocalizations.of(context)!.selectDateOfBirth;
+      widgetPicker = dateTimePicker;
+    }
+    showCupertinoModalPopup(
+        context: ctx,
+        builder: (_) => Material(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+          ),
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height*0.40,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                        child: Text(title, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20), textAlign: TextAlign.center,)
+                    ),
+                  ],
+                ),
+                Expanded(
+                    child: widgetPicker
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0),
+                      child: TextButton(
+                          child: Text(AppLocalizations.of(context)!.entendido, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          }
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              ],
+            ),
+          ),
+        )
+    );
+    return Future.value("");
+  }
+
   @override
   Widget build(BuildContext context) {
     // Initialises some data the first time that the Widget is build and data is Loaded.
     if(firstBuild){
       nombreCompletoController = TextEditingController(text: currentUser.name);
-      selectedDate = currentUser.dateOfBirth == "null" ? DateTime.now() : DateFormat('dd-MM-yyyy').parse(currentUser.dateOfBirth!);
+      startDateController = TextEditingController(text: currentUser.dateOfBirth);
       firstBuild = false;
-    }
-    // Widget to Select your date.
-    Future<void> _selectDate(BuildContext context) async {
-      final DateTime? picked = await showDatePicker(
-          context: context,
-          initialDate: selectedDate,
-          firstDate: DateTime(DateTime.now().year - 60),
-          lastDate: DateTime(DateTime.now().year + 1),
-          initialEntryMode: DatePickerEntryMode.input);
-      if (picked != null && picked != selectedDate && picked != DateTime.now())
-        setState(() {
-          selectedDateTemp = picked;
-        });
-    }
-    // Date to String Function.
-    String dateToString(DateTime date) {
-      final DateFormat formatter = DateFormat('dd-MM-yyyy');
-      final String formatted = formatter.format(date);
-      return formatted;
     }
     // Checking if there has been a change that has not been saved.
     if (!isLoading) {
@@ -79,40 +139,12 @@ class _TusDatosState extends State<TusDatos> {
         isUpdated = true;
       } else if (genderTemp != currentUser.gender! && genderTemp != null) {
         isUpdated = true;
-      } else if (selectedDateTemp != selectedDate && selectedDateTemp != null) {
+      } else if (startDateController.text != currentUser.dateOfBirth) {
         isUpdated = true;
       } else {
         isUpdated = false;
       }
     }
-    /*
-    MaterialButton(
-                    onPressed: isUpdated ? () async => {
-                      setState(() {
-                        //widget.isUpdated(isUpdated);
-                        if(_formKey.currentState!.validate()){
-                          if (nombreCompletoTemp.isNotEmpty) {
-                            currentUser.name = nombreCompletoTemp;
-                          };
-                          if (!(genderTemp == null)) {
-                            currentUser.gender = genderTemp;
-                          };
-                          if (!(selectedDateTemp == null)) {
-                            currentUser.dateOfBirth = dateToString(selectedDateTemp);
-                          };
-                        }
-                        isLoading = true;
-                      }),
-                      // Update User DataBase
-                      await _accessDatabase.updateCurrentUserDatosPerifl(currentUser.name!, currentUser.gender!, currentUser.dateOfBirth!),
-                      Navigator.pop(context)
-                    } : null,
-                    color: isUpdated ? Colors.green : Colors.transparent,
-                    child: Icon(Icons.save, color: isUpdated ? Colors.white : Styles.accentLight),
-                    padding: EdgeInsets.all(15),
-                    shape: CircleBorder(),
-                  ),
-     */
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.yourInfo, style: Theme.of(context).appBarTheme.titleTextStyle,),
@@ -128,8 +160,8 @@ class _TusDatosState extends State<TusDatos> {
                 if (!(genderTemp == null)) {
                   currentUser.gender = genderTemp;
                 };
-                if (!(selectedDateTemp == null)) {
-                  currentUser.dateOfBirth = dateToString(selectedDateTemp);
+                if (startDateController.text != currentUser.dateOfBirth) {
+                  currentUser.dateOfBirth = startDateController.text;
                 };
                 setState(() {
                   isLoading = true;
@@ -198,6 +230,38 @@ class _TusDatosState extends State<TusDatos> {
                           Row(
                             children: [
                               Text(
+                                AppLocalizations.of(context)!.nickname,
+                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.left,
+                              ),
+                              SizedBox(width: MediaQuery.of(context).size.height*0.01),
+                              Padding(
+                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.005),
+                                child: Icon(Icons.lock_outline, color: Theme.of(context).primaryColor, size: 20,),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                          Flexible(
+                            child: new TextFormField(
+                              decoration: InputDecoration(
+                                hintText: AppLocalizations.of(context)!.nickname,
+                              ),
+                              initialValue: "@${currentUser.nick!}",
+                              enabled: false,
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Row(
+                            children: [
+                              Text(
                                 AppLocalizations.of(context)!.email,
                                 style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                               ),
@@ -253,53 +317,35 @@ class _TusDatosState extends State<TusDatos> {
                             style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              if (dateToString(selectedDate) != dateToString(DateTime.now()))
-                                new Theme(
-                                    data: ThemeData(fontFamily: 'Raleway').copyWith(
-                                      colorScheme: ColorScheme.light().copyWith(
-                                        primary: Colors.amber,
+                          GestureDetector(
+                              onTap: () {
+                                selectSlot(context, 0);
+                                FocusScopeNode currentFocus = FocusScope.of(context);
+                                if (!currentFocus.hasPrimaryFocus) {
+                                  currentFocus.unfocus();
+                                }
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  new Flexible(
+                                    child: TextFormField(
+                                      controller: startDateController,
+                                      readOnly: true,
+                                      enabled: false,
+                                      //style: startDateController.text == nullDate ? Theme.of(context).textTheme.headline1!.copyWith(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w300) : Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        enabledBorder: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        disabledBorder: InputBorder.none,
                                       ),
+                                      textAlign: TextAlign.start,
                                     ),
-                                    child: new Builder(
-                                        builder: (context) => new
-                                        TextButton(
-                                          style: TextButton.styleFrom(
-                                            padding: EdgeInsets.zero,
-                                          ),
-                                          onPressed: () => _selectDate(context),
-                                          child: Text(
-                                            selectedDateTemp == null ? dateToString(selectedDate) : dateToString(selectedDateTemp),
-                                            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87),
-                                          ),
-                                        )
-                                    )
-                                ) else (
-                                  Theme(
-                                      data: ThemeData(fontFamily: 'Raleway').copyWith(
-                                        colorScheme: ColorScheme.light().copyWith(
-                                          primary: Colors.amber,
-                                        ),
-                                      ),
-                                      child: new Builder(
-                                          builder: (context) => new
-                                          TextButton(
-                                            style: TextButton.styleFrom(
-                                              padding: EdgeInsets.zero,
-                                            ),
-                                            onPressed: () => _selectDate(context),
-                                            child: Text(
-                                              selectedDateTemp == null ? AppLocalizations.of(context)!.selectDateOfBirth : dateToString(selectedDateTemp),
-                                              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.black87),
-                                            ),
-                                          )
-                                      )
-                                  )
-                              ),
-                            ],
+                                  ),
+                                ],
+                              )
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.04),
                         ],

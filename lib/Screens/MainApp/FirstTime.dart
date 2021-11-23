@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 
 class FirstTime extends StatefulWidget {
   Locale locale;
@@ -138,7 +140,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
       use24hFormat: true,
       onDateTimeChanged: (val) {
         setState(() {
-          startDateController.text = DateFormat('dd/MM/yyyy', widget.locale.languageCode).format(val);
+          startDateController.text = DateFormat('dd-MM-yyyy', widget.locale.languageCode).format(val);
           //startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
         });
       }
@@ -199,7 +201,6 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     );
     return Future.value("");
   }
-
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
     var image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -234,7 +235,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
       0,
       0,
     );
-    startDateController.text = DateFormat('dd/MM/yyyy', widget.locale.languageCode).format(startDate);
+    startDateController.text = DateFormat('dd-MM-yyyy', widget.locale.languageCode).format(startDate);
     nullDate = startDateController.text;
   }
 
@@ -328,7 +329,6 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
             )
           ),
         ),
-
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       resizeToAvoidBottomInset: false,
@@ -1105,6 +1105,8 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                             tabs[4] = true;
                           });
                         }
+                      } else if (_selectedIndex == 4) {
+                        addUser();
                       }
                     },
                     backgroundColor: _selectedIndex == 4 ? Colors.green : Theme.of(context).accentColor,
@@ -1213,6 +1215,24 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     }
   }
 
+  Future<void> addUser() async {
+    setState(() {
+      isLoading = true;
+    });
+    bool isTrainer = false;
+    if (_value == 1) isTrainer = true;
+    await _accessDatabase.addUser(currentUser.id!, nameController.text, nick, startDateController.text, gender!, _image, isTrainer);
+    if (brand.id != null) {
+      await _accessDatabase.updateCurrentUserBrand(brand.id!);
+    }
+    Navigator.pushReplacement(
+        context,
+        CupertinoPageRoute<Null>(
+          builder: (context) => SplashScreen(),
+          settings: RouteSettings(name: 'SplashScreen'),
+        )
+    );
+  }
 }
 
 

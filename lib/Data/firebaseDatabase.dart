@@ -114,6 +114,7 @@ class FirebaseDatabaseService {
               "nick": null,
               "email": email,
               "imageUrl": null,
+              "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
               "isFirst": true,
               "isTrainer": null,
               "isPrivate": true,
@@ -158,55 +159,26 @@ class FirebaseDatabaseService {
     return result;
   }
   // Add User
-  Future<int> addUser(String email, String password, String name, bool isTrainer, int gender, String idioma) async {
-    bool authError = false;
-    bool firestoreError = false;
-    final DateTime now = DateTime.now();
-    final DateFormat formatter = DateFormat('dd-MM-yyyy');
-    final String formatted = formatter.format(now);
-    UserCredential? authResult = await _auth
-        .createUserWithEmailAndPassword(
-        email: email,
-        password: password)
-       .then((userCredential) async {
-          if(userCredential != null && userCredential.user != null) {
-          await _firestore
-              .collection("Users")
-              .doc(userCredential.user!.uid)
-              .set({
-            "name": name,
-            "email": email,
-            "imageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=4d1be54c-ad85-4745-8bc5-62f27571a91b",
-            "isFirst": true,
-            "isTrainer": isTrainer,
-            "isPrivate": true,
-            "gender": gender,
-            "dateJoined": formatted,
-            "dateOfBirth": null,
-            "idioma": idioma,
-            "previousIdioma": null,
-            "brandID": null,
-            "isAdmin": false,
-          })
-          .catchError((err) {
-            print(err);
-            firestoreError = true;
-          });
-          await userCredential.user!.sendEmailVerification();
-        }
-          return userCredential;
-      }).catchError((err) {
-        print(err);
-        authError = true;
-      });
-
-    if (authResult != null && authResult.user != null) {
-      if (authError) return -1;
-      else if (firestoreError) return -2;
-      else return 0;
-    } else {
-      return -1;
+  Future<void> addUser(String uid, String name, String nick, String dateOfBirth, int gender, File? image, bool isTrainer) async {
+    String imageUrl = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
+    if (image != null) {
+      imageUrl = await updateCurrentUserPhoto(image);
     }
+    await _firestore
+      .collection("Users")
+      .doc(uid)
+      .update({
+        "name": name,
+        "nick": nick,
+        "imageUrl": imageUrl,
+        "isFirst": false,
+        "isTrainer": isTrainer,
+        "gender": gender,
+        "dateOfBirth": dateOfBirth,
+    })
+    .catchError((err) {
+      print(err);
+    });
   }
 
   // Add Error/ Report Bug
