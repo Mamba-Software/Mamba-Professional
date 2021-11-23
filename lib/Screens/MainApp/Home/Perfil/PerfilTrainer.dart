@@ -31,7 +31,9 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
   bool isLoading = false;
-  // Brand Events Today
+  // Event List
+  int totalEvents  = 0;
+  int thisMonthEvents  = 0;
   List<Event> todayEvents = [];
   // Image Picker
   var _image;
@@ -46,6 +48,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
   initProfileHome() {
     getUser();
     getUserEventsToday();
+    getTrainerEventsDone();
   }
 
   // Gets the user info from firebase.
@@ -55,7 +58,29 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
   // Gets user events today.
   void getUserEventsToday() async {
     todayEvents = await _accessDatabase.getAllEventsTodayUser(currentUser.id!, currentUser.isTrainer!);
+  }
+
+  // Gets the events passed by the trainer.
+  void getTrainerEventsDone() async {
+    DateTime today = DateTime.now();
+    var tempMonth = 0;
+    List<Event> listEvents = [];
+    List<Event> list = await _accessDatabase.getAllEventsFromTrainer(currentUser.id!);
+    for (var i=0; i<list.length; i++) {
+      Event event = list[i];
+      int year = int.parse(event.year!);
+      int month = int.parse(event.month!);
+      int day = int.parse(event.day!);
+      if (year <= today.year && month <= today.month && day < today.day) {
+        listEvents.add(event);
+        if (year == today.year && month == today.month) {
+          tempMonth += 1;
+        }
+      }
+    }
     setState(() {
+      thisMonthEvents = tempMonth;
+      totalEvents = listEvents.length;
       isLoading = false;
     });
   }
@@ -94,7 +119,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.65,
                       child: IconButton(
-                        icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: 50,),
+                        icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 50,),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -135,7 +160,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.08,
+                      top: MediaQuery.of(context).size.height*0.09,
                       bottom: 0,
                       left: 0,
                       right: 0,
@@ -179,7 +204,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                               ),
                             ),
                             child: Container(
-                              width: MediaQuery.of(context).size.width * 0.66,
+                              width: MediaQuery.of(context).size.width * 0.81,
                               height: MediaQuery.of(context).size.height * 0.10,
                               decoration: new BoxDecoration(
                                 color: Colors.white,
@@ -189,17 +214,17 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                                 ),
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Container(
                                     height: MediaQuery.of(context).size.height * 0.10,
-                                    width: MediaQuery.of(context).size.width * 0.28,
+                                    width: MediaQuery.of(context).size.width * 0.38,
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       mainAxisSize: MainAxisSize.max,
                                       children: <Widget>[
                                         Text(
-                                          "0",
+                                          totalEvents.toString(),
                                           style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
                                         ),
                                         SizedBox(height: 2),
@@ -218,13 +243,13 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                                   ),
                                   Container(
                                     height: MediaQuery.of(context).size.height * 0.10,
-                                    width: MediaQuery.of(context).size.width * 0.28,
+                                    width: MediaQuery.of(context).size.width * 0.38,
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       mainAxisSize: MainAxisSize.max,
                                       children: <Widget>[
                                         Text(
-                                          "0",
+                                          thisMonthEvents.toString(),
                                           style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
                                         ),
                                         SizedBox(height: 2),
@@ -390,8 +415,11 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(event.title!,
-                                            style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                                        Container(
+                                          width: MediaQuery.of(context).size.width*0.8,
+                                          child: Text(event.title!,
+                                              style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                                        ),
                                         SizedBox(height: MediaQuery.of(context).size.height*0.005),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,

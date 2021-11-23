@@ -79,41 +79,12 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                   alignment: Alignment.topCenter,
                   fit: StackFit.expand,
                   children: <Widget>[
-                    /*
-                    // Fons difuminat
-                    Positioned(
-                      top: MediaQuery.of(context).size.height*0.0,
-                      bottom: MediaQuery.of(context).size.height*0.09,
-                      left: 0,
-                      right: 0,
-                      child: Row(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width*0.5,
-                            height: MediaQuery.of(context).size.height,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(MediaQuery.of(context).size.width*0.50),),
-                              color: Theme.of(context).accentColor.withOpacity(0.05),
-                            ),
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width*0.5,
-                            height: MediaQuery.of(context).size.height*0.50,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(bottomRight: Radius.circular(MediaQuery.of(context).size.width*0.50),),
-                              color: Theme.of(context).accentColor.withOpacity(0.15),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                     */
                     Positioned(
                       top: 0,
                       bottom: MediaQuery.of(context).size.height*0.10,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.65,
-                      child: Icon(Icons.manage_search, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                      child: Icon(Icons.explore_outlined, color: Theme.of(context).primaryColor, size: 50,),
                     ),
                     Positioned(
                       top: 0,
@@ -121,7 +92,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                       left: MediaQuery.of(context).size.width*0.65,
                       right: 0,
                       child: IconButton(
-                        icon: Icon(Icons.settings, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                        icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: 50,),
                         onPressed: () {
                           Navigator.push(
                               context,

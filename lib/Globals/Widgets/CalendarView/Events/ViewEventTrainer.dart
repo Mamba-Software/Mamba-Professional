@@ -144,7 +144,6 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
         temp.add(client);
       }
     }
-
     setState(() {
       brandClientsJoining = temp;
     });
@@ -224,12 +223,12 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
         backgroundColor: Colors.transparent,
         onSelectedItemChanged: (int index) {
           setState(() {
-            members = event!.joinedMembers.length+index+1;
+            members = event!.joinedMembers.length+index;
             membersController.text = "${event!.joinedMembers.length.toString()} / ${members.toString()}";
           });
         },
         children: new List<Widget>.generate(totalMembers.toInt(), (int index) {
-          var member = event!.joinedMembers.length+index+1;
+          var member = event!.joinedMembers.length+index;
           return new Center(
             child: new Text(
                 "${member.toString()}"
@@ -612,8 +611,8 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                       children: <Widget>[
                                         Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
                                         Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 20),
-                                            width: MediaQuery.of(context).size.width*0.70,
+                                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                            width: MediaQuery.of(context).size.width*0.72,
                                             child: Row(
                                               mainAxisSize: MainAxisSize.max,
                                               children: <Widget>[

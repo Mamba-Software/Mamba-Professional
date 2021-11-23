@@ -816,7 +816,7 @@
       }
     }
   },
-  "noTrainingsDone": "Este usuario no ha participado en ningún evento",
+  "noTrainingsDone": "No ha finalizado ningún evento",
   "@noTrainingsDone": {
     "description": "Wellcome message"
   },

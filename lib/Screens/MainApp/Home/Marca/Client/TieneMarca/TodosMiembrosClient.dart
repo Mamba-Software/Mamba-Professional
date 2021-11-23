@@ -407,7 +407,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                     padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
                                     child: GestureDetector(
                                       onTap: () {
-                                        Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
+
                                       },
                                       child: Container(
                                           height: MediaQuery.of(context).size.height*0.09,
@@ -420,7 +420,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                                 padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
                                                 child: CircularImage(
                                                   size: MediaQuery.of(context).size.width*0.2,
-                                                  image: user.imageUrl,
+                                                  image: user.noImageUrl,
                                                   color: Theme.of(context).primaryColor,
                                                   borderWidth: 1.5,
                                                 ),
@@ -436,7 +436,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                                         Expanded(
                                                           child: Text(
                                                             splitCommonName(user.name!),
-                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor.withOpacity(0.3)),
                                                             textAlign: TextAlign.left,
                                                           ),
                                                         ),
@@ -451,7 +451,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                                 child: Icon(
                                                   Icons.arrow_forward_ios,
                                                   size: 30,
-                                                  color: Theme.of(context).primaryColor,
+                                                  color: Theme.of(context).primaryColor.withOpacity(0.3),
                                                 ),
                                               ),
                                             ],

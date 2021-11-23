@@ -29,7 +29,9 @@ class _PerfilClientState extends State<PerfilClient> {
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
   bool isLoading = false;
-  // Brand Events Today
+  // Events
+  int totalEvents  = 0;
+  int thisMonthEvents  = 0;
   List<Event> todayEvents = [];
   // Image Picker
   var _image;
@@ -44,6 +46,7 @@ class _PerfilClientState extends State<PerfilClient> {
   initProfileHome() {
     getUser();
     getUserEventsToday();
+    getClientEventsDone();
   }
 
   // Gets the user info from firebase.
@@ -53,7 +56,28 @@ class _PerfilClientState extends State<PerfilClient> {
   // Gets user events today.
   void getUserEventsToday() async {
     todayEvents = await _accessDatabase.getAllEventsTodayUser(currentUser.id!, currentUser.isTrainer!);
+  }
+
+  void getClientEventsDone() async {
+    DateTime today = DateTime.now();
+    var tempMonth = 0;
+    List<Event> listEvents = [];
+    List<Event> list = await _accessDatabase.getAllEventsFromClient(currentUser.id!);
+    for (var i=0; i<list.length; i++) {
+      Event event = list[i];
+      int year = int.parse(event.year!);
+      int month = int.parse(event.month!);
+      int day = int.parse(event.day!);
+      if (year <= today.year && month <= today.month && day < today.day) {
+        listEvents.add(event);
+        if (year == today.year && month == today.month) {
+          tempMonth += 1;
+        }
+      }
+    }
     setState(() {
+      thisMonthEvents = tempMonth;
+      totalEvents = listEvents.length;
       isLoading = false;
     });
   }
@@ -133,7 +157,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.08,
+                      top: MediaQuery.of(context).size.height*0.09,
                       bottom: 0,
                       left: 0,
                       right: 0,
@@ -197,7 +221,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                       mainAxisSize: MainAxisSize.max,
                                       children: <Widget>[
                                         Text(
-                                          "0",
+                                          totalEvents.toString(),
                                           style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
                                         ),
                                         SizedBox(height: 2),
@@ -222,7 +246,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                       mainAxisSize: MainAxisSize.max,
                                       children: <Widget>[
                                         Text(
-                                          "0",
+                                          thisMonthEvents.toString(),
                                           style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
                                         ),
                                         SizedBox(height: 2),
@@ -388,8 +412,11 @@ class _PerfilClientState extends State<PerfilClient> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(event.title!,
-                                            style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                                        Container(
+                                          width: MediaQuery.of(context).size.width*0.8,
+                                          child: Text(event.title!,
+                                              style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                                        ),
                                         SizedBox(height: MediaQuery.of(context).size.height*0.005),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
