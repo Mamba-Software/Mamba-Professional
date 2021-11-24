@@ -5,6 +5,7 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/ForgotPassword.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Register.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 
@@ -114,16 +115,13 @@ class _LoginState extends State<Login> {
                         ),
                         TextButton(
                           onPressed: (){
-                            if(email.isEmpty) {
-                              showInSnackBar(AppLocalizations.of(context)!.emailError);
-                            } else {
-                              if(emailValidator(email)){
-                                _accessDatabase.resetPassword(email);
-                                showInSnackBar(AppLocalizations.of(context)!.validatePassword);
-                              } else {
-                                showInSnackBar(AppLocalizations.of(context)!.validateEmail);
-                              }
-                            }
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute<Null>(
+                                  builder: (context) => ForgotPassword(),
+                                  settings: RouteSettings(name: 'ForgotPassword'),
+                                )
+                            );
                           },
                           child: Text(
                             AppLocalizations.of(context)!.forgotPassword,
@@ -139,7 +137,7 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           child: Container(
-                            height: MediaQuery.of(context).size.height*0.07,
+                            height: MediaQuery.of(context).size.height*0.06,
                             width: MediaQuery.of(context).size.width*0.50,
                             decoration: BoxDecoration(
                                 color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(10)
@@ -176,7 +174,7 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           child: Container(
-                            height: MediaQuery.of(context).size.height*0.07,
+                            height: MediaQuery.of(context).size.height*0.06,
                             width: MediaQuery.of(context).size.width*0.50,
                             decoration: BoxDecoration(
                                 color: Colors.white, borderRadius: BorderRadius.circular(10)
@@ -240,17 +238,6 @@ class _LoginState extends State<Login> {
       isLoading = true;
     });
     signIn();
-  }
-
-  // Validate email and pwd format
-  bool emailValidator(String value) {
-    Pattern pattern = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
-    RegExp regex = new RegExp(pattern.toString());
-    if (!regex.hasMatch(value)) {
-      return false;
-    } else {
-      return true;
-    }
   }
 
   void showInSnackBar(String value) {

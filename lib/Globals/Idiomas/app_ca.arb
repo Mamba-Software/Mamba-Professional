@@ -22,6 +22,8 @@
   "passworRepeat": "Confirma la contrasenya",
   "passwordNotSameError": "Les contrasenyes no coincideixen",
   "forgotPassword": "Has oblidat la teva contrasenya?",
+  "resetPassword": "Recuperar contrasenya",
+  "recover": "Recuperar",
   "login": "Inicia Sessió",
   "loginError": "No trobem aquest usuari.\n Torneu a provar si us plau",
   "validate": "T'hem enviat un correu de validació",

@@ -40,8 +40,15 @@ class FirebaseDatabaseService {
     return await _auth.signOut();
   }
 
-  Future<void> resetPassword(String email) async {
-    return await _auth.sendPasswordResetEmail(email: email);
+  Future<int> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return 1;
+    } catch (e) {
+      print(e.toString());
+      return -1;
+    }
+
   }
 
   Future<bool> deleteUser(String password) async {

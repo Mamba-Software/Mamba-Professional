@@ -91,6 +91,14 @@
   "@forgotPassword":{
     "description": "Contraseña Text "
   },
+  "resetPassword": "Recuperar contraseña",
+  "@resetPassword":{
+    "description": "Contraseña Text "
+  },
+  "recover": "Recuperar",
+  "@recover":{
+    "description": "Contraseña Text "
+  },
   "login": "Inicia Sesión",
   "@login":{
     "description": "LogIn Text "

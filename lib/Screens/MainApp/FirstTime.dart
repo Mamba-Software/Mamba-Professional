@@ -367,7 +367,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                   child: Text(
                                     AppLocalizations.of(context)!.wellcomeMessage,
                                     style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w400),
-                                    textAlign: TextAlign.justify,
+                                    textAlign: TextAlign.left,
                                   ),
                                 ),
                               ],
