@@ -280,60 +280,81 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                       Row(
                         children: [
                           Container(
-                            height: MediaQuery.of(context).size.height*0.05,
-                            width: MediaQuery.of(context).size.width*0.50,
+                            height: MediaQuery.of(context).size.height*0.08,
+                            width: MediaQuery.of(context).size.width,
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  IconButton(
-                                    icon: Icon(Icons.calendar_today_outlined, size: 30, color: Theme.of(context).primaryColor),
-                                    padding: EdgeInsets.all(0),
-                                    alignment: Alignment.centerLeft ,
-                                    onPressed: () {
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.calendar_today_outlined, size: 30, color: Theme.of(context).primaryColor),
+                                        padding: EdgeInsets.all(0),
+                                        onPressed: () {
 
-                                    },
+                                        },
+                                      ),
+                                      Text(
+                                        AppLocalizations.of(context)!.calendar,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                                  IconButton(
-                                    icon: Icon(Icons.groups_outlined, size: 35, color: Theme.of(context).primaryColor),
-                                    padding: EdgeInsets.all(0),
-                                    alignment: Alignment.centerLeft ,
-                                    onPressed: () {
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.groups_outlined, size: 35, color: Theme.of(context).primaryColor),
+                                        padding: EdgeInsets.all(0),
+                                        onPressed: () {
 
-                                    },
+                                        },
+                                      ),
+                                      Text(
+                                        AppLocalizations.of(context)!.members,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: MediaQuery.of(context).size.height*0.05,
-                            width: MediaQuery.of(context).size.width*0.50,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.send_outlined, size: 35, color: Theme.of(context).primaryColor,),
-                                    padding: EdgeInsets.all(0),
-                                    alignment: Alignment.centerRight ,
-                                    onPressed: () {
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.send_outlined, size: 35, color: Theme.of(context).primaryColor),
+                                        padding: EdgeInsets.all(0),
+                                        onPressed: () {
 
-                                    },
+                                        },
+                                      ),
+                                      Text(
+                                        AppLocalizations.of(context)!.join,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                                  IconButton(
-                                    icon: Icon(Icons.question_answer_outlined, size: 35, color: Theme.of(context).primaryColor),
-                                    padding: EdgeInsets.all(0),
-                                    alignment: Alignment.centerRight ,
-                                    onPressed: () {
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.question_answer_outlined, size: 35, color: Theme.of(context).primaryColor),
+                                        padding: EdgeInsets.all(0),
+                                        onPressed: () {
 
-                                    },
+                                        },
+                                      ),
+                                      Text(
+                                        AppLocalizations.of(context)!.contact,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -341,7 +362,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                           ),
                         ],
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                         child: RichText(

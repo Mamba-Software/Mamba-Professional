@@ -650,8 +650,16 @@
   "@book":{
     "description": "Cancelar text"
   },
+  "join": "Unirse",
+  "@join":{
+    "description": "Cancelar text"
+  },
   "leave": "Abandonar",
   "@leave":{
+    "description": "Cancelar text"
+  },
+  "contact": "Contactar",
+  "@contact":{
     "description": "Cancelar text"
   },
   "addMembers": "Añadir Miembros",

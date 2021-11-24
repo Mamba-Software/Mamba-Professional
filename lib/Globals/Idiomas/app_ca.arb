@@ -151,6 +151,8 @@
   "entendido": "Entesos",
   "book": "Reservar",
   "leave": "Abandonar",
+  "join": "Unir-se",
+  "contact": "Contactar",
   "addMembers": "Afegir Membres",
   "inviteCode": "Codi d'invitació",
   "inviteCodeError": "Copia el codi d'invitació si us plau",
