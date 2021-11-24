@@ -103,36 +103,3 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-/*
-AppBar(
-        title: returnTitle(_currentIndex),
-        centerTitle: true,
-        shadowColor: Theme.of(context).scaffoldBackgroundColor,
-        automaticallyImplyLeading: false,
-      ),
-
-
-items: <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person, color: Styles.white,),
-                label: AppLocalizations.of(context)!.profileBottomNav,
-                backgroundColor: Styles.mainColor,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.fitness_center_rounded, color: Styles.white,),
-                label: AppLocalizations.of(context)!.brandBottomNav,
-                backgroundColor: Styles.mainColor,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.chat, color: Styles.white,),
-                label: AppLocalizations.of(context)!.chatBottomNav,
-                backgroundColor: Styles.mainColor,
-              ),
-            ],
-
-            selectedItemColor: Styles.white,
-            selectedLabelStyle: Styles.whiteTextStyle.copyWith(fontSize: 15),
-            unselectedItemColor: Styles.white,
-            unselectedLabelStyle: Styles.whiteTextStyle.copyWith(fontSize: 15),
- */
-

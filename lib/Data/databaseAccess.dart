@@ -52,6 +52,8 @@ class DatabaseAccess {
   Future<void> updateBrandInfo(String brandID, String name,String description, int maxMembers, List<double> workShift) => _firebase.updateBrandInfo(brandID, name, description, maxMembers, workShift);
   Future<void> updateBrandBaseLocation(String brandID, String locationID) => _firebase.updateBrandBaseLocation(brandID, locationID);
 
+  Future<List<Brand>> getAllBrands() => _firebase.getAllBrands();
+
   // Errors
   Future<bool> addError(String title, String description, String stepsReproduce) => _firebase.addError(title, description, stepsReproduce);
 
@@ -67,7 +69,6 @@ class DatabaseAccess {
 
   Future<bool> joinEvent(String eid, String uid) => _firebase.joinEvent(eid, uid);
   Future<bool> leaveEvent(String eid, String uid, bool isTrainer) => _firebase.leaveEvent(eid, uid, isTrainer);
-
 
   Future<Event> getSingleEvent(String eventId) => _firebase.getSingleEvent(eventId);
 
@@ -110,7 +111,7 @@ class DatabaseAccess {
   Stream<QuerySnapshot> getAllEventsTodayBrandStream(String brandId) => _firebase.getAllEventsTodayBrandStream(brandId);
 
   // Brands
-  Stream<QuerySnapshot> getAllBrands() => _firebase.getAllBrands();
+  Stream<QuerySnapshot> getAllBrandsStream() => _firebase.getAllBrandsStream();
 
   // Events
   Stream<DocumentSnapshot> getSingleEventStream(String id) => _firebase.getSingleEventStream(id);

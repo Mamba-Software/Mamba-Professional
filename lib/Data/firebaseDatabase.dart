@@ -350,6 +350,15 @@ class FirebaseDatabaseService {
     });
   }
 
+  Future<List<Brand>> getAllBrands() async {
+    List<Brand> brands = [];
+    QuerySnapshot querySnapshot = await _firestore.collection("Brands").get();
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      brands.add(Brand.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return brands;
+  }
+
 
   Future<Brand> getBrandDetails(String brandID) async {
     DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Brands").doc(brandID).get();
@@ -907,7 +916,7 @@ class FirebaseDatabaseService {
   // STREAMS
 
   // Brands
-  Stream<QuerySnapshot> getAllBrands() {
+  Stream<QuerySnapshot> getAllBrandsStream() {
     return _firestore.collection("Brands").snapshots();
   }
 

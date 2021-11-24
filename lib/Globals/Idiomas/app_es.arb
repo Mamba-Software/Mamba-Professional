@@ -311,7 +311,7 @@
   "@sendFeedback":{
     "description": "Feedback Text Enviar"
   },
-  "memberSince": "Miembro desde {dateJoined}",
+  "memberSince": "Creada el {dateJoined}",
   "@memberSince": {
     "description": "Member Since message",
     "placeholders": {

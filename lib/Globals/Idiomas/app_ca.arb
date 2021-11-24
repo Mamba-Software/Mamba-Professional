@@ -69,7 +69,7 @@
   "feedback": "Feedback",
   "noFeedback": "No hi ha noves preguntes per contestar.\n\nGracies per voler ajudar-nos!",
   "reporting": "Reporta un error",
-  "memberSince": "Membre des {dateJoined}",
+  "memberSince": "Creada el {dateJoined}",
   "clientOf": "Client de",
   "trainerOf": "Entrenador a",
   "closeSession": "Tancar sessió",

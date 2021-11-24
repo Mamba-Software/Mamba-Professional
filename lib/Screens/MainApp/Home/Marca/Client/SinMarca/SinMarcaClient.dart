@@ -40,7 +40,22 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null,
+      appBar: AppBar(
+        title: Column(
+          children: [
+            Text(AppLocalizations.of(context)!.yourBrand, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+          ],
+        ),
+        centerTitle: false,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.qr_code_outlined),
+            onPressed: () async {
+
+            },
+          ),
+        ],
+      ),
       resizeToAvoidBottomInset: false,
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -211,7 +226,7 @@ class BrandList extends StatelessWidget {
         padding: const EdgeInsets.only(top: 8.0, bottom: 10),
         child: Container(
           child: StreamBuilder<QuerySnapshot>(
-              stream: _accessDatabase.getAllBrands(),
+              stream: _accessDatabase.getAllBrandsStream(),
               builder: (context, snapshot) {
                 //if(snapshot == null || snapshot.data == null || snapshot.data.documents == null ) return EmptyView();
                 //else if(snapshot.hasError) return ErrorView();

@@ -13,6 +13,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/Settings.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -35,8 +37,13 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
   int totalEvents  = 0;
   int thisMonthEvents  = 0;
   List<Event> todayEvents = [];
-  // Image Picker
-  var _image;
+  // Codigo
+  var _codigo;
+  bool codigoError = false;
+  bool codigoClicked = false;
+  bool isLoadingCodigo = false;
+  var _codigoController = TextEditingController();
+
 
   @override
   void initState() {
@@ -171,7 +178,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                           Container(
                             height: MediaQuery.of(context).size.height * 0.23,
                             child: Center(
-                              child: CircularImage(size: MediaQuery.of(context).size.height * 0.23, image: currentUser.imageUrl, file: _image, color: Theme.of(context).accentColor, borderWidth: 2,),
+                              child: CircularImage(size: MediaQuery.of(context).size.height * 0.23, image: currentUser.imageUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
                             ),
                           ),
                         ],
@@ -271,7 +278,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                   ]
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+            SizedBox(height: MediaQuery.of(context).size.height*0.03),
             todayEvents.length != 0 ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -745,25 +752,41 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              height: MediaQuery.of(context).size.height*0.32,
+              height: MediaQuery.of(context).size.height*0.45,
               child: Stack(
                   alignment: Alignment.topCenter,
                   fit: StackFit.expand,
                   children: <Widget>[
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.10,
+                      bottom: MediaQuery.of(context).size.height*0.28,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.65,
-                      child: Icon(Icons.help_outline, color: Colors.black, size: 50,),
+                      child: IconButton(
+                        icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 50,),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.bottomToTop,
+                                child: FeedBack(),
+                              )
+                          ).whenComplete(() {
+                            setState(() {
+                              isLoading = true;
+                              initProfileHome();
+                            });
+                          });
+                        },
+                      ),
                     ),
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.10,
+                      bottom: MediaQuery.of(context).size.height*0.28,
                       left: MediaQuery.of(context).size.width*0.65,
                       right: 0,
                       child: IconButton(
-                        icon: Icon(Icons.settings, color: Colors.black, size: 50,),
+                        icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: 50,),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -781,7 +804,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.05,
+                      top: MediaQuery.of(context).size.height*0.09,
                       bottom: 0,
                       left: 0,
                       right: 0,
@@ -790,242 +813,94 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Container(
-                            height: MediaQuery.of(context).size.height * 0.20,
+                            height: MediaQuery.of(context).size.height * 0.23,
                             child: Center(
-                              child: CircularImage(size: MediaQuery.of(context).size.height * 0.18, image: currentUser.imageUrl, file: _image, color: Theme.of(context).accentColor, borderWidth: 2,),
+                              child: CircularImage(size: MediaQuery.of(context).size.height * 0.23, image: currentUser.imageUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
                             ),
                           ),
                         ],
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.28,
+                      top: MediaQuery.of(context).size.height*0.28 ,
                       bottom: 0,
                       left: 0,
                       right: 0,
                       child: Row(
                         children: [
-                          Expanded(child: Text("${currentUser.name!}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center)),
+                          Expanded(child: Text("${currentUser.name!}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 24, fontFamily: "Helvetica"), textAlign: TextAlign.center)),
                         ],
                       ),
                     ),
-                  ]
-              ),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.04),
-            todayEvents.length != 0 ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 20,), textAlign: TextAlign.start),
-                      todayEvents.length > 1 ? Row(
+                    Positioned(
+                      top: MediaQuery.of(context).size.height*0.40,
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(todayEvents.length.toString(), style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 16, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
-                          SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                          Text(AppLocalizations.of(context)!.events, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 16, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
-                          SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                          Icon(
-                            Icons.swipe,
-                            color: Colors.black,
-                            size: 20,
-                          ),
-                        ],
-                      ) : Container(),
-                    ],
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                Container(
-                  height: MediaQuery.of(context).size.height*0.23,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: BouncingScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: todayEvents.length,
-                      itemBuilder: (context, int index) {
-                        var event = todayEvents[index];
-                        return Padding(
-                          padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
-                          child: GestureDetector(
-                            onTap: () {
-                              bool canEdit = true;
-                              DateTime startDate = DateTime(
-                                int.parse(event.year!),
-                                int.parse(event.month!),
-                                int.parse(event.day!),
-                                int.parse(event.hour!),
-                                int.parse(event.minute!),
-                              );
-                              if (startDate.isBefore(DateTime.now())) {
-                                canEdit = false;
-                              }
-                              if (currentUser.isTrainer!) {
-                                Navigator.push(
-                                    context,
-                                    PageTransition(
-                                        type: PageTransitionType.bottomToTop,
-                                        child: ViewEventTrainer(
-                                          eventId: event.id!,
-                                          canEdit: canEdit,
-                                          locale: Localizations.localeOf(context),
-                                        )
-                                    )
-                                ).whenComplete(() {
-                                  setState(() {
-                                    isLoading = true;
-                                    initProfileHome();
-                                  });
-                                });
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    PageTransition(
-                                        type: PageTransitionType.bottomToTop,
-                                        child: ViewEventClient(
-                                          eventId: event.id!,
-                                          canJoin: true,
-                                          locale: Localizations.localeOf(context),
-                                        )
-                                    )
-                                ).whenComplete(() {
-                                  setState(() {
-                                    isLoading = true;
-                                    initProfileHome();
-                                  });
-                                });
-                              }
-                            },
-                            child: Material(
-                              elevation: 4,
-                              shape: RoundedRectangleBorder(
+                          Material(
+                            //elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.all(
+                                const Radius.circular(10.0),
+                              ),
+                            ),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.81,
+                              height: MediaQuery.of(context).size.height * 0.10,
+                              decoration: new BoxDecoration(
+                                color: Colors.white,
+                                //border: Border.all(color: Theme.of(context).primaryColor, width: 1),
                                 borderRadius: new BorderRadius.all(
                                   const Radius.circular(10.0),
                                 ),
                               ),
-                              child: Stack(
-                                alignment: Alignment.bottomLeft,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Container(
-                                    height: MediaQuery.of(context).size.height * 0.28,
-                                    width: MediaQuery.of(context).size.width * 0.90,
-                                    decoration: new BoxDecoration(
-                                      color: Colors.transparent,
-                                      borderRadius: new BorderRadius.all(
-                                        const Radius.circular(10.0),
-                                      ),
-                                      image: new DecorationImage(
-                                        fit: BoxFit.cover,
-                                        //colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstATop),
-                                        image: Image.asset(Constants.eventBackground).image,
-                                      ),
+                                    height: MediaQuery.of(context).size.height * 0.10,
+                                    width: MediaQuery.of(context).size.width * 0.38,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        Text(
+                                          totalEvents.toString(),
+                                          style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                                        ),
+                                        SizedBox(height: 2),
+                                        Text(
+                                          AppLocalizations.of(context)!.allEvents,
+                                          style: Styles.purpleTextStyle.copyWith(fontSize: 12),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
                                     ),
-                                    child: Center(),
                                   ),
                                   Container(
-                                    width: MediaQuery.of(context).size.width * 0.90,
-                                    height: MediaQuery.of(context).size.height * 0.28,
-                                    decoration: new BoxDecoration(
-                                      color: Colors.white,
-                                      gradient: LinearGradient(
-                                          begin: FractionalOffset.topCenter,
-                                          end: FractionalOffset.bottomCenter,
-                                          colors: [
-                                            Colors.grey.withOpacity(0.0),
-                                            Colors.black,
-                                          ],
-                                          stops: [
-                                            0.0,
-                                            0.75
-                                          ]
-                                      ),
-                                      border: Border.all(color: Theme.of(context).primaryColor, width: 1),
-                                      borderRadius: new BorderRadius.all(
-                                        const Radius.circular(10.0),
-                                      ),
-                                    ),
-                                    child: Center(),
+                                    width: MediaQuery.of(context).size.width * 0.05,
+                                    height: MediaQuery.of(context).size.height * 0.03,
+                                    child: VerticalDivider(color: Theme.of(context).primaryColor,),
                                   ),
-                                  Padding(
-                                    padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.02),
+                                  Container(
+                                    height: MediaQuery.of(context).size.height * 0.10,
+                                    width: MediaQuery.of(context).size.width * 0.38,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(event.title!,
-                                            style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
-                                        SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.schedule,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                            Text(
-                                              event.hour.toString(),
-                                              style: TextStyle(color: Colors.white, fontSize: 14),
-                                            ),
-                                            Text(
-                                              ":",
-                                              style: TextStyle(color: Colors.white, fontSize: 14),
-                                            ),
-                                            Text(
-                                              event.minute=="0" ? "00" : event.minute.toString(),
-                                              style: TextStyle(color: Colors.white, fontSize: 14),
-                                            ),
-                                            Container(
-                                                height: 16,
-                                                width: 32,
-                                                child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
-                                            ),
-                                            Icon(
-                                              Icons.timer,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                            Text(
-                                              durationToString(event.duration!),
-                                              style: TextStyle(color: Colors.white, fontSize: 14),
-                                            ),
-                                            Container(
-                                                height: 16,
-                                                width: 32,
-                                                child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
-                                            ),
-                                            Icon(
-                                              Icons.record_voice_over,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                            Text(
-                                              event.selectedTrainers.length.toString(),
-                                              style: TextStyle(color: Colors.white, fontSize: 14),
-                                            ),
-                                            Container(
-                                                height: 16,
-                                                width: 32,
-                                                child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
-                                            ),
-                                            Icon(
-                                              Icons.directions_run,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                            Text(
-                                              event.joinedMembers.length.toString(),
-                                              style: TextStyle(color: Colors.white, fontSize: 14),
-                                            ),
-                                          ],
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        Text(
+                                          thisMonthEvents.toString(),
+                                          style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                                        ),
+                                        SizedBox(height: 2),
+                                        Text(
+                                          AppLocalizations.of(context)!.monthEvents,
+                                          style: Styles.purpleTextStyle.copyWith(fontSize: 12),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ],
                                     ),
@@ -1034,72 +909,201 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                               ),
                             ),
                           ),
-                        );
-                      }
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.04),
-              ],
-            ) : Container(),
-            currentBrand.id != null ? Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        PageTransition(
-                            type: PageTransitionType.bottomToTop,
-                            child: CalendarWidgetTrainer(
-                              brandID: currentBrand.id!,
-                              canEdit: true,
-                            )
-                        )
-                    ).whenComplete(() {
-                      setState(() {
-                        isLoading = true;
-                        initProfileHome();
-                      });
-                    });
-                  },
-                  child: Material(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.all(
-                        const Radius.circular(10.0),
-                      ),
-                    ),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.90,
-                      height: MediaQuery.of(context).size.height * 0.08,
-                      decoration: new BoxDecoration(
-                        color: Theme.of(context).accentColor,
-                        border: Border.all(color: Theme.of(context).accentColor, width: 1),
-                        borderRadius: new BorderRadius.all(
-                          const Radius.circular(10.0),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width * 0.09,
-                              child: Icon(Icons.add, color: Colors.white, size: 30,)
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.69,
-                            child: Center(child: Text(AppLocalizations.of(context)!.planSessions, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400))),
-                          ),
                         ],
                       ),
                     ),
+                  ]
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  child: FloatingActionButton.extended(
+                    heroTag: null,
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute<Null>(
+                            builder: (context) => RegistrarMarca(
+                              locale: Localizations.localeOf(context),
+                            ),
+                            settings: RouteSettings(name: 'RegistrarMarca'),
+                          )
+                      );
+                    },
+                    icon: Icon(Icons.add_circle_outline, size: 35, color: Colors.white,),
+                    label: Text(AppLocalizations.of(context)!.createBrand, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),),
                   ),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.04),
               ],
-            ) : Container(),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            Container(
+              height: MediaQuery.of(context).size.height*0.07,
+              child: !codigoClicked ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                    child: FloatingActionButton.extended(
+                      onPressed: () {
+                        setState(() {
+                          codigoClicked = !codigoClicked;
+                        });
+                      },
+                      backgroundColor: Colors.green,
+                      icon: Icon(Icons.qr_code_outlined, size: 35,color: Colors.white,),
+                      label: Text(AppLocalizations.of(context)!.addCode,
+                        style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  )
+                ],
+              ) : Padding(
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Flexible(
+                        child: Material(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(13)
+                          ),
+                          elevation: 5,
+                          child: new TextFormField(
+                            controller: _codigoController,
+                            onChanged: (val) {
+                              setState(() {
+                                codigoError = false;
+                                _codigo = val;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context)!.codigo,
+                              hintStyle: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
+                                borderRadius: BorderRadius.circular(13.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
+                                borderRadius: BorderRadius.circular(13.0),
+                              ),
+                            ),
+                            style: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      !isLoadingCodigo ?
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 15.0),
+                            child: FloatingActionButton(
+                              child: Icon(Icons.login),
+                              backgroundColor: Colors.green,
+                              foregroundColor: Styles.white,
+                              onPressed: () async {
+                                if(_codigo == null || _codigo=="") {
+                                  setState(() {
+                                    codigoError = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    isLoadingCodigo = true;
+                                  });
+                                  var result = await _accessDatabase.checkIfBrandExists(_codigo);
+                                  if (!result) {
+                                    Future.delayed(const Duration(milliseconds: 500), () {
+                                      setState(() {
+                                        isLoadingCodigo = false;
+                                        codigoError = true;
+                                      });
+                                    });
+                                  } else {
+                                    await _accessDatabase.updateCurrentUserBrand(_codigo);
+                                    Navigator.pushReplacement(
+                                      context,
+                                      CupertinoPageRoute<Null>(
+                                        builder: (context) =>
+                                            SplashScreen(),
+                                        settings: RouteSettings(
+                                            name: 'SplashScreen'),
+                                      )
+                                    );
+                                  }
+                                }
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 5.0),
+                            child: FloatingActionButton(
+                              heroTag: null,
+                              child: Icon(Icons.close),
+                              backgroundColor: Colors.red,
+                              foregroundColor: Styles.white,
+                              onPressed: () async {
+                                setState(() {
+                                  codigoClicked = !codigoClicked;
+                                  codigoError = false;
+                                  _codigoController.text = "";
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ) :
+                      SizedBox(
+                        width: 130,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            FloatingActionButton(
+                                heroTag: null,
+                                child: SizedBox(
+                                  width: 100,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(18.0),
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                ),
+                                backgroundColor: Colors.orangeAccent,
+                                foregroundColor: Styles.white,
+                                onPressed: false ? () {} : null
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.03),
             GestureDetector(
               onTap: () {
-
+                Navigator.push(
+                    context,
+                    PageTransition(
+                        type: PageTransitionType.bottomToTop,
+                        child: MyCalendarWidget(
+                          brandID: currentBrand.id!,
+                        )
+                    )
+                ).whenComplete(() {
+                  setState(() {
+                    isLoading = true;
+                    initProfileHome();
+                  });
+                });
               },
               child: Material(
                 elevation: 4,
@@ -1159,6 +1163,15 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                           Text(AppLocalizations.of(context)!.mySchedule, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           Text(AppLocalizations.of(context)!.myScheduleText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 14, color: Colors.white.withOpacity(0.5))),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.70, bottom: MediaQuery.of(context).size.height * 0.07),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.lock_outline, color: Colors.white.withOpacity(0.5), size: 50,)
                         ],
                       ),
                     ),
@@ -1227,12 +1240,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Text(AppLocalizations.of(context)!.myProgress, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
-                              Icon(Icons.lock_outline, color: Colors.white.withOpacity(0.5),),
-                            ],
-                          ),
+                          Text(AppLocalizations.of(context)!.myProgress, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           Text(AppLocalizations.of(context)!.myProgressText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 14, color: Colors.white.withOpacity(0.5))),
                         ],

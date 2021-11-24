@@ -200,7 +200,6 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     if (result) {
                       await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
                       await _accessDatabase.leaveBrand(currentUser.id!);
-                      Navigator.pop(context);
                       Navigator.pushReplacement(
                           context,
                           CupertinoPageRoute<Null>(
@@ -210,7 +209,6 @@ class _SettingsBrandState extends State<SettingsBrand> {
                                 name: 'SplashScreen'),
                           )
                       );
-                      currentBrand = Brand();
                     }
                   },
                   child: Row(
