@@ -298,7 +298,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                   ),
                                   SizedBox(width: MediaQuery.of(context).size.width*0.05),
                                   IconButton(
-                                    icon: Icon(Icons.location_on_outlined, size: 35, color: Theme.of(context).primaryColor),
+                                    icon: Icon(Icons.groups_outlined, size: 35, color: Theme.of(context).primaryColor),
                                     padding: EdgeInsets.all(0),
                                     alignment: Alignment.centerLeft ,
                                     onPressed: () {
@@ -319,7 +319,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   IconButton(
-                                    icon: Icon(Icons.group_add_outlined, size: 35, color: Theme.of(context).primaryColor,),
+                                    icon: Icon(Icons.send_outlined, size: 35, color: Theme.of(context).primaryColor,),
                                     padding: EdgeInsets.all(0),
                                     alignment: Alignment.centerRight ,
                                     onPressed: () {
