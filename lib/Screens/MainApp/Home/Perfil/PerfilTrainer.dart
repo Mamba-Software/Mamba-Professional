@@ -278,7 +278,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                   ]
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.03),
+            SizedBox(height: MediaQuery.of(context).size.height*0.04),
             todayEvents.length != 0 ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

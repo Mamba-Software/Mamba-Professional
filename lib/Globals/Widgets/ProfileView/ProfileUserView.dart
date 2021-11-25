@@ -149,7 +149,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                 onPressed: () {
                   print("Travel to Chat");
                 } ,
-                icon: Icon(Icons.chat)
+                icon: Icon(Icons.chat_outlined)
               ),
             )
           ],

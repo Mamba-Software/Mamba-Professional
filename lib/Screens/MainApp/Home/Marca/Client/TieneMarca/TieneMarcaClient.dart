@@ -194,6 +194,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                           type: PageTransitionType.bottomToTop,
                           child: CalendarWidgetClient(
                             brandID: currentBrand.id!,
+                            onlyView: false,
                           )
                       )
                   ).whenComplete(() {
@@ -276,7 +277,9 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                       context,
                       PageTransition(
                           type: PageTransitionType.bottomToTop,
-                          child: TodosMiembrosClient()
+                          child: TodosMiembrosClient(
+                            brandID: currentBrand.id!,
+                          )
                       )
                   ).whenComplete(() {
                     setState(() {
