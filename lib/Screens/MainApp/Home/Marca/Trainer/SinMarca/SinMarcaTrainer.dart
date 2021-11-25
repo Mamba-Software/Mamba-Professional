@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -361,7 +362,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                           icon: Icon(Icons.send_outlined, size: 35, color: Theme.of(context).primaryColor),
                                           padding: EdgeInsets.all(0),
                                           onPressed: () {
-
+                                            _accessDatabase.sendRequest(brand.id!, currentUser.name! ,currentUser.isTrainer!);
                                           },
                                         ),
                                         Text(

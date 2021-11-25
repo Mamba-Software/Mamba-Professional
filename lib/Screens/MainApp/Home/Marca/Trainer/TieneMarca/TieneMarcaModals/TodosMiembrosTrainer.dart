@@ -15,6 +15,8 @@ import 'package:page_transition/page_transition.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
+import 'AddMember.dart';
+
 class TodosMiembrosTrainer extends StatefulWidget {
   const TodosMiembrosTrainer({Key? key}) : super(key: key);
 
@@ -126,18 +128,15 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                 padding: const EdgeInsets.only(right: 8.0),
                 child: IconButton(
                     onPressed: () async {
-                      Clipboard.setData(new ClipboardData(text: currentBrand.id)).then((_){
-                        showTopSnackBar(
+                      Navigator.push(
                           context,
-                          CustomSnackBar.info(
-                            icon: Container(),
-                            iconRotationAngle: 0,
-                            backgroundColor: Theme.of(context).accentColor,
-                            message: AppLocalizations.of(context)!.copyCorrectCode,
-                            textStyle: Styles.whiteTextStyle,
-                          ),
-                        );
-                      });
+                          PageTransition(
+                              type: PageTransitionType.bottomToTop,
+                              child: AddMember(
+                                brandId: currentBrand.id!,
+                              )
+                          )
+                      );
                     },
                     icon: Icon(
                       Icons.group_add,

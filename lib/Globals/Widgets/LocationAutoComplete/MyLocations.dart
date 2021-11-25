@@ -142,7 +142,7 @@ class _MyLocationsState extends State<MyLocations> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.01),
             StreamBuilder<QuerySnapshot>(
-                stream: _accessDatabase.getAllLocationsBrand(currentBrand.id!),
+                stream: _accessDatabase.getAllLocationsBrand(widget.brandId),
                 builder: (context, snapshot) {
                   if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
                     return Container(

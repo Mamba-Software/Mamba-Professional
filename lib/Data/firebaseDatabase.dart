@@ -11,6 +11,7 @@ import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Question.dart';
+import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:uuid/uuid.dart';
 
@@ -229,6 +230,7 @@ class FirebaseDatabaseService {
       return 1;
     }
   }
+
   Future<String> updateCurrentUserPhoto(File image) async {
     User? firebaseUser = await getCurrentUser();
     String imageURL = "";
@@ -744,7 +746,6 @@ class FirebaseDatabaseService {
       print(e.toString());
     }
   }
-
   // Delete Location
   Future<bool> deleteLocation(String locationId) async {
     try {
@@ -778,6 +779,47 @@ class FirebaseDatabaseService {
     DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Locations").doc(locationId).get();
     return Location.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
+
+  // Brand Requests
+
+  // Send Request
+  Future<void> sendRequest(String brandId, String name, bool isTrainer) async {
+    User? currentUser = await getCurrentUser();
+    var uid = Uuid().v1();
+    DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yy');
+    final String formatted = formatter.format(now);
+    await _firestore.collection("Requests").doc(uid).set({
+      "brandId": brandId,
+      "userId": currentUser!.uid,
+      "name": name,
+      "isTrainer": isTrainer,
+      "dateSent": formatted,
+      "year": now.year.toString(),
+      "month": now.month.toString(),
+      "day": now.day.toString(),
+    });
+  }
+
+  // Accept Request
+  Future<void> acceptRequest(String requestId) async {
+    // Get the Request
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Requests").doc(requestId).get();
+    RequestToBrand request =  RequestToBrand.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+    // Accept the user to Brand
+    await _firestore.collection("Users").doc(request.userId).update({
+      "brandID": request.brandId,
+    });
+    // Delete the Request
+    await _firestore.collection("Requests").doc(requestId).delete();
+  }
+
+  // Delete Request
+  Future<void> deleteRequest(String requestId) async {
+    // Delete the Request
+    await _firestore.collection("Requests").doc(requestId).delete();
+  }
+
 
   //Questions
 
@@ -966,11 +1008,18 @@ class FirebaseDatabaseService {
   }
 
   // Locations
-  // Brands
   Stream<QuerySnapshot> getAllLocationsBrand(String brandId) {
     return _firestore
         .collection("Locations")
         .where("brandID", isEqualTo: brandId)
+        .snapshots();
+  }
+
+  // Requests
+  Stream<QuerySnapshot> getAllRequestsBrand(String brandId) {
+    return _firestore
+        .collection("Requests")
+        .where("brandId", isEqualTo: brandId)
         .snapshots();
   }
 

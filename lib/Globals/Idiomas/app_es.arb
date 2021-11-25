@@ -678,6 +678,10 @@
   "@inviteCodeOptional":{
     "description": "inviteCode text"
   },
+  "copyCodeMessage": "Envia tu código de invitación",
+  "@copyCodeMessage":{
+    "description": "inviteCode text"
+  },
   "copyCorrectCode": "Código de invitación copiado correctamente",
   "@copyCorrectCode":{
     "description": "inviteCode text"
@@ -868,6 +872,28 @@
   "noMembersFound": "No hemos encontrado ningún miembro",
   "@noMembersFound": {
     "description": "Wellcome message"
+  },
+  "myRequests": "Solicitudes",
+  "@myRequests": {
+    "description": "Wellcome message"
+  },
+  "requestFromUser": " quiere unirse como {type}",
+  "@requestFromUser": {
+    "description": "requestFromUser message",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "requestSent": "Enviada el {dateJoined}",
+  "@requestSent": {
+    "description": "Member Since message",
+    "placeholders": {
+      "dateJoined": {
+        "type": "String"
+      }
+    }
   },
   "myLocations": "Mis ubicaciones",
   "@myLocations": {
