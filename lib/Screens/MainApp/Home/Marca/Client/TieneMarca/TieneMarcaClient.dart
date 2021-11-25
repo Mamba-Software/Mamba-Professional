@@ -279,6 +279,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                           type: PageTransitionType.bottomToTop,
                           child: TodosMiembrosClient(
                             brandID: currentBrand.id!,
+                            viewOnly: false,
                           )
                       )
                   ).whenComplete(() {

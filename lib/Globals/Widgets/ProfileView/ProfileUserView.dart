@@ -18,7 +18,8 @@ import '../LoadingViewPurple.dart';
 class ProfileViewUser extends StatefulWidget {
   @override
   String userID;
-  ProfileViewUser({Key? key, required this.userID}) : super(key: key);
+  bool viewOnly;
+  ProfileViewUser({Key? key, required this.userID, required this.viewOnly}) : super(key: key);
   _ProfileViewUserState createState() => _ProfileViewUserState();
 }
 
@@ -143,15 +144,16 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
             },
           ),
           actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
+            !isLoading ?
+            widget.viewOnly || user!.id! == currentUser.id ? Container() : Padding(
+              padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.03),
               child: IconButton(
                 onPressed: () {
                   print("Travel to Chat");
                 } ,
                 icon: Icon(Icons.chat_outlined)
               ),
-            )
+            ) : Container()
           ],
         ),
         body: isLoading ?

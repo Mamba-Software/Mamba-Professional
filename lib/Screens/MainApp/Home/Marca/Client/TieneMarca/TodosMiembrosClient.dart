@@ -17,7 +17,8 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class TodosMiembrosClient extends StatefulWidget {
   String brandID;
-  TodosMiembrosClient({Key? key, required this.brandID}) : super(key: key);
+  bool viewOnly;
+  TodosMiembrosClient({Key? key, required this.brandID, required this.viewOnly}) : super(key: key);
 
   @override
   _TodosMiembrosClientState createState() => _TodosMiembrosClientState();
@@ -55,21 +56,16 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
   }
 
   Future<void> getAllClientsFromBrand() async {
-    List<Usuario> privateUsers = [];
     allClients = await _accessDatabase.getAllClientsFromBrand(widget.brandID);
     for (var i=0; i< allClients.length; i++) {
       Usuario client = allClients[i];
       if (client.id == currentUser.id) {
         filteredClients.insert(0, client);
       } else {
-        if (client.isPrivate!) {
-          privateUsers.add(client);
-        } else {
-          filteredClients.add(client);
-        }
+        filteredClients.add(client);
       }
     }
-    filteredClients.addAll(privateUsers);
+    filteredClients = orderClientsPrivateLast(filteredClients);
   }
 
   void filterSearchResults(String query, bool isTrainer) {
@@ -97,14 +93,33 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
           }
         }
         setState(() {
-          filteredClients = usersFiltered;
+          filteredClients = orderClientsPrivateLast(usersFiltered);
         });
       } else {
         setState(() {
-          filteredClients = allClients;
+          filteredClients =  orderClientsPrivateLast(allClients);
         });
       }
     }
+  }
+
+  List<Usuario> orderClientsPrivateLast(List<Usuario> clients) {
+    List<Usuario> orderedUsers = [];
+    List<Usuario> privateUsers = [];
+    for (var i=0; i< clients.length; i++) {
+      Usuario client = clients[i];
+      if (client.id == currentUser.id) {
+        orderedUsers.insert(0, client);
+      } else {
+        if (client.isPrivate!) {
+          privateUsers.add(client);
+        } else {
+          orderedUsers.add(client);
+        }
+      }
+    }
+    orderedUsers.addAll(privateUsers);
+    return orderedUsers;
   }
 
   String splitCommonName(String name) {
@@ -218,7 +233,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                 padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
                                 child: GestureDetector(
                                   onTap: () {
-                                    Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
+                                    Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!, viewOnly: widget.viewOnly,)));
                                   },
                                   child: Container(
                                       height: MediaQuery.of(context).size.height*0.09,
@@ -280,7 +295,21 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                               ],
                                             ),
                                           ),
-                                          Container(
+                                          widget.viewOnly || user.id! == currentUser.id ? Container(
+                                            width: MediaQuery.of(context).size.width*0.15,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                IconButton(
+                                                  icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: 20,),
+                                                  alignment: Alignment.centerRight,
+                                                  padding: EdgeInsets.all(0),
+                                                  onPressed: false ? () {
+                                                  } : null,
+                                                ),
+                                              ],
+                                            ),
+                                          ) : Container(
                                             width: MediaQuery.of(context).size.width*0.15,
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.end,
@@ -435,7 +464,16 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                     padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
                                     child: GestureDetector(
                                       onTap: () {
-                                        Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
+                                        Navigator.push(
+                                            context,
+                                            PageTransition(
+                                                type: PageTransitionType.bottomToTop,
+                                                child: ProfileViewUser(
+                                                  userID: user.id!,
+                                                  viewOnly: widget.viewOnly,
+                                                )
+                                            )
+                                        );
                                       },
                                       child: Container(
                                           height: MediaQuery.of(context).size.height*0.09,
@@ -497,7 +535,21 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                                   ],
                                                 ),
                                               ),
-                                              Container(
+                                              widget.viewOnly || user.id! == currentUser.id ? Container(
+                                                width: MediaQuery.of(context).size.width*0.15,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  children: [
+                                                    IconButton(
+                                                      icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: 20,),
+                                                      alignment: Alignment.centerRight,
+                                                      padding: EdgeInsets.all(0),
+                                                      onPressed: false ? () {
+                                                      } : null,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ) : Container(
                                                 width: MediaQuery.of(context).size.width*0.15,
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.end,
