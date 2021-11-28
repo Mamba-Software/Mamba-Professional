@@ -121,8 +121,12 @@ class DatabaseAccess {
   //Questions
   Stream<QuerySnapshot> getAllQuestions() => _firebase.getAllQuestions();
 
+  //Conversations
+  Stream<QuerySnapshot> getUserConversations(Usuario user) => _firebase.getUserConversations(user);
+
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //Admin
   Future<Stream<QuerySnapshot>> getAllUsers() async => await _firebase.getAllUsers();
+
 }

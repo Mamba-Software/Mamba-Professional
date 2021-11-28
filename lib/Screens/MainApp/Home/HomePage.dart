@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
       Perfil(),
       Marca(),
       Notifications(),
-      Chat(),
+      UserChat(),
     ];
     return Scaffold(
       appBar: null,
