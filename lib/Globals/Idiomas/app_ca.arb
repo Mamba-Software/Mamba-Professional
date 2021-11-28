@@ -253,6 +253,7 @@
   "finishedFeedbackSubtitle": "Gràcies pel teu temps!",
   "sendFeedback": "Enviar",
   "sendRequestConfirmation": "Estàs segur que vols enviar una sol·licitud a aquesta marca?\n\nEls organitzadors rebran una notificació. Fins que aquesta no sigui acceptada o rebutjada no podràs enviar una altra sol·licitud a cap marca.",
-  "cancelRequestConfirmation": "Estàs segur que vols anul·lar la teva sol·licitud a aquesta marca? Encara no hi ha hagut resposta dels organitzadors.\n\nAquesta canvi tindrà un efecte inmediat i ara podràs enviar una sol·licitud a una altre marca."
+  "cancelRequestConfirmation": "Vols anul·lar la teva sol·licitud a aquesta marca? Encara no has rebut resposta dels organitzadors.\n\nAquesta canvi tindrà un efecte inmediat i ara podràs enviar una sol·licitud a una altre marca.",
+  "waitingRequestConfirmation": "Esperant resposta a sol·licitud d'admissió per part de "
 
 }

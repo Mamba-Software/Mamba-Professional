@@ -61,6 +61,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
     } else {
       setState(() {
         request = null;
+        brandIdRequest = "";
       });
     }
   }
@@ -94,50 +95,62 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
           centerTitle: false,
           automaticallyImplyLeading: false,
           actions: [
-            request != null ? IconButton(
-              icon: Icon(Icons.schedule_send, size: 35, color: !codigoClicked ? Theme.of(context).primaryColor : Colors.white,),
-              onPressed: () async {
-                Brand brand = brandList.singleWhere((element) => element.id == request!.brandId!);
-                var result = await showDialog(
-                    context: context,
-                    builder: (_) {
-                      return CancelRequestConfirmationDialog(
-                        text: AppLocalizations.of(context)!.cancelRequestConfirmation,
-                        brand: brand,
-                      );
+            request != null ?
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.schedule_send, size: 35, color: Theme.of(context).accentColor),
+                  onPressed: () async {
+                    Brand brand = brandList.singleWhere((element) => element.id == request!.brandId!);
+                    var result = await showDialog(
+                        context: context,
+                        builder: (_) {
+                          return CancelRequestConfirmationDialog(
+                            text: AppLocalizations.of(context)!.cancelRequestConfirmation,
+                            brand: brand,
+                          );
+                        }
+                    );
+                    if (result) {
+                      setState(() {
+                        brandIdRequest = "";
+                      });
+                      _accessDatabase.deleteRequest(request!.id!);
+                      getUserPendingRequests();
                     }
-                );
-                if (result) {
-                  setState(() {
-                    brandIdRequest = "";
-                  });
-                  _accessDatabase.deleteRequest(request!.id!);
-                }
-              }
-            ) : IconButton(
-              icon: Icon(Icons.qr_code_outlined, size: 35, color: !codigoClicked ? Theme.of(context).primaryColor : Colors.white,),
-              onPressed: !codigoClicked ? () {
-                setState(() {
-                  codigoClicked = true;
-                });
-              } : null,
+                  }
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width*0.03,),
+              ],
+            ) :
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.qr_code_outlined, size: 35, color: !codigoClicked ? Theme.of(context).primaryColor : Colors.white,),
+                  onPressed: !codigoClicked ? () {
+                    setState(() {
+                      codigoClicked = true;
+                    });
+                  } : null,
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width*0.03,),
+                IconButton(
+                  icon: Icon(Icons.add_circle, size: 35, color: Theme.of(context).accentColor,),
+                  onPressed: () async {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute<Null>(
+                          builder: (context) => RegistrarMarca(
+                            locale: Localizations.localeOf(context),
+                          ),
+                          settings: RouteSettings(name: 'RegistrarMarca'),
+                        )
+                    );
+                  },
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width*0.03,)
+              ],
             ),
-            SizedBox(width: MediaQuery.of(context).size.width*0.03,),
-            IconButton(
-              icon: Icon(Icons.add_circle, size: 35, color: Theme.of(context).accentColor,),
-              onPressed: () async {
-                Navigator.push(
-                    context,
-                    CupertinoPageRoute<Null>(
-                      builder: (context) => RegistrarMarca(
-                        locale: Localizations.localeOf(context),
-                      ),
-                      settings: RouteSettings(name: 'RegistrarMarca'),
-                    )
-                );
-              },
-            ),
-            SizedBox(width: MediaQuery.of(context).size.width*0.03,)
           ],
           bottom: codigoClicked ? PreferredSize(
             preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.10,),

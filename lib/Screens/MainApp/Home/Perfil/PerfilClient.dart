@@ -10,8 +10,11 @@ import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEven
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CancelRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
+import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/Settings.dart';
 import 'package:page_transition/page_transition.dart';
@@ -40,6 +43,9 @@ class _PerfilClientState extends State<PerfilClient> {
   bool codigoClicked = false;
   bool isLoadingCodigo = false;
   var _codigoController = TextEditingController();
+  // Request To Brand
+  RequestToBrand request = RequestToBrand();
+  Brand? brandRequested = Brand();
 
   @override
   void initState() {
@@ -48,9 +54,10 @@ class _PerfilClientState extends State<PerfilClient> {
     super.initState();
   }
   // Init for Brand Home
-  initProfileHome() {
+  initProfileHome() async {
     getUser();
     getUserEventsToday();
+    await getUserPendingRequests();
     getClientEventsDone();
   }
 
@@ -61,6 +68,16 @@ class _PerfilClientState extends State<PerfilClient> {
   // Gets user events today.
   void getUserEventsToday() async {
     todayEvents = await _accessDatabase.getAllEventsTodayUser(currentUser.id!, currentUser.isTrainer!);
+  }
+
+  Future<void> getUserPendingRequests() async {
+    RequestToBrand? req = await _accessDatabase.hasPendingRequest(currentUser.id!);
+    if (req != null) {
+      brandRequested = await _accessDatabase.getBrandDetails(req.brandId!);
+      request = req;
+    } else {
+      request = RequestToBrand();
+    }
   }
 
   void getClientEventsDone() async {
@@ -912,153 +929,214 @@ class _PerfilClientState extends State<PerfilClient> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.04),
             SizedBox(height: MediaQuery.of(context).size.height*0.02),
-            Container(
-              height: MediaQuery.of(context).size.height*0.07,
-              child: !codigoClicked ? Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                    child: FloatingActionButton.extended(
-                      onPressed: () {
-                        setState(() {
-                          codigoClicked = !codigoClicked;
-                        });
-                      },
-                      backgroundColor: Colors.green,
-                      icon: Icon(Icons.qr_code_outlined, size: 35,color: Colors.white,),
-                      label: Text(AppLocalizations.of(context)!.addCode,
-                        style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  )
-                ],
-              ) : Padding(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Flexible(
-                        child: Material(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(13)
-                          ),
-                          elevation: 5,
-                          child: new TextFormField(
-                            controller: _codigoController,
-                            onChanged: (val) {
-                              setState(() {
-                                codigoError = false;
-                                _codigo = val;
-                              });
-                            },
-                            decoration: InputDecoration(
-                              hintText: AppLocalizations.of(context)!.codigo,
-                              hintStyle: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
-                                borderRadius: BorderRadius.circular(13.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
-                                borderRadius: BorderRadius.circular(13.0),
-                              ),
-                            ),
-                            style: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
-                            textAlign: TextAlign.center,
+            request.id == null ?
+            Column(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height*0.07,
+                  child: !codigoClicked ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                        child: FloatingActionButton.extended(
+                          onPressed: () {
+                            setState(() {
+                              codigoClicked = !codigoClicked;
+                            });
+                          },
+                          backgroundColor: Colors.green,
+                          icon: Icon(Icons.qr_code_outlined, size: 35,color: Colors.white,),
+                          label: Text(AppLocalizations.of(context)!.addCode,
+                            style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
                           ),
                         ),
-                      ),
-                      !isLoadingCodigo ?
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 15.0),
-                            child: FloatingActionButton(
-                              child: Icon(Icons.login),
-                              backgroundColor: Colors.green,
-                              foregroundColor: Styles.white,
-                              onPressed: () async {
-                                if(_codigo == null || _codigo=="") {
+                      )
+                    ],
+                  ) : Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          Flexible(
+                            child: Material(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(13)
+                              ),
+                              elevation: 5,
+                              child: new TextFormField(
+                                controller: _codigoController,
+                                onChanged: (val) {
                                   setState(() {
-                                    codigoError = true;
+                                    codigoError = false;
+                                    _codigo = val;
                                   });
-                                } else {
-                                  setState(() {
-                                    isLoadingCodigo = true;
-                                  });
-                                  var result = await _accessDatabase.checkIfBrandExists(_codigo);
-                                  if (!result) {
-                                    Future.delayed(const Duration(milliseconds: 500), () {
-                                      setState(() {
-                                        isLoadingCodigo = false;
-                                        codigoError = true;
-                                      });
-                                    });
-                                  } else {
-                                    await _accessDatabase.updateCurrentUserBrand(_codigo);
-                                    Navigator.pushReplacement(
-                                        context,
-                                        CupertinoPageRoute<Null>(
-                                          builder: (context) =>
-                                              SplashScreen(),
-                                          settings: RouteSettings(
-                                              name: 'SplashScreen'),
-                                        )
-                                    );
-                                  }
-                                }
-                              },
+                                },
+                                decoration: InputDecoration(
+                                  hintText: AppLocalizations.of(context)!.codigo,
+                                  hintStyle: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
+                                    borderRadius: BorderRadius.circular(13.0),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
+                                    borderRadius: BorderRadius.circular(13.0),
+                                  ),
+                                ),
+                                style: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 5.0),
-                            child: FloatingActionButton(
-                              heroTag: null,
-                              child: Icon(Icons.close),
-                              backgroundColor: Colors.red,
-                              foregroundColor: Styles.white,
-                              onPressed: () async {
-                                setState(() {
-                                  codigoClicked = !codigoClicked;
-                                  codigoError = false;
-                                  _codigoController.text = "";
-                                });
-                              },
+                          !isLoadingCodigo ?
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 15.0),
+                                child: FloatingActionButton(
+                                  child: Icon(Icons.login),
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: Styles.white,
+                                  onPressed: () async {
+                                    if(_codigo == null || _codigo=="") {
+                                      setState(() {
+                                        codigoError = true;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        isLoadingCodigo = true;
+                                      });
+                                      var result = await _accessDatabase.checkIfBrandExists(_codigo);
+                                      if (!result) {
+                                        Future.delayed(const Duration(milliseconds: 500), () {
+                                          setState(() {
+                                            isLoadingCodigo = false;
+                                            codigoError = true;
+                                          });
+                                        });
+                                      } else {
+                                        await _accessDatabase.updateCurrentUserBrand(_codigo);
+                                        Navigator.pushReplacement(
+                                            context,
+                                            CupertinoPageRoute<Null>(
+                                              builder: (context) =>
+                                                  SplashScreen(),
+                                              settings: RouteSettings(
+                                                  name: 'SplashScreen'),
+                                            )
+                                        );
+                                      }
+                                    }
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5.0),
+                                child: FloatingActionButton(
+                                  heroTag: null,
+                                  child: Icon(Icons.close),
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Styles.white,
+                                  onPressed: () async {
+                                    setState(() {
+                                      codigoClicked = !codigoClicked;
+                                      codigoError = false;
+                                      _codigoController.text = "";
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ) :
+                          SizedBox(
+                            width: 130,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                FloatingActionButton(
+                                    heroTag: null,
+                                    child: SizedBox(
+                                      width: 100,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(18.0),
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      ),
+                                    ),
+                                    backgroundColor: Colors.orangeAccent,
+                                    foregroundColor: Styles.white,
+                                    onPressed: false ? () {} : null
+                                ),
+                              ],
                             ),
                           ),
                         ],
-                      ) :
-                      SizedBox(
-                        width: 130,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                      )
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+              ],
+            ) :
+            Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.01),
+                  child: ListTile(
+                    leading: CircularImage(
+                      size: MediaQuery.of(context).size.width*0.15,
+                      image: brandRequested!.logoUrl!,
+                      color: Theme.of(context).accentColor,
+                      borderWidth: 1,
+                    ),
+                    title: Container(
+                      child: RichText(
+                        text: TextSpan(
+                          style: Styles.purpleTextStyle.copyWith(fontSize: 16),
                           children: [
-                            FloatingActionButton(
-                                heroTag: null,
-                                child: SizedBox(
-                                  width: 100,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(18.0),
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2,
-                                    ),
-                                  ),
-                                ),
-                                backgroundColor: Colors.orangeAccent,
-                                foregroundColor: Styles.white,
-                                onPressed: false ? () {} : null
-                            ),
+                            TextSpan(text: AppLocalizations.of(context)!.waitingRequestConfirmation),
+                            TextSpan(text: brandRequested!.name!, style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
                           ],
                         ),
                       ),
-                    ],
-                  )
-              ),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                        Text(
+                          AppLocalizations.of(context)!.requestSent(request.dateSent!),
+                          style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                    trailing: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 30,),
+                    onTap: () async {
+                      var result = await showDialog(
+                          context: context,
+                          builder: (_) {
+                            return CancelRequestConfirmationDialog(
+                              text: AppLocalizations.of(context)!.cancelRequestConfirmation,
+                              brand: brandRequested!,
+                            );
+                          }
+                      );
+                      if (result) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        _accessDatabase.deleteRequest(request.id!);
+                        initProfileHome();
+                      }
+                    },
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.04),
+              ],
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.03),
             GestureDetector(
               onTap: () {
                 Navigator.push(

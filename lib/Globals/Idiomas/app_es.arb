@@ -1060,8 +1060,12 @@
   "@sendRequestConfirmation": {
     "description": "Wellcome message"
   },
-  "cancelRequestConfirmation": "¿Estás seguro que quieres anular tu solicitud a esta marca? Aún no ha habido respuesta de los organizadores.\n\nEste cambio tendrá un efecto inmediato y ahora podrás enviar una solicitud a otra marca.",
+  "cancelRequestConfirmation": "¿Quieres anular tu solicitud a esta marca? Aún no has recibido respuesta de los organizadores.\n\nEste cambio tendrá un efecto inmediato y ahora podrás enviar una solicitud a otra marca.",
   "@cancelRequestConfirmation": {
+    "description": "Wellcome message"
+  },
+  "waitingRequestConfirmation": "Esperando respuesta a solicitud de admisión por parte de ",
+  "@waitingRequestConfirmation": {
     "description": "Wellcome message"
   }
 }
