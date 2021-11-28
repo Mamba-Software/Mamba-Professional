@@ -135,7 +135,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              height: MediaQuery.of(context).size.height*0.45,
+              height: MediaQuery.of(context).size.height*0.46,
               child: Stack(
                   alignment: Alignment.topCenter,
                   fit: StackFit.expand,
@@ -795,7 +795,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              height: MediaQuery.of(context).size.height*0.45,
+              height: MediaQuery.of(context).size.height*0.46,
               child: Stack(
                   alignment: Alignment.topCenter,
                   fit: StackFit.expand,
@@ -804,9 +804,10 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                       top: 0,
                       bottom: MediaQuery.of(context).size.height*0.28,
                       left: 0,
-                      right: MediaQuery.of(context).size.width*0.65,
+                      right: MediaQuery.of(context).size.width*0.70,
                       child: IconButton(
                         icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 50,),
+                        alignment: Alignment.center,
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -824,9 +825,20 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                       ),
                     ),
                     Positioned(
+                      top: MediaQuery.of(context).size.height*0.12,
+                      bottom: 0,
+                      left: 0,
+                      right: MediaQuery.of(context).size.width*0.70,
+                      child: Text(
+                        AppLocalizations.of(context)!.feedback,
+                        style: Styles.purpleTextStyle.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Positioned(
                       top: 0,
                       bottom: MediaQuery.of(context).size.height*0.28,
-                      left: MediaQuery.of(context).size.width*0.65,
+                      left: MediaQuery.of(context).size.width*0.70,
                       right: 0,
                       child: IconButton(
                         icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: 50,),
@@ -844,6 +856,17 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                             });
                           });
                         },
+                      ),
+                    ),
+                    Positioned(
+                      top: MediaQuery.of(context).size.height*0.12,
+                      bottom: 0,
+                      left: MediaQuery.of(context).size.width*0.70,
+                      right: 0,
+                      child: Text(
+                        AppLocalizations.of(context)!.settings,
+                        style: Styles.purpleTextStyle.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                     Positioned(
