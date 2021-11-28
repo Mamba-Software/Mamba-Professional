@@ -76,7 +76,7 @@ class _FeedBackState extends State<FeedBack> {
             }
           ),
         ),
-        body: !alreadyAnswered ?
+        body: alreadyAnswered ?
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
