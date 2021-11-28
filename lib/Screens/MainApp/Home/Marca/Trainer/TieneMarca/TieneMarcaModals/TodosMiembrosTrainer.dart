@@ -15,7 +15,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
-import 'AddMember.dart';
+import 'MembershipRequests.dart';
 
 class TodosMiembrosTrainer extends StatefulWidget {
   const TodosMiembrosTrainer({Key? key}) : super(key: key);
@@ -52,6 +52,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
 
   Future<void> getAllTrainersFromBrand() async {
     allTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
+    filteredTrainers = [];
     for (var i=0; i< allTrainers.length; i++) {
       Usuario trainer = allTrainers[i];
       if (trainer.id == currentUser.id) {
@@ -132,11 +133,16 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                           context,
                           PageTransition(
                               type: PageTransitionType.bottomToTop,
-                              child: AddMember(
+                              child: MembershipRequests(
                                 brandId: currentBrand.id!,
                               )
                           )
-                      );
+                      ).whenComplete(() {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        getAllUsers();
+                      });
                     },
                     icon: Icon(
                       Icons.group_add,

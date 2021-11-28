@@ -674,6 +674,14 @@
   "@anular":{
     "description": "Cancelar text"
   },
+  "accept": "Aceptar",
+  "@accept":{
+    "description": "Cancelar text"
+  },
+  "reject": "Rechazar",
+  "@reject":{
+    "description": "Cancelar text"
+  },
   "addMembers": "Añadir Miembros",
   "@addMembers":{
     "description": "Añadir Miembros text"
@@ -1066,6 +1074,10 @@
   },
   "waitingRequestConfirmation": "Esperando respuesta a solicitud de admisión por parte de ",
   "@waitingRequestConfirmation": {
+    "description": "Wellcome message"
+  },
+  "requestConfirmation": "¿Quieres aceptar a este usuario como nuevo miembro de tu marca?",
+  "@requestConfirmation": {
     "description": "Wellcome message"
   }
 }

@@ -33,7 +33,7 @@ class RequestToBrand {
     this.dateSent = mapData['dateSent'].toString();
     this.year = mapData['year'].toString();
     this.month = mapData['month'].toString();
-    this.day = mapData['month'].day();
+    this.day = mapData['day'].toString();
   }
 
 
