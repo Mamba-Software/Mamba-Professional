@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:survey_kit/survey_kit.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
@@ -41,7 +42,6 @@ class _UserFeedBackState extends State<UserFeedBack> {
     super.initState();
     isLoading = true;
     this.activeGroup();
-
   }
 
   Future<void> activeGroup() async {
@@ -71,45 +71,34 @@ class _UserFeedBackState extends State<UserFeedBack> {
   @override
   Widget build(BuildContext context) {
     return  isLoading ?
-    LoadingView()
+      Scaffold(
+        body: LoadingViewPurple(),
+      )
         :
      Scaffold(
-       appBar: AppBar(
-         title: Text(AppLocalizations.of(context)!.feedback, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22),),
-         centerTitle: true,
-         leading: IconButton(
-           icon: Icon(Icons.arrow_back, size: 25,color: Styles.accent
-           ),
-             onPressed: () {
-               Navigator.pop(context);
-             },
-           tooltip: 'Back',
-         ),
-       ),
        body: Container(
-         color: Colors.white,
+         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+         color: Theme.of(context).scaffoldBackgroundColor,
          child: Align(
            alignment: Alignment.center,
            child: FutureBuilder<Task>(
              future: getSampleTask(),
              builder: (context, snapshot) {
-               if (snapshot.connectionState == ConnectionState.done &&
-                   snapshot.hasData &&
-                   snapshot.data != null) {
+               if (snapshot.connectionState == ConnectionState.done && snapshot.hasData && snapshot.data != null) {
                  final task = snapshot.data!;
                  return SurveyKit(
                    onResult: (SurveyResult result) {
                      if(result.finishReason.toString() == "FinishReason.COMPLETED") {
                        this._accessDatabase.addAnswers(
-                           this.groupOfQuestions.id, result.results[0]
-                           .results[0].valueIdentifier, result.results[1]
-                           .results[0].valueIdentifier,
-                           result.results[2].results[0].valueIdentifier, result
-                           .results[3].results[0].valueIdentifier);
-
+                         this.groupOfQuestions.id, result.results[0]
+                         .results[0].valueIdentifier, result.results[1]
+                         .results[0].valueIdentifier,
+                         result.results[2].results[0].valueIdentifier, result
+                         .results[3].results[0].valueIdentifier
+                       );
                        sendFeedback();
                      }
-                     else notsendFeedback();
+                     else notSendFeedback();
                    },
                    task: task,
                    themeData: Theme.of(context).copyWith(
@@ -214,7 +203,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
       );
     }
 
-  Future<void> notsendFeedback() async {
+  Future<void> notSendFeedback() async {
     showTopSnackBar(
       context,
       CustomSnackBar.success(
@@ -226,7 +215,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
       ),
     );
   }
-  Future<Task> getSampleTask()  {
+  Future<Task> getSampleTask() {
      var task = NavigableTask(
        id: TaskIdentifier(),
        steps: [
@@ -301,7 +290,6 @@ class _UserFeedBackState extends State<UserFeedBack> {
   Future<Task> getJsonTask() async {
     final taskJson = await rootBundle.loadString('assets/example_json.json');
     final taskMap = json.decode(taskJson);
-
     return Task.fromJson(taskMap);
   }
 }
