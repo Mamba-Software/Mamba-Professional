@@ -17,7 +17,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalendarWidgetClient extends StatefulWidget {
   String brandID;
-  CalendarWidgetClient({Key? key, required this.brandID}) : super(key: key);
+  bool onlyView;
+  CalendarWidgetClient({Key? key, required this.brandID, required this.onlyView}) : super(key: key);
 
   @override
   _CalendarWidgetClientState createState() => _CalendarWidgetClientState();
@@ -153,9 +154,9 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                     appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
                       final Appointment appointment = details.appointments.first;
                       return GestureDetector(
-                        onTap: () {
+                        onTap: !widget.onlyView ? () {
                           _viewEvent(appointment.id.toString(), appointment.startTime);
-                        },
+                        } : null,
                         child: Center(
                           child: Material(
                             elevation: 2,

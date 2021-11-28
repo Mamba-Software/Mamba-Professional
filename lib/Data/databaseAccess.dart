@@ -6,6 +6,7 @@ import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Question.dart';
+import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'firebaseDatabase.dart';
 
@@ -17,7 +18,7 @@ class DatabaseAccess {
   // Users
   Future<int> signIn(String email, String password) => _firebase.signIn(email, password);
   Future<void> signOut() => _firebase.signOut();
-  Future<void> resetPassword(String email) => _firebase.resetPassword(email);
+  Future<int> resetPassword(String email) => _firebase.resetPassword(email);
   Future<bool> deleteUser(String password) => _firebase.deleteUser(password);
 
   Future<bool> checkCurrentUser() => _firebase.checkCurrentUser();
@@ -52,6 +53,8 @@ class DatabaseAccess {
   Future<void> updateBrandInfo(String brandID, String name,String description, int maxMembers, List<double> workShift) => _firebase.updateBrandInfo(brandID, name, description, maxMembers, workShift);
   Future<void> updateBrandBaseLocation(String brandID, String locationID) => _firebase.updateBrandBaseLocation(brandID, locationID);
 
+  Future<List<Brand>> getAllBrands() => _firebase.getAllBrands();
+
   // Errors
   Future<bool> addError(String title, String description, String stepsReproduce) => _firebase.addError(title, description, stepsReproduce);
 
@@ -67,7 +70,6 @@ class DatabaseAccess {
 
   Future<bool> joinEvent(String eid, String uid) => _firebase.joinEvent(eid, uid);
   Future<bool> leaveEvent(String eid, String uid, bool isTrainer) => _firebase.leaveEvent(eid, uid, isTrainer);
-
 
   Future<Event> getSingleEvent(String eventId) => _firebase.getSingleEvent(eventId);
 
@@ -86,7 +88,12 @@ class DatabaseAccess {
   Future<bool> deleteLocation(String locationId) => _firebase.deleteLocation(locationId);
   Future<void> deleteBrandLocations(String brandId) => _firebase.deleteBrandLocations(brandId);
   Future<Location> getSingleLocation(String locationId) => _firebase.getSingleLocation(locationId);
-  // Get Single Location
+
+  // Locations
+  Future<void> sendRequest(String brandId, String name, bool isTrainer) => _firebase.sendRequest(brandId, name, isTrainer);
+  Future<void> acceptRequest(String requestId) => _firebase.acceptRequest(requestId);
+  Future<void> deleteRequest(String requestId) => _firebase.deleteRequest(requestId);
+  Future<RequestToBrand?> hasPendingRequest(String userId) => _firebase.hasPendingRequest(userId);
 
   //Questions
   Future<Question> getOneQuestion(String? id) => _firebase.getOneQuestion(id);
@@ -110,13 +117,16 @@ class DatabaseAccess {
   Stream<QuerySnapshot> getAllEventsTodayBrandStream(String brandId) => _firebase.getAllEventsTodayBrandStream(brandId);
 
   // Brands
-  Stream<QuerySnapshot> getAllBrands() => _firebase.getAllBrands();
+  Stream<QuerySnapshot> getAllBrandsStream() => _firebase.getAllBrandsStream();
 
   // Events
   Stream<DocumentSnapshot> getSingleEventStream(String id) => _firebase.getSingleEventStream(id);
 
   // Locations
-  Stream<QuerySnapshot> getAllLocationsBrand(String brandId) => _firebase.getAllLocationsBrand(brandId);
+  Stream<QuerySnapshot> getAllLocationsBrand(String brandId) => _firebase.getAllLocationsBrand(brandId);// Locations
+
+  // Request
+  Stream<QuerySnapshot> getAllRequestsBrand(String brandId) => _firebase.getAllRequestsBrand(brandId);
 
   //Questions
   Stream<QuerySnapshot> getAllQuestions() => _firebase.getAllQuestions();

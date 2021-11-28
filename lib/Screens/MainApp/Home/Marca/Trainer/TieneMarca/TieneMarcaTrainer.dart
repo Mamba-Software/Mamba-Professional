@@ -79,55 +79,43 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                   alignment: Alignment.topCenter,
                   fit: StackFit.expand,
                   children: <Widget>[
-                    /*
-                    // Fons difuminat
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.0,
-                      bottom: MediaQuery.of(context).size.height*0.09,
+                      top: 0,
+                      bottom: MediaQuery.of(context).size.height*0.15,
                       left: 0,
-                      right: 0,
-                      child: Row(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width*0.5,
-                            height: MediaQuery.of(context).size.height,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(MediaQuery.of(context).size.width*0.50),),
-                              color: Theme.of(context).accentColor.withOpacity(0.05),
-                            ),
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width*0.5,
-                            height: MediaQuery.of(context).size.height*0.50,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(bottomRight: Radius.circular(MediaQuery.of(context).size.width*0.50),),
-                              color: Theme.of(context).accentColor.withOpacity(0.15),
-                            ),
-                          ),
-                        ],
+                      right: MediaQuery.of(context).size.width*0.70,
+                      child: IconButton(
+                        icon: Icon(Icons.explore_outlined, color: Theme.of(context).primaryColor, size: 50,),
+                        alignment: Alignment.center,
+                        onPressed: () {
+
+                        },
                       ),
                     ),
-                     */
                     Positioned(
-                      top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.10,
+                      top: MediaQuery.of(context).size.height*0.12,
+                      bottom: 0,
                       left: 0,
-                      right: MediaQuery.of(context).size.width*0.65,
-                      child: Icon(Icons.manage_search, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                      right: MediaQuery.of(context).size.width*0.70,
+                      child: Text(
+                        AppLocalizations.of(context)!.feedback,
+                        style: Styles.purpleTextStyle.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.10,
-                      left: MediaQuery.of(context).size.width*0.65,
+                      bottom: MediaQuery.of(context).size.height*0.15,
+                      left: MediaQuery.of(context).size.width*0.70,
                       right: 0,
                       child: IconButton(
-                        icon: Icon(Icons.settings, color: Theme.of(context).accentColor.withOpacity(0.5), size: 50,),
+                        icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: 50,),
                         onPressed: () {
                           Navigator.push(
                               context,
                               PageTransition(
-                                  type: PageTransitionType.bottomToTop,
-                                  child: SettingsBrand(),
+                                type: PageTransitionType.bottomToTop,
+                                child: SettingsBrand(),
                               )
                           ).whenComplete(() {
                             setState(() {
@@ -139,7 +127,18 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.05,
+                      top: MediaQuery.of(context).size.height*0.12,
+                      bottom: 0,
+                      left: MediaQuery.of(context).size.width*0.70,
+                      right: 0,
+                      child: Text(
+                        AppLocalizations.of(context)!.settings,
+                        style: Styles.purpleTextStyle.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Positioned(
+                      top: MediaQuery.of(context).size.height*0.07,
                       bottom: 0,
                       left: 0,
                       right: 0,
@@ -150,14 +149,14 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                           Container(
                             height: MediaQuery.of(context).size.height * 0.20,
                             child: Center(
-                              child: CircularImage(size: MediaQuery.of(context).size.height * 0.18, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                              child: CircularImage(size: MediaQuery.of(context).size.height * 0.19, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
                             ),
                           ),
                         ],
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.28,
+                      top: MediaQuery.of(context).size.height*0.29,
                       bottom: 0,
                       left: 0,
                       right: 0,

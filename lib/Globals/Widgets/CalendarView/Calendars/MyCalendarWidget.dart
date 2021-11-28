@@ -233,51 +233,54 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                     ),
                                   ),
                                   child: Center(
-                                    child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(event.title!, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),),
-                                      SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                      Text(
-                                        "-",
-                                        style: TextStyle(color: Colors.white, fontSize: 14),
-                                      ),
-                                      SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                      Icon(
-                                        Icons.record_voice_over,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                      Text(
-                                        event.selectedTrainers.length.toString(),
-                                        style: TextStyle(color: Colors.white, fontSize: 14),
-                                      ),
-                                      Container(
-                                          height: 16,
-                                          width: 32,
-                                          child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
-                                      ),
-                                      Icon(
-                                        Icons.directions_run,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                      Text(
-                                        event.joinedMembers.length.toString(),
-                                        style: TextStyle(color: Colors.white, fontSize: 14),
-                                      ),
-                                      Text(
-                                        " / ",
-                                        style: TextStyle(color: Colors.white, fontSize: 14),
-                                      ),
-                                      Text(
-                                        event.maxMembers.toString(),
-                                        style: TextStyle(color: Colors.white, fontSize: 14),
-                                      ),
-                                    ],
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                      child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                          Flexible(child: Text(event.title!, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),)),
+                                          SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                          Text(
+                                            "-",
+                                            style: TextStyle(color: Colors.white, fontSize: 14),
+                                          ),
+                                          SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                          Icon(
+                                            Icons.record_voice_over,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                          SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                          Text(
+                                            event.selectedTrainers.length.toString(),
+                                            style: TextStyle(color: Colors.white, fontSize: 14),
+                                          ),
+                                          Container(
+                                              height: 16,
+                                              width: 32,
+                                              child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
+                                          ),
+                                          Icon(
+                                            Icons.directions_run,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                          SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                          Text(
+                                            event.joinedMembers.length.toString(),
+                                            style: TextStyle(color: Colors.white, fontSize: 14),
+                                          ),
+                                          Text(
+                                            " / ",
+                                            style: TextStyle(color: Colors.white, fontSize: 14),
+                                          ),
+                                          Text(
+                                            event.maxMembers.toString(),
+                                            style: TextStyle(color: Colors.white, fontSize: 14),
+                                          ),
+                                      ],
                                   ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -415,21 +418,35 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
   }
 
   void _viewEvent(String eventId, DateTime startDate) {
-      bool canEdit = true;
+      bool canAction = true;
       if (startDate.isBefore(DateTime.now())) {
-        canEdit = false;
+        canAction = false;
       }
-      Navigator.push(
-        context,
-        PageTransition(
-            type: PageTransitionType.bottomToTop,
-            child: ViewEventTrainer(
-              eventId: eventId,
-              canEdit: canEdit,
-              locale: Localizations.localeOf(context),
-            ),
-        )
-      );
+      if (currentUser.isTrainer!) {
+        Navigator.push(
+            context,
+            PageTransition(
+                type: PageTransitionType.bottomToTop,
+                child: ViewEventTrainer(
+                  eventId: eventId,
+                  canEdit: canAction,
+                  locale: Localizations.localeOf(context),
+                )
+            )
+        );
+      } else {
+        Navigator.push(
+            context,
+            PageTransition(
+                type: PageTransitionType.bottomToTop,
+                child: ViewEventClient(
+                  eventId: eventId,
+                  canJoin: canAction,
+                  locale: Localizations.localeOf(context),
+                )
+            )
+        );
+      }
   }
 
 }

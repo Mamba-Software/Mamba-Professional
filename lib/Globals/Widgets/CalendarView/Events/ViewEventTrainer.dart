@@ -144,7 +144,6 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
         temp.add(client);
       }
     }
-
     setState(() {
       brandClientsJoining = temp;
     });
@@ -224,12 +223,12 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
         backgroundColor: Colors.transparent,
         onSelectedItemChanged: (int index) {
           setState(() {
-            members = event!.joinedMembers.length+index+1;
+            members = event!.joinedMembers.length+index;
             membersController.text = "${event!.joinedMembers.length.toString()} / ${members.toString()}";
           });
         },
         children: new List<Widget>.generate(totalMembers.toInt(), (int index) {
-          var member = event!.joinedMembers.length+index+1;
+          var member = event!.joinedMembers.length+index;
           return new Center(
             child: new Text(
                 "${member.toString()}"
@@ -612,8 +611,8 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                       children: <Widget>[
                                         Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
                                         Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 20),
-                                            width: MediaQuery.of(context).size.width*0.70,
+                                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                            width: MediaQuery.of(context).size.width*0.72,
                                             child: Row(
                                               mainAxisSize: MainAxisSize.max,
                                               children: <Widget>[
@@ -913,7 +912,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                           var trainer = brandTrainersSelected[index];
                                           return GestureDetector(
                                             onTap: () {
-                                              Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: trainer.id!)));
+                                              Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: trainer.id!, viewOnly: false)));
                                             },
                                             child: Padding(
                                               padding: !(index == 0 || index == brandTrainersSelected.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandTrainersSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
@@ -1076,7 +1075,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                           var client = brandClientsJoining[index];
                                           return GestureDetector(
                                             onTap: () {
-                                              Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: client.id!)));
+                                              Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: client.id!, viewOnly: false)));
                                             },
                                             child: Padding(
                                               padding: !(index == 0 || index == brandClientsJoining.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandClientsJoining.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),

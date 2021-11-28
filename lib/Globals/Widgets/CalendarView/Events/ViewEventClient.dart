@@ -627,8 +627,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                       children: <Widget>[
                                         Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
                                         Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 20),
-                                            width: MediaQuery.of(context).size.width*0.70,
+                                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                            width: MediaQuery.of(context).size.width*0.72,
                                             child: Row(
                                               mainAxisSize: MainAxisSize.max,
                                               children: <Widget>[
@@ -928,7 +928,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                           var trainer = brandTrainersSelected[index];
                                           return GestureDetector(
                                             onTap: () {
-                                              Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: trainer.id!)));
+                                              Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: trainer.id!, viewOnly: false,)));
                                             },
                                             child: Padding(
                                               padding: !(index == 0 || index == brandTrainersSelected.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandTrainersSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
@@ -1089,41 +1089,80 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                         itemCount: brandClientsJoining.length,
                                         itemBuilder: (context, int index) {
                                           var client = brandClientsJoining[index];
-                                          return GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: client.id!)));
-                                            },
-                                            child: Padding(
-                                              padding: !(index == 0 || index == brandClientsJoining.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandClientsJoining.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  CircularImage(
-                                                    size: MediaQuery.of(context).size.width*0.2,
-                                                    image: client.imageUrl,
-                                                    color: Theme.of(context).accentColor,
-                                                    borderWidth: 1.5,
-                                                  ),
-                                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                                  Container(
-                                                    width: MediaQuery.of(context).size.width*0.2,
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Expanded(
-                                                          child: Text(
-                                                            splitCommonName(client.name!),
-                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 15),
-                                                            textAlign: TextAlign.center,
-                                                          ),
-                                                        ),
-                                                      ],
+                                          if (client.isPrivate! && client.id != currentUser.id) {
+                                            return GestureDetector(
+                                              onTap: () {
+
+                                              },
+                                              child: Padding(
+                                                padding: !(index == 0 || index == brandClientsJoining.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandClientsJoining.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    CircularImage(
+                                                      size: MediaQuery.of(context).size.width*0.2,
+                                                      image: client.noImageUrl,
+                                                      color: Theme.of(context).accentColor,
+                                                      borderWidth: 1.5,
                                                     ),
-                                                  ),
-                                                ],
+                                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                                    Container(
+                                                      width: MediaQuery.of(context).size.width*0.2,
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              splitCommonName(client.name!),
+                                                              style: Styles.purpleTextStyle.copyWith(fontSize: 15, color: Theme.of(context).primaryColor.withOpacity(0.3)),
+                                                              textAlign: TextAlign.center,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          );
+                                            );
+                                          } else {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: client.id!, viewOnly: false)));
+                                              },
+                                              child: Padding(
+                                                padding: !(index == 0 || index == brandClientsJoining.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandClientsJoining.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    CircularImage(
+                                                      size: MediaQuery.of(context).size.width*0.2,
+                                                      image: client.imageUrl,
+                                                      color: Theme.of(context).accentColor,
+                                                      borderWidth: 1.5,
+                                                    ),
+                                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                                    Container(
+                                                      width: MediaQuery.of(context).size.width*0.2,
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              splitCommonName(client.name!),
+                                                              style: Styles.purpleTextStyle.copyWith(fontSize: 15),
+                                                              textAlign: TextAlign.center,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          }
+
                                         }
                                     ),
                                   ),

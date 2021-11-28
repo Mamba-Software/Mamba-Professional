@@ -91,6 +91,14 @@
   "@forgotPassword":{
     "description": "Contraseña Text "
   },
+  "resetPassword": "Recuperar contraseña",
+  "@resetPassword":{
+    "description": "Contraseña Text "
+  },
+  "recover": "Recuperar",
+  "@recover":{
+    "description": "Contraseña Text "
+  },
   "login": "Inicia Sesión",
   "@login":{
     "description": "LogIn Text "
@@ -279,7 +287,7 @@
   "@feedbackNotSent":{
     "description": "Feedback Not Sent Text"
   },
-  "feedbackAnswered": "Ya has respondido al Feedback de\nesta semana",
+  "feedbackAnswered": "Ya has respondido al Feedback de esta semana!",
   "@feedbackAnswered":{
     "description": "Feedback Answered Text"
   },
@@ -303,7 +311,7 @@
   "@sendFeedback":{
     "description": "Feedback Text Enviar"
   },
-  "memberSince": "Miembro desde {dateJoined}",
+  "memberSince": "Creada el {dateJoined}",
   "@memberSince": {
     "description": "Member Since message",
     "placeholders": {
@@ -642,8 +650,36 @@
   "@book":{
     "description": "Cancelar text"
   },
+  "join": "Unirse",
+  "@join":{
+    "description": "Cancelar text"
+  },
   "leave": "Abandonar",
   "@leave":{
+    "description": "Cancelar text"
+  },
+  "contact": "Contactar",
+  "@contact":{
+    "description": "Cancelar text"
+  },
+  "send": "Enviar",
+  "@send":{
+    "description": "Cancelar text"
+  },
+  "sent": "Enviada",
+  "@sent":{
+    "description": "Cancelar text"
+  },
+  "anular": "Anular",
+  "@anular":{
+    "description": "Cancelar text"
+  },
+  "accept": "Aceptar",
+  "@accept":{
+    "description": "Cancelar text"
+  },
+  "reject": "Rechazar",
+  "@reject":{
     "description": "Cancelar text"
   },
   "addMembers": "Añadir Miembros",
@@ -660,6 +696,10 @@
   },
   "inviteCodeOptional": "¿No tienes ningún código de invitación? ¡No te preocupes! Finaliza el proceso de bienvenida para ver todas las marcas dentro MAMBA.",
   "@inviteCodeOptional":{
+    "description": "inviteCode text"
+  },
+  "copyCodeMessage": "Envia tu código de invitación",
+  "@copyCodeMessage":{
     "description": "inviteCode text"
   },
   "copyCorrectCode": "Código de invitación copiado correctamente",
@@ -816,7 +856,7 @@
       }
     }
   },
-  "noTrainingsDone": "Este usuario no ha participado en ningún evento",
+  "noTrainingsDone": "No ha finalizado ningún evento",
   "@noTrainingsDone": {
     "description": "Wellcome message"
   },
@@ -852,6 +892,28 @@
   "noMembersFound": "No hemos encontrado ningún miembro",
   "@noMembersFound": {
     "description": "Wellcome message"
+  },
+  "myRequests": "Solicitudes",
+  "@myRequests": {
+    "description": "Wellcome message"
+  },
+  "requestFromUser": " quiere unirse como {type}",
+  "@requestFromUser": {
+    "description": "requestFromUser message",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "requestSent": "Enviada el {dateJoined}",
+  "@requestSent": {
+    "description": "Member Since message",
+    "placeholders": {
+      "dateJoined": {
+        "type": "String"
+      }
+    }
   },
   "myLocations": "Mis ubicaciones",
   "@myLocations": {
@@ -1000,6 +1062,22 @@
   },
   "monthEvents": "sesiones este mes",
   "@monthEvents": {
+    "description": "Wellcome message"
+  },
+  "sendRequestConfirmation": "¿Estás seguro que quieres enviar una solicitud a esta marca?\n\nLos organizadores recibirán una notificación. Hasta que esta no sea aceptada o rechazada no podrás enviar otra solicitud a ninguna marca.",
+  "@sendRequestConfirmation": {
+    "description": "Wellcome message"
+  },
+  "cancelRequestConfirmation": "¿Quieres anular tu solicitud a esta marca? Aún no has recibido respuesta de los organizadores.\n\nEste cambio tendrá un efecto inmediato y ahora podrás enviar una solicitud a otra marca.",
+  "@cancelRequestConfirmation": {
+    "description": "Wellcome message"
+  },
+  "waitingRequestConfirmation": "Esperando respuesta a solicitud de admisión por parte de ",
+  "@waitingRequestConfirmation": {
+    "description": "Wellcome message"
+  },
+  "requestConfirmation": "¿Quieres aceptar a este usuario como nuevo miembro de tu marca?",
+  "@requestConfirmation": {
     "description": "Wellcome message"
   }
 }

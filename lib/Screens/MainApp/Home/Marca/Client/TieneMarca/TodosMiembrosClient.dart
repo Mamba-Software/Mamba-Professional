@@ -16,7 +16,9 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class TodosMiembrosClient extends StatefulWidget {
-  const TodosMiembrosClient({Key? key}) : super(key: key);
+  String brandID;
+  bool viewOnly;
+  TodosMiembrosClient({Key? key, required this.brandID, required this.viewOnly}) : super(key: key);
 
   @override
   _TodosMiembrosClientState createState() => _TodosMiembrosClientState();
@@ -49,22 +51,21 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
   }
 
   Future<void> getAllTrainersFromBrand() async {
-    allTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
+    allTrainers = await _accessDatabase.getAllTrainersFromBrand(widget.brandID);
     filteredTrainers = allTrainers;
   }
 
   Future<void> getAllClientsFromBrand() async {
-    List<Usuario> privateUsers = [];
-    allClients = await _accessDatabase.getAllClientsFromBrand(currentBrand.id!);
+    allClients = await _accessDatabase.getAllClientsFromBrand(widget.brandID);
     for (var i=0; i< allClients.length; i++) {
       Usuario client = allClients[i];
-      if (client.isPrivate!) {
-        privateUsers.add(client);
+      if (client.id == currentUser.id) {
+        filteredClients.insert(0, client);
       } else {
         filteredClients.add(client);
       }
     }
-    filteredClients.addAll(privateUsers);
+    filteredClients = orderClientsPrivateLast(filteredClients);
   }
 
   void filterSearchResults(String query, bool isTrainer) {
@@ -92,14 +93,33 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
           }
         }
         setState(() {
-          filteredClients = usersFiltered;
+          filteredClients = orderClientsPrivateLast(usersFiltered);
         });
       } else {
         setState(() {
-          filteredClients = allClients;
+          filteredClients =  orderClientsPrivateLast(allClients);
         });
       }
     }
+  }
+
+  List<Usuario> orderClientsPrivateLast(List<Usuario> clients) {
+    List<Usuario> orderedUsers = [];
+    List<Usuario> privateUsers = [];
+    for (var i=0; i< clients.length; i++) {
+      Usuario client = clients[i];
+      if (client.id == currentUser.id) {
+        orderedUsers.insert(0, client);
+      } else {
+        if (client.isPrivate!) {
+          privateUsers.add(client);
+        } else {
+          orderedUsers.add(client);
+        }
+      }
+    }
+    orderedUsers.addAll(privateUsers);
+    return orderedUsers;
   }
 
   String splitCommonName(String name) {
@@ -128,31 +148,6 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
             //elevation: 0,
             title: Text(AppLocalizations.of(context)!.members, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
             centerTitle: true,
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: IconButton(
-                    onPressed: () async {
-                      Clipboard.setData(new ClipboardData(text: currentBrand.id)).then((_){
-                        showTopSnackBar(
-                          context,
-                          CustomSnackBar.info(
-                            icon: Container(),
-                            iconRotationAngle: 0,
-                            backgroundColor: Theme.of(context).accentColor,
-                            message: AppLocalizations.of(context)!.copyCorrectCode,
-                            textStyle: Styles.whiteTextStyle,
-                          ),
-                        );
-                      });
-                    },
-                    icon: Icon(
-                      Icons.group_add,
-                      size: 30,
-                    )
-                ),
-              )
-            ],
             bottom: TabBar(
               indicator: UnderlineTabIndicator(
                 borderSide: BorderSide(width: 3.0, color:Theme.of(context).accentColor, ),
@@ -228,7 +223,6 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                     ),
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.only(top: 0),
                         child: ListView.builder(
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
@@ -239,7 +233,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                 padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
                                 child: GestureDetector(
                                   onTap: () {
-                                    Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
+                                    Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!, viewOnly: widget.viewOnly,)));
                                   },
                                   child: Container(
                                       height: MediaQuery.of(context).size.height*0.09,
@@ -248,42 +242,86 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
-                                            child: CircularImage(
-                                              size: MediaQuery.of(context).size.width*0.2,
-                                              image: user.imageUrl,
-                                              color: Theme.of(context).primaryColor,
-                                              borderWidth: 1.5,
-                                            ),
-                                          ),
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                width: MediaQuery.of(context).size.width*0.40,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                          Container(
+                                            width: MediaQuery.of(context).size.width*0.80,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
+                                                  child: CircularImage(
+                                                    size: MediaQuery.of(context).size.width*0.2,
+                                                    image: user.imageUrl,
+                                                    color: Theme.of(context).primaryColor,
+                                                    borderWidth: 1.5,
+                                                  ),
+                                                ),
+                                                Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        user.name!,
-                                                        style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                                                        textAlign: TextAlign.left,
+                                                    Container(
+                                                      width: MediaQuery.of(context).size.width*0.40,
+                                                      child: Column(
+                                                        children: [
+                                                          Row(
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            children: [
+                                                              Expanded(
+                                                                child: Text(
+                                                                  user.name!,
+                                                                  style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                                                                  textAlign: TextAlign.left,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            children: [
+                                                              Expanded(
+                                                                child: Text(
+                                                                  "@${user.nick!}",
+                                                                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
+
                                                   ],
                                                 ),
-                                              ),
-
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                          Padding(
-                                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.20),
-                                            child: Icon(
-                                              Icons.arrow_forward_ios,
-                                              size: 30,
-                                              color: Theme.of(context).primaryColor,
+                                          widget.viewOnly || user.id! == currentUser.id ? Container(
+                                            width: MediaQuery.of(context).size.width*0.15,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                IconButton(
+                                                  icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: 20,),
+                                                  alignment: Alignment.centerRight,
+                                                  padding: EdgeInsets.all(0),
+                                                  onPressed: false ? () {
+                                                  } : null,
+                                                ),
+                                              ],
+                                            ),
+                                          ) : Container(
+                                            width: MediaQuery.of(context).size.width*0.15,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                IconButton(
+                                                  icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor, size: 30,),
+                                                  alignment: Alignment.centerRight,
+                                                  padding: EdgeInsets.all(0),
+                                                  onPressed: () {
+                                                  },
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],
@@ -345,12 +383,12 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                               itemCount: filteredClients.length,
                               itemBuilder: (context, index) {
                                 Usuario user = filteredClients[index];
-                                if (!user.isPrivate!) {
+                                if (user.isPrivate! && user.id != currentUser.id) {
                                   return Container(
                                     padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
                                     child: GestureDetector(
                                       onTap: () {
-                                        Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
+
                                       },
                                       child: Container(
                                           height: MediaQuery.of(context).size.height*0.09,
@@ -359,55 +397,83 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             mainAxisSize: MainAxisSize.max,
                                             children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
-                                                child: CircularImage(
-                                                  size: MediaQuery.of(context).size.width*0.2,
-                                                  image: user.imageUrl,
-                                                  color: Theme.of(context).primaryColor,
-                                                  borderWidth: 1.5,
-                                                ),
-                                              ),
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                    width: MediaQuery.of(context).size.width*0.40,
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                              Container(
+                                                width: MediaQuery.of(context).size.width*0.80,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
+                                                      child: CircularImage(
+                                                        size: MediaQuery.of(context).size.width*0.2,
+                                                        image: user.noImageUrl,
+                                                        color: Theme.of(context).primaryColor,
+                                                        borderWidth: 1.5,
+                                                      ),
+                                                    ),
+                                                    Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
-                                                        Expanded(
-                                                          child: Text(
-                                                            user.name!,
-                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                                                            textAlign: TextAlign.left,
+                                                        Container(
+                                                          width: MediaQuery.of(context).size.width*0.40,
+                                                          child: Column(
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                children: [
+                                                                  Expanded(
+                                                                    child: Text(
+                                                                      splitCommonName(user.name!),
+                                                                      style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor.withOpacity(0.3)),
+                                                                      textAlign: TextAlign.left,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
                                                           ),
                                                         ),
+
                                                       ],
                                                     ),
-                                                  ),
-
-                                                ],
+                                                  ],
+                                                ),
                                               ),
-                                              Padding(
-                                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.20),
-                                                child: Icon(
-                                                  Icons.arrow_forward_ios,
-                                                  size: 30,
-                                                  color: Theme.of(context).primaryColor,
+                                              Container(
+                                                width: MediaQuery.of(context).size.width*0.15,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  children: [
+                                                    IconButton(
+                                                      icon: Icon(Icons.visibility_off_outlined, color: Theme.of(context).primaryColor.withOpacity(0.3), size: 30,),
+                                                      alignment: Alignment.centerRight,
+                                                      padding: EdgeInsets.all(0),
+                                                      onPressed: false ? () {
+                                                      } : null,
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ],
                                           )
                                       ),
                                     ),
-                                  );  
+                                  );
                                 } else {
                                   return Container(
                                     padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
                                     child: GestureDetector(
                                       onTap: () {
-                                        Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: user.id!)));
+                                        Navigator.push(
+                                            context,
+                                            PageTransition(
+                                                type: PageTransitionType.bottomToTop,
+                                                child: ProfileViewUser(
+                                                  userID: user.id!,
+                                                  viewOnly: widget.viewOnly,
+                                                )
+                                            )
+                                        );
                                       },
                                       child: Container(
                                           height: MediaQuery.of(context).size.height*0.09,
@@ -416,42 +482,86 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             mainAxisSize: MainAxisSize.max,
                                             children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
-                                                child: CircularImage(
-                                                  size: MediaQuery.of(context).size.width*0.2,
-                                                  image: user.imageUrl,
-                                                  color: Theme.of(context).primaryColor,
-                                                  borderWidth: 1.5,
-                                                ),
-                                              ),
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                    width: MediaQuery.of(context).size.width*0.40,
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                              Container(
+                                                width: MediaQuery.of(context).size.width*0.80,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right:  MediaQuery.of(context).size.width*0.04),
+                                                      child: CircularImage(
+                                                        size: MediaQuery.of(context).size.width*0.2,
+                                                        image: user.imageUrl,
+                                                        color: Theme.of(context).primaryColor,
+                                                        borderWidth: 1.5,
+                                                      ),
+                                                    ),
+                                                    Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
-                                                        Expanded(
-                                                          child: Text(
-                                                            splitCommonName(user.name!),
-                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                                                            textAlign: TextAlign.left,
+                                                        Container(
+                                                          width: MediaQuery.of(context).size.width*0.40,
+                                                          child: Column(
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                children: [
+                                                                  Expanded(
+                                                                    child: Text(
+                                                                      user.name!,
+                                                                      style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                                                                      textAlign: TextAlign.left,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                children: [
+                                                                  Expanded(
+                                                                    child: Text(
+                                                                      "@${user.nick!}",
+                                                                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
                                                           ),
                                                         ),
+
                                                       ],
                                                     ),
-                                                  ),
-
-                                                ],
+                                                  ],
+                                                ),
                                               ),
-                                              Padding(
-                                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.20),
-                                                child: Icon(
-                                                  Icons.arrow_forward_ios,
-                                                  size: 30,
-                                                  color: Theme.of(context).primaryColor,
+                                              widget.viewOnly || user.id! == currentUser.id ? Container(
+                                                width: MediaQuery.of(context).size.width*0.15,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  children: [
+                                                    IconButton(
+                                                      icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: 20,),
+                                                      alignment: Alignment.centerRight,
+                                                      padding: EdgeInsets.all(0),
+                                                      onPressed: false ? () {
+                                                      } : null,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ) : Container(
+                                                width: MediaQuery.of(context).size.width*0.15,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  children: [
+                                                    IconButton(
+                                                      icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor, size: 30,),
+                                                      alignment: Alignment.centerRight,
+                                                      padding: EdgeInsets.all(0),
+                                                      onPressed: () {
+                                                      },
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ],

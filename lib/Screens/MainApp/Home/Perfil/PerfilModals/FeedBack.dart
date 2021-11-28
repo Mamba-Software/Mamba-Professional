@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
@@ -34,11 +35,8 @@ class _FeedBackState extends State<FeedBack> {
   }
 
   Future<void> checkIfAnswered() async {
-    this.groupOfQuestions =
-        await this._accessDatabase.getActiveGroupOfQuestions();
-    alreadyAnswered = await this
-        ._accessDatabase
-        .checkIfAnswersExist(this.groupOfQuestions.id);
+    this.groupOfQuestions = await this._accessDatabase.getActiveGroupOfQuestions();
+    alreadyAnswered = await this ._accessDatabase.checkIfAnswersExist(this.groupOfQuestions.id);
     setState(() {
       isLoading = false;
     });
@@ -46,213 +44,176 @@ class _FeedBackState extends State<FeedBack> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
-        ? Scaffold(
-            appBar: AppBar(
-              title: Text(AppLocalizations.of(context)!.feedback,
-                  style: Styles.purpleTextStyle
-                      .copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
-              centerTitle: true,
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  size: 25,
-                  color: Styles.accent,
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
+    return isLoading ?
+      Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.feedback, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              size: 25,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+        body: LoadingViewPurple(),
+      )
+        :
+      Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.feedback, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22),),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              size: 25,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            }
+          ),
+        ),
+        body: alreadyAnswered ?
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+              child: ListTile(
+                onTap: () async {
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.rightToLeftWithFade,
+                      child: ReportBug(),
+                    )
+                  );
                 },
+                leading: Icon(
+                  Icons.warning_amber,
+                  color: Theme.of(context).accentColor,
+                  size: 30,
+                ),
+                title: Text(
+                  AppLocalizations.of(context)!.reporting,
+                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).accentColor),
+                ),
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  color: Theme.of(context).accentColor,
+                  size: 25,
+                ),
               ),
             ),
-            body: LoadingViewPurple(),
-          )
-        : alreadyAnswered
-            ? Scaffold(
-                appBar: AppBar(
-                  title: Text(
-                      AppLocalizations.of(context)!.feedback,
-                    //AppLocalizations.of(context)!.createBrand,
-                    style: Styles.purpleTextStyle
-                        .copyWith(fontWeight: FontWeight.bold, fontSize: 22),
+            Container(
+              height: 1,
+              color: Theme.of(context).accentColor,
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.10,),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.15),
+              child: Text(
+                AppLocalizations.of(context)!.feedbackAnswered,
+                textAlign: TextAlign.center,
+                style: Styles.purpleTextStyle.copyWith(fontSize: 18),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.05,),
+            Container(
+                height: MediaQuery.of(context).size.height*0.25,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                    color: Theme.of(context).primaryColor,
+                    style: BorderStyle.solid,
                   ),
-                  centerTitle: true,
-                  elevation: 8,
-                  iconTheme: IconThemeData(
-                    color: Colors.white, //change your color here
+                  shape: BoxShape.circle,
+                  image: new DecorationImage(
+                    fit: BoxFit.fitHeight,
+                    image: Image.asset(Constants.doneFeedbackImage).image,
                   ),
-                  leading: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back,
-                        size: 25,
-                        color: Styles.accent,
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      }),
+                )
+            ),
+          ],
+        ) :
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02),
+              child: ListTile(
+                onTap: () async {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.rightToLeftWithFade,
+                        child: ReportBug(),
+                      )
+                  );
+                },
+                leading: Icon(
+                  Icons.warning_amber,
+                  color: Theme.of(context).accentColor,
+                  size: 30,
                 ),
-                body: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.30,
-                      child: Stack(
-                        alignment: Alignment.topCenter,
-                        fit: StackFit.expand,
-                        children: <Widget>[
-                          Positioned(
-                            top: 0,
-                            bottom: MediaQuery.of(context).size.height * 0.10,
-                            left: MediaQuery.of(context).size.width * 0.65,
-                            right: 0,
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.warning_amber,
-                                color: Theme.of(context)
-                                    .accentColor
-                                    .withOpacity(0.5),
-                                size: 50,
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    PageTransition(
-                                      type: PageTransitionType.rightToLeftWithFade,
-                                      child: ReportBug(),
-                                    )).whenComplete(() {
-                                  setState(() {
-                                    //isLoading = true;
-                                    //initProfileHome();
-                                  });
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.05,
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.30,
-                      child: Stack(
-                        alignment: Alignment.topCenter,
-                        fit: StackFit.expand,
-                        children: <Widget>[
-                          Text(
-                            AppLocalizations.of(context)!.feedbackAnswered,
-                            textAlign: TextAlign.center,
-                            style: Styles.purpleTextStyle.copyWith(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                title: Text(
+                  AppLocalizations.of(context)!.reporting,
+                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).accentColor),
                 ),
-              )
-            : Scaffold(
-                appBar: AppBar(
-                  title: Text(
-                    AppLocalizations.of(context)!.feedback,
-                    //AppLocalizations.of(context)!.createBrand,
-                    style: Styles.purpleTextStyle
-                        .copyWith(fontWeight: FontWeight.bold, fontSize: 22),
-                  ),
-                  centerTitle: true,
-                  elevation: 8,
-                  iconTheme: IconThemeData(
-                    color: Colors.white, //change your color here
-                  ),
-                  leading: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back,
-                        size: 25,
-                        color: Styles.accent,
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      }),
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  color: Theme.of(context).accentColor,
+                  size: 25,
                 ),
-                body: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.30,
-                      child: Stack(
-                        alignment: Alignment.topCenter,
-                        fit: StackFit.expand,
-                        children: <Widget>[
-                          Positioned(
-                            top: 0,
-                            bottom: MediaQuery.of(context).size.height * 0.10,
-                            left: MediaQuery.of(context).size.width * 0.65,
-                            right: 0,
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.warning_amber,
-                                color: Theme.of(context)
-                                    .accentColor
-                                    .withOpacity(0.5),
-                                size: 50,
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    PageTransition(
-                                      type: PageTransitionType.bottomToTop,
-                                      child: ReportBug(),
-                                    )).whenComplete(() {
-                                  setState(() {
-                                    //isLoading = true;
-                                    //initProfileHome();
-                                  });
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+              ),
+            ),
+            Container(
+              height: 1,
+              color: Theme.of(context).accentColor,
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.10,),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.15),
+              child: Text(
+                AppLocalizations.of(context)!.feedbackNotAnswered,
+                textAlign: TextAlign.center,
+                style: Styles.purpleTextStyle.copyWith(fontSize: 18),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.05,),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.bottomToTop,
+                    child: UserFeedBack(
                     ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.05,
+                  )).whenComplete(() {
+                      this.checkIfAnswered();
+                  });
+              },
+              child: Container(
+                  height: MediaQuery.of(context).size.height*0.25,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color: Theme.of(context).primaryColor,
+                      style: BorderStyle.solid,
                     ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.30,
-                      child: Stack(
-                        alignment: Alignment.topCenter,
-                        fit: StackFit.expand,
-                        children: <Widget>[
-                          Text(
-                            AppLocalizations.of(context)!.feedbackNotAnswered,
-                            textAlign: TextAlign.center,
-                            style: Styles.purpleTextStyle.copyWith(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          TextButton(
-                              child: Text(AppLocalizations.of(context)!.responderFeedback),
-                              style: TextButton.styleFrom(
-                                  primary: Styles.mainColor),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    PageTransition(
-                                      type: PageTransitionType.bottomToTop,
-                                      child: UserFeedBack(
-                                      ),
-                                    )).whenComplete(() {
-                                  setState(() {
-                                    //isLoading = true;
-                                    //initProfileHome();
-                                  });
-                                  this.checkIfAnswered();
-                                });
-                              }),
-                        ],
-                      ),
+                    shape: BoxShape.circle,
+                    image: new DecorationImage(
+                      fit: BoxFit.fitHeight,
+                      image: Image.asset(Constants.giveFeedbackImage).image,
                     ),
-                  ],
-                ),
-              );
+                  )
+              ),
+            ),
+          ],
+        ),
+      );
   }
 }

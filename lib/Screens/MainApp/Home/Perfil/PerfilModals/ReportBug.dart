@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
@@ -42,225 +43,203 @@ class _ReportBugState extends State<ReportBug> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
-        ? Scaffold(body: LoadingView())
-        : Scaffold(
-            appBar: AppBar(
-              title:
-              Text(AppLocalizations.of(context)!.reporting,
-                  style: Styles.purpleTextStyle.copyWith(
-                      fontWeight: FontWeight.bold, fontSize: 24)),
-              centerTitle: true,
-              elevation: 8,
-              iconTheme: IconThemeData(
-                color: Colors.white, //change your color here
+    return isLoading ?
+      Scaffold(
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context)!.reporting, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+            centerTitle: true,
+            leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  size: 25,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+          ),
+          body: LoadingViewPurple()
+      )
+        :
+      Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.reporting, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+          centerTitle: true,
+          leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                size: 25,
               ),
-              leading: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                    size: 25,
-                      color: Styles.accent
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.height*0.02),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.title,
+                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }),
-              actions: [ IconButton(
-                  icon: Icon(Icons.send, color: Styles.accent),
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      sendError();
-                    }
-                  }),
-                IconButton(
-                    icon: Icon(Icons.delete, color: Styles.accent),
-                    onPressed: () async {
-                      clearControllers();
-                    }),],
-
-            ),
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 20.0, horizontal: 20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    new Container(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 25.0),
-                        child: Form(
-                          key: _formKey,
-                          child: new Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 25.0, right: 25.0, top: 25.0),
-                                  child: new Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      new Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          new Text(
-                                            AppLocalizations.of(context)!.title,
-                                            style: Styles.purpleTextStyle
-                                                .copyWith(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )),
-                              Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 25.0, right: 25.0, top: 2.0),
-                                  child: new Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      new Flexible(
-                                        child: new TextFormField(
-                                          controller: tituloController,
-                                          validator: (val) => val!.isEmpty
-                                              ? AppLocalizations.of(context)!
-                                                  .titleError
-                                              : null,
-                                          onChanged: (val) {
-                                            setState(() => tituloTemp = val);
-                                          },
-                                          decoration: InputDecoration(
-                                            hintText:
-                                                AppLocalizations.of(context)!
-                                                    .titleHint,
-                                          ),
-                                          enabled: true,
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                              Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 25.0,
-                                      right: 25.0,
-                                      top: 25.0,
-                                      bottom: 8.0),
-                                  child: new Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      new Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          new Text(
-                                            AppLocalizations.of(context)!
-                                                .description,
-                                            style: Styles.purpleTextStyle
-                                                .copyWith(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )),
-                              Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 25.0, right: 25.0, top: 2.0),
-                                  child: new Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      new Flexible(
-                                        child: new TextFormField(
-                                            controller: descriptionController,
-                                            validator: (val) => val!.isEmpty
-                                                ? AppLocalizations.of(context)!
-                                                    .descriptionError
-                                                : null,
-                                            onChanged: (val) {
-                                              setState(
-                                                  () => descriptionTemp = val);
-                                            },
-                                            maxLines: 6,
-                                            decoration: Styles
-                                                .textFromInputDecoration
-                                                .copyWith(
-                                                    hintText:
-                                                        AppLocalizations.of(
-                                                                context)!
-                                                            .descriptionHint)),
-                                      ),
-                                    ],
-                                  )),
-                              Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 25.0, right: 25.0, top: 25.0),
-                                  child: new Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      new Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          new Text(
-                                            AppLocalizations.of(context)!
-                                                .reproducteSteps,
-                                            style: Styles.purpleTextStyle
-                                                .copyWith(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )),
-                              Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 25.0, right: 25.0, top: 2.0),
-                                  child: new Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      new Flexible(
-                                        child: new TextFormField(
-                                          controller: stepsReproduceController,
-                                          onChanged: (val) {
-                                            setState(
-                                                () => stepsReproduceTemp = val);
-                                          },
-                                          decoration: InputDecoration(
-                                            hintMaxLines: 2,
-                                            hintText:
-                                                AppLocalizations.of(context)!
-                                                    .reproducteStepsHint,
-                                          ),
-                                          enabled: true,
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                            ],
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                  TextFormField(
+                    controller: tituloController,
+                    validator: (val) => val!.isEmpty
+                        ? AppLocalizations.of(context)!
+                        .titleError
+                        : null,
+                    onChanged: (val) {
+                      setState(() => tituloTemp = val);
+                    },
+                    decoration: InputDecoration(
+                      hintText:
+                      AppLocalizations.of(context)!
+                          .titleHint,
+                    ),
+                    enabled: true,
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.03,),
+                  Text(
+                    AppLocalizations.of(context)!
+                        .description,
+                    style: Styles.purpleTextStyle
+                        .copyWith(
+                        fontSize: 16,
+                        fontWeight:
+                        FontWeight.bold),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                  TextFormField(
+                      controller: descriptionController,
+                      validator: (val) => val!.isEmpty
+                          ? AppLocalizations.of(context)!
+                          .descriptionError
+                          : null,
+                      onChanged: (val) {
+                        setState(
+                                () => descriptionTemp = val);
+                      },
+                      minLines: 1,
+                      maxLines: 6,
+                      decoration: InputDecoration(
+                        hintText:
+                        AppLocalizations.of(context)!
+                            .descriptionError,
+                      ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.03,),
+                  Text(
+                    AppLocalizations.of(context)!
+                        .reproducteSteps,
+                    style: Styles.purpleTextStyle
+                        .copyWith(
+                        fontSize: 16,
+                        fontWeight:
+                        FontWeight.bold),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                  TextFormField(
+                    controller: stepsReproduceController,
+                    onChanged: (val) {
+                      setState(
+                              () => stepsReproduceTemp = val);
+                    },
+                    minLines: 1,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      hintMaxLines: 2,
+                      hintText:
+                      AppLocalizations.of(context)!
+                          .reproducteStepsHint,
+                    ),
+                    enabled: true,
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.03,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Material(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.all(
+                            const Radius.circular(10.0),
                           ),
                         ),
+                        child: Container(
+                            height: MediaQuery.of(context).size.height*0.06,
+                            width: MediaQuery.of(context).size.width*0.30,
+                            decoration: BoxDecoration(
+                                color: Colors.green, borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.send_outlined, color: Theme.of(context).scaffoldBackgroundColor),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.01,),
+                                TextButton(
+                                  onPressed: () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      sendError();
+                                    }
+                                  },
+                                  child: Text(
+                                    AppLocalizations.of(context)!.send,
+                                    style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor, fontSize: 18),
+                                  ),
+                                )
+                              ],
+                            )
+                        ),
                       ),
-                    )
-                  ],
-                ),
+                      SizedBox(width: MediaQuery.of(context).size.width*0.05,),
+                      Material(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.all(
+                            const Radius.circular(10.0),
+                          ),
+                        ),
+                        child: Container(
+                          height: MediaQuery.of(context).size.height*0.06,
+                          width: MediaQuery.of(context).size.width*0.30,
+                          decoration: BoxDecoration(
+                              color: Colors.red, borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.clear, color: Theme.of(context).scaffoldBackgroundColor),
+                              SizedBox(width: MediaQuery.of(context).size.width*0.01,),
+                              TextButton(
+                                onPressed: () async {
+                                  clearControllers();
+                                },
+                                child: Text(
+                                  AppLocalizations.of(context)!.clear,
+                                  style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor, fontSize: 18),
+                                ),
+                              ),
+                            ],
+                          )
+                        ),
+                      ),
+                    ],
+                  )
+                ],
               ),
             ),
-          );
+          ),
+        ),
+      );
   }
 
   // Sends error to the Database.

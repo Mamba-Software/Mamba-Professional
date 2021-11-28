@@ -12,6 +12,7 @@ import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Question.dart';
+import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:uuid/uuid.dart';
 
@@ -24,20 +25,16 @@ class FirebaseDatabaseService {
   // Authentication Services
   Future<int> signIn(String email, String password) async {
     bool error = false;
-    UserCredential authResult = await _auth
-        .signInWithEmailAndPassword(email: email, password: password)
-        .catchError((value) {
+    UserCredential authResult = await _auth .signInWithEmailAndPassword(email: email, password: password).catchError((value){
       error = true;
     });
     if (error) return -1;
-    if (authResult == null)
-      return -1;
+    if (authResult == null) return -1;
     //if (authResult.user != null) {
-    //if (authResult.user!.emailVerified) return 0;
-    //else return -2;
+      //if (authResult.user!.emailVerified) return 0;
+      //else return -2;
     //}
-    else
-      return 0;
+    else return 0;
   }
 
   Future<void> signOut() async {
@@ -52,9 +49,7 @@ class FirebaseDatabaseService {
     try {
       bool error = false;
       User user = await _auth.currentUser!;
-      await _auth
-          .signInWithEmailAndPassword(email: user.email!, password: password)
-          .catchError((value) {
+      await _auth .signInWithEmailAndPassword(email: user.email!, password: password).catchError((value){
         error = true;
       });
       if (error) return false;
@@ -70,19 +65,15 @@ class FirebaseDatabaseService {
   Future<bool> checkCurrentUser() async {
     User currentUser;
     currentUser = await _auth.currentUser!;
-    if (currentUser != null)
-      return true;
-    else
-      return false;
+    if(currentUser != null) return true;
+    else return false;
   }
 
   Future<bool> checkIfItsMe(String uid) async {
     User currentUser;
     currentUser = await _auth.currentUser!;
-    if (currentUser.uid == uid)
-      return true;
-    else
-      return false;
+    if(currentUser.uid == uid) return true;
+    else return false;
   }
 
   Future<User?> getCurrentUser() async {
@@ -93,14 +84,12 @@ class FirebaseDatabaseService {
 
   Future<Usuario> getCurrentUserDetails() async {
     User? currentUser = await getCurrentUser();
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Users").doc(currentUser!.uid).get();
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Users").doc(currentUser!.uid).get();
     return Usuario.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
 
   Future<Usuario> getUserDetails(String uid) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Users").doc(uid).get();
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Users").doc(uid).get();
     return Usuario.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
 
@@ -113,45 +102,47 @@ class FirebaseDatabaseService {
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
     UserCredential? authResult = await _auth
-        .createUserWithEmailAndPassword(email: email, password: password)
+        .createUserWithEmailAndPassword(
+        email: email,
+        password: password)
         .then((userCredential) async {
-      if (userCredential != null && userCredential.user != null) {
-        await _firestore.collection("Users").doc(userCredential.user!.uid).set({
-          "name": null,
-          "nick": null,
-          "email": email,
-          "imageUrl": null,
-          "noImageUrl":
-              "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
-          "isFirst": true,
-          "isTrainer": null,
-          "isPrivate": true,
-          "gender": null,
-          "dateJoined": formatted,
-          "dateOfBirth": null,
-          "idioma": idioma,
-          "previousIdioma": null,
-          "brandID": null,
-          "isAdmin": false,
-        }).catchError((err) {
-          print(err);
-          firestoreError = true;
-        });
-        await userCredential.user!.sendEmailVerification();
-      }
-      return userCredential;
-    }).catchError((err) {
-      print(err);
-      authError = true;
-    });
+          if(userCredential != null && userCredential.user != null) {
+            await _firestore
+                .collection("Users")
+                .doc(userCredential.user!.uid)
+                .set({
+              "name": null,
+              "nick": null,
+              "email": email,
+              "imageUrl": null,
+              "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
+              "isFirst": true,
+              "isTrainer": null,
+              "isPrivate": true,
+              "gender": null,
+              "dateJoined": formatted,
+              "dateOfBirth": null,
+              "idioma": idioma,
+              "previousIdioma": null,
+              "brandID": null,
+              "isAdmin": false,
+            })
+            .catchError((err) {
+              print(err);
+              firestoreError = true;
+            });
+            await userCredential.user!.sendEmailVerification();
+          }
+          return userCredential;
+      }).catchError((err) {
+        print(err);
+        authError = true;
+      });
 
     if (authResult != null && authResult.user != null) {
-      if (authError)
-        return -1;
-      else if (firestoreError)
-        return -2;
-      else
-        return 0;
+      if (authError) return -1;
+      else if (firestoreError) return -2;
+      else return 0;
     } else {
       return -1;
     }
@@ -171,29 +162,30 @@ class FirebaseDatabaseService {
   }
 
   // Add User
-  Future<void> addUser(String uid, String name, String nick, String dateOfBirth,
-      int gender, File? image, bool isTrainer) async {
-    String imageUrl =
-        "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
+  Future<void> addUser(String uid, String name, String nick, String dateOfBirth, int gender, File? image, bool isTrainer) async {
+    String imageUrl = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
     if (image != null) {
       imageUrl = await updateCurrentUserPhoto(image);
     }
-    await _firestore.collection("Users").doc(uid).update({
-      "name": name,
-      "nick": nick,
-      "imageUrl": imageUrl,
-      "isFirst": false,
-      "isTrainer": isTrainer,
-      "gender": gender,
-      "dateOfBirth": dateOfBirth,
-    }).catchError((err) {
+    await _firestore
+      .collection("Users")
+      .doc(uid)
+      .update({
+        "name": name,
+        "nick": nick,
+        "imageUrl": imageUrl,
+        "isFirst": false,
+        "isTrainer": isTrainer,
+        "gender": gender,
+        "dateOfBirth": dateOfBirth,
+    })
+    .catchError((err) {
       print(err);
     });
   }
 
   // Add Error/ Report Bug
-  Future<bool> addError(String title, String description,
-      [String? stepsReproduce]) async {
+  Future<bool> addError(String title, String description, [String? stepsReproduce]) async {
     var uid = Uuid().v1();
     User? currentUser = await getCurrentUser();
     try {
@@ -237,10 +229,8 @@ class FirebaseDatabaseService {
   Future<String> updateCurrentUserPhoto(File image) async {
     User? firebaseUser = await getCurrentUser();
     String imageURL = "";
-    var storageRef = await _firebaseStorage
-        .ref()
-        .child("userPics/" + firebaseUser!.uid + ".png");
-    var uploadTask = storageRef.putFile(image);
+    var storageRef = await _firebaseStorage.ref().child("userPics/" + firebaseUser!.uid + ".png");
+    var uploadTask= storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
         imageURL = value;
@@ -251,9 +241,7 @@ class FirebaseDatabaseService {
     });
     return imageURL;
   }
-
-  Future<void> updateCurrentUserDatosPerifl(
-      String name, int gender, String? dateOfBirth) async {
+  Future<void> updateCurrentUserDatosPerifl(String name, int gender, String? dateOfBirth) async {
     User? currentUser = await getCurrentUser();
     await _firestore.collection("Users").doc(currentUser!.uid).update({
       "name": name,
@@ -261,9 +249,7 @@ class FirebaseDatabaseService {
       "dateOfBirth": dateOfBirth,
     });
   }
-
-  Future<void> updateCurrentUserSettingsPerifl(
-      bool isPrivate, String idioma, String previousIdioma) async {
+  Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma, String previousIdioma) async {
     User? currentUser = await getCurrentUser();
     await _firestore.collection("Users").doc(currentUser!.uid).update({
       "isPrivate": isPrivate,
@@ -283,15 +269,17 @@ class FirebaseDatabaseService {
   // Brand Model Services
 
   // Add Brand
-  Future<String> addBrand(String name, File image, String description,
-      List<double> workShift, int maxMembers) async {
+  Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) async {
     User? firebaseUser = await getCurrentUser();
     bool firestoreError = false;
     var uid = Uuid().v4();
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
-    await _firestore.collection("Brands").doc(uid).set({
+    await _firestore
+        .collection("Brands")
+        .doc(uid)
+        .set({
       "adminID": firebaseUser!.uid,
       "logoUrl": "",
       "name": name,
@@ -305,8 +293,8 @@ class FirebaseDatabaseService {
       firestoreError = true;
     });
 
-    if (!firestoreError) {
-      await updateCurrentBrandPhoto(uid, image);
+    if(!firestoreError){
+      await updateCurrentBrandPhoto(uid,image);
       return uid;
     } else {
       return "Error";
@@ -322,7 +310,7 @@ class FirebaseDatabaseService {
     List<Usuario> brandUsers = await this.getAllClientsFromBrand(brandId);
     brandUsers.addAll(await this.getAllTrainersFromBrand(brandId));
     // All Users Leave Brand
-    for (var i = 0; i < brandUsers.length; i++) {
+    for (var i=0; i < brandUsers.length; i++) {
       await this.leaveBrand(brandUsers[i].id!);
     }
     // Delete Brand
@@ -331,9 +319,8 @@ class FirebaseDatabaseService {
 
   Future<String> updateCurrentBrandPhoto(String brandID, File image) async {
     var result;
-    var storageRef =
-        await _firebaseStorage.ref().child("brandPics/" + brandID + ".png");
-    var uploadTask = storageRef.putFile(image);
+    var storageRef = await _firebaseStorage.ref().child("brandPics/" + brandID + ".png");
+    var uploadTask= storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
         result = value;
@@ -345,8 +332,7 @@ class FirebaseDatabaseService {
     return result;
   }
 
-  Future<void> updateBrandInfo(String brandID, String name, String description,
-      int maxMembers, List<double> workShift) async {
+  Future<void> updateBrandInfo(String brandID, String name, String description, int maxMembers, List<double> workShift) async {
     await _firestore.collection("Brands").doc(brandID).update({
       "name": name,
       "description": description,
@@ -355,44 +341,47 @@ class FirebaseDatabaseService {
     });
   }
 
-  Future<void> updateBrandBaseLocation(
-      String brandID, String locationID) async {
-    await _firestore
-        .collection("Brands")
-        .doc(brandID)
-        .update({"baseLocation": locationID});
+  Future<void> updateBrandBaseLocation(String brandID, String locationID) async {
+    await _firestore.collection("Brands").doc(brandID).update({
+      "baseLocation": locationID
+    });
   }
 
+  Future<List<Brand>> getAllBrands() async {
+    List<Brand> brands = [];
+    QuerySnapshot querySnapshot = await _firestore.collection("Brands").get();
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      brands.add(Brand.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return brands;
+  }
+
+
   Future<Brand> getBrandDetails(String brandID) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Brands").doc(brandID).get();
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Brands").doc(brandID).get();
     return Brand.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
 
   Future<List<Usuario>> getAllTrainersFromBrand(String brandId) async {
     List<Usuario> users = [];
-    QuerySnapshot querySnapshot = await _firestore
-        .collection("Users")
+    QuerySnapshot querySnapshot = await _firestore.collection("Users")
         .where("brandID", isEqualTo: brandId)
         .where("isTrainer", isEqualTo: true)
         .get();
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      users.add(
-          Usuario.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      users.add(Usuario.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
     return users;
   }
 
   Future<List<Usuario>> getAllClientsFromBrand(String brandId) async {
     List<Usuario> users = [];
-    QuerySnapshot querySnapshot = await _firestore
-        .collection("Users")
+    QuerySnapshot querySnapshot = await _firestore.collection("Users")
         .where("brandID", isEqualTo: brandId)
         .where("isTrainer", isEqualTo: false)
         .get();
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      users.add(
-          Usuario.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      users.add(Usuario.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
     return users;
   }
@@ -409,19 +398,7 @@ class FirebaseDatabaseService {
 
   // Events Calendar
   // Add Event
-  Future<String> addEvent(
-      String? brandID,
-      String? title,
-      String? description,
-      String? year,
-      String? month,
-      String? day,
-      String? hour,
-      String? minute,
-      double? duration,
-      String? locationId,
-      int? maxMembers,
-      var selectedTrainers) async {
+  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) async {
     var eventID = Uuid().v1();
     User? currentUser = await getCurrentUser();
     try {
@@ -448,14 +425,11 @@ class FirebaseDatabaseService {
       return "Error";
     }
   }
-
   // Get Single Event
   Future<Event> getSingleEvent(String id) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Events").doc(id).get();
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Events").doc(id).get();
     return Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
-
   // Get All Events for Client
   Future<List<Event>> getAllEventsFromClient(String clientid) async {
     List<Event> events = [];
@@ -466,13 +440,11 @@ class FirebaseDatabaseService {
         .orderBy("day", descending: true)
         .where("joinedMembers", arrayContains: clientid)
         .get();
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      events.add(
-          Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
     return events;
   }
-
   // Get All Events for Trainer
   Future<List<Event>> getAllEventsFromTrainer(String trainerid) async {
     List<Event> events = [];
@@ -483,16 +455,14 @@ class FirebaseDatabaseService {
         .orderBy("day", descending: true)
         .where("selectedTrainers", arrayContains: trainerid)
         .get();
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      events.add(
-          Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
     return events;
-  } // Get All Events for Client
+  }// Get All Events for Client
 
   // Get All Events for Client
-  Future<List<Event>> getAllClientEventsFromBrand(
-      String clientid, String brandId) async {
+  Future<List<Event>> getAllClientEventsFromBrand(String clientid, String brandId) async {
     List<Event> events = [];
     QuerySnapshot querySnapshot = await _firestore
         .collection("Events")
@@ -502,16 +472,13 @@ class FirebaseDatabaseService {
         .where("brandID", arrayContains: brandId)
         .where("joinedMembers", arrayContains: clientid)
         .get();
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      events.add(
-          Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
     return events;
   }
-
   // Get All Events for Trainer
-  Future<List<Event>> getAllTrainerEventsFromBrand(
-      String trainerid, String brandId) async {
+  Future<List<Event>> getAllTrainerEventsFromBrand(String trainerid, String brandId) async {
     List<Event> events = [];
     QuerySnapshot querySnapshot = await _firestore
         .collection("Events")
@@ -521,9 +488,8 @@ class FirebaseDatabaseService {
         .where("brandID", isEqualTo: brandId)
         .where("selectedTrainers", arrayContains: trainerid)
         .get();
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      events.add(
-          Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
     return events;
   }
@@ -540,16 +506,13 @@ class FirebaseDatabaseService {
         .where("brandID", isEqualTo: brandId)
         .orderBy("hour", descending: false)
         .get();
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      events.add(
-          Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
     return events;
   }
-
   // Get All Events for User Today
-  Future<List<Event>> getAllEventsTodayUser(
-      String userid, bool isTrainer) async {
+  Future<List<Event>> getAllEventsTodayUser(String userid, bool isTrainer) async {
     DateTime today = DateTime.now();
     List<Event> events = [];
     QuerySnapshot querySnapshot;
@@ -572,9 +535,8 @@ class FirebaseDatabaseService {
           .orderBy("hour", descending: false)
           .get();
     }
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      events.add(
-          Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    for(int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
     return events;
   }
@@ -595,7 +557,7 @@ class FirebaseDatabaseService {
           .collection("Events")
           .where("brandID", isEqualTo: brandId)
           .get();
-      for (int i = 0; i < querySnapshot.docs.length; i++) {
+      for(int i = 0; i < querySnapshot.docs.length; i++) {
         await this.deleteEvent(querySnapshot.docs[i].id);
       }
     } catch (e) {
@@ -604,18 +566,17 @@ class FirebaseDatabaseService {
   }
 
   // Delete User from All Existing Events
-  Future<void> deleteUserFromAllBrandEvents(
-      String uid, String brandId, bool isTrainer) async {
+  Future<void> deleteUserFromAllBrandEvents(String uid, String brandId, bool isTrainer) async {
     List<Event> userEvents = [];
     if (isTrainer) {
       userEvents = await this.getAllTrainerEventsFromBrand(uid, brandId);
-      for (var i = 0; i < userEvents.length; i++) {
+      for (var i=0; i < userEvents.length; i++) {
         Event event = userEvents[i];
         await this.leaveEvent(event.id!, uid, true);
       }
     } else {
       userEvents = await this.getAllClientEventsFromBrand(uid, brandId);
-      for (var i = 0; i < userEvents.length; i++) {
+      for (var i=0; i < userEvents.length; i++) {
         Event event = userEvents[i];
         await this.leaveEvent(event.id!, uid, true);
       }
@@ -625,11 +586,9 @@ class FirebaseDatabaseService {
   // Get a Event Trainers
   Future<List<String>> getEventTrainers(String eid) async {
     List<String> participants = [];
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Events").doc(eid).get();
-    Event event =
-        Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
-    for (int i = 0; i < event.selectedTrainers.length; i++) {
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Events").doc(eid).get();
+    Event event =  Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+    for(int i = 0; i < event.selectedTrainers.length; i++) {
       participants.add(event.selectedTrainers[i]);
     }
     return participants;
@@ -638,11 +597,9 @@ class FirebaseDatabaseService {
   // Get a Event Clients
   Future<List<String>> getEventClients(String eid) async {
     List<String> participants = [];
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Events").doc(eid).get();
-    Event event =
-        Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
-    for (int i = 0; i < event.joinedMembers.length; i++) {
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Events").doc(eid).get();
+    Event event =  Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+    for(int i = 0; i < event.joinedMembers.length; i++) {
       participants.add(event.joinedMembers[i]);
     }
     return participants;
@@ -694,7 +651,7 @@ class FirebaseDatabaseService {
     List<String> eventUsers = [];
     if (isTrainer) {
       eventUsers = await this.getEventTrainers(eid);
-      for (var i = 0; i < eventUsers.length; i++) {
+      for (var i=0; i < eventUsers.length; i++) {
         String trainerid = eventUsers[i];
         if (trainerid == uid) {
           isFound = true;
@@ -706,7 +663,7 @@ class FirebaseDatabaseService {
       return isFound;
     } else {
       eventUsers = await this.getEventClients(eid);
-      for (var i = 0; i < eventUsers.length; i++) {
+      for (var i=0; i < eventUsers.length; i++) {
         String trainerid = eventUsers[i];
         if (trainerid == uid) {
           isFound = true;
@@ -720,19 +677,7 @@ class FirebaseDatabaseService {
   }
 
   // Update Event
-  Future<void> updateEvent(
-      String? id,
-      String? title,
-      String? description,
-      String? year,
-      String? month,
-      String? day,
-      String? hour,
-      String? minute,
-      double? duration,
-      String? locationId,
-      int? maxMembers,
-      var selectedTrainers) async {
+  Future<void> updateEvent(String? id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) async {
     try {
       await _firestore.collection("Events").doc(id).update({
         "title": title,
@@ -765,17 +710,7 @@ class FirebaseDatabaseService {
   // Locations
 
   // Add Location
-  Future<String> addLocation(
-      String brandId,
-      bool isBaseLocation,
-      String placeId,
-      String description,
-      String street,
-      String streetNumber,
-      String city,
-      String zipCode,
-      double latitude,
-      double longitude) async {
+  Future<String> addLocation(String brandId, bool isBaseLocation, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) async {
     var uid = Uuid().v1();
     try {
       await _firestore.collection("Locations").doc(uid).set({
@@ -798,18 +733,7 @@ class FirebaseDatabaseService {
   }
 
   // Update Location
-  Future<void> updateLocation(
-      String locationID,
-      String brandId,
-      bool isBaseLocation,
-      String placeId,
-      String description,
-      String street,
-      String streetNumber,
-      String city,
-      String zipCode,
-      double latitude,
-      double longitude) async {
+  Future<void> updateLocation(String locationID, String brandId, bool isBaseLocation, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) async {
     var uid = Uuid().v1();
     try {
       await _firestore.collection("Locations").doc(locationID).update({
@@ -828,7 +752,6 @@ class FirebaseDatabaseService {
       print(e.toString());
     }
   }
-
   // Delete Location
   Future<bool> deleteLocation(String locationId) async {
     try {
@@ -848,7 +771,7 @@ class FirebaseDatabaseService {
             .collection("Locations")
             .where("brandID", isEqualTo: brandId)
             .get();
-        for (int i = 0; i < querySnapshot.docs.length; i++) {
+        for(int i = 0; i < querySnapshot.docs.length; i++) {
           await this.deleteLocation(querySnapshot.docs[i].id);
         }
       } catch (e) {
@@ -861,17 +784,71 @@ class FirebaseDatabaseService {
 
   // Get Single Location
   Future<Location> getSingleLocation(String locationId) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Locations").doc(locationId).get();
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Locations").doc(locationId).get();
     return Location.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
+
+  // Brand Requests
+
+  // Send Request
+  Future<void> sendRequest(String brandId, String name, bool isTrainer) async {
+    User? currentUser = await getCurrentUser();
+    var uid = Uuid().v1();
+    DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yy');
+    final String formatted = formatter.format(now);
+    await _firestore.collection("Requests").doc(uid).set({
+      "brandId": brandId,
+      "userId": currentUser!.uid,
+      "name": name,
+      "isTrainer": isTrainer,
+      "dateSent": formatted,
+      "year": now.year.toString(),
+      "month": now.month.toString(),
+      "day": now.day.toString(),
+    });
+  }
+
+  // Accept Request
+  Future<void> acceptRequest(String requestId) async {
+    // Get the Request
+    DocumentSnapshot<Map<String, dynamic >> _documentSnapshot = await _firestore.collection("Requests").doc(requestId).get();
+    RequestToBrand request =  RequestToBrand.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+    // Accept the user to Brand
+    await _firestore.collection("Users").doc(request.userId).update({
+      "brandID": request.brandId,
+    });
+    // Delete the Request
+    await _firestore.collection("Requests").doc(requestId).delete();
+  }
+
+  // Delete Request
+  Future<void> deleteRequest(String requestId) async {
+    // Delete the Request
+    await _firestore.collection("Requests").doc(requestId).delete();
+  }
+
+  // Has Pending Request
+  Future<RequestToBrand?> hasPendingRequest(String userId) async {
+    RequestToBrand request;
+    QuerySnapshot querySnapshot = await _firestore.collection("Requests")
+        .where("userId", isEqualTo: userId)
+        .get();
+    if (querySnapshot.docs.length > 0) {
+      request = RequestToBrand.fromObject(querySnapshot.docs[0], querySnapshot.docs[0].id);
+      return request;
+    } else {
+      return null;
+    }
+  }
+
 
   //Questions
 
   //Get One Question
   Future<Question> getOneQuestion(String? id) async {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Questions").doc(id).get();
+    await _firestore.collection("Questions").doc(id).get();
     return Question.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
 
@@ -963,7 +940,10 @@ class FirebaseDatabaseService {
     bool firestoreError = false;
     var uid = Uuid().v1();
     try {
-      await _firestore.collection("Answers").doc(answerID).set({
+      await _firestore
+          .collection("Answers")
+          .doc(answerID)
+          .set({
         "userID": currentUser!.uid,
         "groupOfQuestionsID": groupOfQuestionsID,
         "answerOne": answerOne,
@@ -989,7 +969,7 @@ class FirebaseDatabaseService {
 
     print(currentUser.id.toString());
     print(querySnapshot.docs.length);
-    if (querySnapshot.docs.length == 0) {
+    if(querySnapshot.docs.length == 0) {
       print("false");
       return false;
     } else
@@ -1020,18 +1000,19 @@ class FirebaseDatabaseService {
   // STREAMS
 
   // Brands
-  Stream<QuerySnapshot> getAllBrands() {
+  Stream<QuerySnapshot> getAllBrandsStream() {
     return _firestore.collection("Brands").snapshots();
   }
 
   // Events
   Stream<DocumentSnapshot> getSingleEventStream(String eid) {
-    return _firestore.collection("Events").doc(eid).snapshots();
+  return _firestore.collection("Events")
+      .doc(eid)
+      .snapshots();
   }
 
   Stream<QuerySnapshot> getAllEventsFromBrand(String brandid) {
-    return _firestore
-        .collection("Events")
+    return _firestore.collection("Events")
         .where("brandID", isEqualTo: brandid)
         .snapshots();
   }
@@ -1069,11 +1050,18 @@ class FirebaseDatabaseService {
   }
 
   // Locations
-  // Brands
   Stream<QuerySnapshot> getAllLocationsBrand(String brandId) {
     return _firestore
         .collection("Locations")
         .where("brandID", isEqualTo: brandId)
+        .snapshots();
+  }
+
+  // Requests
+  Stream<QuerySnapshot> getAllRequestsBrand(String brandId) {
+    return _firestore
+        .collection("Requests")
+        .where("brandId", isEqualTo: brandId)
         .snapshots();
   }
 
@@ -1096,6 +1084,8 @@ class FirebaseDatabaseService {
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Future<Stream<QuerySnapshot>> getAllUsers() async {
-    return _firestore.collection("Users").snapshots();
+    return _firestore.collection("Users")
+        .snapshots();
   }
+
 }

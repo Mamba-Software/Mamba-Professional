@@ -149,57 +149,56 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
                             ),
                           ),
                           child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(event.title!, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),),
-                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                Text(
-                                  "-",
-                                  style: TextStyle(color: Colors.white, fontSize: 14),
-                                ),
-                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                Icon(
-                                  Icons.record_voice_over,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                Text(
-                                  event.selectedTrainers.length.toString(),
-                                  style: TextStyle(color: Colors.white, fontSize: 14),
-                                ),
-                                Container(
-                                    height: 16,
-                                    width: 32,
-                                    child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
-                                ),
-                                Icon(
-                                  Icons.directions_run,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                Text(
-                                  event.joinedMembers.length.toString(),
-                                  style: TextStyle(color: Colors.white, fontSize: 14),
-                                ),
-                                Text(
-                                  " / ",
-                                  style: TextStyle(color: Colors.white, fontSize: 14),
-                                ),
-                                Text(
-                                  event.maxMembers.toString(),
-                                  style: TextStyle(color: Colors.white, fontSize: 14),
-                                ),
-                              ],
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Flexible(child: Text(event.title!, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),)),
+                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                  Text(
+                                    "-",
+                                    style: TextStyle(color: Colors.white, fontSize: 14),
+                                  ),
+                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                  Icon(
+                                    Icons.record_voice_over,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                  Text(
+                                    event.selectedTrainers.length.toString(),
+                                    style: TextStyle(color: Colors.white, fontSize: 14),
+                                  ),
+                                  Container(
+                                      height: 16,
+                                      width: 32,
+                                      child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
+                                  ),
+                                  Icon(
+                                    Icons.directions_run,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                  Text(
+                                    event.joinedMembers.length.toString(),
+                                    style: TextStyle(color: Colors.white, fontSize: 14),
+                                  ),
+                                  Text(
+                                    " / ",
+                                    style: TextStyle(color: Colors.white, fontSize: 14),
+                                  ),
+                                  Text(
+                                    event.maxMembers.toString(),
+                                    style: TextStyle(color: Colors.white, fontSize: 14),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                        /*
-
-
-                   */
                       ),
                     ),
                   );
@@ -208,113 +207,6 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
             }
           }
       ),
-          /*
-        SfCalendar(
-          view: CalendarView.day,
-          minDate: DateTime(dateJoined.year, dateJoined.month, dateJoined.day, _startHour!.toInt()-1,0),
-          maxDate: DateTime(dateJoined.year, dateJoined.month, dateJoined.day, _endHour!.toInt()+1,0),
-          headerHeight: 0,
-          viewHeaderHeight: 0,
-          dataSource: _getCalendarDataSource(),
-          specialRegions: _getTimeRegions(),
-          selectionDecoration: BoxDecoration(
-              border: Border.all(width: 0.1, color: Colors.transparent)
-          ),
-          timeSlotViewSettings: TimeSlotViewSettings(
-              timeIntervalHeight: MediaQuery.of(context).size.height*0.07,
-              timeIntervalWidth: 60,
-              startHour: _startHour!-1,
-              endHour:  _endHour!+1,
-              timeFormat: 'HH:mm',
-              dayFormat: 'E',
-              dateFormat: 'd',
-              timeRulerSize: MediaQuery.of(context).size.width*0.10,
-              nonWorkingDays: nonWorkDays,
-              minimumAppointmentDuration: Duration(minutes: 30),
-              timeTextStyle: TextStyle(
-                fontWeight: FontWeight.w800,
-                fontSize: 12,
-                color: Theme.of(context).primaryColor,
-              )
-          ),
-          appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
-            final Appointment appointment = details.appointments.first;
-            final Event event = getEvent(appointment.id.toString());
-            return GestureDetector(
-              onTap: () {
-                _viewEvent(appointment.id.toString(), appointment.startTime);
-              },
-              child: Center(
-                child: Material(
-                  elevation: 2,
-                  child: Container(
-                    width: details.bounds.width,
-                    height: details.bounds.height,
-                    decoration: BoxDecoration(
-                      color: appointment.color,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5),
-                      ),
-                    ),
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(event.title!, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),),
-                          SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                          Text(
-                            "-",
-                            style: TextStyle(color: Colors.white, fontSize: 14),
-                          ),
-                          SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                          Icon(
-                            Icons.record_voice_over,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                          Text(
-                            event.selectedTrainers.length.toString(),
-                            style: TextStyle(color: Colors.white, fontSize: 14),
-                          ),
-                          Container(
-                              height: 16,
-                              width: 32,
-                              child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
-                          ),
-                          Icon(
-                            Icons.directions_run,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                          Text(
-                            event.joinedMembers.length.toString(),
-                            style: TextStyle(color: Colors.white, fontSize: 14),
-                          ),
-                          Text(
-                            " / ",
-                            style: TextStyle(color: Colors.white, fontSize: 14),
-                          ),
-                          Text(
-                            event.maxMembers.toString(),
-                            style: TextStyle(color: Colors.white, fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  /*
-
-
-                   */
-                ),
-              ),
-            );
-          },
-        ),
-
-           */
     );
   }
 

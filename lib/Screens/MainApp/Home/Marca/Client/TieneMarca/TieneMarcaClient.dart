@@ -77,57 +77,82 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
               Container(
                 height: MediaQuery.of(context).size.height*0.32,
                 child: Stack(
-                  alignment: Alignment.topCenter,
-                  fit: StackFit.expand,
-                  children: <Widget>[
-                    Positioned(
-                      top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.10,
-                      left: 0,
-                      right: MediaQuery.of(context).size.width*0.65,
-                      child: IconButton(
-                        icon: Icon(Icons.explore_outlined, color: Theme.of(context).primaryColor, size: 50,),
-                        onPressed: () {
-                        },
+                    alignment: Alignment.topCenter,
+                    fit: StackFit.expand,
+                    children: <Widget>[
+                      Positioned(
+                        top: 0,
+                        bottom: MediaQuery.of(context).size.height*0.15,
+                        left: 0,
+                        right: MediaQuery.of(context).size.width*0.70,
+                        child: IconButton(
+                          icon: Icon(Icons.explore_outlined, color: Theme.of(context).primaryColor, size: 50,),
+                          alignment: Alignment.center,
+                          onPressed: () {
+
+                          },
+                        ),
                       ),
-                    ),
-                    Positioned(
-                      top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.10,
-                      left: MediaQuery.of(context).size.width*0.65,
-                      right: 0,
-                      child: IconButton(
-                        icon: Icon(Icons.info_outlined, color: Theme.of(context).primaryColor, size: 50,),
-                        onPressed: () {
-                        },
+                      Positioned(
+                        top: MediaQuery.of(context).size.height*0.12,
+                        bottom: 0,
+                        left: 0,
+                        right: MediaQuery.of(context).size.width*0.70,
+                        child: Text(
+                          AppLocalizations.of(context)!.feedback,
+                          style: Styles.purpleTextStyle.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
-                    Positioned(
-                      top: MediaQuery.of(context).size.height*0.05,
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.20,
-                            child: Center(
-                              child: CircularImage(size: MediaQuery.of(context).size.height * 0.18, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                      Positioned(
+                        top: 0,
+                        bottom: MediaQuery.of(context).size.height*0.15,
+                        left: MediaQuery.of(context).size.width*0.70,
+                        right: 0,
+                        child: IconButton(
+                          icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: 50,),
+                          onPressed: () {
+
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        top: MediaQuery.of(context).size.height*0.12,
+                        bottom: 0,
+                        left: MediaQuery.of(context).size.width*0.70,
+                        right: 0,
+                        child: Text(
+                          AppLocalizations.of(context)!.settings,
+                          style: Styles.purpleTextStyle.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Positioned(
+                        top: MediaQuery.of(context).size.height*0.07,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.20,
+                              child: Center(
+                                child: CircularImage(size: MediaQuery.of(context).size.height * 0.19, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Positioned(
-                      top: MediaQuery.of(context).size.height*0.28,
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Text("${currentBrand.name!}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
-                    ),
-                  ]
+                      Positioned(
+                        top: MediaQuery.of(context).size.height*0.29,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Text("${currentBrand.name!}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                      ),
+                    ]
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.04),
@@ -194,6 +219,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                           type: PageTransitionType.bottomToTop,
                           child: CalendarWidgetClient(
                             brandID: currentBrand.id!,
+                            onlyView: false,
                           )
                       )
                   ).whenComplete(() {
@@ -276,7 +302,10 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                       context,
                       PageTransition(
                           type: PageTransitionType.bottomToTop,
-                          child: TodosMiembrosClient()
+                          child: TodosMiembrosClient(
+                            brandID: currentBrand.id!,
+                            viewOnly: false,
+                          )
                       )
                   ).whenComplete(() {
                     setState(() {
