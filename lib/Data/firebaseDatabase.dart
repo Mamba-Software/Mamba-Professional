@@ -820,6 +820,20 @@ class FirebaseDatabaseService {
     await _firestore.collection("Requests").doc(requestId).delete();
   }
 
+  // Has Pending Request
+  Future<RequestToBrand?> hasPendingRequest(String userId) async {
+    RequestToBrand request;
+    QuerySnapshot querySnapshot = await _firestore.collection("Requests")
+        .where("userId", isEqualTo: userId)
+        .get();
+    if (querySnapshot.docs.length > 0) {
+      request = RequestToBrand.fromObject(querySnapshot.docs[0], querySnapshot.docs[0].id);
+      return request;
+    } else {
+      return null;
+    }
+  }
+
 
   //Questions
 

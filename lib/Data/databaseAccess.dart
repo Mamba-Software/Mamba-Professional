@@ -6,6 +6,7 @@ import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Question.dart';
+import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'firebaseDatabase.dart';
 
@@ -92,6 +93,7 @@ class DatabaseAccess {
   Future<void> sendRequest(String brandId, String name, bool isTrainer) => _firebase.sendRequest(brandId, name, isTrainer);
   Future<void> acceptRequest(String requestId) => _firebase.acceptRequest(requestId);
   Future<void> deleteRequest(String requestId) => _firebase.deleteRequest(requestId);
+  Future<RequestToBrand?> hasPendingRequest(String userId) => _firebase.hasPendingRequest(userId);
 
   //Questions
   Future<Question> getOneQuestion(String? id) => _firebase.getOneQuestion(id);

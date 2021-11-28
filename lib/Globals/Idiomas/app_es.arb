@@ -662,6 +662,18 @@
   "@contact":{
     "description": "Cancelar text"
   },
+  "send": "Enviar",
+  "@send":{
+    "description": "Cancelar text"
+  },
+  "sent": "Enviada",
+  "@sent":{
+    "description": "Cancelar text"
+  },
+  "anular": "Anular",
+  "@anular":{
+    "description": "Cancelar text"
+  },
   "addMembers": "Añadir Miembros",
   "@addMembers":{
     "description": "Añadir Miembros text"
@@ -1042,6 +1054,14 @@
   },
   "monthEvents": "sesiones este mes",
   "@monthEvents": {
+    "description": "Wellcome message"
+  },
+  "sendRequestConfirmation": "¿Estás seguro que quieres enviar una solicitud a esta marca?\n\nLos organizadores recibirán una notificación. Hasta que esta no sea aceptada o rechazada no podrás enviar otra solicitud a ninguna marca.",
+  "@sendRequestConfirmation": {
+    "description": "Wellcome message"
+  },
+  "cancelRequestConfirmation": "¿Estás seguro que quieres anular tu solicitud a esta marca? Aún no ha habido respuesta de los organizadores.\n\nEste cambio tendrá un efecto inmediato y ahora podrás enviar una solicitud a otra marca.",
+  "@cancelRequestConfirmation": {
     "description": "Wellcome message"
   }
 }

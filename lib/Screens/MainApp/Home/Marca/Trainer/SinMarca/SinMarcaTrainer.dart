@@ -7,8 +7,11 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CancelRequestConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/SendRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
+import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/TodosMiembrosClient.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';
@@ -35,13 +38,31 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
   bool codigoClicked = false;
   bool isLoadingCodigo = false;
   var _codigoController = TextEditingController();
+  // Request To Brand
+  String brandIdRequest = "";
+  RequestToBrand? request;
 
   // init Widget state. Loading user info.
   @override
   void initState() {
     isLoading = true;
+    getUserPendingRequests();
     getAllBrands();
     super.initState();
+  }
+
+  Future<void> getUserPendingRequests() async {
+    RequestToBrand? req = await _accessDatabase.hasPendingRequest(currentUser.id!);
+    if (req != null) {
+      setState(() {
+        request = req;
+        brandIdRequest = request!.brandId!;
+      });
+    } else {
+      setState(() {
+        request = null;
+      });
+    }
   }
 
   Future<void> getAllBrands() async {
@@ -73,7 +94,27 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
           centerTitle: false,
           automaticallyImplyLeading: false,
           actions: [
-            IconButton(
+            request != null ? IconButton(
+              icon: Icon(Icons.schedule_send, size: 35, color: !codigoClicked ? Theme.of(context).primaryColor : Colors.white,),
+              onPressed: () async {
+                Brand brand = brandList.singleWhere((element) => element.id == request!.brandId!);
+                var result = await showDialog(
+                    context: context,
+                    builder: (_) {
+                      return CancelRequestConfirmationDialog(
+                        text: AppLocalizations.of(context)!.cancelRequestConfirmation,
+                        brand: brand,
+                      );
+                    }
+                );
+                if (result) {
+                  setState(() {
+                    brandIdRequest = "";
+                  });
+                  _accessDatabase.deleteRequest(request!.id!);
+                }
+              }
+            ) : IconButton(
               icon: Icon(Icons.qr_code_outlined, size: 35, color: !codigoClicked ? Theme.of(context).primaryColor : Colors.white,),
               onPressed: !codigoClicked ? () {
                 setState(() {
@@ -359,15 +400,49 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         IconButton(
-                                          icon: Icon(Icons.send_outlined, size: 35, color: Theme.of(context).primaryColor),
+                                          icon: Icon(brandIdRequest == brand.id! ? Icons.schedule_send : Icons.send_outlined, size: 35, color: brandIdRequest == brand.id! ? Theme.of(context).accentColor : request == null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.3)),
                                           padding: EdgeInsets.all(0),
-                                          onPressed: () {
-                                            _accessDatabase.sendRequest(brand.id!, currentUser.name! ,currentUser.isTrainer!);
-                                          },
+                                          onPressed: request == null || brandIdRequest == brand.id! ? () async {
+                                            if (brandIdRequest == brand.id!) {
+                                              var result = await showDialog(
+                                                  context: context,
+                                                  builder: (_) {
+                                                    return CancelRequestConfirmationDialog(
+                                                      text: AppLocalizations.of(context)!.cancelRequestConfirmation,
+                                                      brand: brand,
+                                                    );
+                                                  }
+                                              );
+                                              if (result) {
+                                                setState(() {
+                                                  brandIdRequest = "";
+                                                });
+                                                _accessDatabase.deleteRequest(request!.id!);
+                                                getUserPendingRequests();
+                                              }
+                                            } else {
+                                              var result = await showDialog(
+                                                  context: context,
+                                                  builder: (_) {
+                                                    return SendRequestConfirmationDialog(
+                                                      text: AppLocalizations.of(context)!.sendRequestConfirmation,
+                                                      brand: brand,
+                                                    );
+                                                  }
+                                              );
+                                              if (result) {
+                                                setState(() {
+                                                  brandIdRequest = brand.id!;
+                                                });
+                                                await _accessDatabase.sendRequest(brand.id!, currentUser.name! ,currentUser.isTrainer!);
+                                                getUserPendingRequests();
+                                              }
+                                            }
+                                          } : null,
                                         ),
                                         Text(
-                                          AppLocalizations.of(context)!.join,
-                                          style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                          brandIdRequest == brand.id! ? AppLocalizations.of(context)!.sent : AppLocalizations.of(context)!.join,
+                                          style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: brandIdRequest == brand.id! ? Theme.of(context).accentColor : request == null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.3)),
                                           textAlign: TextAlign.left,
                                         ),
                                       ],

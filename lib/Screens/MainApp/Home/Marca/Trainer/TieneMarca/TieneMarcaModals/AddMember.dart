@@ -40,7 +40,6 @@ class _AddMemberState extends State<AddMember> {
     for(int i = 0; i < documents.length; i++) {
       RequestToBrand request = RequestToBrand.fromObject(documents[i], documents[i].id);
       requests.add(request);
-      break;
     }
     return requests;
   }
