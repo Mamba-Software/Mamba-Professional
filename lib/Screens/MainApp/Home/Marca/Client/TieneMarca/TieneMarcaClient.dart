@@ -9,10 +9,13 @@ import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/Calen
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/BrandLocations.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/BrandEventsToday.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/SettingsBrandClient.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembrosTrainer.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -112,7 +115,18 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                         child: IconButton(
                           icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: 50,),
                           onPressed: () {
-
+                            Navigator.push(
+                                context,
+                                PageTransition(
+                                  type: PageTransitionType.bottomToTop,
+                                  child: SettingsBrandClient(),
+                                )
+                            ).whenComplete(() {
+                              setState(() {
+                                isLoading = true;
+                                initBrandHome();
+                              });
+                            });
                           },
                         ),
                       ),
