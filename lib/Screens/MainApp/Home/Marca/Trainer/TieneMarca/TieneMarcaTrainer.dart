@@ -80,64 +80,6 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                   fit: StackFit.expand,
                   children: <Widget>[
                     Positioned(
-                      top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.15,
-                      left: 0,
-                      right: MediaQuery.of(context).size.width*0.70,
-                      child: IconButton(
-                        icon: Icon(Icons.explore_outlined, color: Theme.of(context).primaryColor, size: 50,),
-                        alignment: Alignment.center,
-                        onPressed: () {
-
-                        },
-                      ),
-                    ),
-                    Positioned(
-                      top: MediaQuery.of(context).size.height*0.12,
-                      bottom: 0,
-                      left: 0,
-                      right: MediaQuery.of(context).size.width*0.70,
-                      child: Text(
-                        AppLocalizations.of(context)!.feedback,
-                        style: Styles.purpleTextStyle.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Positioned(
-                      top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.15,
-                      left: MediaQuery.of(context).size.width*0.70,
-                      right: 0,
-                      child: IconButton(
-                        icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: 50,),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.bottomToTop,
-                                child: SettingsBrand(),
-                              )
-                          ).whenComplete(() {
-                            setState(() {
-                              isLoading = true;
-                              initBrandHome();
-                            });
-                          });
-                        },
-                      ),
-                    ),
-                    Positioned(
-                      top: MediaQuery.of(context).size.height*0.12,
-                      bottom: 0,
-                      left: MediaQuery.of(context).size.width*0.70,
-                      right: 0,
-                      child: Text(
-                        AppLocalizations.of(context)!.settings,
-                        style: Styles.purpleTextStyle.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Positioned(
                       top: MediaQuery.of(context).size.height*0.07,
                       bottom: 0,
                       left: 0,
@@ -146,10 +88,26 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.20,
-                            child: Center(
-                              child: CircularImage(size: MediaQuery.of(context).size.height * 0.19, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.bottomToTop,
+                                    child: SettingsBrand(),
+                                  )
+                              ).whenComplete(() {
+                                setState(() {
+                                  isLoading = true;
+                                  initBrandHome();
+                                });
+                              });
+                            },
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.20,
+                              child: Center(
+                                child: CircularImage(size: MediaQuery.of(context).size.height * 0.19, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                              ),
                             ),
                           ),
                         ],
