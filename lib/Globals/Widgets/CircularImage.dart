@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 
@@ -50,7 +51,7 @@ class _CircularImageState extends State<CircularImage> {
                 shape: BoxShape.circle,
                 image: new DecorationImage(
                   fit: BoxFit.cover,
-                  image: widget.file != null ? FileImage(widget.file!) : NetworkImage(widget.image!) as ImageProvider,
+                  image: widget.file != null ? FileImage(widget.file!) : CachedNetworkImageProvider(widget.image!) as ImageProvider,
                 )
             )
         )

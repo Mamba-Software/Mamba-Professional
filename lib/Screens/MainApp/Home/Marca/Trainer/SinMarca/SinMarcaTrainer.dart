@@ -202,6 +202,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 15.0),
                                 child: FloatingActionButton(
+                                  heroTag: "28",
                                   child: Icon(Icons.login),
                                   backgroundColor: Colors.green,
                                   foregroundColor: Styles.white,
@@ -241,7 +242,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 5.0),
                                 child: FloatingActionButton(
-                                  heroTag: null,
+                                  heroTag: "29",
                                   child: Icon(Icons.close),
                                   backgroundColor: Colors.red,
                                   foregroundColor: Styles.white,
@@ -263,7 +264,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 FloatingActionButton(
-                                    heroTag: null,
+                                    heroTag: "30",
                                     child: SizedBox(
                                       width: 100,
                                       child: Padding(

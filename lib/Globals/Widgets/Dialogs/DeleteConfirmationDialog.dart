@@ -39,6 +39,7 @@ class DeleteConfirmationDialog extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       FloatingActionButton.extended(
+                        heroTag: "1",
                         label: Text(AppLocalizations.of(context)!.delete),
                         icon: Icon(Icons.delete_outline),
                         backgroundColor: Colors.red,
@@ -49,6 +50,7 @@ class DeleteConfirmationDialog extends StatelessWidget {
                       ),
                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
                       FloatingActionButton.extended(
+                        heroTag: "2",
                         icon: Icon(Icons.cancel_outlined, size: 30,),
                         label: Text(AppLocalizations.of(context)!.cancel),
                         backgroundColor: Theme.of(context).primaryColor,

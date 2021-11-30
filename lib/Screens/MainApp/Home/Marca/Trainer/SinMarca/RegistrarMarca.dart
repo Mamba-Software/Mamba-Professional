@@ -348,7 +348,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.01),
                     child: FloatingActionButton.extended(
-                      heroTag: null,
+                      heroTag: "26",
                       onPressed: () async {
                         setState(() {
                           isFirstTime = false;
@@ -1050,7 +1050,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                 child: Container(
                   height: 50,
                   child: FloatingActionButton.extended(
-                    heroTag: null,
+                    heroTag: "61",
                     onPressed: () {
                       if (_selectedIndex == 1) {
                         setState(() {
@@ -1086,7 +1086,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                 child: Container(
                   height: 50,
                   child: FloatingActionButton.extended(
-                    heroTag: null,
+                    heroTag: "27",
                     onPressed: () async {
                       if (_selectedIndex == 0) {
                           if (validatePortada()) {

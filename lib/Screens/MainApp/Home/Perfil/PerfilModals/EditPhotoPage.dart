@@ -131,6 +131,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
           ),
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: "38",
         onPressed: uploadPhoto,
         tooltip: AppLocalizations.of(context)!.save,
         backgroundColor: Theme.of(context).accentColor,

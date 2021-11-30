@@ -1080,7 +1080,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                 child: Container(
                   height: 50,
                   child: FloatingActionButton.extended(
-                    heroTag: null,
+                    heroTag: "4",
                     onPressed: () {
                       if (_selectedIndex == 1) {
                         setState(() {
@@ -1113,7 +1113,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                 child: Container(
                   height: 50,
                   child: FloatingActionButton.extended(
-                    heroTag: null,
+                    heroTag: "5",
                     onPressed: () {
                       if (_selectedIndex == 0) {
                         if (formKeyInfo.currentState!.validate()){

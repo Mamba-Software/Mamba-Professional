@@ -95,6 +95,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         FloatingActionButton.extended(
+                          heroTag: "18",
                           label: Text(AppLocalizations.of(context)!.accept),
                           icon: Icon(Icons.check_circle_outline),
                           backgroundColor: Colors.green,
@@ -105,6 +106,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width*0.01),
                         FloatingActionButton.extended(
+                          heroTag: "19",
                           icon: Icon(Icons.cancel_outlined, size: 30,),
                           label: Text(AppLocalizations.of(context)!.reject),
                           backgroundColor: Colors.red,

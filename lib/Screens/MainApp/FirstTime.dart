@@ -1033,7 +1033,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                 child: Container(
                   height: 50,
                   child: FloatingActionButton.extended(
-                    heroTag: null,
+                    heroTag: "21",
                     onPressed: () {
                       if (_selectedIndex == 1) {
                         setState(() {
@@ -1075,7 +1075,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                 child: Container(
                   height: 50,
                   child: FloatingActionButton.extended(
-                    heroTag: null,
+                    heroTag: "22",
                     onPressed: () {
                       if (_selectedIndex == 0) {
                         _tabController!.animateTo(_selectedIndex += 1);

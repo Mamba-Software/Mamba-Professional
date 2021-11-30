@@ -991,7 +991,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                       child: FloatingActionButton.extended(
-                        heroTag: null,
+                        heroTag: "41",
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -1018,6 +1018,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                         child: FloatingActionButton.extended(
+                          heroTag: "42",
                           onPressed: () {
                             setState(() {
                               codigoClicked = !codigoClicked;
@@ -1073,6 +1074,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 15.0),
                                 child: FloatingActionButton(
+                                  heroTag: "43",
                                   child: Icon(Icons.login),
                                   backgroundColor: Colors.green,
                                   foregroundColor: Styles.white,
@@ -1112,7 +1114,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 5.0),
                                 child: FloatingActionButton(
-                                  heroTag: null,
+                                  heroTag: "44",
                                   child: Icon(Icons.close),
                                   backgroundColor: Colors.red,
                                   foregroundColor: Styles.white,
@@ -1134,7 +1136,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 FloatingActionButton(
-                                    heroTag: null,
+                                    heroTag: "45",
                                     child: SizedBox(
                                       width: 100,
                                       child: Padding(
@@ -1216,22 +1218,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
               ],
             ),
             GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    PageTransition(
-                        type: PageTransitionType.bottomToTop,
-                        child: MyCalendarWidget(
-                          brandID: currentBrand.id!,
-                        )
-                    )
-                ).whenComplete(() {
-                  setState(() {
-                    isLoading = true;
-                    initProfileHome();
-                  });
-                });
-              },
+              onTap: () {},
               child: Material(
                 elevation: 4,
                 shape: RoundedRectangleBorder(

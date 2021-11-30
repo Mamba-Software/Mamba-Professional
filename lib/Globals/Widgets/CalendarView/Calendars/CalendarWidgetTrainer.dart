@@ -197,6 +197,7 @@ class _CalendarWidgetTrainerState extends State<CalendarWidgetTrainer> {
                 height: 65,
                 width: 65,
                 child: FloatingActionButton(
+                  heroTag: "3",
                   onPressed: () {
                     _addEvent();
                   },

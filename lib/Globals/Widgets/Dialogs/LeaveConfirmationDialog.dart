@@ -44,6 +44,7 @@ class LeaveConfirmationDialog extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       FloatingActionButton.extended(
+                        heroTag: "16",
                         label: Text(AppLocalizations.of(context)!.leave),
                         icon: Icon(Icons.check_circle_outline),
                         backgroundColor: Colors.red,
@@ -54,6 +55,7 @@ class LeaveConfirmationDialog extends StatelessWidget {
                       ),
                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
                       FloatingActionButton.extended(
+                        heroTag: "17",
                         icon: Icon(Icons.cancel_outlined, size: 30,),
                         label: Text(AppLocalizations.of(context)!.cancel),
                         backgroundColor: Theme.of(context).primaryColor,

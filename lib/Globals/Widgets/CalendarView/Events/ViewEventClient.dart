@@ -1195,7 +1195,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
             child: Container(
               width: MediaQuery.of(context).size.width*0.40,
               child: FloatingActionButton.extended(
-                heroTag: null,
+                heroTag: "6",
                 onPressed: () async {
                   var result = await showDialog(
                       context: context,
@@ -1232,7 +1232,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
             child: Container(
               width: MediaQuery.of(context).size.width*0.45,
               child: FloatingActionButton.extended(
-                heroTag: null,
+                heroTag: "50",
                 onPressed: () async {
                   var result = await showDialog(
                       context: context,

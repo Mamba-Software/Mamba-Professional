@@ -44,6 +44,7 @@ class ConfirmationDialog extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       FloatingActionButton.extended(
+                        heroTag: "12",
                         label: Text(AppLocalizations.of(context)!.confirm),
                         icon: Icon(Icons.check_circle_outline),
                         backgroundColor: Theme.of(context).accentColor,
@@ -54,6 +55,7 @@ class ConfirmationDialog extends StatelessWidget {
                       ),
                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
                       FloatingActionButton.extended(
+                        heroTag: "13",
                         icon: Icon(Icons.cancel_outlined, size: 30,),
                         label: Text(AppLocalizations.of(context)!.cancel),
                         backgroundColor: Theme.of(context).primaryColor,

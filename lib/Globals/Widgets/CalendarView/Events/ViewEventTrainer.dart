@@ -1143,7 +1143,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   FloatingActionButton.extended(
-                    heroTag: null,
+                    heroTag: "7",
                     onPressed: () async {
                       // DeleteDialog
                       var result = await showDialog(
@@ -1167,7 +1167,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01,),
                   FloatingActionButton.extended(
-                    heroTag: null,
+                    heroTag: "8",
                     onPressed: () async {
                       bool hasError = false;
                       setState(() {
@@ -1220,7 +1220,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
             child: Container(
               width: MediaQuery.of(context).size.width*0.25,
               child: FloatingActionButton.extended(
-                heroTag: null,
+                heroTag: "9",
                 onPressed: () {
                   setState(() {
                     isEditing = true;

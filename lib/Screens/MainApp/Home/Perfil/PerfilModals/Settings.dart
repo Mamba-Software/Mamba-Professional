@@ -368,6 +368,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       FloatingActionButton.extended(
+                        heroTag: "39",
                         label: Text(AppLocalizations.of(context)!.delete),
                         icon: Icon(Icons.delete_outline),
                         backgroundColor: canDelete ? Colors.red : Colors.red[100],
@@ -392,6 +393,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                         },
                       ),
                       FloatingActionButton.extended(
+                        heroTag: "40",
                         icon: Icon(Icons.cancel_outlined, size: 30,),
                         label: Text(AppLocalizations.of(context)!.cancel),
                         backgroundColor: Theme.of(context).primaryColor,

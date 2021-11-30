@@ -989,6 +989,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                         child: FloatingActionButton.extended(
+                          heroTag: "34",
                           onPressed: () {
                             setState(() {
                               codigoClicked = !codigoClicked;
@@ -1044,6 +1045,7 @@ class _PerfilClientState extends State<PerfilClient> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 15.0),
                                 child: FloatingActionButton(
+                                  heroTag: "35",
                                   child: Icon(Icons.login),
                                   backgroundColor: Colors.green,
                                   foregroundColor: Styles.white,
@@ -1083,7 +1085,7 @@ class _PerfilClientState extends State<PerfilClient> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 5.0),
                                 child: FloatingActionButton(
-                                  heroTag: null,
+                                  heroTag: "36",
                                   child: Icon(Icons.close),
                                   backgroundColor: Colors.red,
                                   foregroundColor: Styles.white,
@@ -1105,7 +1107,7 @@ class _PerfilClientState extends State<PerfilClient> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 FloatingActionButton(
-                                    heroTag: null,
+                                    heroTag: "37",
                                     child: SizedBox(
                                       width: 100,
                                       child: Padding(
