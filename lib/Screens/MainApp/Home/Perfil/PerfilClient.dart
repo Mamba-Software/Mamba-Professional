@@ -138,7 +138,7 @@ class _PerfilClientState extends State<PerfilClient> {
                   children: <Widget>[
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.28,
+                      bottom: MediaQuery.of(context).size.height*0.29,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.70,
                       child: IconButton(
@@ -173,7 +173,7 @@ class _PerfilClientState extends State<PerfilClient> {
                     ),
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.28,
+                      bottom: MediaQuery.of(context).size.height*0.29,
                       left: MediaQuery.of(context).size.width*0.70,
                       right: 0,
                       child: IconButton(
@@ -798,7 +798,7 @@ class _PerfilClientState extends State<PerfilClient> {
                   children: <Widget>[
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.28,
+                      bottom: MediaQuery.of(context).size.height*0.29,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.70,
                       child: IconButton(
@@ -833,7 +833,7 @@ class _PerfilClientState extends State<PerfilClient> {
                     ),
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.28,
+                      bottom: MediaQuery.of(context).size.height*0.29,
                       left: MediaQuery.of(context).size.width*0.70,
                       right: 0,
                       child: IconButton(

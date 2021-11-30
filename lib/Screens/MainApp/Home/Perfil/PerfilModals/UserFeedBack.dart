@@ -1,22 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:survey_kit/survey_kit.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
-import 'package:mamba_castelldefels/Models/Question.dart';
-import 'package:mamba_castelldefels/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/FeedBack.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -26,8 +18,6 @@ class UserFeedBack extends StatefulWidget {
   @override
   _UserFeedBackState createState() => _UserFeedBackState();
 }
-
-
 
 class _UserFeedBackState extends State<UserFeedBack> {
   //DataBase Access
@@ -77,8 +67,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
         :
      Scaffold(
        body: Container(
-         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-         color: Theme.of(context).scaffoldBackgroundColor,
+         color: Colors.white,
          child: Align(
            alignment: Alignment.center,
            child: FutureBuilder<Task>(
@@ -98,35 +87,16 @@ class _UserFeedBackState extends State<UserFeedBack> {
                        );
                        sendFeedback();
                      }
-                     else notSendFeedback();
+                     //else notSendFeedback();
                    },
                    task: task,
-                   themeData: Theme.of(context).copyWith(
-                     colorScheme: ColorScheme.fromSwatch(
-                       primarySwatch: Colors.orange,
-                     ).copyWith(
-                       onPrimary: Colors.white,
-                     ),
-                     primaryColor: Colors.orange,
-                     backgroundColor: Colors.white,
-                     appBarTheme: const AppBarTheme(
-                       color: Colors.white,
-                       iconTheme: IconThemeData(
-                         color: Colors.orange,
-                       ),
-                       textTheme: TextTheme(
-                         button: TextStyle(
-                           color: Colors.orange,
-                         ),
-                       ),
-                     ),
-                     iconTheme: const IconThemeData(
-                       color: Colors.orange,
-                     ),
-                     outlinedButtonTheme: OutlinedButtonThemeData(
+                   themeData: Styles.lightTheme.copyWith(
+                      primaryColor: Theme.of(context).accentColor,
+                      backgroundColor: Colors.white,
+                      outlinedButtonTheme: OutlinedButtonThemeData(
                        style: ButtonStyle(
                          minimumSize: MaterialStateProperty.all(
-                           Size(150.0, 60.0),
+                           Size(MediaQuery.of(context).size.width*0.4, MediaQuery.of(context).size.height*0.07),
                          ),
                          side: MaterialStateProperty.resolveWith(
                                (Set<MaterialState> state) {
@@ -136,54 +106,22 @@ class _UserFeedBackState extends State<UserFeedBack> {
                                );
                              }
                              return BorderSide(
-                               color: Colors.orange,
+                               color: Theme.of(context).accentColor,
                              );
                            },
                          ),
                          shape: MaterialStateProperty.all(
                            RoundedRectangleBorder(
-                             borderRadius: BorderRadius.circular(8.0),
-                           ),
-                         ),
-                         textStyle: MaterialStateProperty.resolveWith(
-                               (Set<MaterialState> state) {
-                             if (state.contains(MaterialState.disabled)) {
-                               return Theme
-                                   .of(context)
-                                   .textTheme
-                                   .button
-                                   ?.copyWith(
-                                 color: Colors.grey,
-                               );
-                             }
-                             return Theme
-                                 .of(context)
-                                 .textTheme
-                                 .button
-                                 ?.copyWith(
-                               color: Colors.orange,
-                             );
-                           },
-                         ),
-                       ),
-                     ),
-                     textButtonTheme: TextButtonThemeData(
-                       style: ButtonStyle(
-                         textStyle: MaterialStateProperty.all(
-                           Theme
-                               .of(context)
-                               .textTheme
-                               .button
-                               ?.copyWith(
-                             color: Colors.orange,
+                             borderRadius: BorderRadius.circular(10.0),
                            ),
                          ),
                        ),
                      ),
-                   ),
+                   )
                  );
+               } else {
+                 return CircularProgressIndicator.adaptive(value: 1, backgroundColor: Theme.of(context).accentColor);
                }
-               return CircularProgressIndicator.adaptive(value: 1, backgroundColor: Colors.orange);
              },
            ),
          ),
@@ -215,6 +153,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
       ),
     );
   }
+
   Future<Task> getSampleTask() {
      var task = NavigableTask(
        id: TaskIdentifier(),
@@ -285,11 +224,5 @@ class _UserFeedBackState extends State<UserFeedBack> {
        ),
      );
      return Future.value(task);
-  }
-
-  Future<Task> getJsonTask() async {
-    final taskJson = await rootBundle.loadString('assets/example_json.json');
-    final taskMap = json.decode(taskJson);
-    return Task.fromJson(taskMap);
   }
 }

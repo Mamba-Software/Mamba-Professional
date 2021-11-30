@@ -474,7 +474,7 @@ class FirebaseDatabaseService {
         .orderBy("year", descending: true)
         .orderBy("month", descending: true)
         .orderBy("day", descending: true)
-        .where("brandID", arrayContains: brandId)
+        .where("brandID", isEqualTo: brandId)
         .where("joinedMembers", arrayContains: clientid)
         .get();
     for(int i = 0; i < querySnapshot.docs.length; i++) {
