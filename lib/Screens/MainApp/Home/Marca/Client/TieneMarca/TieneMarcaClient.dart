@@ -355,20 +355,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
               SizedBox(height: MediaQuery.of(context).size.height*0.04),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      PageTransition(
-                          type: PageTransitionType.bottomToTop,
-                          child: BrandLocations(
-                            brandId: currentBrand.id!,
-                          )
-                      )
-                  ).whenComplete(() {
-                    setState(() {
-                      isLoading = true;
-                      initBrandHome();
-                    });
-                  });
+
                 },
                 child: Material(
                   elevation: 4,
@@ -392,7 +379,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                           image: new DecorationImage(
                             fit: BoxFit.cover,
                             //colorFilter: new ColorFilter.mode(Colors.black.withOpacity(1), BlendMode.dstATop),
-                            image: Image.asset(Constants.myLocationsImage).image,
+                            image: Image.asset(Constants.podiumImage).image,
                           ),
                         ),
                         child: Center(),
@@ -426,9 +413,18 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(AppLocalizations.of(context)!.locations, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                            Text(AppLocalizations.of(context)!.ranking, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                             SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                            Text(AppLocalizations.of(context)!.locationsBrandText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                            Text(AppLocalizations.of(context)!.rankingBrandText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 14, color: Colors.white.withOpacity(0.5))),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.70, bottom: MediaQuery.of(context).size.height * 0.07),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.lock_outline, color: Colors.white.withOpacity(0.5), size: 50,)
                           ],
                         ),
                       ),

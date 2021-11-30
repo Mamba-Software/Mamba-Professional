@@ -110,6 +110,8 @@
   "location": "Ubicació",
   "locations": "Ubicacions",
   "locationsBrandText": "Descobreix totes les nostres ubicacions",
+  "ranking": "Rànquing",
+  "rankingBrandText": "En quina posició estàs?",
   "baseLocation": "Ubicació base",
   "baseLocationDescription": "Aquesta és l'ubicació que utilitzarem per localitzar la teva marca al mapa perque els clients puguin trobar-te a prop seu. En cas de no tenir adreça fixe, introduiex una ubicació utilitzada frequentment.",
   "streetName": "Carrer: ",

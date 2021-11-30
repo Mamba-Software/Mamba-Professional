@@ -489,6 +489,14 @@
   "@locationsBrandText":{
     "description": "baseLocation text"
   },
+  "ranking": "Ranking",
+  "@ranking":{
+    "description": "baseLocation text"
+  },
+  "rankingBrandText": "¿En qué posición estás?",
+  "@rankingBrandText":{
+    "description": "baseLocation text"
+  },
   "baseLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor. En caso de no tener una dirección fija, introduce una ubicación utilizada frequentemente.",
   "@baseLocationDescription":{
     "description": "baseLocation text"
