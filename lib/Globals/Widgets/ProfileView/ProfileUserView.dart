@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../Constants.dart';
@@ -149,7 +150,10 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
               padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.03),
               child: IconButton(
                 onPressed: () {
-                  print("Travel to Chat");
+                  Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child:
+                  ChatDetailPage(user!)
+                  ),
+                  );
                 } ,
                 icon: Icon(Icons.chat_outlined)
               ),

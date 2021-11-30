@@ -5,5 +5,6 @@ class ChatUsers{
   String? messageText;
   String? imageURL;
   String? time;
-  ChatUsers({this.name, this.messageText, this.imageURL, this.time});
+  String? userId;
+  ChatUsers({this.name, this.messageText, this.imageURL, this.time, this.userId});
 }

@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
+import 'package:mamba_castelldefels/Models/ChatUsers.dart';
+import 'package:mamba_castelldefels/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
@@ -108,6 +110,14 @@ class DatabaseAccess {
   Future<String> addAnswers(String? groupOfQuestionsID, String? answerOne, String? answerTwo, String? answerThree, String? answerFour) => _firebase.addAnswers(groupOfQuestionsID, answerOne, answerTwo, answerThree, answerFour);
   Future<bool> checkIfAnswersExist(String? groupOfQuestionsID) => _firebase.checkIfAnswersExist(groupOfQuestionsID);
 
+  //Conversations
+  Future<String> addConversation( var users, String? brandId, String? year, String? month, String? day, String? hour, String? minute, String? second, String? lastMessage) => _firebase.addConversation(users!, brandId, year, month, day, hour, minute, second, lastMessage);
+  Future<void> updateConversation(String? uid, String lastMessage, String year, String month, String day, String hour, String minute, String second) => _firebase.updateConversation(uid, lastMessage, year, month, day, hour, minute, second);
+
+  //Messages
+  Future<String> addMessage(String? message, String? userSent, String? year, String? month, String? day, String? hour, String? minute,String? second, String? conversationId) => _firebase.addMessage(message, userSent, year, month, day, hour, minute, second, conversationId);
+
+  Future<List<Conversation>> getConversationByUsers(Map<String, dynamic> currentUser, Map<String, dynamic> user) => _firebase.getConversationByUsers(currentUser, user);
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams
 
@@ -132,7 +142,10 @@ class DatabaseAccess {
   Stream<QuerySnapshot> getAllQuestions() => _firebase.getAllQuestions();
 
   //Conversations
-  Stream<QuerySnapshot> getUserConversations(Usuario user) => _firebase.getUserConversations(user);
+  Stream<QuerySnapshot> getUserConversations(Map<String, dynamic> mapUser) => _firebase.getUserConversations(mapUser);
+
+  //Messages
+  Stream<QuerySnapshot> getConversationMessages(String? conversationId) => _firebase.getConversationMessages(conversationId);
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

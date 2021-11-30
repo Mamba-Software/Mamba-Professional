@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembrosTrainer.dart';
+import 'package:page_transition/page_transition.dart';
 
 import 'chatPage.dart';
 
@@ -32,7 +34,13 @@ class _UserChatState extends State<UserChat> {
                 color: Styles.accent,
               ),
               onPressed: () {
-
+                Navigator.push(
+                    context,
+                    PageTransition(
+                        type: PageTransitionType.bottomToTop,
+                        child: TodosMiembrosTrainer()
+                    )
+                );
               },
             ),
           ]

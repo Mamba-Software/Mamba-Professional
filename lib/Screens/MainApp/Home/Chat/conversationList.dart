@@ -1,25 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Models/Usuario.dart';
 
 import 'chatDetailPage.dart';
 
 class ConversationList extends StatefulWidget{
+
   String name;
   String messageText;
   String imageUrl;
   String time;
   bool isMessageRead;
-  ConversationList({required this.name,required this.messageText,required this.imageUrl,required this.time,required this.isMessageRead});
+  String userId;
+  ConversationList({required this.name,required this.messageText,required this.imageUrl,required this.time,required this.isMessageRead, required this.userId});
   @override
   _ConversationListState createState() => _ConversationListState();
 }
 
 class _ConversationListState extends State<ConversationList> {
+
+  late Usuario user;
+  var _accessDatabase = new DatabaseAccess();
+  bool isLoading = true;
+
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  Future<void> getUser() async {
+    user = await this._accessDatabase.getUserDetails(widget.userId);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+     return GestureDetector(
       onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context){
-          return ChatDetailPage();
+          return ChatDetailPage(user);
         }));
       },
       child: Container(

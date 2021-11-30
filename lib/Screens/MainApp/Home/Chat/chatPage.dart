@@ -20,20 +20,18 @@ class _ChatPageState extends State<ChatPage> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
 
-  List<ChatUsers> chatUsers = [
-    ChatUsers(
-        name: "Test 2",
-        messageText: "Awesome Setup",
-        imageURL: "images/userImage1.jpeg",
-        time: "Now"),
-    ChatUsers(
-        name: "Test 3",
-        messageText: "Awesome Setup",
-        imageURL: "images/userImage1.jpeg",
-        time: "Now"),
-  ];
+  List<ChatUsers> chatUsers = [];
+
 
   List<Conversation> conversations = [];
+
+  Map<String, dynamic> toMap(String? id,String? name, String? imageURL) {
+    return {
+      'uid': id,
+      'name': name,
+      'image': imageURL,
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,25 +62,13 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ),
             StreamBuilder<QuerySnapshot>(
-                stream: _accessDatabase.getUserConversations(currentUser),
+                stream: _accessDatabase.getUserConversations(toMap(currentUser.id,currentUser.name,currentUser.imageUrl)),
                 builder: (context, snapshot) {
                   if (snapshot.data == null) {
                     return LoadingView();
                   } else {
                     chatUsers = documentsToConversations(
                         snapshot.data!.docs, chatUsers);
-                    chatUsers = [
-                      ChatUsers(
-                          name: "Test 2",
-                          messageText: "Awesome Setup",
-                          imageURL: "images/userImage1.jpeg",
-                          time: "Now"),
-                      ChatUsers(
-                          name: "Test 3",
-                          messageText: "Awesome Setup",
-                          imageURL: "images/userImage1.jpeg",
-                          time: "Now"),
-                    ];
                     return ListView.builder(
                       itemCount: chatUsers.length,
                       shrinkWrap: true,
@@ -96,6 +82,7 @@ class _ChatPageState extends State<ChatPage> {
                           time: chatUsers[index].time!,
                           isMessageRead:
                               (index == 0 || index == 3) ? true : false,
+                          userId: chatUsers[index].userId!,
                         );
                       },
                     );
@@ -109,26 +96,33 @@ class _ChatPageState extends State<ChatPage> {
 
   List<ChatUsers> documentsToConversations(
       List<DocumentSnapshot> documents, List<ChatUsers> _chatUsers) {
-    List<ChatUsers> chatUsers = _chatUsers;
+    List<ChatUsers> chatUsers = [];
     Conversation conv;
     Usuario user;
-
-    for (int i = documents.length - 1; i >= chatUsers.length; i--) {
+    String time;
+    for (int i = 0; i < documents.length; i++) {
       conv = Conversation.fromObject(documents[i], documents[i].id);
+      time = conv.hour! + ':' + conv.minute! + ':' + conv.second!;
       if (conv.brandId != null) {
-        if (conv.users[0].id == currentUser.id) {
+        if (conv.users[0]['uid'] == currentUser.id) {
           chatUsers.add(ChatUsers(
-              name: conv.users[1].name!,
-              messageText: "Awesome Setup",
-              imageURL: conv.users[1].imageUrl!,
-              time: conv.minute!));
+              name: conv.users[1]['name'],
+              messageText: conv.lastMessage,
+              imageURL: conv.users[1]['image'],
+              time: time,
+              userId: conv.users[1]['uid']));
         } else {
           chatUsers.add(ChatUsers(
-              name: conv.users[0].name!,
-              messageText: "Awesome Setup",
-              imageURL: conv.users[0].name!,
-              time: conv.minute!));
+              name: conv.users[0]['name'],
+              messageText: conv.lastMessage,
+              imageURL: conv.users[0]['image'],
+              time: time,
+              userId: conv.users[0]['uid']));
         }
+      }
+
+      else {
+
       }
     }
     return chatUsers;
