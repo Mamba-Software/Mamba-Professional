@@ -135,49 +135,51 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                 if (snapshot.data != null) {
                   messages = documentsToMessages(snapshot.data!.docs);
                   return SingleChildScrollView(
-                    child:
-                      ListView.builder(
-                    itemCount: messages.length,
-                    shrinkWrap: true,
-                    padding: EdgeInsets.only(top: 10, bottom: 10),
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Container(
-                        padding: EdgeInsets.only(
-                            left: 14, right: 14, top: 10, bottom: 10),
-                        child: Align(
-                          alignment: (messages[index].messageType == "receiver"
-                              ? Alignment.topLeft
-                              : Alignment.topRight),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: (messages[index].messageType == "receiver"
-                                  ? Colors.grey.shade200
-                                  : Styles.mainColor),
+                    child: ListView.builder(
+                      itemCount: messages.length,
+                      shrinkWrap: true,
+                      padding: EdgeInsets.only(top: 10, bottom: 10),
+                      physics: BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(
+                                  left: 14, right: 14, top: 10, bottom: 10),
+                              child: Align(
+                                alignment: (messages[index].messageType == "receiver"
+                                    ? Alignment.topLeft
+                                    : Alignment.topRight),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: (messages[index].messageType == "receiver"
+                                        ? Colors.grey.shade200
+                                        : Styles.mainColor),
+                                  ),
+                                  padding: EdgeInsets.all(16),
+                                  child: Text(
+                                    messages[index].messageContent!,
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                ),
+                              ),
                             ),
-                            padding: EdgeInsets.all(16),
-                            child: Text(
-                              messages[index].messageContent!,
-                              style: TextStyle(fontSize: 15),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                      ),
+                            if (index == messages.length-1) SizedBox(height: MediaQuery.of(context).size.height*0.08),
+                          ],
+                        );
+                      },
+                    ),
                   );
-
-
                 }
                 else return LoadingView();
               }
-              ),
+            ),
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(
               padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
-              height: 60,
+              height: MediaQuery.of(context).size.height*0.08,
               width: double.infinity,
               color: Colors.white,
               child: Row(
@@ -200,7 +202,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   FloatingActionButton(
                     onPressed: () async {
                       DateTime today = DateTime.now();
-
                       if (editingController.text != '') {
                         if (messages.length == 0) {
                           List<Map> chatUsers = [];
@@ -224,13 +225,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                           await _accessDatabase.updateConversation(
                             conversationId,
                             editingController.text,
-                              today.year.toString(),
-                              today.month.toString(),
-                              today.day.toString(),
-                              today.hour.toString(),
-                              today.minute.toString(),
-                              today.second.toString(),
-                              );
+                            today.year.toString(),
+                            today.month.toString(),
+                            today.day.toString(),
+                            today.hour.toString(),
+                            today.minute.toString(),
+                            today.second.toString(),
+                          );
                         }
                         _accessDatabase.addMessage(
                             editingController.text,
@@ -243,7 +244,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                             today.second.toString(),
                             conversationId);
 
-                          editingController.text = '';
+                        editingController.text = '';
 
                         setState(() {
 

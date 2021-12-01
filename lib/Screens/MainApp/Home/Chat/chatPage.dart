@@ -67,12 +67,11 @@ class _ChatPageState extends State<ChatPage> {
                   if (snapshot.data == null) {
                     return LoadingView();
                   } else {
-                    chatUsers = documentsToConversations(
-                        snapshot.data!.docs, chatUsers);
+                    chatUsers = documentsToConversations(snapshot.data!.docs, chatUsers);
                     return ListView.builder(
                       itemCount: chatUsers.length,
                       shrinkWrap: true,
-                      padding: EdgeInsets.only(top: 16),
+                      //padding: EdgeInsets.only(top: 16),
                       physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         return ConversationList(

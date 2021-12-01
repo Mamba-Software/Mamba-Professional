@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
           } else if (position == 2) {
             return Notifications();
           } else if (position == 3) {
-            return Chat();
+            return UserChat();
           } else {
             return Perfil();
           }
