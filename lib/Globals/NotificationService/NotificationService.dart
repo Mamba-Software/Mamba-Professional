@@ -1,0 +1,37 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Models/Event.dart';
+import 'package:mamba_castelldefels/Models/Usuario.dart';
+
+class NotificationService {
+
+  // Contexto per al Idioma
+  BuildContext? context;
+  // Acceso a Base de Datos
+  var _accessDatabase = new DatabaseAccess();
+
+  NotificationService(BuildContext context) {
+    this.context = context;
+  }
+
+  Future<void> joinEvent(String userId, String eventId) async {
+    Usuario usuario = await _accessDatabase.getUserDetails(userId);
+    Event event = await _accessDatabase.getSingleEvent(eventId);
+    String title = AppLocalizations.of(this.context!)!.joinEventTitleNotification(usuario.name!, event.title!);
+    var startDate = DateTime(
+      int.parse(event.year!),
+      int.parse(event.month!),
+      int.parse(event.day!),
+      int.parse(event.hour!),
+      int.parse(event.minute!),
+    );
+    String eventTimeDay = DateFormat('EE dd/MM/yy', Localizations.localeOf(this.context!).languageCode).format(startDate);
+    String eventTimeTime = "${event.hour.toString()}:${event.minute=="0" ? "00" : event.minute.toString()}h";
+    String subtitle = AppLocalizations.of(this.context!)!.joinEventSubtitleNotification(eventTimeDay, eventTimeTime);
+    var parameters = [usuario.imageUrl];
+    _accessDatabase.sendNotification(userId, "EventJoined", false, title, subtitle, parameters);
+  }
+
+}

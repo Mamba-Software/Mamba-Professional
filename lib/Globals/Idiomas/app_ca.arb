@@ -259,5 +259,8 @@
   "sendRequestConfirmation": "Estàs segur que vols enviar una sol·licitud a aquesta marca?\n\nEls organitzadors rebran una notificació. Fins que aquesta no sigui acceptada o rebutjada no podràs enviar una altra sol·licitud a cap marca.",
   "cancelRequestConfirmation": "Vols anul·lar la teva sol·licitud a aquesta marca? Encara no has rebut resposta dels organitzadors.\n\nAquesta canvi tindrà un efecte inmediat i ara podràs enviar una sol·licitud a una altre marca.",
   "waitingRequestConfirmation": "Esperant resposta a sol·licitud d'admissió per part de ",
-  "requestConfirmation": "¿Vols acceptar a aquest usuari com a nou membre de la teva marca?"
+  "requestConfirmation": "¿Vols acceptar a aquest usuari com a nou membre de la teva marca?",
+  "markAsRead": "Totes llegides",
+  "joinEventTitleNotification": "{user} s'ha unit al event {name}",
+  "joinEventSubtitleNotification": "Aquest es realitzarà el {dia} a les {horas}"
 }

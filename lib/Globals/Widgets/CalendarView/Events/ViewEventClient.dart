@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/JoinConfirmationDialog.dart';
@@ -1209,6 +1210,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                       isLoadingBody = true;
                     });
                     bool hasJoined = await _accessDatabase.joinEvent(event!.id!, currentUser.id!);
+                    NotificationService(context).joinEvent(currentUser.id!, event!.id!);
                     if (hasJoined) {
                       getEventInfo();
                       setState(() {

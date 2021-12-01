@@ -98,7 +98,7 @@ class DatabaseAccess {
   Future<RequestToBrand?> hasPendingRequest(String userId) => _firebase.hasPendingRequest(userId);
 
   // Notifications
-  Future<void> sendNotification(String userId, String type, bool isImportant, String title, String subtitle) => _firebase.sendNotification(userId, type, isImportant, title, subtitle);
+  Future<void> sendNotification(String userId, String type, bool isImportant, String title, String subtitle, var parameters) => _firebase.sendNotification(userId, type, isImportant, title, subtitle, parameters);
   //Future<void> readImportantNotification(String requestId) => _firebase.acceptRequest(requestId);
 
   //Questions

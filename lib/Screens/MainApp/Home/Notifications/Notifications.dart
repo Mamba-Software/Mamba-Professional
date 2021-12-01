@@ -43,14 +43,25 @@ class _NotificationsState extends State<Notifications> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text(AppLocalizations.of(context)!.notificationsBottomNav, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+        title: Row(
+          children: [
+            SizedBox(width: MediaQuery.of(context).size.width*0.01,),
+            Text(AppLocalizations.of(context)!.notificationsBottomNav, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+          ],
+        ),
+        centerTitle: false,
         actions: [
-          IconButton(
-            icon: Icon(Icons.mark_email_read_outlined),
+          TextButton.icon(
+            icon: Icon(Icons.mark_email_read_outlined, color: Theme.of(context).primaryColor,),
+            label: Text(
+              AppLocalizations.of(context)!.markAsRead,
+              style: TextStyle(color: Colors.black),
+            ),
             onPressed: () {
-
+              // call method
             },
           ),
+          SizedBox(width: MediaQuery.of(context).size.width*0.03,),
         ],
       ),
       body: Column(
@@ -76,7 +87,7 @@ class _NotificationsState extends State<Notifications> {
                       itemBuilder: (context, index) {
                         NotificationEvent notification = notificationsList[index];
                         return ListTile(
-                          leading: Icon(Icons.calendar_today_outlined, color: Theme.of(context).primaryColor, size: 25,),
+                          leading: returnIconGivenType(notification),
                           title: Text(
                             notification.title!,
                             style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: Colors.grey),
@@ -91,7 +102,6 @@ class _NotificationsState extends State<Notifications> {
                               ),
                             ],
                           ),
-                          trailing: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 30,),
                           onTap: () {
 
                           },
@@ -106,4 +116,38 @@ class _NotificationsState extends State<Notifications> {
       ),
     );
   }
+
+  Widget returnIconGivenType (NotificationEvent notification) {
+    // Return the leading icon depending on Type
+    switch(notification.type!) {
+      case "WellcomeMamba": {
+        return
+          Icon(
+            Icons.event_available,
+            color: Colors.green,
+            size: 30,
+          );
+      }
+      case "EventJoined": {
+        return
+          Icon(
+            Icons.event_available,
+            color: Colors.green,
+            size: 30,
+          );
+      }
+      case "EventAbandoned": {
+        return
+          Icon(
+            Icons.event_busy,
+            color: Colors.red,
+            size: 30,
+          );
+      }
+      default: {
+        return Container();
+      }
+    }
+  }
+
 }

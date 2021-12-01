@@ -958,7 +958,7 @@ class FirebaseDatabaseService {
   // Notifications
 
   // Send Notification
-  Future<void> sendNotification(String userId, String type, bool isImportant, String title, String subtitle) async {
+  Future<void> sendNotification(String userId, String type, bool isImportant, String title, String subtitle, var parameters) async {
     var uid = Uuid().v1();
     DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yy');
@@ -967,12 +967,14 @@ class FirebaseDatabaseService {
       "userId": userId,
       "type": type,
       "isImportant": isImportant,
+      "isRead": false,
       "title": title,
       "subtitle": subtitle,
       "dateSent": formatted,
       "year": now.year.toString(),
       "month": now.month.toString(),
       "day": now.day.toString(),
+      "parameters": parameters,
     });
   }
 

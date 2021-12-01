@@ -1087,5 +1087,33 @@
   "requestConfirmation": "¿Quieres aceptar a este usuario como nuevo miembro de tu marca?",
   "@requestConfirmation": {
     "description": "Wellcome message"
+  },
+  "markAsRead": "Todas leídas",
+  "@markAsRead": {
+    "description": "Wellcome message"
+  },
+  "joinEventTitleNotification": "{user} se ha unido al evento {name}",
+  "@joinEventTitleNotification": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "user": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "joinEventSubtitleNotification": "Este se realizará el {dia} a las {horas}",
+  "@joinEventSubtitleNotification": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "dia": {
+        "type": "String"
+      },
+      "horas": {
+        "type": "String"
+      }
+    }
   }
 }
