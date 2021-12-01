@@ -955,6 +955,27 @@ class FirebaseDatabaseService {
     }
   }
 
+  // Notifications
+
+  // Send Notification
+  Future<void> sendNotification(String userId, String type, bool isImportant, String title, String subtitle) async {
+    var uid = Uuid().v1();
+    DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yy');
+    final String formatted = formatter.format(now);
+    await _firestore.collection("Requests").doc(uid).set({
+      "userId": userId,
+      "type": type,
+      "isImportant": isImportant,
+      "title": title,
+      "subtitle": subtitle,
+      "dateSent": formatted,
+      "year": now.year.toString(),
+      "month": now.month.toString(),
+      "day": now.day.toString(),
+    });
+  }
+
   //Questions
 
   //Get One Question
@@ -1239,6 +1260,14 @@ class FirebaseDatabaseService {
     return _firestore
         .collection("Requests")
         .where("brandId", isEqualTo: brandId)
+        .snapshots();
+  }
+
+  // Notifications
+  Stream<QuerySnapshot> getAllNotificationsUser(String userId) {
+    return _firestore
+        .collection("Notifications")
+        .where("userId", isEqualTo: userId)
         .snapshots();
   }
 

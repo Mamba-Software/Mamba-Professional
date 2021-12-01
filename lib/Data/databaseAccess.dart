@@ -91,11 +91,15 @@ class DatabaseAccess {
   Future<void> deleteBrandLocations(String brandId) => _firebase.deleteBrandLocations(brandId);
   Future<Location> getSingleLocation(String locationId) => _firebase.getSingleLocation(locationId);
 
-  // Locations
+  // Requests
   Future<void> sendRequest(String brandId, String name, bool isTrainer) => _firebase.sendRequest(brandId, name, isTrainer);
   Future<void> acceptRequest(String requestId) => _firebase.acceptRequest(requestId);
   Future<void> deleteRequest(String requestId) => _firebase.deleteRequest(requestId);
   Future<RequestToBrand?> hasPendingRequest(String userId) => _firebase.hasPendingRequest(userId);
+
+  // Notifications
+  Future<void> sendNotification(String userId, String type, bool isImportant, String title, String subtitle) => _firebase.sendNotification(userId, type, isImportant, title, subtitle);
+  //Future<void> readImportantNotification(String requestId) => _firebase.acceptRequest(requestId);
 
   //Questions
   Future<Question> getOneQuestion(String? id) => _firebase.getOneQuestion(id);
@@ -137,6 +141,9 @@ class DatabaseAccess {
 
   // Request
   Stream<QuerySnapshot> getAllRequestsBrand(String brandId) => _firebase.getAllRequestsBrand(brandId);
+
+  // Request
+  Stream<QuerySnapshot> getAllNotificationsUser(String userId) => _firebase.getAllNotificationsUser(userId);
 
   //Questions
   Stream<QuerySnapshot> getAllQuestions() => _firebase.getAllQuestions();

@@ -74,16 +74,16 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                height: MediaQuery.of(context).size.height*0.32,
+                height: MediaQuery.of(context).size.height*0.25,
                 child: Stack(
                   alignment: Alignment.topCenter,
                   fit: StackFit.expand,
                   children: <Widget>[
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.07,
+                      top: MediaQuery.of(context).size.height*0.06,
                       bottom: 0,
                       left: 0,
-                      right: 0,
+                      right: MediaQuery.of(context).size.width*0.55,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -106,7 +106,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                             child: Container(
                               height: MediaQuery.of(context).size.height * 0.20,
                               child: Center(
-                                child: CircularImage(size: MediaQuery.of(context).size.height * 0.19, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                                child: CircularImage(size: MediaQuery.of(context).size.height * 0.18, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
                               ),
                             ),
                           ),
@@ -114,11 +114,19 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.29,
+                      top: MediaQuery.of(context).size.height*0.10,
                       bottom: 0,
-                      left: 0,
-                      right: 0,
+                      left: MediaQuery.of(context).size.width*0.30,
+                      right: MediaQuery.of(context).size.width*0,
                       child: Text("${currentBrand.name!}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                    ),
+                    Positioned(
+                      top: MediaQuery.of(context).size.height*0.15,
+                      bottom: 0,
+                      left: MediaQuery.of(context).size.width*0.25,
+                      right: MediaQuery.of(context).size.width*0,
+                      child: Text(AppLocalizations.of(context)!.memberSince(currentBrand.dateJoined!),
+                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.grey, fontWeight: FontWeight.w500, fontSize: 14, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                     ),
                   ]
                 ),
