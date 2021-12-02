@@ -115,6 +115,10 @@ class _LoginState extends State<Login> {
                         ),
                         TextButton(
                           onPressed: (){
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
                             Navigator.push(
                                 context,
                                 CupertinoPageRoute<Null>(
@@ -181,6 +185,10 @@ class _LoginState extends State<Login> {
                             ),
                             child: TextButton(
                               onPressed: () {
+                                FocusScopeNode currentFocus = FocusScope.of(context);
+                                if (!currentFocus.hasPrimaryFocus) {
+                                  currentFocus.unfocus();
+                                }
                                 Navigator.push(
                                     context,
                                     CupertinoPageRoute<Null>(
@@ -208,7 +216,7 @@ class _LoginState extends State<Login> {
   }
 
   void signIn() async {
-      int result = await _accessDatabase.signIn(email, password);
+      int result = await _accessDatabase.signIn(email.trim(), password);
       print(result);
       if (result == 0) {
         Navigator.pushReplacement(
@@ -237,6 +245,10 @@ class _LoginState extends State<Login> {
     setState(() {
       isLoading = true;
     });
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
     signIn();
   }
 

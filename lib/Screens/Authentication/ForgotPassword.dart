@@ -105,12 +105,19 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                     setState(() {
                                       isLoading = true;
                                     });
+                                    FocusScopeNode currentFocus = FocusScope.of(context);
+                                    if (!currentFocus.hasPrimaryFocus) {
+                                      currentFocus.unfocus();
+                                    }
                                     result = await _accessDatabase.resetPassword(email);
                                     if (result == 1) {
                                       setState(() {
                                         isLoading = false;
                                       });
                                       showInSnackBar(AppLocalizations.of(context)!.validatePassword);
+                                      Future.delayed(Duration(seconds: 5), () async {
+                                        Navigator.pop(context);
+                                      });
                                     } else {
                                       setState(() {
                                         isLoading = false;

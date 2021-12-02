@@ -215,11 +215,15 @@ class _RegisterState extends State<Register> {
     setState(() {
       isLoading = true;
     });
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
     signUp();
   }
 
   void signUp() async{
-      var result =  await _accessDatabase.registerUser(email, password1, Localizations.localeOf(context).languageCode);
+      var result =  await _accessDatabase.registerUser(email.trim(), password1, Localizations.localeOf(context).languageCode);
       if (result == 0) {
         setState(() {
           isLoading = false;
