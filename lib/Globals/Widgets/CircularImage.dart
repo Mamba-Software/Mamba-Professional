@@ -44,7 +44,7 @@ class _CircularImageState extends State<CircularImage> {
             height: widget.size,
             decoration: new BoxDecoration(
                 border: Border.all(
-                  width: widget.borderWidth == null ? 3 : widget.borderWidth!,
+                  width: widget.borderWidth == null ? 0 : widget.borderWidth!,
                   color: widget.color == null ? Styles.mainColor : widget.color!,
                   style: BorderStyle.solid,
                 ),

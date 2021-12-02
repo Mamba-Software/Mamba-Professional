@@ -13,6 +13,10 @@ var placesAPIIOS = "AIzaSyAYFglgzIMLYXB9XQPaZ977MKUMseCJCvY";
 var currentUser = Usuario();
 var currentBrand = Brand();
 
+// Unread Notifications and Chats
+var unreadNotifications = 0;
+var unreadChats = 0;
+
 // Current User Location
 Position? currentPosition;
 String? currentAddress;

@@ -30,8 +30,9 @@ class NotificationService {
     String eventTimeDay = DateFormat('EE dd/MM/yy', Localizations.localeOf(this.context!).languageCode).format(startDate);
     String eventTimeTime = "${event.hour.toString()}:${event.minute=="0" ? "00" : event.minute.toString()}h";
     String subtitle = AppLocalizations.of(this.context!)!.joinEventSubtitleNotification(eventTimeDay, eventTimeTime);
-    var parameters = [usuario.imageUrl];
-    _accessDatabase.sendNotification(userId, "EventJoined", false, title, subtitle, parameters);
+    var parameters = [usuario.imageUrl, eventId];
+    for (var i=0; i<event.selectedTrainers.length!; i++) {
+      _accessDatabase.sendNotification(event.selectedTrainers[i], "EventJoined", false, title, subtitle, parameters);
+    }
   }
-
 }

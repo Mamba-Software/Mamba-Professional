@@ -64,7 +64,10 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: Theme.of(context).primaryColor,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_rounded),
+            icon: unreadNotifications > 0 ? buildCustomBadge(
+              counter: unreadNotifications,
+              child: Icon(Icons.notifications_rounded),
+            ) : Icon(Icons.notifications_rounded),
             label: AppLocalizations.of(context)!.notificationsBottomNav,
             backgroundColor: Theme.of(context).primaryColor,
           ),
@@ -109,24 +112,6 @@ class _HomePageState extends State<HomePage> {
           });
         },
       ),
-      /*
-      PageView(
-        physics: NeverScrollableScrollPhysics(),
-        controller: _pageController,
-        allowImplicitScrolling: true,
-        children: <Widget>[
-          Perfil(),
-          Marca(),
-          Notifications(),
-          Chat(),
-        ],
-        onPageChanged: (page) {
-          setState(() {
-            _currentIndex = page;
-          });
-        },
-      ),
-       */
     );
   }
 
@@ -136,6 +121,37 @@ class _HomePageState extends State<HomePage> {
     });
     _pageController.jumpToPage(value);
   }
+
+  Widget buildCustomBadge({required int counter, required Widget child}) {
+
+    final text = counter.toString();
+    final deltaFontSize = (text.length - 1) * 3.0;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        child,
+        Positioned(
+          top: -6,
+          right: -15,
+          child: CircleAvatar(
+            backgroundColor: Theme.of(context).accentColor,
+            radius: 10,
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 12 - deltaFontSize,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+
 
   @override
   void dispose() {

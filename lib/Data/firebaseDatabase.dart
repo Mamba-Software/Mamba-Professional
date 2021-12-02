@@ -963,7 +963,7 @@ class FirebaseDatabaseService {
     DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yy');
     final String formatted = formatter.format(now);
-    await _firestore.collection("Requests").doc(uid).set({
+    await _firestore.collection("Notifications").doc(uid).set({
       "userId": userId,
       "type": type,
       "isImportant": isImportant,

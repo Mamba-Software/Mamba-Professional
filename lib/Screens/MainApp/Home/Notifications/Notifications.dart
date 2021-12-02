@@ -5,8 +5,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/NotificationEvent.dart';
+import 'package:page_transition/page_transition.dart';
 
 class Notifications extends StatefulWidget {
   const Notifications({Key? key}) : super(key: key);
@@ -19,8 +22,9 @@ class _NotificationsState extends State<Notifications> {
 
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
-  // Request List
+  // Notification List
   List<NotificationEvent> notificationsList = [];
+  List<NotificationEvent> notReadNotificationsList = [];
 
   @override
   initState() {
@@ -36,6 +40,17 @@ class _NotificationsState extends State<Notifications> {
       notifications.add(notification);
     }
     return notifications;
+  }
+
+  int unreadNotificationsFunction (List<NotificationEvent> list) {
+    int count = 0;
+    for (int i = 0; i < list.length; i++) {
+      NotificationEvent notification = list[i];
+      if (notification.isRead == false) {
+        count += 1;
+      }
+    }
+    return count;
   }
 
   @override
@@ -79,6 +94,11 @@ class _NotificationsState extends State<Notifications> {
                   );
                 } else {
                   notificationsList = documentsToNotifications(snapshot.data!.docs);
+                  Future.delayed(Duration.zero, () async {
+                    setState(() {
+                      unreadNotifications = unreadNotificationsFunction(notificationsList);
+                    });
+                  });
                   return ListView.builder(
                       physics: BouncingScrollPhysics(),
                       shrinkWrap: true,
@@ -86,11 +106,12 @@ class _NotificationsState extends State<Notifications> {
                       itemCount: notificationsList.length,
                       itemBuilder: (context, index) {
                         NotificationEvent notification = notificationsList[index];
+                        bool isRead = notification.isRead!;
                         return ListTile(
                           leading: returnIconGivenType(notification),
                           title: Text(
                             notification.title!,
-                            style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: Colors.grey),
+                            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: isRead ? FontWeight.normal : FontWeight.w600),
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +124,7 @@ class _NotificationsState extends State<Notifications> {
                             ],
                           ),
                           onTap: () {
-
+                            returnActionOnTap(notification);
                           },
                         );
                       }
@@ -129,12 +150,12 @@ class _NotificationsState extends State<Notifications> {
           );
       }
       case "EventJoined": {
-        return
-          Icon(
-            Icons.event_available,
-            color: Colors.green,
-            size: 30,
-          );
+        return CircularImage(
+          size: MediaQuery.of(context).size.width*0.15,
+          image: notification.parameters[0],
+          color: Theme.of(context).primaryColor,
+          borderWidth: 1.5,
+        );
       }
       case "EventAbandoned": {
         return
@@ -146,6 +167,34 @@ class _NotificationsState extends State<Notifications> {
       }
       default: {
         return Container();
+      }
+    }
+  }
+
+  void returnActionOnTap (NotificationEvent notification) {
+    switch(notification.type!) {
+      case "WellcomeMamba": {
+        break;
+      }
+      case "EventJoined": {
+          Navigator.push(
+              context,
+              PageTransition(
+                type: PageTransitionType.bottomToTop,
+                child: ViewEventTrainer(
+                  eventId: notification.parameters[1],
+                  canEdit: false,
+                  locale: Localizations.localeOf(context),
+                ),
+              )
+          );
+        break;
+      }
+      case "EventAbandoned": {
+        break;
+      }
+      default: {
+        break;
       }
     }
   }
