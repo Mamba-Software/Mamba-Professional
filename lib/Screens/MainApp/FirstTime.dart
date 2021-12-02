@@ -1,9 +1,9 @@
 import 'dart:io';
-
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
@@ -26,6 +26,8 @@ class FirstTime extends StatefulWidget {
 class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMixin{
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  // Acceso a Base de Datos
+  NotificationService? _notificationService;
   // Boolean Loading
   bool isLoading = false;
   // Form Key
@@ -467,52 +469,60 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                               SizedBox(height: MediaQuery.of(context).size.height*0.01),
                               Row(
                                 children: [
-                                  Container(
-                                    width: MediaQuery.of(context).size.width * 0.85,
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: TextFormField(
-                                            controller: nickController,
-                                            keyboardType: TextInputType.name,
-                                            validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nicknameError : null,
-                                            onChanged: (val) {
-                                              nick = val;
-                                              checkIfNickExists(nick);
-                                            },
-                                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
-                                            decoration: InputDecoration(
-                                              hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
-                                              hintText: "@${undoCapitalized(AppLocalizations.of(context)!.name)}",
-                                              border: UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Colors.grey,
-                                                      width: 1.0
-                                                  )
+                                  GestureDetector(
+                                    onTap: () {
+                                      FocusScopeNode currentFocus = FocusScope.of(context);
+                                      if (!currentFocus.hasPrimaryFocus) {
+                                        currentFocus.unfocus();
+                                      }
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width * 0.85,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: TextFormField(
+                                              controller: nickController,
+                                              keyboardType: TextInputType.name,
+                                              validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nicknameError : null,
+                                              onChanged: (val) {
+                                                nick = val;
+                                                checkIfNickExists(nick);
+                                              },
+                                              style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
+                                              decoration: InputDecoration(
+                                                hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                                hintText: "@${undoCapitalized(AppLocalizations.of(context)!.name)}",
+                                                border: UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.grey,
+                                                        width: 1.0
+                                                    )
+                                                ),
+                                                enabledBorder: UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.grey,
+                                                        width: 1.0
+                                                    )
+                                                ),
+                                                focusedBorder: UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.grey,
+                                                        width: 1.0
+                                                    )
+                                                ),
+                                                errorBorder: UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colors.red,
+                                                        width: 1.0
+                                                    )
+                                                ),
+                                                disabledBorder: InputBorder.none,
                                               ),
-                                              enabledBorder: UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Colors.grey,
-                                                      width: 1.0
-                                                  )
-                                              ),
-                                              focusedBorder: UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Colors.grey,
-                                                      width: 1.0
-                                                  )
-                                              ),
-                                              errorBorder: UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Colors.red,
-                                                      width: 1.0
-                                                  )
-                                              ),
-                                              disabledBorder: InputBorder.none,
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   isSearchAlias ? Center(
@@ -1219,11 +1229,14 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     setState(() {
       isLoading = true;
     });
+    _notificationService = NotificationService(context);
     bool isTrainer = false;
     if (_value == 1) isTrainer = true;
     await _accessDatabase.addUser(currentUser.id!, nameController.text, nick, startDateController.text, gender!, _image, isTrainer);
-    if (brand.id != null) {
+    _notificationService!.wellcomeUser(currentUser.id!);
+    if (brandOkay && !brandNotFound) {
       await _accessDatabase.updateCurrentUserBrand(brand.id!);
+      _notificationService!.userJoinsBrand(currentUser.id!, brand.id!);
     }
     Navigator.pushReplacement(
         context,

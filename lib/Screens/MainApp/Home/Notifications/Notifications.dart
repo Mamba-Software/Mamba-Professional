@@ -3,11 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Models/NotificationEvent.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -141,13 +145,32 @@ class _NotificationsState extends State<Notifications> {
   Widget returnIconGivenType (NotificationEvent notification) {
     // Return the leading icon depending on Type
     switch(notification.type!) {
-      case "WellcomeMamba": {
-        return
-          Icon(
-            Icons.event_available,
-            color: Colors.green,
-            size: 30,
+      case "Wellcome_User": {
+        return SizedBox(
+            width: MediaQuery.of(context).size.width*0.15,
+            child: Center(
+              child: Image(
+                width: MediaQuery.of(context).size.width*0.10,
+                image: AssetImage(Constants.logoSimpleYellow)
+              ),
+            ),
           );
+      }
+      case "UserJoinsBrand_User": {
+        return CircularImage(
+          size: MediaQuery.of(context).size.width*0.15,
+          image: notification.parameters[1],
+          color: Theme.of(context).primaryColor,
+          borderWidth: 1.5,
+        );
+      }
+      case "UserJoinsBrand_Trainer": {
+        return CircularImage(
+          size: MediaQuery.of(context).size.width*0.15,
+          image: notification.parameters[1],
+          color: Theme.of(context).primaryColor,
+          borderWidth: 1.5,
+        );
       }
       case "EventJoined": {
         return CircularImage(
@@ -173,21 +196,60 @@ class _NotificationsState extends State<Notifications> {
 
   void returnActionOnTap (NotificationEvent notification) {
     switch(notification.type!) {
-      case "WellcomeMamba": {
+      case "Wellcome_User": {
         break;
       }
-      case "EventJoined": {
+      case "UserJoinsBrand_User": {
+        if (currentUser.isTrainer!) {
           Navigator.push(
               context,
               PageTransition(
-                type: PageTransitionType.bottomToTop,
-                child: ViewEventTrainer(
-                  eventId: notification.parameters[1],
-                  canEdit: false,
-                  locale: Localizations.localeOf(context),
-                ),
+                  type: PageTransitionType.bottomToTop,
+                  child: CalendarWidgetTrainer(
+                    brandID: notification.parameters[0],
+                    canEdit: true,
+                  )
               )
           );
+        } else {
+          Navigator.push(
+              context,
+              PageTransition(
+                  type: PageTransitionType.bottomToTop,
+                  child: CalendarWidgetClient(
+                    brandID: notification.parameters[0],
+                    onlyView: true,
+                  )
+              )
+          );
+        }
+        break;
+      }
+      case "UserJoinsBrand_Trainer": {
+        Navigator.push(
+            context,
+            PageTransition(
+                type: PageTransitionType.bottomToTop,
+                child: ProfileViewUser(
+                  userID: notification.parameters[0],
+                  viewOnly: false,
+                )
+            )
+        );
+        break;
+      }
+      case "EventJoined": {
+        Navigator.push(
+            context,
+            PageTransition(
+              type: PageTransitionType.bottomToTop,
+              child: ViewEventTrainer(
+                eventId: notification.parameters[1],
+                canEdit: false,
+                locale: Localizations.localeOf(context),
+              ),
+            )
+        );
         break;
       }
       case "EventAbandoned": {

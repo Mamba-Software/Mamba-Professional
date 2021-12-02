@@ -1270,6 +1270,9 @@ class FirebaseDatabaseService {
     return _firestore
         .collection("Notifications")
         .where("userId", isEqualTo: userId)
+        .orderBy("year", descending: true)
+        .orderBy("month", descending: true)
+        .orderBy("day", descending: true)
         .snapshots();
   }
 

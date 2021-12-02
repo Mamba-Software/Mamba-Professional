@@ -261,6 +261,12 @@
   "waitingRequestConfirmation": "Esperant resposta a sol·licitud d'admissió per part de ",
   "requestConfirmation": "¿Vols acceptar a aquest usuari com a nou membre de la teva marca?",
   "markAsRead": "Totes llegides",
+  "wellcomeToMAMBA": "Benvingut/da a MAMBA",
+  "onlyImportantNotifications": "Aquí rebràs alertes de les novetats més importants per tu",
+  "userJoinsBrandUser": "Felicitats! T'has unit a {brand}",
+  "userJoinsBrandSubtitleUser": "Consulta el calendari per reservar la teva primera sessió",
+  "userJoinsBrandBrand": "{name} s'ha unit a {brand}",
+  "userJoinsBrandBrandSubtitle": "Ja sou un total de {number} membres",
   "joinEventTitleNotification": "{user} s'ha unit al event {name}",
   "joinEventSubtitleNotification": "Aquest es realitzarà el {dia} a les {horas}"
 }

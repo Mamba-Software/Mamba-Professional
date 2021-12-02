@@ -702,7 +702,7 @@
   "@inviteCodeError":{
     "description": "inviteCode text"
   },
-  "inviteCodeOptional": "¿No tienes ningún código de invitación? ¡No te preocupes! Finaliza el proceso de bienvenida para ver todas las marcas dentro MAMBA.",
+  "inviteCodeOptional": "¿No tienes ningún código de invitación? ¡No te preocupes! Finaliza el proceso de bienvenida para ver todas las marcas dentro de MAMBA.",
   "@inviteCodeOptional":{
     "description": "inviteCode text"
   },
@@ -1091,6 +1091,48 @@
   "markAsRead": "Todas leídas",
   "@markAsRead": {
     "description": "Wellcome message"
+  },
+  "wellcomeToMAMBA": "Bienvenido/a a MAMBA",
+  "@wellcomeToMAMBA": {
+    "description": "Wellcome to MAMBA"
+  },
+  "onlyImportantNotifications": "Aquí recibirás alertas de las novedades más importantes para ti",
+  "@onlyImportantNotifications": {
+    "description": "onlyImportantNotifications"
+  },
+  "userJoinsBrandUser": "Felicidades! Te has unido a {brand}",
+  "@userJoinsBrandUser": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "userJoinsBrandSubtitleUser": "Consulta el calendario para reservar tu primera sesión",
+  "@userJoinsBrandSubtitleUser": {
+    "description": "userJoinsBrandUser message"
+  },
+  "userJoinsBrandBrand": "{name} se ha unido a {brand}",
+  "@userJoinsBrandBrand": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "userJoinsBrandBrandSubtitle": "Ya sois un total de {number} miembros",
+  "@userJoinsBrandBrandSubtitle": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
   },
   "joinEventTitleNotification": "{user} se ha unido al evento {name}",
   "@joinEventTitleNotification": {

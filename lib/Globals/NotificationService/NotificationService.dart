@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
@@ -14,6 +16,34 @@ class NotificationService {
 
   NotificationService(BuildContext context) {
     this.context = context;
+  }
+
+  Future<void> wellcomeUser(String userId) async {
+    String title = AppLocalizations.of(this.context!)!.wellcomeToMAMBA;
+    String subtitle = AppLocalizations.of(this.context!)!.onlyImportantNotifications;
+    var parameters = [];
+    _accessDatabase.sendNotification(userId, "Wellcome_User", false, title, subtitle, parameters);
+  }
+
+  Future<void> userJoinsBrand(String userId, String brandId) async {
+    // Notification to the User Joining
+    Usuario user = await _accessDatabase.getUserDetails(userId);
+    Brand brand = await _accessDatabase.getBrandDetails(brandId);
+    String title = AppLocalizations.of(this.context!)!.userJoinsBrandUser(brand.name!);
+    String subtitle = AppLocalizations.of(this.context!)!.userJoinsBrandSubtitleUser;
+    var parameters = [brandId, brand.logoUrl];
+    _accessDatabase.sendNotification(userId, "UserJoinsBrand_User", false, title, subtitle, parameters);
+    // Notification to All Brand Trainers
+    List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
+    title = AppLocalizations.of(this.context!)!.userJoinsBrandBrand(user.name!, brand.name!);
+    subtitle = AppLocalizations.of(this.context!)!.userJoinsBrandBrandSubtitle(brand.maxMembers.toString());
+    parameters = [userId, user.imageUrl!];
+    for (var i=0; i<listUsers.length; i++) {
+      Usuario trainer = listUsers[i];
+      if (trainer.id! != userId) {
+        _accessDatabase.sendNotification(trainer.id!, "UserJoinsBrand_Trainer", false, title, subtitle, parameters);
+      }
+    }
   }
 
   Future<void> joinEvent(String userId, String eventId) async {
