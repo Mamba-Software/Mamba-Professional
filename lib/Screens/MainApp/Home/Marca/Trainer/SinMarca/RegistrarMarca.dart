@@ -1050,7 +1050,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                 child: Container(
                   height: 50,
                   child: FloatingActionButton.extended(
-                    heroTag: "61",
+                    heroTag: "72",
                     onPressed: () {
                       if (_selectedIndex == 1) {
                         setState(() {

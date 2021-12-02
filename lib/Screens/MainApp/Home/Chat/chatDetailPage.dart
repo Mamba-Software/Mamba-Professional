@@ -200,6 +200,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     width: 15,
                   ),
                   FloatingActionButton(
+                    heroTag: "60",
                     onPressed: () async {
                       DateTime today = DateTime.now();
                       if (editingController.text != '') {

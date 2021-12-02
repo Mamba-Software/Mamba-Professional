@@ -991,7 +991,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                       child: FloatingActionButton.extended(
-                        heroTag: "41",
+                        heroTag: "46",
                         onPressed: () {
                           Navigator.push(
                               context,
