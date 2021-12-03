@@ -4,6 +4,7 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
@@ -55,197 +56,207 @@ class _SettingsState extends State<Settings> {
         isUpdated = false;
       }
     }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settings, style: Theme.of(context).appBarTheme.titleTextStyle,),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 25,),
-          onPressed: () async {
-            if (isUpdated) {
-              setState(() {
-                isSaved = true;
-                if (!(_isPrivate == null)) {
-                  currentUser.isPrivate = _isPrivate;
-                };
-                if (idiomaChanged) {
-                  currentUser.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
-                  currentUser.previousIdioma = "";
-                };
-                _idiomaChanged.currentState!.resetIdiomaChanged();
-                idiomaChanged = false;
-              });
-              await _accessDatabase.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!);
-            }
-            Navigator.pop(context);
-            },
-        ),
-      ),
-      body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      AppLocalizations.of(context)!.yourInfo,
-                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.rightToLeftWithFade,
-                              child: TusDatos(),
-                            )
-                        );
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(Icons.edit_outlined, color: Theme.of(context).primaryColor),
-                          SizedBox(width: 10),
-                          Text(
-                            AppLocalizations.of(context)!.editYourInfo,
-                            style: Styles.purpleTextStyle,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.rightToLeftWithFade,
-                              child: EditPhotoPage(),
-                            )
-                        );
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(Icons.face_retouching_natural, color: Theme.of(context).primaryColor),
-                          SizedBox(width: 10),
-                          Text(
-                            AppLocalizations.of(context)!.editYourPhoto,
-                            style: Styles.purpleTextStyle,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                  ],
-                ),
-                !(currentUser.isTrainer!) ? Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.typeProfile,
-                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    ProfileTypeWidget(
-                      key: _typeProfileKey,
-                      user: currentUser,
-                      selectedProfileTypeChanged: (isPrivate) {
-                        setState(() {
-                          _isPrivate = isPrivate;
-                        });
-                      },
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                  ],
-                ) : Container(),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      AppLocalizations.of(context)!.language,
-                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    LanguagePickerWidget(
-                      key: _idiomaChanged,
-                      idiomaChanged: (bool) {
-                        idiomaChanged = bool!;
-                      },
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                  ],
-                ),
-                TextButton(
-                  onPressed: () async {
-                    var result = await showDialog(
-                        context: context,
-                        builder: (_) {
-                          return ConfirmationDialog(text: AppLocalizations.of(context)!.closeSessionConfirmation);
-                        }
-                    );
-                    if (result) {
-                      _accessDatabase.signOut().then((value) =>
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            CupertinoPageRoute<Null>(
-                              builder: (context) => Login(),
-                              settings: RouteSettings(name: 'Login'),
-                            ),
-                                (_) => false,
-                          )
-                      );
-                    }
-
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.logout_outlined, color: Theme.of(context).primaryColor),
-                      SizedBox(width: 10),
-                      Text(
-                        AppLocalizations.of(context)!.closeSession,
-                        style: Styles.purpleTextStyle,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                TextButton(
-                  onPressed: () async {
-                    showDialog(
-                        context: context,
-                        builder: (_) {
-                          return DeleteDialog();
-                        }
-                    );
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.delete_outline, color: Colors.red),
-                      SizedBox(width: 10),
-                      Text(
-                        AppLocalizations.of(context)!.deleteAccount,
-                        style: Styles.purpleTextStyle.copyWith(color: Colors.red),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+    return isLoading ?
+      Scaffold(
+        body: LoadingViewPurple(),
+      )
+        :
+      Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.settings, style: Theme.of(context).appBarTheme.titleTextStyle,),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, size: 25,),
+            onPressed: () async {
+              if (isUpdated) {
+                setState(() {
+                  isSaved = true;
+                  if (!(_isPrivate == null)) {
+                    currentUser.isPrivate = _isPrivate;
+                  };
+                  if (idiomaChanged) {
+                    currentUser.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
+                    currentUser.previousIdioma = "";
+                  };
+                  _idiomaChanged.currentState!.resetIdiomaChanged();
+                  idiomaChanged = false;
+                });
+                await _accessDatabase.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!);
+              }
+              Navigator.pop(context);
+              },
           ),
         ),
+        body: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        AppLocalizations.of(context)!.yourInfo,
+                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.rightToLeftWithFade,
+                                child: TusDatos(),
+                              )
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.edit_outlined, color: Theme.of(context).primaryColor),
+                            SizedBox(width: 10),
+                            Text(
+                              AppLocalizations.of(context)!.editYourInfo,
+                              style: Styles.purpleTextStyle,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.rightToLeftWithFade,
+                                child: EditPhotoPage(),
+                              )
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.face_retouching_natural, color: Theme.of(context).primaryColor),
+                            SizedBox(width: 10),
+                            Text(
+                              AppLocalizations.of(context)!.editYourPhoto,
+                              style: Styles.purpleTextStyle,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                    ],
+                  ),
+                  !(currentUser.isTrainer!) ? Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.typeProfile,
+                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                      ProfileTypeWidget(
+                        key: _typeProfileKey,
+                        user: currentUser,
+                        selectedProfileTypeChanged: (isPrivate) {
+                          setState(() {
+                            _isPrivate = isPrivate;
+                          });
+                        },
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                    ],
+                  ) : Container(),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        AppLocalizations.of(context)!.language,
+                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                      LanguagePickerWidget(
+                        key: _idiomaChanged,
+                        idiomaChanged: (bool) {
+                          idiomaChanged = bool!;
+                        },
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                    ],
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      var result = await showDialog(
+                          context: context,
+                          builder: (_) {
+                            return ConfirmationDialog(text: AppLocalizations.of(context)!.closeSessionConfirmation);
+                          }
+                      );
+                      if (result) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        Future.delayed(Duration(seconds: 1), () async {
+                          _accessDatabase.signOut().then((value) =>
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                CupertinoPageRoute<Null>(
+                                  builder: (context) => Login(),
+                                  settings: RouteSettings(name: 'Login'),
+                                ),
+                                    (_) => false,
+                              )
+                          );
+                        });
+                      }
+
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.logout_outlined, color: Theme.of(context).primaryColor),
+                        SizedBox(width: 10),
+                        Text(
+                          AppLocalizations.of(context)!.closeSession,
+                          style: Styles.purpleTextStyle,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  TextButton(
+                    onPressed: () async {
+                      showDialog(
+                          context: context,
+                          builder: (_) {
+                            return DeleteDialog();
+                          }
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.delete_outline, color: Colors.red),
+                        SizedBox(width: 10),
+                        Text(
+                          AppLocalizations.of(context)!.deleteAccount,
+                          style: Styles.purpleTextStyle.copyWith(color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
     );
   }
 }

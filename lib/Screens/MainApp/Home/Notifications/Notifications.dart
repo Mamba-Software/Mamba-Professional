@@ -46,7 +46,7 @@ class _NotificationsState extends State<Notifications> {
     return notifications;
   }
 
-  int unreadNotificationsFunction (List<NotificationEvent> list) {
+  void unreadNotificationsFunction (List<NotificationEvent> list) {
     int count = 0;
     for (int i = 0; i < list.length; i++) {
       NotificationEvent notification = list[i];
@@ -54,7 +54,11 @@ class _NotificationsState extends State<Notifications> {
         count += 1;
       }
     }
-    return count;
+    Future.delayed(Duration.zero, () async {
+      setState(() {
+        unreadNotifications = count;
+      });
+    });
   }
 
   @override
@@ -77,7 +81,8 @@ class _NotificationsState extends State<Notifications> {
               style: TextStyle(color: Colors.black),
             ),
             onPressed: () {
-              // call method
+              _accessDatabase.markALLNotificationAsRead(currentUser.id!);
+              unreadNotificationsFunction(notificationsList);
             },
           ),
           SizedBox(width: MediaQuery.of(context).size.width*0.03,),
@@ -85,7 +90,6 @@ class _NotificationsState extends State<Notifications> {
       ),
       body: Column(
         children: [
-          SizedBox(height: MediaQuery.of(context).size.height*0.01),
           StreamBuilder<QuerySnapshot>(
               stream: _accessDatabase.getAllNotificationsUser(currentUser.id!),
               builder: (context, snapshot) {
@@ -98,11 +102,7 @@ class _NotificationsState extends State<Notifications> {
                   );
                 } else {
                   notificationsList = documentsToNotifications(snapshot.data!.docs);
-                  Future.delayed(Duration.zero, () async {
-                    setState(() {
-                      unreadNotifications = unreadNotificationsFunction(notificationsList);
-                    });
-                  });
+                  unreadNotificationsFunction(notificationsList);
                   return ListView.builder(
                       physics: BouncingScrollPhysics(),
                       shrinkWrap: true,
@@ -111,32 +111,36 @@ class _NotificationsState extends State<Notifications> {
                       itemBuilder: (context, index) {
                         NotificationEvent notification = notificationsList[index];
                         bool isRead = notification.isRead!;
-                        return ListTile(
-                          leading: returnIconGivenType(notification),
-                          title: Text(
-                            notification.title!,
-                            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: isRead ? FontWeight.normal : FontWeight.w600),
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                          child: ListTile(
+                            leading: returnIconGivenType(notification),
+                            title: Text(
+                              notification.title!,
+                              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: isRead ? FontWeight.normal : FontWeight.bold),
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                Text(
+                                  notification.subtitle!,
+                                  style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                            onTap: () {
+                              _accessDatabase.markNotificationAsRead(notification.id!);
+                              unreadNotificationsFunction(notificationsList);
+                              returnActionOnTap(notification);
+                            },
                           ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                              Text(
-                                notification.subtitle!,
-                                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                          onTap: () {
-                            returnActionOnTap(notification);
-                          },
                         );
                       }
                   );
                 }
               }
           ),
-          SizedBox(height: MediaQuery.of(context).size.height*0.01),
         ],
       ),
     );

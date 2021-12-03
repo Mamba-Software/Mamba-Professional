@@ -48,10 +48,10 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
   // Date Of Birth
   TextEditingController startDateController = TextEditingController();
   String nullDate = "";
-  bool errorDate = false;
+  bool errorDate = true;
   // Gender Widget value
   int? gender;
-  bool errorGender = false;
+  bool errorGender = true;
   void updateGender(int newGender) {
     setState(() {
       gender = newGender;
@@ -143,7 +143,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
       onDateTimeChanged: (val) {
         setState(() {
           startDateController.text = DateFormat('dd-MM-yyyy', widget.locale.languageCode).format(val);
-          //startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
+          errorDate = false;
         });
       }
     );
@@ -644,6 +644,9 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                   genderTemp: gender,
                                   selectedGenderChanged: (gender) {
                                     updateGender(gender);
+                                    setState(() {
+                                      errorGender = false;
+                                    });
                                   }
                               ),
                               errorGender ? Column(
@@ -1247,7 +1250,6 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     );
   }
 }
-
 
 class GenderWidget extends StatefulWidget {
   final ValueChanged<int> selectedGenderChanged;

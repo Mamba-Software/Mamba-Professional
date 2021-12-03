@@ -12,6 +12,7 @@ import 'package:mamba_castelldefels/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
+import 'package:mamba_castelldefels/Models/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Models/Question.dart';
 import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
@@ -976,6 +977,39 @@ class FirebaseDatabaseService {
       "day": now.day.toString(),
       "parameters": parameters,
     });
+  }
+
+  // Number Unread Notifications
+  Future<int> numberUnreadNotifications(String userId) async {
+    List<NotificationEvent> notifications = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Notifications")
+        .where("userId", isEqualTo: userId)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      notifications.add(NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return notifications.length;
+  }
+
+  // Mark as Read Notifications
+  Future<void> markNotificationAsRead(String notificationId) async {
+    await _firestore.collection("Notifications").doc(notificationId).update({
+      "isRead": true,
+    });
+  }
+
+  // Mark ALL as Read Notifications
+  Future<void> markALLNotificationAsRead(String userId) async {
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Notifications")
+        .where("userId", isEqualTo: userId)
+        .where("isRead", isEqualTo: false)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      NotificationEvent notif = NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      await this.markNotificationAsRead(notif.id!);
+    }
   }
 
   //Questions

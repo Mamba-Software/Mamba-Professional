@@ -1100,7 +1100,7 @@
   "@onlyImportantNotifications": {
     "description": "onlyImportantNotifications"
   },
-  "userJoinsBrandUser": "Felicidades! Te has unido a {brand}",
+  "userJoinsBrandUser": "Te has unido a {brand}",
   "@userJoinsBrandUser": {
     "description": "userJoinsBrandUser message",
     "placeholders": {
@@ -1109,7 +1109,7 @@
       }
     }
   },
-  "userJoinsBrandSubtitleUser": "Consulta el calendario para reservar tu primera sesión",
+  "userJoinsBrandSubtitleUser": "Consulta el calendario para participar en tu primera sesión",
   "@userJoinsBrandSubtitleUser": {
     "description": "userJoinsBrandUser message"
   },

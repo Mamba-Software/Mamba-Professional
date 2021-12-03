@@ -99,6 +99,9 @@ class DatabaseAccess {
 
   // Notifications
   Future<void> sendNotification(String userId, String type, bool isImportant, String title, String subtitle, var parameters) => _firebase.sendNotification(userId, type, isImportant, title, subtitle, parameters);
+  Future<int> numberUnreadNotifications(String userId) => _firebase.numberUnreadNotifications(userId);
+  Future<void> markNotificationAsRead(String notificationId) => _firebase.markNotificationAsRead(notificationId);
+  Future<void> markALLNotificationAsRead(String userId) => _firebase.markALLNotificationAsRead(userId);
   //Future<void> readImportantNotification(String requestId) => _firebase.acceptRequest(requestId);
 
   //Questions
@@ -153,7 +156,6 @@ class DatabaseAccess {
 
   //Messages
   Stream<QuerySnapshot> getConversationMessages(String? conversationId) => _firebase.getConversationMessages(conversationId);
-
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //Admin

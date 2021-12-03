@@ -50,6 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // EMAIL VERIFICATION ACTIVATED
     //if(firebaseUser != null && firebaseUser.emailVerified) {
       currentUser = await _accessDatabase.getCurrentUserDetails();
+      unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
       if (currentUser.brandID != "null" && currentUser.brandID != null) {
         currentBrand = await _accessDatabase.getBrandDetails(currentUser.brandID!);
       } else {
