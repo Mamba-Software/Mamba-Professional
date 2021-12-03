@@ -178,6 +178,22 @@ class _NotificationsState extends State<Notifications> {
           borderWidth: 1.5,
         );
       }
+      case "UserLeavesBrand_User": {
+        return CircularImage(
+          size: MediaQuery.of(context).size.width*0.15,
+          image: notification.parameters[1],
+          color: Theme.of(context).primaryColor,
+          borderWidth: 1.5,
+        );
+      }
+      case "UserLeavesBrand_Trainer": {
+        return CircularImage(
+          size: MediaQuery.of(context).size.width*0.15,
+          image: notification.parameters[1],
+          color: Theme.of(context).primaryColor,
+          borderWidth: 1.5,
+        );
+      }
       case "UserSendRequestToBrand_User": {
         return CircularImage(
           size: MediaQuery.of(context).size.width*0.15,
@@ -258,6 +274,12 @@ class _NotificationsState extends State<Notifications> {
                 )
             )
         );
+        break;
+      }
+      case "UserLeavesBrand_User": {
+        break;
+      }
+      case "UserLeavesBrand_Trainer": {
         break;
       }
       case "UserSendRequestToBrand_User": {

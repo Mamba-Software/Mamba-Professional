@@ -1136,7 +1136,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                           String baseLocation = await _accessDatabase.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
                           await _accessDatabase.updateBrandBaseLocation(result, baseLocation);
                           await _accessDatabase.updateCurrentUserBrand(result);
-
+                          // Notification Trainer has created Brand
                           Navigator.pop(context);
                           Navigator.pushReplacement(
                               context,

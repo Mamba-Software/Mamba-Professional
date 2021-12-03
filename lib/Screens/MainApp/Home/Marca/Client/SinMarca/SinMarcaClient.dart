@@ -5,6 +5,7 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CancelRequestConfirmationDialog.dart';
@@ -212,6 +213,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                       });
                                     } else {
                                       await _accessDatabase.updateCurrentUserBrand(_codigo);
+                                      NotificationService(context).userJoinsBrand(currentUser.id!, _codigo);
                                       Navigator.pushReplacement(
                                           context,
                                           CupertinoPageRoute<Null>(
@@ -432,6 +434,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                                 brandIdRequest = brand.id!;
                                               });
                                               await _accessDatabase.sendRequest(brand.id!, currentUser.name! ,currentUser.isTrainer!);
+                                              NotificationService(context).userSendRequestToBrand(currentUser.id!, brand.id!);
                                               getUserPendingRequests();
                                             }
                                           }

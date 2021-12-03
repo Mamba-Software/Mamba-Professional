@@ -47,6 +47,27 @@ class NotificationService {
     }
   }
 
+  Future<void> userLeavesBrand(String userId, String brandId) async {
+    // Notification to the User Joining
+    Usuario user = await _accessDatabase.getUserDetails(userId);
+    Brand brand = await _accessDatabase.getBrandDetails(brandId);
+    String title = AppLocalizations.of(this.context!)!.userLeavesBrandUser(brand.name!);
+    String subtitle = AppLocalizations.of(this.context!)!.userLeavesBrandUserSubtitle;
+    var parameters = [brandId, brand.logoUrl];
+    _accessDatabase.sendNotification(userId, "UserLeavesBrand_User", false, title, subtitle, parameters);
+    // Notification to All Brand Trainers
+    List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
+    title = AppLocalizations.of(this.context!)!.userLeavesBrandBrand(user.name!, brand.name!);
+    subtitle = AppLocalizations.of(this.context!)!.userLeavesBrandBrandSubtitle(brand.maxMembers.toString());
+    parameters = [userId, user.imageUrl!];
+    for (var i=0; i<listUsers.length; i++) {
+      Usuario trainer = listUsers[i];
+      if (trainer.id! != userId) {
+        _accessDatabase.sendNotification(trainer.id!, "UserLeavesBrand_Trainer", false, title, subtitle, parameters);
+      }
+    }
+  }
+
   Future<void> userSendRequestToBrand(String userId, String brandId) async {
     // Notification to the User Joining
     Usuario user = await _accessDatabase.getUserDetails(userId);

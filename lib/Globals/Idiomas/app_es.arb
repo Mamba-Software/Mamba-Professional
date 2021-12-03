@@ -1088,7 +1088,7 @@
   "@requestConfirmation": {
     "description": "Wellcome message"
   },
-  "markAsRead": "Todas leídas",
+  "markAsRead": "Marcar como leídas",
   "@markAsRead": {
     "description": "Wellcome message"
   },
@@ -1127,6 +1127,40 @@
   },
   "userJoinsBrandBrandSubtitle": "Ya sois un total de {number} miembros",
   "@userJoinsBrandBrandSubtitle": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "userLeavesBrandUser": "Has abandonado a {brand}",
+  "@userLeavesBrandUser": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "userLeavesBrandUserSubtitle": "Ahora podrás formar parte de otra marca",
+  "@userLeavesBrandUserSubtitle": {
+    "description": "userJoinsBrandUser message"
+  },
+  "userLeavesBrandBrand": "{name} ha abandonado a {brand}",
+  "@userLeavesBrandBrand": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "userLeavesBrandBrandSubtitle": "Ahora sois un total de {number} miembros",
+  "@userLeavesBrandBrandSubtitle": {
     "description": "userJoinsBrandUser message",
     "placeholders": {
       "number": {

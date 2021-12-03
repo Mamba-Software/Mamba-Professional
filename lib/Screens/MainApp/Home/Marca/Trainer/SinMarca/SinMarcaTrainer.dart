@@ -30,8 +30,6 @@ class SinMarcaTrainer extends StatefulWidget {
 class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
-  // Notification Service
-  NotificationService? _notificationService;
   // Boolean isLoading
   bool isLoading = false;
   // Brand List
@@ -229,6 +227,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                         });
                                       } else {
                                         await _accessDatabase.updateCurrentUserBrand(_codigo);
+                                        NotificationService(context).userJoinsBrand(currentUser.id!, _codigo);
                                         Navigator.pushReplacement(
                                             context,
                                             CupertinoPageRoute<Null>(
@@ -449,8 +448,8 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                                   brandIdRequest = brand.id!;
                                                 });
                                                 await _accessDatabase.sendRequest(brand.id!, currentUser.name! ,currentUser.isTrainer!);
-                                                _notificationService = NotificationService(context);
-                                                _notificationService!.userSendRequestToBrand(currentUser.id!, brand.id!);
+                                                NotificationService(context).userSendRequestToBrand(currentUser.id!, brand.id!);
+                                                getUserPendingRequests();
                                               }
                                             }
                                           } : null,

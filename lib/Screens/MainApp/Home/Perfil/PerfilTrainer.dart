@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/MyCalendarWidget.dart';
@@ -1097,6 +1098,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                                         });
                                       } else {
                                         await _accessDatabase.updateCurrentUserBrand(_codigo);
+                                        NotificationService(context).userJoinsBrand(currentUser.id!, _codigo);
                                         Navigator.pushReplacement(
                                             context,
                                             CupertinoPageRoute<Null>(
