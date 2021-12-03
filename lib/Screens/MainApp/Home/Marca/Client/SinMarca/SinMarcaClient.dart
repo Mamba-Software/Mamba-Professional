@@ -12,6 +12,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/SendRequestConfirmat
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/RectangularImage.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
@@ -305,7 +306,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                 size: MediaQuery.of(context).size.width*0.10,
                                 image: brand.logoUrl,
                                 color: Theme.of(context).accentColor,
-                                borderWidth: 1.5,
+                                borderWidth: 1,
                               ),
                               SizedBox(width: MediaQuery.of(context).size.width*0.03),
                               Expanded(
@@ -323,14 +324,10 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                       Container(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height * 0.35,
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          image: new DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(brand.logoUrl!),
-                          ),
+                        child: RectangularImage(
+                          image: brand.logoUrl!,
+                          size: MediaQuery.of(context).size.width,
                         ),
-                        child: Center(),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       Row(

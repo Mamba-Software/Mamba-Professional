@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
+import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
 class NotificationService {
@@ -42,6 +43,34 @@ class NotificationService {
       Usuario trainer = listUsers[i];
       if (trainer.id! != userId) {
         _accessDatabase.sendNotification(trainer.id!, "UserJoinsBrand_Trainer", false, title, subtitle, parameters);
+      }
+    }
+  }
+
+  Future<void> userSendRequestToBrand(String userId, String brandId) async {
+    // Notification to the User Joining
+    Usuario user = await _accessDatabase.getUserDetails(userId);
+    RequestToBrand? req = await _accessDatabase.hasPendingRequest(userId);
+    Brand brand = await _accessDatabase.getBrandDetails(brandId);
+    String title = AppLocalizations.of(this.context!)!.userSendRequestToBrandUser(brand.name!);
+    String subtitle = AppLocalizations.of(this.context!)!.userSendRequestToBrandUserSubtitle;
+    var parameters = [brandId, brand.logoUrl];
+    _accessDatabase.sendNotification(userId, "UserSendRequestToBrand_User", false, title, subtitle, parameters);
+    // Notification to All Brand Trainers
+    List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
+    title = AppLocalizations.of(this.context!)!.userSendRequestToBrandBrand(user.name!);
+    var startDate = DateTime(
+      int.parse(req!.year!),
+      int.parse(req.month!),
+      int.parse(req.day!),
+    );
+    String eventTimeDay = DateFormat('EE dd/MM/yy', Localizations.localeOf(this.context!).languageCode).format(startDate);
+    subtitle = AppLocalizations.of(this.context!)!.userSendRequestToBrandBrandSubtitle(eventTimeDay);
+    parameters = [userId, user.imageUrl!, brandId];
+    for (var i=0; i<listUsers.length; i++) {
+      Usuario trainer = listUsers[i];
+      if (trainer.id! != userId) {
+        _accessDatabase.sendNotification(trainer.id!, "UserSendRequestToBrand_Trainer", false, title, subtitle, parameters);
       }
     }
   }

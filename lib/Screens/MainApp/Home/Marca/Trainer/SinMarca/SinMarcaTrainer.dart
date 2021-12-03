@@ -4,12 +4,14 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CancelRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/SendRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/RectangularImage.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
@@ -28,6 +30,8 @@ class SinMarcaTrainer extends StatefulWidget {
 class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  // Notification Service
+  NotificationService? _notificationService;
   // Boolean isLoading
   bool isLoading = false;
   // Brand List
@@ -319,7 +323,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                   size: MediaQuery.of(context).size.width*0.10,
                                   image: brand.logoUrl,
                                   color: Theme.of(context).accentColor,
-                                  borderWidth: 1.5,
+                                  borderWidth: 1,
                                 ),
                                 SizedBox(width: MediaQuery.of(context).size.width*0.03),
                                 Expanded(
@@ -337,14 +341,10 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                         Container(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height * 0.35,
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            image: new DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(brand.logoUrl!),
-                            ),
+                          child: RectangularImage(
+                            image: brand.logoUrl!,
+                            size: MediaQuery.of(context).size.width,
                           ),
-                          child: Center(),
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.01),
                         Row(
@@ -449,7 +449,8 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                                   brandIdRequest = brand.id!;
                                                 });
                                                 await _accessDatabase.sendRequest(brand.id!, currentUser.name! ,currentUser.isTrainer!);
-                                                getUserPendingRequests();
+                                                _notificationService = NotificationService(context);
+                                                _notificationService!.userSendRequestToBrand(currentUser.id!, brand.id!);
                                               }
                                             }
                                           } : null,

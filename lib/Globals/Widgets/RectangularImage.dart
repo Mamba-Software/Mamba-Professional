@@ -2,21 +2,22 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 
-class CircularImage extends StatefulWidget {
+class RectangularImage extends StatefulWidget {
   final double? size;
   final double? borderWidth;
   final String? image;
   final File? file;
   final Color? color;
 
-  CircularImage({Key? key, this.size, this.borderWidth, this.image, this.file, this.color}) : super(key: key);
+  RectangularImage({Key? key, this.size, this.borderWidth, this.image, this.file, this.color}) : super(key: key);
 
   @override
-  _CircularImageState createState() => new _CircularImageState();
+  _RectangularImageState createState() => new _RectangularImageState();
 }
 
-class _CircularImageState extends State<CircularImage> {
+class _RectangularImageState extends State<RectangularImage> {
 
 
   @override
@@ -31,10 +32,7 @@ class _CircularImageState extends State<CircularImage> {
               width: widget.size! * 0.20,
               height: widget.size! * 0.20,
               child: Center(
-                child: CircularProgressIndicator(
-                  color: widget.color == null ? Theme.of(context).accentColor : widget.color!,
-                  strokeWidth: 2,
-                ),
+                child: LoadingViewPurple(),
               ),
             ),
           ),
@@ -48,7 +46,6 @@ class _CircularImageState extends State<CircularImage> {
                   color: widget.color == null ? Styles.mainColor : widget.color!,
                   style: widget.borderWidth == null ? BorderStyle.none : BorderStyle.solid,
                 ),
-                shape: BoxShape.circle,
                 image: new DecorationImage(
                   fit: BoxFit.cover,
                   image: widget.file != null ? FileImage(widget.file!) : CachedNetworkImageProvider(widget.image!) as ImageProvider,

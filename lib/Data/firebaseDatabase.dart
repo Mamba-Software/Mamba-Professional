@@ -985,6 +985,7 @@ class FirebaseDatabaseService {
     QuerySnapshot querySnapshot = await _firestore
         .collection("Notifications")
         .where("userId", isEqualTo: userId)
+        .where("isRead", isEqualTo: false)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       notifications.add(NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));

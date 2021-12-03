@@ -267,6 +267,10 @@
   "userJoinsBrandSubtitleUser": "Consulta el calendari per participar en la teva primera sessió",
   "userJoinsBrandBrand": "{name} s'ha unit a {brand}",
   "userJoinsBrandBrandSubtitle": "Ja sou un total de {number} membres",
+  "userSendRequestToBrandUser": "Has enviat una sol·licitud per unir-te a {brand}",
+  "userSendRequestToBrandUserSubtitle": "Els organitzadors encara no han contestat",
+  "userSendRequestToBrandBrand": "{name} ha enviat una sol·licitud d'afiliació",
+  "userSendRequestToBrandBrandSubtitle": "Enviada el {dia}",
   "joinEventTitleNotification": "{user} s'ha unit al event {name}",
   "joinEventSubtitleNotification": "Aquest es realitzarà el {dia} a les {horas}"
 }

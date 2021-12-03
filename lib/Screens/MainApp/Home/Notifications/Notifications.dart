@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Models/NotificationEvent.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/MembershipRequests.dart';
 import 'package:page_transition/page_transition.dart';
 
 class Notifications extends StatefulWidget {
@@ -43,6 +44,7 @@ class _NotificationsState extends State<Notifications> {
       NotificationEvent notification = NotificationEvent.fromObject(documents[i], documents[i].id);
       notifications.add(notification);
     }
+    unreadNotificationsFunction(notifications);
     return notifications;
   }
 
@@ -176,6 +178,22 @@ class _NotificationsState extends State<Notifications> {
           borderWidth: 1.5,
         );
       }
+      case "UserSendRequestToBrand_User": {
+        return CircularImage(
+          size: MediaQuery.of(context).size.width*0.15,
+          image: notification.parameters[1],
+          color: Theme.of(context).primaryColor,
+          borderWidth: 1.5,
+        );
+      }
+      case "UserSendRequestToBrand_Trainer": {
+        return CircularImage(
+          size: MediaQuery.of(context).size.width*0.15,
+          image: notification.parameters[1],
+          color: Theme.of(context).primaryColor,
+          borderWidth: 1.5,
+        );
+      }
       case "EventJoined": {
         return CircularImage(
           size: MediaQuery.of(context).size.width*0.15,
@@ -240,6 +258,23 @@ class _NotificationsState extends State<Notifications> {
                 )
             )
         );
+        break;
+      }
+      case "UserSendRequestToBrand_User": {
+        break;
+      }
+      case "UserSendRequestToBrand_Trainer": {
+        if (notification.isRead == false) {
+          Navigator.push(
+              context,
+              PageTransition(
+                  type: PageTransitionType.bottomToTop,
+                  child: MembershipRequests(
+                    brandId: notification.parameters[2],
+                  )
+              )
+          );
+        }
         break;
       }
       case "EventJoined": {

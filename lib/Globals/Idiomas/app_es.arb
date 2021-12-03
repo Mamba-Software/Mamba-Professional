@@ -1134,6 +1134,37 @@
       }
     }
   },
+  "userSendRequestToBrandUser": "Has enviado una solicitud para unirte a {brand}",
+  "@userSendRequestToBrandUser": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "userSendRequestToBrandUserSubtitle": "Los organizadores aún no han contestado",
+  "@userSendRequestToBrandUserSubtitle": {
+    "description": "userJoinsBrandUser message"
+  },
+  "userSendRequestToBrandBrand": "{name} ha enviado una solicitud de afiliación",
+  "@userSendRequestToBrandBrand": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "userSendRequestToBrandBrandSubtitle": "Enviada el {dia}",
+  "@userSendRequestToBrandBrandSubtitle": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "dia": {
+        "type": "String"
+      }
+    }
+  },
   "joinEventTitleNotification": "{user} se ha unido al evento {name}",
   "@joinEventTitleNotification": {
     "description": "Wellcome message",
