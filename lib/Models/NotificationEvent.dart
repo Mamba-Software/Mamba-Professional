@@ -13,6 +13,9 @@ class NotificationEvent {
   String? year;
   String? month;
   String? day;
+  String? hour;
+  String? minutes;
+  String? seconds;
   var parameters;
 
   NotificationEvent({
@@ -27,6 +30,9 @@ class NotificationEvent {
     this.year,
     this.month,
     this.day,
+    this.hour,
+    this.minutes,
+    this.seconds,
     this.parameters,
   });
 
@@ -42,6 +48,9 @@ class NotificationEvent {
     this.year = mapData['year'].toString();
     this.month = mapData['month'].toString();
     this.day = mapData['day'].toString();
+    this.hour = mapData['hour'].toString();
+    this.minutes = mapData['minutes'].toString();
+    this.seconds = mapData['seconds'].toString();
     this.parameters = mapData['parameters'];
   }
 
@@ -57,6 +66,9 @@ class NotificationEvent {
     this.year = documentSnapshot.get("year").toString();
     this.month = documentSnapshot.get("month").toString();
     this.day = documentSnapshot.get("day").toString();
+    this.hour = documentSnapshot.get("hour").toString();
+    this.minutes = documentSnapshot.get("minutes").toString();
+    this.seconds = documentSnapshot.get("seconds").toString();
     this.parameters = documentSnapshot.get("parameters");
   }
 }

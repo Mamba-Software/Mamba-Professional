@@ -975,6 +975,9 @@ class FirebaseDatabaseService {
       "year": now.year.toString(),
       "month": now.month.toString(),
       "day": now.day.toString(),
+      "hour": now.hour.toString(),
+      "minutes": now.minute.toString(),
+      "seconds": now.second.toString(),
       "parameters": parameters,
     });
   }
@@ -1308,6 +1311,9 @@ class FirebaseDatabaseService {
         .orderBy("year", descending: true)
         .orderBy("month", descending: true)
         .orderBy("day", descending: true)
+        .orderBy("hour", descending: true)
+        .orderBy("minute", descending: true)
+        .orderBy("seconds", descending: true)
         .snapshots();
   }
 
