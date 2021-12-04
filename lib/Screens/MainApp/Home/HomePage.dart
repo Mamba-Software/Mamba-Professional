@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
   // Index of Bottom Navigation Bar
   int _currentIndex = 0;
   // Page Controller
-  final PreloadPageController _pageController = PreloadPageController(initialPage: 0);
+  final PageController _pageController = PageController(initialPage: 0);
 
   @override
   void initState() {
@@ -91,21 +91,16 @@ class _HomePageState extends State<HomePage> {
             color: Colors.grey
         ),
       ),
-      body: PreloadPageView.builder(
+      body: PageView(
         physics: NeverScrollableScrollPhysics(),
-        preloadPagesCount: 4,
-        itemBuilder: (BuildContext context, int position) {
-          if (position == 1) {
-            return Marca();
-          } else if (position == 2) {
-            return Notifications();
-          } else if (position == 3) {
-            return UserChat();
-          } else {
-            return Perfil();
-          }
-        },
         controller: _pageController,
+        //allowImplicitScrolling: true,
+        children: <Widget>[
+          Perfil(),
+          Marca(),
+          Notifications(),
+          UserChat(),
+        ],
         onPageChanged: (page) {
           setState(() {
             _currentIndex = page;
@@ -115,10 +110,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _onTappedBar(int value) {
+  Future<void> _onTappedBar(int value) async {
     setState(() {
       _currentIndex = value;
     });
+    unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
     _pageController.jumpToPage(value);
   }
 

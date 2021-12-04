@@ -67,7 +67,13 @@ class _PerfilClientState extends State<PerfilClient> {
     currentUser = await _accessDatabase.getCurrentUserDetails();
     // Check for new brand
     if (currentUser.brandID != currentBrand.id && currentUser.brandID != "null" && currentUser.brandID != null) {
-      currentBrand = await _accessDatabase.getBrandDetails(currentUser.brandID!);
+      Navigator.pushReplacement(
+          context,
+          CupertinoPageRoute<Null>(
+            builder: (context) => SplashScreen(),
+            settings: RouteSettings(name: 'SplashScreen'),
+          )
+      );
     }
   }
   // Gets user events today.

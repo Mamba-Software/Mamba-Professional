@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/RequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
@@ -165,6 +166,7 @@ class _MembershipRequestsState extends State<MembershipRequests> {
                                 );
                                 if (result) {
                                   _accessDatabase.acceptRequest(request.id!);
+                                  NotificationService(context).userJoinsBrand(request.userId!, request.brandId!);
                                 } else if (!result) {
                                   _accessDatabase.deleteRequest(request.id!);
                                 }

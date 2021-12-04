@@ -1312,8 +1312,16 @@ class FirebaseDatabaseService {
         .orderBy("month", descending: true)
         .orderBy("day", descending: true)
         .orderBy("hour", descending: true)
-        .orderBy("minute", descending: true)
+        .orderBy("minutes", descending: true)
         .orderBy("seconds", descending: true)
+        /*
+        .orderBy("year", descending: false)
+        .orderBy("month", descending: false)
+        .orderBy("day", descending: false)
+        .orderBy("hour", descending: false)
+        .orderBy("minutes", descending: false)
+        .orderBy("seconds", descending: false)
+         */
         .snapshots();
   }
 

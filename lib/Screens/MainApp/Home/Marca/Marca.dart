@@ -1,9 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/MarcaClient.dart';
 
 import 'Client/SinMarca/SinMarcaClient.dart';
@@ -34,10 +37,13 @@ class _MarcaState extends State<Marca> {
     currentUser = await _accessDatabase.getCurrentUserDetails();
     // Check for new brand
     if (currentUser.brandID != currentBrand.id && currentUser.brandID != "null" && currentUser.brandID != null) {
-      Brand brand = await _accessDatabase.getBrandDetails(currentUser.brandID!);
-      setState(() {
-        currentBrand = brand;
-      });
+      Navigator.pushReplacement(
+          context,
+          CupertinoPageRoute<Null>(
+            builder: (context) => SplashScreen(),
+            settings: RouteSettings(name: 'SplashScreen'),
+          )
+      );
     }
   }
 

@@ -29,7 +29,8 @@ class _NotificationsState extends State<Notifications> {
   var _accessDatabase = new DatabaseAccess();
   // Notification List
   List<NotificationEvent> notificationsList = [];
-  List<NotificationEvent> notReadNotificationsList = [];
+  // Unread Notifications
+  int numberUnreadNotifications = 0;
 
   @override
   initState() {
@@ -44,8 +45,18 @@ class _NotificationsState extends State<Notifications> {
       NotificationEvent notification = NotificationEvent.fromObject(documents[i], documents[i].id);
       notifications.add(notification);
     }
-    unreadNotificationsFunction(notifications);
     return notifications;
+  }
+
+  Future<void> countUnreadNotifications () async {
+    int count = 0;
+    count = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
+    if (count != numberUnreadNotifications) {
+      numberUnreadNotifications = count;
+      setState(() {
+        unreadNotifications = numberUnreadNotifications;
+      });
+    }
   }
 
   void unreadNotificationsFunction (List<NotificationEvent> list) {
@@ -56,10 +67,12 @@ class _NotificationsState extends State<Notifications> {
         count += 1;
       }
     }
-    Future.delayed(Duration.zero, () async {
-      setState(() {
-        unreadNotifications = count;
-      });
+    WidgetsBinding.instance!.addPostFrameCallback((_){
+      if (mounted) {
+        setState(() {
+          unreadNotifications = count;
+        });
+      }
     });
   }
 
@@ -82,68 +95,69 @@ class _NotificationsState extends State<Notifications> {
               AppLocalizations.of(context)!.markAsRead,
               style: TextStyle(color: Colors.black),
             ),
-            onPressed: () {
-              _accessDatabase.markALLNotificationAsRead(currentUser.id!);
-              unreadNotificationsFunction(notificationsList);
+            onPressed: () async {
+              await _accessDatabase.markALLNotificationAsRead(currentUser.id!);
             },
           ),
           SizedBox(width: MediaQuery.of(context).size.width*0.03,),
         ],
       ),
-      body: Column(
-        children: [
-          StreamBuilder<QuerySnapshot>(
-              stream: _accessDatabase.getAllNotificationsUser(currentUser.id!),
-              builder: (context, snapshot) {
-                if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
-                  return Container(
-                      height: MediaQuery.of(context).size.height*0.65,
-                      child: Center(
-                          child: LoadingViewPurple()
-                      )
-                  );
-                } else {
-                  notificationsList = documentsToNotifications(snapshot.data!.docs);
-                  unreadNotificationsFunction(notificationsList);
-                  return ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: notificationsList.length,
-                      itemBuilder: (context, index) {
-                        NotificationEvent notification = notificationsList[index];
-                        bool isRead = notification.isRead!;
-                        return Padding(
-                          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
-                          child: ListTile(
-                            leading: returnIconGivenType(notification),
-                            title: Text(
-                              notification.title!,
-                              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: isRead ? FontWeight.normal : FontWeight.bold),
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            StreamBuilder<QuerySnapshot>(
+                stream: _accessDatabase.getAllNotificationsUser(currentUser.id!),
+                builder: (context, snapshot) {
+                  if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
+                    return Container(
+                        height: MediaQuery.of(context).size.height*0.65,
+                        child: Center(
+                            child: LoadingViewPurple()
+                        )
+                    );
+                  } else {
+                    notificationsList = documentsToNotifications(snapshot.data!.docs);
+                    countUnreadNotifications();
+                    return ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: notificationsList.length,
+                        itemBuilder: (context, index) {
+                          NotificationEvent notification = notificationsList[index];
+                          bool isRead = notification.isRead!;
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                            child: ListTile(
+                              leading: returnIconGivenType(notification),
+                              title: Text(
+                                notification.title!,
+                                style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: isRead ? FontWeight.normal : FontWeight.bold),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                  Text(
+                                    notification.subtitle!,
+                                    style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                              onTap: () async {
+                                await _accessDatabase.markNotificationAsRead(notification.id!);
+                                returnActionOnTap(notification);
+                              },
                             ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                Text(
-                                  notification.subtitle!,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                            onTap: () {
-                              _accessDatabase.markNotificationAsRead(notification.id!);
-                              unreadNotificationsFunction(notificationsList);
-                              returnActionOnTap(notification);
-                            },
-                          ),
-                        );
-                      }
-                  );
+                          );
+                        }
+                    );
+                  }
                 }
-              }
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -238,28 +252,30 @@ class _NotificationsState extends State<Notifications> {
         break;
       }
       case "UserJoinsBrand_User": {
-        if (currentUser.isTrainer!) {
-          Navigator.push(
-              context,
-              PageTransition(
-                  type: PageTransitionType.bottomToTop,
-                  child: CalendarWidgetTrainer(
-                    brandID: notification.parameters[0],
-                    canEdit: true,
-                  )
-              )
-          );
-        } else {
-          Navigator.push(
-              context,
-              PageTransition(
-                  type: PageTransitionType.bottomToTop,
-                  child: CalendarWidgetClient(
-                    brandID: notification.parameters[0],
-                    onlyView: true,
-                  )
-              )
-          );
+        if (notification.isRead == false) {
+          if (currentUser.isTrainer!) {
+            Navigator.push(
+                context,
+                PageTransition(
+                    type: PageTransitionType.bottomToTop,
+                    child: CalendarWidgetTrainer(
+                      brandID: notification.parameters[0],
+                      canEdit: true,
+                    )
+                )
+            );
+          } else {
+            Navigator.push(
+                context,
+                PageTransition(
+                    type: PageTransitionType.bottomToTop,
+                    child: CalendarWidgetClient(
+                      brandID: notification.parameters[0],
+                      onlyView: true,
+                    )
+                )
+            );
+          }
         }
         break;
       }
