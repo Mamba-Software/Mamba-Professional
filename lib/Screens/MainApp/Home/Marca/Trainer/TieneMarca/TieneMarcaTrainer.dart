@@ -77,7 +77,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height*0.05),
                 Container(
-                  height: MediaQuery.of(context).size.height*0.18,
+                  height: MediaQuery.of(context).size.height*0.20,
                   width: MediaQuery.of(context).size.width*0.90,
                   child: Center(
                     child: Row(
@@ -99,7 +99,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Text("${currentBrand.name!}",
-                                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center
+                                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center
                                   ),
                                   IconButton(
                                     icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: 35,),
@@ -140,7 +140,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.max,
                                           children: <Widget>[
                                             Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
@@ -150,7 +150,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                               style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
                                           ],
                                         ),
-                                        SizedBox(height: 4),
+                                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                         Flexible(child: Text(AppLocalizations.of(context)!.clients.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,)),
                                       ],
                                     ),
@@ -177,7 +177,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                               style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
                                           ],
                                         ),
-                                        SizedBox(height: 4),
+                                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                         Flexible(child: Text(AppLocalizations.of(context)!.trainers.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,)),
                                       ],
                                     ),
@@ -194,7 +194,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.end,
                                           mainAxisSize: MainAxisSize.max,
                                           children: <Widget>[
                                             Icon(Icons.event_available_outlined, color: Theme.of(context).accentColor,),
@@ -205,7 +205,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
 
                                           ],
                                         ),
-                                        SizedBox(height: 4),
+                                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                         Flexible(child: Text(AppLocalizations.of(context)!.sessions.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,)),
                                       ],
                                     ),

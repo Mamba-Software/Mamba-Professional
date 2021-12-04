@@ -180,16 +180,17 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                   ),
                 ),
               ],
-          ),
+            ),
           ),
           backgroundColor: Colors.transparent,
           body: TabBarView(
               children: [
                 Column(
                   children: [
+                    filteredTrainers.length > 1 ?
                     Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.02),
-                        child: TextField(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.02),
+                      child: TextField(
                           controller: searchTrainersController,
                           onChanged: (value) {
                             // Filter trainers
@@ -220,7 +221,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                             contentPadding: EdgeInsets.all(0),
                           ),
                         )
-                    ),
+                    ) : Container(),
                     Expanded(
                       child: Container(
                         child: ListView.builder(
@@ -338,6 +339,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                 ),
                 Column(
                   children: [
+                    filteredClients.length > 1 ?
                     Padding(
                       padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.04,left: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.03, bottom: MediaQuery.of(context).size.width*0.02),
                       child: TextField(
@@ -371,7 +373,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                           contentPadding: EdgeInsets.all(0),
                         ),
                       )
-                    ),
+                    ) : Container(),
                     filteredClients.length != 0 ?
                       Expanded(
                         child: Container(

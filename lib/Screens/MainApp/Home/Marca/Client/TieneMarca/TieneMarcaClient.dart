@@ -6,17 +6,12 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/BrandLocations.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/BrandEventsToday.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/SettingsBrandClient.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembrosTrainer.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'TodosMiembrosClient.dart';
@@ -81,7 +76,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height*0.05),
                 Container(
-                  height: MediaQuery.of(context).size.height*0.18,
+                  height: MediaQuery.of(context).size.height*0.20,
                   width: MediaQuery.of(context).size.width*0.90,
                   child: Center(
                     child: Row(
@@ -103,7 +98,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Text("${currentBrand.name!}",
-                                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 26, fontFamily: "Helvetica"), textAlign: TextAlign.center
+                                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center
                                   ),
                                   IconButton(
                                     icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: 35,),
@@ -144,7 +139,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.max,
                                           children: <Widget>[
                                             Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
@@ -154,7 +149,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                                               style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
                                           ],
                                         ),
-                                        SizedBox(height: 4),
+                                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                         Flexible(child: Text(AppLocalizations.of(context)!.clients.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,)),
                                       ],
                                     ),
@@ -181,7 +176,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                                               style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
                                           ],
                                         ),
-                                        SizedBox(height: 4),
+                                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                         Flexible(child: Text(AppLocalizations.of(context)!.trainers.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,)),
                                       ],
                                     ),
@@ -198,7 +193,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.end,
                                           mainAxisSize: MainAxisSize.max,
                                           children: <Widget>[
                                             Icon(Icons.event_available_outlined, color: Theme.of(context).accentColor,),
@@ -209,7 +204,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
 
                                           ],
                                         ),
-                                        SizedBox(height: 4),
+                                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                         Flexible(child: Text(AppLocalizations.of(context)!.sessions.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,)),
                                       ],
                                     ),

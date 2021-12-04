@@ -10,13 +10,9 @@ import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
-import 'package:mamba_castelldefels/Models/ChatUsers.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/conversationList.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import 'MembershipRequests.dart';
 
@@ -195,6 +191,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
               children: [
                 Column(
                   children: [
+                    filteredClients.length > 1 ?
                     Padding(
                       padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.04,left: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.03, bottom: MediaQuery.of(context).size.width*0.02),
                       child: TextField(
@@ -228,7 +225,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                           contentPadding: EdgeInsets.all(0),
                         ),
                       )
-                    ),
+                    ) : Container(),
                     filteredClients.length != 0 ?
                       Expanded(
                         child: Container(
@@ -353,6 +350,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                 ),
                 Column(
                   children: [
+                    filteredTrainers.length > 1 ?
                     Padding(
                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.02),
                         child: TextField(
@@ -386,7 +384,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                             contentPadding: EdgeInsets.all(0),
                           ),
                         )
-                    ),
+                    ) : Container(),
                     Expanded(
                       child: Container(
                         padding: EdgeInsets.only(top: 0),
