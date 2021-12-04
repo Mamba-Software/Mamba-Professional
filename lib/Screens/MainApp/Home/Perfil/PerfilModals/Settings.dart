@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
@@ -273,6 +274,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
   // Delete Alert
+  bool isLoading = false;
   bool firstBuild = true;
   bool canDelete = false;
   bool wrongPassword = false;
@@ -380,11 +382,26 @@ class _DeleteDialogState extends State<DeleteDialog> {
                     children: [
                       FloatingActionButton.extended(
                         heroTag: "39",
-                        label: Text(AppLocalizations.of(context)!.delete),
-                        icon: Icon(Icons.delete_outline),
+                        label: !isLoading ? Text(AppLocalizations.of(context)!.delete) : Container(
+                          width: MediaQuery.of(context).size.width*0.20,
+                          child: Center(
+                            child: SizedBox(
+                              width: 25,
+                              height: 25,
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                strokeWidth: 2.5,
+                              ),
+                            ),
+                          ),
+                        ),
+                        icon: !isLoading ? Icon(Icons.delete_outline) : Container(),
                         backgroundColor: canDelete ? Colors.red : Colors.red[100],
                         foregroundColor: Styles.white,
                         onPressed: () async {
+                          setState(() {
+                            isLoading = true;
+                          });
                           // Delete Function
                           var result = await _accessDatabase.deleteUser(deleteTemp);
                           if (!result) {
@@ -392,6 +409,9 @@ class _DeleteDialogState extends State<DeleteDialog> {
                               wrongPassword = true;
                             });
                           } else {
+                            if (currentUser.brandID != "null" && currentUser.brandID != null) {
+                              NotificationService(context).userLeavesBrand(currentUser.id!, currentUser.brandID!);
+                            }
                             Navigator.pushAndRemoveUntil(
                               context,
                               CupertinoPageRoute<Null>(
