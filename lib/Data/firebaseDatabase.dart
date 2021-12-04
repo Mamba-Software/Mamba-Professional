@@ -959,7 +959,7 @@ class FirebaseDatabaseService {
   // Notifications
 
   // Send Notification
-  Future<void> sendNotification(String userId, String type, bool isImportant, String title, String subtitle, var parameters) async {
+  Future<void> sendNotification(String userId, String type, var parameters) async {
     var uid = Uuid().v1();
     DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yy');
@@ -967,10 +967,7 @@ class FirebaseDatabaseService {
     await _firestore.collection("Notifications").doc(uid).set({
       "userId": userId,
       "type": type,
-      "isImportant": isImportant,
       "isRead": false,
-      "title": title,
-      "subtitle": subtitle,
       "dateSent": formatted,
       "year": now.year.toString(),
       "month": now.month.toString(),

@@ -285,6 +285,10 @@
   "userSendRequestToBrandUserSubtitle": "Els organitzadors encara no han contestat",
   "userSendRequestToBrandBrand": "{name} ha enviat una sol·licitud d'afiliació",
   "userSendRequestToBrandBrandSubtitle": "Enviada el {dia}",
+  "userCancelRequestToBrandUser": "Has cancel·lat la teva sol·licitud per unir-te a {brand}",
+  "userCancelRequestToBrandUserSubtitle": "Ara pots sol·licitar unir-te a una altra marca.",
+  "userCancelRequestToBrandBrand": "{name} ha cancelado su solicitud de afiliación",
+  "userCancelRequestToBrandBrandSubtitle": "Recuerda que puedes compartir tu código de invitación para añadir a nuevos miembros directamente",
   "joinEventTitleNotification": "{user} s'ha unit al event {name}",
   "joinEventSubtitleNotification": "Aquest es realitzarà el {dia} a les {horas}"
 }

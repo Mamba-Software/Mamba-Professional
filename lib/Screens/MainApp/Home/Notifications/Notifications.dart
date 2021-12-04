@@ -131,20 +131,8 @@ class _NotificationsState extends State<Notifications> {
                             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
                             child: ListTile(
                               leading: returnIconGivenType(notification),
-                              title: Text(
-                                notification.title!,
-                                style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: isRead ? FontWeight.normal : FontWeight.bold),
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                  Text(
-                                    notification.subtitle!,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
+                              title: returnTitleGivenType(notification),
+                              subtitle: returnSubtitleGivenType(notification),
                               onTap: () async {
                                 await _accessDatabase.markNotificationAsRead(notification.id!);
                                 returnActionOnTap(notification);
@@ -222,6 +210,210 @@ class _NotificationsState extends State<Notifications> {
           image: notification.parameters[1],
           color: Theme.of(context).primaryColor,
           borderWidth: 1.5,
+        );
+      }
+      case "UserCancelRequestToBrand_User": {
+        return CircularImage(
+          size: MediaQuery.of(context).size.width*0.15,
+          image: notification.parameters[1],
+          color: Theme.of(context).primaryColor,
+          borderWidth: 1.5,
+        );
+      }
+      case "UserCancelRequestToBrand_Trainer": {
+        return CircularImage(
+          size: MediaQuery.of(context).size.width*0.15,
+          image: notification.parameters[1],
+          color: Theme.of(context).primaryColor,
+          borderWidth: 1.5,
+        );
+      }
+      case "EventJoined": {
+        return CircularImage(
+          size: MediaQuery.of(context).size.width*0.15,
+          image: notification.parameters[0],
+          color: Theme.of(context).primaryColor,
+          borderWidth: 1.5,
+        );
+      }
+      case "EventAbandoned": {
+        return
+          Icon(
+            Icons.event_busy,
+            color: Colors.red,
+            size: 30,
+          );
+      }
+      default: {
+        return Container();
+      }
+    }
+  }
+
+  Widget returnTitleGivenType (NotificationEvent notification) {
+    // Return the leading icon depending on Type
+    switch(notification.type!) {
+      case "Wellcome_User": {
+        return Text(
+          AppLocalizations.of(context)!.wellcomeToMAMBA,
+          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+        );
+      }
+      case "UserJoinsBrand_User": {
+        return Text(
+          AppLocalizations.of(context)!.userJoinsBrandUser(notification.parameters[2]),
+          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+        );
+      }
+      case "UserJoinsBrand_Trainer": {
+        return Text(
+          AppLocalizations.of(context)!.userJoinsBrandBrand(notification.parameters[2], notification.parameters[3]),
+          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+        );
+      }
+      case "UserLeavesBrand_User": {
+        return Text(
+          AppLocalizations.of(context)!.userLeavesBrandUser(notification.parameters[2]),
+          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+        );
+      }
+      case "UserLeavesBrand_Trainer": {
+        return Text(
+          AppLocalizations.of(context)!.userLeavesBrandBrand(notification.parameters[2], notification.parameters[3]),
+          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+        );
+      }
+      case "UserSendRequestToBrand_User": {
+        return Text(
+          AppLocalizations.of(context)!.userSendRequestToBrandUser(notification.parameters[2]),
+          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+        );
+      }
+      case "UserSendRequestToBrand_Trainer": {
+        return Text(
+          AppLocalizations.of(context)!.userSendRequestToBrandUser(notification.parameters[2]),
+          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+        );
+      }
+      case "UserCancelRequestToBrand_User": {
+        return Text(
+          AppLocalizations.of(context)!.userSendRequestToBrandUser(notification.parameters[2]),
+          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+        );
+      }
+      case "UserCancelRequestToBrand_Trainer": {
+        return Text(
+          AppLocalizations.of(context)!.userSendRequestToBrandUser(notification.parameters[2]),
+          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+        );
+      }
+      case "EventJoined": {
+        return CircularImage(
+          size: MediaQuery.of(context).size.width*0.15,
+          image: notification.parameters[0],
+          color: Theme.of(context).primaryColor,
+          borderWidth: 1.5,
+        );
+      }
+      case "EventAbandoned": {
+        return
+          Icon(
+            Icons.event_busy,
+            color: Colors.red,
+            size: 30,
+          );
+      }
+      default: {
+        return Container();
+      }
+    }
+  }
+
+  Widget returnSubtitleGivenType (NotificationEvent notification) {
+    // Return the leading icon depending on Type
+    switch(notification.type!) {
+      case "Wellcome_User": {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            Text(
+              AppLocalizations.of(context)!.onlyImportantNotifications,
+              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+            ),
+          ],
+        );
+      }
+      case "UserJoinsBrand_User": {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            Text(
+              AppLocalizations.of(context)!.userJoinsBrandSubtitleUser,
+              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+            ),
+          ],
+        );
+      }
+      case "UserJoinsBrand_Trainer": {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            Text(
+              AppLocalizations.of(context)!.userJoinsBrandBrandSubtitle(notification.parameters[4]),
+              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+            ),
+          ],
+        );
+      }
+      case "UserLeavesBrand_User": {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            Text(
+              AppLocalizations.of(context)!.userLeavesBrandUserSubtitle,
+              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+            ),
+          ],
+        );
+      }
+      case "UserLeavesBrand_Trainer": {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            Text(
+              AppLocalizations.of(context)!.userLeavesBrandBrandSubtitle(notification.parameters[4]),
+              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+            ),
+          ],
+        );
+      }
+      case "UserSendRequestToBrand_User": {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            Text(
+              AppLocalizations.of(context)!.userSendRequestToBrandUserSubtitle,
+              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+            ),
+          ],
+        );
+      }
+      case "UserSendRequestToBrand_Trainer": {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            Text(
+              AppLocalizations.of(context)!.userLeavesBrandBrandSubtitle(notification.parameters[3]),
+              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+            ),
+          ],
         );
       }
       case "EventJoined": {
@@ -308,7 +500,7 @@ class _NotificationsState extends State<Notifications> {
               PageTransition(
                   type: PageTransitionType.bottomToTop,
                   child: MembershipRequests(
-                    brandId: notification.parameters[2],
+                    brandId: notification.parameters[4],
                   )
               )
           );

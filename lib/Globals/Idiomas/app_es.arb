@@ -1239,6 +1239,37 @@
       }
     }
   },
+  "userCancelRequestToBrandUser": "Has cancelado tu solicitud para unirte a {brand}",
+  "@userCancelRequestToBrandUser": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "userCancelRequestToBrandUserSubtitle": "Ahora puedes solicitar unirte a otra marca.",
+  "@userCancelRequestToBrandUserSubtitle": {
+    "description": "userJoinsBrandUser message"
+  },
+  "userCancelRequestToBrandBrand": "{name} ha cancelado su solicitud de afiliación",
+  "@userCancelRequestToBrandBrand": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "userCancelRequestToBrandBrandSubtitle": "Recuerda que puedes compartir tu código de invitación para añadir a nuevos miembros directamente",
+  "@userCancelRequestToBrandBrandSubtitle": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "dia": {
+        "type": "String"
+      }
+    }
+  },
   "joinEventTitleNotification": "{user} se ha unido al evento {name}",
   "@joinEventTitleNotification": {
     "description": "Wellcome message",
