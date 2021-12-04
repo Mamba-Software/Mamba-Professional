@@ -56,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {
         currentBrand = Brand();
       }
-      //_getCurrentLocation();
+      _getCurrentLocation();
       Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
       if(currentUser.isAdmin!) {
         Navigator.pushReplacement(

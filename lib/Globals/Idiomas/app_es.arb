@@ -453,6 +453,42 @@
   "@createBrandTime":{
     "description": "createBrand Text"
   },
+  "createBrandCover": "Portada",
+  "@createBrandCover":{
+    "description": "createBrand Text"
+  },
+  "createBrandCoverDescription": "Crea la portada de tu marca. Escoje tu logo y tu nombre.",
+  "@createBrandCoverDescription":{
+    "description": "createBrand Text"
+  },
+  "createBrandDesc": "Descripción",
+  "@createBrandDesc":{
+    "description": "createBrand Text"
+  },
+  "createBrandDescDescription": "Lo primero que leerán tus clientes sobre tu marca y tu forma de trabajar es esta pequeña descripción.\n\nEn 250 caracteres, transmite tus valores fundamentales y beneficios de trabajar de tu mano.",
+  "@createBrandDescDescription":{
+    "description": "createBrand Text"
+  },
+  "createBrandBaseLocation": "Ubicación",
+  "@createBrandBaseLocation":{
+    "description": "createBrand Text"
+  },
+  "createBrandLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.\n\nEn caso de no tener una dirección fija, introduce una ubicación utilizada frequentemente.",
+  "@createBrandLocationDescription":{
+    "description": "createBrand Text"
+  },
+  "createBrandWorkshift": "Horario",
+  "@createBrandWorkshift":{
+    "description": "createBrand Text"
+  },
+  "createBrandWorkshiftDescription": "Es importante que definas tu horario de trabajo para que tus clientes sepan cuando puedes ser contactado y cuando estás fuera de tu horario laboral.",
+  "@createBrandWorkshiftDescription":{
+    "description": "createBrand Text"
+  },
+  "createBrandBreakDescription": "En caso de que siempre te tomes un descanso a la misma hora, por ejemplo a la hora de comer, añadelo para que conste en tu calendario.",
+  "@createBrandBreakDescription":{
+    "description": "createBrand Text"
+  },
   "addCode": "Añadir Código",
   "@addCode":{
     "description": "createBrand Text"
@@ -497,7 +533,7 @@
   "@rankingBrandText":{
     "description": "baseLocation text"
   },
-  "baseLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor. En caso de no tener una dirección fija, introduce una ubicación utilizada frequentemente.",
+  "baseLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.\n\nEn caso de no tener una dirección fija, introduce una ubicación utilizada frequentemente.",
   "@baseLocationDescription":{
     "description": "baseLocation text"
   },
@@ -593,6 +629,10 @@
         "type": "String"
       }
     }
+  },
+  "add": "Añadir",
+  "@add":{
+    "description": "Siguiente text"
   },
   "next": "Siguiente",
   "@next":{

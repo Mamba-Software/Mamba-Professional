@@ -61,7 +61,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
   int membersMax = 30;
   // Form To Validate
   final formKeyMembers = GlobalKey<FormState>();
-  bool errorMembers = false;
 
   // 3rd TAB: Location
   // Google APIS
@@ -86,7 +85,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
   TimeOfDay _breakEndTime = TimeOfDay(hour: 14, minute: 00);
   List<TimeOfDay> _breakList = [];
   List<int> removedIndex = [];
-  int breakLimit = 6;
+  int breakLimit = 2;
   bool errorBreakTime = false;
 
   // Cupertino Picker
@@ -193,6 +192,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
@@ -221,6 +221,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                     ),
                   ],
                 ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
               ],
             ),
           ),
@@ -300,10 +301,10 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                 children: [
                   Text(
                     AppLocalizations.of(context)!.createBrandTitle,
-                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
+                    style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                    textAlign: TextAlign.left,
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   ListTile(
                     leading: Icon(
                       Icons.image_outlined,
@@ -344,38 +345,32 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                       style: Styles.purpleTextStyle.copyWith(fontSize: 16),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.01),
-                    child: FloatingActionButton.extended(
-                      heroTag: "26",
-                      onPressed: () async {
-                        setState(() {
-                          isFirstTime = false;
-                        });
-                      },
-                      backgroundColor: Theme.of(context).accentColor,
-                      icon: Container(),
-                      label: Text(
-                        AppLocalizations.of(context)!.letsGo,
-                        style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
+        ),
+        floatingActionButton: Padding(
+          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.01, horizontal: MediaQuery.of(context).size.width*0.01),
+          child: FloatingActionButton.extended(
+            heroTag: "73",
+            onPressed: () {
+              setState(() {
+                isFirstTime = false;
+              });
+            },
+            backgroundColor: _selectedIndex == 3 ? Colors.green : Theme.of(context).accentColor,
+            icon: Container(),
+            label: Text(
+              AppLocalizations.of(context)!.next,
+              style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+          ),
         ),
       )
         :
       Scaffold(
         appBar: AppBar(
           toolbarHeight: MediaQuery.of(context).size.height*0.13,
-          title: Column(
-            children: [
-              Text(AppLocalizations.of(context)!.createBrand, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
-            ],
-          ),
+          title: getTitle(),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
@@ -471,6 +466,19 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          AppLocalizations.of(context)!.createBrandCoverDescription,
+                                          style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
                                   Text(
                                     AppLocalizations.of(context)!.logo,
                                     style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
@@ -499,7 +507,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                           backgroundColor: Colors.white,
                                           elevation: 10,
                                           shape: CircleBorder(),
-                                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.10, right: MediaQuery.of(context).size.height * 0.10, top: MediaQuery.of(context).size.height * 0.125),
+                                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.10, right: MediaQuery.of(context).size.height * 0.10, top: MediaQuery.of(context).size.height * 0.13),
                                         ),
                                       ) :
                                       GestureDetector(
@@ -563,6 +571,19 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          AppLocalizations.of(context)!.createBrandDescDescription,
+                                          style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
                                   Text(
                                     AppLocalizations.of(context)!.description,
                                     style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
@@ -574,7 +595,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                         controller: descriptionController,
                                         validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
                                         minLines: 1,
-                                        maxLines: 6,
+                                        maxLines: 5,
+                                        maxLength: 250,
                                         decoration: InputDecoration(
                                           hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
                                           hintText: AppLocalizations.of(context)!.descriptionError,
@@ -586,46 +608,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                     ),
                                   ),
                                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                                  Text(
-                                    AppLocalizations.of(context)!.maxNumberClients,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                  GestureDetector(
-                                      onTap: () {
-                                        selectSlot(context, 2, null);
-                                      },
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          new Flexible(
-                                            child: TextFormField(
-                                              controller: membersController,
-                                              maxLines: 2,
-                                              readOnly: true,
-                                              enabled: false,
-                                              style: Styles.purpleTextStyle,
-                                              decoration: InputDecoration(
-                                                hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
-                                                hintText: AppLocalizations.of(context)!.maxNumberClientsError,
-                                                labelStyle: Styles.purpleTextStyle,
-                                                border: InputBorder.none,
-                                                focusedBorder: InputBorder.none,
-                                                enabledBorder: InputBorder.none,
-                                                errorBorder: InputBorder.none,
-                                                disabledBorder: InputBorder.none,
-                                              ),
-                                              textAlign: TextAlign.start,
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                  ),
-                                  errorMembers ? Text(
-                                      AppLocalizations.of(context)!.maxNumberClientsError,
-                                      style: Styles.redTextStyle.copyWith(fontSize: 12),
-                                  ) : new Container(),
                                 ],
                               ),
                             )
@@ -643,8 +625,21 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                               mainAxisAlignment: MainAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        AppLocalizations.of(context)!.createBrandLocationDescription,
+                                        style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.04),
                                 Text(
-                                  AppLocalizations.of(context)!.baseLocation,
+                                  AppLocalizations.of(context)!.createBrandBaseLocation,
                                   style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -789,6 +784,19 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                               mainAxisAlignment: MainAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        AppLocalizations.of(context)!.createBrandWorkshiftDescription,
+                                        style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.04),
                                 Text(
                                   AppLocalizations.of(context)!.workingHours,
                                   style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
@@ -843,6 +851,19 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                   ),
                                 ) : new Container(),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        AppLocalizations.of(context)!.createBrandBreakDescription,
+                                        style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.04),
                                 Text(
                                   AppLocalizations.of(context)!.lunchBreak,
                                   style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
@@ -895,41 +916,32 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                         ],
                                       ),
                                     ),
-                                    _breakList.length < breakLimit ? Padding(
-                                      padding: const EdgeInsets.only(left: 0.0),
-                                      child: OutlinedButton(
-                                        onPressed: () {
-                                          double toDouble(DateTime myTime) => myTime.hour + myTime.minute/60.0;
-                                          if (toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text)) > toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text))){
-                                            setState(() {
-                                              errorBreakTime = true;
-                                            });
-                                          } else {
-                                            DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text);
-                                            DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text);
-                                            _breakStartTime = TimeOfDay(hour: start.hour, minute: start.minute);
-                                            _breakEndTime = TimeOfDay(hour: end.hour, minute: end.minute);
-                                            setState(() {
-                                              errorBreakTime = false ;
-                                              _breakList.add(_breakStartTime);
-                                              _breakList.add(_breakEndTime);
-                                            });
-                                          }
-                                        },
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon( Icons.add, color: Colors.white, size: 30,),
-                                          ],
-                                        ),
-                                        style: OutlinedButton.styleFrom(
-                                          backgroundColor: Colors.green,
-                                          elevation: 3,
-                                          shape: CircleBorder(),
-                                          padding: EdgeInsets.all(5),
-                                        ),
-                                      ),
+                                    SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                                    _breakList.length < breakLimit ? FloatingActionButton.extended(
+                                      heroTag: "74",
+                                      onPressed: () {
+                                        double toDouble(DateTime myTime) => myTime.hour + myTime.minute/60.0;
+                                        if (toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text)) > toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text))){
+                                          setState(() {
+                                            errorBreakTime = true;
+                                          });
+                                        } else {
+                                          DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text);
+                                          DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text);
+                                          _breakStartTime = TimeOfDay(hour: start.hour, minute: start.minute);
+                                          _breakEndTime = TimeOfDay(hour: end.hour, minute: end.minute);
+                                          setState(() {
+                                            errorBreakTime = false ;
+                                            _breakList.add(_breakStartTime);
+                                            _breakList.add(_breakEndTime);
+                                          });
+                                        }
+                                      },
+                                      backgroundColor: Colors.green,
+                                      icon: Container(),
+                                      label: Text(
+                                        AppLocalizations.of(context)!.add,
+                                        style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
                                     ) : Container(),
                                   ],
                                 ),
@@ -1101,7 +1113,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                         if (validateInfo()) {
                           _tabController!.animateTo(_selectedIndex += 1);
                           setState(() {
-                            errorMembers = false;
                             addEventTabValue += 0.25;
                             tabs[2] = true;
                           });
@@ -1162,6 +1173,32 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
       );
   }
 
+  Widget getTitle() {
+    if (tabs[0] && !tabs[1] && !tabs[2] && !tabs[3]) {
+      return Text(
+        AppLocalizations.of(context)!.createBrandCover,
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    } else if (tabs[0] && tabs[1] && !tabs[2] && !tabs[3]) {
+      return Text(
+        AppLocalizations.of(context)!.createBrandDesc,
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    } else if (tabs[0] && tabs[1] && tabs[2] && !tabs[3]) {
+      return Text(
+        AppLocalizations.of(context)!.createBrandBaseLocation,
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    } else if (tabs[0] && tabs[1] && tabs[2] && tabs[3]) {
+      return Text(
+        AppLocalizations.of(context)!.createBrandWorkshift,
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    } else {
+      return Text(AppLocalizations.of(context)!.createBrand, style: Theme.of(context).appBarTheme.titleTextStyle,);
+    }
+  }
+
   bool validatePortada() {
     if (!formKeyInfo.currentState!.validate() || _image==null) {
       setState(() {
@@ -1176,15 +1213,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
   }
 
   bool validateInfo() {
-    if (!formKeyMembers.currentState!.validate() || membersController.text.isEmpty) {
-      setState(() {
-        errorMembers = true;
-      });
+    if (!formKeyMembers.currentState!.validate()) {
       return false;
     }
-    setState(() {
-      errorMembers = false;
-    });
     return true;
   }
 
