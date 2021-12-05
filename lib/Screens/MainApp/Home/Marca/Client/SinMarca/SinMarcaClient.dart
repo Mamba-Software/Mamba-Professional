@@ -118,6 +118,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                       setState(() {
                         brandIdRequest = "";
                       });
+                      NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
                       _accessDatabase.deleteRequest(request!.id!);
                       getUserPendingRequests();
                     }
@@ -416,6 +417,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                               setState(() {
                                                 brandIdRequest = "";
                                               });
+                                              NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
                                               _accessDatabase.deleteRequest(request!.id!);
                                               getUserPendingRequests();
                                             }
@@ -473,14 +475,21 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                       SizedBox(height: MediaQuery.of(context).size.height*0.02),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                        child: RichText(
-                          text: TextSpan(
-                            style: Styles.purpleTextStyle.copyWith(fontSize: 16),
-                            children: [
-                              TextSpan(text: '${brand.name!} ', style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
-                              TextSpan(text: brand.description!),
-                            ],
-                          ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: RichText(
+                                textAlign: TextAlign.start,
+                                text: TextSpan(
+                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                  children: [
+                                    TextSpan(text: '${brand.name!} ', style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
+                                    TextSpan(text: brand.description!),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),

@@ -56,6 +56,7 @@ class _PerfilClientState extends State<PerfilClient> {
   }
   // Init for Brand Home
   initProfileHome() async {
+    unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
     getUser();
     getUserEventsToday();
     await getUserPendingRequests();
@@ -1187,6 +1188,7 @@ class _PerfilClientState extends State<PerfilClient> {
                         setState(() {
                           isLoading = true;
                         });
+                        NotificationService().userCancelRequestToBrand(currentUser.id!, request.brandId!);
                         _accessDatabase.deleteRequest(request.id!);
                         initProfileHome();
                       }

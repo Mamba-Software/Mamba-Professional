@@ -259,6 +259,14 @@
   "@sessions":{
     "description": "Sesiones Text"
   },
+  "sessionsDone": "Sesiones realizadas",
+  "@sessionsDone":{
+    "description": "Sesiones Text"
+  },
+  "sessionsToDo": "Sesiones previstas",
+  "@sessionsToDo":{
+    "description": "Sesiones Text"
+  },
   "stats": "Control y Análisis",
   "@stats":{
     "description": "Análisis Text"
@@ -943,6 +951,10 @@
   },
   "myRequests": "Solicitudes",
   "@myRequests": {
+    "description": "Wellcome message"
+  },
+  "noRequestsFound": "No hemos encontrado ninguna solicitud",
+  "@noRequestsFound": {
     "description": "Wellcome message"
   },
   "requestFromUser": " quiere unirse como {type}",

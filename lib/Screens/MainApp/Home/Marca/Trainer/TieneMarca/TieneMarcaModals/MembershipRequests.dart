@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/RequestConfirmationDialog.dart';
@@ -117,63 +118,81 @@ class _MembershipRequestsState extends State<MembershipRequests> {
                       );
                     } else {
                       requestList = documentsToRequests(snapshot.data!.docs);
-                      return ListView.builder(
-                          physics: BouncingScrollPhysics(),
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          itemCount: requestList.length,
-                          itemBuilder: (context, index) {
-                            RequestToBrand request = requestList[index];
-                            String type;
-                            if (request.isTrainer!) {
-                              type = AppLocalizations.of(context)!.trainer.toLowerCase();
-                            } else {
-                              type = AppLocalizations.of(context)!.client.toLowerCase();
-                            }
-                            return ListTile(
-                              leading: Icon(request.isTrainer! ? Icons.record_voice_over : Icons.directions_run, color: Theme.of(context).primaryColor, size: 25,),
-                              title: Container(
-                                child: RichText(
-                                  text: TextSpan(
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16),
-                                    children: [
-                                      TextSpan(text: request.name!, style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
-                                      TextSpan(text: AppLocalizations.of(context)!.requestFromUser(type)),
-                                    ],
+                      if (requestList.length != 0) {
+                        return ListView.builder(
+                            physics: BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            itemCount: requestList.length,
+                            itemBuilder: (context, index) {
+                              RequestToBrand request = requestList[index];
+                              String type;
+                              if (request.isTrainer!) {
+                                type = AppLocalizations.of(context)!.trainer.toLowerCase();
+                              } else {
+                                type = AppLocalizations.of(context)!.client.toLowerCase();
+                              }
+                              return ListTile(
+                                leading: Icon(request.isTrainer! ? Icons.record_voice_over : Icons.directions_run, color: Theme.of(context).primaryColor, size: 25,),
+                                title: Container(
+                                  child: RichText(
+                                    text: TextSpan(
+                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                      children: [
+                                        TextSpan(text: request.name!, style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
+                                        TextSpan(text: AppLocalizations.of(context)!.requestFromUser(type)),
+                                      ],
+                                    ),
                                   ),
                                 ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                    Text(
+                                      AppLocalizations.of(context)!.requestSent(request.dateSent!),
+                                      style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                                trailing: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 30,),
+                                onTap: () async {
+                                  var result = await showDialog(
+                                      context: context,
+                                      builder: (_) {
+                                        return RequestConfirmationDialog(
+                                          text: AppLocalizations.of(context)!.requestConfirmation,
+                                          userId: request.userId!,
+                                        );
+                                      }
+                                  );
+                                  if (result) {
+                                    _accessDatabase.acceptRequest(request.id!);
+                                    NotificationService().userJoinsBrand(request.userId!, request.brandId!);
+                                  } else if (!result) {
+                                    _accessDatabase.deleteRequest(request.id!);
+                                  }
+                                },
+                              );
+                            }
+                        );
+                      } else {
+                        return Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Container(
+                                  width: MediaQuery.of(context).size.width*0.30,
+                                  child: Image.asset(Constants.emptyCalendar)
                               ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                  Text(
-                                    AppLocalizations.of(context)!.requestSent(request.dateSent!),
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                              trailing: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 30,),
-                              onTap: () async {
-                                var result = await showDialog(
-                                    context: context,
-                                    builder: (_) {
-                                      return RequestConfirmationDialog(
-                                        text: AppLocalizations.of(context)!.requestConfirmation,
-                                        userId: request.userId!,
-                                      );
-                                    }
-                                );
-                                if (result) {
-                                  _accessDatabase.acceptRequest(request.id!);
-                                  NotificationService().userJoinsBrand(request.userId!, request.brandId!);
-                                } else if (!result) {
-                                  _accessDatabase.deleteRequest(request.id!);
-                                }
-                              },
-                            );
-                          }
-                      );
+                              SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                              Text(AppLocalizations.of(context)!.noRequestsFound, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey), textAlign: TextAlign.center,),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.12),
+                            ],
+                          ),
+                        );
+                      }
                     }
                   }
               ),

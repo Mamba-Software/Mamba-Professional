@@ -31,6 +31,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
   // Brand Events Today
   List<Event> todayEvents = [];
   int numberEventsFinished = 0;
+  int numberEventsToDo = 0;
 
   @override
   void initState() {
@@ -63,6 +64,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
   // Gets number of finished events
   Future<void> getNumberFinishedEvents() async {
     numberEventsFinished = await _accessDatabase.getNumberEventsFinishedBrand(currentBrand.id!);
+    numberEventsToDo = await _accessDatabase.getNumberEventsToDoBrand(currentBrand.id!);
   }
   // Gets all events of today.
   Future<void> getAllEventsTodayBrand() async {
@@ -89,20 +91,20 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height*0.05),
                 Container(
-                  height: MediaQuery.of(context).size.height*0.20,
+                  height: MediaQuery.of(context).size.height*0.25,
                   width: MediaQuery.of(context).size.width*0.90,
                   child: Center(
                     child: Row(
                       children: [
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.30,
+                          width: MediaQuery.of(context).size.width * 0.35,
                           child: Center(
-                            child: CircularImage(size: MediaQuery.of(context).size.width * 0.28, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                            child: CircularImage(size: MediaQuery.of(context).size.width * 0.33, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
                           ),
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width*0.05),
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.55,
+                          width: MediaQuery.of(context).size.width * 0.50,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -110,8 +112,10 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Text("${currentBrand.name!}",
-                                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center
+                                  Flexible(
+                                    child: Text("${currentBrand.name!}",
+                                        style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center
+                                    ),
                                   ),
                                   IconButton(
                                     icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: 35,),
@@ -145,82 +149,128 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    height: MediaQuery.of(context).size.height * 0.07,
-                                    width: MediaQuery.of(context).size.width * 0.13,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
-                                            SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
-                                            Text(
-                                              currentBrand.numberClients.toString(),
-                                              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
-                                          ],
-                                        ),
-                                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                        Flexible(child: Text(AppLocalizations.of(context)!.clients.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,)),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width * 0.05,
-                                    height: MediaQuery.of(context).size.height * 0.03,
-                                    child: VerticalDivider(color: Theme.of(context).accentColor,),
-                                  ),
-                                  Container(
-                                    height: MediaQuery.of(context).size.height * 0.07,
-                                    width: MediaQuery.of(context).size.width * 0.19,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Row(
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: <Widget>[
+                                          Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
+                                          SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
+                                          Text(
+                                            currentBrand.numberClients.toString(),
+                                            style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
+                                        ],
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                      Container(
+                                        width: MediaQuery.of(context).size.width*0.15,
+                                        child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            Icon(Icons.record_voice_over, color: Theme.of(context).accentColor,),
-                                            SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
-                                            Text(
-                                              currentBrand.numberTrainers.toString(),
-                                              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
+                                          children: [
+                                            Flexible(child: Text(AppLocalizations.of(context)!.clients.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,))
                                           ],
                                         ),
-                                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                        Flexible(child: Text(AppLocalizations.of(context)!.trainers.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,)),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                   Container(
-                                    width: MediaQuery.of(context).size.width * 0.05,
-                                    height: MediaQuery.of(context).size.height * 0.03,
-                                    child: VerticalDivider(color: Theme.of(context).accentColor,),
-                                  ),
-                                  Container(
-                                    height: MediaQuery.of(context).size.height * 0.07,
                                     width: MediaQuery.of(context).size.width * 0.13,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            Icon(Icons.event_available_outlined, color: Theme.of(context).accentColor,),
-                                            SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
-                                            Text(
-                                              numberEventsFinished.toString(),
-                                              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
-
+                                    height: MediaQuery.of(context).size.height * 0.03,
+                                    child: VerticalDivider(
+                                      color: Theme.of(context).accentColor,
+                                      thickness: 2,
+                                    ),
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: <Widget>[
+                                          Icon(Icons.record_voice_over, color: Theme.of(context).accentColor,),
+                                          SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
+                                          Text(
+                                            currentBrand.numberTrainers.toString(),
+                                            style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
+                                        ],
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(AppLocalizations.of(context)!.trainers.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,)
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: <Widget>[
+                                          Icon(Icons.event_available_outlined, color: Theme.of(context).primaryColor,),
+                                          SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
+                                          Text(
+                                            numberEventsFinished.toString(),
+                                            style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: 16),),
+                                        ],
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                      Container(
+                                        width: MediaQuery.of(context).size.width*0.15,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Flexible(child: Text(AppLocalizations.of(context)!.sessionsDone.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).primaryColor), textAlign: TextAlign.center,))
                                           ],
                                         ),
-                                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                        Flexible(child: Text(AppLocalizations.of(context)!.sessions.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,)),
-                                      ],
+                                      ),
+                                    ],
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.13,
+                                    height: MediaQuery.of(context).size.height * 0.03,
+                                    child: VerticalDivider(
+                                      color: Theme.of(context).primaryColor,
+                                      thickness: 2,
                                     ),
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: <Widget>[
+                                          Icon(Icons.event, color: Theme.of(context).primaryColor,),
+                                          SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
+                                          Text(
+                                            numberEventsToDo.toString(),
+                                            style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: 16),),
+                                        ],
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                      Container(
+                                        width: MediaQuery.of(context).size.width*0.15,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Flexible(child: Text(AppLocalizations.of(context)!.sessionsToDo.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).primaryColor), textAlign: TextAlign.center,))
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),

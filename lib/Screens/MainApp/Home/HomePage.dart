@@ -129,7 +129,7 @@ class _HomePageState extends State<HomePage> {
       children: [
         child,
         Positioned(
-          top: -6,
+          top: -2,
           right: -15,
           child: CircleAvatar(
             backgroundColor: Theme.of(context).accentColor,

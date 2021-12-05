@@ -31,6 +31,8 @@ class _NotificationsState extends State<Notifications> {
   List<NotificationEvent> notificationsList = [];
   // Unread Notifications
   int numberUnreadNotifications = 0;
+  // Has unread notifications
+  bool hasUnread = false;
 
   @override
   initState() {
@@ -43,6 +45,13 @@ class _NotificationsState extends State<Notifications> {
     List<NotificationEvent> notifications = [];
     for(int i = 0; i < documents.length; i++) {
       NotificationEvent notification = NotificationEvent.fromObject(documents[i], documents[i].id);
+      if (notification.isRead == false && hasUnread == false) {
+        Future.delayed(Duration.zero, () async {
+          setState(() {
+            hasUnread = true;
+          });
+        });
+      }
       notifications.add(notification);
     }
     return notifications;
@@ -89,7 +98,7 @@ class _NotificationsState extends State<Notifications> {
         ),
         centerTitle: false,
         actions: [
-          TextButton.icon(
+          hasUnread ? TextButton.icon(
             icon: Icon(Icons.mark_email_read_outlined, color: Theme.of(context).primaryColor,),
             label: Text(
               AppLocalizations.of(context)!.markAsRead,
@@ -97,8 +106,11 @@ class _NotificationsState extends State<Notifications> {
             ),
             onPressed: () async {
               await _accessDatabase.markALLNotificationAsRead(currentUser.id!);
+              setState(() {
+                hasUnread = false;
+              });
             },
-          ),
+          ) : Container(),
           SizedBox(width: MediaQuery.of(context).size.width*0.03,),
         ],
       ),
@@ -564,17 +576,6 @@ class _NotificationsState extends State<Notifications> {
         break;
       }
       case "UserCancelRequestToBrand_Trainer": {
-        if (notification.isRead == false) {
-          Navigator.push(
-              context,
-              PageTransition(
-                  type: PageTransitionType.bottomToTop,
-                  child: MembershipRequests(
-                    brandId: notification.parameters[3],
-                  )
-              )
-          );
-        }
         break;
       }
       case "EventJoined": {

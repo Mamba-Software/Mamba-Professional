@@ -589,6 +589,31 @@ class FirebaseDatabaseService {
         int.parse(event.hour!),
         int.parse(event.minute!),
       );
+      if (today.isAfter(startDate)) {
+        events.add(event);
+      }
+    }
+    return events.length;
+  }
+
+  // Get All Events Finished Brand
+  Future<int> getNumberEventsToDoBrand(String brandId) async {
+    DateTime today = DateTime.now();
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Events")
+        .where("brandID", isEqualTo: brandId)
+        .get();
+
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      Event event = Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      var startDate = DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
       if (today.isBefore(startDate)) {
         events.add(event);
       }
