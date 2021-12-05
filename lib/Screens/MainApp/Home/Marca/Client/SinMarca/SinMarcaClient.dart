@@ -213,7 +213,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                       });
                                     } else {
                                       await _accessDatabase.updateCurrentUserBrand(_codigo);
-                                      NotificationService(context).userJoinsBrand(currentUser.id!, _codigo);
+                                      NotificationService().userJoinsBrand(currentUser.id!, _codigo);
                                       Navigator.pushReplacement(
                                           context,
                                           CupertinoPageRoute<Null>(
@@ -434,7 +434,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                                 brandIdRequest = brand.id!;
                                               });
                                               await _accessDatabase.sendRequest(brand.id!, currentUser.name! ,currentUser.isTrainer!);
-                                              NotificationService(context).userSendRequestToBrand(currentUser.id!, brand.id!);
+                                              NotificationService().userSendRequestToBrand(currentUser.id!, brand.id!);
                                               getUserPendingRequests();
                                             }
                                           }

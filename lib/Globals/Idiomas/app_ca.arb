@@ -287,8 +287,8 @@
   "userSendRequestToBrandBrandSubtitle": "Enviada el {dia}",
   "userCancelRequestToBrandUser": "Has cancel·lat la teva sol·licitud per unir-te a {brand}",
   "userCancelRequestToBrandUserSubtitle": "Ara pots sol·licitar unir-te a una altra marca.",
-  "userCancelRequestToBrandBrand": "{name} ha cancelado su solicitud de afiliación",
-  "userCancelRequestToBrandBrandSubtitle": "Recuerda que puedes compartir tu código de invitación para añadir a nuevos miembros directamente",
+  "userCancelRequestToBrandBrand": "{name} ha cancel·lat la seva sol·licitud  d'afiliació",
+  "userCancelRequestToBrandBrandSubtitle": "Recorda que pots compartir el teu codi d'invitació per afegir a nous membres directament",
   "joinEventTitleNotification": "{user} s'ha unit al event {name}",
   "joinEventSubtitleNotification": "Aquest es realitzarà el {dia} a les {horas}"
 }

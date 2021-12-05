@@ -410,7 +410,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             });
                           } else {
                             if (currentUser.brandID != "null" && currentUser.brandID != null) {
-                              NotificationService(context).userLeavesBrand(currentUser.id!, currentUser.brandID!);
+                              NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
                             }
                             Navigator.pushAndRemoveUntil(
                               context,

@@ -1263,12 +1263,7 @@
   },
   "userCancelRequestToBrandBrandSubtitle": "Recuerda que puedes compartir tu código de invitación para añadir a nuevos miembros directamente",
   "@userCancelRequestToBrandBrandSubtitle": {
-    "description": "userJoinsBrandUser message",
-    "placeholders": {
-      "dia": {
-        "type": "String"
-      }
-    }
+    "description": "userJoinsBrandUser message"
   },
   "joinEventTitleNotification": "{user} se ha unido al evento {name}",
   "@joinEventTitleNotification": {

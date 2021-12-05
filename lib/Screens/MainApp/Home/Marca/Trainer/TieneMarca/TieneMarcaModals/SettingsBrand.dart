@@ -199,7 +199,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         }
                     );
                     if (result) {
-                      NotificationService(context).userLeavesBrand(currentUser.id!, currentUser.brandID!);
+                      NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
                       await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
                       await _accessDatabase.leaveBrand(currentUser.id!);
                       Navigator.pushReplacement(

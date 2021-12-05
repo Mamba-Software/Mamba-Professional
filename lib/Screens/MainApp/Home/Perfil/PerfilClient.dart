@@ -1075,7 +1075,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                         });
                                       } else {
                                         await _accessDatabase.updateCurrentUserBrand(_codigo);
-                                        NotificationService(context).userJoinsBrand(currentUser.id!, _codigo);
+                                        NotificationService().userJoinsBrand(currentUser.id!, _codigo);
                                         Navigator.pushReplacement(
                                             context,
                                             CupertinoPageRoute<Null>(

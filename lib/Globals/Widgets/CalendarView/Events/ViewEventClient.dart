@@ -40,10 +40,9 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
   // Acceso a Base de Datos
-  NotificationService? _notificationService;
+  NotificationService _notificationService = NotificationService();
   // Boolean Loading
   bool isLoading = false;
-  bool isFirstBuild = true;
   bool isLoadingBody = false;
   // Boolean isUpdated
   bool isEditing = false;
@@ -382,10 +381,6 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    if (isFirstBuild) {
-      _notificationService = NotificationService(context);
-      isFirstBuild = false;
-    }
 
     return isLoading ?
     Scaffold(
@@ -1218,7 +1213,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                       isLoadingBody = true;
                     });
                     bool hasJoined = await _accessDatabase.joinEvent(event!.id!, currentUser.id!);
-                    _notificationService!.joinEvent(currentUser.id!, event!.id!);
+                    _notificationService.joinEvent(currentUser.id!, event!.id!);
                     if (hasJoined) {
                       getEventInfo();
                       setState(() {

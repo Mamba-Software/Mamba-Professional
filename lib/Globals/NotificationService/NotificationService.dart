@@ -10,14 +10,10 @@ import 'package:mamba_castelldefels/Models/Usuario.dart';
 
 class NotificationService {
 
-  // Contexto per al Idioma
-  BuildContext? context;
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
 
-  NotificationService(BuildContext context) {
-    this.context = context;
-  }
+  NotificationService();
 
   Future<void> wellcomeUser(String userId) async {
     var parameters = [];
@@ -67,13 +63,7 @@ class NotificationService {
     _accessDatabase.sendNotification(userId, "UserSendRequestToBrand_User", parameters);
     // Notification to All Brand Trainers
     List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
-    var startDate = DateTime(
-      int.parse(req!.year!),
-      int.parse(req.month!),
-      int.parse(req.day!),
-    );
-    String eventTimeDay = DateFormat('EE dd/MM/yy', Localizations.localeOf(this.context!).languageCode).format(startDate);
-    parameters = [userId, user.imageUrl!, user.name!, eventTimeDay, brandId];
+    parameters = [userId, user.imageUrl!, user.name!, req!.dateSent, brandId];
     for (var i=0; i<listUsers.length; i++) {
       Usuario trainer = listUsers[i];
       if (trainer.id! != userId) {
@@ -90,7 +80,7 @@ class NotificationService {
     _accessDatabase.sendNotification(userId, "UserCancelRequestToBrand_User", parameters);
     // Notification to All Brand Trainers
     List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
-    parameters = [userId, user.imageUrl!, user.name!];
+    parameters = [userId, user.imageUrl!, user.name!, brandId];
     for (var i=0; i<listUsers.length; i++) {
       Usuario trainer = listUsers[i];
       if (trainer.id! != userId) {
@@ -99,10 +89,11 @@ class NotificationService {
     }
   }
 
+
   Future<void> joinEvent(String userId, String eventId) async {
     Usuario usuario = await _accessDatabase.getUserDetails(userId);
     Event event = await _accessDatabase.getSingleEvent(eventId);
-    String title = AppLocalizations.of(this.context!)!.joinEventTitleNotification(usuario.name!, event.title!);
+    //String title = AppLocalizations.of(this.context!)!.joinEventTitleNotification(usuario.name!, event.title!);
     var startDate = DateTime(
       int.parse(event.year!),
       int.parse(event.month!),
@@ -110,12 +101,12 @@ class NotificationService {
       int.parse(event.hour!),
       int.parse(event.minute!),
     );
-    String eventTimeDay = DateFormat('EE dd/MM/yy', Localizations.localeOf(this.context!).languageCode).format(startDate);
-    String eventTimeTime = "${event.hour.toString()}:${event.minute=="0" ? "00" : event.minute.toString()}h";
-    String subtitle = AppLocalizations.of(this.context!)!.joinEventSubtitleNotification(eventTimeDay, eventTimeTime);
+    //String eventTimeDay = DateFormat('EE dd/MM/yy', Localizations.localeOf(this.context!).languageCode).format(startDate);
+    //String eventTimeTime = "${event.hour.toString()}:${event.minute=="0" ? "00" : event.minute.toString()}h";
+    //String subtitle = AppLocalizations.of(this.context!)!.joinEventSubtitleNotification(eventTimeDay, eventTimeTime);
     var parameters = [usuario.imageUrl, eventId];
     for (var i=0; i<event.selectedTrainers.length!; i++) {
-      _accessDatabase.sendNotification(event.selectedTrainers[i], "EventJoined", false, title, subtitle, parameters);
+      //_accessDatabase.sendNotification(event.selectedTrainers[i], "EventJoined", false, title, subtitle, parameters);
     }
   }
 }

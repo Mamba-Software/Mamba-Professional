@@ -166,7 +166,7 @@ class _MembershipRequestsState extends State<MembershipRequests> {
                                 );
                                 if (result) {
                                   _accessDatabase.acceptRequest(request.id!);
-                                  NotificationService(context).userJoinsBrand(request.userId!, request.brandId!);
+                                  NotificationService().userJoinsBrand(request.userId!, request.brandId!);
                                 } else if (!result) {
                                   _accessDatabase.deleteRequest(request.id!);
                                 }

@@ -297,13 +297,13 @@ class _NotificationsState extends State<Notifications> {
       }
       case "UserCancelRequestToBrand_User": {
         return Text(
-          AppLocalizations.of(context)!.userSendRequestToBrandUser(notification.parameters[2]),
+          AppLocalizations.of(context)!.userCancelRequestToBrandUser(notification.parameters[2]),
           style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
         );
       }
       case "UserCancelRequestToBrand_Trainer": {
         return Text(
-          AppLocalizations.of(context)!.userSendRequestToBrandUser(notification.parameters[2]),
+          AppLocalizations.of(context)!.userCancelRequestToBrandBrand(notification.parameters[2]),
           style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
         );
       }
@@ -410,7 +410,31 @@ class _NotificationsState extends State<Notifications> {
           children: [
             SizedBox(height: MediaQuery.of(context).size.height*0.01),
             Text(
-              AppLocalizations.of(context)!.userLeavesBrandBrandSubtitle(notification.parameters[3]),
+              AppLocalizations.of(context)!.userSendRequestToBrandBrandSubtitle(notification.parameters[3]),
+              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+            ),
+          ],
+        );
+      }
+      case "UserCancelRequestToBrand_User": {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            Text(
+              AppLocalizations.of(context)!.userCancelRequestToBrandUserSubtitle,
+              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+            ),
+          ],
+        );
+      }
+      case "UserCancelRequestToBrand_Trainer": {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            Text(
+              AppLocalizations.of(context)!.userCancelRequestToBrandBrandSubtitle,
               style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
             ),
           ],
@@ -501,6 +525,23 @@ class _NotificationsState extends State<Notifications> {
                   type: PageTransitionType.bottomToTop,
                   child: MembershipRequests(
                     brandId: notification.parameters[4],
+                  )
+              )
+          );
+        }
+        break;
+      }
+      case "UserCancelRequestToBrand_User": {
+        break;
+      }
+      case "UserCancelRequestToBrand_Trainer": {
+        if (notification.isRead == false) {
+          Navigator.push(
+              context,
+              PageTransition(
+                  type: PageTransitionType.bottomToTop,
+                  child: MembershipRequests(
+                    brandId: notification.parameters[3],
                   )
               )
           );
