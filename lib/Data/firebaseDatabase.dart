@@ -320,6 +320,8 @@ class FirebaseDatabaseService {
       "description": description,
       "dateJoined": formatted,
       "baseLocation": null,
+      "numberClients": 0,
+      "numberTrainers": 1,
       "workShift": workShift,
       "maxMembers": maxMembers,
     }).catchError((err) {
@@ -349,6 +351,15 @@ class FirebaseDatabaseService {
     }
     // Delete Brand
     await _firestore.collection("Brands").doc(brandId).delete();
+  }
+
+  Future<void> updateNumberMembers(String brandID) async {
+    List<Usuario> trainers = await this.getAllTrainersFromBrand(brandID);
+    List<Usuario> clients = await this.getAllClientsFromBrand(brandID);
+    await _firestore.collection("Brands").doc(brandID).update({
+      "numberClients": clients.length,
+      "numberTrainers": trainers.length,
+    });
   }
 
   Future<String> updateCurrentBrandPhoto(String brandID, File image) async {
@@ -558,6 +569,31 @@ class FirebaseDatabaseService {
           Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
     return events;
+  }
+
+  // Get All Events Finished Brand
+  Future<int> getNumberEventsFinishedBrand(String brandId) async {
+    DateTime today = DateTime.now();
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Events")
+        .where("brandID", isEqualTo: brandId)
+        .get();
+
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      Event event = Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      var startDate = DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
+      if (today.isBefore(startDate)) {
+        events.add(event);
+      }
+    }
+    return events.length;
   }
 
   // Get All Events for Today of Brand

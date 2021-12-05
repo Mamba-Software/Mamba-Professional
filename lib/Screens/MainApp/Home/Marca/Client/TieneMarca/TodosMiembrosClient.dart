@@ -221,7 +221,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                             contentPadding: EdgeInsets.all(0),
                           ),
                         )
-                    ) : Container(),
+                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.01,),
                     Expanded(
                       child: Container(
                         child: ListView.builder(
@@ -373,7 +373,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                           contentPadding: EdgeInsets.all(0),
                         ),
                       )
-                    ) : Container(),
+                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.01,),
                     filteredClients.length != 0 ?
                       Expanded(
                         child: Container(

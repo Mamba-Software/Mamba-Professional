@@ -35,7 +35,8 @@ class NotificationService {
     _accessDatabase.sendNotification(userId, "UserJoinsBrand_User", parameters);
     // Notification to All Brand Trainers
     List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
-    parameters = [userId, user.imageUrl!, user.name!, brand.name!,brand.maxMembers.toString()];
+    int members = brand.numberClients! + brand.numberTrainers!;
+    parameters = [userId, user.imageUrl!, user.name!, brand.name!,members.toString()];
     for (var i=0; i<listUsers.length; i++) {
       Usuario trainer = listUsers[i];
       if (trainer.id! != userId) {
@@ -52,7 +53,8 @@ class NotificationService {
     _accessDatabase.sendNotification(userId, "UserLeavesBrand_User", parameters);
     // Notification to All Brand Trainers
     List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
-    parameters = [userId, user.imageUrl!, user.name!, brand.name!, brand.maxMembers.toString()];
+    int members = brand.numberClients! + brand.numberTrainers!;
+    parameters = [userId, user.imageUrl!, user.name!, brand.name!, members.toString()];
     for (var i=0; i<listUsers.length; i++) {
       Usuario trainer = listUsers[i];
       if (trainer.id! != userId) {

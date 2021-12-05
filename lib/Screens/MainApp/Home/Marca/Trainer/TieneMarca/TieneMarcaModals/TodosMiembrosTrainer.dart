@@ -225,7 +225,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                           contentPadding: EdgeInsets.all(0),
                         ),
                       )
-                    ) : Container(),
+                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.01,),
                     filteredClients.length != 0 ?
                       Expanded(
                         child: Container(
@@ -384,7 +384,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                             contentPadding: EdgeInsets.all(0),
                           ),
                         )
-                    ) : Container(),
+                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.01,),
                     Expanded(
                       child: Container(
                         padding: EdgeInsets.only(top: 0),

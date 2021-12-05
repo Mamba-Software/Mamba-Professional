@@ -10,6 +10,8 @@ class Brand {
   String? description;
   String? dateJoined;
   String? baseLocation;
+  int? numberClients;
+  int? numberTrainers;
   var workShift;
   int? maxMembers;
   // Sector
@@ -26,6 +28,8 @@ class Brand {
     this.description,
     this.dateJoined,
     this.baseLocation,
+    this.numberClients,
+    this.numberTrainers,
     this.workShift,
     this.maxMembers,
   });
@@ -39,6 +43,8 @@ class Brand {
     data['description'] = brand.description;
     data['dateJoined'] = brand.dateJoined;
     data['baseLocation'] = brand.baseLocation;
+    data['numberClients'] = brand.numberClients;
+    data['numberTrainers'] = brand.numberTrainers;
     data['workShift'] = brand.workShift;
     data['maxMembers'] = brand.maxMembers;
     return data;
@@ -52,6 +58,8 @@ class Brand {
     this.description = mapData['description'].toString();
     this.dateJoined = mapData['dateJoined'].toString();
     this.baseLocation = mapData['baseLocation'].toString();
+    this.numberClients = mapData['numberClients'];
+    this.numberTrainers = mapData['numberTrainers'];
     this.workShift = mapData['workShift'];
     this.maxMembers = mapData['maxMembers'];
   }
@@ -64,6 +72,8 @@ class Brand {
     this.description = documentSnapshot.get("description").toString();
     this.dateJoined = documentSnapshot.get("dateJoined").toString();
     this.baseLocation = documentSnapshot.get("baseLocation").toString();
+    this.numberClients = documentSnapshot.get("numberClients");
+    this.numberTrainers = documentSnapshot.get("numberTrainers");
     this.workShift = documentSnapshot.get("workShift");
     this.maxMembers = documentSnapshot.get("maxMembers");
   }
