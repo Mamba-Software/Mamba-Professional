@@ -130,7 +130,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
             ],
           ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: _image != null ? FloatingActionButton(
         heroTag: "38",
         onPressed: uploadPhoto,
         tooltip: AppLocalizations.of(context)!.save,
@@ -139,7 +139,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
           Icons.check,
           color: Colors.white,
         ),
-      ),
+      ) : Container(),
     );
   }
 }

@@ -90,9 +90,10 @@ class _HomePageState extends State<HomePage> {
         unselectedIconTheme: IconThemeData(
             color: Colors.grey
         ),
+        showUnselectedLabels: true,
       ),
       body: PageView(
-        physics: NeverScrollableScrollPhysics(),
+        //physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         //allowImplicitScrolling: true,
         children: <Widget>[
