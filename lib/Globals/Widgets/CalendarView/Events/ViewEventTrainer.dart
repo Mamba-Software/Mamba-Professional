@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
@@ -383,7 +385,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
             height: MediaQuery.of(context).size.height*0.22,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(Constants.eventBackground),
+                image: returnRandomImage(),
                 fit: BoxFit.cover,
               ),
             ),
@@ -1127,6 +1129,65 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
       ),
       floatingActionButton: whichFloatingActionButton(),
     );
+  }
+
+  AssetImage returnRandomImage() {
+    Random random = new Random();
+    int randomNumber = random.nextInt(15);
+
+    switch(randomNumber) {
+      case 0: {
+        return AssetImage(Constants.eventBackground);
+      }
+      case 1: {
+        return AssetImage(Constants.eventBackground1);
+      }
+      case 2: {
+        return AssetImage(Constants.eventBackground2);
+      }
+      case 3: {
+        return AssetImage(Constants.eventBackground3);
+      }
+      case 4: {
+        return AssetImage(Constants.eventBackground4);
+      }
+      case 5: {
+        return AssetImage(Constants.eventBackground5);
+      }
+      case 6: {
+        return AssetImage(Constants.eventBackground6);
+      }
+      case 7: {
+        return AssetImage(Constants.eventBackground7);
+      }
+      case 8: {
+        return AssetImage(Constants.eventBackground8);
+      }
+      case 9: {
+        return AssetImage(Constants.eventBackground9);
+      }
+      case 10: {
+        return AssetImage(Constants.eventBackground10);
+      }
+      case 11: {
+        return AssetImage(Constants.eventBackground11);
+      }
+      case 12: {
+        return AssetImage(Constants.eventBackground12);
+      }
+      case 13: {
+        return AssetImage(Constants.eventBackground13);
+      }
+      case 14: {
+        return AssetImage(Constants.eventBackground14);
+      }
+      case 15: {
+        return AssetImage(Constants.eventBackground15);
+      }
+      default: {
+        return AssetImage(Constants.eventBackground);
+      }
+    }
   }
 
   Widget whichFloatingActionButton() {
