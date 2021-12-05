@@ -1265,6 +1265,19 @@
   "@userCancelRequestToBrandBrandSubtitle": {
     "description": "userJoinsBrandUser message"
   },
+  "userCreatesBrandUser": "Has creado tu marca {brand}",
+  "@userCreatesBrandUser": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "userCreatesBrandUserSubtitle": "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece MAMBA",
+  "@userCreatesBrandUserSubtitle": {
+    "description": "userJoinsBrandUser message"
+  },
   "joinEventTitleNotification": "{user} se ha unido al evento {name}",
   "@joinEventTitleNotification": {
     "description": "Wellcome message",

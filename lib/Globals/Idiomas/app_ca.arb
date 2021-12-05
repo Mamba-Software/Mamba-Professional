@@ -289,6 +289,8 @@
   "userCancelRequestToBrandUserSubtitle": "Ara pots sol·licitar unir-te a una altra marca.",
   "userCancelRequestToBrandBrand": "{name} ha cancel·lat la seva sol·licitud  d'afiliació",
   "userCancelRequestToBrandBrandSubtitle": "Recorda que pots compartir el teu codi d'invitació per afegir a nous membres directament",
+  "userCreatesBrandUser": "Has creat la teva marca {brand}",
+  "userCreatesBrandUserSubtitle": "Ara podràs utilitzar totes les funcionalitats de calendarització, control i gestió que ofereix MAMBA",
   "joinEventTitleNotification": "{user} s'ha unit al event {name}",
   "joinEventSubtitleNotification": "Aquest es realitzarà el {dia} a les {horas}"
 }

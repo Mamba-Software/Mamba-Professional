@@ -20,6 +20,14 @@ class NotificationService {
     _accessDatabase.sendNotification(userId, "Wellcome_User", parameters);
   }
 
+  Future<void> userCreatesBrand(String userId, String brandId) async {
+    // Notification to the User Joining
+    Usuario user = await _accessDatabase.getUserDetails(userId);
+    Brand brand = await _accessDatabase.getBrandDetails(brandId);
+    var parameters = [brandId, brand.logoUrl, brand.name!];
+    _accessDatabase.sendNotification(userId, "UserCreatesBrand_User", parameters);
+  }
+
   Future<void> userJoinsBrand(String userId, String brandId) async {
     // Notification to the User Joining
     Usuario user = await _accessDatabase.getUserDetails(userId);
