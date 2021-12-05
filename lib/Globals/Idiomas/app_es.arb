@@ -1071,7 +1071,7 @@
   "@logo": {
     "description": "Wellcome message"
   },
-  "noEventsToday": "No tienes nada previsto para hoy ...",
+  "noEventsToday": "Nada previsto para hoy ...",
   "@noEventsToday": {
     "description": "Wellcome message"
   },
