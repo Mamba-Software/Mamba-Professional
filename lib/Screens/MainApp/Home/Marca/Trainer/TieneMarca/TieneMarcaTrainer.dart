@@ -97,7 +97,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.30,
                           child: Center(
-                            child: CircularImage(size: MediaQuery.of(context).size.width * 0.30, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                            child: CircularImage(size: MediaQuery.of(context).size.width * 0.28, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
                           ),
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width*0.05),

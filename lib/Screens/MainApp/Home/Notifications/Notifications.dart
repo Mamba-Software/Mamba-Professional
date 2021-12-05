@@ -305,7 +305,7 @@ class _NotificationsState extends State<Notifications> {
       }
       case "UserSendRequestToBrand_Trainer": {
         return Text(
-          AppLocalizations.of(context)!.userSendRequestToBrandUser(notification.parameters[2]),
+          AppLocalizations.of(context)!.userSendRequestToBrandBrand(notification.parameters[2]),
           style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
         );
       }
