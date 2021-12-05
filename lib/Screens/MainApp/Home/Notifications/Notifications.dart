@@ -155,14 +155,22 @@ class _NotificationsState extends State<Notifications> {
     switch(notification.type!) {
       case "Wellcome_User": {
         return SizedBox(
-            width: MediaQuery.of(context).size.width*0.15,
-            child: Center(
-              child: Image(
-                width: MediaQuery.of(context).size.width*0.10,
-                image: AssetImage(Constants.logoSimpleYellow)
-              ),
+          width: MediaQuery.of(context).size.width*0.15,
+          child: Center(
+            child: Image(
+              width: MediaQuery.of(context).size.width*0.10,
+              image: AssetImage(Constants.logoSimpleYellow)
             ),
-          );
+          ),
+        );
+      }
+      case "UserCreatesBrand_User": {
+        return CircularImage(
+          size: MediaQuery.of(context).size.width*0.15,
+          image: notification.parameters[1],
+          color: Theme.of(context).primaryColor,
+          borderWidth: 1.5,
+        );
       }
       case "UserJoinsBrand_User": {
         return CircularImage(
@@ -259,6 +267,12 @@ class _NotificationsState extends State<Notifications> {
           style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
         );
       }
+      case "UserCreatesBrand_User": {
+        return Text(
+          AppLocalizations.of(context)!.userCreatesBrandUser(notification.parameters[2]),
+          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+        );
+      }
       case "UserJoinsBrand_User": {
         return Text(
           AppLocalizations.of(context)!.userJoinsBrandUser(notification.parameters[2]),
@@ -339,6 +353,18 @@ class _NotificationsState extends State<Notifications> {
             SizedBox(height: MediaQuery.of(context).size.height*0.01),
             Text(
               AppLocalizations.of(context)!.onlyImportantNotifications,
+              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+            ),
+          ],
+        );
+      }
+      case "UserCreatesBrand_User": {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            Text(
+              AppLocalizations.of(context)!.userCreatesBrandUserSubtitle,
               style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
             ),
           ],
@@ -465,6 +491,9 @@ class _NotificationsState extends State<Notifications> {
   void returnActionOnTap (NotificationEvent notification) {
     switch(notification.type!) {
       case "Wellcome_User": {
+        break;
+      }
+      case "UserCreatesBrand_User": {
         break;
       }
       case "UserJoinsBrand_User": {

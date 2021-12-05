@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
@@ -1147,6 +1148,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                           String baseLocation = await _accessDatabase.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
                           await _accessDatabase.updateBrandBaseLocation(result, baseLocation);
                           await _accessDatabase.updateCurrentUserBrand(result);
+                          NotificationService().userCreatesBrand(currentUser.id!, result);
                           // Notification Trainer has created Brand
                           Navigator.pop(context);
                           Navigator.pushReplacement(
