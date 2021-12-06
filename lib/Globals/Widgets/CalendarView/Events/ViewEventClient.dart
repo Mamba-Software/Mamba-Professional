@@ -2,13 +2,9 @@ import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/JoinConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/LeaveConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -18,8 +14,6 @@ import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../../../Constants.dart';
 import '../../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -82,6 +76,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   // Event Retrieved From BD
   Event? event;
   var placeDetails;
+  // BackGround image
+  Image? theImage;
 
   String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
   String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
@@ -90,7 +86,74 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   @override
   initState() {
     isLoading = true;
+    theImage = returnRandomImage();
     getEventInfo();
+  }
+
+  // Did Change Dependencies
+  @override
+  didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(theImage!.image, context);
+  }
+
+  Image returnRandomImage() {
+    Random random = new Random();
+    int randomNumber = random.nextInt(15);
+
+    switch(randomNumber) {
+      case 0: {
+        return Image.asset(Constants.eventBackground);
+      }
+      case 1: {
+        return Image.asset(Constants.eventBackground1);
+      }
+      case 2: {
+        return Image.asset(Constants.eventBackground2);
+      }
+      case 3: {
+        return Image.asset(Constants.eventBackground3);
+      }
+      case 4: {
+        return Image.asset(Constants.eventBackground4);
+      }
+      case 5: {
+        return Image.asset(Constants.eventBackground5);
+      }
+      case 6: {
+        return Image.asset(Constants.eventBackground6);
+      }
+      case 7: {
+        return Image.asset(Constants.eventBackground7);
+      }
+      case 8: {
+        return Image.asset(Constants.eventBackground8);
+      }
+      case 9: {
+        return Image.asset(Constants.eventBackground9);
+      }
+      case 10: {
+        return Image.asset(Constants.eventBackground10);
+      }
+      case 11: {
+        return Image.asset(Constants.eventBackground11);
+      }
+      case 12: {
+        return Image.asset(Constants.eventBackground12);
+      }
+      case 13: {
+        return Image.asset(Constants.eventBackground13);
+      }
+      case 14: {
+        return Image.asset(Constants.eventBackground14);
+      }
+      case 15: {
+        return Image.asset(Constants.eventBackground15);
+      }
+      default: {
+        return Image.asset(Constants.eventBackground);
+      }
+    }
   }
 
   void getEventInfo() async {
@@ -120,13 +183,14 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     getAllClientsFromBrand();
     await getLocation(event!.locationId!);
     if (mounted) {
-      setState(() {
-        isLoading = false;
-        isLoadingBody = false;
-        isEditing = false;
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        setState(() {
+          isLoading = false;
+          isLoadingBody = false;
+          isEditing = false;
+        });
       });
     }
-
   }
 
   Future<void> getAllTrainersFromBrand() async {
@@ -400,14 +464,38 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
               color: Colors.white,
             ),
           ),
-          Container(
-            height: MediaQuery.of(context).size.height*0.22,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: returnRandomImage(),
-                fit: BoxFit.cover,
+          Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height*0.22,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: theImage!.image,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ),
+              Container(
+                height: MediaQuery.of(context).size.height*0.22,
+                decoration: new BoxDecoration(
+                  color: Colors.white,
+                  gradient: LinearGradient(
+                      begin: FractionalOffset.bottomCenter,
+                      end: FractionalOffset.topCenter,
+                      colors: [
+                        Colors.grey.withOpacity(0.0),
+                        Colors.white,
+                      ],
+                      stops: [
+                        0.0,
+                        0.75
+                      ]
+                  ),
+                ),
+                child: Center(),
+              ),
+            ],
           ),
           Positioned(
             top: MediaQuery.of(context).size.height*0.19,
@@ -1187,65 +1275,6 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
       ),
       floatingActionButton: whichFloatingActionButton(),
     );
-  }
-
-  AssetImage returnRandomImage() {
-    Random random = new Random();
-    int randomNumber = random.nextInt(15);
-
-    switch(randomNumber) {
-      case 0: {
-        return AssetImage(Constants.eventBackground);
-      }
-      case 1: {
-        return AssetImage(Constants.eventBackground1);
-      }
-      case 2: {
-        return AssetImage(Constants.eventBackground2);
-      }
-      case 3: {
-        return AssetImage(Constants.eventBackground3);
-      }
-      case 4: {
-        return AssetImage(Constants.eventBackground4);
-      }
-      case 5: {
-        return AssetImage(Constants.eventBackground5);
-      }
-      case 6: {
-        return AssetImage(Constants.eventBackground6);
-      }
-      case 7: {
-        return AssetImage(Constants.eventBackground7);
-      }
-      case 8: {
-        return AssetImage(Constants.eventBackground8);
-      }
-      case 9: {
-        return AssetImage(Constants.eventBackground9);
-      }
-      case 10: {
-        return AssetImage(Constants.eventBackground10);
-      }
-      case 11: {
-        return AssetImage(Constants.eventBackground11);
-      }
-      case 12: {
-        return AssetImage(Constants.eventBackground12);
-      }
-      case 13: {
-        return AssetImage(Constants.eventBackground13);
-      }
-      case 14: {
-        return AssetImage(Constants.eventBackground14);
-      }
-      case 15: {
-        return AssetImage(Constants.eventBackground15);
-      }
-      default: {
-        return AssetImage(Constants.eventBackground);
-      }
-    }
   }
 
   Widget whichFloatingActionButton() {

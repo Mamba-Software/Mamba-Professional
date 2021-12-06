@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -47,19 +49,36 @@ class _PerfilClientState extends State<PerfilClient> {
   // Request To Brand
   RequestToBrand request = RequestToBrand();
   Brand? brandRequested = Brand();
+  // Images Of Events
+  List<Image?> imagesEvents = [];
+  var imagesEventsNum = [];
+  Image? mySessions = Image.asset(Constants.mySessionsImage);
+  Image? myProgress = Image.asset(Constants.myProgressImage);
 
   @override
   void initState() {
+    super.initState();
     isLoading = true;
     initProfileHome();
-    super.initState();
   }
+
+  // Did Change Dependencies
+  @override
+  didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(mySessions!.image, context);
+    precacheImage(myProgress!.image, context);
+    for (var i=0; i<imagesEvents.length; i++) {
+      precacheImage(imagesEvents[i]!.image, context);
+    }
+  }
+
   // Init for Brand Home
   initProfileHome() async {
     unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
     getUser();
     getUserEventsToday();
-    await getUserPendingRequests();
+    if (currentUser.brandID == "null" && currentUser.brandID == null) await getUserPendingRequests();
     getClientEventsDone();
   }
 
@@ -77,10 +96,84 @@ class _PerfilClientState extends State<PerfilClient> {
       );
     }
   }
+
   // Gets user events today.
   void getUserEventsToday() async {
     todayEvents = await _accessDatabase.getAllEventsTodayUser(currentUser.id!, currentUser.isTrainer!);
+    for (var i=0; i<todayEvents.length; i++) {
+      Image? image = returnRandomImage(imagesEventsNum);
+      imagesEvents.add(image);
+    }
   }
+
+  // Gets Random Image for each Event.
+  Image? returnRandomImage(var prohibited) {
+    Random random = new Random();
+    bool isOkay = false;
+    int randomNumber = 0;
+    do {
+      randomNumber = random.nextInt(15);
+      if (!prohibited.contains(randomNumber)) {
+        isOkay = true;
+        imagesEventsNum.add(randomNumber);
+      }
+    } while(!isOkay);
+
+    switch(randomNumber) {
+      case 0: {
+        return Image.asset(Constants.eventBackground, gaplessPlayback: true,);
+      }
+      case 1: {
+        return Image.asset(Constants.eventBackground1, gaplessPlayback: true,);
+      }
+      case 2: {
+        return Image.asset(Constants.eventBackground2, gaplessPlayback: true,);
+      }
+      case 3: {
+        return Image.asset(Constants.eventBackground3, gaplessPlayback: true,);
+      }
+      case 4: {
+        return Image.asset(Constants.eventBackground4, gaplessPlayback: true,);
+      }
+      case 5: {
+        return Image.asset(Constants.eventBackground5, gaplessPlayback: true,);
+      }
+      case 6: {
+        return Image.asset(Constants.eventBackground6, gaplessPlayback: true,);
+      }
+      case 7: {
+        return Image.asset(Constants.eventBackground7, gaplessPlayback: true,);
+      }
+      case 8: {
+        return Image.asset(Constants.eventBackground8, gaplessPlayback: true,);
+      }
+      case 9: {
+        return Image.asset(Constants.eventBackground9, gaplessPlayback: true,);
+      }
+      case 10: {
+        return Image.asset(Constants.eventBackground10, gaplessPlayback: true,);
+      }
+      case 11: {
+        return Image.asset(Constants.eventBackground11, gaplessPlayback: true,);
+      }
+      case 12: {
+        return Image.asset(Constants.eventBackground12, gaplessPlayback: true,);
+      }
+      case 13: {
+        return Image.asset(Constants.eventBackground13, gaplessPlayback: true,);
+      }
+      case 14: {
+        return Image.asset(Constants.eventBackground14, gaplessPlayback: true,);
+      }
+      case 15: {
+        return Image.asset(Constants.eventBackground15, gaplessPlayback: true,);
+      }
+      default: {
+        return Image.asset(Constants.eventBackground, gaplessPlayback: true,);
+      }
+    }
+  }
+
   // Get user pending requests
   Future<void> getUserPendingRequests() async {
     RequestToBrand? req = await _accessDatabase.hasPendingRequest(currentUser.id!);
@@ -434,7 +527,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                       image: new DecorationImage(
                                         fit: BoxFit.cover,
                                         //colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstATop),
-                                        image: Image.asset(Constants.eventBackground).image,
+                                        image: imagesEvents[index]!.image,
                                       ),
                                     ),
                                     child: Center(),
@@ -666,7 +759,7 @@ class _PerfilClientState extends State<PerfilClient> {
                         ),
                         image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: Image.asset(Constants.mySessionsImage).image,
+                          image: mySessions!.image,
                         ),
                       ),
                       child: Center(),
@@ -737,7 +830,7 @@ class _PerfilClientState extends State<PerfilClient> {
                         image: new DecorationImage(
                           fit: BoxFit.cover,
                           colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
-                          image: Image.asset(Constants.myProgressImage).image,
+                          image: myProgress!.image,
                         ),
                       ),
                       child: Center(),
