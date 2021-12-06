@@ -89,6 +89,14 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
   int breakLimit = 6;
   bool errorBreakTime = false;
 
+  Map<String, dynamic> toMap(String? id, String? name, String? imageURL) {
+    return {
+      'uid': id,
+      'name': name,
+      'image': imageURL,
+    };
+  }
+
   // Cupertino Picker
   Future<void> selectSlot(ctx, type, bool? isStart) {
     // Initial Vars
@@ -1132,10 +1140,24 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                           setState(() {
                             isLoading = true;
                           });
+                          DateTime today = DateTime.now();
+                          List<Map> chatUsers = [];
+                          chatUsers.add(toMap(currentUser.id, currentUser.name,
+                          currentUser.imageUrl));
                           var result = await _accessDatabase.addBrand(nameBrandController.text, _image, descriptionController.text, _workShift, members);
                           String baseLocation = await _accessDatabase.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
                           await _accessDatabase.updateBrandBaseLocation(result, baseLocation);
                           await _accessDatabase.updateCurrentUserBrand(result);
+                          await _accessDatabase.addConversation(
+                              chatUsers,
+                              result,
+                              today.year.toString(),
+                              today.month.toString(),
+                              today.day.toString(),
+                              today.hour.toString(),
+                              today.minute.toString(),
+                              today.second.toString(),
+                              '');
 
                           Navigator.pop(context);
                           Navigator.pushReplacement(

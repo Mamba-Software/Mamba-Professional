@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
 import 'chatDetailPage.dart';
+import 'chatDetailPageGroup.dart';
 
 class ConversationList extends StatefulWidget{
 
@@ -13,15 +16,15 @@ class ConversationList extends StatefulWidget{
   String imageUrl;
   String time;
   bool isMessageRead;
+  bool isGroup;
   String userId;
-  ConversationList({required this.name,required this.messageText,required this.imageUrl,required this.time,required this.isMessageRead, required this.userId});
+  ConversationList({required this.name,required this.messageText,required this.imageUrl,required this.time,required this.isMessageRead, required this.userId, required this.isGroup});
   @override
   _ConversationListState createState() => _ConversationListState();
 }
 
 class _ConversationListState extends State<ConversationList> {
 
-  late Usuario user;
   var _accessDatabase = new DatabaseAccess();
   bool isLoading = true;
 
@@ -31,7 +34,6 @@ class _ConversationListState extends State<ConversationList> {
   }
 
   Future<void> getUser() async {
-    user = await this._accessDatabase.getUserDetails(widget.userId);
     setState(() {
       isLoading = false;
     });
@@ -40,10 +42,19 @@ class _ConversationListState extends State<ConversationList> {
   @override
   Widget build(BuildContext context) {
      return GestureDetector(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context){
-          return ChatDetailPage(user);
-        }));
+      onTap: () async {
+        if(!widget.isGroup) {
+          Usuario user = await this._accessDatabase.getUserDetails(widget.userId);
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return ChatDetailPage(user);
+          }));
+        }
+        else {
+          Brand brand = await _accessDatabase.getBrandDetails(widget.userId);
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return ChatDetailPageGroup(brand);
+          }));
+        }
       },
       child: Container(
         padding: EdgeInsets.only(left: 16,right: 16,top: 10,bottom: 10),
@@ -52,10 +63,16 @@ class _ConversationListState extends State<ConversationList> {
             Expanded(
               child: Row(
                 children: <Widget>[
-                  CircleAvatar(
+                  CircularImage(
+                    size: MediaQuery.of(context).size.width*0.2,
+                    image: widget.imageUrl,
+                    color: Theme.of(context).primaryColor,
+                    borderWidth: 1.5,
+                  ),
+                 /* CircleAvatar(
                     backgroundImage: NetworkImage(widget.imageUrl),
                     maxRadius: 30,
-                  ),
+                  ),*/
                   SizedBox(width: 16,),
                   Expanded(
                     child: Container(

@@ -12,6 +12,7 @@ import 'package:mamba_castelldefels/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
+import 'package:mamba_castelldefels/Models/Message.dart';
 import 'package:mamba_castelldefels/Models/Question.dart';
 import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
@@ -929,6 +930,26 @@ class FirebaseDatabaseService {
     await _firestore.collection("Users").doc(request.userId).update({
       "brandID": request.brandId,
     });
+
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Conversations")
+        .where("brandId", isEqualTo: request.brandId)
+        .get();
+
+    Conversation conversation  = Conversation.fromObject(querySnapshot.docs[0], querySnapshot.docs[0].id);
+
+    DocumentSnapshot<Map<String, dynamic>> _docu =
+    await _firestore.collection("Users").doc(request.userId).get();
+    Usuario user = Usuario.fromMap(_docu.data()!, _docu.id);
+    conversation.users.add({
+      'uid': user.id,
+      'name': user.name,
+      'image': user.imageUrl,
+    });
+
+    await _firestore.collection("Conversations").doc(conversation.conversationId).update({
+      "users": conversation.users,
+    });
     // Delete the Request
     await _firestore.collection("Requests").doc(requestId).delete();
   }
@@ -1171,6 +1192,26 @@ class FirebaseDatabaseService {
     }
   }
 
+  Future<List<Message>> getConversationMessagesInit(String? conversationId) async {
+    List<Message> messages = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Messages")
+        .where("conversationId", isEqualTo: conversationId)
+        .orderBy("year", descending: false)
+        .orderBy("month", descending: false)
+        .orderBy("day", descending: false)
+        .orderBy("hour", descending: false)
+        .orderBy("minute", descending: false)
+        .orderBy("second", descending: false)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      messages.add(Message.fromObject(
+          querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+
+    return messages;
+  }
+
   Future<List<Conversation>> getConversationByUsers(
       Map<String, dynamic> currentUser, Map<String, dynamic> user) async {
     List<Conversation> conversations = [];
@@ -1193,6 +1234,17 @@ class FirebaseDatabaseService {
       }
     }
     return conversations;
+  }
+
+  Future<Conversation> getConversationByBrand(String? brandId) async {
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Conversations")
+        .where("brandId", isEqualTo: brandId)
+        .get();
+
+    return Conversation.fromObject(
+        querySnapshot.docs[0], querySnapshot.docs[0].id);
+
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1301,6 +1353,7 @@ class FirebaseDatabaseService {
         .orderBy("month", descending: false)
         .orderBy("day", descending: false)
         .orderBy("hour", descending: false)
+        .orderBy("minute", descending: false)
         .orderBy("minute", descending: false)
         .orderBy("second", descending: false)
         .snapshots();

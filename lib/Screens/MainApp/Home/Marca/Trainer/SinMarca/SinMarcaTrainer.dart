@@ -9,10 +9,13 @@ import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CancelRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/SendRequestConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
+import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/TodosMiembrosClient.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';
 import 'package:page_transition/page_transition.dart';
@@ -467,8 +470,14 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                         IconButton(
                                           icon: Icon(Icons.question_answer_outlined, size: 35, color: Theme.of(context).primaryColor),
                                           padding: EdgeInsets.all(0),
-                                          onPressed: () {
-
+                                          onPressed: () async {
+                                            Usuario adminUser = await _accessDatabase.getUserDetails(brand.adminID!);
+                                            if(adminUser == null) LoadingView();
+                                            else {
+                                              Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child:
+                                              ChatDetailPage(adminUser)
+                                              ),);
+                                            }
                                           },
                                         ),
                                         Text(

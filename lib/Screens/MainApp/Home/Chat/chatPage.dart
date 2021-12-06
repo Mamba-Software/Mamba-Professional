@@ -74,6 +74,7 @@ class _ChatPageState extends State<ChatPage> {
                       //padding: EdgeInsets.only(top: 16),
                       physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
+
                         return ConversationList(
                           name: chatUsers[index].name!,
                           messageText: chatUsers[index].messageText!,
@@ -82,6 +83,7 @@ class _ChatPageState extends State<ChatPage> {
                           isMessageRead:
                               (index == 0 || index == 3) ? true : false,
                           userId: chatUsers[index].userId!,
+                          isGroup: chatUsers[index].isGroup!
                         );
                       },
                     );
@@ -101,28 +103,38 @@ class _ChatPageState extends State<ChatPage> {
     String time;
     for (int i = 0; i < documents.length; i++) {
       conv = Conversation.fromObject(documents[i], documents[i].id);
-      time = conv.hour! + ':' + conv.minute! + ':' + conv.second!;
-      if (conv.brandId != null) {
+      time = conv.day! + '/' + conv.month! + '/' + conv.year! + '   ' + conv.hour! + ':' + conv.minute!;
+      if (conv.brandId == 'null') {
         if (conv.users[0]['uid'] == currentUser.id) {
           chatUsers.add(ChatUsers(
               name: conv.users[1]['name'],
               messageText: conv.lastMessage,
               imageURL: conv.users[1]['image'],
               time: time,
-              userId: conv.users[1]['uid']));
+              userId: conv.users[1]['uid'],
+              isGroup: false));
         } else {
           chatUsers.add(ChatUsers(
               name: conv.users[0]['name'],
               messageText: conv.lastMessage,
               imageURL: conv.users[0]['image'],
               time: time,
-              userId: conv.users[0]['uid']));
+              userId: conv.users[0]['uid'],
+              isGroup: false));
         }
       }
 
       else {
-
+        print(time);
+        chatUsers.add(ChatUsers(
+            name: currentBrand.name,
+            messageText: conv.lastMessage,
+            imageURL: currentBrand.logoUrl,
+            time: time,
+            userId: currentBrand.id,
+            isGroup: true));
       }
+
     }
     return chatUsers;
   }
