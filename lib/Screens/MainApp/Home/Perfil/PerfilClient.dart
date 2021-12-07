@@ -604,41 +604,22 @@ class _PerfilClientState extends State<PerfilClient> {
                               if (startDate.isBefore(DateTime.now())) {
                                 canEdit = false;
                               }
-                              if (currentUser.isTrainer!) {
-                                Navigator.push(
-                                    context,
-                                    PageTransition(
-                                        type: PageTransitionType.bottomToTop,
-                                        child: ViewEventTrainer(
-                                          eventId: event.id!,
-                                          canEdit: canEdit,
-                                          locale: Localizations.localeOf(context),
-                                        )
-                                    )
-                                ).whenComplete(() {
-                                  setState(() {
-                                    isLoading = true;
-                                    initProfileHome();
-                                  });
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                      type: PageTransitionType.bottomToTop,
+                                      child: ViewEventClient(
+                                        eventId: event.id!,
+                                        canJoin: canEdit,
+                                        locale: Localizations.localeOf(context),
+                                      )
+                                  )
+                              ).whenComplete(() {
+                                setState(() {
+                                  isLoading = true;
+                                  initProfileHome();
                                 });
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    PageTransition(
-                                        type: PageTransitionType.bottomToTop,
-                                        child: ViewEventClient(
-                                          eventId: event.id!,
-                                          canJoin: true,
-                                          locale: Localizations.localeOf(context),
-                                        )
-                                    )
-                                ).whenComplete(() {
-                                  setState(() {
-                                    isLoading = true;
-                                    initProfileHome();
-                                  });
-                                });
-                              }
+                              });
                             },
                             child: Material(
                               elevation: 4,
