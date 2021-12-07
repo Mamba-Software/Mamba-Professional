@@ -104,9 +104,10 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width*0.05),
                         Container(
+                          height: MediaQuery.of(context).size.height*0.20,
                           width: MediaQuery.of(context).size.width * 0.50,
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -141,136 +142,80 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Text(AppLocalizations.of(context)!.memberSince(currentBrand.dateJoined!),
-                                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.grey, fontWeight: FontWeight.w500, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.center),
-                                ],
-                              ),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: <Widget>[
-                                          Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
-                                          SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
-                                          Text(
-                                            currentBrand.numberClients.toString(),
-                                            style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
-                                        ],
-                                      ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                      Container(
-                                        width: MediaQuery.of(context).size.width*0.17,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Flexible(child: Text(AppLocalizations.of(context)!.clients.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,))
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
                                   Container(
-                                    width: MediaQuery.of(context).size.width * 0.13,
-                                    height: MediaQuery.of(context).size.height * 0.03,
-                                    child: VerticalDivider(
-                                      color: Theme.of(context).accentColor,
-                                      thickness: 2,
+                                    width: MediaQuery.of(context).size.width*0.50,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
+                                        SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
+                                        Text(
+                                          currentBrand.numberClients.toString(),
+                                          style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
+                                        SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
+                                        Flexible(child: Text(AppLocalizations.of(context)!.clients.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,))
+                                      ],
                                     ),
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: <Widget>[
-                                          Icon(Icons.record_voice_over, color: Theme.of(context).accentColor,),
-                                          SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
-                                          Text(
-                                            currentBrand.numberTrainers.toString(),
-                                            style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
-                                        ],
-                                      ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(AppLocalizations.of(context)!.trainers.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,)
-                                        ],
-                                      ),
-                                    ],
                                   ),
                                 ],
                               ),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: <Widget>[
-                                          Icon(Icons.event_available_outlined, color: Theme.of(context).primaryColor,),
-                                          SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
-                                          Text(
-                                            numberEventsFinished.toString(),
-                                            style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: 16),),
-                                        ],
-                                      ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                      Container(
-                                        width: MediaQuery.of(context).size.width*0.17,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Flexible(child: Text(AppLocalizations.of(context)!.sessionsDone.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).primaryColor), textAlign: TextAlign.center,))
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
                                   Container(
-                                    width: MediaQuery.of(context).size.width * 0.13,
-                                    height: MediaQuery.of(context).size.height * 0.03,
-                                    child: VerticalDivider(
-                                      color: Theme.of(context).primaryColor,
-                                      thickness: 2,
+                                    width: MediaQuery.of(context).size.width*0.50,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Icon(Icons.record_voice_over, color: Theme.of(context).accentColor,),
+                                        SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
+                                        Text(
+                                          currentBrand.numberTrainers.toString(),
+                                          style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
+                                        SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
+                                        Flexible(child: Text(AppLocalizations.of(context)!.trainers.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,))
+                                      ],
                                     ),
                                   ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: <Widget>[
-                                          Icon(Icons.event, color: Theme.of(context).primaryColor,),
-                                          SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
-                                          Text(
-                                            numberEventsToDo.toString(),
-                                            style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: 16),),
-                                        ],
-                                      ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                      Container(
-                                        width: MediaQuery.of(context).size.width*0.15,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Flexible(child: Text(AppLocalizations.of(context)!.sessionsToDo.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).primaryColor), textAlign: TextAlign.center,))
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width*0.50,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Icon(Icons.event_available_outlined, color: Theme.of(context).primaryColor,),
+                                        SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
+                                        Text(
+                                          numberEventsFinished.toString(),
+                                          style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: 16),),
+                                        SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
+                                        Flexible(child: Text(AppLocalizations.of(context)!.sessionsDone.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).primaryColor), textAlign: TextAlign.center,))
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width*0.50,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Icon(Icons.event, color: Theme.of(context).primaryColor,),
+                                        SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
+                                        Text(
+                                          numberEventsToDo.toString(),
+                                          style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: 16),),
+                                        SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
+                                        Flexible(child: Text(AppLocalizations.of(context)!.sessionsToDo.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).primaryColor), textAlign: TextAlign.center,))
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
