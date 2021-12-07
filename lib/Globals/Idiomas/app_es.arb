@@ -920,6 +920,14 @@
   "@todaysBrandEvents": {
     "description": "Wellcome message"
   },
+  "toDo": "Por realizar",
+  "@toDo": {
+    "description": "Wellcome message"
+  },
+  "doing": "Realizando",
+  "@doing": {
+    "description": "Wellcome message"
+  },
   "finished": "Realizado",
   "@finished": {
     "description": "Wellcome message"

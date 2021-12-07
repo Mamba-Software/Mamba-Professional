@@ -40,6 +40,9 @@ class _PerfilClientState extends State<PerfilClient> {
   int totalEvents  = 0;
   int thisMonthEvents  = 0;
   List<Event> todayEvents = [];
+  var todayEventsLabels = [];
+  int scrollIndex = 0;
+  ScrollController? _scrollController;
   // Codigo
   var _codigo;
   bool codigoError = false;
@@ -77,8 +80,9 @@ class _PerfilClientState extends State<PerfilClient> {
   initProfileHome() async {
     unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
     getUser();
-    getUserEventsToday();
     if (currentUser.brandID == "null" && currentUser.brandID == null) await getUserPendingRequests();
+    await getUserEventsToday();
+    _scrollController = ScrollController(initialScrollOffset: MediaQuery.of(context).size.width * scrollIndex);
     getClientEventsDone();
   }
 
@@ -98,11 +102,154 @@ class _PerfilClientState extends State<PerfilClient> {
   }
 
   // Gets user events today.
-  void getUserEventsToday() async {
+  Future<void> getUserEventsToday() async {
+    bool indexFound = false;
+    DateTime now = DateTime.now();
     todayEvents = await _accessDatabase.getAllEventsTodayUser(currentUser.id!, currentUser.isTrainer!);
-    for (var i=0; i<todayEvents.length; i++) {
+    todayEventsLabels = [];
+    for (var i=0; i < todayEvents.length; i++) {
+      Event event = todayEvents[i];
+      // Event Time
+      var startDate =  DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
+      var hour = event.duration.toString().split(".")[0];
+      var min = event.duration!.toStringAsFixed(2).split(".")[1];
+      var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
+      if (startDate.isBefore(now) && endDate.isBefore(now)) {
+        // Done
+        todayEventsLabels.add(2);
+      }
+      if (startDate.isBefore(now) && endDate.isAfter(now)) {
+        // Doing
+        todayEventsLabels.add(1);
+      }
+      if (startDate.isAfter(now) && endDate.isAfter(now)) {
+        // To Do
+        todayEventsLabels.add(0);
+      }
+      // Define Scroll Position
+      if (!indexFound && startDate.isAfter(now)) {
+        scrollIndex = i;
+        indexFound = true;
+      }
+      // Load Images
       Image? image = returnRandomImage(imagesEventsNum);
       imagesEvents.add(image);
+    }
+    if (!indexFound) {
+      scrollIndex = todayEvents.length-1;
+    }
+  }
+
+  // Return bade on events Today
+  Widget returnBadge(int index) {
+    int label = todayEventsLabels[index];
+    switch (label) {
+    // To Do
+      case 0:
+        return Material(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              const Radius.circular(10.0),
+            ),
+          ),
+          child: Container(
+            height: MediaQuery.of(context).size.height*0.03,
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width*0.30,
+            ),
+            decoration: BoxDecoration(
+                color: Colors.red, borderRadius: BorderRadius.circular(10)
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: Text(AppLocalizations.of(context)!.toDo,
+                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                Icon(
+                  Icons.update_outlined,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ],
+            ),
+          ),
+        );
+    // Doing
+      case 1:
+        return Material(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              const Radius.circular(10.0),
+            ),
+          ),
+          child: Container(
+            height: MediaQuery.of(context).size.height*0.03,
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width*0.30,
+            ),
+            decoration: BoxDecoration(
+                color: Theme.of(context).accentColor, borderRadius: BorderRadius.circular(10)
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: Text(AppLocalizations.of(context)!.doing,
+                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                Icon(
+                  Icons.hourglass_top_outlined,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ],
+            ),
+          ),
+        );
+    // Done
+      case 2:
+        return Material(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              const Radius.circular(10.0),
+            ),
+          ),
+          child: Container(
+            height: MediaQuery.of(context).size.height*0.03,
+            width: MediaQuery.of(context).size.width*0.25,
+            decoration: BoxDecoration(
+                color: Colors.green, borderRadius: BorderRadius.circular(10)
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(AppLocalizations.of(context)!.finished,
+                    style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                Icon(
+                  Icons.done_outline_outlined,
+                  color: Colors.white,
+                  size: 15,
+                ),
+              ],
+            ),
+          ),
+        );
+      default:
+        return Container();
     }
   }
 
@@ -564,10 +711,18 @@ class _PerfilClientState extends State<PerfilClient> {
                                       children: [
                                         Container(
                                           width: MediaQuery.of(context).size.width*0.8,
-                                          child: Text(event.title!,
-                                              style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                                          child: Row(
+                                            children: [
+                                              Flexible(
+                                                child: Text(event.title!,
+                                                    style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                                              ),
+                                              SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                                              returnBadge(index),
+                                            ],
+                                          ),
                                         ),
-                                        SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [

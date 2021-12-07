@@ -215,6 +215,8 @@
   "totalNumberEvents": "Sessions realitzades: {number}",
   "noTrainingsDone": "Aquest usuari no ha participat en cap event",
   "todaysBrandEvents": "Previst per avui",
+  "toDo": "Per realitzar",
+  "doing": "Realitzant",
   "finished": "Realitzat",
   "today": "Avui {date}",
   "full": "Ple",
