@@ -88,6 +88,57 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
     return "${hour}h ${min}m ";
   }
 
+  // Return bade on events Today
+  Widget returnBadge(Event event) {
+    int label = 0;
+    DateTime now = DateTime.now();
+    var startDate =  DateTime(
+      int.parse(event.year!),
+      int.parse(event.month!),
+      int.parse(event.day!),
+      int.parse(event.hour!),
+      int.parse(event.minute!),
+    );
+    var hour = event.duration.toString().split(".")[0];
+    var min = event.duration!.toStringAsFixed(2).split(".")[1];
+    var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
+    if (startDate.isBefore(now) && endDate.isBefore(now)) {
+      // Done
+      label = 2;
+    }
+    if (startDate.isBefore(now) && endDate.isAfter(now)) {
+      // Doing
+      label = 1;
+    }
+    if (startDate.isAfter(now) && endDate.isAfter(now)) {
+      // To Do
+      label = 0;
+    }
+    switch (label) {
+      default:
+        return Material(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              const Radius.circular(5.0),
+            ),
+          ),
+          child: Container(
+            height: MediaQuery.of(context).size.height*0.015,
+            width: MediaQuery.of(context).size.width*0.05,
+            decoration: BoxDecoration(
+                color: Colors.green, borderRadius: BorderRadius.circular(5)
+            ),
+            child: Icon(
+              Icons.done_outline_outlined,
+              color: Colors.white,
+              size: 10,
+            ),
+          ),
+        );
+    }
+  }
+
   String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
 
   @override
@@ -249,6 +300,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
+                                        SizedBox(height: MediaQuery.of(context).size.height*0.006,),
                                         Row(
                                           children: [
                                             Flexible(
@@ -256,75 +308,84 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                                   textAlign: TextAlign.start,
                                                   style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 14),)
                                             ),
+                                            /*
+                                            SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                            returnBadge(event),
+                                             */
                                           ],
                                         ),
-                                        SizedBox(height: MediaQuery.of(context).size.height*0.005,),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
+                                        SizedBox(height: MediaQuery.of(context).size.height*0.006,),
+                                        Column(
                                           children: [
-                                            Icon(
-                                              Icons.schedule,
-                                              color: Colors.black,
-                                              size: 15,
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                Icon(
+                                                  Icons.schedule,
+                                                  color: Colors.black,
+                                                  size: 15,
+                                                ),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                Text(
+                                                  event.hour.toString(),
+                                                  style: TextStyle(color: Colors.black, fontSize: 12),
+                                                ),
+                                                Text(
+                                                  ":",
+                                                  style: TextStyle(color: Colors.black, fontSize: 12),
+                                                ),
+                                                Text(
+                                                  event.minute=="0" ? "00" : event.minute.toString(),
+                                                  style: TextStyle(color: Colors.black, fontSize: 12),
+                                                ),
+                                                Container(
+                                                    height: 8,
+                                                    width: 32,
+                                                    child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
+                                                ),
+                                                Icon(
+                                                  Icons.timer,
+                                                  color: Colors.black,
+                                                  size: 15,
+                                                ),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                Text(
+                                                  durationToString(event.duration!),
+                                                  style: TextStyle(color: Colors.black, fontSize: 12),
+                                                ),
+                                                Container(
+                                                    height: 8,
+                                                    width: 32,
+                                                    child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
+                                                ),
+                                                Icon(
+                                                  Icons.record_voice_over,
+                                                  color: Colors.black,
+                                                  size: 15,
+                                                ),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                Text(
+                                                  event.selectedTrainers.length.toString(),
+                                                  style: TextStyle(color: Colors.black, fontSize: 12),
+                                                ),
+                                                Container(
+                                                    height: 8,
+                                                    width: 32,
+                                                    child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
+                                                ),
+                                                Icon(
+                                                  Icons.directions_run,
+                                                  color: Colors.black,
+                                                  size: 15,
+                                                ),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                Text(
+                                                  event.joinedMembers.length.toString(),
+                                                  style: TextStyle(color: Colors.black, fontSize: 12),
+                                                ),
+                                              ],
                                             ),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                            Text(
-                                              event.hour.toString(),
-                                              style: TextStyle(color: Colors.black, fontSize: 12),
-                                            ),
-                                            Text(
-                                              ":",
-                                              style: TextStyle(color: Colors.black, fontSize: 12),
-                                            ),
-                                            Text(
-                                              event.minute=="0" ? "00" : event.minute.toString(),
-                                              style: TextStyle(color: Colors.black, fontSize: 12),
-                                            ),
-                                            Container(
-                                                height: 16,
-                                                width: 32,
-                                                child: VerticalDivider(color: Colors.black, width: 10, thickness: 2,)
-                                            ),
-                                            Icon(
-                                              Icons.timer,
-                                              color: Colors.black,
-                                              size: 15,
-                                            ),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                            Text(
-                                              durationToString(event.duration!),
-                                              style: TextStyle(color: Colors.black, fontSize: 12),
-                                            ),
-                                            Container(
-                                                height: 16,
-                                                width: 32,
-                                                child: VerticalDivider(color: Colors.black, width: 10, thickness: 2,)
-                                            ),
-                                            Icon(
-                                              Icons.record_voice_over,
-                                              color: Colors.black,
-                                              size: 15,
-                                            ),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                            Text(
-                                              event.selectedTrainers.length.toString(),
-                                              style: TextStyle(color: Colors.black, fontSize: 12),
-                                            ),
-                                            Container(
-                                                height: 16,
-                                                width: 32,
-                                                child: VerticalDivider(color: Colors.black, width: 10, thickness: 2,)
-                                            ),
-                                            Icon(
-                                              Icons.directions_run,
-                                              color: Colors.black,
-                                              size: 15,
-                                            ),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                            Text(
-                                              event.joinedMembers.length.toString(),
-                                              style: TextStyle(color: Colors.black, fontSize: 12),
-                                            ),
+                                            SizedBox(height: MediaQuery.of(context).size.height*0.003,),
                                           ],
                                         ),
                                       ],
