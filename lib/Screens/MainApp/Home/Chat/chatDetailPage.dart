@@ -56,6 +56,219 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     };
   }
 
+  Column messageTextNotNewData(var index, String timeHour) {
+      return Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(
+                horizontal:
+                MediaQuery.of(context)
+                    .size
+                    .width *
+                    0.01,
+                vertical:
+                MediaQuery.of(context)
+                    .size
+                    .height *
+                    0.01),
+            child: Align(
+              alignment: (messages[index]
+                  .messageType ==
+                  "sender"
+                  ? Alignment.topRight
+                  : Alignment.topLeft),
+              child: Container(
+                //width: MediaQuery.of(context).size.width*0.50,
+                decoration: BoxDecoration(
+                  borderRadius:
+                  BorderRadius.circular(
+                      20),
+                  color: (messages[index]
+                      .messageType ==
+                      "sender"
+                      ? Styles.mainColor
+                      : Colors.grey.shade200),
+                ),
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment:
+                  CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment
+                          .end,
+                      mainAxisSize:
+                      MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            messages[index]
+                                .messageContent!,
+                            style: TextStyle(
+                                fontSize: 15),
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(
+                              context)
+                              .size
+                              .width *
+                              0.02,
+                        ),
+                        Column(children: [
+                          SizedBox(
+                            height: MediaQuery.of(
+                                context)
+                                .size
+                                .height *
+                                0.01,
+                          ),
+                          Text(
+                            timeHour,
+                            style: TextStyle(
+                                fontSize: 12),
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          if (index == messages.length - 1)
+            SizedBox(
+                height: MediaQuery.of(context)
+                    .size
+                    .height *
+                    0.08),
+        ],
+      );
+  }
+
+  Column messageTextNewData(var index, String timeHour, String timeDay) {
+      return Column(
+        children: [
+          Text(
+            timeDay,
+            style: TextStyle(fontSize: 15),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(
+                horizontal:
+                MediaQuery.of(context)
+                    .size
+                    .width *
+                    0.01,
+                vertical:
+                MediaQuery.of(context)
+                    .size
+                    .height *
+                    0.01),
+            child: Align(
+              alignment: (messages[index]
+                  .messageType ==
+                  "sender"
+                  ? Alignment.topRight
+                  : Alignment.topLeft),
+              child: Container(
+                //width: MediaQuery.of(context).size.width*0.50,
+                decoration: BoxDecoration(
+                  borderRadius:
+                  BorderRadius.circular(
+                      20),
+                  color: (messages[index]
+                      .messageType ==
+                      "sender"
+                      ? Styles.mainColor
+                      : Colors.grey.shade200),
+                ),
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment:
+                  CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment
+                          .end,
+                      mainAxisSize:
+                      MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            messages[index]
+                                .messageContent!,
+                            style: TextStyle(
+                                fontSize: 15),
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(
+                              context)
+                              .size
+                              .width *
+                              0.02,
+                        ),
+                        Column(children: [
+                          SizedBox(
+                            height: MediaQuery.of(
+                                context)
+                                .size
+                                .height *
+                                0.01,
+                          ),
+                          Text(
+                            timeHour,
+                            style: TextStyle(
+                                fontSize: 12),
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          if (index == messages.length - 1)
+            SizedBox(
+                height: MediaQuery.of(context)
+                    .size
+                    .height *
+                    0.08),
+        ],
+      );
+  }
+
+  String getTimeHour(var index) {
+    return messages[index]
+        .time![messages[index].time!.length - 8] +
+        messages[index]
+            .time![messages[index].time!.length - 7] +
+        messages[index]
+            .time![messages[index].time!.length - 6] +
+        messages[index]
+            .time![messages[index].time!.length - 5] +
+        messages[index]
+            .time![messages[index].time!.length - 4];
+  }
+
+  String getTimeDay(var index) {
+    return messages[index].time![0] +
+        messages[index].time![1] +
+        messages[index].time![2] +
+        messages[index].time![3] +
+        messages[index].time![4] +
+        messages[index].time![5] +
+        messages[index].time![6] +
+        messages[index].time![7] +
+        messages[index].time![8] +
+        messages[index].time![9] +
+        messages[index].time![10];
+  }
+
   void initState() {
     timeDayGolbal = '';
     super.initState();
@@ -120,55 +333,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             ),
           ],
         ),
-        /*
-        flexibleSpace: SafeArea(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-            child: Row(
-
-              children: <Widget>[
-                SizedBox(
-                  width:  MediaQuery.of(context).size.width*0.1,
-                ),
-                GestureDetector(
-                  child: CircularImage(
-                    size: MediaQuery.of(context).size.width*0.11,
-                    image: widget.user.imageUrl!,
-                    color: Theme.of(context).primaryColor,
-                    borderWidth: 1.5,
-                  ),
-                  onTap: () {
-                    Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: widget.user.id!, viewOnly: true)));
-                  },
-                ),
-                SizedBox(
-                  width: 12,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        widget.user.name!,
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  Icons.settings,
-                  color: Colors.black54,
-                ),
-              ],
-            ),
-          ),
-        ),
-         */
       ),
       body: Stack(
         children: <Widget>[
@@ -180,211 +344,28 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   messages = documentsToMessages(snapshot.data!.docs);
                   return SingleChildScrollView(
                     dragStartBehavior: DragStartBehavior.down,
-                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                    keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                     child: ListView.builder(
                       controller: scrollController,
                       itemCount: messages.length,
                       shrinkWrap: true,
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.03,
-                          vertical: MediaQuery
-                              .of(context)
-                              .size
-                              .height * 0.03),
+                      padding: EdgeInsets.symmetric(
+                          horizontal:
+                          MediaQuery.of(context).size.width * 0.03,
+                          vertical:
+                          MediaQuery.of(context).size.height * 0.03),
                       physics: BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
-                        String timeHour = messages[index].time![messages[index]
-                            .time!.length - 8] +
-                            messages[index].time![messages[index].time!.length -
-                                7] +
-                            messages[index].time![messages[index].time!.length -
-                                6] +
-                            messages[index].time![messages[index].time!.length -
-                                5] +
-                            messages[index].time![messages[index].time!.length -
-                                4];
-                        String timeDay = messages[index].time![0] +
-                            messages[index].time![1] +
-                            messages[index].time![2] +
-                            messages[index].time![3] +
-                            messages[index].time![4] +
-                            messages[index].time![5] + messages[index]
-                            .time![6] +
-                            messages[index].time![7] +
-                            messages[index].time![8] +
-                            messages[index].time![9] +
-                            messages[index].time![10];
+                        String timeHour = getTimeHour(index);
+                        String timeDay = getTimeDay(index);
                         if (timeDay != timeDayGolbal) {
                           timeDayGolbal = timeDay;
-                          return Column(
-                            children: [
-                              Text(
-                                timeDay,
-                                style: TextStyle(fontSize: 15),
-                              ),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width * 0.01,
-                                    vertical: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height * 0.01),
-                                child: Align(
-                                  alignment: (messages[index].messageType ==
-                                      "receiver"
-                                      ? Alignment.topLeft
-                                      : Alignment.topRight),
-                                  child: Container(
-                                    //width: MediaQuery.of(context).size.width*0.50,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: (messages[index].messageType ==
-                                          "receiver"
-                                          ? Colors.grey.shade200
-                                          : Styles.mainColor),
-                                    ),
-                                    padding: EdgeInsets.all(16),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .end,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .end,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                messages[index].messageContent!,
-                                                style: TextStyle(fontSize: 15),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width * 0.02,
-                                            ),
-                                            Column(
-                                                children: [
-                                                  SizedBox(
-                                                    height: MediaQuery
-                                                        .of(context)
-                                                        .size
-                                                        .height * 0.01,
-                                                  ),
-                                                  Text(
-                                                    timeHour,
-                                                    style: TextStyle(
-                                                        fontSize: 12),
-                                                  ),
-
-                                                ]
-                                            ),
-                                          ],
-                                        ),
-
-                                      ],
-                                    ),
-
-                                  ),
-                                ),
-                              ),
-                              if (index == messages.length - 1) SizedBox(
-                                  height: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height * 0.08),
-                            ],
-                          );
+                          return messageTextNewData(index, timeHour, timeDay);
+                        } else {
+                          return messageTextNotNewData(index, timeHour);
                         }
-                        else {
-                          return Column(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 0.01,
-                                    vertical: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height * 0.01),
-                                child: Align(
-                                  alignment: (messages[index].messageType ==
-                                      "receiver"
-                                      ? Alignment.topLeft
-                                      : Alignment.topRight),
-                                  child: Container(
-                                    //width: MediaQuery.of(context).size.width*0.50,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: (messages[index].messageType ==
-                                          "receiver"
-                                          ? Colors.grey.shade200
-                                          : Styles.mainColor),
-                                    ),
-                                    padding: EdgeInsets.all(16),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .end,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .end,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                messages[index].messageContent!,
-                                                style: TextStyle(fontSize: 15),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width * 0.02,
-                                            ),
-                                            Column(
-                                                children: [
-                                                  SizedBox(
-                                                    height: MediaQuery
-                                                        .of(context)
-                                                        .size
-                                                        .height * 0.01,
-                                                  ),
-                                                  Text(
-                                                    timeHour,
-                                                    style: TextStyle(
-                                                        fontSize: 12),
-                                                  ),
-
-                                                ]
-                                            ),
-                                          ],
-                                        ),
-
-                                      ],
-                                    ),
-
-                                  ),
-                                ),
-                              ),
-                              if (index == messages.length - 1) SizedBox(
-                                  height: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height * 0.08),
-                            ],
-                          );
                         }
-                      },
                     ),
                   );
                 }
@@ -392,217 +373,32 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   timeDayGolbal = '';
                   return SingleChildScrollView(
                     dragStartBehavior: DragStartBehavior.down,
-                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                    keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                     child: ListView.builder(
-                      controller: scrollController,
-                      itemCount: messages.length,
-                      shrinkWrap: true,
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.03,
-                          vertical: MediaQuery
-                              .of(context)
-                              .size
-                              .height * 0.03),
-                      physics: BouncingScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        String timeHour = messages[index].time![messages[index]
-                            .time!.length - 8] +
-                            messages[index].time![messages[index].time!.length -
-                                7] +
-                            messages[index].time![messages[index].time!.length -
-                                6] +
-                            messages[index].time![messages[index].time!.length -
-                                5] +
-                            messages[index].time![messages[index].time!.length -
-                                4];
-                        String timeDay = messages[index].time![0] +
-                            messages[index].time![1] +
-                            messages[index].time![2] +
-                            messages[index].time![3] +
-                            messages[index].time![4] +
-                            messages[index].time![5] + messages[index]
-                            .time![6] +
-                            messages[index].time![7] +
-                            messages[index].time![8] +
-                            messages[index].time![9] +
-                            messages[index].time![10];
-                        if (timeDay != timeDayGolbal) {
-                          timeDayGolbal = timeDay;
-                          return Column(
-                            children: [
-                              Text(
-                                timeDay,
-                                style: TextStyle(fontSize: 15),
-                              ),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width * 0.01,
-                                    vertical: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height * 0.01),
-                                child: Align(
-                                  alignment: (messages[index].messageType ==
-                                      "receiver"
-                                      ? Alignment.topLeft
-                                      : Alignment.topRight),
-                                  child: Container(
-                                    //width: MediaQuery.of(context).size.width*0.50,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: (messages[index].messageType ==
-                                          "receiver"
-                                          ? Colors.grey.shade200
-                                          : Styles.mainColor),
-                                    ),
-                                    padding: EdgeInsets.all(16),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .end,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .end,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                messages[index].messageContent!,
-                                                style: TextStyle(fontSize: 15),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width * 0.02,
-                                            ),
-                                            Column(
-                                                children: [
-                                                  SizedBox(
-                                                    height: MediaQuery
-                                                        .of(context)
-                                                        .size
-                                                        .height * 0.01,
-                                                  ),
-                                                  Text(
-                                                    timeHour,
-                                                    style: TextStyle(
-                                                        fontSize: 12),
-                                                  ),
-
-                                                ]
-                                            ),
-                                          ],
-                                        ),
-
-                                      ],
-                                    ),
-
-                                  ),
-                                ),
-                              ),
-                              if (index == messages.length - 1) SizedBox(
-                                  height: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height * 0.08),
-                            ],
-                          );
+                        controller: scrollController,
+                        itemCount: messages.length,
+                        shrinkWrap: true,
+                        padding: EdgeInsets.symmetric(
+                            horizontal:
+                            MediaQuery.of(context).size.width * 0.03,
+                            vertical:
+                            MediaQuery.of(context).size.height * 0.03),
+                        physics: BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          String timeHour = getTimeHour(index);
+                          String timeDay = getTimeDay(index);
+                          if (timeDay != timeDayGolbal) {
+                            timeDayGolbal = timeDay;
+                            return messageTextNewData(index, timeHour, timeDay);
+                          } else {
+                            return messageTextNotNewData(index, timeHour);
+                          }
                         }
-                        else {
-                          return Column(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 0.01,
-                                    vertical: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height * 0.01),
-                                child: Align(
-                                  alignment: (messages[index].messageType ==
-                                      "receiver"
-                                      ? Alignment.topLeft
-                                      : Alignment.topRight),
-                                  child: Container(
-                                    //width: MediaQuery.of(context).size.width*0.50,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: (messages[index].messageType ==
-                                          "receiver"
-                                          ? Colors.grey.shade200
-                                          : Styles.mainColor),
-                                    ),
-                                    padding: EdgeInsets.all(16),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .end,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .end,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                messages[index].messageContent!,
-                                                style: TextStyle(fontSize: 15),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width * 0.02,
-                                            ),
-                                            Column(
-                                                children: [
-                                                  SizedBox(
-                                                    height: MediaQuery
-                                                        .of(context)
-                                                        .size
-                                                        .height * 0.01,
-                                                  ),
-                                                  Text(
-                                                    timeHour,
-                                                    style: TextStyle(
-                                                        fontSize: 12),
-                                                  ),
-
-                                                ]
-                                            ),
-                                          ],
-                                        ),
-
-                                      ],
-                                    ),
-
-                                  ),
-                                ),
-                              ),
-                              if (index == messages.length - 1) SizedBox(
-                                  height: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height * 0.08),
-                            ],
-                          );
-                        }
-                      },
                     ),
                   );
                 }
-
-              }
-            ),
+              }),
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(

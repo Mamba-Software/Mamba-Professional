@@ -1349,13 +1349,12 @@ class FirebaseDatabaseService {
     return _firestore
         .collection("Messages")
         .where("conversationId", isEqualTo: conversationId)
-        .orderBy("year", descending: false)
-        .orderBy("month", descending: false)
-        .orderBy("day", descending: false)
-        .orderBy("hour", descending: false)
-        .orderBy("minute", descending: false)
-        .orderBy("minute", descending: false)
-        .orderBy("second", descending: false)
+        .orderBy("year", descending: true)
+        .orderBy("month", descending: true)
+        .orderBy("day", descending: true)
+        .orderBy("hour", descending: true)
+        .orderBy("minute", descending: true)
+        .orderBy("second", descending: true)
         .snapshots();
 
    /* .orderBy("year", descending: false)
