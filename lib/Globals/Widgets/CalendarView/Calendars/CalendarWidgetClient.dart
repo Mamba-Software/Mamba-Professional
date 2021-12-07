@@ -11,7 +11,9 @@ import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import '../../../GlobalVars.dart';
 import '../../../Styles.dart';
+import '../../CircularImage.dart';
 import '../Events/AddEvent.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -153,6 +155,7 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                     ),
                     appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
                       final Appointment appointment = details.appointments.first;
+                      final Event event = getEvent(appointment.id.toString());
                       return GestureDetector(
                         onTap: !widget.onlyView ? () {
                           _viewEvent(appointment.id.toString(), appointment.startTime);
@@ -170,7 +173,22 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                                 ),
                               ),
                               child: Center(
-                                child: Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                                    event.joinedMembers.contains(currentUser.id!) ? Column(
+                                      children: [
+                                        SizedBox(height: details.bounds.height*0.05,),
+                                        CircularImage(
+                                          size: details.bounds.width*0.6,
+                                          image: currentUser.imageUrl!,
+                                          color: Theme.of(context).accentColor,
+                                        ),
+                                      ],
+                                    ) : Container(),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -182,6 +200,14 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
               }
           ), // This trailing comma makes auto-formatting nicer for build methods.
       );
+  }
+
+  Event getEvent(String eventId) {
+    for (var i=0; i < eventsList.length; i++) {
+      Event temp = eventsList[i];
+      if (temp.id == eventId) return temp;
+    }
+    return Event();
   }
 
   List<TimeRegion> _getTimeRegions() {
