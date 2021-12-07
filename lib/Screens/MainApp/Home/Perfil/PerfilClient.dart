@@ -335,26 +335,11 @@ class _PerfilClientState extends State<PerfilClient> {
   }
 
   void getClientEventsDone() async {
-    DateTime today = DateTime.now();
-    var tempMonth = 0;
-    List<Event> listEvents = [];
-    List<Event> list = await _accessDatabase.getAllEventsFromClient(currentUser.id!);
-    for (var i=0; i<list.length; i++) {
-      Event event = list[i];
-      int year = int.parse(event.year!);
-      int month = int.parse(event.month!);
-      int day = int.parse(event.day!);
-      if (year <= today.year && month <= today.month && day < today.day) {
-        listEvents.add(event);
-        if (year == today.year && month == today.month) {
-          tempMonth += 1;
-        }
-      }
-    }
+    List<int> res = await _accessDatabase.getAllClientEventsFinished(currentUser.id!, currentBrand.id!);
     setState(() {
-      thisMonthEvents = tempMonth;
-      totalEvents = listEvents.length;
       isLoading = false;
+      totalEvents = res[0];
+      thisMonthEvents = res[1];
     });
   }
 

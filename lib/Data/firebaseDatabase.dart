@@ -567,6 +567,37 @@ class FirebaseDatabaseService {
     return events;
   }
 
+  // Get All Finished Events for Client
+  Future<List<int>> getAllClientEventsFinished(String clientid, String brandId) async {
+    DateTime today = DateTime.now();
+    List<Event> events = [];
+    List<Event> eventsMonth = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Events")
+        .where("brandID", isEqualTo: brandId)
+        .where("joinedMembers", arrayContains: clientid)
+        .get();
+
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      Event event = Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      var startDate = DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
+      if (today.isAfter(startDate)) {
+        events.add(event);
+        if (today.year == int.parse(event.year!) && today.month == int.parse(event.month!)) {
+          eventsMonth.add(event);
+        }
+      }
+    }
+    List<int> result = [events.length, eventsMonth.length];
+    return result;
+  }
+
   // Get All Events for Trainer
   Future<List<Event>> getAllTrainerEventsFromBrand(
       String trainerid, String brandId) async {
@@ -584,6 +615,37 @@ class FirebaseDatabaseService {
           Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
     return events;
+  }
+
+  // Get All Finished Events for Trainer
+  Future<List<int>> getAllTrainerEventsFinished(String trainerid, String brandId) async {
+    DateTime today = DateTime.now();
+    List<Event> events = [];
+    List<Event> eventsMonth = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Events")
+        .where("brandID", isEqualTo: brandId)
+        .where("selectedTrainers", arrayContains: trainerid)
+        .get();
+
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      Event event = Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      var startDate = DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
+      if (today.isAfter(startDate)) {
+        events.add(event);
+        if (today.year == int.parse(event.year!) && today.month == int.parse(event.month!)) {
+          eventsMonth.add(event);
+        }
+      }
+    }
+    List<int> result = [events.length, eventsMonth.length];
+    return result;
   }
 
   // Get All Events Finished Brand

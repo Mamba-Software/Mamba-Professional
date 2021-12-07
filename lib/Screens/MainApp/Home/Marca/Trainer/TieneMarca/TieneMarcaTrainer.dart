@@ -165,7 +165,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                       ),
                                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                       Container(
-                                        width: MediaQuery.of(context).size.width*0.15,
+                                        width: MediaQuery.of(context).size.width*0.17,
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
@@ -228,7 +228,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                       ),
                                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                       Container(
-                                        width: MediaQuery.of(context).size.width*0.15,
+                                        width: MediaQuery.of(context).size.width*0.17,
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [

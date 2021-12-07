@@ -40,7 +40,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
   bool isLoading = true;
   bool isFirstBuild = true;
   // Event List
-  int totalEvents  = 0;
+  int totalEvents = 0;
   int thisMonthEvents  = 0;
   List<Event> todayEvents = [];
   var todayEventsLabels = [];
@@ -340,26 +340,11 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
 
   // Gets the events passed by the trainer.
   void getTrainerEventsDone() async {
-    DateTime today = DateTime.now();
-    var tempMonth = 0;
-    List<Event> listEvents = [];
-    List<Event> list = await _accessDatabase.getAllEventsFromTrainer(currentUser.id!);
-    for (var i=0; i<list.length; i++) {
-      Event event = list[i];
-      int year = int.parse(event.year!);
-      int month = int.parse(event.month!);
-      int day = int.parse(event.day!);
-      if (year <= today.year && month <= today.month && day < today.day) {
-        listEvents.add(event);
-        if (year == today.year && month == today.month) {
-          tempMonth += 1;
-        }
-      }
-    }
+    List<int> res = await _accessDatabase.getAllTrainerEventsFinished(currentUser.id!, currentBrand.id!);
     setState(() {
       isLoading = false;
-      thisMonthEvents = tempMonth;
-      totalEvents = listEvents.length;
+      totalEvents = res[0];
+      thisMonthEvents = res[1];
     });
   }
 
