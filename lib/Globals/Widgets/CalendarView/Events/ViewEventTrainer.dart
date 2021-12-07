@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
@@ -12,6 +13,8 @@ import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../../../Constants.dart';
 import '../../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -838,6 +841,23 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                                     location.description!,
                                                     style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor)
                                                 ),
+                                                trailing: !isEditing ? IconButton(
+                                                  onPressed: () async {
+                                                    Clipboard.setData(new ClipboardData(text: location.description!)).then((_){
+                                                      showTopSnackBar(
+                                                        context,
+                                                        CustomSnackBar.info(
+                                                          icon: Container(),
+                                                          iconRotationAngle: 0,
+                                                          backgroundColor: Theme.of(context).accentColor,
+                                                          message: AppLocalizations.of(context)!.copyCorrectLocation,
+                                                          textStyle: Styles.whiteTextStyle,
+                                                        ),
+                                                      );
+                                                    });
+                                                  },
+                                                  icon: Icon(Icons.copy, color: Theme.of(context).accentColor, size: 25,),
+                                                ) : Icon(Icons.edit_location_outlined, color: Theme.of(context).accentColor, size: 30,),
                                                 onTap: isEditing ? () async {
                                                   setState(() {
                                                     isLoading = true;
@@ -1210,7 +1230,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                 ],
                               ),
                             ),
-                            widget.canEdit ? SizedBox(height: MediaQuery.of(context).size.height*0.15) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                            widget.canEdit ? SizedBox(height: MediaQuery.of(context).size.height*0.20) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           ],
                         ),
                       ),
@@ -1235,9 +1255,73 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
             padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
             child: Container(
               width: MediaQuery.of(context).size.width*0.70,
-              child: Row(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      FloatingActionButton.extended(
+                        heroTag: "8",
+                        onPressed: () async {
+                          bool hasError = false;
+                          setState(() {
+                            errorDate = false;
+                            errorNoTrainerSelected = false;
+                          });
+                          var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
+                          if (!formKeyInfo.currentState!.validate()) {
+                            hasError = true;
+                          }
+                          if (!validateDateAndTime(startDate, double.parse(duration))) {
+                            hasError = true;
+                            setState(() {
+                              errorDate = true;
+                            });
+                          }
+                          if (!brandTrainersSelectedBool.contains(true)) {
+                            hasError = true;
+                            setState(() {
+                              errorNoTrainerSelected = true;
+                            });
+                          }
+                          if (!hasError) {
+                            setState(() {
+                              isLoadingBody = true;
+                            });
+                            var selectedTrainerId = [];
+                            for (var i=0; i< allTrainers.length; i++) {
+                              if (brandTrainersSelectedBool[i]) {
+                                selectedTrainerId.add(allTrainers[i].id);
+                              }
+                            }
+                            await _accessDatabase.updateEvent(widget.eventId, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+                            getEventInfo();
+                          }
+                        },
+                        backgroundColor: Colors.green,
+                        icon: Icon(Icons.save_rounded, color: Colors.white,),
+                        label: Text(AppLocalizations.of(context)!.save,
+                          style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                      ),
+                      SizedBox(width: MediaQuery.of(context).size.width*0.01,),
+                      FloatingActionButton.extended(
+                        heroTag: "75",
+                        icon: Icon(Icons.cancel_outlined, size: 30,),
+                        label: Text(AppLocalizations.of(context)!.close),
+                        backgroundColor: Theme.of(context).primaryColor,
+                        foregroundColor: Styles.white,
+                        onPressed: () async {
+                          setState(() {
+                            isLoadingBody = true;
+                          });
+                          getEventInfo();
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02,),
                   FloatingActionButton.extended(
                     heroTag: "7",
                     onPressed: () async {
@@ -1259,51 +1343,6 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                     backgroundColor: Colors.red,
                     icon: Icon(Icons.delete_outline, color: Colors.white,),
                     label: Text(AppLocalizations.of(context)!.delete,
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.01,),
-                  FloatingActionButton.extended(
-                    heroTag: "8",
-                    onPressed: () async {
-                      bool hasError = false;
-                      setState(() {
-                        errorDate = false;
-                        errorNoTrainerSelected = false;
-                      });
-                      var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
-                      if (!formKeyInfo.currentState!.validate()) {
-                        hasError = true;
-                      }
-                      if (!validateDateAndTime(startDate, double.parse(duration))) {
-                        hasError = true;
-                        setState(() {
-                          errorDate = true;
-                        });
-                      }
-                      if (!brandTrainersSelectedBool.contains(true)) {
-                        hasError = true;
-                        setState(() {
-                          errorNoTrainerSelected = true;
-                        });
-                      }
-                      if (!hasError) {
-                        setState(() {
-                          isLoadingBody = true;
-                        });
-                        var selectedTrainerId = [];
-                        for (var i=0; i< allTrainers.length; i++) {
-                          if (brandTrainersSelectedBool[i]) {
-                            selectedTrainerId.add(allTrainers[i].id);
-                          }
-                        }
-                        print(location.id);
-                        await _accessDatabase.updateEvent(widget.eventId, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
-                        getEventInfo();
-                      }
-                    },
-                    backgroundColor: Colors.green,
-                    icon: Icon(Icons.save_rounded, color: Colors.white,),
-                    label: Text(AppLocalizations.of(context)!.save,
                       style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
                   ),
                 ],

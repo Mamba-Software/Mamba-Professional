@@ -14,6 +14,8 @@ import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../../../Constants.dart';
 import '../../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -484,12 +486,12 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                       begin: FractionalOffset.bottomCenter,
                       end: FractionalOffset.topCenter,
                       colors: [
-                        Colors.grey.withOpacity(0.0),
-                        Colors.white,
+                        Colors.white.withOpacity(0.1),
+                        Colors.white.withOpacity(0.9),
                       ],
                       stops: [
-                        0.0,
-                        0.75
+                        0.8,
+                        1
                       ]
                   ),
                 ),
@@ -579,37 +581,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                 children: [
                                   Row(
                                     children: [
-                                      isEditing ? new Expanded(
-                                        child: new TextFormField(
-                                          controller: titleController,
-                                          validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
-                                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 24),
-                                          decoration: InputDecoration(
-                                              labelStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
-                                              enabledBorder: UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Colors.grey,
-                                                      width: 1.0
-                                                  )
-                                              ),
-                                              focusedBorder: UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Colors.grey,
-                                                      width: 1.0
-                                                  )
-                                              ),
-                                              errorBorder: UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Colors.red,
-                                                      width: 1.0
-                                                  )
-                                              ),
-                                              disabledBorder: InputBorder.none,
-                                              contentPadding: EdgeInsets.all(0)
-                                          ),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ) : new Expanded(
+                                      Expanded(
                                         child: new TextField(
                                           controller: titleController,
                                           readOnly: true,
@@ -634,38 +606,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                       child: new Row(
                                         mainAxisSize: MainAxisSize.max,
                                         children: <Widget>[
-                                          isEditing ? new Flexible(
-                                            child: new TextFormField(
-                                              controller: descriptionController,
-                                              minLines: 1,
-                                              maxLines: 6,
-                                              style: Styles.purpleTextStyle.copyWith(fontSize: 15),
-                                              decoration: InputDecoration(
-                                                labelStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
-                                                hintText:AppLocalizations.of(context)!.noDescription,
-                                                enabledBorder: UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey,
-                                                        width: 1.0
-                                                    )
-                                                ),
-                                                focusedBorder: UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey,
-                                                        width: 1.0
-                                                    )
-                                                ),
-                                                errorBorder: UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors.red,
-                                                        width: 1.0
-                                                    )
-                                                ),
-                                                disabledBorder: InputBorder.none,
-                                              ),
-                                              textAlign: TextAlign.justify,
-                                            ),
-                                          ) : new Flexible(
+                                          Flexible(
                                             child: new TextFormField(
                                               controller: descriptionController,
                                               readOnly: true,
@@ -692,16 +633,6 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height*0.035),
-                            errorDate ? Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Center(
-                                child: Text(
-                                  AppLocalizations.of(context)!.errorDate,
-                                  style: Styles.redTextStyle.copyWith(fontSize: 13),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ): Container(),
                             Container(
                               height: MediaQuery.of(context).size.height * 0.30,
                               width: MediaQuery.of(context).size.width * 0.90,
@@ -725,34 +656,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                             child: Row(
                                               mainAxisSize: MainAxisSize.max,
                                               children: <Widget>[
-                                                isEditing ? new Flexible(
-                                                  child: TextFormField(
-                                                    controller: startDateController,
-                                                    readOnly: true,
-                                                    onTap: () {
-                                                      if (isEditing) selectSlot(context, 0);
-                                                    },
-                                                    style: Styles.purpleTextStyle,
-                                                    decoration: InputDecoration(
-                                                      labelStyle: Styles.purpleTextStyle,
-                                                      border: InputBorder.none,
-                                                      enabledBorder: UnderlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: errorDate ? Colors.red : Colors.grey,
-                                                              width: 1.0
-                                                          )
-                                                      ),
-                                                      focusedBorder: UnderlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: errorDate ? Colors.red : Colors.grey,
-                                                              width: 1.0
-                                                          )
-                                                      ),
-                                                      disabledBorder: InputBorder.none,
-                                                    ),
-                                                    textAlign: TextAlign.start,
-                                                  ),
-                                                ) : new Flexible(
+                                                Flexible(
                                                   child: TextFormField(
                                                     controller: startDateController,
                                                     readOnly: true,
@@ -786,34 +690,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                               mainAxisSize: MainAxisSize.max,
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               children: <Widget>[
-                                                isEditing ? new Flexible(
-                                                  child: TextFormField(
-                                                    controller: durationController,
-                                                    onTap: () {
-                                                      if (isEditing) selectSlot(context, 1);
-                                                    },
-                                                    readOnly: true,
-                                                    style: Styles.purpleTextStyle,
-                                                    decoration: InputDecoration(
-                                                      labelStyle: Styles.purpleTextStyle,
-                                                      border: InputBorder.none,
-                                                      enabledBorder: UnderlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: errorDate ? Colors.red : Colors.grey,
-                                                              width: 1.0
-                                                          )
-                                                      ),
-                                                      focusedBorder: UnderlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: errorDate ? Colors.red : Colors.grey,
-                                                              width: 1.0
-                                                          )
-                                                      ),
-                                                      disabledBorder: InputBorder.none,
-                                                    ),
-                                                    textAlign: TextAlign.start,
-                                                  ),
-                                                ) : new Flexible(
+                                                Flexible(
                                                   child: TextFormField(
                                                     controller: durationController,
                                                     readOnly: true,
@@ -851,42 +728,27 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                     location.description!,
                                                     style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor)
                                                 ),
-                                                onTap: isEditing ? () async {
-                                                  setState(() {
-                                                    isLoading = true;
-                                                  });
-                                                  var result = await Navigator.push(
-                                                      context,
-                                                      PageTransition(
-                                                        type: PageTransitionType.rightToLeftWithFade,
-                                                        child: MyLocationsSelect(
-                                                          brandId: currentBrand.id!,
+                                                trailing: IconButton(
+                                                  onPressed: () async {
+                                                    Clipboard.setData(new ClipboardData(text: location.description!)).then((_){
+                                                      showTopSnackBar(
+                                                        context,
+                                                        CustomSnackBar.info(
+                                                          icon: Container(),
+                                                          iconRotationAngle: 0,
+                                                          backgroundColor: Theme.of(context).accentColor,
+                                                          message: AppLocalizations.of(context)!.copyCorrectLocation,
+                                                          textStyle: Styles.whiteTextStyle,
                                                         ),
-                                                      )
-                                                  );
-                                                  if (result != null) {
-                                                    await getLocation(result);
-                                                    setState(() {
-                                                      isLoading = false;
+                                                      );
                                                     });
-                                                  } else {
-                                                    setState(() {
-                                                      isLoading = false;
-                                                    });
-                                                  }
-                                                } : null,
+                                                  },
+                                                  icon: Icon(Icons.copy, color: Theme.of(context).accentColor, size: 25,),
+                                                ),
                                               ),
                                             ),
                                           ],
                                         ),
-                                        isEditing ? Padding(
-                                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, top:MediaQuery.of(context).size.width*0.01),
-                                          child: Container(
-                                            height: 1,
-                                            width: MediaQuery.of(context).size.width*0.68,
-                                            color: Colors.grey,
-                                          ),
-                                        ) : Container(),
                                       ],
                                     ),
                                   ],
@@ -942,73 +804,6 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  isEditing ? Container(
-                                    height: MediaQuery.of(context).size.height*0.20,
-                                    width: MediaQuery.of(context).size.width*0.99,
-                                    child: ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: AlwaysScrollableScrollPhysics(),
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: allTrainers.length,
-                                        itemBuilder: (context, int index) {
-                                          var trainer = allTrainers[index];
-                                          return GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                brandTrainersSelectedBool[index] = !brandTrainersSelectedBool[index];
-                                              });
-                                            },
-                                            child: Padding(
-                                              padding: !(index == 0 || index == allTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: allTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  CircularImage(
-                                                    size: MediaQuery.of(context).size.width*0.2,
-                                                    image: trainer.imageUrl,
-                                                    color: Theme.of(context).accentColor,
-                                                    borderWidth: 1.5,
-                                                  ),
-                                                  Container(
-                                                    width: MediaQuery.of(context).size.width*0.2,
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Text(
-                                                          splitCommonName(trainer.name!),
-                                                          style: Styles.purpleTextStyle.copyWith(fontSize: 15),
-                                                          textAlign: TextAlign.center,
-                                                        ),
-                                                        SizedBox(
-                                                          width: MediaQuery.of(context).size.width*0.01,
-                                                        ),
-                                                        SizedBox(
-                                                          width: MediaQuery.of(context).size.width*0.05,
-                                                          child: Checkbox(
-                                                            checkColor: Colors.white,
-                                                            fillColor: MaterialStateProperty.resolveWith(getColor),
-                                                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                            value: brandTrainersSelectedBool[index],
-                                                            shape: CircleBorder(
-                                                                side: BorderSide.none
-                                                            ),
-                                                            onChanged: (bool? value) {
-                                                              setState(() {
-                                                                brandTrainersSelectedBool[index] = !brandTrainersSelectedBool[index];
-                                                              });
-                                                            },
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                    ),
-                                  ) :
                                   Container(
                                     height: MediaQuery.of(context).size.height*0.20,
                                     width: MediaQuery.of(context).size.width*0.99,
@@ -1060,16 +855,6 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                 ],
                               ),
                             ),
-                            errorNoTrainerSelected ? Padding(
-                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                              child: Center(
-                                child: Text(
-                                  AppLocalizations.of(context)!.noTrainerSelectedError,
-                                  style: Styles.redTextStyle.copyWith(fontSize: 16),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ) : Container(),
                             SizedBox(height: MediaQuery.of(context).size.height*0.01),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
@@ -1087,7 +872,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                     style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
                                   ),
                                   SizedBox(width: 16),
-                                  !isEditing ? Row(
+                                  Row(
                                     children: [
                                       Text(
                                         "( "+event!.joinedMembers.length.toString(),
@@ -1102,52 +887,11 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                         style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16),
                                       ),
                                     ],
-                                  ) : Container(),
+                                  )
                                 ],
                               ),
                             ),
-                            isEditing ? Padding(
-                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Icon(Icons.person, color: Theme.of(context).accentColor,),
-                                  Container(
-                                    padding: EdgeInsets.only(left: 20),
-                                    width: MediaQuery.of(context).size.width*0.30,
-                                    child: GestureDetector(
-                                        onTap: () {
-                                          selectSlot(context, 2);
-                                        },
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            new Flexible(
-                                              child: TextFormField(
-                                                controller: membersController,
-                                                readOnly: true,
-                                                enabled: false,
-                                                style: Styles.purpleTextStyle,
-                                                decoration: InputDecoration(
-                                                  labelStyle: Styles.purpleTextStyle,
-                                                  border: InputBorder.none,
-                                                  focusedBorder: InputBorder.none,
-                                                  enabledBorder: InputBorder.none,
-                                                  errorBorder: InputBorder.none,
-                                                  disabledBorder: InputBorder.none,
-                                                ),
-                                                textAlign: TextAlign.start,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ) : Padding(
+                            Padding(
                               padding: EdgeInsets.only(top: 0),
                               child:
                               brandClientsJoining.isEmpty ?
