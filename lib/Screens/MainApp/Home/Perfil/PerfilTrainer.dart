@@ -131,6 +131,8 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
       if (startDate.isBefore(now) && endDate.isAfter(now)) {
         // Doing
         todayEventsLabels.add(1);
+        scrollIndex = i;
+        indexFound = true;
       }
       if (startDate.isAfter(now) && endDate.isAfter(now)) {
         // To Do
