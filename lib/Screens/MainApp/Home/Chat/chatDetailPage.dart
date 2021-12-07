@@ -1,14 +1,22 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Models/ChatMessage.dart';
 import 'package:mamba_castelldefels/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Models/Message.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:page_transition/page_transition.dart';
 
 class ChatDetailPage extends StatefulWidget {
   final Usuario user;
@@ -25,12 +33,18 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   String? conversationId;
 
   var editingController = TextEditingController();
+  var scrollController = ScrollController();
+
+ // ItemScrollController _scrollController = ItemScrollController();
 
   bool isLoading = true;
 
   String? messageNow;
 
+  String timeDayGolbal = '';
+
   List<ChatMessage> messages = [];
+  List<Message> notChatMessages = [];
 
   List<Conversation> conversations = [];
 
@@ -42,9 +56,227 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     };
   }
 
+  Column messageTextNotNewData(var index, String timeHour) {
+      return Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(
+                horizontal:
+                MediaQuery.of(context)
+                    .size
+                    .width *
+                    0.01,
+                vertical:
+                MediaQuery.of(context)
+                    .size
+                    .height *
+                    0.01),
+            child: Align(
+              alignment: (messages[index]
+                  .messageType ==
+                  "sender"
+                  ? Alignment.topRight
+                  : Alignment.topLeft),
+              child: Container(
+                //width: MediaQuery.of(context).size.width*0.50,
+                decoration: BoxDecoration(
+                  borderRadius:
+                  BorderRadius.circular(
+                      20),
+                  color: (messages[index]
+                      .messageType ==
+                      "sender"
+                      ? Styles.mainColor
+                      : Colors.grey.shade200),
+                ),
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment:
+                  CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment
+                          .end,
+                      mainAxisSize:
+                      MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            messages[index]
+                                .messageContent!,
+                            style: TextStyle(
+                                fontSize: 15),
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(
+                              context)
+                              .size
+                              .width *
+                              0.02,
+                        ),
+                        Column(children: [
+                          SizedBox(
+                            height: MediaQuery.of(
+                                context)
+                                .size
+                                .height *
+                                0.01,
+                          ),
+                          Text(
+                            timeHour,
+                            style: TextStyle(
+                                fontSize: 12),
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          if (index == messages.length - 1)
+            SizedBox(
+                height: MediaQuery.of(context)
+                    .size
+                    .height *
+                    0.08),
+        ],
+      );
+  }
+
+  Column messageTextNewData(var index, String timeHour, String timeDay) {
+      return Column(
+        children: [
+          Text(
+            timeDay,
+            style: TextStyle(fontSize: 15),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(
+                horizontal:
+                MediaQuery.of(context)
+                    .size
+                    .width *
+                    0.01,
+                vertical:
+                MediaQuery.of(context)
+                    .size
+                    .height *
+                    0.01),
+            child: Align(
+              alignment: (messages[index]
+                  .messageType ==
+                  "sender"
+                  ? Alignment.topRight
+                  : Alignment.topLeft),
+              child: Container(
+                //width: MediaQuery.of(context).size.width*0.50,
+                decoration: BoxDecoration(
+                  borderRadius:
+                  BorderRadius.circular(
+                      20),
+                  color: (messages[index]
+                      .messageType ==
+                      "sender"
+                      ? Styles.mainColor
+                      : Colors.grey.shade200),
+                ),
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment:
+                  CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment
+                          .end,
+                      mainAxisSize:
+                      MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            messages[index]
+                                .messageContent!,
+                            style: TextStyle(
+                                fontSize: 15),
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(
+                              context)
+                              .size
+                              .width *
+                              0.02,
+                        ),
+                        Column(children: [
+                          SizedBox(
+                            height: MediaQuery.of(
+                                context)
+                                .size
+                                .height *
+                                0.01,
+                          ),
+                          Text(
+                            timeHour,
+                            style: TextStyle(
+                                fontSize: 12),
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          if (index == messages.length - 1)
+            SizedBox(
+                height: MediaQuery.of(context)
+                    .size
+                    .height *
+                    0.08),
+        ],
+      );
+  }
+
+  String getTimeHour(var index) {
+    return messages[index]
+        .time![messages[index].time!.length - 8] +
+        messages[index]
+            .time![messages[index].time!.length - 7] +
+        messages[index]
+            .time![messages[index].time!.length - 6] +
+        messages[index]
+            .time![messages[index].time!.length - 5] +
+        messages[index]
+            .time![messages[index].time!.length - 4];
+  }
+
+  String getTimeDay(var index) {
+    return messages[index].time![0] +
+        messages[index].time![1] +
+        messages[index].time![2] +
+        messages[index].time![3] +
+        messages[index].time![4] +
+        messages[index].time![5] +
+        messages[index].time![6] +
+        messages[index].time![7] +
+        messages[index].time![8] +
+        messages[index].time![9] +
+        messages[index].time![10];
+  }
+
   void initState() {
+    timeDayGolbal = '';
     super.initState();
     getConversationId();
+    WidgetsBinding.instance!
+        .addPostFrameCallback((_) => setState(() {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    }));
   }
 
   Future<void> getConversationId() async {
@@ -54,12 +286,17 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     if(conversations.length == 0) {
       conversationId = '';
     }
-    else conversationId = conversations[0].conversationId;
+    else {
+      conversationId = conversations[0].conversationId;
+      notChatMessages = await _accessDatabase.getConversationMessagesInit(conversationId);
+      messages = await initMessages(notChatMessages);
 
-    setState(() {
-      isLoading = false;
-    });
-  }
+    }
+      setState(() {
+        isLoading = false;
+      });
+    }
+
 
   @override
   Widget build(BuildContext context) {
@@ -70,61 +307,31 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     :
     Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        flexibleSpace: SafeArea(
-          child: Container(
-            padding: EdgeInsets.only(right: 16),
-            child: Row(
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(
-                  width: 2,
-                ),
-                CircleAvatar(
-                  backgroundImage: NetworkImage(widget.user.imageUrl!),
-                  maxRadius: 20,
-                ),
-                SizedBox(
-                  width: 12,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        widget.user.name!,
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Text(
-                        "Online",
-                        style: TextStyle(
-                            color: Colors.grey.shade600, fontSize: 13),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  Icons.settings,
-                  color: Colors.black54,
-                ),
-              ],
+        elevation: 4,
+        automaticallyImplyLeading: true,
+        backgroundColor: Theme.of(context).accentColor,
+        leadingWidth: MediaQuery.of(context).size.width*0.07,
+        toolbarHeight: MediaQuery.of(context).size.height*0.08,
+        title: Row(
+          children: [
+            GestureDetector(
+              child: CircularImage(
+                size: MediaQuery.of(context).size.width*0.1,
+                image: widget.user.imageUrl!,
+                color: Theme.of(context).accentColor,
+                borderWidth: 0.1,
+              ),
+              onTap: () {
+                Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ProfileViewUser(userID: widget.user.id!, viewOnly: true)));
+              },
             ),
-          ),
+            SizedBox(width: MediaQuery.of(context).size.width*0.03,),
+            Text(
+              widget.user.name!,
+              style: TextStyle(
+                  fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+          ],
         ),
       ),
       body: Stack(
@@ -133,52 +340,76 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               stream: _accessDatabase.getConversationMessages(conversationId),
               builder: (context, snapshot) {
                 if (snapshot.data != null) {
+                  timeDayGolbal = '';
                   messages = documentsToMessages(snapshot.data!.docs);
                   return SingleChildScrollView(
+                    dragStartBehavior: DragStartBehavior.down,
+                    keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                     child: ListView.builder(
+                      controller: scrollController,
                       itemCount: messages.length,
                       shrinkWrap: true,
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal:
+                          MediaQuery.of(context).size.width * 0.03,
+                          vertical:
+                          MediaQuery.of(context).size.height * 0.03),
                       physics: BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(
-                                  left: 14, right: 14, top: 10, bottom: 10),
-                              child: Align(
-                                alignment: (messages[index].messageType == "receiver"
-                                    ? Alignment.topLeft
-                                    : Alignment.topRight),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: (messages[index].messageType == "receiver"
-                                        ? Colors.grey.shade200
-                                        : Styles.mainColor),
-                                  ),
-                                  padding: EdgeInsets.all(16),
-                                  child: Text(
-                                    messages[index].messageContent!,
-                                    style: TextStyle(fontSize: 15),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            if (index == messages.length-1) SizedBox(height: MediaQuery.of(context).size.height*0.08),
-                          ],
-                        );
-                      },
+                        String timeHour = getTimeHour(index);
+                        String timeDay = getTimeDay(index);
+                        if (timeDay != timeDayGolbal) {
+                          timeDayGolbal = timeDay;
+                          return messageTextNewData(index, timeHour, timeDay);
+                        } else {
+                          return messageTextNotNewData(index, timeHour);
+                        }
+                        }
                     ),
                   );
                 }
-                else return LoadingView();
-              }
-            ),
+                else {
+                  timeDayGolbal = '';
+                  return SingleChildScrollView(
+                    dragStartBehavior: DragStartBehavior.down,
+                    keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                    child: ListView.builder(
+                        controller: scrollController,
+                        itemCount: messages.length,
+                        shrinkWrap: true,
+                        padding: EdgeInsets.symmetric(
+                            horizontal:
+                            MediaQuery.of(context).size.width * 0.03,
+                            vertical:
+                            MediaQuery.of(context).size.height * 0.03),
+                        physics: BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          String timeHour = getTimeHour(index);
+                          String timeDay = getTimeDay(index);
+                          if (timeDay != timeDayGolbal) {
+                            timeDayGolbal = timeDay;
+                            return messageTextNewData(index, timeHour, timeDay);
+                          } else {
+                            return messageTextNotNewData(index, timeHour);
+                          }
+                        }
+                    ),
+                  );
+                }
+              }),
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(
-              padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 0.02,
+                  vertical: MediaQuery
+                      .of(context)
+                      .size
+                      .height * 0.01),
               height: MediaQuery.of(context).size.height*0.08,
               width: double.infinity,
               color: Colors.white,
@@ -203,6 +434,16 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     heroTag: "60",
                     onPressed: () async {
                       DateTime today = DateTime.now();
+                      String minute, hour, second;
+                      if(today.minute.toString().length == 1) minute = '0' + today.minute.toString();
+                      else minute = today.minute.toString();
+
+                      if(today.hour.toString().length == 1) hour = '0' + today.hour.toString();
+                      else hour = today.hour.toString();
+
+                      if(today.second.toString().length == 1) second = '0' + today.second.toString();
+                      else second = today.second.toString();
+
                       if (editingController.text != '') {
                         if (messages.length == 0) {
                           List<Map> chatUsers = [];
@@ -217,9 +458,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                               today.year.toString(),
                               today.month.toString(),
                               today.day.toString(),
-                              today.hour.toString(),
-                              today.minute.toString(),
-                              today.second.toString(),
+                              hour,
+                              minute,
+                              second,
                               editingController.text);
                         }
                         else {
@@ -229,9 +470,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                             today.year.toString(),
                             today.month.toString(),
                             today.day.toString(),
-                            today.hour.toString(),
-                            today.minute.toString(),
-                            today.second.toString(),
+                            hour,
+                            minute,
+                            second,
                           );
                         }
                         _accessDatabase.addMessage(
@@ -240,9 +481,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                             today.year.toString(),
                             today.month.toString(),
                             today.day.toString(),
-                            today.hour.toString(),
-                            today.minute.toString(),
-                            today.second.toString(),
+                            hour,
+                            minute,
+                            second,
                             conversationId);
 
                         editingController.text = '';
@@ -278,7 +519,30 @@ List<ChatMessage> documentsToMessages(
   String time;
   for (int i = 0; i < documents.length; i++) {
     message = Message.fromObject(documents[i], documents[i].id);
-    time = message.hour! + ':' + message.minute! + ':' + message.second!;
+    time = message.day! + '/' + message.month! + '/' + message.year! + '   ' + message.hour! + ':' + message.minute! + ':' + message.second!;
+    if (message.userSent == currentUser.id) {
+      chatMessages.add(ChatMessage(
+          messageContent: message.message,
+          messageType: "sender",
+          time: time));
+    } else {
+      chatMessages.add(ChatMessage(
+          messageContent: message.message,
+          messageType: "receiver",
+          time: time));
+    }
+  }
+  return chatMessages;
+}
+
+Future<List<ChatMessage>> initMessages (
+    List<Message> notChatMessages) async {
+  List<ChatMessage> chatMessages = [];
+  Message message;
+  String time;
+  for (int i = 0; i < notChatMessages.length; i++) {
+    message = notChatMessages[i];
+    time = message.day! + '/' + message.month! + '/' + message.year! + '   ' + message.hour! + ':' + message.minute! + ':' + message.second!;
     if (message.userSent == currentUser.id) {
       chatMessages.add(ChatMessage(
           messageContent: message.message,

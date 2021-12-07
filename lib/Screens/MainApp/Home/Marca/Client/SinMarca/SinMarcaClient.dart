@@ -18,6 +18,7 @@ import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/TodosMiembrosClient.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -455,8 +456,14 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                       IconButton(
                                         icon: Icon(Icons.question_answer_outlined, size: 35, color: Theme.of(context).primaryColor),
                                         padding: EdgeInsets.all(0),
-                                        onPressed: () {
-
+                                        onPressed: () async {
+                                          Usuario adminUser = await _accessDatabase.getUserDetails(brand.adminID!);
+                                          if(adminUser == null) LoadingView();
+                                          else {
+                                          Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child:
+                                          ChatDetailPage(adminUser)
+                                          ),);
+                                          }
                                         },
                                       ),
                                       Text(

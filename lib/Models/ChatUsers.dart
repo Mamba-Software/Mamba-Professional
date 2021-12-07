@@ -6,5 +6,6 @@ class ChatUsers{
   String? imageURL;
   String? time;
   String? userId;
-  ChatUsers({this.name, this.messageText, this.imageURL, this.time, this.userId});
+  bool? isGroup = false;
+  ChatUsers({this.name, this.messageText, this.imageURL, this.time, this.userId, this.isGroup});
 }
