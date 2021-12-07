@@ -883,7 +883,7 @@
   "@maxNumberClients":{
     "description": "addEvent text"
   },
-  "maxNumberClientsError": "Introduce el número máximo de asistentes en sesiones de tu marca",
+  "maxNumberClientsError": "Introduce el número máximo de asistentes que pueden asistir en cualquiera de tus sesiones.",
   "@maxNumberClientsError":{
     "description": "addEvent text"
   },

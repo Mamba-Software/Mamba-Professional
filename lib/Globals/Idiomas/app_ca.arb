@@ -207,7 +207,7 @@
   "deleteEventConfirmation": "Estàs segur que vols borrar aquest event?",
   "completeEventConfirmation": "Estàs segur que vols marcar aquest event com a realitzat? Aquesta acció no es podrà desfer.",
   "maxNumberClients": "Nombre màxim d'asistents",
-  "maxNumberClientsError": "Introdueix el nombre màxim d'asistents en sessions de la teva marca",
+  "maxNumberClientsError": "Introdueix el nombre màxim d'asistents que poden asistir en qualsevol de les teves sessions.",
   "numberClientJoining": "Asistents",
   "noClientJoining": "Sense asistents",
   "designatedTrainers": "Selecciona els entrenadors",
