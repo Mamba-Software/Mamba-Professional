@@ -979,6 +979,15 @@
   "@myLocations": {
     "description": "Wellcome message"
   },
+  "brandLocations": "Ubicaciones {brand}",
+  "@brandLocations": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
   "addLocation": "Añadir ubicación",
   "@addLocation": {
     "description": "Wellcome message"
@@ -1302,16 +1311,16 @@
       }
     }
   },
-  "joinEventSubtitleNotification": "Este se realizará el {dia} a las {horas}",
-  "@joinEventSubtitleNotification": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "dia": {
-        "type": "String"
-      },
-      "horas": {
-        "type": "String"
-      }
-    }
+  "myLocationsBaseLocationDesc": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.",
+  "@myLocationsBaseLocationDesc": {
+    "description": "Wellcome message"
+  },
+  "myLocationsBaseLocationClientDesc": "Esta es la ubicación usada para localizar a la marca en el mapa para que los clientes puedan encontrarla a su alrededor.",
+  "@myLocationsBaseLocationClientDesc": {
+    "description": "Wellcome message"
+  },
+  "myLocationsDeleteDescription": "¿Estás seguro que quieres borrar esta ubicación?\n\nEn caso que esta ubicación este siendo usada en cualquier evento, actualizaremos la ubicación de este a tu ubicación base.",
+  "@myLocationsOtherLocationsDesc": {
+    "description": "Wellcome message"
   }
 }

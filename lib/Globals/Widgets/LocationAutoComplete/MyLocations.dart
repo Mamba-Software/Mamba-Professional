@@ -6,6 +6,8 @@ import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:uuid/uuid.dart';
@@ -36,6 +38,8 @@ class _MyLocationsState extends State<MyLocations> {
   var searchTrainersController = TextEditingController();
   // Locations From Brand
   List<Location> locationList = [];
+  // String baseLocationId
+  String baseLocationId = "";
 
   Future<void> getAllLocations() async {
     setState(() {
@@ -56,6 +60,7 @@ class _MyLocationsState extends State<MyLocations> {
       Location location = Location.fromObject(documents[i], documents[i].id);
       if (location.isBaseLocation!) {
         locations.add(location);
+        baseLocationId = location.id!;
         break;
       }
     }
@@ -161,50 +166,76 @@ class _MyLocationsState extends State<MyLocations> {
                         itemBuilder: (context, index) {
                           Location location = locationList[index];
                           if (location.isBaseLocation!) {
-                            return ListTile(
-                              leading: Icon(Icons.home_filled, color: Theme.of(context).accentColor, size: 25,),
-                              title: Text(
-                                  location.description!,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).accentColor)
-                              ),
-                              trailing: IconButton(
-                                onPressed: () async {
-                                  // Generate a new token here
-                                  final sessionToken = Uuid().v4();
-                                  final language = currentUser.idioma;
-                                  final Suggestion? result = await showSearch(
-                                    context: context,
-                                    delegate: AddressSearch(sessionToken, language!),
-                                  );
-                                  // We have a result for our locations search
-                                  if (result != null) {
-                                    Location loc = Location();
-                                    loc.placeId = result.placeId;
-                                    final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(loc.placeId!);
-                                    // Get the information on Strings
-                                    if(placeDetails.street!=null) loc.street = placeDetails.street!;
-                                    if(placeDetails.streetNumber!=null) loc.streetNumber = placeDetails.streetNumber!; else loc.streetNumber="N/A";
-                                    if(placeDetails.city!=null) loc.city = placeDetails.city!;
-                                    if(placeDetails.zipCode!=null) loc.zipCode = placeDetails.zipCode!; else loc.zipCode="N/A";
-                                    //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
-                                    // Build Correct Description
-                                    loc.description = "${loc.street} ${loc.streetNumber}, ${loc.city}, ${loc.zipCode}";
-                                    // Get Latitude/Longitude
-                                    var temp = await gPlace!.details.get(loc.placeId!);
-                                    if (temp != null && temp.result != null && mounted) {
-                                      detailsResult = temp.result;
-                                      loc.latitude = detailsResult!.geometry!.location!.lat!;
-                                      loc.longitude = detailsResult!.geometry!.location!.lng!;
-                                    }
-                                    // Save location to DataBase
-                                    await _accessDatabase.updateLocation(location.id!,widget.brandId, true, loc.placeId!, loc.description!, loc.street!, loc.streetNumber!, loc.city!, loc.zipCode!, loc.latitude!, loc.longitude!);
-                                  }
-                                },
-                                icon: Icon(Icons.edit, color: Theme.of(context).accentColor, size: 25,),
-                              ),
-                              onTap: () {
+                            return Column(
+                              children: [
+                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                ListTile(
+                                  leading: Icon(Icons.home_filled, color: Theme.of(context).accentColor, size: 25,),
+                                  title: Text(
+                                      location.description!,
+                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).accentColor)
+                                  ),
+                                  trailing: IconButton(
+                                    onPressed: () async {
+                                      // Generate a new token here
+                                      final sessionToken = Uuid().v4();
+                                      final language = currentUser.idioma;
+                                      final Suggestion? result = await showSearch(
+                                        context: context,
+                                        delegate: AddressSearch(sessionToken, language!),
+                                      );
+                                      // We have a result for our locations search
+                                      if (result != null) {
+                                        Location loc = Location();
+                                        loc.placeId = result.placeId;
+                                        final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(loc.placeId!);
+                                        // Get the information on Strings
+                                        if(placeDetails.street!=null) loc.street = placeDetails.street!;
+                                        if(placeDetails.streetNumber!=null) loc.streetNumber = placeDetails.streetNumber!; else loc.streetNumber="N/A";
+                                        if(placeDetails.city!=null) loc.city = placeDetails.city!;
+                                        if(placeDetails.zipCode!=null) loc.zipCode = placeDetails.zipCode!; else loc.zipCode="N/A";
+                                        //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
+                                        // Build Correct Description
+                                        loc.description = "${loc.street} ${loc.streetNumber}, ${loc.city}, ${loc.zipCode}";
+                                        // Get Latitude/Longitude
+                                        var temp = await gPlace!.details.get(loc.placeId!);
+                                        if (temp != null && temp.result != null && mounted) {
+                                          detailsResult = temp.result;
+                                          loc.latitude = detailsResult!.geometry!.location!.lat!;
+                                          loc.longitude = detailsResult!.geometry!.location!.lng!;
+                                        }
+                                        // Save location to DataBase
+                                        await _accessDatabase.updateLocation(location.id!,widget.brandId, true, loc.placeId!, loc.description!, loc.street!, loc.streetNumber!, loc.city!, loc.zipCode!, loc.latitude!, loc.longitude!);
+                                      }
+                                    },
+                                    icon: Icon(Icons.edit, color: Theme.of(context).accentColor, size: 25,),
+                                  ),
+                                  onTap: () {
 
-                              },
+                                  },
+                                ),
+                                Column(
+                                  children: [
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              AppLocalizations.of(context)!.myLocationsBaseLocationDesc,
+                                              style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                  ],
+                                ),
+                              ],
                             );
                           } else {
                             return ListTile(
@@ -214,8 +245,16 @@ class _MyLocationsState extends State<MyLocations> {
                                   style: Styles.purpleTextStyle.copyWith(fontSize: 16)
                               ),
                               trailing: IconButton(
-                                onPressed: () {
-                                  _accessDatabase.deleteLocation(location.id!);
+                                onPressed: () async {
+                                  var result = await showDialog(
+                                      context: context,
+                                      builder: (_) {
+                                        return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.myLocationsDeleteDescription);
+                                      }
+                                  );
+                                  if (result) {
+                                    _accessDatabase.deleteLocation(location.id!, baseLocationId);
+                                  }
                                 },
                                 icon: Icon(Icons.delete_outline, color: Colors.red, size: 25,),
                               ),

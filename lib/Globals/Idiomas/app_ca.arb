@@ -226,6 +226,7 @@
   "requestFromUser": " quiere unirse como {type}",
   "requestSent": "Enviada el {dateJoined}",
   "myLocations": "Les meves ubicacions",
+  "brandLocations": "Ubicacions {brand}",
   "addLocation": "Afegir ubicació",
   "historial": "Control",
   "notifications": "Notificaciones",
@@ -295,5 +296,8 @@
   "userCreatesBrandUser": "Has creat la teva marca {brand}",
   "userCreatesBrandUserSubtitle": "Ara podràs utilitzar totes les funcionalitats de calendarització, control i gestió que ofereix MAMBA",
   "joinEventTitleNotification": "{user} s'ha unit al event {name}",
-  "joinEventSubtitleNotification": "Aquest es realitzarà el {dia} a les {horas}"
+  "joinEventSubtitleNotification": "Aquest es realitzarà el {dia} a les {horas}",
+  "myLocationsBaseLocationDesc": "Aquesta és l'ubicació que utilitzarem per localitzar la teva marca al mapa perque els clients puguin trobar-te a prop seu.",
+  "myLocationsBaseLocationClientDesc": "Aquesta és la ubicació usada per localitzar la marca al mapa perquè els clients puguin trobar-la al seu voltant.",
+  "myLocationsDeleteDescription": "Segur que vols esborrar aquesta ubicació?\n\nEn cas que aquesta ubicació estigui sent utilitzada en qualsevol event, actualitzarem la ubicació d'aquest a la teva ubicació base."
 }

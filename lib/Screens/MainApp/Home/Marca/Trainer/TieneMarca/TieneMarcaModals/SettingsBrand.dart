@@ -58,213 +58,213 @@ class _SettingsBrandState extends State<SettingsBrand> {
       )
         :
       Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settings, style: Theme.of(context).appBarTheme.titleTextStyle,),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 25,),
-          onPressed: () async {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      AppLocalizations.of(context)!.info,
-                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.rightToLeftWithFade,
-                              child: EditBrandInfo(
-                                locale: Localizations.localeOf(context),
-                              ),
-                            )
-                        );
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(Icons.edit_outlined, color: Theme.of(context).primaryColor),
-                          SizedBox(width: 10),
-                          Text(
-                            AppLocalizations.of(context)!.editBrandInfo,
-                            style: Styles.purpleTextStyle,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.rightToLeftWithFade,
-                              child: EditLogoPage(),
-                            )
-                        );
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(Icons.photo_camera_back, color: Theme.of(context).primaryColor),
-                          SizedBox(width: 10),
-                          Text(
-                            AppLocalizations.of(context)!.editBrandLogo,
-                            style: Styles.purpleTextStyle,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.rightToLeftWithFade,
-                              child: MyLocations(
-                                brandId: currentBrand.id!,
-                              ),
-                            )
-                        );
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor),
-                          SizedBox(width: 10),
-                          Text(
-                            AppLocalizations.of(context)!.myLocations,
-                            style: Styles.purpleTextStyle,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                  ],
-                ),
-                false ? Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      AppLocalizations.of(context)!.personlize,
-                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    TextButton(
-                      onPressed: () {
-
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(Icons.photo_library, color: Theme.of(context).primaryColor),
-                          SizedBox(width: 10),
-                          Text(
-                            AppLocalizations.of(context)!.addBrandPhotos,
-                            style: Styles.purpleTextStyle,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                  ],
-                ) : Container(),
-                currentUser.id != currentBrand.adminID ? TextButton(
-                  onPressed: () async {
-                    // DeleteDialog
-                    var result = await showDialog(
-                        context: context,
-                        builder: (_) {
-                          return ConfirmationDialog(text: AppLocalizations.of(context)!.exitBrandConfirm);
-                        }
-                    );
-                    if (result) {
-                      NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
-                      await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
-                      await _accessDatabase.leaveBrand(currentUser.id!);
-                      Navigator.pushReplacement(
-                          context,
-                          CupertinoPageRoute<Null>(
-                            builder: (context) =>
-                                SplashScreen(),
-                            settings: RouteSettings(
-                                name: 'SplashScreen'),
-                          )
-                      );
-                    }
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.logout, color: Colors.red),
-                      SizedBox(width: 10),
-                      Text(
-                        AppLocalizations.of(context)!.exitBrand,
-                        style: Styles.purpleTextStyle.copyWith(color: Colors.red),
-                      ),
-                    ],
-                  ),
-                ) : TextButton(
-                  onPressed: () async {
-                    var result = await showDialog(
-                        context: context,
-                        builder: (_) {
-                          return DeleteBrandDialog();
-                        }
-                    );
-                    print(result);
-                    if (result) {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      await _accessDatabase.deleteBrand(currentBrand.id!);
-                      Navigator.pushReplacement(
-                          context,
-                          CupertinoPageRoute<Null>(
-                            builder: (context) =>
-                                SplashScreen(),
-                            settings: RouteSettings(
-                                name: 'SplashScreen'),
-                          )
-                      );
-                    }
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.delete_outline, color: Colors.red),
-                      SizedBox(width: 10),
-                      Text(
-                        AppLocalizations.of(context)!.deleteBrand,
-                        style: Styles.purpleTextStyle.copyWith(color: Colors.red),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.settings, style: Theme.of(context).appBarTheme.titleTextStyle,),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, size: 25,),
+            onPressed: () async {
+              Navigator.pop(context);
+            },
           ),
         ),
+        body: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        AppLocalizations.of(context)!.info,
+                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.rightToLeftWithFade,
+                                child: EditBrandInfo(
+                                  locale: Localizations.localeOf(context),
+                                ),
+                              )
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.edit_outlined, color: Theme.of(context).primaryColor),
+                            SizedBox(width: 10),
+                            Text(
+                              AppLocalizations.of(context)!.editBrandInfo,
+                              style: Styles.purpleTextStyle,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.rightToLeftWithFade,
+                                child: EditLogoPage(),
+                              )
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.photo_camera_back, color: Theme.of(context).primaryColor),
+                            SizedBox(width: 10),
+                            Text(
+                              AppLocalizations.of(context)!.editBrandLogo,
+                              style: Styles.purpleTextStyle,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.rightToLeftWithFade,
+                                child: MyLocations(
+                                  brandId: currentBrand.id!,
+                                ),
+                              )
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor),
+                            SizedBox(width: 10),
+                            Text(
+                              AppLocalizations.of(context)!.myLocations,
+                              style: Styles.purpleTextStyle,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                    ],
+                  ),
+                  false ? Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        AppLocalizations.of(context)!.personlize,
+                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                      TextButton(
+                        onPressed: () {
+
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.photo_library, color: Theme.of(context).primaryColor),
+                            SizedBox(width: 10),
+                            Text(
+                              AppLocalizations.of(context)!.addBrandPhotos,
+                              style: Styles.purpleTextStyle,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                    ],
+                  ) : Container(),
+                  currentUser.id != currentBrand.adminID ? TextButton(
+                    onPressed: () async {
+                      // DeleteDialog
+                      var result = await showDialog(
+                          context: context,
+                          builder: (_) {
+                            return ConfirmationDialog(text: AppLocalizations.of(context)!.exitBrandConfirm);
+                          }
+                      );
+                      if (result) {
+                        NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
+                        await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
+                        await _accessDatabase.leaveBrand(currentUser.id!);
+                        Navigator.pushReplacement(
+                            context,
+                            CupertinoPageRoute<Null>(
+                              builder: (context) =>
+                                  SplashScreen(),
+                              settings: RouteSettings(
+                                  name: 'SplashScreen'),
+                            )
+                        );
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.logout, color: Colors.red),
+                        SizedBox(width: 10),
+                        Text(
+                          AppLocalizations.of(context)!.exitBrand,
+                          style: Styles.purpleTextStyle.copyWith(color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ) : TextButton(
+                    onPressed: () async {
+                      var result = await showDialog(
+                          context: context,
+                          builder: (_) {
+                            return DeleteBrandDialog();
+                          }
+                      );
+                      print(result);
+                      if (result) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        await _accessDatabase.deleteBrand(currentBrand.id!);
+                        Navigator.pushReplacement(
+                            context,
+                            CupertinoPageRoute<Null>(
+                              builder: (context) =>
+                                  SplashScreen(),
+                              settings: RouteSettings(
+                                  name: 'SplashScreen'),
+                            )
+                        );
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.delete_outline, color: Colors.red),
+                        SizedBox(width: 10),
+                        Text(
+                          AppLocalizations.of(context)!.deleteBrand,
+                          style: Styles.purpleTextStyle.copyWith(color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
     );
   }
 }

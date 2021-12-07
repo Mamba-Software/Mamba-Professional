@@ -857,7 +857,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                                     });
                                                   },
                                                   icon: Icon(Icons.copy, color: Theme.of(context).accentColor, size: 25,),
-                                                ) : Icon(Icons.edit_location_outlined, color: Theme.of(context).accentColor, size: 30,),
+                                                ) : Icon(Icons.edit_location_outlined, color: Theme.of(context).accentColor, size: 25,),
                                                 onTap: isEditing ? () async {
                                                   setState(() {
                                                     isLoading = true;
@@ -1308,8 +1308,11 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                       SizedBox(width: MediaQuery.of(context).size.width*0.01,),
                       FloatingActionButton.extended(
                         heroTag: "75",
-                        icon: Icon(Icons.cancel_outlined, size: 30,),
-                        label: Text(AppLocalizations.of(context)!.close),
+                        icon: SizedBox(width: MediaQuery.of(context).size.width*0.001,),
+                        label: Padding(
+                          padding: EdgeInsets.only(right:MediaQuery.of(context).size.width*0.011,),
+                          child: Icon(Icons.cancel_outlined, size: 35,),
+                        ),
                         backgroundColor: Theme.of(context).primaryColor,
                         foregroundColor: Styles.white,
                         onPressed: () async {

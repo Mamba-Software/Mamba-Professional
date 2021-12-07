@@ -66,6 +66,7 @@ class DatabaseAccess {
   Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.addEvent(brandID, title, description, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);
 
   Future<void> updateEvent(String id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.updateEvent(id, title, description, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);
+  Future<void> updateEventLocation(String eventId, String locationId) => _firebase.updateEventLocation(eventId, locationId);
   Future<void> updateEventCompleted(String id) => _firebase.updateEventCompleted(id);
 
   Future<void> deleteEvent(String id) => _firebase.deleteEvent(id);
@@ -76,6 +77,7 @@ class DatabaseAccess {
   Future<bool> leaveEvent(String eid, String uid, bool isTrainer) => _firebase.leaveEvent(eid, uid, isTrainer);
 
   Future<Event> getSingleEvent(String eventId) => _firebase.getSingleEvent(eventId);
+  Future<List<Event>> getAllEventsWithLocationId(String locationId) => _firebase.getAllEventsWithLocationId(locationId);
 
   Future<List<Event>> getAllEventsFromClient(String clientid) => _firebase.getAllEventsFromClient(clientid);
   Future<List<Event>> getAllEventsFromTrainer(String trainerid) => _firebase.getAllEventsFromTrainer(trainerid);
@@ -92,7 +94,7 @@ class DatabaseAccess {
   // Locations
   Future<String> addLocation(String brandId, bool isBaseLocation, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) => _firebase.addLocation(brandId, isBaseLocation, placeId, description, street, streetNumber, city, zipCode, latitude, longitude);
   Future<void> updateLocation(String locationId, String brandId, bool isBaseLocation, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) => _firebase.updateLocation(locationId, brandId, isBaseLocation, placeId, description, street, streetNumber, city, zipCode, latitude, longitude);
-  Future<bool> deleteLocation(String locationId) => _firebase.deleteLocation(locationId);
+  Future<bool> deleteLocation(String locationId, String baseLocation) => _firebase.deleteLocation(locationId, baseLocation);
   Future<void> deleteBrandLocations(String brandId) => _firebase.deleteBrandLocations(brandId);
   Future<Location> getSingleLocation(String locationId) => _firebase.getSingleLocation(locationId);
 

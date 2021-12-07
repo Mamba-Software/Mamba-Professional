@@ -71,7 +71,7 @@ class _BrandLocationsState extends State<BrandLocations> {
       body:  isLoading ?
       Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.myLocations, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+          title: Text(AppLocalizations.of(context)!.brandLocations(currentBrand.name!), style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
           centerTitle: true,
           iconTheme: IconThemeData(
             color: Styles.accent, //change your color here
@@ -82,7 +82,7 @@ class _BrandLocationsState extends State<BrandLocations> {
           :
       Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.locations, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+          title: Text(AppLocalizations.of(context)!.brandLocations(currentBrand.name!), style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
           centerTitle: true,
         ),
         body: Column(
@@ -108,32 +108,58 @@ class _BrandLocationsState extends State<BrandLocations> {
                         itemBuilder: (context, index) {
                           Location location = locationList[index];
                           if (location.isBaseLocation!) {
-                            return ListTile(
-                              leading: Icon(Icons.home_filled, color: Theme.of(context).accentColor, size: 25,),
-                              title: Text(
-                                  location.description!,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).accentColor)
-                              ),
-                              trailing: IconButton(
-                                onPressed: () async {
-                                  Clipboard.setData(new ClipboardData(text: currentBrand.id)).then((_){
-                                    showTopSnackBar(
-                                      context,
-                                      CustomSnackBar.info(
-                                        icon: Container(),
-                                        iconRotationAngle: 0,
-                                        backgroundColor: Theme.of(context).accentColor,
-                                        message: AppLocalizations.of(context)!.copyCorrectLocation,
-                                        textStyle: Styles.whiteTextStyle,
-                                      ),
-                                    );
-                                  });
-                                },
-                                icon: Icon(Icons.copy, color: Theme.of(context).accentColor, size: 25,),
-                              ),
-                              onTap: () {
+                            return Column(
+                              children: [
+                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                ListTile(
+                                  leading: Icon(Icons.home_filled, color: Theme.of(context).accentColor, size: 25,),
+                                  title: Text(
+                                      location.description!,
+                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).accentColor)
+                                  ),
+                                  trailing: IconButton(
+                                    onPressed: () async {
+                                      Clipboard.setData(new ClipboardData(text: location.description!)).then((_){
+                                        showTopSnackBar(
+                                          context,
+                                          CustomSnackBar.info(
+                                            icon: Container(),
+                                            iconRotationAngle: 0,
+                                            backgroundColor: Theme.of(context).accentColor,
+                                            message: AppLocalizations.of(context)!.copyCorrectLocation,
+                                            textStyle: Styles.whiteTextStyle,
+                                          ),
+                                        );
+                                      });
+                                    },
+                                    icon: Icon(Icons.copy, color: Theme.of(context).accentColor, size: 25,),
+                                  ),
+                                  onTap: () {
 
-                              },
+                                  },
+                                ),
+                                Column(
+                                  children: [
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              AppLocalizations.of(context)!.myLocationsBaseLocationClientDesc,
+                                              style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                  ],
+                                ),
+                              ],
                             );
                           } else {
                             return ListTile(
@@ -144,7 +170,7 @@ class _BrandLocationsState extends State<BrandLocations> {
                               ),
                               trailing: IconButton(
                                 onPressed: () async {
-                                  Clipboard.setData(new ClipboardData(text: currentBrand.id)).then((_){
+                                  Clipboard.setData(new ClipboardData(text: location.description!)).then((_){
                                     showTopSnackBar(
                                       context,
                                       CustomSnackBar.info(

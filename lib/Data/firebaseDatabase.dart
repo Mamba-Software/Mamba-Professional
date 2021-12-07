@@ -501,6 +501,20 @@ class FirebaseDatabaseService {
   }
 
   // Get All Events for Client
+  Future<List<Event>> getAllEventsWithLocationId(String locationId) async {
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Events")
+        .where("locationId", isEqualTo: locationId)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(
+          Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return events;
+  }
+
+  // Get All Events for Client
   Future<List<Event>> getAllEventsFromClient(String clientid) async {
     List<Event> events = [];
     QuerySnapshot querySnapshot = await _firestore
@@ -845,6 +859,16 @@ class FirebaseDatabaseService {
       print(e.toString());
     }
   }
+  // Update Event Location
+  Future<void> updateEventLocation(String eventId, String locationId) async {
+    try {
+      await _firestore.collection("Events").doc(eventId).update({
+        "locationId": locationId,
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   // Update Event Is Completed
   Future<void> updateEventCompleted(String id) async {
@@ -924,8 +948,15 @@ class FirebaseDatabaseService {
   }
 
   // Delete Location
-  Future<bool> deleteLocation(String locationId) async {
+  Future<bool> deleteLocation(String locationId, String? baseLocation) async {
     try {
+      if (baseLocation != null) {
+        List<Event> events = await  this.getAllEventsWithLocationId(locationId);
+        for (int i = 0; i < events.length; i++) {
+          Event event = events[i];
+          await this.updateEventLocation(event.id!, baseLocation);
+        }
+      }
       await _firestore.collection("Locations").doc(locationId).delete();
       return true;
     } catch (e) {
@@ -943,7 +974,7 @@ class FirebaseDatabaseService {
             .where("brandID", isEqualTo: brandId)
             .get();
         for (int i = 0; i < querySnapshot.docs.length; i++) {
-          await this.deleteLocation(querySnapshot.docs[i].id);
+          await this.deleteLocation(querySnapshot.docs[i].id, null);
         }
       } catch (e) {
         print(e.toString());
