@@ -51,7 +51,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
   TimeOfDay _breakEndTime = TimeOfDay(hour: 14, minute: 00);
   List<TimeOfDay> _breakList = [];
   List<int> removedIndex = [];
-  int breakLimit = 6;
+  int breakLimit = 2;
   bool errorBreakTime = false;
   List<int> startBreaks = [];
 
@@ -365,7 +365,8 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -378,7 +379,6 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                       ),
                     ],
                   ),
-
                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   Text(
                     AppLocalizations.of(context)!.description,
@@ -403,7 +403,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -458,7 +458,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                     AppLocalizations.of(context)!.maxNumberClientsError,
                     style: Styles.redTextStyle.copyWith(fontSize: 12),
                   ) : new Container(),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -489,7 +489,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                           padding: EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
-                            border: Border.all(color: Styles.accent, width: 1.0),
+                            border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
                             color: Colors.transparent,
                           ),
                           child: Text(
@@ -507,7 +507,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                           padding: EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
-                            border: Border.all(color: Styles.accent, width: 1.0),
+                            border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
                             color: Colors.transparent,
                           ),
                           child: Text(
@@ -526,14 +526,14 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                       textAlign: TextAlign.center,
                     ),
                   ) : new Container(),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Text(
-                          AppLocalizations.of(context)!.createBrandWorkshiftDescription,
+                          AppLocalizations.of(context)!.createBrandBreakDescription,
                           style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
                           textAlign: TextAlign.left,
                         ),
@@ -556,37 +556,37 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             TextButton(
-                              onPressed: () async {
+                              onPressed: _breakList.length < breakLimit ? () {
                                 selectSlot(context, 4, true);
-                              },
+                              } : null,
                               child: Container(
                                 padding: EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.all(Radius.circular(5)),
-                                  border: Border.all(color: Styles.accent, width: 1.0),
+                                  border: Border.all(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey, width: 1.0),
                                   color: Colors.transparent,
                                 ),
                                 child: Text(
                                   breakStartTimeController.text,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 25),
+                                  style: Styles.purpleTextStyle.copyWith(fontSize: 25, color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
                                 ),
                               ),
                             ),
-                            Text("-", style: Styles.purpleTextStyle.copyWith(fontSize: 30),),
+                            Text("-", style: Styles.purpleTextStyle.copyWith(fontSize: 30, color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),),
                             TextButton(
-                              onPressed: () async {
-                                selectSlot(context, 4, false);
-                              },
+                              onPressed: _breakList.length < breakLimit ? () {
+                                selectSlot(context, 4, true);
+                              } : null,
                               child: Container(
                                 padding: EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.all(Radius.circular(5)),
-                                  border: Border.all(color: Styles.accent, width: 1.0),
+                                  border: Border.all(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey, width: 1.0),
                                   color: Colors.transparent,
                                 ),
                                 child: Text(
                                   breakEndTimeController.text,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 25),
+                                  style: Styles.purpleTextStyle.copyWith(fontSize: 25, color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
                                 ),
                               ),
                             ),
