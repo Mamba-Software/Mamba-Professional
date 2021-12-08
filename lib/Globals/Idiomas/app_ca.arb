@@ -302,4 +302,6 @@
   "myLocationsBaseLocationDesc": "Aquesta és l'ubicació que utilitzarem per localitzar la teva marca al mapa perque els clients puguin trobar-te a prop seu.",
   "myLocationsBaseLocationClientDesc": "Aquesta és la ubicació usada per localitzar la marca al mapa perquè els clients puguin trobar-la al seu voltant.",
   "myLocationsDeleteDescription": "Segur que vols esborrar aquesta ubicació?\n\nEn cas que aquesta ubicació estigui sent utilitzada en qualsevol event, actualitzarem la ubicació d'aquest a la teva ubicació base."
+  "writeMessage": "Escriu un missatge",
+  "membersOfBrand": "Grup amb tots els membres de la marca"
 }

@@ -1330,5 +1330,25 @@
   "myLocationsDeleteDescription": "¿Estás seguro que quieres borrar esta ubicación?\n\nEn caso que esta ubicación este siendo usada en cualquier evento, actualizaremos la ubicación de este a tu ubicación base.",
   "@myLocationsOtherLocationsDesc": {
     "description": "Wellcome message"
+  "joinEventSubtitleNotification": "Este se realizará el {dia} a las {horas}",
+  "@joinEventSubtitleNotification": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "dia": {
+        "type": "String"
+      },
+      "horas": {
+        "type": "String"
+      }
+    }
+  },
+  "writeMessage": "Escribe un mensaje",
+  "@writeMessage": {
+    "description": "writeMessage message"
+  },
+
+  "membersOfBrand": "Grupo con todos los miembros de la marca",
+  "@membersOfBrand": {
+    "description": "membersOfBrand message"
   }
 }

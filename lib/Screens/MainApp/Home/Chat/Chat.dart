@@ -15,39 +15,10 @@ class UserChat extends StatefulWidget {
 }
 
 class _UserChatState extends State<UserChat> {
+
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: Row(
-          children: [
-            SizedBox(width: MediaQuery.of(context).size.width*0.01,),
-            Text(AppLocalizations.of(context)!.chatBottomNav, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
-          ],
-        ),
-        centerTitle: false,
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              size: 25,
-              color: Styles.accent,
-            ),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  PageTransition(
-                      type: PageTransitionType.bottomToTop,
-                      child: TodosMiembrosTrainer()
-                  )
-              );
-            },
-          ),
-          SizedBox(width: MediaQuery.of(context).size.width*0.03,),
-        ]
-      ),
-      body: ChatPage(),
-    );
+    return ChatPage();
   }
 }
