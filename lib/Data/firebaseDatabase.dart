@@ -1085,6 +1085,8 @@ class FirebaseDatabaseService {
     await _firestore.collection("Users").doc(request.userId).update({
       "brandID": request.brandId,
     });
+    // Delete the Request
+    await _firestore.collection("Requests").doc(requestId).delete();
 
     QuerySnapshot querySnapshot = await _firestore
         .collection("Conversations")
@@ -1105,8 +1107,7 @@ class FirebaseDatabaseService {
     await _firestore.collection("Conversations").doc(conversation.conversationId).update({
       "users": conversation.users,
     });
-    // Delete the Request
-    await _firestore.collection("Requests").doc(requestId).delete();
+
   }
 
   // Delete Request

@@ -170,24 +170,29 @@ class _PerfilClientState extends State<PerfilClient> {
           child: Container(
             height: MediaQuery.of(context).size.height*0.03,
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width*0.25,
+              maxWidth: MediaQuery.of(context).size.width*0.30,
             ),
             decoration: BoxDecoration(
                 color: Colors.red, borderRadius: BorderRadius.circular(10)
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: Text(AppLocalizations.of(context)!.toDo,
-                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
-                ),
-                Icon(
-                  Icons.update_outlined,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ],
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: Text(AppLocalizations.of(context)!.toDo,
+                        style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.01,),
+                  Icon(
+                    Icons.update_outlined,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -203,24 +208,29 @@ class _PerfilClientState extends State<PerfilClient> {
           child: Container(
             height: MediaQuery.of(context).size.height*0.03,
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width*0.25,
+              maxWidth: MediaQuery.of(context).size.width*0.30,
             ),
             decoration: BoxDecoration(
                 color: Theme.of(context).accentColor, borderRadius: BorderRadius.circular(10)
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: Text(AppLocalizations.of(context)!.doing,
-                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
-                ),
-                Icon(
-                  Icons.hourglass_top_outlined,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ],
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Flexible(
+                    child: Text(AppLocalizations.of(context)!.doing,
+                        style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.01,),
+                  Icon(
+                    Icons.hourglass_top_outlined,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -235,21 +245,28 @@ class _PerfilClientState extends State<PerfilClient> {
           ),
           child: Container(
             height: MediaQuery.of(context).size.height*0.03,
-            width: MediaQuery.of(context).size.width*0.25,
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width*0.30,
+            ),
             decoration: BoxDecoration(
                 color: Colors.green, borderRadius: BorderRadius.circular(10)
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(AppLocalizations.of(context)!.finished,
-                    style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
-                Icon(
-                  Icons.done_outline_outlined,
-                  color: Colors.white,
-                  size: 15,
-                ),
-              ],
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(AppLocalizations.of(context)!.finished,
+                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.01,),
+                  Icon(
+                    Icons.done_outline_outlined,
+                    color: Colors.white,
+                    size: 15,
+                  ),
+                ],
+              ),
             ),
           ),
         );
