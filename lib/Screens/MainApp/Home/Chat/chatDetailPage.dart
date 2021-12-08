@@ -214,6 +214,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     conversations = await this
         ._accessDatabase
         .getConversationByUsers(toMap(currentUser.id), toMap(widget.user.id));
+
     if (conversations.length == 0 ||
         (conversations.length == 1 && conversations[0].brandId != "null")) {
       conversationId = '';
@@ -229,7 +230,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         }
       } else {
         conversationId = conversations[1].conversationId;
-
         for (int i = 0; i < conversations[1].isMessageRead.length; ++i) {
           if (conversations[1].isMessageRead[i]['uid'] == currentUser.id) {
             conversations[1].isMessageRead[i]['isMessageRead'] = false;

@@ -1111,21 +1111,22 @@ class FirebaseDatabaseService {
     DocumentSnapshot<Map<String, dynamic>> _docu =
     await _firestore.collection("Users").doc(request.userId).get();
     Usuario user = Usuario.fromMap(_docu.data()!, _docu.id);
-    print(conversation.users);
     conversation.users.add({
       'uid': user.id,
     });
 
-    List<Map> userMessagesRead = [];
+    //List<Map> userMessagesRead = [];
 
-    if(conversation.isMessageRead is Map) userMessagesRead.add(conversation.isMessageRead);
-    else userMessagesRead = conversation.isMessageRead;
+    /*for(int i = 0; i < conversation.isMessageRead.length; ++i) {
+      userMessagesRead.add(conversation.isMessageRead[i]);
+    }*/
+    //if(conversation.isMessageRead is Map) userMessagesRead.add(conversation.isMessageRead);
+    //else userMessagesRead = conversation.isMessageRead;
 
-    userMessagesRead.add(toMapisMessageRead(user.id, true));
+   // userMessagesRead.add(toMapisMessageRead(user.id, true));
 
     await _firestore.collection("Conversations").doc(conversation.conversationId).update({
       "users": conversation.users,
-      "messagesRead": userMessagesRead,
     });
 
   }
@@ -1431,17 +1432,17 @@ class FirebaseDatabaseService {
     QuerySnapshot querySnapshot = await _firestore
         .collection("Messages")
         .where("conversationId", isEqualTo: conversationId)
-        .orderBy("year", descending: true)
-        .orderBy("month", descending: true)
-        .orderBy("day", descending: true)
-        .orderBy("hour", descending: true)
-        .orderBy("minute", descending: true)
-        .orderBy("second", descending: true)
+        .orderBy("year", descending: false)
+        .orderBy("month", descending: false)
+        .orderBy("day", descending: false)
+        .orderBy("hour", descending: false)
+        .orderBy("minute", descending: false)
+        .orderBy("second", descending: false)
         .get();
 
     if(querySnapshot.docs.length == 0) return '';
     else return Message.fromObject(
-        querySnapshot.docs[0], querySnapshot.docs[0].id).userSent;
+        querySnapshot.docs[querySnapshot.docs.length-1], querySnapshot.docs[querySnapshot.docs.length-1].id).userSent;
   }
 
 
@@ -1456,13 +1457,14 @@ class FirebaseDatabaseService {
         .collection("Conversations")
         .where("users", arrayContains: user)
         .get();
+
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       for (int j = 0; j < querySnapshot2.docs.length; j++) {
         if (querySnapshot.docs[i].id == querySnapshot2.docs[j].id) {
           conversations.add(Conversation.fromObject(
               querySnapshot.docs[i], querySnapshot.docs[i].id));
-          i = querySnapshot.docs.length;
-          j = querySnapshot2.docs.length;
+         // i = querySnapshot.docs.length;
+          //j = querySnapshot2.docs.length;
         }
       }
     }
