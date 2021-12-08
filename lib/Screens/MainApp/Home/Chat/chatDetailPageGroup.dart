@@ -14,6 +14,7 @@ import 'package:mamba_castelldefels/Models/ChatMessage.dart';
 import 'package:mamba_castelldefels/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Models/Message.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChatDetailPageGroup extends StatefulWidget {
   final Brand brand;
@@ -47,11 +48,22 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
 
   List<Conversation> conversations = [];
 
-  Map<String, dynamic> toMap(String? id, String? name, String? imageURL) {
+  List<MaterialColor> userColors = [Colors.red, Colors.blue, Colors.orange,Colors.green, Colors.brown, Colors.deepOrange, Colors.pink, Colors.yellow, Colors.cyan, Colors.lightGreen, Colors.blueGrey];
+
+  int itColors = 0;
+
+  Map<String, MaterialColor> mapUserColors = new Map();
+
+  Map<String, dynamic> toMap(String? id) {
     return {
       'uid': id,
-      'name': name,
-      'image': imageURL,
+    };
+  }
+
+  Map<String, dynamic> toMapisMessageRead(String? id, bool? isMessageRead) {
+    return {
+      'uid': id,
+      'isMessageRead': isMessageRead,
     };
   }
 
@@ -67,6 +79,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
   }
 
   Column messageTextNotNewData(var index, String timeHour) {
+    MaterialColor matCol;
     if(userSent == "sender") {
       return Column(
         children: [
@@ -161,6 +174,12 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
         ],
       );
     }
+    if(!mapUserColors.containsKey(userSent)) {
+      mapUserColors.addAll({userSent! : userColors[itColors]});
+      userColors.add(userColors[itColors]);
+      ++itColors;
+    }
+    matCol = mapUserColors[userSent]!;
     return Column(
       children: [
         Container(
@@ -193,7 +212,17 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                     ? Styles.mainColor
                     : Colors.grey.shade200),
               ),
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.symmetric(
+                  horizontal:
+                  MediaQuery.of(context)
+                      .size
+                      .width *
+                      0.03,
+                  vertical:
+                  MediaQuery.of(context)
+                      .size
+                      .height *
+                      0.02),
               child: Column(
                 crossAxisAlignment:
                 CrossAxisAlignment.start,
@@ -202,7 +231,9 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                     userSent!,
                     style: TextStyle(
                         fontSize: 15,
-                      fontWeight: FontWeight.bold,),
+                      fontWeight: FontWeight.bold,
+                      color: matCol.shade200,
+                      ),
                   ),
                   Row(
                     mainAxisAlignment:
@@ -247,17 +278,13 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
             ),
           ),
         ),
-        if (index == messages.length - 1)
-          SizedBox(
-              height: MediaQuery.of(context)
-                  .size
-                  .height *
-                  0.08),
       ],
     );
   }
 
   Column messageTextNewData(var index, String timeHour, String timeDay) {
+    MaterialColor matCol;
+
     if(userSent == "sender") {
       return Column(
         children: [
@@ -295,7 +322,17 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                       ? Styles.mainColor
                       : Colors.grey.shade200),
                 ),
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.symmetric(
+                    horizontal:
+                    MediaQuery.of(context)
+                        .size
+                        .width *
+                        0.03,
+                    vertical:
+                    MediaQuery.of(context)
+                        .size
+                        .height *
+                        0.02),
                 child: Column(
                   crossAxisAlignment:
                   CrossAxisAlignment.end,
@@ -343,15 +380,17 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
               ),
             ),
           ),
-          if (index == messages.length - 1)
-            SizedBox(
-                height: MediaQuery.of(context)
-                    .size
-                    .height *
-                    0.08),
         ],
       );
     }
+
+    if(!mapUserColors.containsKey(userSent)) {
+      mapUserColors.addAll({userSent! : userColors[itColors]});
+      userColors.add(userColors[itColors]);
+      ++itColors;
+    }
+    matCol = mapUserColors[userSent]!;
+
     return Column(
       children: [
         Text(
@@ -388,7 +427,17 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                     ? Styles.mainColor
                     : Colors.grey.shade200),
               ),
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.symmetric(
+                  horizontal:
+                  MediaQuery.of(context)
+                      .size
+                      .width *
+                      0.03,
+                  vertical:
+                  MediaQuery.of(context)
+                      .size
+                      .height *
+                      0.02),
               child: Column(
                 crossAxisAlignment:
                 CrossAxisAlignment.start,
@@ -397,7 +446,9 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                     userSent!,
                     style: TextStyle(
                         fontSize: 15,
-                    fontWeight: FontWeight.bold,),
+                    fontWeight: FontWeight.bold,
+                      color: matCol.shade200,
+                      ),
                   ),
                   Row(
                     mainAxisAlignment:
@@ -442,12 +493,6 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
             ),
           ),
         ),
-        if (index == messages.length - 1)
-          SizedBox(
-              height: MediaQuery.of(context)
-                  .size
-                  .height *
-                  0.08),
       ],
     );
   }
@@ -488,6 +533,13 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
         await _accessDatabase.getConversationMessagesInit(conversationId);
     messages = await initMessages(notChatMessages);
 
+    for(int i = 0; i < conv.isMessageRead.length; ++i) {
+      if(conv.isMessageRead[i]['uid'] == currentUser.id) {
+        conv.isMessageRead[i]['isMessageRead'] = false;
+        await _accessDatabase.updateReadMessage(conversationId, conv.isMessageRead);
+      }
+    }
+
     setState(() {
       isLoading = false;
     });
@@ -520,9 +572,22 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.03,
                   ),
-                  Text(
-                    currentBrand.name!,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        currentBrand.name!,
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                        textAlign: TextAlign.left,
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.005,
+                      ),
+                      Text(
+                        AppLocalizations.of(context)!.membersOfBrand,
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -555,6 +620,10 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                               itemBuilder: (context, index) {
                                 String timeHour = getTimeHour(index);
                                 String timeDay = getTimeDay(index);
+                                if(index + 1 == messages.length) timeDayGolbal = '';
+                                else {
+                                  timeDayGolbal = getTimeDay(index + 1);
+                                }
                                 if (timeDay != timeDayGolbal) {
                                   timeDayGolbal = timeDay;
                                   return FutureBuilder<String?>(
@@ -585,7 +654,6 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                             );
                           }
                           else {
-                            timeDayGolbal = '';
                             return ListView.builder(
                               controller: scrollController,
                               reverse: true,
@@ -601,6 +669,10 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                               itemBuilder: (context, index) {
                                 String timeHour = getTimeHour(index);
                                 String timeDay = getTimeDay(index);
+                                if(index + 1 == messages.length) timeDayGolbal = '';
+                                else {
+                                  timeDayGolbal = getTimeDay(index + 1);
+                                }
                                 if (timeDay != timeDayGolbal) {
                                   timeDayGolbal = timeDay;
                                   return FutureBuilder<String?>(
@@ -647,9 +719,11 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                         ),
                         Expanded(
                           child: TextField(
+                            minLines: 1,
+                            maxLines: 10,
                             controller: editingController,
                             decoration: InputDecoration(
-                                hintText: "Write message...",
+                                hintText: AppLocalizations.of(context)!.writeMessage,
                                 hintStyle: TextStyle(color: Colors.black54),
                                 border: InputBorder.none),
                           ),
@@ -677,8 +751,38 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                               second = today.second.toString();
 
                             if (editingController.text != '') {
+
+                              List<Map> userMessagesRead = [];
+                              //userMessagesRead.add(toMapisMessageRead(currentUser.id, false));
+
+                              List<Usuario> users = await _accessDatabase.getAllTrainersFromBrand(widget.brand.id!);
+
+                              for(int i = 0; i < users.length; ++i) {
+                                if(users[i].id == currentUser.id) {
+                                  userMessagesRead.add(toMapisMessageRead(
+                                      users[i].id, false));
+                                }
+                                else {
+                                  userMessagesRead.add(toMapisMessageRead(
+                                      users[i].id, true));
+                                }
+                              }
+
+                              users = await _accessDatabase.getAllClientsFromBrand(widget.brand.id!);
+                              for(int i = 0; i < users.length; ++i) {
+                                if(users[i].id == currentUser.id) {
+                                  userMessagesRead.add(toMapisMessageRead(
+                                      users[i].id, false));
+                                }
+                                else {
+                                  userMessagesRead.add(toMapisMessageRead(
+                                      users[i].id, true));
+                                }
+                              }
+
                               await _accessDatabase.updateConversation(
                                 conversationId,
+                                userMessagesRead,
                                 editingController.text,
                                 today.year.toString(),
                                 today.month.toString(),

@@ -14,9 +14,10 @@ class Conversation {
   String? minute;
   String? second;
   String? lastMessage;
+  var isMessageRead;
 
   Conversation(
-      { this.users, required this.year, required this.month, required this.day, required this.hour, required this.minute, required this.second});
+      { this.users, required this.year, required this.month, required this.day, required this.hour, required this.minute, required this.second, this.isMessageRead});
 
 
   Conversation.fromMap(Map<String, dynamic> mapData, String documentId) {
@@ -30,6 +31,7 @@ class Conversation {
     this.lastMessage = mapData['lastMessage'].toString();
     this.brandId = mapData['brandId'].toString();
     this.second = mapData['second'].toString();
+    this.isMessageRead = mapData['messagesRead'];
   }
 
   Conversation.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
@@ -43,6 +45,7 @@ class Conversation {
     this.lastMessage = documentSnapshot.get("lastMessage").toString();
     this.brandId = documentSnapshot.get("brandId").toString();
     this.second = documentSnapshot.get("second").toString();
+    this.isMessageRead = documentSnapshot.get("messagesRead");
   }
 
 

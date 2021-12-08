@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
@@ -18,7 +19,8 @@ class ConversationList extends StatefulWidget{
   bool isMessageRead;
   bool isGroup;
   String userId;
-  ConversationList({required this.name,required this.messageText,required this.imageUrl,required this.time,required this.isMessageRead, required this.userId, required this.isGroup});
+  IconData? iconData;
+  ConversationList({required this.name,required this.messageText,required this.imageUrl,required this.time,required this.isMessageRead, required this.userId, required this.isGroup, this.iconData});
   @override
   _ConversationListState createState() => _ConversationListState();
 }
@@ -57,32 +59,52 @@ class _ConversationListState extends State<ConversationList> {
         }
       },
       child: Container(
-        padding: EdgeInsets.only(left: 16,right: 16,top: 10,bottom: 10),
+        padding: EdgeInsets.symmetric(
+            horizontal:
+            MediaQuery.of(context)
+                .size
+                .width *
+                0.04,
+            vertical:
+            MediaQuery.of(context)
+                .size
+                .height *
+                0.01),
         child: Row(
           children: <Widget>[
             Expanded(
               child: Row(
                 children: <Widget>[
                   CircularImage(
-                    size: MediaQuery.of(context).size.width*0.2,
+                    size: MediaQuery.of(context).size.width*0.15,
                     image: widget.imageUrl,
                     color: Theme.of(context).primaryColor,
                     borderWidth: 1.5,
                   ),
-                 /* CircleAvatar(
-                    backgroundImage: NetworkImage(widget.imageUrl),
-                    maxRadius: 30,
-                  ),*/
-                  SizedBox(width: 16,),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03,),
                   Expanded(
                     child: Container(
                       color: Colors.transparent,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(widget.name, style: TextStyle(fontSize: 16),),
-                          SizedBox(height: 6,),
-                          Text(widget.messageText,style: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),),
+                          Text(widget.name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.005,),
+                            TextField(
+                              enabled: false,
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),
+                                hintText: widget.messageText,
+                                contentPadding: EdgeInsets.all(0),
+                                isDense: true,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                              ),
+                            ),
+
+                         // Text(widget.messageText,style: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),),
                         ],
                       ),
                     ),
@@ -90,6 +112,13 @@ class _ConversationListState extends State<ConversationList> {
                 ],
               ),
             ),
+            SizedBox(width: MediaQuery.of(context).size.width*0.04,),
+            Icon(
+              widget.iconData,
+              color: widget.iconData == Icons.groups ? Theme.of(context).accentColor : Theme.of(context).primaryColor,
+              size: widget.iconData == Icons.groups ? 25 : 20,
+            ),
+            SizedBox(width: MediaQuery.of(context).size.width*0.04,),
             Text(widget.time,style: TextStyle(fontSize: 12,fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),),
           ],
         ),

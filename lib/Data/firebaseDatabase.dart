@@ -25,6 +25,13 @@ class FirebaseDatabaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
+  Map<String, dynamic> toMapisMessageRead(String? id, bool? isMessageRead) {
+    return {
+      'uid': id,
+      'isMessageRead': isMessageRead,
+    };
+  }
+
   // Authentication Services
   Future<int> signIn(String email, String password) async {
     bool error = false;
@@ -290,10 +297,11 @@ class FirebaseDatabaseService {
     });
   }
 
-  Future<void> updateConversation(String? uid, String lastMessage, String year,
+  Future<void> updateConversation(String? uid, var messagesRead, String lastMessage, String year,
       String month, String day, String hour, String minute, String second) async {
     await _firestore.collection("Conversations").doc(uid).update({
       "lastMessage": lastMessage,
+      "messagesRead": messagesRead,
       "year": year,
       "month": month,
       "day": day,
@@ -303,6 +311,11 @@ class FirebaseDatabaseService {
     });
   }
 
+  Future<void> updateReadMessage(String? uid, var messagesRead) async {
+    await _firestore.collection("Conversations").doc(uid).update({
+      "messagesRead": messagesRead,
+    });
+  }
   // Brand Model Services
 
   // Add Brand
@@ -1003,14 +1016,20 @@ class FirebaseDatabaseService {
     DocumentSnapshot<Map<String, dynamic>> _docu =
     await _firestore.collection("Users").doc(request.userId).get();
     Usuario user = Usuario.fromMap(_docu.data()!, _docu.id);
+    print(conversation.users);
     conversation.users.add({
       'uid': user.id,
-      'name': user.name,
-      'image': user.imageUrl,
     });
+
+    List<Map> userMessagesRead = [];
+
+    userMessagesRead.add(conversation.isMessageRead);
+    userMessagesRead.add(toMapisMessageRead(user.id, true));
+
 
     await _firestore.collection("Conversations").doc(conversation.conversationId).update({
       "users": conversation.users,
+      "messagesRead": userMessagesRead,
     });
     // Delete the Request
     await _firestore.collection("Requests").doc(requestId).delete();
@@ -1229,6 +1248,7 @@ class FirebaseDatabaseService {
 
   Future<String> addConversation(
       var users,
+      var messagesRead,
       String? brandId,
       String? year,
       String? month,
@@ -1242,6 +1262,7 @@ class FirebaseDatabaseService {
     try {
       await _firestore.collection("Conversations").doc(uid).set({
         "users": users,
+        "messagesRead": messagesRead,
         "brandId": brandId,
         "year": year,
         "month": month,
@@ -1295,12 +1316,12 @@ class FirebaseDatabaseService {
     QuerySnapshot querySnapshot = await _firestore
         .collection("Messages")
         .where("conversationId", isEqualTo: conversationId)
-        .orderBy("year", descending: false)
-        .orderBy("month", descending: false)
-        .orderBy("day", descending: false)
-        .orderBy("hour", descending: false)
-        .orderBy("minute", descending: false)
-        .orderBy("second", descending: false)
+        .orderBy("year", descending: true)
+        .orderBy("month", descending: true)
+        .orderBy("day", descending: true)
+        .orderBy("hour", descending: true)
+        .orderBy("minute", descending: true)
+        .orderBy("second", descending: true)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       messages.add(Message.fromObject(
@@ -1309,6 +1330,25 @@ class FirebaseDatabaseService {
 
     return messages;
   }
+
+  Future<String?> getLastUserMessageSent(String? conversationId) async {
+    List<Message> messages = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Messages")
+        .where("conversationId", isEqualTo: conversationId)
+        .orderBy("year", descending: true)
+        .orderBy("month", descending: true)
+        .orderBy("day", descending: true)
+        .orderBy("hour", descending: true)
+        .orderBy("minute", descending: true)
+        .orderBy("second", descending: true)
+        .get();
+
+    if(querySnapshot.docs.length == 0) return '';
+    else return Message.fromObject(
+        querySnapshot.docs[0], querySnapshot.docs[0].id).userSent;
+  }
+
 
   Future<List<Conversation>> getConversationByUsers(
       Map<String, dynamic> currentUser, Map<String, dynamic> user) async {

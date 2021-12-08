@@ -1313,5 +1313,14 @@
         "type": "String"
       }
     }
+  },
+  "writeMessage": "Escribe un mensaje",
+  "@writeMessage": {
+    "description": "writeMessage message"
+  },
+
+  "membersOfBrand": "Grupo con todos los miembros de la marca",
+  "@membersOfBrand": {
+    "description": "membersOfBrand message"
   }
 }

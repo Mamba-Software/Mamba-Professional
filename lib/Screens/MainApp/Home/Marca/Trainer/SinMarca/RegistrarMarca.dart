@@ -89,11 +89,16 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
   int breakLimit = 2;
   bool errorBreakTime = false;
 
-  Map<String, dynamic> toMap(String? id, String? name, String? imageURL) {
+  Map<String, dynamic> toMap(String? id) {
     return {
       'uid': id,
-      'name': name,
-      'image': imageURL,
+    };
+  }
+
+  Map<String, dynamic> toMapisMessageRead(String? id, bool? isMessageRead) {
+    return {
+      'uid': id,
+      'isMessageRead': isMessageRead,
     };
   }
 
@@ -1154,16 +1159,32 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                           });
                           DateTime today = DateTime.now();
                           List<Map> chatUsers = [];
-                          chatUsers.add(toMap(currentUser.id, currentUser.name,
-                          currentUser.imageUrl));
+                          chatUsers.add(toMap(currentUser.id));
                           var result = await _accessDatabase.addBrand(nameBrandController.text, _image, descriptionController.text, _workShift, members);
                           String baseLocation = await _accessDatabase.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
                           await _accessDatabase.updateBrandBaseLocation(result, baseLocation);
                           await _accessDatabase.updateCurrentUserBrand(result);
                           NotificationService().userCreatesBrand(currentUser.id!, result);
                           // Notification Trainer has created Brand
+
+                          List<Map> userMessagesRead = [];
+                          List<Usuario> users = await _accessDatabase.getAllTrainersFromBrand(result);
+
+                          for(int i = 0; i < users.length; ++i) {
+                            userMessagesRead.add(toMapisMessageRead(
+                                users[i].id, true));
+                          }
+
+                          users = await _accessDatabase.getAllClientsFromBrand(result);
+
+                          for(int i = 0; i < users.length; ++i) {
+                            userMessagesRead.add(toMapisMessageRead(
+                                users[i].id, true));
+                          }
+
                           await _accessDatabase.addConversation(
                               chatUsers,
+                              userMessagesRead,
                               result,
                               today.year.toString(),
                               today.month.toString(),
