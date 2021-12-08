@@ -285,7 +285,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   ),
                   Text(
                     widget.user.name!,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Theme.of(context).primaryColor),
                   ),
                 ],
               ),

@@ -1118,9 +1118,10 @@ class FirebaseDatabaseService {
 
     List<Map> userMessagesRead = [];
 
-    userMessagesRead.add(conversation.isMessageRead);
-    userMessagesRead.add(toMapisMessageRead(user.id, true));
+    if(conversation.isMessageRead is Map) userMessagesRead.add(conversation.isMessageRead);
+    else userMessagesRead = conversation.isMessageRead;
 
+    userMessagesRead.add(toMapisMessageRead(user.id, true));
 
     await _firestore.collection("Conversations").doc(conversation.conversationId).update({
       "users": conversation.users,

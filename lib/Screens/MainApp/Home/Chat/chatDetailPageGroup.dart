@@ -577,7 +577,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                     children: [
                       Text(
                         currentBrand.name!,
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Theme.of(context).primaryColor),
                         textAlign: TextAlign.left,
                       ),
                       SizedBox(
@@ -585,7 +585,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                       ),
                       Text(
                         AppLocalizations.of(context)!.membersOfBrand,
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Theme.of(context).primaryColor),
                       ),
                     ],
                   ),
