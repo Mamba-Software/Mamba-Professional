@@ -80,10 +80,16 @@ class _PerfilClientState extends State<PerfilClient> {
   initProfileHome() async {
     unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
     getUser();
-    if (currentUser.brandID == "null" && currentUser.brandID == null) await getUserPendingRequests();
+    if (currentUser.brandID == "null" || currentUser.brandID == null) {
+      await getUserPendingRequests();
+    } else {
+      await getClientEventsDone();
+    }
     await getUserEventsToday();
     _scrollController = ScrollController(initialScrollOffset: MediaQuery.of(context).size.width * scrollIndex);
-    getClientEventsDone();
+    setState(() {
+      isLoading = false;
+    });
   }
 
   // Gets the user info from firebase.
@@ -148,7 +154,7 @@ class _PerfilClientState extends State<PerfilClient> {
     }
   }
 
-  // Return bade on events Today
+// Return bade on events Today
   Widget returnBadge(int index) {
     int label = todayEventsLabels[index];
     switch (label) {
@@ -164,7 +170,7 @@ class _PerfilClientState extends State<PerfilClient> {
           child: Container(
             height: MediaQuery.of(context).size.height*0.03,
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width*0.30,
+              maxWidth: MediaQuery.of(context).size.width*0.25,
             ),
             decoration: BoxDecoration(
                 color: Colors.red, borderRadius: BorderRadius.circular(10)
@@ -174,9 +180,8 @@ class _PerfilClientState extends State<PerfilClient> {
               children: [
                 Flexible(
                   child: Text(AppLocalizations.of(context)!.toDo,
-                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
                 ),
-                SizedBox(width: MediaQuery.of(context).size.width*0.02),
                 Icon(
                   Icons.update_outlined,
                   color: Colors.white,
@@ -198,7 +203,7 @@ class _PerfilClientState extends State<PerfilClient> {
           child: Container(
             height: MediaQuery.of(context).size.height*0.03,
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width*0.30,
+              maxWidth: MediaQuery.of(context).size.width*0.25,
             ),
             decoration: BoxDecoration(
                 color: Theme.of(context).accentColor, borderRadius: BorderRadius.circular(10)
@@ -208,9 +213,8 @@ class _PerfilClientState extends State<PerfilClient> {
               children: [
                 Flexible(
                   child: Text(AppLocalizations.of(context)!.doing,
-                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
                 ),
-                SizedBox(width: MediaQuery.of(context).size.width*0.02),
                 Icon(
                   Icons.hourglass_top_outlined,
                   color: Colors.white,
@@ -239,8 +243,7 @@ class _PerfilClientState extends State<PerfilClient> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(AppLocalizations.of(context)!.finished,
-                    style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14, fontFamily: "Helvetica"), textAlign: TextAlign.left),
-                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                    style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
                 Icon(
                   Icons.done_outline_outlined,
                   color: Colors.white,
@@ -334,13 +337,10 @@ class _PerfilClientState extends State<PerfilClient> {
     }
   }
 
-  void getClientEventsDone() async {
+  Future<void> getClientEventsDone() async {
     List<int> res = await _accessDatabase.getAllClientEventsFinished(currentUser.id!, currentBrand.id!);
-    setState(() {
-      isLoading = false;
-      totalEvents = res[0];
-      thisMonthEvents = res[1];
-    });
+    totalEvents = res[0];
+    thisMonthEvents = res[1];
   }
 
   durationToString(double duration) {

@@ -84,10 +84,16 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
   initProfileHome() async {
     unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
     getUser();
-    if (currentUser.brandID == "null" && currentUser.brandID == null) await getUserPendingRequests();
+    if (currentUser.brandID == "null" || currentUser.brandID == null) {
+      await getUserPendingRequests();
+    } else {
+      await getTrainerEventsDone();
+    }
     await getUserEventsToday();
     _scrollController = ScrollController(initialScrollOffset: MediaQuery.of(context).size.width * scrollIndex);
-    getTrainerEventsDone();
+    setState(() {
+      isLoading = false;
+    });
   }
 
   // Gets the user info from firebase.
@@ -168,7 +174,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
           child: Container(
             height: MediaQuery.of(context).size.height*0.03,
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width*0.30,
+              maxWidth: MediaQuery.of(context).size.width*0.25,
             ),
             decoration: BoxDecoration(
                 color: Colors.red, borderRadius: BorderRadius.circular(10)
@@ -178,9 +184,8 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
               children: [
                 Flexible(
                   child: Text(AppLocalizations.of(context)!.toDo,
-                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
                 ),
-                SizedBox(width: MediaQuery.of(context).size.width*0.02),
                 Icon(
                   Icons.update_outlined,
                   color: Colors.white,
@@ -202,7 +207,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
           child: Container(
             height: MediaQuery.of(context).size.height*0.03,
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width*0.30,
+              maxWidth: MediaQuery.of(context).size.width*0.25,
             ),
             decoration: BoxDecoration(
                 color: Theme.of(context).accentColor, borderRadius: BorderRadius.circular(10)
@@ -212,9 +217,8 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
               children: [
                 Flexible(
                   child: Text(AppLocalizations.of(context)!.doing,
-                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
                 ),
-                SizedBox(width: MediaQuery.of(context).size.width*0.02),
                 Icon(
                   Icons.hourglass_top_outlined,
                   color: Colors.white,
@@ -227,32 +231,31 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
       // Done
       case 2:
         return Material(
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            const Radius.circular(10.0),
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              const Radius.circular(10.0),
+            ),
           ),
-        ),
-        child: Container(
-          height: MediaQuery.of(context).size.height*0.03,
-          width: MediaQuery.of(context).size.width*0.25,
-          decoration: BoxDecoration(
-              color: Colors.green, borderRadius: BorderRadius.circular(10)
+          child: Container(
+            height: MediaQuery.of(context).size.height*0.03,
+            width: MediaQuery.of(context).size.width*0.25,
+            decoration: BoxDecoration(
+                color: Colors.green, borderRadius: BorderRadius.circular(10)
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(AppLocalizations.of(context)!.finished,
+                    style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                Icon(
+                  Icons.done_outline_outlined,
+                  color: Colors.white,
+                  size: 15,
+                ),
+              ],
+            ),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(AppLocalizations.of(context)!.finished,
-                  style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14, fontFamily: "Helvetica"), textAlign: TextAlign.left),
-              SizedBox(width: MediaQuery.of(context).size.width*0.02),
-              Icon(
-                Icons.done_outline_outlined,
-                color: Colors.white,
-                size: 15,
-              ),
-            ],
-          ),
-        ),
       );
       default:
         return Container();
@@ -339,13 +342,10 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
   }
 
   // Gets the events passed by the trainer.
-  void getTrainerEventsDone() async {
+  Future<void> getTrainerEventsDone() async {
     List<int> res = await _accessDatabase.getAllTrainerEventsFinished(currentUser.id!, currentBrand.id!);
-    setState(() {
-      isLoading = false;
-      totalEvents = res[0];
-      thisMonthEvents = res[1];
-    });
+    totalEvents = res[0];
+    thisMonthEvents = res[1];
   }
 
   durationToString(double duration) {
