@@ -79,40 +79,43 @@ class _ChatPageState extends State<ChatPage> {
           ),
           centerTitle: false,
           bottom: searchClicked ? PreferredSize(
-            preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.07,),
-            child: Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.04,left: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.03, bottom: MediaQuery.of(context).size.width*0.02),
-                child: TextField(
-                  controller: searchController,
-                  onChanged: (value) {
-                    // Filter chats
-                    filterSearchResults(value.toLowerCase());
-                  },
-                  textAlign: TextAlign.left,
-                  decoration: InputDecoration(
-                    hintText: AppLocalizations.of(context)!.search,
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0))
+            preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.10,),
+            child: Container(
+              height: MediaQuery.of(context).size.height*0.10,
+              child: Padding(
+                  padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.04,left: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.03, bottom: MediaQuery.of(context).size.width*0.02),
+                  child: TextField(
+                    controller: searchController,
+                    onChanged: (value) {
+                      // Filter chats
+                      filterSearchResults(value.toLowerCase());
+                    },
+                    textAlign: TextAlign.left,
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context)!.search,
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0))
+                      ),
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0))
+                      ),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Colors.grey,
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          searchController.clear();
+                          filterSearchResults("");
+                        },
+                        icon: Icon(Icons.delete_outline, color: Colors.grey,),
+                      ),
+                      contentPadding: EdgeInsets.all(0),
                     ),
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0))
-                    ),
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: Colors.grey,
-                    ),
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        searchController.clear();
-                        filterSearchResults("");
-                      },
-                      icon: Icon(Icons.delete_outline, color: Colors.grey,),
-                    ),
-                    contentPadding: EdgeInsets.all(0),
-                  ),
-                )
+                  )
+              ),
             )
           ) :  PreferredSize(
             preferredSize: Size.fromHeight(0),

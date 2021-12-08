@@ -163,6 +163,7 @@ class _NotificationsState extends State<Notifications> {
   }
 
   Widget returnIconGivenType (NotificationEvent notification) {
+
     // Return the leading icon depending on Type
     switch(notification.type!) {
       case "Wellcome_User": {
