@@ -295,7 +295,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               child: Column(
                 children: <Widget>[
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.79,
+                    height: MediaQuery.of(context).size.height * 0.77,
                     child: StreamBuilder<QuerySnapshot>(
                         stream: _accessDatabase
                             .getConversationMessages(conversationId),
@@ -366,11 +366,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                         }),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.02,
-                        vertical: MediaQuery.of(context).size.height * 0.01),
                     height: MediaQuery.of(context).size.height * 0.10,
                     width: double.infinity,
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02, vertical: MediaQuery.of(context).size.height * 0.01),
                     color: Colors.white,
                     child: Row(
                       children: <Widget>[

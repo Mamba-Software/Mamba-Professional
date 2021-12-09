@@ -211,7 +211,7 @@ class _ChatPageState extends State<ChatPage> {
                                 height: MediaQuery
                                     .of(context)
                                     .size
-                                    .height * 0.65,
+                                    .height * 0.80,
                                 child: Center(
                                     child: LoadingViewPurple()
                                 )

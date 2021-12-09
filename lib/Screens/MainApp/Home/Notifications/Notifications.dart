@@ -2,17 +2,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetTrainer.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
+import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/MembershipRequests.dart';
@@ -33,6 +36,7 @@ class _NotificationsState extends State<Notifications> {
   List<NotificationEvent> notificationsList = [];
   List<Usuario> usersList = [];
   List<Brand> brandsList = [];
+  List<Event> eventList = [];
   // Unread Notifications
   int numberUnreadNotifications = 0;
   // Has unread notifications
@@ -49,6 +53,7 @@ class _NotificationsState extends State<Notifications> {
     List<NotificationEvent> notifications = [];
     List<Usuario> users = [];
     List<Brand> brands = [];
+    List<Event> events = [];
 
     for(int i = 0; i < documents.length; i++) {
       NotificationEvent notification = NotificationEvent.fromObject(documents[i], documents[i].id);
@@ -80,6 +85,15 @@ class _NotificationsState extends State<Notifications> {
         } else {
           brands.add(Brand());
         }
+        if (notification.parameters[2] != "null") {
+          Event event = events.firstWhere((element) => element.id == notification.parameters[2], orElse: () => Event());
+          if (event.id == null) {
+            event = await _accessDatabase.getSingleEvent(notification.parameters[2]);
+          }
+          events.add(event);
+        } else {
+          events.add(Event());
+        }
       } else {
         users.add(Usuario());
         brands.add(Brand());
@@ -89,6 +103,7 @@ class _NotificationsState extends State<Notifications> {
     notificationsList = notifications;
     usersList = users;
     brandsList = brands;
+    eventList = events;
     return notifications;
   }
 
@@ -184,7 +199,7 @@ class _NotificationsState extends State<Notifications> {
                             );
                           } else {
                             return Container(
-                                height: MediaQuery.of(context).size.height*0.65,
+                                height: MediaQuery.of(context).size.height*0.80,
                                 child: Center(
                                     child: LoadingViewPurple()
                                 )
@@ -204,6 +219,7 @@ class _NotificationsState extends State<Notifications> {
   Widget returnNotification(int index, NotificationEvent notification) {
     Usuario user = usersList[index];
     Brand brand = brandsList[index];
+    Event event = eventList[index];
 
     switch(notification.type!) {
       case "Wellcome_User": {
@@ -311,7 +327,7 @@ class _NotificationsState extends State<Notifications> {
             children: [
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
-                AppLocalizations.of(context)!.userJoinsBrandBrandSubtitle(notification.parameters[2]),
+                AppLocalizations.of(context)!.userJoinsBrandBrandSubtitle(notification.parameters[3]),
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
               ),
             ],
@@ -367,7 +383,7 @@ class _NotificationsState extends State<Notifications> {
             children: [
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
-                AppLocalizations.of(context)!.userLeavesBrandBrandSubtitle(notification.parameters[2]),
+                AppLocalizations.of(context)!.userLeavesBrandBrandSubtitle(notification.parameters[3]),
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
               ),
             ],
@@ -423,7 +439,7 @@ class _NotificationsState extends State<Notifications> {
             children: [
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
-                AppLocalizations.of(context)!.userSendRequestToBrandBrandSubtitle(notification.parameters[2]),
+                AppLocalizations.of(context)!.userSendRequestToBrandBrandSubtitle(notification.parameters[3]),
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
               ),
             ],
@@ -490,21 +506,135 @@ class _NotificationsState extends State<Notifications> {
           },
         );
       }
-      case "EventJoined": {
-        return CircularImage(
-          size: MediaQuery.of(context).size.width*0.15,
-          image: notification.parameters[0],
-          color: Theme.of(context).primaryColor,
-          borderWidth: 1.5,
+      case "UserJoinEvent_User": {
+        var startDate = DateTime(
+          int.parse(event.year!),
+          int.parse(event.month!),
+          int.parse(event.day!),
+          int.parse(event.hour!),
+          int.parse(event.minute!),
+        );
+        String eventTimeDay = DateFormat('EE dd/MM/yy', Localizations.localeOf(context).languageCode).format(startDate);
+        String eventTimeTime = "${event.hour.toString()}:${event.minute=="0" ? "00" : event.minute.toString()}h";
+        return ListTile(
+          leading: CircularImage(
+            size: MediaQuery.of(context).size.width*0.15,
+            image: brand.logoUrl!,
+            color: Theme.of(context).primaryColor,
+            borderWidth: 1.5,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.userJoinEventUser(event.title!, brand.name!),
+            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                AppLocalizations.of(context)!.userJoinEventUserSubtitle(eventTimeDay, eventTimeTime),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+          onTap: () async {
+            await _accessDatabase.markNotificationAsRead(notification.id!);
+            returnActionOnTap(index,notification);
+          },
         );
       }
-      case "EventAbandoned": {
-        return
-          Icon(
-            Icons.event_busy,
-            color: Colors.red,
-            size: 30,
-          );
+      case "UserJoinEvent_Trainer": {
+        return ListTile(
+          leading: CircularImage(
+            size: MediaQuery.of(context).size.width*0.15,
+            image: user.imageUrl,
+            color: Theme.of(context).primaryColor,
+            borderWidth: 1.5,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.userJoinEventBrand(user.name!, event.title!),
+            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                AppLocalizations.of(context)!.userJoinEventBrandSubtitle(event.joinedMembers.length.toString(), event.maxMembers.toString() ),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+          onTap: () async {
+            await _accessDatabase.markNotificationAsRead(notification.id!);
+            returnActionOnTap(index,notification);
+          },
+        );
+      }
+      case "UserLeaveEvent_User": {
+        var startDate = DateTime(
+          int.parse(event.year!),
+          int.parse(event.month!),
+          int.parse(event.day!),
+          int.parse(event.hour!),
+          int.parse(event.minute!),
+        );
+        String eventTimeDay = DateFormat('EE dd/MM/yy', Localizations.localeOf(context).languageCode).format(startDate);
+        String eventTimeTime = "${event.hour.toString()}:${event.minute=="0" ? "00" : event.minute.toString()}h";
+        return ListTile(
+          leading: CircularImage(
+            size: MediaQuery.of(context).size.width*0.15,
+            image: brand.logoUrl!,
+            color: Theme.of(context).primaryColor,
+            borderWidth: 1.5,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.userLeavesEventUser(event.title!, brand.name!),
+            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                AppLocalizations.of(context)!.userLeavesEventUserSubtitle,
+                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+          onTap: () async {
+            await _accessDatabase.markNotificationAsRead(notification.id!);
+            returnActionOnTap(index,notification);
+          },
+        );
+      }
+      case "UserLeaveEvent_Trainer": {
+        return ListTile(
+          leading: CircularImage(
+            size: MediaQuery.of(context).size.width*0.15,
+            image: user.imageUrl,
+            color: Theme.of(context).primaryColor,
+            borderWidth: 1.5,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.userLeavesEventBrand(user.name!, event.title!),
+            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                AppLocalizations.of(context)!.userLeavesEventBrandSubtitle(event.joinedMembers.length.toString(), event.maxMembers.toString() ),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+          onTap: () async {
+            await _accessDatabase.markNotificationAsRead(notification.id!);
+            returnActionOnTap(index,notification);
+          },
+        );
       }
       default: {
         return Container();
@@ -516,6 +646,7 @@ class _NotificationsState extends State<Notifications> {
 
     Usuario user = usersList[index];
     Brand brand = brandsList[index];
+    Event event = eventList[index];
 
     switch(notification.type!) {
       case "Wellcome_User": {
@@ -525,46 +656,42 @@ class _NotificationsState extends State<Notifications> {
         break;
       }
       case "UserJoinsBrand_User": {
-        if (notification.isRead == false) {
-          if (currentUser.isTrainer!) {
-            Navigator.push(
-                context,
-                PageTransition(
-                    type: PageTransitionType.bottomToTop,
-                    child: CalendarWidgetTrainer(
-                      brandID: notification.parameters[1],
-                      canEdit: true,
-                    )
-                )
-            );
-          } else {
-            Navigator.push(
-                context,
-                PageTransition(
-                    type: PageTransitionType.bottomToTop,
-                    child: CalendarWidgetClient(
-                      brandID: notification.parameters[1],
-                      onlyView: true,
-                    )
-                )
-            );
-          }
-        }
-        break;
-      }
-      case "UserJoinsBrand_Trainer": {
-        if (notification.isRead == false) {
+        if (currentUser.isTrainer!) {
           Navigator.push(
               context,
               PageTransition(
                   type: PageTransitionType.bottomToTop,
-                  child: ProfileViewUser(
-                    userID: notification.parameters[0],
-                    viewOnly: false,
+                  child: CalendarWidgetTrainer(
+                    brandID: notification.parameters[1],
+                    canEdit: true,
+                  )
+              )
+          );
+        } else {
+          Navigator.push(
+              context,
+              PageTransition(
+                  type: PageTransitionType.bottomToTop,
+                  child: CalendarWidgetClient(
+                    brandID: notification.parameters[1],
+                    onlyView: true,
                   )
               )
           );
         }
+        break;
+      }
+      case "UserJoinsBrand_Trainer": {
+        Navigator.push(
+            context,
+            PageTransition(
+                type: PageTransitionType.bottomToTop,
+                child: ProfileViewUser(
+                  userID: notification.parameters[0],
+                  viewOnly: false,
+                )
+            )
+        );
         break;
       }
       case "UserLeavesBrand_User": {
@@ -577,17 +704,15 @@ class _NotificationsState extends State<Notifications> {
         break;
       }
       case "UserSendRequestToBrand_Trainer": {
-        if (notification.isRead == false) {
-          Navigator.push(
-              context,
-              PageTransition(
-                  type: PageTransitionType.bottomToTop,
-                  child: MembershipRequests(
-                    brandId: notification.parameters[1],
-                  )
-              )
-          );
-        }
+        Navigator.push(
+            context,
+            PageTransition(
+                type: PageTransitionType.bottomToTop,
+                child: MembershipRequests(
+                  brandId: notification.parameters[1],
+                )
+            )
+        );
         break;
       }
       case "UserCancelRequestToBrand_User": {
@@ -596,21 +721,92 @@ class _NotificationsState extends State<Notifications> {
       case "UserCancelRequestToBrand_Trainer": {
         break;
       }
-      case "EventJoined": {
+      case "UserJoinEvent_User": {
+        bool canAction = true;
+        var startDate = DateTime(
+          int.parse(event.year!),
+          int.parse(event.month!),
+          int.parse(event.day!),
+          int.parse(event.hour!),
+          int.parse(event.minute!),
+        );
+        if (startDate.isBefore(DateTime.now())) {
+          canAction = false;
+        }
         Navigator.push(
             context,
             PageTransition(
               type: PageTransitionType.bottomToTop,
-              child: ViewEventTrainer(
-                eventId: notification.parameters[1],
-                canEdit: false,
+              child: ViewEventClient(
+                eventId: notification.parameters[2],
+                canJoin: canAction,
                 locale: Localizations.localeOf(context),
               ),
             )
         );
         break;
       }
-      case "EventAbandoned": {
+      case "UserJoinEvent_Trainer": {
+        bool canAction = true;
+        var startDate = DateTime(
+          int.parse(event.year!),
+          int.parse(event.month!),
+          int.parse(event.day!),
+          int.parse(event.hour!),
+          int.parse(event.minute!),
+        );
+        if (startDate.isBefore(DateTime.now())) {
+          canAction = false;
+        }
+        Navigator.push(
+            context,
+            PageTransition(
+              type: PageTransitionType.bottomToTop,
+              child: ViewEventTrainer(
+                eventId: notification.parameters[2],
+                canEdit: canAction,
+                locale: Localizations.localeOf(context),
+              ),
+            )
+        );
+        break;
+      }
+      case "UserLeaveEvent_User": {
+        Navigator.push(
+            context,
+            PageTransition(
+                type: PageTransitionType.bottomToTop,
+                child: CalendarWidgetClient(
+                  brandID: notification.parameters[1],
+                  onlyView: true,
+                )
+            )
+        );
+        break;
+      }
+      case "UserLeaveEvent_Trainer": {
+        bool canAction = true;
+        var startDate = DateTime(
+          int.parse(event.year!),
+          int.parse(event.month!),
+          int.parse(event.day!),
+          int.parse(event.hour!),
+          int.parse(event.minute!),
+        );
+        if (startDate.isBefore(DateTime.now())) {
+          canAction = false;
+        }
+        Navigator.push(
+            context,
+            PageTransition(
+              type: PageTransitionType.bottomToTop,
+              child: ViewEventTrainer(
+                eventId: notification.parameters[2],
+                canEdit: canAction,
+                locale: Localizations.localeOf(context),
+              ),
+            )
+        );
         break;
       }
       default: {

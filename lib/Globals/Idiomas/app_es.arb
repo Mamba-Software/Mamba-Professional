@@ -1307,18 +1307,6 @@
   "@userCreatesBrandUserSubtitle": {
     "description": "userJoinsBrandUser message"
   },
-  "joinEventTitleNotification": "{user} se ha unido al evento {name}",
-  "@joinEventTitleNotification": {
-    "description": "Wellcome message",
-    "placeholders": {
-      "user": {
-        "type": "String"
-      },
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "myLocationsBaseLocationDesc": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.",
   "@myLocationsBaseLocationDesc": {
     "description": "Wellcome message"
@@ -1331,14 +1319,90 @@
   "@myLocationsOtherLocationsDesc": {
     "description": "Wellcome message"
   },
-  "joinEventSubtitleNotification": "Este se realizará el {dia} a las {horas}",
-  "@joinEventSubtitleNotification": {
+  "userJoinEventUser": "Te has unido al evento {name} de {brand}",
+  "@userJoinEventUser": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "userJoinEventUserSubtitle": "Este se realizará el {dia} a las {horas}",
+  "@userJoinEventUserSubtitle": {
     "description": "Wellcome message",
     "placeholders": {
       "dia": {
         "type": "String"
       },
       "horas": {
+        "type": "String"
+      }
+    }
+  },
+  "userJoinEventBrand": "{user} se ha unido al evento {name}",
+  "@userJoinEventBrand": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "user": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "userJoinEventBrandSubtitle": "Hay {joined} miembros apuntados de un máximo de {total} plazas",
+  "@userJoinEventBrandSubtitle": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "joined": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "userLeavesEventUser": "Has abandonado tu plaza del evento {name} de {brand}",
+  "@userLeavesEventUser": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "userLeavesEventUserSubtitle": "Haz clic para ver su calendario y encontrar un evento al que puedas asistir",
+  "@userLeavesEventUserSubtitle": {
+    "description": "Wellcome message"
+  },
+  "userLeavesEventBrand": "{user} ha abandonado el evento {name}",
+  "@userLeavesEventBrand": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "user": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "userLeavesEventBrandSubtitle": "Ahora quedan {joined} miembros apuntados de un máximo de {total} plazas",
+  "@userLeavesEventBrandSubtitle": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "joined": {
+        "type": "String"
+      },
+      "total": {
         "type": "String"
       }
     }

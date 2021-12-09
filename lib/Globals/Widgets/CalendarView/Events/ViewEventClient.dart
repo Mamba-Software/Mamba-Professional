@@ -1046,7 +1046,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                       isLoadingBody = true;
                     });
                     bool hasJoined = await _accessDatabase.joinEvent(event!.id!, currentUser.id!);
-                    _notificationService.joinEvent(currentUser.id!, event!.id!);
+                    _notificationService.userJoinEvent(currentUser.id!, event!.brandID!, event!.id!);
                     if (hasJoined) {
                       getEventInfo();
                       setState(() {
@@ -1084,6 +1084,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                       isLoadingBody = true;
                     });
                     bool hasJoined = await _accessDatabase.leaveEvent(event!.id!, currentUser.id!, false);
+                    _notificationService.userLeaveEvent(currentUser.id!, event!.brandID!, event!.id!);
                     if (hasJoined) {
                       getEventInfo();
                       setState(() {

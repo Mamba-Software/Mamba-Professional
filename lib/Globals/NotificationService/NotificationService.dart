@@ -22,19 +22,19 @@ class NotificationService {
 
   Future<void> userCreatesBrand(String userId, String brandId) async {
     // Notification to the User Joining
-    var parameters = ["null", brandId];
+    var parameters = ["null", brandId, "null"];
     _accessDatabase.sendNotification(userId, "UserCreatesBrand_User", parameters);
   }
 
   Future<void> userJoinsBrand(String userId, String brandId) async {
     // Notification to the User Joining
     Brand brand = await _accessDatabase.getBrandDetails(brandId);
-    var parameters = ["null", brandId];
+    var parameters = ["null", brandId, "null"];
     _accessDatabase.sendNotification(userId, "UserJoinsBrand_User", parameters);
     // Notification to All Brand Trainers
     List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
     int members = brand.numberClients! + brand.numberTrainers! + 1;
-    parameters = [userId, brandId, members.toString()];
+    parameters = [userId, brandId, "null", members.toString()];
     for (var i=0; i<listUsers.length; i++) {
       Usuario trainer = listUsers[i];
       if (trainer.id! != userId) {
@@ -46,11 +46,11 @@ class NotificationService {
   Future<void> userLeavesBrand(String userId, String brandId) async {
     // Notification to the User Joining
     Brand brand = await _accessDatabase.getBrandDetails(brandId);
-    var parameters = ["null", brandId];
+    var parameters = ["null", brandId, "null"];
     _accessDatabase.sendNotification(userId, "UserLeavesBrand_User", parameters);
     // Notification to All Brand Trainers
     int members = brand.numberClients! + brand.numberTrainers! - 1;
-    parameters = [userId, brandId, members.toString()];
+    parameters = [userId, brandId, "null", members.toString()];
     List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
     for (var i=0; i<listUsers.length; i++) {
       Usuario trainer = listUsers[i];
@@ -63,10 +63,10 @@ class NotificationService {
   Future<void> userSendRequestToBrand(String userId, String brandId) async {
     // Notification to the User Joining
     RequestToBrand? req = await _accessDatabase.hasPendingRequest(userId);
-    var parameters = ["null", brandId];
+    var parameters = ["null", brandId, "null",];
     _accessDatabase.sendNotification(userId, "UserSendRequestToBrand_User", parameters);
     // Notification to All Brand Trainers
-    parameters = [userId, brandId, req!.dateSent!,];
+    parameters = [userId, brandId, "null", req!.dateSent!,];
     List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
     for (var i=0; i<listUsers.length; i++) {
       Usuario trainer = listUsers[i];
@@ -78,11 +78,11 @@ class NotificationService {
 
   Future<void> userCancelRequestToBrand(String userId, String brandId) async {
     // Notification to the User Canceling Request
-    var parameters = ["null", brandId];
+    var parameters = ["null", brandId, "null",];
     _accessDatabase.sendNotification(userId, "UserCancelRequestToBrand_User", parameters);
     // Notification to All Brand Trainers
     List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
-    parameters = [userId, brandId];
+    parameters = [userId, brandId, "null",];
     for (var i=0; i<listUsers.length; i++) {
       Usuario trainer = listUsers[i];
       if (trainer.id! != userId) {
@@ -91,24 +91,35 @@ class NotificationService {
     }
   }
 
-
-  Future<void> joinEvent(String userId, String eventId) async {
-    Usuario usuario = await _accessDatabase.getUserDetails(userId);
-    Event event = await _accessDatabase.getSingleEvent(eventId);
-    //String title = AppLocalizations.of(this.context!)!.joinEventTitleNotification(usuario.name!, event.title!);
-    var startDate = DateTime(
-      int.parse(event.year!),
-      int.parse(event.month!),
-      int.parse(event.day!),
-      int.parse(event.hour!),
-      int.parse(event.minute!),
-    );
-    //String eventTimeDay = DateFormat('EE dd/MM/yy', Localizations.localeOf(this.context!).languageCode).format(startDate);
-    //String eventTimeTime = "${event.hour.toString()}:${event.minute=="0" ? "00" : event.minute.toString()}h";
-    //String subtitle = AppLocalizations.of(this.context!)!.joinEventSubtitleNotification(eventTimeDay, eventTimeTime);
-    var parameters = [usuario.imageUrl, eventId];
-    for (var i=0; i<event.selectedTrainers.length!; i++) {
-      //_accessDatabase.sendNotification(event.selectedTrainers[i], "EventJoined", false, title, subtitle, parameters);
+  Future<void> userJoinEvent(String userId, String brandId, String eventId) async {
+    // Notification to the User Joining Event
+    var parameters = ["null", brandId, eventId];
+    _accessDatabase.sendNotification(userId, "UserJoinEvent_User", parameters);
+    // Notification to All Brand Trainers
+    parameters = [userId, "null", eventId];
+    List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
+    for (var i=0; i<listUsers.length; i++) {
+      Usuario trainer = listUsers[i];
+      if (trainer.id! != userId) {
+        _accessDatabase.sendNotification(trainer.id!, "UserJoinEvent_Trainer", parameters);
+      }
     }
   }
+
+  Future<void> userLeaveEvent(String userId, String brandId, String eventId) async {
+    // Notification to the User Joining Event
+    var parameters = ["null", brandId, eventId];
+    _accessDatabase.sendNotification(userId, "UserLeaveEvent_User", parameters);
+    // Notification to All Brand Trainers
+    parameters = [userId, "null", eventId];
+    List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
+    for (var i=0; i<listUsers.length; i++) {
+      Usuario trainer = listUsers[i];
+      if (trainer.id! != userId) {
+        _accessDatabase.sendNotification(trainer.id!, "UserLeaveEvent_Trainer", parameters);
+      }
+    }
+  }
+
+
 }

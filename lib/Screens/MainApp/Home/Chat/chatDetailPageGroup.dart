@@ -597,7 +597,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
               child: Column(
                 children: <Widget>[
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.79,
+                    height: MediaQuery.of(context).size.height * 0.77,
                     child: StreamBuilder<QuerySnapshot>(
                         stream:
                         _accessDatabase.getConversationMessages(conversationId),

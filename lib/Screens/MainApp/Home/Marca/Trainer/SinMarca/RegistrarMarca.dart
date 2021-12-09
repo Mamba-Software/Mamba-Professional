@@ -1160,7 +1160,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                           DateTime today = DateTime.now();
                           List<Map> chatUsers = [];
                           chatUsers.add(toMap(currentUser.id));
-                          var result = await _accessDatabase.addBrand(nameBrandController.text, _image, descriptionController.text, _workShift, members);
+                          var result = await _accessDatabase.addBrand(nameBrandController.text, _image, descriptionController.text, _workShift, membersMax);
                           String baseLocation = await _accessDatabase.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
                           await _accessDatabase.updateBrandBaseLocation(result, baseLocation);
                           await _accessDatabase.updateCurrentUserBrand(result);
