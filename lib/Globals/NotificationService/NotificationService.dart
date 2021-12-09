@@ -22,21 +22,19 @@ class NotificationService {
 
   Future<void> userCreatesBrand(String userId, String brandId) async {
     // Notification to the User Joining
-    Brand brand = await _accessDatabase.getBrandDetails(brandId);
-    var parameters = [brandId, brand.logoUrl, brand.name!];
+    var parameters = ["null", brandId];
     _accessDatabase.sendNotification(userId, "UserCreatesBrand_User", parameters);
   }
 
   Future<void> userJoinsBrand(String userId, String brandId) async {
     // Notification to the User Joining
-    Usuario user = await _accessDatabase.getUserDetails(userId);
     Brand brand = await _accessDatabase.getBrandDetails(brandId);
-    var parameters = [brandId, brand.logoUrl, brand.name!];
+    var parameters = ["null", brandId];
     _accessDatabase.sendNotification(userId, "UserJoinsBrand_User", parameters);
     // Notification to All Brand Trainers
     List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
-    int members = brand.numberClients! + brand.numberTrainers!;
-    parameters = [userId, user.imageUrl!, user.name!, brand.name!,members.toString()];
+    int members = brand.numberClients! + brand.numberTrainers! + 1;
+    parameters = [userId, brandId, members.toString()];
     for (var i=0; i<listUsers.length; i++) {
       Usuario trainer = listUsers[i];
       if (trainer.id! != userId) {
@@ -47,14 +45,13 @@ class NotificationService {
 
   Future<void> userLeavesBrand(String userId, String brandId) async {
     // Notification to the User Joining
-    Usuario user = await _accessDatabase.getUserDetails(userId);
     Brand brand = await _accessDatabase.getBrandDetails(brandId);
-    var parameters = [brandId, brand.logoUrl, brand.name!];
+    var parameters = ["null", brandId];
     _accessDatabase.sendNotification(userId, "UserLeavesBrand_User", parameters);
     // Notification to All Brand Trainers
+    int members = brand.numberClients! + brand.numberTrainers! - 1;
+    parameters = [userId, brandId, members.toString()];
     List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
-    int members = brand.numberClients! + brand.numberTrainers!;
-    parameters = [userId, user.imageUrl!, user.name!, brand.name!, members.toString()];
     for (var i=0; i<listUsers.length; i++) {
       Usuario trainer = listUsers[i];
       if (trainer.id! != userId) {
@@ -65,14 +62,12 @@ class NotificationService {
 
   Future<void> userSendRequestToBrand(String userId, String brandId) async {
     // Notification to the User Joining
-    Usuario user = await _accessDatabase.getUserDetails(userId);
     RequestToBrand? req = await _accessDatabase.hasPendingRequest(userId);
-    Brand brand = await _accessDatabase.getBrandDetails(brandId);
-    var parameters = [brandId, brand.logoUrl, brand.name!];
+    var parameters = ["null", brandId];
     _accessDatabase.sendNotification(userId, "UserSendRequestToBrand_User", parameters);
     // Notification to All Brand Trainers
+    parameters = [userId, brandId, req!.dateSent!,];
     List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
-    parameters = [userId, user.imageUrl!, user.name!, req!.dateSent, brandId];
     for (var i=0; i<listUsers.length; i++) {
       Usuario trainer = listUsers[i];
       if (trainer.id! != userId) {
@@ -83,13 +78,11 @@ class NotificationService {
 
   Future<void> userCancelRequestToBrand(String userId, String brandId) async {
     // Notification to the User Canceling Request
-    Usuario user = await _accessDatabase.getUserDetails(userId);
-    Brand brand = await _accessDatabase.getBrandDetails(brandId);
-    var parameters = [brandId, brand.logoUrl, brand.name!];
+    var parameters = ["null", brandId];
     _accessDatabase.sendNotification(userId, "UserCancelRequestToBrand_User", parameters);
     // Notification to All Brand Trainers
     List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
-    parameters = [userId, user.imageUrl!, user.name!, brandId];
+    parameters = [userId, brandId];
     for (var i=0; i<listUsers.length; i++) {
       Usuario trainer = listUsers[i];
       if (trainer.id! != userId) {

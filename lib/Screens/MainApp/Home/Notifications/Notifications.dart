@@ -12,7 +12,9 @@ import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEven
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/NotificationEvent.dart';
+import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/MembershipRequests.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -29,6 +31,8 @@ class _NotificationsState extends State<Notifications> {
   var _accessDatabase = new DatabaseAccess();
   // Notification List
   List<NotificationEvent> notificationsList = [];
+  List<Usuario> usersList = [];
+  List<Brand> brandsList = [];
   // Unread Notifications
   int numberUnreadNotifications = 0;
   // Has unread notifications
@@ -41,8 +45,11 @@ class _NotificationsState extends State<Notifications> {
 
   String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
 
-  List<NotificationEvent> documentsToNotifications(List<DocumentSnapshot> documents) {
+  Future<List<NotificationEvent>> documentsToNotifications(List<DocumentSnapshot> documents) async {
     List<NotificationEvent> notifications = [];
+    List<Usuario> users = [];
+    List<Brand> brands = [];
+
     for(int i = 0; i < documents.length; i++) {
       NotificationEvent notification = NotificationEvent.fromObject(documents[i], documents[i].id);
       if (notification.isRead == false && hasUnread == false) {
@@ -52,8 +59,30 @@ class _NotificationsState extends State<Notifications> {
           });
         });
       }
+      if (notification.parameters.length > 0) {
+        if (notification.parameters[0] != "null") {
+          List<String> coverInformation = await _accessDatabase.getUserCover(notification.parameters[0]);
+          Usuario user = Usuario(name: coverInformation[0], imageUrl: coverInformation[1]);
+          users.add(user);
+        } else {
+          users.add(Usuario());
+        }
+        if (notification.parameters[1] != "null") {
+          List<String> coverInformation = await _accessDatabase.getBrandCover(notification.parameters[1]);
+          Brand brand = Brand(name: coverInformation[0], logoUrl: coverInformation[1]);
+          brands.add(brand);
+        } else {
+          brands.add(Brand());
+        }
+      } else {
+        users.add(Usuario());
+        brands.add(Brand());
+      }
       notifications.add(notification);
     }
+    notificationsList = notifications;
+    usersList = users;
+    brandsList = brands;
     return notifications;
   }
 
@@ -129,28 +158,32 @@ class _NotificationsState extends State<Notifications> {
                         )
                     );
                   } else {
-                    notificationsList = documentsToNotifications(snapshot.data!.docs);
-                    countUnreadNotifications();
-                    return ListView.builder(
-                        physics: BouncingScrollPhysics(),
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        itemCount: notificationsList.length,
-                        itemBuilder: (context, index) {
-                          NotificationEvent notification = notificationsList[index];
-                          bool isRead = notification.isRead!;
-                          return Padding(
-                            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
-                            child: ListTile(
-                              leading: returnIconGivenType(notification),
-                              title: returnTitleGivenType(notification),
-                              subtitle: returnSubtitleGivenType(notification),
-                              onTap: () async {
-                                await _accessDatabase.markNotificationAsRead(notification.id!);
-                                returnActionOnTap(notification);
-                              },
-                            ),
-                          );
+                    return FutureBuilder<List<NotificationEvent>>(
+                        future: documentsToNotifications(snapshot.data!.docs),
+                        builder: (context, snapshot) {
+                          if (snapshot.data != null) {
+                            notificationsList = snapshot.data!;
+                            return ListView.builder(
+                                physics: BouncingScrollPhysics(),
+                                shrinkWrap: true,
+                                scrollDirection: Axis.vertical,
+                                itemCount: notificationsList.length,
+                                itemBuilder: (context, index) {
+                                  NotificationEvent notification = notificationsList[index];
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                                    child: returnNotification(index, notification),
+                                  );
+                                }
+                            );
+                          } else {
+                            return Container(
+                                height: MediaQuery.of(context).size.height*0.65,
+                                child: Center(
+                                    child: LoadingViewPurple()
+                                )
+                            );
+                          }
                         }
                     );
                   }
@@ -162,91 +195,293 @@ class _NotificationsState extends State<Notifications> {
     );
   }
 
-  Widget returnIconGivenType (NotificationEvent notification) {
+  Widget returnNotification(int index, NotificationEvent notification) {
+    Usuario user = usersList[index];
+    Brand brand = brandsList[index];
 
-    // Return the leading icon depending on Type
     switch(notification.type!) {
       case "Wellcome_User": {
-        return SizedBox(
-          width: MediaQuery.of(context).size.width*0.15,
-          child: Center(
-            child: Image(
-              width: MediaQuery.of(context).size.width*0.10,
-              image: AssetImage(Constants.logoSimpleYellow)
+        return ListTile(
+          leading: SizedBox(
+            width: MediaQuery.of(context).size.width*0.15,
+            child: Center(
+              child: Image(
+                  width: MediaQuery.of(context).size.width*0.10,
+                  image: AssetImage(Constants.logoSimpleYellow)
+              ),
             ),
           ),
+          title: Text(
+            AppLocalizations.of(context)!.wellcomeToMAMBA,
+            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                AppLocalizations.of(context)!.onlyImportantNotifications,
+                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+          onTap: () async {
+            await _accessDatabase.markNotificationAsRead(notification.id!);
+            returnActionOnTap(index,notification);
+          },
         );
       }
       case "UserCreatesBrand_User": {
-        return CircularImage(
-          size: MediaQuery.of(context).size.width*0.15,
-          image: notification.parameters[1],
-          color: Theme.of(context).primaryColor,
-          borderWidth: 1.5,
+        // Name and Image
+        return ListTile(
+          leading: CircularImage(
+            size: MediaQuery.of(context).size.width*0.15,
+            image: brand.logoUrl!,
+            color: Theme.of(context).primaryColor,
+            borderWidth: 1.5,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.userCreatesBrandUser(brand.name!),
+            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                AppLocalizations.of(context)!.userCreatesBrandUserSubtitle,
+                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+          onTap: () async {
+            await _accessDatabase.markNotificationAsRead(notification.id!);
+            returnActionOnTap(index,notification);
+          },
         );
       }
       case "UserJoinsBrand_User": {
-        return CircularImage(
-          size: MediaQuery.of(context).size.width*0.15,
-          image: notification.parameters[1],
-          color: Theme.of(context).primaryColor,
-          borderWidth: 1.5,
+        return ListTile(
+          leading: CircularImage(
+            size: MediaQuery.of(context).size.width*0.15,
+            image: brand.logoUrl!,
+            color: Theme.of(context).primaryColor,
+            borderWidth: 1.5,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.userJoinsBrandUser(brand.name!),
+            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                AppLocalizations.of(context)!.userJoinsBrandSubtitleUser,
+                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+          onTap: () async {
+            await _accessDatabase.markNotificationAsRead(notification.id!);
+            returnActionOnTap(index,notification);
+          },
         );
       }
       case "UserJoinsBrand_Trainer": {
-        return CircularImage(
-          size: MediaQuery.of(context).size.width*0.15,
-          image: notification.parameters[1],
-          color: Theme.of(context).primaryColor,
-          borderWidth: 1.5,
+        return ListTile(
+          leading: CircularImage(
+            size: MediaQuery.of(context).size.width*0.15,
+            image: user.imageUrl!,
+            color: Theme.of(context).primaryColor,
+            borderWidth: 1.5,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.userJoinsBrandBrand(user.name!, brand.name!),
+            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                AppLocalizations.of(context)!.userJoinsBrandBrandSubtitle(notification.parameters[2]),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+          onTap: () async {
+            await _accessDatabase.markNotificationAsRead(notification.id!);
+            returnActionOnTap(index,notification);
+          },
         );
       }
       case "UserLeavesBrand_User": {
-        return CircularImage(
-          size: MediaQuery.of(context).size.width*0.15,
-          image: notification.parameters[1],
-          color: Theme.of(context).primaryColor,
-          borderWidth: 1.5,
+        return ListTile(
+          leading: CircularImage(
+            size: MediaQuery.of(context).size.width*0.15,
+            image: brand.logoUrl!,
+            color: Theme.of(context).primaryColor,
+            borderWidth: 1.5,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.userLeavesBrandUser(brand.name!),
+            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                AppLocalizations.of(context)!.userLeavesBrandUserSubtitle,
+                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+          onTap: () async {
+            await _accessDatabase.markNotificationAsRead(notification.id!);
+            returnActionOnTap(index,notification);
+          },
         );
       }
       case "UserLeavesBrand_Trainer": {
-        return CircularImage(
-          size: MediaQuery.of(context).size.width*0.15,
-          image: notification.parameters[1],
-          color: Theme.of(context).primaryColor,
-          borderWidth: 1.5,
+        return ListTile(
+          leading: CircularImage(
+            size: MediaQuery.of(context).size.width*0.15,
+            image: user.imageUrl!,
+            color: Theme.of(context).primaryColor,
+            borderWidth: 1.5,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.userLeavesBrandBrand(user.name!, brand.name!),
+            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                AppLocalizations.of(context)!.userLeavesBrandBrandSubtitle(notification.parameters[2]),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+          onTap: () async {
+            await _accessDatabase.markNotificationAsRead(notification.id!);
+            returnActionOnTap(index,notification);
+          },
         );
       }
       case "UserSendRequestToBrand_User": {
-        return CircularImage(
-          size: MediaQuery.of(context).size.width*0.15,
-          image: notification.parameters[1],
-          color: Theme.of(context).primaryColor,
-          borderWidth: 1.5,
+        return ListTile(
+          leading: CircularImage(
+            size: MediaQuery.of(context).size.width*0.15,
+            image: brand.logoUrl!,
+            color: Theme.of(context).primaryColor,
+            borderWidth: 1.5,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.userSendRequestToBrandUser(brand.name!),
+            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                AppLocalizations.of(context)!.userSendRequestToBrandUserSubtitle,
+                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+          onTap: () async {
+            await _accessDatabase.markNotificationAsRead(notification.id!);
+            returnActionOnTap(index,notification);
+          },
         );
       }
       case "UserSendRequestToBrand_Trainer": {
-        return CircularImage(
-          size: MediaQuery.of(context).size.width*0.15,
-          image: notification.parameters[1],
-          color: Theme.of(context).primaryColor,
-          borderWidth: 1.5,
+        return ListTile(
+          leading: CircularImage(
+            size: MediaQuery.of(context).size.width*0.15,
+            image: user.imageUrl!,
+            color: Theme.of(context).primaryColor,
+            borderWidth: 1.5,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.userSendRequestToBrandBrand(user.name!),
+            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                AppLocalizations.of(context)!.userSendRequestToBrandBrandSubtitle(notification.parameters[2]),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+          onTap: () async {
+            await _accessDatabase.markNotificationAsRead(notification.id!);
+            returnActionOnTap(index,notification);
+          },
         );
       }
       case "UserCancelRequestToBrand_User": {
-        return CircularImage(
-          size: MediaQuery.of(context).size.width*0.15,
-          image: notification.parameters[1],
-          color: Theme.of(context).primaryColor,
-          borderWidth: 1.5,
+        return ListTile(
+          leading: CircularImage(
+            size: MediaQuery.of(context).size.width*0.15,
+            image: brand.logoUrl!,
+            color: Theme.of(context).primaryColor,
+            borderWidth: 1.5,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.userCancelRequestToBrandUser(brand.name!),
+            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                AppLocalizations.of(context)!.userCancelRequestToBrandUserSubtitle,
+                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+          onTap: () async {
+            await _accessDatabase.markNotificationAsRead(notification.id!);
+            returnActionOnTap(index,notification);
+          },
         );
       }
       case "UserCancelRequestToBrand_Trainer": {
-        return CircularImage(
-          size: MediaQuery.of(context).size.width*0.15,
-          image: notification.parameters[1],
-          color: Theme.of(context).primaryColor,
-          borderWidth: 1.5,
+        return ListTile(
+          leading: CircularImage(
+            size: MediaQuery.of(context).size.width*0.15,
+            image: user.imageUrl!,
+            color: Theme.of(context).primaryColor,
+            borderWidth: 1.5,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.userCancelRequestToBrandBrand(user.name!),
+            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                AppLocalizations.of(context)!.userCancelRequestToBrandBrandSubtitle,
+                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+          onTap: () async {
+            await _accessDatabase.markNotificationAsRead(notification.id!);
+            returnActionOnTap(index,notification);
+          },
         );
       }
       case "EventJoined": {
@@ -271,237 +506,11 @@ class _NotificationsState extends State<Notifications> {
     }
   }
 
-  Widget returnTitleGivenType (NotificationEvent notification) {
-    // Return the leading icon depending on Type
-    switch(notification.type!) {
-      case "Wellcome_User": {
-        return Text(
-          AppLocalizations.of(context)!.wellcomeToMAMBA,
-          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-        );
-      }
-      case "UserCreatesBrand_User": {
-        return Text(
-          AppLocalizations.of(context)!.userCreatesBrandUser(notification.parameters[2]),
-          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-        );
-      }
-      case "UserJoinsBrand_User": {
-        return Text(
-          AppLocalizations.of(context)!.userJoinsBrandUser(notification.parameters[2]),
-          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-        );
-      }
-      case "UserJoinsBrand_Trainer": {
-        return Text(
-          AppLocalizations.of(context)!.userJoinsBrandBrand(notification.parameters[2], notification.parameters[3]),
-          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-        );
-      }
-      case "UserLeavesBrand_User": {
-        return Text(
-          AppLocalizations.of(context)!.userLeavesBrandUser(notification.parameters[2]),
-          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-        );
-      }
-      case "UserLeavesBrand_Trainer": {
-        return Text(
-          AppLocalizations.of(context)!.userLeavesBrandBrand(notification.parameters[2], notification.parameters[3]),
-          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-        );
-      }
-      case "UserSendRequestToBrand_User": {
-        return Text(
-          AppLocalizations.of(context)!.userSendRequestToBrandUser(notification.parameters[2]),
-          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-        );
-      }
-      case "UserSendRequestToBrand_Trainer": {
-        return Text(
-          AppLocalizations.of(context)!.userSendRequestToBrandBrand(notification.parameters[2]),
-          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-        );
-      }
-      case "UserCancelRequestToBrand_User": {
-        return Text(
-          AppLocalizations.of(context)!.userCancelRequestToBrandUser(notification.parameters[2]),
-          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-        );
-      }
-      case "UserCancelRequestToBrand_Trainer": {
-        return Text(
-          AppLocalizations.of(context)!.userCancelRequestToBrandBrand(notification.parameters[2]),
-          style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-        );
-      }
-      case "EventJoined": {
-        return CircularImage(
-          size: MediaQuery.of(context).size.width*0.15,
-          image: notification.parameters[0],
-          color: Theme.of(context).primaryColor,
-          borderWidth: 1.5,
-        );
-      }
-      case "EventAbandoned": {
-        return
-          Icon(
-            Icons.event_busy,
-            color: Colors.red,
-            size: 30,
-          );
-      }
-      default: {
-        return Container();
-      }
-    }
-  }
+  void returnActionOnTap (int index, NotificationEvent notification) {
 
-  Widget returnSubtitleGivenType (NotificationEvent notification) {
-    // Return the leading icon depending on Type
-    switch(notification.type!) {
-      case "Wellcome_User": {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-            Text(
-              AppLocalizations.of(context)!.onlyImportantNotifications,
-              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
-            ),
-          ],
-        );
-      }
-      case "UserCreatesBrand_User": {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-            Text(
-              AppLocalizations.of(context)!.userCreatesBrandUserSubtitle,
-              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
-            ),
-          ],
-        );
-      }
-      case "UserJoinsBrand_User": {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-            Text(
-              AppLocalizations.of(context)!.userJoinsBrandSubtitleUser,
-              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
-            ),
-          ],
-        );
-      }
-      case "UserJoinsBrand_Trainer": {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-            Text(
-              AppLocalizations.of(context)!.userJoinsBrandBrandSubtitle(notification.parameters[4]),
-              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
-            ),
-          ],
-        );
-      }
-      case "UserLeavesBrand_User": {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-            Text(
-              AppLocalizations.of(context)!.userLeavesBrandUserSubtitle,
-              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
-            ),
-          ],
-        );
-      }
-      case "UserLeavesBrand_Trainer": {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-            Text(
-              AppLocalizations.of(context)!.userLeavesBrandBrandSubtitle(notification.parameters[4]),
-              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
-            ),
-          ],
-        );
-      }
-      case "UserSendRequestToBrand_User": {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-            Text(
-              AppLocalizations.of(context)!.userSendRequestToBrandUserSubtitle,
-              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
-            ),
-          ],
-        );
-      }
-      case "UserSendRequestToBrand_Trainer": {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-            Text(
-              AppLocalizations.of(context)!.userSendRequestToBrandBrandSubtitle(notification.parameters[3]),
-              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
-            ),
-          ],
-        );
-      }
-      case "UserCancelRequestToBrand_User": {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-            Text(
-              AppLocalizations.of(context)!.userCancelRequestToBrandUserSubtitle,
-              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
-            ),
-          ],
-        );
-      }
-      case "UserCancelRequestToBrand_Trainer": {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-            Text(
-              AppLocalizations.of(context)!.userCancelRequestToBrandBrandSubtitle,
-              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
-            ),
-          ],
-        );
-      }
-      case "EventJoined": {
-        return CircularImage(
-          size: MediaQuery.of(context).size.width*0.15,
-          image: notification.parameters[0],
-          color: Theme.of(context).primaryColor,
-          borderWidth: 1.5,
-        );
-      }
-      case "EventAbandoned": {
-        return
-          Icon(
-            Icons.event_busy,
-            color: Colors.red,
-            size: 30,
-          );
-      }
-      default: {
-        return Container();
-      }
-    }
-  }
+    Usuario user = usersList[index];
+    Brand brand = brandsList[index];
 
-  void returnActionOnTap (NotificationEvent notification) {
     switch(notification.type!) {
       case "Wellcome_User": {
         break;
@@ -517,7 +526,7 @@ class _NotificationsState extends State<Notifications> {
                 PageTransition(
                     type: PageTransitionType.bottomToTop,
                     child: CalendarWidgetTrainer(
-                      brandID: notification.parameters[0],
+                      brandID: notification.parameters[1],
                       canEdit: true,
                     )
                 )
@@ -528,7 +537,7 @@ class _NotificationsState extends State<Notifications> {
                 PageTransition(
                     type: PageTransitionType.bottomToTop,
                     child: CalendarWidgetClient(
-                      brandID: notification.parameters[0],
+                      brandID: notification.parameters[1],
                       onlyView: true,
                     )
                 )
@@ -538,16 +547,18 @@ class _NotificationsState extends State<Notifications> {
         break;
       }
       case "UserJoinsBrand_Trainer": {
-        Navigator.push(
-            context,
-            PageTransition(
-                type: PageTransitionType.bottomToTop,
-                child: ProfileViewUser(
-                  userID: notification.parameters[0],
-                  viewOnly: false,
-                )
-            )
-        );
+        if (notification.isRead == false) {
+          Navigator.push(
+              context,
+              PageTransition(
+                  type: PageTransitionType.bottomToTop,
+                  child: ProfileViewUser(
+                    userID: notification.parameters[0],
+                    viewOnly: false,
+                  )
+              )
+          );
+        }
         break;
       }
       case "UserLeavesBrand_User": {
@@ -566,7 +577,7 @@ class _NotificationsState extends State<Notifications> {
               PageTransition(
                   type: PageTransitionType.bottomToTop,
                   child: MembershipRequests(
-                    brandId: notification.parameters[4],
+                    brandId: notification.parameters[1],
                   )
               )
           );

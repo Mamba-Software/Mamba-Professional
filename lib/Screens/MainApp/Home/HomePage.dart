@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
       body: PageView(
         //physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
-        allowImplicitScrolling: true,
+        //allowImplicitScrolling: true,
         children: <Widget>[
           Perfil(),
           Marca(),

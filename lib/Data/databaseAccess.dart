@@ -29,6 +29,7 @@ class DatabaseAccess {
   Future<User?> getCurrentUser() => _firebase.getCurrentUser();
   Future<Usuario> getCurrentUserDetails() => _firebase.getCurrentUserDetails();
   Future<Usuario> getUserDetails(String uid) => _firebase.getUserDetails(uid);
+  Future<List<String>> getUserCover(String uid) => _firebase.getUserCover(uid);
 
   Future<int> registerUser(String email, String password, String idioma) => _firebase.registerUser(email, password, idioma);
   Future<void> addUser(String uid, String name, String nick, String dateOfBirth, int gender, File? image, bool isTrainer) => _firebase.addUser(uid, name, nick, dateOfBirth, gender, image, isTrainer);
@@ -47,6 +48,7 @@ class DatabaseAccess {
 
   Future<bool> checkIfBrandExists(String brandID) => _firebase.checkIfBrandExists(brandID);
   Future<Brand> getBrandDetails(String brandID) => _firebase.getBrandDetails(brandID);
+  Future<List<String>> getBrandCover(String brandID) => _firebase.getBrandCover(brandID);
   Future<List<Usuario>> getAllTrainersFromBrand(String brandID) => _firebase.getAllTrainersFromBrand(brandID);
   Future<List<Usuario>> getAllClientsFromBrand(String brandID) => _firebase.getAllClientsFromBrand(brandID);
 
