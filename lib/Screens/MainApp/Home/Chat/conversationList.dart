@@ -88,7 +88,7 @@ class _ConversationListState extends State<ConversationList> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(widget.iconData == Icons.groups ? widget.name + "(Grupo)" : widget.name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                          Text(widget.name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                           SizedBox(height: MediaQuery.of(context).size.height*0.005,),
                             TextField(
                               enabled: false,

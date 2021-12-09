@@ -46,9 +46,11 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
     await getBrand();
     await getNumberFinishedEvents();
     await getAllEventsTodayBrand();
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   // Update Number of Members.

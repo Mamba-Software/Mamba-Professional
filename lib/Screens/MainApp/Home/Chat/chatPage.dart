@@ -4,6 +4,7 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/ChatUsers.dart';
 import 'package:mamba_castelldefels/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Models/Conversation.dart';
@@ -149,56 +150,76 @@ class _ChatPageState extends State<ChatPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             StreamBuilder<QuerySnapshot>(
-                stream:
-                    _accessDatabase.getUserConversations(toMap(currentUser.id)),
+                stream: _accessDatabase.getUserConversations(toMap(currentUser.id)),
                 builder: (context, snapshot) {
                   if (snapshot.data == null) {
-                    return LoadingView();
+                    return Container(
+                        height: MediaQuery.of(context).size.height*0.65,
+                        child: Center(
+                            child: LoadingViewPurple()
+                        )
+                    );
                   } else {
-
                     return FutureBuilder<List<ChatUsers>>(
                         future: documentsToConversations(
                             snapshot.data!.docs, chatUsers),
                         builder: (context, snapshot) {
-                          if (snapshot.data != null && !isFiltered) {
-                            chatUsers = snapshot.data!;
-                            return ListView.builder(
-                              itemCount: chatUsers.length,
-                              shrinkWrap: true,
-                              //padding: EdgeInsets.only(top: 16),
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return ConversationList(
-                                    name: chatUsers[index].name!,
-                                    messageText: chatUsers[index].messageText!,
-                                    imageUrl: chatUsers[index].imageURL!,
-                                    time: chatUsers[index].time!,
-                                    isMessageRead: chatUsers[index].isMessageRead!,
-                                    userId: chatUsers[index].userId!,
-                                    isGroup: chatUsers[index].isGroup!,
-                                    iconData: chatUsers[index].iconData!);
-                              },
+                          if (snapshot.data != null) {
+                            if (!isFiltered) {
+                              chatUsers = snapshot.data!;
+                              return ListView.builder(
+                                itemCount: chatUsers.length,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  return ConversationList(
+                                      name: chatUsers[index].name!,
+                                      messageText: chatUsers[index]
+                                          .messageText!,
+                                      imageUrl: chatUsers[index].imageURL!,
+                                      time: chatUsers[index].time!,
+                                      isMessageRead: chatUsers[index]
+                                          .isMessageRead!,
+                                      userId: chatUsers[index].userId!,
+                                      isGroup: chatUsers[index].isGroup!,
+                                      iconData: chatUsers[index].iconData!);
+                                },
+                              );
+                            } else {
+                              return ListView.builder(
+                                itemCount: chatUsers.length,
+                                shrinkWrap: true,
+                                //padding: EdgeInsets.only(top: 16),
+                                physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  return ConversationList(
+                                      name: chatUsers[index].name!,
+                                      messageText: chatUsers[index]
+                                          .messageText!,
+                                      imageUrl: chatUsers[index].imageURL!,
+                                      time: chatUsers[index].time!,
+                                      isMessageRead: chatUsers[index]
+                                          .isMessageRead!,
+                                      userId: chatUsers[index].userId!,
+                                      isGroup: chatUsers[index].isGroup!,
+                                      iconData: chatUsers[index].iconData!);
+                                },
+                              );
+                            }
+                          } else {
+                            return Container(
+                                height: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .height * 0.65,
+                                child: Center(
+                                    child: LoadingViewPurple()
+                                )
                             );
-                          } else
-                            return ListView.builder(
-                              itemCount: chatUsers.length,
-                              shrinkWrap: true,
-                              //padding: EdgeInsets.only(top: 16),
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return ConversationList(
-                                    name: chatUsers[index].name!,
-                                    messageText: chatUsers[index].messageText!,
-                                    imageUrl: chatUsers[index].imageURL!,
-                                    time: chatUsers[index].time!,
-                                    isMessageRead: chatUsers[index].isMessageRead!,
-                                    userId: chatUsers[index].userId!,
-                                    isGroup: chatUsers[index].isGroup!,
-                                    iconData: chatUsers[index].iconData!);
-                              },
-                            );
-                        });
-                  }
+                          }
+                        }
+                      );
+                   }
                 }),
           ],
         ),

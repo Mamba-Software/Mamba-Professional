@@ -61,15 +61,21 @@ class _NotificationsState extends State<Notifications> {
       }
       if (notification.parameters.length > 0) {
         if (notification.parameters[0] != "null") {
-          List<String> coverInformation = await _accessDatabase.getUserCover(notification.parameters[0]);
-          Usuario user = Usuario(name: coverInformation[0], imageUrl: coverInformation[1]);
+          Usuario user = users.firstWhere((element) => element.id == notification.parameters[0], orElse: () => Usuario());
+          if (user.id == null) {
+            List<String> coverInformation = await _accessDatabase.getUserCover(notification.parameters[0]);
+            user = Usuario(id: notification.parameters[0], name: coverInformation[0], imageUrl: coverInformation[1]);
+          }
           users.add(user);
         } else {
           users.add(Usuario());
         }
         if (notification.parameters[1] != "null") {
-          List<String> coverInformation = await _accessDatabase.getBrandCover(notification.parameters[1]);
-          Brand brand = Brand(name: coverInformation[0], logoUrl: coverInformation[1]);
+          Brand brand = brands.firstWhere((element) => element.id == notification.parameters[1], orElse: () => Brand());
+          if (brand.id == null) {
+            List<String> coverInformation = await _accessDatabase.getBrandCover(notification.parameters[1]);
+            brand = Brand(id: notification.parameters[1], name: coverInformation[0], logoUrl: coverInformation[1]);
+          }
           brands.add(brand);
         } else {
           brands.add(Brand());
