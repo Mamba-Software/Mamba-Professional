@@ -123,7 +123,7 @@ class DatabaseAccess {
 
   //GroupOfQuestions
   Future<String> addGroupOfQuestions(String? questionOne, String? questionTwo, String? questionThree, String? questionFour) => _firebase.addGroupOfQuestions(questionOne, questionTwo, questionThree, questionFour);
-  Future<GroupOfQuestions> getActiveGroupOfQuestions() => _firebase.getActiveGroupOfQuestions();
+  Future<GroupOfQuestions?> getActiveGroupOfQuestions() => _firebase.getActiveGroupOfQuestions();
 
   //Answers
   Future<String> addAnswers(String? groupOfQuestionsID, String? answerOne, String? answerTwo, String? answerThree, String? answerFour) => _firebase.addAnswers(groupOfQuestionsID, answerOne, answerTwo, answerThree, answerFour);

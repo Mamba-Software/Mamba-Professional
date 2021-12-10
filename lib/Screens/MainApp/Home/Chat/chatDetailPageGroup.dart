@@ -792,7 +792,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                                 second,
                               );
                               _accessDatabase.addMessage(
-                                  editingController.text,
+                                  editingController.text.trim(),
                                   currentUser.id,
                                   today.year.toString(),
                                   today.month.toString(),

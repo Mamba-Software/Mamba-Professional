@@ -573,7 +573,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                   ]
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            SizedBox(height: MediaQuery.of(context).size.height*0.03),
             todayEvents.length != 0 ? Container(
               height: MediaQuery.of(context).size.height*0.32,
               child: Column(
@@ -817,7 +817,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                 ],
               ),
             ) : Container(
-              height: MediaQuery.of(context).size.height*0.08,
+              height: MediaQuery.of(context).size.height*0.09,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

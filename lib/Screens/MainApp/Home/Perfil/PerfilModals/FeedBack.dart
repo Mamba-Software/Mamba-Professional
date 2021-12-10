@@ -23,7 +23,7 @@ class FeedBack extends StatefulWidget {
 class _FeedBackState extends State<FeedBack> {
   // Boolean New Feedback
   bool newFeedback = false;
-  GroupOfQuestions groupOfQuestions = new GroupOfQuestions();
+  GroupOfQuestions? groupOfQuestions = new GroupOfQuestions();
   var _accessDatabase = new DatabaseAccess();
   bool alreadyAnswered = false;
   bool isLoading = true;
@@ -36,7 +36,11 @@ class _FeedBackState extends State<FeedBack> {
 
   Future<void> checkIfAnswered() async {
     this.groupOfQuestions = await this._accessDatabase.getActiveGroupOfQuestions();
-    alreadyAnswered = await this ._accessDatabase.checkIfAnswersExist(this.groupOfQuestions.id);
+    if (groupOfQuestions != null) {
+      alreadyAnswered = await this ._accessDatabase.checkIfAnswersExist(this.groupOfQuestions!.id);
+    } else {
+      alreadyAnswered = true;
+    }
     setState(() {
       isLoading = false;
     });

@@ -23,7 +23,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
   //DataBase Access
   var _accessDatabase = new DatabaseAccess();
 
-  GroupOfQuestions groupOfQuestions = new GroupOfQuestions();
+  GroupOfQuestions? groupOfQuestions = new GroupOfQuestions();
   bool isLoading = true;
   String questionOne = "", questionTwo = "", questionThree = "", questionFour = "";
 
@@ -41,16 +41,16 @@ class _UserFeedBackState extends State<UserFeedBack> {
     this.groupOfQuestions = await this._accessDatabase.getActiveGroupOfQuestions();
 
     if(currentUser.idioma == "ca") {
-      questionOne = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions.questionOne)).questionCat!;
-      questionTwo = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions.questionTwo)).questionCat!;
-      questionThree = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions.questionThree)).questionCat!;
-      questionFour = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions.questionFour)).questionCat!;
+      questionOne = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions!.questionOne)).questionCat!;
+      questionTwo = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions!.questionTwo)).questionCat!;
+      questionThree = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions!.questionThree)).questionCat!;
+      questionFour = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions!.questionFour)).questionCat!;
     }
     else {
-      questionOne = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions.questionOne)).questionSpn!;
-      questionTwo = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions.questionTwo)).questionSpn!;
-      questionThree = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions.questionThree)).questionSpn!;
-      questionFour = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions.questionFour)).questionSpn!;
+      questionOne = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions!.questionOne)).questionSpn!;
+      questionTwo = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions!.questionTwo)).questionSpn!;
+      questionThree = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions!.questionThree)).questionSpn!;
+      questionFour = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions!.questionFour)).questionSpn!;
     }
 
     setState(() {
@@ -79,7 +79,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
                    onResult: (SurveyResult result) {
                      if(result.finishReason.toString() == "FinishReason.COMPLETED") {
                        this._accessDatabase.addAnswers(
-                         this.groupOfQuestions.id, result.results[0]
+                         this.groupOfQuestions!.id, result.results[0]
                          .results[0].valueIdentifier, result.results[1]
                          .results[0].valueIdentifier,
                          result.results[2].results[0].valueIdentifier, result

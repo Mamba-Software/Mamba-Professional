@@ -730,7 +730,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                           shape: BoxShape.circle,
                                           image: new DecorationImage(
                                             image: FileImage(_image),
-                                            fit: BoxFit.fitHeight,
+                                            fit: BoxFit.cover,
                                           ),
                                         )
                                     )
