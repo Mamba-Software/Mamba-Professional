@@ -97,6 +97,7 @@ class _NotificationsState extends State<Notifications> {
       } else {
         users.add(Usuario());
         brands.add(Brand());
+        events.add(Event());
       }
       notifications.add(notification);
     }
@@ -668,13 +669,14 @@ class _NotificationsState extends State<Notifications> {
               )
           );
         } else {
+
           Navigator.push(
               context,
               PageTransition(
                   type: PageTransitionType.bottomToTop,
                   child: CalendarWidgetClient(
                     brandID: notification.parameters[1],
-                    onlyView: true,
+                    onlyView: false,
                   )
               )
           );

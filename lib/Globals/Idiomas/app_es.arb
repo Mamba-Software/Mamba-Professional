@@ -1411,7 +1411,10 @@
   "@writeMessage": {
     "description": "writeMessage message"
   },
-
+  "noMessages": "Aún no has empezado ninguna conversación",
+  "@noMessages": {
+    "description": "writeMessage message"
+  },
   "membersOfBrand": "Grupo con todos los miembros de la marca",
   "@membersOfBrand": {
     "description": "membersOfBrand message"
