@@ -62,7 +62,7 @@ class CancelRequestConfirmationDialog extends StatelessWidget {
                         label: Text(AppLocalizations.of(context)!.cancel),
                         backgroundColor: Theme.of(context).primaryColor,
                         foregroundColor: Styles.white,
-                        onPressed: () async {
+                        onPressed: () {
                           Navigator.pop(context, false);
                         },
                       ),
