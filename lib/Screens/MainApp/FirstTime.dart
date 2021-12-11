@@ -720,7 +720,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                 GestureDetector(
                                     onTap: getImage,
                                     child: CircularImage(
-                                      size: MediaQuery.of(context).size.height * 0.26,
+                                      size: MediaQuery.of(context).size.height * 0.25,
                                       file: _image,
                                       borderWidth: 1,
                                       color: Theme.of(context).primaryColor,
