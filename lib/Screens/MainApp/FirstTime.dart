@@ -136,7 +136,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
       mode: CupertinoDatePickerMode.date,
       initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
       minimumDate: startDate.subtract(Duration(days: 365*80)),
-      maximumDate: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
+      maximumDate: DateTime(startDate.year, startDate.month, 31, 0, 0),
       minimumYear: 1941,
       maximumYear: 2021,
       use24hFormat: true,
@@ -719,21 +719,12 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                 ) :
                                 GestureDetector(
                                     onTap: getImage,
-                                    child: Container(
-                                        height: MediaQuery.of(context).size.height * 0.26,
-                                        decoration: new BoxDecoration(
-                                          border: Border.all(
-                                            width: 1.5,
-                                            color: Theme.of(context).accentColor,
-                                            style: BorderStyle.solid,
-                                          ),
-                                          shape: BoxShape.circle,
-                                          image: new DecorationImage(
-                                            image: FileImage(_image),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        )
-                                    )
+                                    child: CircularImage(
+                                      size: MediaQuery.of(context).size.height * 0.26,
+                                      file: _image,
+                                      borderWidth: 1,
+                                      color: Theme.of(context).primaryColor,
+                                     ),
                                 ),
                               ),
                             ),
