@@ -451,6 +451,18 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                                             ),
                                                           ],
                                                         ),
+                                                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                                        user.id == currentBrand.adminID! ? Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            Expanded(
+                                                              child: Text(
+                                                                "(${AppLocalizations.of(context)!.owner})",
+                                                                style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12, fontStyle: FontStyle.italic),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ) : Container(),
                                                       ],
                                                     ),
                                                   ),

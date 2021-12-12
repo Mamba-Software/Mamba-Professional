@@ -826,8 +826,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                   CircularImage(
                                                     size: MediaQuery.of(context).size.width*0.2,
                                                     image: trainer.imageUrl,
-                                                    color: Theme.of(context).accentColor,
-                                                    borderWidth: 1.5,
+                                                    color: Theme.of(context).primaryColor,
+                                                    borderWidth: 1,
                                                   ),
                                                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                                   Container(
@@ -939,8 +939,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                     CircularImage(
                                                       size: MediaQuery.of(context).size.width*0.2,
                                                       image: client.noImageUrl,
-                                                      color: Theme.of(context).accentColor,
-                                                      borderWidth: 1.5,
+                                                      color: Theme.of(context).primaryColor,
+                                                    borderWidth: 1,
                                                     ),
                                                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                                     Container(
@@ -975,8 +975,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                     CircularImage(
                                                       size: MediaQuery.of(context).size.width*0.2,
                                                       image: client.imageUrl,
-                                                      color: Theme.of(context).accentColor,
-                                                      borderWidth: 1.5,
+                                                      color: Theme.of(context).primaryColor,
+                                                    borderWidth: 1,
                                                     ),
                                                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                                     Container(

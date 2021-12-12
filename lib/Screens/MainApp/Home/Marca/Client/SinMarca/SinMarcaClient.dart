@@ -385,6 +385,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                                   type: PageTransitionType.rightToLeftWithFade,
                                                   child: TodosMiembrosClient(
                                                     brandID: brand.id!,
+                                                    brandAdmin: brand.adminID!,
                                                     viewOnly: true,
                                                   )
                                               )

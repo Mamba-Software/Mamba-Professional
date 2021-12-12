@@ -401,6 +401,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                                     type: PageTransitionType.rightToLeftWithFade,
                                                     child: TodosMiembrosClient(
                                                       brandID: brand.id!,
+                                                      brandAdmin: brand.adminID!,
                                                       viewOnly: true,
                                                     )
                                                 )

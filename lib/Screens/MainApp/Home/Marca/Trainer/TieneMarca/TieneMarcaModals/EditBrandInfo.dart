@@ -32,8 +32,10 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
   final formKeyInfo = GlobalKey<FormState>();
   // Name Brand Controller
   var nameBrandController = TextEditingController();
+  String nameBrandControllerTemp = "";
   // Description Controller
   var descriptionController = TextEditingController();
+  String descriptionControllerTemp = "";
   // Max Members Brand
   TextEditingController membersController = TextEditingController();
   int members = 1;
@@ -262,9 +264,9 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
       var startMinWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[1]);
       var endHourWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
       var endMinWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
-      if (nameBrandController.text.trim() != currentBrand.name! && nameBrandController.text != "") {
+      if (nameBrandControllerTemp.trim() != currentBrand.name! && nameBrandControllerTemp != "") {
         isUpdated = true;
-      } else if (descriptionController.text.trim() != currentBrand.description! && descriptionController.text != "") {
+      } else if (descriptionControllerTemp.trim() != currentBrand.description! && descriptionControllerTemp != "") {
         isUpdated = true;
       } else if (startTimeController.text != DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startHourWS, startMinWS,)) || endTimeController.text != DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endHourWS, endMinWS,))) {
         isUpdated = true;
@@ -327,6 +329,11 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                     child: new TextFormField(
                       keyboardType: TextInputType.text,
                       controller: nameBrandController,
+                      onChanged: (value) {
+                        setState(() {
+                          nameBrandControllerTemp = value;
+                        });
+                      },
                       validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameBrandError : null,
                       style: Styles.purpleTextStyle.copyWith(fontSize: 16),
                       textCapitalization: TextCapitalization.words,
@@ -364,6 +371,11 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                     child: new TextFormField(
                       keyboardType: TextInputType.text,
                       controller: descriptionController,
+                      onChanged: (value) {
+                        setState(() {
+                          descriptionControllerTemp = value;
+                        });
+                      },
                       validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
                       minLines: 1,
                       maxLines: 5,

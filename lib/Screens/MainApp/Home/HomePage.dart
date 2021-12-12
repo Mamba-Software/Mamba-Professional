@@ -25,8 +25,6 @@ class _HomePageState extends State<HomePage> {
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
   bool isLoading = false;
-  // Index of Bottom Navigation Bar
-  int _currentIndex = 0;
   // Page Controller
   final PageController _pageController = PageController(initialPage: 0);
 
@@ -50,7 +48,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: null,
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
+        currentIndex: currentIndex,
         iconSize: MediaQuery.of(context).size.height*0.04,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -104,7 +102,7 @@ class _HomePageState extends State<HomePage> {
         ],
         onPageChanged: (page) {
           setState(() {
-            _currentIndex = page;
+            currentIndex = page;
           });
         },
       ),
@@ -113,7 +111,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _onTappedBar(int value) async {
     setState(() {
-      _currentIndex = value;
+      currentIndex = value;
     });
     unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
     _pageController.jumpToPage(value);

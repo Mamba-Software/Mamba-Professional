@@ -437,6 +437,14 @@
       }
     }
   },
+  "owner": "Propietario/a",
+  "@owner":{
+    "description": "createBrand Text"
+  },
+  "creator": "Creador",
+  "@creator":{
+    "description": "createBrand Text"
+  },
   "createBrand": "Crea tu marca",
   "@createBrand":{
     "description": "createBrand Text"
@@ -993,6 +1001,10 @@
   },
   "myLocations": "Mis ubicaciones",
   "@myLocations": {
+    "description": "Wellcome message"
+  },
+  "theirLocations": "Sus ubicaciones",
+  "@theirLocations": {
     "description": "Wellcome message"
   },
   "brandLocations": "Ubicaciones {brand}",

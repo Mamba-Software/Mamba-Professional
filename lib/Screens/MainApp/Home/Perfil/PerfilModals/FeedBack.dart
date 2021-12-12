@@ -80,8 +80,9 @@ class _FeedBackState extends State<FeedBack> {
             }
           ),
         ),
-        body: alreadyAnswered ?
+        body: !alreadyAnswered ?
         Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
@@ -144,6 +145,7 @@ class _FeedBackState extends State<FeedBack> {
           ],
         ) :
         Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
@@ -200,20 +202,29 @@ class _FeedBackState extends State<FeedBack> {
                       this.checkIfAnswered();
                   });
               },
-              child: Container(
-                  height: MediaQuery.of(context).size.height*0.25,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 1,
-                      color: Theme.of(context).primaryColor,
-                      style: BorderStyle.solid,
+              child: Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.07),
+                    child: Container(
+                        height: MediaQuery.of(context).size.height*0.25,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 1,
+                            color: Theme.of(context).primaryColor,
+                            style: BorderStyle.solid,
+                          ),
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                            fit: BoxFit.fitHeight,
+                            image: Image.asset(Constants.giveFeedbackImage).image,
+                          ),
+                        )
                     ),
-                    shape: BoxShape.circle,
-                    image: new DecorationImage(
-                      fit: BoxFit.fitHeight,
-                      image: Image.asset(Constants.giveFeedbackImage).image,
-                    ),
-                  )
+                  ),
+                  Icon(Icons.touch_app, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.height*0.15,),
+                ],
               ),
             ),
           ],

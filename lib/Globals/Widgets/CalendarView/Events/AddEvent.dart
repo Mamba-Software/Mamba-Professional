@@ -873,8 +873,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                             CircularImage(
                                                               size: MediaQuery.of(context).size.width*0.2,
                                                               image: trainer.imageUrl,
-                                                              color: Theme.of(context).accentColor,
-                                                              borderWidth: 1.5,
+                                                              color: Theme.of(context).primaryColor,
+                                                    borderWidth: 1,
                                                             ),
                                                             Container(
                                                               width: MediaQuery.of(context).size.width*0.2,
@@ -946,8 +946,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                             CircularImage (
                                                               size: MediaQuery.of(context).size.width*0.2,
                                                               image: trainer.imageUrl,
-                                                              color: Theme.of(context).accentColor,
-                                                              borderWidth: 1.5,
+                                                              color: Theme.of(context).primaryColor,
+                                                    borderWidth: 1,
                                                             ),
                                                             Row(
                                                               mainAxisAlignment: MainAxisAlignment.center,

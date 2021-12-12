@@ -20,3 +20,6 @@ var unreadChats = 0;
 // Current User Location
 Position? currentPosition;
 String? currentAddress;
+
+// Current Index BotomNavigation
+int currentIndex = 0;

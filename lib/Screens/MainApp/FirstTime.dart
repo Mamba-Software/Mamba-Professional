@@ -1022,8 +1022,8 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                           CircularImage(
                                             size: MediaQuery.of(context).size.width*0.2,
                                             image: brand.logoUrl,
-                                            color: Theme.of(context).accentColor,
-                                            borderWidth: 1.5,
+                                            color: Theme.of(context).primaryColor,
+                                                    borderWidth: 1,
                                           ),
                                           SizedBox(width: MediaQuery.of(context).size.width*0.04),
                                           Expanded(

@@ -28,6 +28,7 @@ class _TusDatosState extends State<TusDatos> {
   // Form Values
   final _formKey = GlobalKey<FormState>();
   var nombreCompletoController;
+  String nombreCompletoControllerTemp = "";
 
   // Gender Widget value
   int? genderTemp;
@@ -135,7 +136,7 @@ class _TusDatosState extends State<TusDatos> {
     }
     // Checking if there has been a change that has not been saved.
     if (!isLoading) {
-      if (nombreCompletoController.text.trim() != currentUser.name! && nombreCompletoController.text != "") {
+      if (nombreCompletoControllerTemp.trim() != currentUser.name! && nombreCompletoControllerTemp != "") {
         isUpdated = true;
       } else if (genderTemp != currentUser.gender! && genderTemp != null) {
         isUpdated = true;
@@ -189,6 +190,11 @@ class _TusDatosState extends State<TusDatos> {
                             child: new TextFormField(
                               controller: nombreCompletoController,
                               textCapitalization: TextCapitalization.words,
+                              onChanged: (value) {
+                                setState(() {
+                                  nombreCompletoControllerTemp = value;
+                                });
+                              },
                               validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
                               decoration: InputDecoration(
                                 hintText: AppLocalizations.of(context)!.nameCompleto,

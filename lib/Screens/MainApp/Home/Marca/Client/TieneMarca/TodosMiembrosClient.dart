@@ -18,8 +18,9 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class TodosMiembrosClient extends StatefulWidget {
   String brandID;
+  String brandAdmin;
   bool viewOnly;
-  TodosMiembrosClient({Key? key, required this.brandID, required this.viewOnly}) : super(key: key);
+  TodosMiembrosClient({Key? key, required this.brandID,  required this.brandAdmin, required this.viewOnly}) : super(key: key);
 
   @override
   _TodosMiembrosClientState createState() => _TodosMiembrosClientState();
@@ -231,6 +232,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                             itemCount: filteredTrainers.length,
                             itemBuilder: (context, index) {
                               Usuario user = filteredTrainers[index];
+                              print(user.id);
                               return Container(
                                 padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
                                 child: GestureDetector(
@@ -288,6 +290,18 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                                               ),
                                                             ],
                                                           ),
+                                                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                                          user.id == widget.brandAdmin ? Row(
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            children: [
+                                                              Expanded(
+                                                                child: Text(
+                                                                  "(${AppLocalizations.of(context)!.owner})",
+                                                                  style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12, fontStyle: FontStyle.italic),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ) : Container(),
                                                         ],
                                                       ),
                                                     ),
