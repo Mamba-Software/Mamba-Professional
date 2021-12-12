@@ -132,7 +132,11 @@ class DatabaseAccess {
   //Conversations
   Future<String> addConversation( var users, var messagesRead, String? brandId, String? year, String? month, String? day, String? hour, String? minute, String? second, String? lastMessage) => _firebase.addConversation(users!, messagesRead, brandId, year, month, day, hour, minute, second, lastMessage);
   Future<void> updateConversation(String? uid, var messagesRead, String lastMessage, String year, String month, String day, String hour, String minute, String second) => _firebase.updateConversation(uid, messagesRead, lastMessage, year, month, day, hour, minute, second);
+  Future<void> updateConversationUsers(String? uid, var users) => _firebase.updateConversationUsers(uid, users);
+  Future<void> updateConversationNewUser(String? brandId, String? userId) => _firebase.updateConversationNewUser(brandId, userId);
   Future<void> updateReadMessage(String? uid, var messagesRead) => _firebase.updateReadMessage(uid, messagesRead);
+  Future<void> deleteUserMemberConversations(Map<String, dynamic> currentUser) => _firebase.deleteUserMemberConversations(currentUser);
+  Future<void> deleteBrandConversations(String? brandId) => _firebase.deleteBrandConversations(brandId);
   //Messages
   Future<String> addMessage(String? message, String? userSent, String? year, String? month, String? day, String? hour, String? minute,String? second, String? conversationId) => _firebase.addMessage(message, userSent, year, month, day, hour, minute, second, conversationId);
   Future<List<Message>> getConversationMessagesInit(String? conversationId) => _firebase.getConversationMessagesInit(conversationId);

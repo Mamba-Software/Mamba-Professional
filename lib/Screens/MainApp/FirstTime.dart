@@ -1230,6 +1230,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     _notificationService!.wellcomeUser(currentUser.id!);
     if (brandOkay && !brandNotFound) {
       await _accessDatabase.updateCurrentUserBrand(brand.id!);
+      await _accessDatabase.updateConversationNewUser(brand.id, currentUser.id);
       _notificationService!.userJoinsBrand(currentUser.id!, brand.id!);
     }
     Navigator.pushReplacement(

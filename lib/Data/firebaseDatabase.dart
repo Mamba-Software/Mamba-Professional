@@ -319,11 +319,97 @@ class FirebaseDatabaseService {
     });
   }
 
-  Future<void> updateReadMessage(String? uid, var messagesRead) async {
+  Future<void> updateConversationUsers(String? uid, var users) async {
     await _firestore.collection("Conversations").doc(uid).update({
-      "messagesRead": messagesRead,
+      "users": users,
     });
   }
+
+  Future<void> updateConversationNewUser(String? brandId, String? userId) async {
+
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Conversations")
+        .where("brandId", isEqualTo: brandId)
+        .get();
+
+    Conversation conversation = Conversation.fromObject(
+        querySnapshot.docs[0], querySnapshot.docs[0].id);
+
+    DocumentSnapshot<Map<String, dynamic>> _docu =
+    await _firestore.collection("Users").doc(userId).get();
+    Usuario user = Usuario.fromMap(_docu.data()!, _docu.id);
+    conversation.users.add({
+      'uid': user.id,
+    });
+
+    //List<Map> userMessagesRead = [];
+
+    /*for(int i = 0; i < conversation.isMessageRead.length; ++i) {
+      userMessagesRead.add(conversation.isMessageRead[i]);
+    }*/
+    //if(conversation.isMessageRead is Map) userMessagesRead.add(conversation.isMessageRead);
+    //else userMessagesRead = conversation.isMessageRead;
+
+    // userMessagesRead.add(toMapisMessageRead(user.id, true));
+
+    await _firestore.collection("Conversations").doc(
+        conversation.conversationId).update({
+      "users": conversation.users,
+    });
+  }
+
+    Future<void> updateReadMessage(String? uid, var messagesRead) async {
+      await _firestore.collection("Conversations").doc(uid).update({
+        "messagesRead": messagesRead,
+      });
+    }
+
+  Future<void> deleteUserMemberConversations(Map<String, dynamic> currentUser)async {
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Conversations")
+        .where("users", arrayContains: currentUser)
+        .get();
+
+    QuerySnapshot querySnapshotMessages;
+
+    for (var conv in querySnapshot.docs) {
+      querySnapshotMessages = await _firestore
+          .collection("Messages")
+          .where("conversationId", isEqualTo: conv.id)
+          .get();
+
+      if(Conversation.fromObject(conv, conv.id).brandId == 'null') {
+        for (var mess in querySnapshotMessages.docs) {
+          await this.deleteMessage(mess.id);
+        }
+        await this.deleteConversation(conv.id);
+      }
+      else {
+        print(currentUser["uid"]);
+        for (var mess in querySnapshotMessages.docs) {
+          print(Message.fromObject(
+              mess, mess.id).userSent);
+          if(currentUser["uid"] == Message.fromObject(
+              mess, mess.id).userSent) await this.deleteMessage(mess.id);
+        }
+      }
+    }
+  }
+
+  Future<void> deleteBrandConversations(String? brandId) async {
+    Conversation conv = await getConversationByBrand(brandId);
+
+    QuerySnapshot querySnapshotMessages = await _firestore
+        .collection("Messages")
+        .where("conversationId", isEqualTo: conv.conversationId)
+        .get();
+
+    for (var mess in querySnapshotMessages.docs) {
+      await this.deleteMessage(mess.id);
+    }
+    await this.deleteConversation(conv.conversationId!);
+  }
+
   // Brand Model Services
 
   // Add Brand
@@ -1361,6 +1447,15 @@ class FirebaseDatabaseService {
 
   //Conversations
 
+  // Delete Conversation
+  Future<void> deleteConversation(String id) async {
+    try {
+      await _firestore.collection("Conversations").doc(id).delete();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   Future<String> addConversation(
       var users,
       var messagesRead,
@@ -1612,6 +1707,14 @@ class FirebaseDatabaseService {
   }
 
   //Messages
+  Future<void> deleteMessage(String id) async {
+    try {
+      await _firestore.collection("Messages").doc(id).delete();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   Stream<QuerySnapshot> getConversationMessages(String? conversationId) {
     print(conversationId);
     return _firestore

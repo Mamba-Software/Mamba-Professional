@@ -47,10 +47,12 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void filterSearchResults(String query) {
+    print(query);
     List<ChatUsers> chatUsersFiltered = [];
       if (query.isNotEmpty || query != "") {
         for (var item in allChatUsers) {
           if (item.name!.toLowerCase().startsWith(query)) {
+            print(item);
             chatUsersFiltered.add(item);
           }
         }
@@ -166,25 +168,25 @@ class _ChatPageState extends State<ChatPage> {
                             snapshot.data!.docs, chatUsers),
                         builder: (context, snapshot) {
                           if (snapshot.data != null) {
-                            chatUsers = snapshot.data!;
-                            if (chatUsers.length > 0) {
+                            allChatUsers = snapshot.data!;
+                            if (allChatUsers.length > 0) {
                               if (!isFiltered) {
                                 return ListView.builder(
-                                  itemCount: chatUsers.length,
+                                  itemCount: allChatUsers.length,
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     return ConversationList(
-                                        name: chatUsers[index].name!,
-                                        messageText: chatUsers[index]
+                                        name: allChatUsers[index].name!,
+                                        messageText: allChatUsers[index]
                                             .messageText!,
-                                        imageUrl: chatUsers[index].imageURL!,
-                                        time: chatUsers[index].time!,
-                                        isMessageRead: chatUsers[index]
+                                        imageUrl: allChatUsers[index].imageURL!,
+                                        time: allChatUsers[index].time!,
+                                        isMessageRead: allChatUsers[index]
                                             .isMessageRead!,
-                                        userId: chatUsers[index].userId!,
-                                        isGroup: chatUsers[index].isGroup!,
-                                        iconData: chatUsers[index].iconData!);
+                                        userId: allChatUsers[index].userId!,
+                                        isGroup: allChatUsers[index].isGroup!,
+                                        iconData: allChatUsers[index].iconData!);
                                   },
                                 );
                               } else {

@@ -1364,6 +1364,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                                         });
                                       } else {
                                         await _accessDatabase.updateCurrentUserBrand(_codigo);
+                                        await _accessDatabase.updateConversationNewUser(_codigo, currentUser.id);
                                         NotificationService().userJoinsBrand(currentUser.id!, _codigo);
                                         Navigator.pushReplacement(
                                             context,
