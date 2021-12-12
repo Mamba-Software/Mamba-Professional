@@ -525,7 +525,7 @@ class _NotificationsState extends State<Notifications> {
             borderWidth: 1.0,
           ),
           title: Text(
-            AppLocalizations.of(context)!.userJoinEventUser(event.title!, brand.name!),
+            AppLocalizations.of(context)!.userJoinEventUser(event.title!),
             style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
           ),
           subtitle: Column(
@@ -590,7 +590,7 @@ class _NotificationsState extends State<Notifications> {
             borderWidth: 1.0,
           ),
           title: Text(
-            AppLocalizations.of(context)!.userLeavesEventUser(event.title!, brand.name!),
+            AppLocalizations.of(context)!.userLeavesEventUser(event.title!),
             style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
           ),
           subtitle: Column(

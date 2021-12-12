@@ -27,7 +27,6 @@ class _TusDatosState extends State<TusDatos> {
 
   // Form Values
   final _formKey = GlobalKey<FormState>();
-  String nombreCompletoTemp = "";
   var nombreCompletoController;
 
   // Gender Widget value
@@ -47,6 +46,7 @@ class _TusDatosState extends State<TusDatos> {
 
   Future<void> selectSlot(ctx, type) {
     // Initial Vars
+    var maxDate = DateTime.now();
     var startDate = DateTime.now();
     var title;
     var widgetPicker;
@@ -58,7 +58,7 @@ class _TusDatosState extends State<TusDatos> {
         mode: CupertinoDatePickerMode.date,
         initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
         minimumDate: startDate.subtract(Duration(days: 365*80)),
-        maximumDate: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
+        maximumDate: DateTime(maxDate.year, maxDate.month, 31, 0, 0),
         minimumYear: 1941,
         maximumYear: 2021,
         use24hFormat: true,
@@ -128,14 +128,14 @@ class _TusDatosState extends State<TusDatos> {
   @override
   Widget build(BuildContext context) {
     // Initialises some data the first time that the Widget is build and data is Loaded.
-    if(firstBuild){
+    if (firstBuild) {
       nombreCompletoController = TextEditingController(text: currentUser.name);
       startDateController = TextEditingController(text: currentUser.dateOfBirth);
       firstBuild = false;
     }
     // Checking if there has been a change that has not been saved.
     if (!isLoading) {
-      if (nombreCompletoTemp != currentUser.name! && nombreCompletoTemp != "") {
+      if (nombreCompletoController.text.trim() != currentUser.name! && nombreCompletoController.text != "") {
         isUpdated = true;
       } else if (genderTemp != currentUser.gender! && genderTemp != null) {
         isUpdated = true;
@@ -152,28 +152,11 @@ class _TusDatosState extends State<TusDatos> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 25,),
           onPressed: () async {
-            if (_formKey.currentState!.validate()) {
-              if (isUpdated) {
-                if (nombreCompletoTemp.isNotEmpty) {
-                  currentUser.name = nombreCompletoTemp;
-                };
-                if (!(genderTemp == null)) {
-                  currentUser.gender = genderTemp;
-                };
-                if (startDateController.text != currentUser.dateOfBirth) {
-                  currentUser.dateOfBirth = startDateController.text;
-                };
-                setState(() {
-                  isLoading = true;
-                });
-                await _accessDatabase.updateCurrentUserDatosPerifl(
-                currentUser.name!, currentUser.gender!, currentUser.dateOfBirth!);
-              }
-              Navigator.pop(context);
-            }
+            Navigator.pop(context);
           },
         ),
       ),
+      resizeToAvoidBottomInset: true,
       body: isLoading ?
         LoadingViewPurple()
           :
@@ -205,12 +188,8 @@ class _TusDatosState extends State<TusDatos> {
                           Flexible(
                             child: new TextFormField(
                               controller: nombreCompletoController,
+                              textCapitalization: TextCapitalization.words,
                               validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
-                              onChanged: (val) {
-                                setState(() => {
-                                  nombreCompletoTemp = val
-                                });
-                              },
                               decoration: InputDecoration(
                                 hintText: AppLocalizations.of(context)!.nameCompleto,
                                 focusedBorder: UnderlineInputBorder(
@@ -357,6 +336,37 @@ class _TusDatosState extends State<TusDatos> {
             ),
           ),
         ),
+      floatingActionButton: isUpdated ? Padding(
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+        child: FloatingActionButton.extended(
+          heroTag: "82",
+          onPressed: () async {
+            if (_formKey.currentState!.validate()) {
+              if (isUpdated) {
+                if (nombreCompletoController.text.isNotEmpty) {
+                  currentUser.name = nombreCompletoController.text;
+                };
+                if (!(genderTemp == null)) {
+                  currentUser.gender = genderTemp;
+                };
+                if (startDateController.text != currentUser.dateOfBirth) {
+                  currentUser.dateOfBirth = startDateController.text;
+                };
+                setState(() {
+                  isLoading = true;
+                });
+                await _accessDatabase.updateCurrentUserDatosPerifl(
+                    currentUser.name!, currentUser.gender!, currentUser.dateOfBirth!);
+              }
+              Navigator.pop(context);
+            }
+          },
+          backgroundColor: Colors.green,
+          icon: Icon(Icons.save_rounded, color: Colors.white,),
+          label: Text(AppLocalizations.of(context)!.save,
+            style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+        ),
+      ) : Container(),
     );
   }
 }

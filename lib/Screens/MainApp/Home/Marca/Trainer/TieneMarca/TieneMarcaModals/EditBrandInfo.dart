@@ -257,17 +257,14 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    /*
     if (!isLoading) {
       var startHourWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
       var startMinWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[1]);
       var endHourWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
       var endMinWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
-      if (nameBrandController.text != currentBrand.name! && nameBrandController.text != "") {
+      if (nameBrandController.text.trim() != currentBrand.name! && nameBrandController.text != "") {
         isUpdated = true;
-      } else if (descriptionController.text != currentBrand.description! && descriptionController.text != "") {
-        isUpdated = true;
-      } else if (members != currentBrand.maxMembers) {
+      } else if (descriptionController.text.trim() != currentBrand.description! && descriptionController.text != "") {
         isUpdated = true;
       } else if (startTimeController.text != DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startHourWS, startMinWS,)) || endTimeController.text != DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endHourWS, endMinWS,))) {
         isUpdated = true;
@@ -277,12 +274,11 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
         isUpdated = false;
       }
     }
-     */
 
     return isLoading ?
     Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.createBrand, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+        title: Text(AppLocalizations.of(context)!.yourBrand, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 25,),
@@ -305,29 +301,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () async {
-            if (validateInfo()) {
-                setState(() {
-                  isLoading = true;
-                });
-                DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(startTimeController.text);
-                DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(endTimeController.text);
-                double toDouble(DateTime myTime) => myTime.hour + myTime.minute/60.0;
-                double toDouble2(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
-                _workShift.add(toDouble(start));
-                _workShift.add(toDouble(end));
-                for (var i=0; i < _breakList.length; i+=2) {
-                  if(!removedIndex.contains(i)) {
-                    _workShift.add(toDouble2(_breakList[i]));
-                    _workShift.add(toDouble2(_breakList[i+1]));
-                  }
-                }
-                setState(() {
-                  isLoading = true;
-                });
-               await _accessDatabase.updateBrandInfo(currentBrand.id!, nameBrandController.text, descriptionController.text, members, _workShift);
-               await getBrand();
-               Navigator.pop(context);
-            }
+            Navigator.pop(context);
           },
         ),
       ),
@@ -355,6 +329,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                       controller: nameBrandController,
                       validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameBrandError : null,
                       style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                      textCapitalization: TextCapitalization.words,
                       decoration: InputDecoration(
                         hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
                         hintText: AppLocalizations.of(context)!.nameBrandError,
@@ -365,7 +340,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.05),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -403,8 +378,8 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
-
+                  SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                  /*
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -459,7 +434,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                     style: Styles.redTextStyle.copyWith(fontSize: 12),
                   ) : new Container(),
                   SizedBox(height: MediaQuery.of(context).size.height*0.03),
-
+                  */
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -526,7 +501,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                       textAlign: TextAlign.center,
                     ),
                   ) : new Container(),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.05),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -729,11 +704,59 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                     shrinkWrap: true,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  _breakList.length < breakLimit ? Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          AppLocalizations.of(context)!.createBrandAddDescription,
+                          style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor, fontSize: 16),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  ) : Container(),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.10),
                 ],
               ),
             )
         ),
       ),
+      floatingActionButton: isUpdated ? Padding(
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+        child: FloatingActionButton.extended(
+          heroTag: "81",
+          onPressed: () async {
+            if (validateInfo()) {
+              setState(() {
+                isLoading = true;
+              });
+              DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(startTimeController.text);
+              DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(endTimeController.text);
+              double toDouble(DateTime myTime) => myTime.hour + myTime.minute/60.0;
+              double toDouble2(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
+              _workShift.add(toDouble(start));
+              _workShift.add(toDouble(end));
+              for (var i=0; i < _breakList.length; i+=2) {
+                if(!removedIndex.contains(i)) {
+                  _workShift.add(toDouble2(_breakList[i]));
+                  _workShift.add(toDouble2(_breakList[i+1]));
+                }
+              }
+              setState(() {
+                isLoading = true;
+              });
+              await _accessDatabase.updateBrandInfo(currentBrand.id!, nameBrandController.text, descriptionController.text, members, _workShift);
+              await getBrand();
+              Navigator.pop(context);
+            }
+          },
+          backgroundColor: Colors.green,
+          icon: Icon(Icons.save_rounded, color: Colors.white,),
+          label: Text(AppLocalizations.of(context)!.save,
+            style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+        ),
+      ) : Container(),
     );
   }
   bool validateInfo() {

@@ -59,7 +59,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
   // Max Members Brand
   TextEditingController membersController = TextEditingController();
   int members = 1;
-  int membersMax = 30;
+  int membersMax = 100;
   // Form To Validate
   final formKeyMembers = GlobalKey<FormState>();
 
@@ -599,6 +599,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                     child: new TextFormField(
                                         keyboardType: TextInputType.text,
                                         controller: descriptionController,
+                                        textCapitalization: TextCapitalization.sentences,
                                         validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
                                         minLines: 1,
                                         maxLines: 5,
@@ -1049,6 +1050,20 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                   },
                                   shrinkWrap: true,
                                 ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                _breakList.length < breakLimit ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        AppLocalizations.of(context)!.createBrandAddDescription,
+                                        style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor, fontSize: 16),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                  ],
+                                ) : Container(),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.04),
                               ],
                             )
                         ),

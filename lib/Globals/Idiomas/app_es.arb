@@ -497,6 +497,10 @@
   "@createBrandBreakDescription":{
     "description": "createBrand Text"
   },
+  "createBrandAddDescription": "Haz click en AÑADIR para guardar tu tiempo de descanso",
+  "@createBrandAddDescription":{
+    "description": "createBrand Text"
+  },
   "addCode": "Añadir Código",
   "@addCode":{
     "description": "createBrand Text"
@@ -1323,14 +1327,11 @@
   "@myLocationsOtherLocationsDesc": {
     "description": "Wellcome message"
   },
-  "userJoinEventUser": "Te has unido al evento {name} de {brand}",
+  "userJoinEventUser": "Te has unido al evento {name}",
   "@userJoinEventUser": {
     "description": "Wellcome message",
     "placeholders": {
       "name": {
-        "type": "String"
-      },
-      "brand": {
         "type": "String"
       }
     }
@@ -1371,14 +1372,11 @@
       }
     }
   },
-  "userLeavesEventUser": "Has abandonado tu plaza del evento {name} de {brand}",
+  "userLeavesEventUser": "Has abandonado tu plaza del evento {name}",
   "@userLeavesEventUser": {
     "description": "Wellcome message",
     "placeholders": {
       "name": {
-        "type": "String"
-      },
-      "brand": {
         "type": "String"
       }
     }
