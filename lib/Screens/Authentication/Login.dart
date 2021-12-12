@@ -29,6 +29,7 @@ class _LoginState extends State<Login> {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   // FormVariables
   final _formKey = GlobalKey<FormState>();
+  var emailController = TextEditingController();
   String email = '';
   String password = '';
   String emailTemp = '';
@@ -57,8 +58,8 @@ class _LoginState extends State<Login> {
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.03),
                         TextFormField(
+                          controller: emailController,
                           keyboardType: TextInputType.emailAddress,
-                          initialValue: emailTemp,
                           validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
                           onChanged: (val) {
                             setState(() {
@@ -114,18 +115,24 @@ class _LoginState extends State<Login> {
                             )
                         ),
                         TextButton(
-                          onPressed: (){
+                          onPressed: () async {
                             FocusScopeNode currentFocus = FocusScope.of(context);
                             if (!currentFocus.hasPrimaryFocus) {
                               currentFocus.unfocus();
                             }
-                            Navigator.push(
+                            String? email = await Navigator.push(
                                 context,
-                                CupertinoPageRoute<Null>(
+                                CupertinoPageRoute<String>(
                                   builder: (context) => ForgotPassword(),
                                   settings: RouteSettings(name: 'ForgotPassword'),
                                 )
                             );
+                            if (email != null) {
+                              setState(() {
+                                this.emailController.text = email;
+                                this.email = email;
+                              });
+                            }
                           },
                           child: Text(
                             AppLocalizations.of(context)!.forgotPassword,
@@ -184,18 +191,24 @@ class _LoginState extends State<Login> {
                                 color: Colors.white, borderRadius: BorderRadius.circular(10)
                             ),
                             child: TextButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 FocusScopeNode currentFocus = FocusScope.of(context);
                                 if (!currentFocus.hasPrimaryFocus) {
                                   currentFocus.unfocus();
                                 }
-                                Navigator.push(
+                                String? email = await Navigator.push(
                                     context,
-                                    CupertinoPageRoute<Null>(
+                                    CupertinoPageRoute<String>(
                                       builder: (context) => Register(),
                                       settings: RouteSettings(name: 'Register'),
                                     )
                                 );
+                                if (email != null) {
+                                  setState(() {
+                                    this.emailController.text = email;
+                                    this.email = email;
+                                  });
+                                }
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.register,
@@ -216,6 +229,7 @@ class _LoginState extends State<Login> {
   }
 
   void signIn() async {
+      print(email.trim());
       int result = await _accessDatabase.signIn(email.trim(), password);
       if (result == 0) {
         Navigator.pushReplacement(

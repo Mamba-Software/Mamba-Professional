@@ -28,7 +28,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
   // Geolocator
-  final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+  final Geolocator geolocator = Geolocator();
   bool locatorDialog = false;
   // Acceso a Base de Datos
   NotificationService? _notificationService;
@@ -1144,7 +1144,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                   height: 50,
                   child: FloatingActionButton.extended(
                     heroTag: "22",
-                    onPressed: () {
+                    onPressed: () async {
                       if (_selectedIndex == 0) {
                         _tabController!.animateTo(_selectedIndex += 1);
                         setState(() {
@@ -1167,7 +1167,9 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                         });
                       } else if (_selectedIndex == 3) {
                         _tabController!.animateTo(_selectedIndex += 1);
-                        if (!locatorDialog) _getCurrentLocation();
+                        if (!locatorDialog) {
+                          currentPosition = await _determinePosition();
+                        }
                         setState(() {
                           locatorDialog = true;
                           addEventTabValue += 0.166;
@@ -1199,25 +1201,52 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     );
   }
 
-  void _getCurrentLocation() {
-    geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-      .then((Position position) {
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        // Permissions are denied forever, handle appropriately.
+        return Future.error(
+            'Location permissions are permanently denied, we cannot request permissions.');
+      }
+
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error(
+            'Location permissions are denied');
+      }
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    return Geolocator.getCurrentPosition(forceAndroidLocationManager: true, desiredAccuracy: LocationAccuracy.best);
+  }
+
+  Future<void> _getCurrentLocation() async {
+    await Geolocator.getCurrentPosition(forceAndroidLocationManager: true, desiredAccuracy: LocationAccuracy.best)
+        .then((Position position) {
         currentPosition = position;
-        _getAddressFromLatLng();
+        print(currentPosition);
       }).catchError((e) {
         print(e);
       });
-  }
-
-  void _getAddressFromLatLng() async {
-    try {
-      List<Placemark> p = await geolocator.placemarkFromCoordinates(currentPosition!.latitude, currentPosition!.longitude);
-      Placemark place = p[0];
-      currentAddress = "${place.locality}, ${place.postalCode}, ${place.country}";
-      print(currentAddress);
-    } catch (e) {
-      print(e);
-    }
   }
 
   bool validateInformation() {

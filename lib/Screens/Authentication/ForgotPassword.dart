@@ -43,6 +43,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 color: Colors.white, //change your color here
               ),
               backgroundColor: Theme.of(context).accentColor,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back, size: 25,),
+                onPressed: () {
+                  if (email.isNotEmpty) {
+                    Navigator.pop(context, email.trim());
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
             ),
             backgroundColor: Theme.of(context).accentColor,
             body: SingleChildScrollView(
@@ -116,7 +126,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                       });
                                       showInSnackBar(AppLocalizations.of(context)!.validatePassword);
                                       Future.delayed(Duration(seconds: 5), () async {
-                                        Navigator.pop(context);
+                                        Navigator.pop(context, email.trim());
                                       });
                                     } else {
                                       setState(() {

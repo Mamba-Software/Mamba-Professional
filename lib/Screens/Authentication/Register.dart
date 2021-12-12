@@ -45,6 +45,16 @@ class _RegisterState extends State<Register> {
               iconTheme: IconThemeData(
                 color: Colors.white, //change your color here
               ),
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back, size: 25,),
+                onPressed: () {
+                  if (email.isNotEmpty) {
+                    Navigator.pop(context, email.trim());
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
               backgroundColor: Theme.of(context).accentColor,
             ),
             backgroundColor: Theme.of(context).accentColor,
@@ -230,7 +240,7 @@ class _RegisterState extends State<Register> {
         });
         showInSnackBar(AppLocalizations.of(context)!.validate);
         Future.delayed(Duration(seconds: 5), () async {
-          Navigator.pop(context);
+          Navigator.pop(context, email.trim());
         });
       } else if (result == -1) {
         setState(() {

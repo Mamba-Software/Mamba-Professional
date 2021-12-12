@@ -679,6 +679,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                       }
                                       setState(() {
                                         hasLocation = true;
+                                        errorLocation = false;
                                       });
                                     } else {
                                       setState(() {

@@ -1248,7 +1248,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                   ]
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+            SizedBox(height: MediaQuery.of(context).size.height*0.05),
             request.id == null ?
             Column(
               children: [
