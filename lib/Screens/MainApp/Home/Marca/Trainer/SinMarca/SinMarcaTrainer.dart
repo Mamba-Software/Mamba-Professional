@@ -302,7 +302,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
         ),
         body: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
-          child: Column(
+          child: brandList.length > 0 ? Column(
             children: [
               ListView.builder(
                   physics: BouncingScrollPhysics(),
@@ -539,6 +539,25 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
             ],
+          ) : Container(
+            height: MediaQuery.of(context).size.height *0.70,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Container(
+                      height: MediaQuery.of(context).size.height*0.25,
+                      child: Image.asset(Constants.arroundLocation)
+                  ),
+                ),
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.2),
+                    child: Text(AppLocalizations.of(context)!.noBrandsFound, style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080)), textAlign: TextAlign.center,),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );

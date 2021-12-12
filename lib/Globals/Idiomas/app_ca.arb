@@ -151,7 +151,7 @@
   "next": "Següent",
   "finish": "Finalitzar",
   "brandFound": "Marca trobada!",
-  "brandNotFound": "No trobem aquesta Marca. Si us plau assegureu-vos que heu introduït el codi correctament",
+  "brandNotFound": "No trobem aquesta marca. Si us plau assegureu-vos que heu introduït el codi correctament",
   "notInBrand": "No formes part de cap marca",
   "wantDeleteUser": "¿Vols eliminar el teu usuari?",
   "writeDeleteUser": "Escriu la teva contrasenya per confirmar aquesta acció:",
@@ -223,6 +223,7 @@
   "available": "Disponible",
   "noEvents": "Sense esdeveniments",
   "noMembersFound": "No hem trobat cap membre",
+  "noBrandsFound": "No hem trobat marques a prop teu",
   "myRequests": "Sol·licituds",
   "noRequestsFound": "No hem trobat cap sol·licitud",
   "requestFromUser": " quiere unirse como {type}",
@@ -310,5 +311,6 @@
   "userLeavesEventBrandSubtitle": "Ara queden {joined} membres apuntats d'un màxim de {total} places",
   "writeMessage": "Escriu un missatge",
   "noMessages": "Encara no has començat ninguna conversa",
-  "membersOfBrand": "Grup amb tots els membres de la marca"
+  "membersOfBrand": "Grup amb tots els membres de la marca",
+  "locationPermision": "Una de les funcionalitats més potents de MAMBA és el localitzador de marques. Basant-nos en la teva ubicació quan obris la nostra app, et mostrarem les marques més properes a tu.\n\nPer això és necessari que ens donis permisos de localització."
 }

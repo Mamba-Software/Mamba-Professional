@@ -526,21 +526,12 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                       ) :
                                       GestureDetector(
                                         onTap: getImage,
-                                        child: Container(
-                                            height: MediaQuery.of(context).size.height * 0.26,
-                                            decoration: new BoxDecoration(
-                                              border: Border.all(
-                                                width: 1.5,
-                                                color: Styles.accent,
-                                                style: BorderStyle.solid,
-                                              ),
-                                              shape: BoxShape.circle,
-                                              image: new DecorationImage(
-                                                image: FileImage(_image),
-                                                fit: BoxFit.fitHeight,
-                                              ),
-                                            )
-                                        )
+                                        child: CircularImage(
+                                          size: MediaQuery.of(context).size.height * 0.25,
+                                          file: _image,
+                                          borderWidth: 1,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -556,6 +547,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                       validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameBrandError : null,
                                       style: Styles.purpleTextStyle.copyWith(fontSize: 26, fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.center,
+                                      textCapitalization: TextCapitalization.words,
                                       decoration: InputDecoration(
                                         hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 18, color: Colors.grey, fontWeight: FontWeight.normal),
                                         hintText: AppLocalizations.of(context)!.nameBrandError,
@@ -1160,7 +1152,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                           DateTime today = DateTime.now();
                           List<Map> chatUsers = [];
                           chatUsers.add(toMap(currentUser.id));
-                          var result = await _accessDatabase.addBrand(nameBrandController.text, _image, descriptionController.text, _workShift, membersMax);
+                          var result = await _accessDatabase.addBrand(nameBrandController.text.trim(), _image, descriptionController.text.trim(), _workShift, membersMax);
                           String baseLocation = await _accessDatabase.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
                           await _accessDatabase.updateBrandBaseLocation(result, baseLocation);
                           await _accessDatabase.updateCurrentUserBrand(result);

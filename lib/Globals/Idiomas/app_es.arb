@@ -654,7 +654,7 @@
   "@brandFound":{
     "description": "disponibilidad text"
   },
-  "brandNotFound": "No encontramos esta Marca. Por favor asegúrate que has introducido el cógido correctamente",
+  "brandNotFound": "No encontramos esta marca. Por favor asegúrate que has introducido el cógido correctamente",
   "@brandNotFound":{
     "description": "disponibilidad text"
   },
@@ -955,6 +955,10 @@
   },
   "noMembersFound": "No hemos encontrado ningún miembro",
   "@noMembersFound": {
+    "description": "Wellcome message"
+  },
+  "noBrandsFound": "No hemos encontrado marcas cerca de ti",
+  "@noBrandsFound": {
     "description": "Wellcome message"
   },
   "myRequests": "Solicitudes",
@@ -1418,5 +1422,10 @@
   "membersOfBrand": "Grupo con todos los miembros de la marca",
   "@membersOfBrand": {
     "description": "membersOfBrand message"
+  },
+  "locationPermision": "Una de las funcionalidades más potentes de MAMBA és el localizador de marcas. Basándonos en tu ubicación cuando abras nuestra app, te mostraremos las marcas más cercanas a ti.\n\nPara ello es necessario que nos des permisos de localización.",
+  "@locationPermision": {
+    "description": "membersOfBrand message"
   }
+
 }

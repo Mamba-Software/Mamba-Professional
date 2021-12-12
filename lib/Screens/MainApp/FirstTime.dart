@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
@@ -26,6 +27,9 @@ class FirstTime extends StatefulWidget {
 class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMixin{
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  // Geolocator
+  final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+  bool locatorDialog = false;
   // Acceso a Base de Datos
   NotificationService? _notificationService;
   // Boolean Loading
@@ -33,10 +37,10 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
   // Form Key
   final _formKey = GlobalKey<FormState>();
   // Tab Controller
-  double addEventTabValue = 0.20;
+  double addEventTabValue = 0.166;
   TabController? _tabController;
   int _selectedIndex = 0;
-  List<bool> tabs = [true, false, false, false, false];
+  List<bool> tabs = [true, false, false, false, false, false];
   // Title Controller
   var nameController = TextEditingController();
   // Nick Controller
@@ -228,7 +232,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
   @override
   initState() {
     //isLoading = true;
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 6, vsync: this);
     var startDate = DateTime.now();
     startDate = DateTime(
       startDate.year,
@@ -304,7 +308,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.fitness_center_rounded, color: tabs[3] ? Theme.of(context).accentColor : Colors.white)
+                            Icon(Icons.location_on_outlined, color: tabs[3] ? Theme.of(context).accentColor : Colors.white)
                           ],
                         ),
                       ),
@@ -315,7 +319,18 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.qr_code_outlined, color: tabs[4] ? Theme.of(context).accentColor : Colors.white)
+                            Icon(Icons.fitness_center_rounded, color: tabs[4] ? Theme.of(context).accentColor : Colors.white)
+                          ],
+                        ),
+                      ),
+                    ),
+                    Tab(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.qr_code_outlined, color: tabs[5] ? Theme.of(context).accentColor : Colors.white)
                           ],
                         ),
                       ),
@@ -421,6 +436,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                         keyboardType: TextInputType.name,
                                         validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nameCompletoError : null,
                                         style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
+                                        textCapitalization: TextCapitalization.words,
                                         decoration: InputDecoration(
                                           hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
                                           hintText: AppLocalizations.of(context)!.nameCompletoError,
@@ -492,7 +508,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                               style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
                                               decoration: InputDecoration(
                                                 hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
-                                                hintText: "@${undoCapitalized(AppLocalizations.of(context)!.name)}",
+                                                hintText: "${AppLocalizations.of(context)!.nicknameError}",
                                                 border: UnderlineInputBorder(
                                                     borderSide: BorderSide(
                                                         color: Colors.grey,
@@ -728,18 +744,62 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                 ),
                               ),
                             ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.02),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Expanded(
                                   child: Text(
                                     AppLocalizations.of(context)!.profilePhotoOptional,
-                                    style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                    style: Styles.purpleTextStyle.copyWith(color:  Theme.of(context).primaryColor, fontSize: 16),
                                     textAlign: TextAlign.left,
                                   ),
                                 ),
                               ],
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                          ],
+                        ),
+                      )
+                  ),
+                  resizeToAvoidBottomInset: false,
+                ),
+                Scaffold(
+                  body: SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                        child: Column(
+                          children: [
+                            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.location,
+                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.locationPermision,
+                                    style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor, fontSize: 16),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                            Center(
+                              child: Container(
+                                  height: MediaQuery.of(context).size.height *0.25,
+                                  child: Image.asset(Constants.currentLocation)
+                              ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height*0.04),
                           ],
@@ -936,7 +996,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                               ],
                             ),
                             Container(
-                              height: MediaQuery.of(context).size.height*0.20,
+                              height: MediaQuery.of(context).size.height*0.17,
                               child: Column(
                                 children: [
                                   brandOkay && !brandNotFound && codeController.text.isNotEmpty ? Column(
@@ -1009,7 +1069,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                 Expanded(
                                   child: Text(
                                     AppLocalizations.of(context)!.inviteCodeOptional,
-                                    style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                    style: Styles.purpleTextStyle.copyWith(color:  Theme.of(context).primaryColor, fontSize: 16),
                                     textAlign: TextAlign.left,
                                   ),
                                 ),
@@ -1055,11 +1115,15 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                         setState(() {
                           tabs[4] = false;
                         });
-                        validateTypeOfUser();
+                      } else if (_selectedIndex == 5) {
+                        setState(() {
+                          tabs[5] = false;
+                        });
+                        //validateTypeOfUser();
                       }
                       _tabController!.animateTo(_selectedIndex -= 1);
                       setState(() {
-                        addEventTabValue -= 0.20;
+                        addEventTabValue -= 0.166;
                       });
 
                     },
@@ -1084,39 +1148,47 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                       if (_selectedIndex == 0) {
                         _tabController!.animateTo(_selectedIndex += 1);
                         setState(() {
-                          addEventTabValue += 0.20;
+                          addEventTabValue += 0.166;
                           tabs[1] = true;
                         });
                       } else if (_selectedIndex == 1) {
                         if (validateInformation()) {
                           _tabController!.animateTo(_selectedIndex += 1);
                           setState(() {
-                            addEventTabValue += 0.20;
+                            addEventTabValue += 0.166;
                             tabs[2] = true;
                           });
                         }
                       } else if (_selectedIndex == 2) {
                         _tabController!.animateTo(_selectedIndex += 1);
                         setState(() {
-                          addEventTabValue += 0.20;
+                          addEventTabValue += 0.166;
                           tabs[3] = true;
                         });
                       } else if (_selectedIndex == 3) {
+                        _tabController!.animateTo(_selectedIndex += 1);
+                        if (!locatorDialog) _getCurrentLocation();
+                        setState(() {
+                          locatorDialog = true;
+                          addEventTabValue += 0.166;
+                          tabs[4] = true;
+                        });
+                      } else if (_selectedIndex == 4) {
                         if (validateTypeOfUser()) {
                           _tabController!.animateTo(_selectedIndex += 1);
                           setState(() {
-                            addEventTabValue += 0.20;
-                            tabs[4] = true;
+                            addEventTabValue +=0.166;
+                            tabs[5] = true;
                           });
                         }
-                      } else if (_selectedIndex == 4) {
+                      } else if (_selectedIndex == 5) {
                         addUser();
                       }
                     },
-                    backgroundColor: _selectedIndex == 4 ? Colors.green : Theme.of(context).accentColor,
+                    backgroundColor: _selectedIndex == 5 ? Colors.green : Theme.of(context).accentColor,
                     icon: Container(),
                     label: Text(
-                      _selectedIndex == 4 ? AppLocalizations.of(context)!.finish : AppLocalizations.of(context)!.next,
+                      _selectedIndex == 5 ? AppLocalizations.of(context)!.finish : AppLocalizations.of(context)!.next,
                       style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
                   ),
                 ),
@@ -1125,6 +1197,27 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
           ),
       ),
     );
+  }
+
+  void _getCurrentLocation() {
+    geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+      .then((Position position) {
+        currentPosition = position;
+        _getAddressFromLatLng();
+      }).catchError((e) {
+        print(e);
+      });
+  }
+
+  void _getAddressFromLatLng() async {
+    try {
+      List<Placemark> p = await geolocator.placemarkFromCoordinates(currentPosition!.latitude, currentPosition!.longitude);
+      Placemark place = p[0];
+      currentAddress = "${place.locality}, ${place.postalCode}, ${place.country}";
+      print(currentAddress);
+    } catch (e) {
+      print(e);
+    }
   }
 
   bool validateInformation() {
@@ -1189,27 +1282,32 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
   }
 
   Widget getTitle() {
-    if (tabs[0] && !tabs[1] && !tabs[2] && !tabs[3] && !tabs[4]) {
+    if (tabs[0] && !tabs[1] && !tabs[2] && !tabs[3] && !tabs[4] && !tabs[5]) {
       return Text(
         AppLocalizations.of(context)!.wellcome,
         style: Theme.of(context).appBarTheme.titleTextStyle,
       );
-    } else if (tabs[0] && tabs[1] && !tabs[2] && !tabs[3] && !tabs[4]) {
+    } else if (tabs[0] && tabs[1] && !tabs[2] && !tabs[3] && !tabs[4] && !tabs[5]) {
       return Text(
         AppLocalizations.of(context)!.yourInfo,
         style: Theme.of(context).appBarTheme.titleTextStyle,
       );
-    } else if (tabs[0] && tabs[1] && tabs[2] && !tabs[3] && !tabs[4]) {
+    } else if (tabs[0] && tabs[1] && tabs[2] && !tabs[3] && !tabs[4] && !tabs[5]) {
       return Text(
         AppLocalizations.of(context)!.uploadPhoto,
         style: Theme.of(context).appBarTheme.titleTextStyle,
       );
-    } else if (tabs[0] && tabs[1] && tabs[2] && tabs[3] && !tabs[4]) {
+    } else if (tabs[0] && tabs[1] && tabs[2] && tabs[3] && !tabs[4] && !tabs[5]) {
+      return Text(
+        AppLocalizations.of(context)!.location,
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    } else if (tabs[0] && tabs[1] && tabs[2] && tabs[3] && tabs[4] && !tabs[5]) {
       return Text(
         AppLocalizations.of(context)!.typeProfile,
         style: Theme.of(context).appBarTheme.titleTextStyle,
       );
-    } else if (tabs[0] && tabs[1] && tabs[2] && tabs[3] && tabs[4]) {
+    } else if (tabs[0] && tabs[1] && tabs[2] && tabs[3] && tabs[4] && tabs[5]) {
       return Text(
         AppLocalizations.of(context)!.inviteCode,
         style: Theme.of(context).appBarTheme.titleTextStyle,
@@ -1303,5 +1401,4 @@ class _GenderWidgetState extends State<GenderWidget> {
       ),
     );
   }
-
 }

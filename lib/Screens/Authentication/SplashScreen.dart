@@ -34,8 +34,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   // Data Base Access
   var _accessDatabase = new DatabaseAccess();
-  // Geolocator
-  final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
 
   @override
   initState() {
@@ -56,7 +54,6 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {
         currentBrand = Brand();
       }
-      _getCurrentLocation();
       Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
       if(currentUser.isAdmin!) {
         Navigator.pushReplacement(
@@ -96,29 +93,6 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
             (_) => false,
       );
-    }
-  }
-
-  void _getCurrentLocation() {
-    geolocator
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-        .then((Position position) {
-            currentPosition = position;
-            print(currentPosition);
-            _getAddressFromLatLng();
-          }).catchError((e) {
-            print(e);
-          });
-  }
-
-  void _getAddressFromLatLng() async {
-    try {
-      List<Placemark> p = await geolocator.placemarkFromCoordinates(currentPosition!.latitude, currentPosition!.longitude);
-      Placemark place = p[0];
-      currentAddress = "${place.locality}, ${place.postalCode}, ${place.country}";
-      print(currentAddress);
-    } catch (e) {
-      print(e);
     }
   }
 

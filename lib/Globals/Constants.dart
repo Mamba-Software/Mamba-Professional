@@ -47,4 +47,6 @@ class Constants {
   static String clientImage = "assets/images/clientImage.png";
   static String doneFeedbackImage = "assets/images/doneFeedbackImage.png";
   static String giveFeedbackImage = "assets/images/giveFeedbackImage.png";
+  static String currentLocation = "assets/images/currentLocation.png";
+  static String arroundLocation = "assets/images/arroundLocation.png";
 }
