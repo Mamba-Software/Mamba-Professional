@@ -254,8 +254,8 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                       ),
                       Icon(
                         userToShow.isTrainer! ? Icons.record_voice_over : Icons.directions_run,
-                        color: Colors.black,
-                        size: 18,
+                        color: matCol.shade200,
+                        size: MediaQuery.of(context).size.height*0.02,
                       ),
                     ],
                   ),
@@ -490,8 +490,8 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                       ),
                       Icon(
                         userToShow.isTrainer! ? Icons.record_voice_over : Icons.directions_run,
-                        color: Colors.black,
-                        size: 18,
+                        color: matCol.shade200,
+                        size: MediaQuery.of(context).size.height*0.02,
                       ),
                     ],
                   ),
@@ -766,6 +766,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                           child: TextField(
                             minLines: 1,
                             maxLines: 10,
+                            textCapitalization: TextCapitalization.sentences,
                             controller: editingController,
                             decoration: InputDecoration(
                                 hintText: AppLocalizations.of(context)!.writeMessage,

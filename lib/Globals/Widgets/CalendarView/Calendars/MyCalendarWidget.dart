@@ -146,7 +146,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
     return isLoading ?
       Scaffold(
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.mySchedule, style: Theme.of(context).appBarTheme.titleTextStyle,),
+            title: Text(AppLocalizations.of(context)!.mySessions, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
             leading: IconButton(
               icon: Icon(Icons.arrow_back, size: 25,),
@@ -160,7 +160,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
         :
       Scaffold(
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.mySchedule, style: Theme.of(context).appBarTheme.titleTextStyle,),
+            title: Text(AppLocalizations.of(context)!.mySessions, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
             leading: IconButton(
               icon: Icon(Icons.arrow_back, size: 25,),

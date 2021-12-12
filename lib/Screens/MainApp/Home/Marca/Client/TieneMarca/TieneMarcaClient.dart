@@ -53,9 +53,11 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
     await getBrand();
     await getNumberFinishedEvents();
     await getAllEventsTodayBrand();
-    setState(() {
-      isLoading = false;
-    });
+    if(mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   // Update Number of Members.
@@ -376,7 +378,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                             image: new DecorationImage(
                               fit: BoxFit.cover,
                               //colorFilter: new ColorFilter.mode(Colors.black.withOpacity(1), BlendMode.dstATop),
-                              image: Image.asset(Constants.calendarImage).image,
+                              image: Image.asset(Constants.mySessionsImage).image,
                             ),
                           ),
                           child: Center(),

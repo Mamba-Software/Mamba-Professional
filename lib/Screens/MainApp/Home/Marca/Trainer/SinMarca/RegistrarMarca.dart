@@ -1201,7 +1201,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                               today.minute.toString(),
                               today.second.toString(),
                               '');
-
+                          setState(() {
+                            currentIndex = 1;
+                          });
                           Navigator.pop(context);
                           Navigator.pushReplacement(
                               context,

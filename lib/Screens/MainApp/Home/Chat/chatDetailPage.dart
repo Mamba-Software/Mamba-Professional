@@ -378,6 +378,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                         Expanded(
                           child: TextField(
                             controller: editingController,
+                            textCapitalization: TextCapitalization.sentences,
                             minLines: 1,
                             maxLines: 10,
                             decoration: InputDecoration(

@@ -233,6 +233,9 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                         await _accessDatabase.updateCurrentUserBrand(_codigo);
                                         await _accessDatabase.updateConversationNewUser(_codigo, currentUser.id);
                                         NotificationService().userJoinsBrand(currentUser.id!, _codigo);
+                                        setState(() {
+                                          currentIndex = 1;
+                                        });
                                         Navigator.pushReplacement(
                                             context,
                                             CupertinoPageRoute<Null>(

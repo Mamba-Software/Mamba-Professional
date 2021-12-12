@@ -330,7 +330,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                             image: new DecorationImage(
                               fit: BoxFit.cover,
                               //colorFilter: new ColorFilter.mode(Colors.black.withOpacity(1), BlendMode.dstATop),
-                              image: Image.asset(Constants.calendarImage).image,
+                              image: Image.asset(Constants.mySessionsImage).image,
                             ),
                           ),
                           child: Center(),

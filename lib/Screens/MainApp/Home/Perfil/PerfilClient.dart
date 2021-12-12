@@ -55,7 +55,7 @@ class _PerfilClientState extends State<PerfilClient> {
   // Images Of Events
   List<Image?> imagesEvents = [];
   var imagesEventsNum = [];
-  Image? mySessions = Image.asset(Constants.mySessionsImage);
+  Image? mySessions = Image.asset(Constants.calendarImage);
   Image? myProgress = Image.asset(Constants.myProgressImage);
 
   @override
@@ -944,7 +944,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(AppLocalizations.of(context)!.mySchedule, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                          Text(AppLocalizations.of(context)!.mySessions, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           Text(AppLocalizations.of(context)!.myScheduleText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 14, color: Colors.grey[200])),
                         ],
@@ -1323,6 +1323,9 @@ class _PerfilClientState extends State<PerfilClient> {
                                         await _accessDatabase.updateCurrentUserBrand(_codigo);
                                         await _accessDatabase.updateConversationNewUser(_codigo, currentUser.id);
                                         NotificationService().userJoinsBrand(currentUser.id!, _codigo);
+                                        setState(() {
+                                          currentIndex = 1;
+                                        });
                                         Navigator.pushReplacement(
                                             context,
                                             CupertinoPageRoute<Null>(
@@ -1482,7 +1485,7 @@ class _PerfilClientState extends State<PerfilClient> {
                         ),
                         image: new DecorationImage(
                           fit: BoxFit.cover,
-                          image: Image.asset(Constants.mySessionsImage).image,
+                          image: Image.asset(Constants.calendarImage).image,
                         ),
                       ),
                       child: Center(),
@@ -1516,7 +1519,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(AppLocalizations.of(context)!.mySchedule, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                          Text(AppLocalizations.of(context)!.mySessions, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           Text(AppLocalizations.of(context)!.myScheduleText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 14, color: Colors.white.withOpacity(0.5))),
                         ],
