@@ -30,6 +30,8 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
 
   String? conversationId;
 
+  late Usuario userToShow;
+
   var editingController = TextEditingController();
 
   var scrollController = ScrollController();
@@ -75,6 +77,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
   Future<String?> getUser(String? userId) async {
     if(userId == "sender") return userId;
     Usuario user = await this._accessDatabase.getUserDetails(userId!);
+    userToShow = user;
     return user.name;
   }
 
@@ -227,13 +230,34 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                 crossAxisAlignment:
                 CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    userSent!,
-                    style: TextStyle(
-                        fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: matCol.shade200,
+                  Row(
+                    mainAxisAlignment:
+                    MainAxisAlignment
+                        .end,
+                    mainAxisSize:
+                    MainAxisSize.min,
+                    children: [
+                      Text(
+                        userSent!,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: matCol.shade200,
+                        ),
                       ),
+                      SizedBox(
+                        width: MediaQuery.of(
+                            context)
+                            .size
+                            .width *
+                            0.02,
+                      ),
+                      Icon(
+                        userToShow.isTrainer! ? Icons.record_voice_over : Icons.directions_run,
+                        color: Colors.black,
+                        size: 18,
+                      ),
+                    ],
                   ),
                   Row(
                     mainAxisAlignment:
@@ -442,13 +466,34 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                 crossAxisAlignment:
                 CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    userSent!,
-                    style: TextStyle(
-                        fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                      color: matCol.shade200,
+                  Row(
+                    mainAxisAlignment:
+                    MainAxisAlignment
+                        .end,
+                    mainAxisSize:
+                    MainAxisSize.min,
+                    children: [
+                      Text(
+                        userSent!,
+                        style: TextStyle(
+                            fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                          color: matCol.shade200,
+                          ),
                       ),
+                      SizedBox(
+                        width: MediaQuery.of(
+                            context)
+                            .size
+                            .width *
+                            0.02,
+                      ),
+                      Icon(
+                        userToShow.isTrainer! ? Icons.record_voice_over : Icons.directions_run,
+                        color: Colors.black,
+                        size: 18,
+                      ),
+                    ],
                   ),
                   Row(
                     mainAxisAlignment:

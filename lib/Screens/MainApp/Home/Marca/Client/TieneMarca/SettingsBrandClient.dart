@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.d
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/BrandLocations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocations.dart';
+import 'package:mamba_castelldefels/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
@@ -103,9 +104,17 @@ class _SettingsBrandClientState extends State<SettingsBrandClient> {
                       );
                       if (result) {
                         NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
+                        Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID); //12/12/2021
                         await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
                         await _accessDatabase.leaveBrand(currentUser.id!);
-                        Navigator.pushReplacement(
+                        //12/12/2021
+                        for(int i = 0; i < conv.users.length; ++i) {
+                          if(conv.users[i]['uid'] == currentUser.id) {
+                            conv.users.removeAt(i);
+                          }
+                        }
+                        await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
+                         Navigator.pushReplacement(
                             context,
                             CupertinoPageRoute<Null>(
                               builder: (context) =>

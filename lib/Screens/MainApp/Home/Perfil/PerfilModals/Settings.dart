@@ -6,6 +6,7 @@ import 'package:mamba_castelldefels/Globals/NotificationService/NotificationServ
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
@@ -39,6 +40,7 @@ class _SettingsState extends State<Settings> {
   bool isUpdated = false;
   // Boolean isSaved
   bool isSaved = false;
+
 
   @override
   void initState() {
@@ -403,14 +405,23 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             isLoading = true;
                           });
                           // Delete Function
+                          String? userId = currentUser.id;
                           var result = await _accessDatabase.deleteUser(deleteTemp);
                           if (!result) {
                             setState(() {
                               wrongPassword = true;
                             });
                           } else {
+                            await _accessDatabase.deleteUserMemberConversations(toMap(userId));
                             if (currentUser.brandID != "null" && currentUser.brandID != null) {
                               NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
+                              Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID); //12/12/2021
+                              for(int i = 0; i < conv.users.length; ++i) {
+                                if(conv.users[i]['uid'] == currentUser.id) {
+                                  conv.users.removeAt(i);
+                                }
+                              }
+                              await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
                             }
                             Navigator.pushAndRemoveUntil(
                               context,
@@ -469,6 +480,12 @@ class _DeleteDialogState extends State<DeleteDialog> {
   String splitCommonName(String name) {
     List<String> aux = name.split(" ");
     return aux[0];
+  }
+
+  Map<String, dynamic> toMap(String? id) {
+    return {
+      'uid': id,
+    };
   }
 }
 
