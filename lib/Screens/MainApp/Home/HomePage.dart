@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
       appBar: null,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        iconSize: 32,
+        iconSize: MediaQuery.of(context).size.height*0.04,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

@@ -447,7 +447,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                 );
                               }
                               _accessDatabase.addMessage(
-                                  editingController.text,
+                                  editingController.text.trim(),
                                   currentUser.id,
                                   today.year.toString(),
                                   today.month.toString(),

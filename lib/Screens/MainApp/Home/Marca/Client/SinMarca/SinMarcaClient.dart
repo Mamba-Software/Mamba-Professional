@@ -401,6 +401,29 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       IconButton(
+                                        icon: Icon(Icons.question_answer_outlined, size: 35, color: Theme.of(context).primaryColor),
+                                        padding: EdgeInsets.all(0),
+                                        onPressed: () async {
+                                          Usuario adminUser = await _accessDatabase.getUserDetails(brand.adminID!);
+                                          if(adminUser == null) LoadingView();
+                                          else {
+                                          Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child:
+                                          ChatDetailPage(adminUser)
+                                          ),);
+                                          }
+                                        },
+                                      ),
+                                      Text(
+                                        AppLocalizations.of(context)!.contact,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      IconButton(
                                         icon: Icon(brandIdRequest == brand.id! ? Icons.schedule_send : Icons.send_outlined, size: 35, color: brandIdRequest == brand.id! ? Theme.of(context).accentColor : request == null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.3)),
                                         padding: EdgeInsets.all(0),
                                         onPressed: request == null || brandIdRequest == brand.id! ? () async {
@@ -446,29 +469,6 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                       Text(
                                         brandIdRequest == brand.id! ? AppLocalizations.of(context)!.sent : AppLocalizations.of(context)!.join,
                                         style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: brandIdRequest == brand.id! ? Theme.of(context).accentColor : request == null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.3)),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(Icons.question_answer_outlined, size: 35, color: Theme.of(context).primaryColor),
-                                        padding: EdgeInsets.all(0),
-                                        onPressed: () async {
-                                          Usuario adminUser = await _accessDatabase.getUserDetails(brand.adminID!);
-                                          if(adminUser == null) LoadingView();
-                                          else {
-                                          Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child:
-                                          ChatDetailPage(adminUser)
-                                          ),);
-                                          }
-                                        },
-                                      ),
-                                      Text(
-                                        AppLocalizations.of(context)!.contact,
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14),
                                         textAlign: TextAlign.left,
                                       ),
                                     ],

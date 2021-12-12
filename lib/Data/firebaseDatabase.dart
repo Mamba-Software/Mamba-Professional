@@ -1300,7 +1300,7 @@ class FirebaseDatabaseService {
 
   //Get Active Group Of GroupOfQuestions
 
-  Future<GroupOfQuestions> getActiveGroupOfQuestions() async {
+  Future<GroupOfQuestions?> getActiveGroupOfQuestions() async {
     List<GroupOfQuestions> groupOfQuestions = [];
     QuerySnapshot querySnapshot = await _firestore
         .collection("GroupOfQuestions")
@@ -1309,6 +1309,9 @@ class FirebaseDatabaseService {
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       groupOfQuestions.add(GroupOfQuestions.fromObject(
           querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    if (querySnapshot.docs.length == 0) {
+      return null;
     }
     return groupOfQuestions[0];
   }

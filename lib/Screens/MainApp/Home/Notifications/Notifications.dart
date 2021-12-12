@@ -97,6 +97,7 @@ class _NotificationsState extends State<Notifications> {
       } else {
         users.add(Usuario());
         brands.add(Brand());
+        events.add(Event());
       }
       notifications.add(notification);
     }
@@ -260,7 +261,7 @@ class _NotificationsState extends State<Notifications> {
             size: MediaQuery.of(context).size.width*0.15,
             image: brand.logoUrl!,
             color: Theme.of(context).primaryColor,
-            borderWidth: 1.5,
+            borderWidth: 1,
           ),
           title: Text(
             AppLocalizations.of(context)!.userCreatesBrandUser(brand.name!),
@@ -288,7 +289,7 @@ class _NotificationsState extends State<Notifications> {
             size: MediaQuery.of(context).size.width*0.15,
             image: brand.logoUrl!,
             color: Theme.of(context).primaryColor,
-            borderWidth: 1.5,
+            borderWidth: 1.0,
           ),
           title: Text(
             AppLocalizations.of(context)!.userJoinsBrandUser(brand.name!),
@@ -316,7 +317,7 @@ class _NotificationsState extends State<Notifications> {
             size: MediaQuery.of(context).size.width*0.15,
             image: user.imageUrl!,
             color: Theme.of(context).primaryColor,
-            borderWidth: 1.5,
+            borderWidth: 1.0,
           ),
           title: Text(
             AppLocalizations.of(context)!.userJoinsBrandBrand(user.name!, brand.name!),
@@ -344,7 +345,7 @@ class _NotificationsState extends State<Notifications> {
             size: MediaQuery.of(context).size.width*0.15,
             image: brand.logoUrl!,
             color: Theme.of(context).primaryColor,
-            borderWidth: 1.5,
+            borderWidth: 1.0,
           ),
           title: Text(
             AppLocalizations.of(context)!.userLeavesBrandUser(brand.name!),
@@ -372,7 +373,7 @@ class _NotificationsState extends State<Notifications> {
             size: MediaQuery.of(context).size.width*0.15,
             image: user.imageUrl!,
             color: Theme.of(context).primaryColor,
-            borderWidth: 1.5,
+            borderWidth: 1.0,
           ),
           title: Text(
             AppLocalizations.of(context)!.userLeavesBrandBrand(user.name!, brand.name!),
@@ -400,7 +401,7 @@ class _NotificationsState extends State<Notifications> {
             size: MediaQuery.of(context).size.width*0.15,
             image: brand.logoUrl!,
             color: Theme.of(context).primaryColor,
-            borderWidth: 1.5,
+            borderWidth: 1.0,
           ),
           title: Text(
             AppLocalizations.of(context)!.userSendRequestToBrandUser(brand.name!),
@@ -428,7 +429,7 @@ class _NotificationsState extends State<Notifications> {
             size: MediaQuery.of(context).size.width*0.15,
             image: user.imageUrl!,
             color: Theme.of(context).primaryColor,
-            borderWidth: 1.5,
+            borderWidth: 1.0,
           ),
           title: Text(
             AppLocalizations.of(context)!.userSendRequestToBrandBrand(user.name!),
@@ -456,7 +457,7 @@ class _NotificationsState extends State<Notifications> {
             size: MediaQuery.of(context).size.width*0.15,
             image: brand.logoUrl!,
             color: Theme.of(context).primaryColor,
-            borderWidth: 1.5,
+            borderWidth: 1.0,
           ),
           title: Text(
             AppLocalizations.of(context)!.userCancelRequestToBrandUser(brand.name!),
@@ -484,7 +485,7 @@ class _NotificationsState extends State<Notifications> {
             size: MediaQuery.of(context).size.width*0.15,
             image: user.imageUrl!,
             color: Theme.of(context).primaryColor,
-            borderWidth: 1.5,
+            borderWidth: 1.0,
           ),
           title: Text(
             AppLocalizations.of(context)!.userCancelRequestToBrandBrand(user.name!),
@@ -521,7 +522,7 @@ class _NotificationsState extends State<Notifications> {
             size: MediaQuery.of(context).size.width*0.15,
             image: brand.logoUrl!,
             color: Theme.of(context).primaryColor,
-            borderWidth: 1.5,
+            borderWidth: 1.0,
           ),
           title: Text(
             AppLocalizations.of(context)!.userJoinEventUser(event.title!, brand.name!),
@@ -549,7 +550,7 @@ class _NotificationsState extends State<Notifications> {
             size: MediaQuery.of(context).size.width*0.15,
             image: user.imageUrl,
             color: Theme.of(context).primaryColor,
-            borderWidth: 1.5,
+            borderWidth: 1.0,
           ),
           title: Text(
             AppLocalizations.of(context)!.userJoinEventBrand(user.name!, event.title!),
@@ -586,7 +587,7 @@ class _NotificationsState extends State<Notifications> {
             size: MediaQuery.of(context).size.width*0.15,
             image: brand.logoUrl!,
             color: Theme.of(context).primaryColor,
-            borderWidth: 1.5,
+            borderWidth: 1.0,
           ),
           title: Text(
             AppLocalizations.of(context)!.userLeavesEventUser(event.title!, brand.name!),
@@ -614,7 +615,7 @@ class _NotificationsState extends State<Notifications> {
             size: MediaQuery.of(context).size.width*0.15,
             image: user.imageUrl,
             color: Theme.of(context).primaryColor,
-            borderWidth: 1.5,
+            borderWidth: 1.0,
           ),
           title: Text(
             AppLocalizations.of(context)!.userLeavesEventBrand(user.name!, event.title!),
@@ -674,7 +675,7 @@ class _NotificationsState extends State<Notifications> {
                   type: PageTransitionType.bottomToTop,
                   child: CalendarWidgetClient(
                     brandID: notification.parameters[1],
-                    onlyView: true,
+                    onlyView: false,
                   )
               )
           );
@@ -772,13 +773,24 @@ class _NotificationsState extends State<Notifications> {
         break;
       }
       case "UserLeaveEvent_User": {
+        bool canAction = true;
+        var startDate = DateTime(
+          int.parse(event.year!),
+          int.parse(event.month!),
+          int.parse(event.day!),
+          int.parse(event.hour!),
+          int.parse(event.minute!),
+        );
+        if (startDate.isBefore(DateTime.now())) {
+          canAction = false;
+        }
         Navigator.push(
             context,
             PageTransition(
                 type: PageTransitionType.bottomToTop,
                 child: CalendarWidgetClient(
                   brandID: notification.parameters[1],
-                  onlyView: true,
+                  onlyView: canAction,
                 )
             )
         );

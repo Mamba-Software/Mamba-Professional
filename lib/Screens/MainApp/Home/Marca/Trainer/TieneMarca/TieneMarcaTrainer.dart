@@ -108,7 +108,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                               ),
                             ),
                             IconButton(
-                              icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: 35,),
+                              icon: Icon(Icons.edit, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
                               alignment: Alignment.centerRight,
                               padding: EdgeInsets.all(0),
                               onPressed: () {
@@ -236,6 +236,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 todayEvents.length > 0 ? Column(
                   children: [
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(

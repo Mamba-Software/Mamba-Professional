@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
@@ -165,47 +166,71 @@ class _ChatPageState extends State<ChatPage> {
                             snapshot.data!.docs, chatUsers),
                         builder: (context, snapshot) {
                           if (snapshot.data != null) {
-                            if (!isFiltered) {
-                              chatUsers = snapshot.data!;
-                              return ListView.builder(
-                                itemCount: chatUsers.length,
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  return ConversationList(
-                                      name: chatUsers[index].name!,
-                                      messageText: chatUsers[index]
-                                          .messageText!,
-                                      imageUrl: chatUsers[index].imageURL!,
-                                      time: chatUsers[index].time!,
-                                      isMessageRead: chatUsers[index]
-                                          .isMessageRead!,
-                                      userId: chatUsers[index].userId!,
-                                      isGroup: chatUsers[index].isGroup!,
-                                      iconData: chatUsers[index].iconData!);
-                                },
-                              );
+                            chatUsers = snapshot.data!;
+                            if (chatUsers.length > 0) {
+                              if (!isFiltered) {
+                                return ListView.builder(
+                                  itemCount: chatUsers.length,
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    return ConversationList(
+                                        name: chatUsers[index].name!,
+                                        messageText: chatUsers[index]
+                                            .messageText!,
+                                        imageUrl: chatUsers[index].imageURL!,
+                                        time: chatUsers[index].time!,
+                                        isMessageRead: chatUsers[index]
+                                            .isMessageRead!,
+                                        userId: chatUsers[index].userId!,
+                                        isGroup: chatUsers[index].isGroup!,
+                                        iconData: chatUsers[index].iconData!);
+                                  },
+                                );
+                              } else {
+                                return ListView.builder(
+                                  itemCount: chatUsers.length,
+                                  shrinkWrap: true,
+                                  //padding: EdgeInsets.only(top: 16),
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    return ConversationList(
+                                        name: chatUsers[index].name!,
+                                        messageText: chatUsers[index]
+                                            .messageText!,
+                                        imageUrl: chatUsers[index].imageURL!,
+                                        time: chatUsers[index].time!,
+                                        isMessageRead: chatUsers[index]
+                                            .isMessageRead!,
+                                        userId: chatUsers[index].userId!,
+                                        isGroup: chatUsers[index].isGroup!,
+                                        iconData: chatUsers[index].iconData!);
+                                  },
+                                );
+                              }
                             } else {
-                              return ListView.builder(
-                                itemCount: chatUsers.length,
-                                shrinkWrap: true,
-                                //padding: EdgeInsets.only(top: 16),
-                                physics: NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  return ConversationList(
-                                      name: chatUsers[index].name!,
-                                      messageText: chatUsers[index]
-                                          .messageText!,
-                                      imageUrl: chatUsers[index].imageURL!,
-                                      time: chatUsers[index].time!,
-                                      isMessageRead: chatUsers[index]
-                                          .isMessageRead!,
-                                      userId: chatUsers[index].userId!,
-                                      isGroup: chatUsers[index].isGroup!,
-                                      iconData: chatUsers[index].iconData!);
-                                },
+                              return Container(
+                                height: MediaQuery.of(context).size.height *0.65,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Center(
+                                      child: Container(
+                                          height: MediaQuery.of(context).size.height *0.25,
+                                          child: Image.asset(Constants.chatImage)
+                                      ),
+                                    ),
+                                    Center(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
+                                          child: Text(AppLocalizations.of(context)!.noMessages, style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080)), textAlign: TextAlign.center,),
+                                        ),
+                                    ),
+                                  ],
+                                ),
                               );
                             }
+
                           } else {
                             return Container(
                                 height: MediaQuery

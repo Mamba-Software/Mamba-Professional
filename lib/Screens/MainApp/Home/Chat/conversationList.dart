@@ -79,7 +79,7 @@ class _ConversationListState extends State<ConversationList> {
                     size: MediaQuery.of(context).size.width*0.15,
                     image: widget.imageUrl,
                     color: Theme.of(context).primaryColor,
-                    borderWidth: 1.5,
+                    borderWidth: 1,
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width*0.03,),
                   Expanded(

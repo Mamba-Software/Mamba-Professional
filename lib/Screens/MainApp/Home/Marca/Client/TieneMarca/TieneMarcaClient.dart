@@ -234,6 +234,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 todayEvents.length > 0 ? Column(
                   children: [
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(

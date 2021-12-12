@@ -100,7 +100,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                           icon: Icon(Icons.check_circle_outline),
                           backgroundColor: Colors.green,
                           foregroundColor: Styles.white,
-                          onPressed: () async {
+                          onPressed: () {
                             Navigator.pop(context, true);
                           },
                         ),
@@ -111,7 +111,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                           label: Text(AppLocalizations.of(context)!.reject),
                           backgroundColor: Colors.red,
                           foregroundColor: Styles.white,
-                          onPressed: () async {
+                          onPressed: () {
                             Navigator.pop(context, false);
                           },
                         ),

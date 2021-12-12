@@ -309,5 +309,6 @@
   "userLeavesEventBrand": "{user} ha abandonat l'esdeveniment {name}",
   "userLeavesEventBrandSubtitle": "Ara queden {joined} membres apuntats d'un màxim de {total} places",
   "writeMessage": "Escriu un missatge",
+  "noMessages": "Encara no has començat ninguna conversa",
   "membersOfBrand": "Grup amb tots els membres de la marca"
 }

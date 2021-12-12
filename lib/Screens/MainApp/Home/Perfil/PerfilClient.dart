@@ -382,7 +382,7 @@ class _PerfilClientState extends State<PerfilClient> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // 46%
+            //46%
             Container(
               height: MediaQuery.of(context).size.height*0.46,
               child: Stack(
@@ -395,7 +395,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.70,
                       child: IconButton(
-                        icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 50,),
+                        icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
                         alignment: Alignment.center,
                         onPressed: () {
                           Navigator.push(
@@ -430,7 +430,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       left: MediaQuery.of(context).size.width*0.70,
                       right: 0,
                       child: IconButton(
-                        icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: 50,),
+                        icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -570,21 +570,20 @@ class _PerfilClientState extends State<PerfilClient> {
                   ]
               ),
             ),
-            // 4%
-            SizedBox(height: MediaQuery.of(context).size.height*0.04),
-            //  33% - 10%
+            //4%
+            SizedBox(height: MediaQuery.of(context).size.height*0.03),
+            // 33% - 8%
             todayEvents.length != 0 ? Container(
-              height: MediaQuery.of(context).size.height*0.33,
-              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height*0.32,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                    padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 23,), textAlign: TextAlign.start),
+                        Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 20,), textAlign: TextAlign.start),
                         todayEvents.length > 1 ? Row(
                           children: [
                             Text(todayEvents.length.toString(), style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 16, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
@@ -797,22 +796,25 @@ class _PerfilClientState extends State<PerfilClient> {
                 ],
               ),
             ) : Container(
-              height: MediaQuery.of(context).size.height*0.10,
-              width: MediaQuery.of(context).size.width*0.9,
+              height: MediaQuery.of(context).size.height*0.09,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(AppLocalizations.of(context)!.noEventsToday, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 23,), textAlign: TextAlign.start),
-                    ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(AppLocalizations.of(context)!.noEventsToday, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 23,), textAlign: TextAlign.start),
+                      ],
+                    ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.04),
                 ],
               ),
             ),
+            // 12%
             Column(
               children: [
                 GestureDetector(
@@ -869,6 +871,7 @@ class _PerfilClientState extends State<PerfilClient> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.04),
               ],
             ),
+            // 20%
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -951,6 +954,7 @@ class _PerfilClientState extends State<PerfilClient> {
                 ),
               ),
             ),
+            // 4%
             SizedBox(height: MediaQuery.of(context).size.height*0.04),
             GestureDetector(
               onTap: () {
