@@ -91,9 +91,8 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              PageTransition(
-                                type: PageTransitionType.rightToLeftWithFade,
-                                child: EditBrandInfo(
+                              CupertinoPageRoute<String>(
+                                  builder: (context) => EditBrandInfo(
                                   locale: Localizations.localeOf(context),
                                 ),
                               )
@@ -116,9 +115,8 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              PageTransition(
-                                type: PageTransitionType.rightToLeftWithFade,
-                                child: EditLogoPage(),
+                              CupertinoPageRoute<String>(
+                                builder: (context) => EditLogoPage(),
                               )
                           );
                         },
@@ -138,10 +136,9 @@ class _SettingsBrandState extends State<SettingsBrand> {
                       TextButton(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.rightToLeftWithFade,
-                                child: MyLocations(
+                            context,
+                            CupertinoPageRoute<String>(
+                              builder: (context) => MyLocations(
                                   brandId: currentBrand.id!,
                                 ),
                               )

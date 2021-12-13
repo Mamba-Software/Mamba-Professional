@@ -311,9 +311,8 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
   void _addEvent({DateTime? dateTimeClicked}) {
     Navigator.push(
         context,
-        PageTransition(
-          type: PageTransitionType.bottomToTop,
-          child: AddEvent(
+        CupertinoPageRoute<Null>(
+          builder: (context) => AddEvent(
             locale: Localizations.localeOf(context),
             initialDateTime: dateTimeClicked ?? null,
           ),
@@ -328,9 +327,8 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
       }
       Navigator.push(
         context,
-        PageTransition(
-            type: PageTransitionType.bottomToTop,
-            child: ViewEventClient(
+          CupertinoPageRoute<Null>(
+            builder: (context) => ViewEventClient(
               eventId: eventId,
               canJoin: canJoin,
               locale: Localizations.localeOf(context),

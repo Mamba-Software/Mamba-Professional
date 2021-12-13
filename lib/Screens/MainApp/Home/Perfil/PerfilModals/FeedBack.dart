@@ -91,9 +91,8 @@ class _FeedBackState extends State<FeedBack> {
                 onTap: () async {
                   Navigator.push(
                     context,
-                    PageTransition(
-                      type: PageTransitionType.rightToLeftWithFade,
-                      child: ReportBug(),
+                      CupertinoPageRoute<String>(
+                        builder: (context) => ReportBug(),
                     )
                   );
                 },
@@ -154,9 +153,8 @@ class _FeedBackState extends State<FeedBack> {
                 onTap: () async {
                   Navigator.push(
                       context,
-                      PageTransition(
-                        type: PageTransitionType.rightToLeftWithFade,
-                        child: ReportBug(),
+                      CupertinoPageRoute<String>(
+                        builder: (context) => ReportBug(),
                       )
                   );
                 },
@@ -194,9 +192,8 @@ class _FeedBackState extends State<FeedBack> {
               onTap: () {
                 Navigator.push(
                   context,
-                  PageTransition(
-                    type: PageTransitionType.bottomToTop,
-                    child: UserFeedBack(
+                    CupertinoPageRoute<String>(
+                      builder: (context) => UserFeedBack(
                     ),
                   )).whenComplete(() {
                       this.checkIfAnswered();

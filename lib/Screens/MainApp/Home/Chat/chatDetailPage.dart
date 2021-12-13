@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -274,9 +275,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     onTap: () {
                       Navigator.push(
                           context,
-                          PageTransition(
-                              type: PageTransitionType.bottomToTop,
-                              child: ProfileViewUser(
+                          CupertinoPageRoute<Null>(
+                                  builder: (context) => ProfileViewUser(
                                   userID: widget.user.id!, viewOnly: true)));
                     },
                   ),

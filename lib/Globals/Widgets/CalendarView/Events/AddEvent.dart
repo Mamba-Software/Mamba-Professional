@@ -507,9 +507,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                             });
                                             var result = await Navigator.push(
                                                 context,
-                                                PageTransition(
-                                                  type: PageTransitionType.rightToLeftWithFade,
-                                                  child: MyLocationsSelect(
+                                              CupertinoPageRoute<Null>(
+                                                builder: (context) => MyLocationsSelect(
                                                     brandId: currentBrand.id!,
                                                   ),
                                                 )

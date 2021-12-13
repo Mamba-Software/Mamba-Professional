@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -45,15 +46,14 @@ class _ConversationListState extends State<ConversationList> {
   Widget build(BuildContext context) {
      return GestureDetector(
       onTap: () async {
-        if(!widget.isGroup) {
+        if (!widget.isGroup) {
           Usuario user = await this._accessDatabase.getUserDetails(widget.userId);
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
+          Navigator.push(context, CupertinoPageRoute(builder: (context) {
             return ChatDetailPage(user);
           }));
-        }
-        else {
+        } else {
           Brand brand = await _accessDatabase.getBrandDetails(widget.userId);
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
+          Navigator.push(context, CupertinoPageRoute(builder: (context) {
             return ChatDetailPageGroup(brand);
           }));
         }

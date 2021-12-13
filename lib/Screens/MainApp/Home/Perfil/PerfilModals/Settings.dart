@@ -112,9 +112,8 @@ class _SettingsState extends State<Settings> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              PageTransition(
-                                type: PageTransitionType.rightToLeftWithFade,
-                                child: TusDatos(),
+                              CupertinoPageRoute<String>(
+                                builder: (context) => TusDatos(),
                               )
                           );
                         },
@@ -135,9 +134,8 @@ class _SettingsState extends State<Settings> {
                         onPressed: () {
                           Navigator.push(
                               context,
-                              PageTransition(
-                                type: PageTransitionType.rightToLeftWithFade,
-                                child: EditPhotoPage(),
+                              CupertinoPageRoute<String>(
+                                builder: (context) => EditPhotoPage(),
                               )
                           );
                         },

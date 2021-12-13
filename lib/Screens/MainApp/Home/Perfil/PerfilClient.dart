@@ -1469,20 +1469,7 @@ class _PerfilClientState extends State<PerfilClient> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                    context,
-                    PageTransition(
-                        type: PageTransitionType.bottomToTop,
-                        child: MyCalendarWidget(
-                          brandID: currentBrand.id!,
-                        )
-                    )
-                ).whenComplete(() {
-                  setState(() {
-                    isLoading = true;
-                    initProfileHome();
-                  });
-                });
+
               },
               child: Material(
                 elevation: 4,

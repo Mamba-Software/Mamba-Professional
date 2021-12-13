@@ -1,5 +1,6 @@
 // Flutter Libs
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
@@ -749,9 +750,8 @@ class _NotificationsState extends State<Notifications> {
           if (currentUser.isTrainer!) {
             Navigator.push(
                 context,
-                PageTransition(
-                    type: PageTransitionType.bottomToTop,
-                    child: CalendarWidgetTrainer(
+              CupertinoPageRoute<Null>(
+                builder: (context) => CalendarWidgetTrainer(
                       brandID: brand.id!,
                       canEdit: true,
                     )
@@ -760,9 +760,8 @@ class _NotificationsState extends State<Notifications> {
           } else {
             Navigator.push(
                 context,
-                PageTransition(
-                    type: PageTransitionType.bottomToTop,
-                    child: CalendarWidgetClient(
+              CupertinoPageRoute<Null>(
+                builder: (context) => CalendarWidgetClient(
                       brandID: brand.id!,
                       onlyView: false,
                     )
@@ -776,9 +775,8 @@ class _NotificationsState extends State<Notifications> {
         if (user.id != null) {
           Navigator.push(
               context,
-              PageTransition(
-                  type: PageTransitionType.bottomToTop,
-                  child: ProfileViewUser(
+              CupertinoPageRoute<Null>(
+                                  builder: (context) => ProfileViewUser(
                     userID: user.id!,
                     viewOnly: false,
                   )
@@ -800,9 +798,8 @@ class _NotificationsState extends State<Notifications> {
         if (brand.id != null) {
           Navigator.push(
               context,
-              PageTransition(
-                  type: PageTransitionType.bottomToTop,
-                  child: MembershipRequests(
+              CupertinoPageRoute<Null>(
+                                  builder: (context) => MembershipRequests(
                     brandId: brand.id!,
                   )
               )
@@ -831,9 +828,8 @@ class _NotificationsState extends State<Notifications> {
           }
           Navigator.push(
               context,
-              PageTransition(
-                type: PageTransitionType.bottomToTop,
-                child: ViewEventClient(
+              CupertinoPageRoute<Null>(
+                                  builder: (context) => ViewEventClient(
                   eventId: event.id!,
                   canJoin: canAction,
                   locale: Localizations.localeOf(context),
@@ -858,9 +854,8 @@ class _NotificationsState extends State<Notifications> {
           }
           Navigator.push(
               context,
-              PageTransition(
-                type: PageTransitionType.bottomToTop,
-                child: ViewEventTrainer(
+              CupertinoPageRoute<Null>(
+                                  builder: (context) => ViewEventTrainer(
                   eventId: event.id!,
                   canEdit: canAction,
                   locale: Localizations.localeOf(context),
@@ -874,9 +869,8 @@ class _NotificationsState extends State<Notifications> {
         if (brand.id != null) {
           Navigator.push(
               context,
-              PageTransition(
-                  type: PageTransitionType.bottomToTop,
-                  child: CalendarWidgetClient(
+              CupertinoPageRoute<Null>(
+                                  builder: (context) => CalendarWidgetClient(
                     brandID: brand.id!,
                     onlyView: true,
                   )
@@ -900,9 +894,8 @@ class _NotificationsState extends State<Notifications> {
           }
           Navigator.push(
               context,
-              PageTransition(
-                type: PageTransitionType.bottomToTop,
-                child: ViewEventTrainer(
+              CupertinoPageRoute<Null>(
+                                  builder: (context) => ViewEventTrainer(
                   eventId: event.id!,
                   canEdit: canAction,
                   locale: Localizations.localeOf(context),

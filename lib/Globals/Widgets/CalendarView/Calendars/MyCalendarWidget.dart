@@ -605,9 +605,8 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
       if (currentUser.isTrainer!) {
         Navigator.push(
             context,
-            PageTransition(
-                type: PageTransitionType.bottomToTop,
-                child: ViewEventTrainer(
+            CupertinoPageRoute<Null>(
+                                  builder: (context) => ViewEventTrainer(
                   eventId: eventId,
                   canEdit: canAction,
                   locale: Localizations.localeOf(context),
@@ -617,9 +616,8 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
       } else {
         Navigator.push(
             context,
-            PageTransition(
-                type: PageTransitionType.bottomToTop,
-                child: ViewEventClient(
+            CupertinoPageRoute<Null>(
+                                  builder: (context) => ViewEventClient(
                   eventId: eventId,
                   canJoin: canAction,
                   locale: Localizations.localeOf(context),

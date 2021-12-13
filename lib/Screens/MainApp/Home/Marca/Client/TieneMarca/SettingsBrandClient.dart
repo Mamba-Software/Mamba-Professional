@@ -72,9 +72,8 @@ class _SettingsBrandClientState extends State<SettingsBrandClient> {
                     onPressed: () {
                       Navigator.push(
                           context,
-                          PageTransition(
-                            type: PageTransitionType.rightToLeftWithFade,
-                            child: BrandLocations(
+                        CupertinoPageRoute<String>(
+                          builder: (context) => BrandLocations(
                               brandId: currentBrand.id!,
                             ),
                           )

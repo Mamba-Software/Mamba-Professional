@@ -324,9 +324,8 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
     if (currentUser.isTrainer!) {
       Navigator.push(
           context,
-          PageTransition(
-              type: PageTransitionType.bottomToTop,
-              child: ViewEventTrainer(
+          CupertinoPageRoute<Null>(
+                                  builder: (context) => ViewEventTrainer(
                 eventId: eventId,
                 canEdit: canAction,
                 locale: Localizations.localeOf(context),
@@ -336,9 +335,8 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
     } else {
       Navigator.push(
           context,
-          PageTransition(
-              type: PageTransitionType.bottomToTop,
-              child: ViewEventClient(
+          CupertinoPageRoute<Null>(
+                                  builder: (context) => ViewEventClient(
                 eventId: eventId,
                 canJoin: canAction,
                 locale: Localizations.localeOf(context),

@@ -197,8 +197,8 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
               padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.03),
               child: IconButton(
                 onPressed: () {
-                  Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child:
-                  ChatDetailPage(user!)
+                  Navigator.push(context, CupertinoPageRoute<Null>(
+                    builder: (context) => ChatDetailPage(user!)
                   ),
                   );
                 } ,
@@ -415,9 +415,8 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                 if (currentUser.isTrainer!) {
                                   Navigator.push(
                                       context,
-                                      PageTransition(
-                                          type: PageTransitionType.bottomToTop,
-                                          child: ViewEventTrainer(
+                                    CupertinoPageRoute<Null>(
+                                      builder: (context) => ViewEventTrainer(
                                             eventId: event.id!,
                                             canEdit: false,
                                             locale: Localizations.localeOf(context),
@@ -427,9 +426,8 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                 } else {
                                   Navigator.push(
                                       context,
-                                      PageTransition(
-                                          type: PageTransitionType.bottomToTop,
-                                          child: ViewEventClient(
+                                      CupertinoPageRoute<Null>(
+                                          builder: (context) => ViewEventClient(
                                             eventId: event.id!,
                                             canJoin: false,
                                             locale: Localizations.localeOf(context),

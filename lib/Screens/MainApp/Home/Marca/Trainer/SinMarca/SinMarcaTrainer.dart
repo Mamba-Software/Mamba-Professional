@@ -374,9 +374,8 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                           onPressed: () {
                                             Navigator.push(
                                                 context,
-                                                PageTransition(
-                                                    type: PageTransitionType.rightToLeftWithFade,
-                                                    child: CalendarWidgetClient(
+                                              CupertinoPageRoute<Null>(
+                                                builder: (context) => CalendarWidgetClient(
                                                       brandID: brand.id!,
                                                       onlyView: true,
                                                     )
@@ -400,9 +399,8 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                           onPressed: () {
                                             Navigator.push(
                                                 context,
-                                                PageTransition(
-                                                    type: PageTransitionType.rightToLeftWithFade,
-                                                    child: TodosMiembrosClient(
+                                              CupertinoPageRoute<Null>(
+                                                builder: (context) => TodosMiembrosClient(
                                                       brandID: brand.id!,
                                                       brandAdmin: brand.adminID!,
                                                       viewOnly: true,
@@ -428,8 +426,8 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                             Usuario adminUser = await _accessDatabase.getUserDetails(brand.adminID!);
                                             if(adminUser == null) LoadingView();
                                             else {
-                                              Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child:
-                                              ChatDetailPage(adminUser)
+                                              Navigator.push(context, CupertinoPageRoute<Null>(
+                                                builder: (context) => ChatDetailPage(adminUser)
                                               ),);
                                             }
                                           },

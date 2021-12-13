@@ -132,9 +132,8 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                     onPressed: () async {
                       Navigator.push(
                           context,
-                          PageTransition(
-                              type: PageTransitionType.bottomToTop,
-                              child: MembershipRequests(
+                        CupertinoPageRoute<Null>(
+                          builder: (context) => MembershipRequests(
                                 brandId: currentBrand.id!,
                               )
                           )
@@ -271,15 +270,15 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                       alignment: Alignment.centerRight,
                                       padding: EdgeInsets.all(0),
                                       onPressed: () {
-                                        Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ChatDetailPage(user)),);
+                                        Navigator.push(context, CupertinoPageRoute<Null>(
+                                          builder: (context) => ChatDetailPage(user)),);
                                       },
                                     ),
                                     onTap: () {
                                       Navigator.push(
                                           context,
-                                          PageTransition(
-                                              type: PageTransitionType.bottomToTop,
-                                              child: ProfileViewUser(
+                                        CupertinoPageRoute<Null>(
+                                          builder: (context) => ProfileViewUser(
                                                 userID: user.id!,
                                                 viewOnly: false,
                                               )
@@ -394,15 +393,15 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                   alignment: Alignment.centerRight,
                                   padding: EdgeInsets.all(0),
                                   onPressed: () {
-                                    Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ChatDetailPage(user)),);
+                                    Navigator.push(context, CupertinoPageRoute<Null>(
+                                      builder: (context) => ChatDetailPage(user)),);
                                   },
                                 ),
                                 onTap: () {
                                   Navigator.push(
                                       context,
-                                      PageTransition(
-                                          type: PageTransitionType.bottomToTop,
-                                          child: ProfileViewUser(
+                                    CupertinoPageRoute<Null>(
+                                      builder: (context) => ProfileViewUser(
                                             userID: user.id!,
                                             viewOnly: false,
                                           )

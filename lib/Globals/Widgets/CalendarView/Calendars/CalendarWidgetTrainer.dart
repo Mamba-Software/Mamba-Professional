@@ -340,9 +340,8 @@ class _CalendarWidgetTrainerState extends State<CalendarWidgetTrainer> {
   void _addEvent({DateTime? dateTimeClicked}) {
     Navigator.push(
         context,
-        PageTransition(
-          type: PageTransitionType.bottomToTop,
-          child: AddEvent(
+        CupertinoPageRoute<String>(
+          builder: (context) => AddEvent(
             locale: Localizations.localeOf(context),
             initialDateTime: dateTimeClicked ?? null,
           ),
@@ -357,9 +356,8 @@ class _CalendarWidgetTrainerState extends State<CalendarWidgetTrainer> {
       }
       Navigator.push(
         context,
-        PageTransition(
-            type: PageTransitionType.bottomToTop,
-            child: ViewEventTrainer(
+        CupertinoPageRoute<Null>(
+          builder: (context) => ViewEventTrainer(
               eventId: eventId,
               canEdit: canEdit,
               locale: Localizations.localeOf(context),

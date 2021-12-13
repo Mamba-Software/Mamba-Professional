@@ -271,15 +271,15 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                   alignment: Alignment.centerRight,
                                   padding: EdgeInsets.all(0),
                                   onPressed: () {
-                                    Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ChatDetailPage(user)),);
+                                    Navigator.push(context, CupertinoPageRoute<Null>(
+                                      builder: (context) => ChatDetailPage(user)),);
                                   },
                                 ),
                                 onTap: () {
                                   Navigator.push(
                                       context,
-                                      PageTransition(
-                                          type: PageTransitionType.bottomToTop,
-                                          child: ProfileViewUser(
+                                    CupertinoPageRoute<Null>(
+                                      builder: (context) => ProfileViewUser(
                                             userID: user.id!,
                                             viewOnly: widget.viewOnly,
                                           )
@@ -396,15 +396,15 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                       alignment: Alignment.centerRight,
                                       padding: EdgeInsets.all(0),
                                       onPressed: () {
-                                        Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ChatDetailPage(user)),);
+                                        Navigator.push(context, CupertinoPageRoute<Null>(
+                                          builder: (context) => ChatDetailPage(user)),);
                                       },
                                     ),
                                     onTap: () {
                                       Navigator.push(
                                           context,
-                                          PageTransition(
-                                              type: PageTransitionType.bottomToTop,
-                                              child: ProfileViewUser(
+                                        CupertinoPageRoute<Null>(
+                                          builder: (context) => ProfileViewUser(
                                                 userID: user.id!,
                                                 viewOnly: widget.viewOnly,
                                               )

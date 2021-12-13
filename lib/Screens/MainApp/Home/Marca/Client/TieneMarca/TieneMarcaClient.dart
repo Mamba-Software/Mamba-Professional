@@ -118,9 +118,8 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                           onPressed: () {
                             Navigator.push(
                                 context,
-                                PageTransition(
-                                  type: PageTransitionType.rightToLeftWithFade,
-                                  child: BrandLocations(
+                              CupertinoPageRoute<String>(
+                                builder: (context) => BrandLocations(
                                     brandId: currentBrand.id!,
                                   ),
                                 )
