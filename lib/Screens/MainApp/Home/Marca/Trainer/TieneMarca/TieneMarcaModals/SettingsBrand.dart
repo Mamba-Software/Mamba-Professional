@@ -238,7 +238,6 @@ class _SettingsBrandState extends State<SettingsBrand> {
                             return DeleteBrandDialog();
                           }
                       );
-                      print(result);
                       if (result) {
                         setState(() {
                           isLoading = true;

@@ -47,12 +47,10 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void filterSearchResults(String query) {
-    print(query);
     List<ChatUsers> chatUsersFiltered = [];
       if (query.isNotEmpty || query != "") {
         for (var item in allChatUsers) {
           if (item.name!.toLowerCase().startsWith(query)) {
-            print(item);
             chatUsersFiltered.add(item);
           }
         }

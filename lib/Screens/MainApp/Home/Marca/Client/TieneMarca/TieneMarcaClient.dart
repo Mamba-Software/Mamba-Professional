@@ -138,7 +138,6 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                                   return LeaveBrandConfirmationDialog(text: AppLocalizations.of(context)!.exitBrandConfirm);
                                 }
                             );
-                            print(result);
                             if (result) {
                               setState(() {
                                 isLoading = true;
