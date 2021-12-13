@@ -35,9 +35,12 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   // Birthday
   int birthday = 0;
   // Event List
+  String month = "";
   int totalEvents  = 0;
   int thisMonthEvents  = 0;
   List<Event> listEvents = [];
+
+  String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
 
   // init Widget state. Loading user info.
   @override
@@ -63,16 +66,38 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     List<Event> list = await _accessDatabase.getAllEventsFromTrainer(widget.userID);
     for (var i=0; i<list.length; i++) {
       Event event = list[i];
-      int year = int.parse(event.year!);
-      int month = int.parse(event.month!);
-      int day = int.parse(event.day!);
-      if (year <= today.year && month <= today.month && day < today.day) {
+      var startDate =  DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
+      if (startDate.isBefore(today)) {
         listEvents.add(event);
-        if (year == today.year && month == today.month) {
+        if (startDate.year == today.year && startDate.month == today.month) {
           tempMonth += 1;
         }
       }
     }
+    listEvents.sort((a,b) {
+      var aDate =  DateTime(
+        int.parse(a.year!),
+        int.parse(a.month!),
+        int.parse(a.day!),
+        int.parse(a.hour!),
+        int.parse(a.minute!),
+      );
+      var bDate =  DateTime(
+        int.parse(b.year!),
+        int.parse(b.month!),
+        int.parse(b.day!),
+        int.parse(b.hour!),
+        int.parse(b.minute!),
+      );
+      return aDate.compareTo(bDate);
+    });
+    listEvents = List.from(listEvents.reversed);
     setState(() {
       thisMonthEvents = tempMonth;
       totalEvents = listEvents.length;
@@ -86,16 +111,38 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     List<Event> list = await _accessDatabase.getAllEventsFromClient(widget.userID);
     for (var i=0; i<list.length; i++) {
       Event event = list[i];
-      int year = int.parse(event.year!);
-      int month = int.parse(event.month!);
-      int day = int.parse(event.day!);
-      if (year <= today.year && month <= today.month && day < today.day) {
+      var startDate =  DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
+      if (startDate.isBefore(today)) {
         listEvents.add(event);
-        if (year == today.year && month == today.month) {
+        if (startDate.year == today.year && startDate.month == today.month) {
           tempMonth += 1;
         }
       }
     }
+    listEvents.sort((a,b) {
+      var aDate =  DateTime(
+        int.parse(a.year!),
+        int.parse(a.month!),
+        int.parse(a.day!),
+        int.parse(a.hour!),
+        int.parse(a.minute!),
+      );
+      var bDate =  DateTime(
+        int.parse(b.year!),
+        int.parse(b.month!),
+        int.parse(b.day!),
+        int.parse(b.hour!),
+        int.parse(b.minute!),
+      );
+      return aDate.compareTo(bDate);
+    });
+    listEvents = List.from(listEvents.reversed);
     setState(() {
       thisMonthEvents = tempMonth;
       totalEvents = listEvents.length;
@@ -164,27 +211,39 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
         LoadingViewPurple()
             :
         SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(height: MediaQuery.of(context).size.height*0.04),
+              SizedBox(height: MediaQuery.of(context).size.height*0.03),
               CircularImage(size: MediaQuery.of(context).size.width*0.45, image: user!.imageUrl, borderWidth: 1.5,),
-              SizedBox(height: MediaQuery.of(context).size.height*0.02),
-              Text(
-                user!.name!,
-                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24),
+              SizedBox(height: MediaQuery.of(context).size.height*0.03),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                child: Text(
+                  user!.name!,
+                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24),
+                  textAlign: TextAlign.center,
+                ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Icon(
+                    user!.isTrainer! ?  Icons.record_voice_over : Icons.directions_run,
+                    color: Theme.of(context).accentColor,
+                    size: 25,
+                  ),
+                  user!.isTrainer! ? SizedBox(width: 4) : SizedBox(width: 2),
                   Text(
-                    "@${user!.nick!}",
-                    style: TextStyle(color: Colors.grey),
+                    user!.isTrainer! ?  AppLocalizations.of(context)!.trainer : AppLocalizations.of(context)!.client,
+                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.w600,color: Theme.of(context).accentColor,),
                   ),
                 ],
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              SizedBox(height: MediaQuery.of(context).size.height*0.00),
+              /*
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -198,6 +257,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     user!.gender == 2 ? AppLocalizations.of(context)!.transgender : user!.gender == 0 ? AppLocalizations.of(context)!.male : AppLocalizations.of(context)!.female,
                     style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).accentColor),
                   ),
+                  /*
                   Container(
                     height: 16,
                     width: 32,
@@ -213,6 +273,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     user!.dateOfBirth!,
                     style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).accentColor),
                   ),
+                   */
                   Container(
                       height: 16,
                       width: 32,
@@ -230,6 +291,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                   ),
                 ],
               ),
+              */
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -313,134 +375,183 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     itemCount: listEvents.length,
                     itemBuilder: (context,int index) {
                       Event event = listEvents[index];
-                      return Padding(
-                        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
-                        child: ListTile(
-                          onTap: () {
-                            if (currentUser.isTrainer!) {
-                              Navigator.push(
-                                  context,
-                                  PageTransition(
-                                      type: PageTransitionType.bottomToTop,
-                                      child: ViewEventTrainer(
-                                        eventId: event.id!,
-                                        canEdit: false,
-                                        locale: Localizations.localeOf(context),
+                      bool addLabel = false;
+                      var startDate =  DateTime(
+                        int.parse(event.year!),
+                        int.parse(event.month!),
+                        int.parse(event.day!),
+                        int.parse(event.hour!),
+                        int.parse(event.minute!),
+                      );
+                      String day = DateFormat('EEEE', Localizations.localeOf(context).languageCode).format(startDate);
+                      String _month = DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode).format(startDate);
+                      if (_month != month) {
+                        month = _month;
+                        addLabel = true;
+                      }
+                      return Column(
+                        children: [
+                          addLabel ? Padding(
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                            child: Column(
+                              children: [
+                                //if(index != 0) SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      Localizations.localeOf(context).languageCode == 'ca' ? month.substring(3).toUpperCase() : month.toUpperCase(),
+                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).accentColor),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ) : Container(),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
+                            child: ListTile(
+                              onTap: () {
+                                if (currentUser.isTrainer!) {
+                                  Navigator.push(
+                                      context,
+                                      PageTransition(
+                                          type: PageTransitionType.bottomToTop,
+                                          child: ViewEventTrainer(
+                                            eventId: event.id!,
+                                            canEdit: false,
+                                            locale: Localizations.localeOf(context),
+                                          )
                                       )
-                                  )
-                              );
-                            } else {
-                              Navigator.push(
-                                  context,
-                                  PageTransition(
-                                      type: PageTransitionType.bottomToTop,
-                                      child: ViewEventClient(
-                                        eventId: event.id!,
-                                        canJoin: false,
-                                        locale: Localizations.localeOf(context),
+                                  );
+                                } else {
+                                  Navigator.push(
+                                      context,
+                                      PageTransition(
+                                          type: PageTransitionType.bottomToTop,
+                                          child: ViewEventClient(
+                                            eventId: event.id!,
+                                            canJoin: false,
+                                            locale: Localizations.localeOf(context),
+                                          )
                                       )
-                                  )
-                              );
-                            }
-                          },
-                          leading: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Icon(
-                                Icons.event_available,
-                                color: Theme.of(context).primaryColor,
-                                size: 25,
-                              ),
-                              Text(
-                                "${event.day}/${event.month}/${event.year!.substring(2, 4)}",
-                                style: Styles.purpleTextStyle.copyWith(fontSize: 12.0, fontWeight: FontWeight.w600),
-                              ),
-                              Text(
-                                "${event.hour.toString()}:${event.minute=="0" ? "00" : event.minute.toString()}",
-                                style: Styles.purpleTextStyle.copyWith(fontSize: 12.0, fontWeight: FontWeight.w600),
-                              ),
-                            ],
-                          ),
-                          title: Text(event.title!,style: Styles.purpleTextStyle.copyWith(fontSize: 18.0, fontWeight: FontWeight.w600),),
-                          subtitle: Column(
-                            children: [
-                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                  );
+                                }
+                              },
+                              leading: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(
-                                    Icons.timer,
-                                    color: Colors.grey,
-                                    size: 20,
-                                  ),
-                                  SizedBox(width: 2),
                                   Text(
-                                    durationToString(event.duration!),
-                                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                                  ),
-                                  Container(
-                                      height: 16,
-                                      width: 32,
-                                      child: VerticalDivider(color: Colors.grey, width: 10, thickness: 2,)
-                                  ),
-                                  SizedBox(width: 4),
-                                  Icon(
-                                    Icons.record_voice_over,
-                                    color: Colors.grey,
-                                    size: 20,
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    event.selectedTrainers.length.toString(),
-                                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                                  ),
-                                  Container(
-                                      height: 16,
-                                      width: 32,
-                                      child: VerticalDivider(color: Colors.grey, width: 10, thickness: 2,)
-                                  ),
-                                  Icon(
-                                    Icons.directions_run,
-                                    color: Colors.grey,
-                                    size: 20,
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    event.joinedMembers.length.toString(),
-                                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                                    toCapitalized(day),
+                                    style: Styles.purpleTextStyle.copyWith(fontSize: 12.0, fontWeight: FontWeight.w600),
                                   ),
                                   Text(
-                                    " / ",
-                                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                                  ),
-                                  Text(
-                                    event.maxMembers.toString(),
-                                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                                    "${event.day}/${event.month}/${event.year!.substring(2, 4)}",
+                                    style: Styles.purpleTextStyle.copyWith(fontSize: 12.0, fontWeight: FontWeight.w600),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                            ],
+                              minLeadingWidth: MediaQuery.of(context).size.width*0.15,
+                              title: Text(event.title!,style: Styles.purpleTextStyle.copyWith(fontSize: 18.0, fontWeight: FontWeight.w600),),
+                              subtitle: Column(
+                                children: [
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Icons.schedule,
+                                        color: Colors.black,
+                                        size: 15,
+                                      ),
+                                      SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                      Text(
+                                        event.hour.toString(),
+                                        style: TextStyle(color: Colors.black, fontSize: 12),
+                                      ),
+                                      Text(
+                                        ":",
+                                        style: TextStyle(color: Colors.black, fontSize: 12),
+                                      ),
+                                      Text(
+                                        event.minute=="0" ? "00" : event.minute.toString(),
+                                        style: TextStyle(color: Colors.black, fontSize: 12),
+                                      ),
+                                      Container(
+                                          height: 8,
+                                          width: 24,
+                                          child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
+                                      ),
+                                      Icon(
+                                        Icons.timer,
+                                        color: Colors.black,
+                                        size: 15,
+                                      ),
+                                      SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                      Text(
+                                        durationToString(event.duration!),
+                                        style: TextStyle(color: Colors.black, fontSize: 12),
+                                      ),
+                                      Container(
+                                          height: 8,
+                                          width: 24,
+                                          child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
+                                      ),
+                                      Icon(
+                                        Icons.record_voice_over,
+                                        color: Colors.black,
+                                        size: 15,
+                                      ),
+                                      SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                      Text(
+                                        event.selectedTrainers.length.toString(),
+                                        style: TextStyle(color: Colors.black, fontSize: 12),
+                                      ),
+                                      Container(
+                                          height: 8,
+                                          width: 24,
+                                          child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
+                                      ),
+                                      Icon(
+                                        Icons.directions_run,
+                                        color: Colors.black,
+                                        size: 15,
+                                      ),
+                                      SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                      Text(
+                                        event.joinedMembers.length.toString(),
+                                        style: TextStyle(color: Colors.black, fontSize: 12),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              trailing: Icon(
+                                Icons.arrow_forward_ios,
+                                color: Theme.of(context).primaryColor,
+                                size: 20,
+                              ),
+                            ),
                           ),
-                          trailing: Icon(
-                            Icons.arrow_forward_ios,
+                          /*
+                          Container(
+                            height: 1,
                             color: Theme.of(context).primaryColor,
-                            size: 20,
                           ),
-                        ),
+                           */
+                        ],
                       );
                     },
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 ],
               )
                 :
               Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.only(bottom: 120),
-                    height: MediaQuery.of(context).size.height*0.49,
+                    height: MediaQuery.of(context).size.height*0.30,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
@@ -467,138 +578,3 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     );
   }
 }
-
-/*
-Container(
-                              height: MediaQuery.of(context).size.height*0.15,
-                              child: new Card(
-                                color: Theme.of(context).scaffoldBackgroundColor,
-                                /*elevation: 5,
-                                shape: RoundedRectangleBorder(
-                                  //side: BorderSide(color: Styles.accent, width: 0.01),
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                */
-                                //margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width*0.02, MediaQuery.of(context).size.width*0.01, MediaQuery.of(context).size.width*0.02, MediaQuery.of(context).size.width*0.01),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: MediaQuery.of(context).size.width*0.24,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.event_available,
-                                              color: Theme.of(context).primaryColor,
-                                              size: 40,
-                                            ),
-                                            Text(
-                                              "${event.day}/${event.month}/${event.year!.substring(2, 4)}",
-                                              style: Styles.purpleTextStyle.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        width: MediaQuery.of(context).size.width*0.55,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          Text(event.title!,style: Styles.purpleTextStyle.copyWith(fontSize: 18.0, fontWeight: FontWeight.bold),),
-                                                        ],
-                                                      ),
-                                                      SizedBox(height: 8),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          Icon(
-                                                            Icons.timer,
-                                                            color: Colors.grey,
-                                                            size: 25,
-                                                          ),
-                                                          SizedBox(width: 2),
-                                                          Text(
-                                                            durationToString(event.duration!),
-                                                            style: TextStyle(color: Colors.grey, fontSize: 16),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      SizedBox(height: 4),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          SizedBox(width: 4),
-                                                          Icon(
-                                                            Icons.record_voice_over,
-                                                            color: Colors.grey,
-                                                            size: 25,
-                                                          ),
-                                                          SizedBox(width: 8),
-                                                          Text(
-                                                            event.selectedTrainers.length.toString(),
-                                                            style: TextStyle(color: Colors.grey, fontSize: 16),
-                                                          ),
-                                                          Container(
-                                                              height: 16,
-                                                              width: 32,
-                                                              child: VerticalDivider(color: Colors.grey, width: 10, thickness: 2,)
-                                                          ),
-                                                          Icon(
-                                                            Icons.directions_run,
-                                                            color: Colors.grey,
-                                                            size: 25,
-                                                          ),
-                                                          SizedBox(width: 8),
-                                                          Text(
-                                                            event.joinedMembers.length.toString(),
-                                                            style: TextStyle(color: Colors.grey, fontSize: 16),
-                                                          ),
-                                                          Text(
-                                                            " / ",
-                                                            style: TextStyle(color: Colors.grey, fontSize: 16),
-                                                          ),
-                                                          Text(
-                                                            event.maxMembers.toString(),
-                                                            style: TextStyle(color: Colors.grey, fontSize: 16),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        width: MediaQuery.of(context).size.width*0.14,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.arrow_forward_ios,
-                                              color: Theme.of(context).primaryColor,
-                                              size: 25,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
- */

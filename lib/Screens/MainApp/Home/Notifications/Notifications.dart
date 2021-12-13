@@ -41,6 +41,8 @@ class _NotificationsState extends State<Notifications> {
   int numberUnreadNotifications = 0;
   // Has unread notifications
   bool hasUnread = false;
+  // String Deleted Photo
+  String deletedObject = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/not-found-image.jpg?alt=media&token=70687295-6a17-4735-9c0a-e5749c777319";
 
   @override
   initState() {
@@ -69,7 +71,11 @@ class _NotificationsState extends State<Notifications> {
           Usuario user = users.firstWhere((element) => element.id == notification.parameters[0], orElse: () => Usuario());
           if (user.id == null) {
             List<String> coverInformation = await _accessDatabase.getUserCover(notification.parameters[0]);
-            user = Usuario(id: notification.parameters[0], name: coverInformation[0], imageUrl: coverInformation[1]);
+            if (coverInformation[0] != "Error") {
+              user = Usuario(id: notification.parameters[0], name: coverInformation[0], imageUrl: coverInformation[1]);
+            } else {
+              user = Usuario(name: AppLocalizations.of(context)!.deletedUser, imageUrl: deletedObject);
+            }
           }
           users.add(user);
         } else {
@@ -79,7 +85,11 @@ class _NotificationsState extends State<Notifications> {
           Brand brand = brands.firstWhere((element) => element.id == notification.parameters[1], orElse: () => Brand());
           if (brand.id == null) {
             List<String> coverInformation = await _accessDatabase.getBrandCover(notification.parameters[1]);
-            brand = Brand(id: notification.parameters[1], name: coverInformation[0], logoUrl: coverInformation[1]);
+            if (coverInformation[0] != "Error") {
+              brand = Brand(id: notification.parameters[1], name: coverInformation[0], logoUrl: coverInformation[1]);
+            } else {
+              brand = Brand(name: AppLocalizations.of(context)!.deletedBrand, logoUrl: deletedObject);
+            }
           }
           brands.add(brand);
         } else {
@@ -218,6 +228,14 @@ class _NotificationsState extends State<Notifications> {
   }
 
   Widget returnNotification(int index, NotificationEvent notification) {
+    var dateSent = DateTime(
+      int.parse(notification.year!),
+      int.parse(notification.month!),
+      int.parse(notification.day!),
+      int.parse(notification.hour!),
+      int.parse(notification.minutes!),
+    );
+    String time = DateFormat("E dd MMMM yyyy, HH:mm", Localizations.localeOf(context).languageCode).format(dateSent);
     Usuario user = usersList[index];
     Brand brand = brandsList[index];
     Event event = eventList[index];
@@ -245,6 +263,11 @@ class _NotificationsState extends State<Notifications> {
               Text(
                 AppLocalizations.of(context)!.onlyImportantNotifications,
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                time.toUpperCase(),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
               ),
             ],
           ),
@@ -275,6 +298,11 @@ class _NotificationsState extends State<Notifications> {
                 AppLocalizations.of(context)!.userCreatesBrandUserSubtitle,
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
               ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                time.toUpperCase(),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+              ),
             ],
           ),
           onTap: () async {
@@ -302,6 +330,11 @@ class _NotificationsState extends State<Notifications> {
               Text(
                 AppLocalizations.of(context)!.userJoinsBrandSubtitleUser,
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                time.toUpperCase(),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
               ),
             ],
           ),
@@ -331,6 +364,11 @@ class _NotificationsState extends State<Notifications> {
                 AppLocalizations.of(context)!.userJoinsBrandBrandSubtitle(notification.parameters[3]),
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
               ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                time.toUpperCase(),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+              ),
             ],
           ),
           onTap: () async {
@@ -358,6 +396,11 @@ class _NotificationsState extends State<Notifications> {
               Text(
                 AppLocalizations.of(context)!.userLeavesBrandUserSubtitle,
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                time.toUpperCase(),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
               ),
             ],
           ),
@@ -387,6 +430,11 @@ class _NotificationsState extends State<Notifications> {
                 AppLocalizations.of(context)!.userLeavesBrandBrandSubtitle(notification.parameters[3]),
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
               ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                time.toUpperCase(),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+              ),
             ],
           ),
           onTap: () async {
@@ -414,6 +462,11 @@ class _NotificationsState extends State<Notifications> {
               Text(
                 AppLocalizations.of(context)!.userSendRequestToBrandUserSubtitle,
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                time.toUpperCase(),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
               ),
             ],
           ),
@@ -443,6 +496,11 @@ class _NotificationsState extends State<Notifications> {
                 AppLocalizations.of(context)!.userSendRequestToBrandBrandSubtitle(notification.parameters[3]),
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
               ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                time.toUpperCase(),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+              ),
             ],
           ),
           onTap: () async {
@@ -470,6 +528,11 @@ class _NotificationsState extends State<Notifications> {
               Text(
                 AppLocalizations.of(context)!.userCancelRequestToBrandUserSubtitle,
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                time.toUpperCase(),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
               ),
             ],
           ),
@@ -499,6 +562,11 @@ class _NotificationsState extends State<Notifications> {
                 AppLocalizations.of(context)!.userCancelRequestToBrandBrandSubtitle,
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
               ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                time.toUpperCase(),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+              ),
             ],
           ),
           onTap: () async {
@@ -515,7 +583,7 @@ class _NotificationsState extends State<Notifications> {
           int.parse(event.hour!),
           int.parse(event.minute!),
         );
-        String eventTimeDay = DateFormat('EE dd/MM/yy', Localizations.localeOf(context).languageCode).format(startDate);
+        String eventTimeDay = DateFormat('EE dd-MM-yy', Localizations.localeOf(context).languageCode).format(startDate);
         String eventTimeTime = "${event.hour.toString()}:${event.minute=="0" ? "00" : event.minute.toString()}h";
         return ListTile(
           leading: CircularImage(
@@ -535,6 +603,11 @@ class _NotificationsState extends State<Notifications> {
               Text(
                 AppLocalizations.of(context)!.userJoinEventUserSubtitle(eventTimeDay, eventTimeTime),
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                time.toUpperCase(),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
               ),
             ],
           ),
@@ -563,6 +636,11 @@ class _NotificationsState extends State<Notifications> {
               Text(
                 AppLocalizations.of(context)!.userJoinEventBrandSubtitle(event.joinedMembers.length.toString(), event.maxMembers.toString() ),
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                time.toUpperCase(),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
               ),
             ],
           ),
@@ -601,6 +679,11 @@ class _NotificationsState extends State<Notifications> {
                 AppLocalizations.of(context)!.userLeavesEventUserSubtitle,
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
               ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                time.toUpperCase(),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+              ),
             ],
           ),
           onTap: () async {
@@ -628,6 +711,11 @@ class _NotificationsState extends State<Notifications> {
               Text(
                 AppLocalizations.of(context)!.userLeavesEventBrandSubtitle(event.joinedMembers.length.toString(), event.maxMembers.toString() ),
                 style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                time.toUpperCase(),
+                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
               ),
             ],
           ),
@@ -657,42 +745,46 @@ class _NotificationsState extends State<Notifications> {
         break;
       }
       case "UserJoinsBrand_User": {
-        if (currentUser.isTrainer!) {
-          Navigator.push(
-              context,
-              PageTransition(
-                  type: PageTransitionType.bottomToTop,
-                  child: CalendarWidgetTrainer(
-                    brandID: notification.parameters[1],
-                    canEdit: true,
-                  )
-              )
-          );
-        } else {
-          Navigator.push(
-              context,
-              PageTransition(
-                  type: PageTransitionType.bottomToTop,
-                  child: CalendarWidgetClient(
-                    brandID: notification.parameters[1],
-                    onlyView: false,
-                  )
-              )
-          );
+        if (brand.id != null) {
+          if (currentUser.isTrainer!) {
+            Navigator.push(
+                context,
+                PageTransition(
+                    type: PageTransitionType.bottomToTop,
+                    child: CalendarWidgetTrainer(
+                      brandID: brand.id!,
+                      canEdit: true,
+                    )
+                )
+            );
+          } else {
+            Navigator.push(
+                context,
+                PageTransition(
+                    type: PageTransitionType.bottomToTop,
+                    child: CalendarWidgetClient(
+                      brandID: brand.id!,
+                      onlyView: false,
+                    )
+                )
+            );
+          }
         }
         break;
       }
       case "UserJoinsBrand_Trainer": {
-        Navigator.push(
-            context,
-            PageTransition(
-                type: PageTransitionType.bottomToTop,
-                child: ProfileViewUser(
-                  userID: notification.parameters[0],
-                  viewOnly: false,
-                )
-            )
-        );
+        if (user.id != null) {
+          Navigator.push(
+              context,
+              PageTransition(
+                  type: PageTransitionType.bottomToTop,
+                  child: ProfileViewUser(
+                    userID: user.id!,
+                    viewOnly: false,
+                  )
+              )
+          );
+        }
         break;
       }
       case "UserLeavesBrand_User": {
@@ -705,15 +797,17 @@ class _NotificationsState extends State<Notifications> {
         break;
       }
       case "UserSendRequestToBrand_Trainer": {
-        Navigator.push(
-            context,
-            PageTransition(
-                type: PageTransitionType.bottomToTop,
-                child: MembershipRequests(
-                  brandId: notification.parameters[1],
-                )
-            )
-        );
+        if (brand.id != null) {
+          Navigator.push(
+              context,
+              PageTransition(
+                  type: PageTransitionType.bottomToTop,
+                  child: MembershipRequests(
+                    brandId: brand.id!,
+                  )
+              )
+          );
+        }
         break;
       }
       case "UserCancelRequestToBrand_User": {
@@ -723,102 +817,99 @@ class _NotificationsState extends State<Notifications> {
         break;
       }
       case "UserJoinEvent_User": {
-        bool canAction = true;
-        var startDate = DateTime(
-          int.parse(event.year!),
-          int.parse(event.month!),
-          int.parse(event.day!),
-          int.parse(event.hour!),
-          int.parse(event.minute!),
-        );
-        if (startDate.isBefore(DateTime.now())) {
-          canAction = false;
+        if (event.id != null) {
+          bool canAction = true;
+          var startDate = DateTime(
+            int.parse(event.year!),
+            int.parse(event.month!),
+            int.parse(event.day!),
+            int.parse(event.hour!),
+            int.parse(event.minute!),
+          );
+          if (startDate.isBefore(DateTime.now())) {
+            canAction = false;
+          }
+          Navigator.push(
+              context,
+              PageTransition(
+                type: PageTransitionType.bottomToTop,
+                child: ViewEventClient(
+                  eventId: event.id!,
+                  canJoin: canAction,
+                  locale: Localizations.localeOf(context),
+                ),
+              )
+          );
         }
-        Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.bottomToTop,
-              child: ViewEventClient(
-                eventId: notification.parameters[2],
-                canJoin: canAction,
-                locale: Localizations.localeOf(context),
-              ),
-            )
-        );
         break;
       }
       case "UserJoinEvent_Trainer": {
-        bool canAction = true;
-        var startDate = DateTime(
-          int.parse(event.year!),
-          int.parse(event.month!),
-          int.parse(event.day!),
-          int.parse(event.hour!),
-          int.parse(event.minute!),
-        );
-        if (startDate.isBefore(DateTime.now())) {
-          canAction = false;
+        if (event.id != null) {
+          bool canAction = true;
+          var startDate = DateTime(
+            int.parse(event.year!),
+            int.parse(event.month!),
+            int.parse(event.day!),
+            int.parse(event.hour!),
+            int.parse(event.minute!),
+          );
+          if (startDate.isBefore(DateTime.now())) {
+            canAction = false;
+          }
+          Navigator.push(
+              context,
+              PageTransition(
+                type: PageTransitionType.bottomToTop,
+                child: ViewEventTrainer(
+                  eventId: event.id!,
+                  canEdit: canAction,
+                  locale: Localizations.localeOf(context),
+                ),
+              )
+          );
         }
-        Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.bottomToTop,
-              child: ViewEventTrainer(
-                eventId: notification.parameters[2],
-                canEdit: canAction,
-                locale: Localizations.localeOf(context),
-              ),
-            )
-        );
         break;
       }
       case "UserLeaveEvent_User": {
-        bool canAction = true;
-        var startDate = DateTime(
-          int.parse(event.year!),
-          int.parse(event.month!),
-          int.parse(event.day!),
-          int.parse(event.hour!),
-          int.parse(event.minute!),
-        );
-        if (startDate.isBefore(DateTime.now())) {
-          canAction = false;
+        if (brand.id != null) {
+          Navigator.push(
+              context,
+              PageTransition(
+                  type: PageTransitionType.bottomToTop,
+                  child: CalendarWidgetClient(
+                    brandID: brand.id!,
+                    onlyView: true,
+                  )
+              )
+          );
         }
-        Navigator.push(
-            context,
-            PageTransition(
-                type: PageTransitionType.bottomToTop,
-                child: CalendarWidgetClient(
-                  brandID: notification.parameters[1],
-                  onlyView: canAction,
-                )
-            )
-        );
         break;
       }
       case "UserLeaveEvent_Trainer": {
-        bool canAction = true;
-        var startDate = DateTime(
-          int.parse(event.year!),
-          int.parse(event.month!),
-          int.parse(event.day!),
-          int.parse(event.hour!),
-          int.parse(event.minute!),
-        );
-        if (startDate.isBefore(DateTime.now())) {
-          canAction = false;
+        if (event.id != null) {
+          bool canAction = true;
+          var startDate = DateTime(
+            int.parse(event.year!),
+            int.parse(event.month!),
+            int.parse(event.day!),
+            int.parse(event.hour!),
+            int.parse(event.minute!),
+          );
+          if (startDate.isBefore(DateTime.now())) {
+            canAction = false;
+          }
+          Navigator.push(
+              context,
+              PageTransition(
+                type: PageTransitionType.bottomToTop,
+                child: ViewEventTrainer(
+                  eventId: event.id!,
+                  canEdit: canAction,
+                  locale: Localizations.localeOf(context),
+                ),
+              )
+          );
         }
-        Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.bottomToTop,
-              child: ViewEventTrainer(
-                eventId: notification.parameters[2],
-                canEdit: canAction,
-                locale: Localizations.localeOf(context),
-              ),
-            )
-        );
         break;
       }
       default: {

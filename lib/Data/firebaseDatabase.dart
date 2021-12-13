@@ -122,11 +122,16 @@ class FirebaseDatabaseService {
   }
 
   Future<List<String>> getUserCover(String uid) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Users").doc(uid).get();
-    String name = _documentSnapshot.get("name");
-    String image = _documentSnapshot.get("imageUrl");
-    List<String> result = [name, image];
-    return result;
+    try {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Users").doc(uid).get();
+      String name = _documentSnapshot.get("name");
+      String image = _documentSnapshot.get("imageUrl");
+      List<String> result = [name, image];
+      return result;
+    } catch (e) {
+      print(e);
+      return ["Error"];
+    }
   }
 
   // User Model Services
@@ -521,11 +526,16 @@ class FirebaseDatabaseService {
   }
 
   Future<List<String>> getBrandCover(String brandID) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Brands").doc(brandID).get();
-    String name = _documentSnapshot.get("name");
-    String image = _documentSnapshot.get("logoUrl");
-    List<String> result = [name, image];
-    return result;
+    try {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Brands").doc(brandID).get();
+      String name = _documentSnapshot.get("name");
+      String image = _documentSnapshot.get("logoUrl");
+      List<String> result = [name, image];
+      return result;
+    } catch (e) {
+      print(e);
+      return ["Error"];
+    }
   }
 
   Future<List<Usuario>> getAllTrainersFromBrand(String brandId) async {
@@ -610,9 +620,14 @@ class FirebaseDatabaseService {
 
   // Get Single Event
   Future<Event> getSingleEvent(String id) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Events").doc(id).get();
-    return Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+    try {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      await _firestore.collection("Events").doc(id).get();
+      return Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+    } catch (e) {
+      print(e);
+      return Event();
+    }
   }
 
   // Get All Events for Client

@@ -480,14 +480,24 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.28 ,
+                      top: MediaQuery.of(context).size.height*0.27,
                       bottom: 0,
                       left: 0,
                       right: 0,
-                      child: Row(
-                        children: [
-                          Expanded(child: Text("${currentUser.name!}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 24, fontFamily: "Helvetica"), textAlign: TextAlign.center)),
-                        ],
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "${currentUser.name!}",
+                                style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 24, fontFamily: "Helvetica"),
+                                textAlign: TextAlign.center
+                              )
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     Positioned(
@@ -1155,14 +1165,24 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.28 ,
+                      top: MediaQuery.of(context).size.height*0.27,
                       bottom: 0,
                       left: 0,
                       right: 0,
-                      child: Row(
-                        children: [
-                          Expanded(child: Text("${currentUser.name!}", style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 24, fontFamily: "Helvetica"), textAlign: TextAlign.center)),
-                        ],
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                                child: Text(
+                                    "${currentUser.name!}",
+                                    style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 24, fontFamily: "Helvetica"),
+                                    textAlign: TextAlign.center
+                                )
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     Positioned(

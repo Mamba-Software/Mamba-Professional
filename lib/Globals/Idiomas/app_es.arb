@@ -445,6 +445,14 @@
   "@creator":{
     "description": "createBrand Text"
   },
+  "deletedUser": "Usuario eliminado",
+  "@deletedUser":{
+    "description": "createBrand Text"
+  },
+  "deletedBrand": "Marca eliminada",
+  "@deletedBrand":{
+    "description": "createBrand Text"
+  },
   "createBrand": "Crea tu marca",
   "@createBrand":{
     "description": "createBrand Text"

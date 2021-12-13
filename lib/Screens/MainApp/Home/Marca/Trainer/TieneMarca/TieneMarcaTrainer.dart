@@ -42,6 +42,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
 
   // Init for Brand Home
   initBrandHome() async {
+    unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
     await updateMembers();
     await getBrand();
     await getNumberFinishedEvents();
