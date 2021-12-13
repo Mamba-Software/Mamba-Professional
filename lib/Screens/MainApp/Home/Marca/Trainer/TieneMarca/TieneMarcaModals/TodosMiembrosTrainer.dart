@@ -237,53 +237,56 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                               itemCount: filteredClients.length,
                               itemBuilder: (context, index) {
                                 Usuario user = filteredClients[index];
-                                return ListTile(
-                                  leading: CircularImage(
-                                    size: MediaQuery.of(context).size.width*0.15,
-                                    image: user.imageUrl,
-                                    color: Theme.of(context).primaryColor,
-                                    borderWidth: 1.0,
-                                  ),
-                                  title: Text(
-                                    user.name!,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                  subtitle: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "@${user.nick!}",
-                                        style: TextStyle(color: Colors.grey, fontSize: 14),
-                                      ),
-                                    ],
-                                  ),
-                                  trailing: user.id! == currentUser.id ? IconButton(
-                                    icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                                    alignment: Alignment.centerRight,
-                                    padding: EdgeInsets.all(0),
-                                    onPressed: false ? () {
-                                    } : null,
-                                  ) : IconButton(
-                                    icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
-                                    alignment: Alignment.centerRight,
-                                    padding: EdgeInsets.all(0),
-                                    onPressed: () {
-                                      Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ChatDetailPage(user)),);
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                                  child: ListTile(
+                                    leading: CircularImage(
+                                      size: MediaQuery.of(context).size.width*0.15,
+                                      image: user.imageUrl,
+                                      color: Theme.of(context).primaryColor,
+                                      borderWidth: 1.0,
+                                    ),
+                                    title: Text(
+                                      user.name!,
+                                      style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                    subtitle: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "@${user.nick!}",
+                                          style: TextStyle(color: Colors.grey, fontSize: 14),
+                                        ),
+                                      ],
+                                    ),
+                                    trailing: user.id! == currentUser.id ? IconButton(
+                                      icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+                                      alignment: Alignment.centerRight,
+                                      padding: EdgeInsets.all(0),
+                                      onPressed: false ? () {
+                                      } : null,
+                                    ) : IconButton(
+                                      icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
+                                      alignment: Alignment.centerRight,
+                                      padding: EdgeInsets.all(0),
+                                      onPressed: () {
+                                        Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ChatDetailPage(user)),);
+                                      },
+                                    ),
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          PageTransition(
+                                              type: PageTransitionType.bottomToTop,
+                                              child: ProfileViewUser(
+                                                userID: user.id!,
+                                                viewOnly: false,
+                                              )
+                                          )
+                                      );
                                     },
                                   ),
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        PageTransition(
-                                            type: PageTransitionType.bottomToTop,
-                                            child: ProfileViewUser(
-                                              userID: user.id!,
-                                              viewOnly: false,
-                                            )
-                                        )
-                                    );
-                                  },
                                 );
                               }
                           ),
@@ -352,58 +355,61 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                           itemCount: filteredTrainers.length,
                           itemBuilder: (context, index) {
                             Usuario user = filteredTrainers[index];
-                            return ListTile(
-                              leading: CircularImage(
-                                size: MediaQuery.of(context).size.width*0.15,
-                                image: user.imageUrl,
-                                color: Theme.of(context).primaryColor,
-                                borderWidth: 1.0,
-                              ),
-                              title: Text(
-                                user.name!,
-                                style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.left,
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "@${user.nick!}",
-                                    style: TextStyle(color: Colors.grey, fontSize: 14),
-                                  ),
-                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                  user.id == currentBrand.adminID ? Text(
-                                    "(${AppLocalizations.of(context)!.owner})",
-                                    style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12, fontStyle: FontStyle.italic),
-                                  ) : Container(),
-                                ],
-                              ),
-                              trailing: user.id! == currentUser.id ? IconButton(
-                                icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                                alignment: Alignment.centerRight,
-                                padding: EdgeInsets.all(0),
-                                onPressed: false ? () {
-                                } : null,
-                              ) : IconButton(
-                                icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
-                                alignment: Alignment.centerRight,
-                                padding: EdgeInsets.all(0),
-                                onPressed: () {
-                                  Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ChatDetailPage(user)),);
+                            return Padding(
+                              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
+                              child: ListTile(
+                                leading: CircularImage(
+                                  size: MediaQuery.of(context).size.width*0.15,
+                                  image: user.imageUrl,
+                                  color: Theme.of(context).primaryColor,
+                                  borderWidth: 1.0,
+                                ),
+                                title: Text(
+                                  user.name!,
+                                  style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.left,
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "@${user.nick!}",
+                                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                    user.id == currentBrand.adminID ? Text(
+                                      "(${AppLocalizations.of(context)!.owner})",
+                                      style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12, fontStyle: FontStyle.italic),
+                                    ) : Container(),
+                                  ],
+                                ),
+                                trailing: user.id! == currentUser.id ? IconButton(
+                                  icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+                                  alignment: Alignment.centerRight,
+                                  padding: EdgeInsets.all(0),
+                                  onPressed: false ? () {
+                                  } : null,
+                                ) : IconButton(
+                                  icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
+                                  alignment: Alignment.centerRight,
+                                  padding: EdgeInsets.all(0),
+                                  onPressed: () {
+                                    Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ChatDetailPage(user)),);
+                                  },
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      PageTransition(
+                                          type: PageTransitionType.bottomToTop,
+                                          child: ProfileViewUser(
+                                            userID: user.id!,
+                                            viewOnly: false,
+                                          )
+                                      )
+                                  );
                                 },
                               ),
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    PageTransition(
-                                        type: PageTransitionType.bottomToTop,
-                                        child: ProfileViewUser(
-                                          userID: user.id!,
-                                          viewOnly: false,
-                                        )
-                                    )
-                                );
-                              },
                             );
                           }
                         ),

@@ -100,189 +100,179 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height*0.06),
-                Container(
-                  height: MediaQuery.of(context).size.height*0.25,
-                  width: MediaQuery.of(context).size.width*0.90,
-                  child: Center(
-                    child: Column(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Flexible(
+                      child: Text("${currentBrand.name!}",
+                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 25, fontFamily: "Helvetica"), textAlign: TextAlign.left
+                      ),
+                    ),
+                    Row(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Flexible(
-                              child: Text("${currentBrand.name!}",
-                                  style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 25, fontFamily: "Helvetica"), textAlign: TextAlign.left
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.location_on, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
-                                  alignment: Alignment.centerRight,
-                                  padding: EdgeInsets.all(0),
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        PageTransition(
-                                          type: PageTransitionType.rightToLeftWithFade,
-                                          child: BrandLocations(
-                                            brandId: currentBrand.id!,
-                                          ),
-                                        )
-                                    );
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.exit_to_app, color: Colors.red, size: MediaQuery.of(context).size.height*0.04,),
-                                  alignment: Alignment.centerRight,
-                                  padding: EdgeInsets.all(0),
-                                  onPressed: () async {
-                                    // DeleteDialog
-                                    var result = await showDialog(
-                                        context: context,
-                                        builder: (_) {
-                                          return LeaveBrandConfirmationDialog(text: AppLocalizations.of(context)!.exitBrandConfirm);
-                                        }
-                                    );
-                                    print(result);
-                                    if (result) {
-                                      setState(() {
-                                        isLoading = true;
-                                      });
-                                      NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
-                                      Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID); //12/12/2021
-                                      await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
-                                      await _accessDatabase.leaveBrand(currentUser.id!);
-                                      //12/12/2021
-                                      for(int i = 0; i < conv.users.length; ++i) {
-                                        if(conv.users[i]['uid'] == currentUser.id) {
-                                          conv.users.removeAt(i);
-                                        }
-                                      }
-                                      await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
-                                      Navigator.pushReplacement(
-                                          context,
-                                          CupertinoPageRoute<Null>(
-                                            builder: (context) =>
-                                                SplashScreen(),
-                                            settings: RouteSettings(
-                                                name: 'SplashScreen'),
-                                          )
-                                      );
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
+                        IconButton(
+                          icon: Icon(Icons.location_on, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
+                          alignment: Alignment.centerRight,
+                          padding: EdgeInsets.all(0),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                PageTransition(
+                                  type: PageTransitionType.rightToLeftWithFade,
+                                  child: BrandLocations(
+                                    brandId: currentBrand.id!,
+                                  ),
+                                )
+                            );
+                          },
                         ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                        Row(
-                          children: [
-                            Container(
-                              height: MediaQuery.of(context).size.height*0.15,
-                              child: Center(
-                                child: CircularImage(size: MediaQuery.of(context).size.width * 0.33, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
-                              ),
-                            ),
-                            SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                            Container(
-                              height: MediaQuery.of(context).size.height*0.15,
-                              width: MediaQuery.of(context).size.width * 0.50,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        width: MediaQuery.of(context).size.width*0.50,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
-                                            SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
-                                            Text(
-                                              currentBrand.numberClients.toString(),
-                                              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
-                                            SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
-                                            Flexible(child: Text(AppLocalizations.of(context)!.clients.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,))
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        width: MediaQuery.of(context).size.width*0.50,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Icon(Icons.record_voice_over, color: Theme.of(context).accentColor,),
-                                            SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
-                                            Text(
-                                              currentBrand.numberTrainers.toString(),
-                                              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
-                                            SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
-                                            Flexible(child: Text(AppLocalizations.of(context)!.trainers.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,))
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        width: MediaQuery.of(context).size.width*0.50,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Icon(Icons.event_available_outlined, color: Theme.of(context).primaryColor,),
-                                            SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
-                                            Text(
-                                              numberEventsFinished.toString(),
-                                              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: 16),),
-                                            SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
-                                            Flexible(child: Text(AppLocalizations.of(context)!.sessionsDone.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).primaryColor), textAlign: TextAlign.center,))
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        width: MediaQuery.of(context).size.width*0.50,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Icon(Icons.event, color: Theme.of(context).primaryColor,),
-                                            SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
-                                            Text(
-                                              numberEventsToDo.toString(),
-                                              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: 16),),
-                                            SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
-                                            Flexible(child: Text(AppLocalizations.of(context)!.sessionsToDo.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).primaryColor), textAlign: TextAlign.center,))
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                        IconButton(
+                          icon: Icon(Icons.exit_to_app, color: Colors.red, size: MediaQuery.of(context).size.height*0.04,),
+                          alignment: Alignment.centerRight,
+                          padding: EdgeInsets.all(0),
+                          onPressed: () async {
+                            // DeleteDialog
+                            var result = await showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return LeaveBrandConfirmationDialog(text: AppLocalizations.of(context)!.exitBrandConfirm);
+                                }
+                            );
+                            print(result);
+                            if (result) {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
+                              Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID); //12/12/2021
+                              await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
+                              await _accessDatabase.leaveBrand(currentUser.id!);
+                              //12/12/2021
+                              for(int i = 0; i < conv.users.length; ++i) {
+                                if(conv.users[i]['uid'] == currentUser.id) {
+                                  conv.users.removeAt(i);
+                                }
+                              }
+                              await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
+                              Navigator.pushReplacement(
+                                  context,
+                                  CupertinoPageRoute<Null>(
+                                    builder: (context) =>
+                                        SplashScreen(),
+                                    settings: RouteSettings(
+                                        name: 'SplashScreen'),
+                                  )
+                              );
+                            }
+                          },
                         ),
                       ],
                     ),
-                  ),
+                  ],
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                Row(
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).size.height*0.15,
+                      child: Center(
+                        child: CircularImage(size: MediaQuery.of(context).size.width * 0.33, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                      ),
+                    ),
+                    SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                    Container(
+                      height: MediaQuery.of(context).size.height*0.15,
+                      width: MediaQuery.of(context).size.width * 0.50,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width*0.50,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
+                                    SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
+                                    Text(
+                                      currentBrand.numberClients.toString(),
+                                      style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
+                                    SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
+                                    Flexible(child: Text(AppLocalizations.of(context)!.clients.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,))
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width*0.50,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Icon(Icons.record_voice_over, color: Theme.of(context).accentColor,),
+                                    SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
+                                    Text(
+                                      currentBrand.numberTrainers.toString(),
+                                      style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
+                                    SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
+                                    Flexible(child: Text(AppLocalizations.of(context)!.trainers.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,))
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width*0.50,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Icon(Icons.event_available_outlined, color: Theme.of(context).primaryColor,),
+                                    SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
+                                    Text(
+                                      numberEventsFinished.toString(),
+                                      style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: 16),),
+                                    SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
+                                    Flexible(child: Text(AppLocalizations.of(context)!.sessionsDone.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).primaryColor), textAlign: TextAlign.center,))
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width*0.50,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Icon(Icons.event, color: Theme.of(context).primaryColor,),
+                                    SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
+                                    Text(
+                                      numberEventsToDo.toString(),
+                                      style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: 16),),
+                                    SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
+                                    Flexible(child: Text(AppLocalizations.of(context)!.sessionsToDo.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).primaryColor), textAlign: TextAlign.center,))
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.04),
                 todayEvents.length > 0 ? Column(
                   children: [
                     SizedBox(height: MediaQuery.of(context).size.height*0.01),

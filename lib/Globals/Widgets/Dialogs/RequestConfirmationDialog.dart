@@ -132,11 +132,22 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                         borderWidth: 2,
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                      Expanded(
-                        child: Text(
-                          user.name!,
-                          style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 23),
-                          textAlign: TextAlign.left,
+                      Container(
+                        width: MediaQuery.of(context).size.width*0.9,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  user.name!,
+                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 23),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],

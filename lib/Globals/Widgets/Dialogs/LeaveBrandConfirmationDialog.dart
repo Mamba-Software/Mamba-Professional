@@ -24,7 +24,7 @@ class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDia
       insetPadding: EdgeInsets.all(20),
       child: Container(
         padding: EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
-        height: MediaQuery.of(context).size.height*0.3,
+        height: MediaQuery.of(context).size.height*0.30,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Colors.white
@@ -37,6 +37,25 @@ class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDia
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                Container(
+                  width: MediaQuery.of(context).size.width*0.9,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            currentBrand.name!,
+                            style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 23),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0, bottom: 24.0, right: 10, left: 10),
                   child: Row(
@@ -81,7 +100,7 @@ class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDia
             ),
             Positioned(
                 bottom: 0,
-                top: -150,
+                top: -120,
                 child: Column(
                   children: <Widget>[
                     CircularImage(
@@ -89,14 +108,6 @@ class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDia
                       image: currentBrand.logoUrl,
                       color: Theme.of(context).accentColor,
                       borderWidth: 2,
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    Expanded(
-                      child: Text(
-                        currentBrand.name!,
-                        style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 23),
-                        textAlign: TextAlign.left,
-                      ),
                     ),
                   ],
                 )
