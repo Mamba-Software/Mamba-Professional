@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/scheduler.dart';
+import 'dart:io';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
@@ -834,6 +834,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                 ],
               ),
             ),
+            Platform.isAndroid ? SizedBox(height: MediaQuery.of(context).size.height*0.01) : Container(),
             Column(
               children: [
                 GestureDetector(

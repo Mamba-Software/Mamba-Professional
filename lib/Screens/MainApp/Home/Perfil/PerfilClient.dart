@@ -1,5 +1,5 @@
+import 'dart:io';
 import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -813,6 +813,7 @@ class _PerfilClientState extends State<PerfilClient> {
                 ],
               ),
             ),
+            Platform.isAndroid ? SizedBox(height: MediaQuery.of(context).size.height*0.01) : Container(),
             // 12%
             Column(
               children: [
