@@ -37,7 +37,7 @@ class _PerfilClientState extends State<PerfilClient> {
   // Boolean Loading
   bool isLoading = false;
   // Events
-  int totalEvents  = 0;
+  int totalEvents = 0;
   int thisMonthEvents  = 0;
   List<Event> todayEvents = [];
   var todayEventsLabels = [];
@@ -574,7 +574,7 @@ class _PerfilClientState extends State<PerfilClient> {
             SizedBox(height: MediaQuery.of(context).size.height*0.03),
             // 33% - 8%
             todayEvents.length != 0 ? Container(
-              height: MediaQuery.of(context).size.height*0.32,
+              height: MediaQuery.of(context).size.height*0.31,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -792,15 +792,14 @@ class _PerfilClientState extends State<PerfilClient> {
                         }
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
                 ],
               ),
             ) : Container(
-              height: MediaQuery.of(context).size.height*0.09,
+              height: MediaQuery.of(context).size.height*0.07,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
                     child: Row(
@@ -810,7 +809,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       ],
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
                 ],
               ),
             ),

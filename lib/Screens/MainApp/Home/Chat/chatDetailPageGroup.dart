@@ -749,7 +749,6 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                           }
                         }),
                   ),
-
                   Container(
                     padding: EdgeInsets.symmetric(
                         horizontal: MediaQuery.of(context).size.width * 0.02,
@@ -757,115 +756,121 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                     height: MediaQuery.of(context).size.height * 0.10,
                     width: double.infinity,
                     color: Colors.white,
-                    child: Row(
-                      children: <Widget>[
+                    child: Column(
+                      children: [
+                        Row(
+                          children: <Widget>[
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.03,
+                            ),
+                            Expanded(
+                              child: TextField(
+                                minLines: 1,
+                                maxLines: 10,
+                                textCapitalization: TextCapitalization.sentences,
+                                controller: editingController,
+                                decoration: InputDecoration(
+                                    hintText: AppLocalizations.of(context)!.writeMessage,
+                                    hintStyle: TextStyle(color: Colors.black54),
+                                    border: InputBorder.none),
+                              ),
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.03,
+                            ),
+                            FloatingActionButton(
+                              onPressed: () async {
+                                DateTime today = DateTime.now();
+                                String minute, hour, second;
+                                if (today.minute.toString().length == 1)
+                                  minute = '0' + today.minute.toString();
+                                else
+                                  minute = today.minute.toString();
+
+                                if (today.hour.toString().length == 1)
+                                  hour = '0' + today.hour.toString();
+                                else
+                                  hour = today.hour.toString();
+
+                                if (today.second.toString().length == 1)
+                                  second = '0' + today.second.toString();
+                                else
+                                  second = today.second.toString();
+
+                                if (editingController.text != '') {
+
+                                  List<Map> userMessagesRead = [];
+                                  //userMessagesRead.add(toMapisMessageRead(currentUser.id, false));
+
+                                  List<Usuario> users = await _accessDatabase.getAllTrainersFromBrand(widget.brand.id!);
+
+                                  for(int i = 0; i < users.length; ++i) {
+                                    if(users[i].id == currentUser.id) {
+                                      userMessagesRead.add(toMapisMessageRead(
+                                          users[i].id, false));
+                                    }
+                                    else {
+                                      userMessagesRead.add(toMapisMessageRead(
+                                          users[i].id, true));
+                                    }
+                                  }
+
+                                  users = await _accessDatabase.getAllClientsFromBrand(widget.brand.id!);
+                                  for(int i = 0; i < users.length; ++i) {
+                                    if(users[i].id == currentUser.id) {
+                                      userMessagesRead.add(toMapisMessageRead(
+                                          users[i].id, false));
+                                    }
+                                    else {
+                                      userMessagesRead.add(toMapisMessageRead(
+                                          users[i].id, true));
+                                    }
+                                  }
+
+                                  await _accessDatabase.updateConversation(
+                                    conversationId,
+                                    userMessagesRead,
+                                    editingController.text,
+                                    today.year.toString(),
+                                    today.month.toString(),
+                                    today.day.toString(),
+                                    hour,
+                                    minute,
+                                    second,
+                                  );
+                                  _accessDatabase.addMessage(
+                                      editingController.text.trim(),
+                                      currentUser.id,
+                                      today.year.toString(),
+                                      today.month.toString(),
+                                      today.day.toString(),
+                                      hour,
+                                      minute,
+                                      second,
+                                      conversationId);
+
+                                  editingController.text = '';
+
+
+                                  setState(() {});
+                                }
+                              },
+                              child: Icon(
+                                Icons.send,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                              backgroundColor: Styles.mainColor,
+                              elevation: 0,
+                            ),
+                          ],
+                        ),
                         SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.03,
-                        ),
-                        Expanded(
-                          child: TextField(
-                            minLines: 1,
-                            maxLines: 10,
-                            textCapitalization: TextCapitalization.sentences,
-                            controller: editingController,
-                            decoration: InputDecoration(
-                                hintText: AppLocalizations.of(context)!.writeMessage,
-                                hintStyle: TextStyle(color: Colors.black54),
-                                border: InputBorder.none),
-                          ),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.03,
-                        ),
-                        FloatingActionButton(
-                          onPressed: () async {
-                            DateTime today = DateTime.now();
-                            String minute, hour, second;
-                            if (today.minute.toString().length == 1)
-                              minute = '0' + today.minute.toString();
-                            else
-                              minute = today.minute.toString();
-
-                            if (today.hour.toString().length == 1)
-                              hour = '0' + today.hour.toString();
-                            else
-                              hour = today.hour.toString();
-
-                            if (today.second.toString().length == 1)
-                              second = '0' + today.second.toString();
-                            else
-                              second = today.second.toString();
-
-                            if (editingController.text != '') {
-
-                              List<Map> userMessagesRead = [];
-                              //userMessagesRead.add(toMapisMessageRead(currentUser.id, false));
-
-                              List<Usuario> users = await _accessDatabase.getAllTrainersFromBrand(widget.brand.id!);
-
-                              for(int i = 0; i < users.length; ++i) {
-                                if(users[i].id == currentUser.id) {
-                                  userMessagesRead.add(toMapisMessageRead(
-                                      users[i].id, false));
-                                }
-                                else {
-                                  userMessagesRead.add(toMapisMessageRead(
-                                      users[i].id, true));
-                                }
-                              }
-
-                              users = await _accessDatabase.getAllClientsFromBrand(widget.brand.id!);
-                              for(int i = 0; i < users.length; ++i) {
-                                if(users[i].id == currentUser.id) {
-                                  userMessagesRead.add(toMapisMessageRead(
-                                      users[i].id, false));
-                                }
-                                else {
-                                  userMessagesRead.add(toMapisMessageRead(
-                                      users[i].id, true));
-                                }
-                              }
-
-                              await _accessDatabase.updateConversation(
-                                conversationId,
-                                userMessagesRead,
-                                editingController.text,
-                                today.year.toString(),
-                                today.month.toString(),
-                                today.day.toString(),
-                                hour,
-                                minute,
-                                second,
-                              );
-                              _accessDatabase.addMessage(
-                                  editingController.text.trim(),
-                                  currentUser.id,
-                                  today.year.toString(),
-                                  today.month.toString(),
-                                  today.day.toString(),
-                                  hour,
-                                  minute,
-                                  second,
-                                  conversationId);
-
-                              editingController.text = '';
-
-
-                              setState(() {});
-                            }
-                          },
-                          child: Icon(
-                            Icons.send,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                          backgroundColor: Styles.mainColor,
-                          elevation: 0,
+                          height: MediaQuery.of(context).size.height * 0.01,
                         ),
                       ],
                     ),
                   ),
-
                 ],
               ),
             ),

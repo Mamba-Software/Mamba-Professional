@@ -229,7 +229,6 @@ class _LoginState extends State<Login> {
   }
 
   void signIn() async {
-      print(email.trim());
       int result = await _accessDatabase.signIn(email.trim(), password);
       if (result == 0) {
         Navigator.pushReplacement(

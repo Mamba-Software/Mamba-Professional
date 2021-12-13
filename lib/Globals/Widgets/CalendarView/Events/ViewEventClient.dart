@@ -1030,37 +1030,48 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
           return Padding(
             padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
             child: Container(
-              width: MediaQuery.of(context).size.width*0.40,
-              child: FloatingActionButton.extended(
-                heroTag: "6",
-                onPressed: () async {
-                  var result = await showDialog(
-                      context: context,
-                      builder: (_) {
-                        return JoinConfirmationDialog(text: AppLocalizations.of(context)!.joinEventConfirmation);
-                      }
-                  );
-                  if (result) {
-                    // Join Event
-                    setState(() {
-                      isLoadingBody = true;
-                    });
-                    bool hasJoined = await _accessDatabase.joinEvent(event!.id!, currentUser.id!);
-                    _notificationService.userJoinEvent(currentUser.id!, event!.brandID!, event!.id!);
-                    if (hasJoined) {
-                      getEventInfo();
-                      setState(() {
-                        isJoined = true;
-                        isLoadingBody = false;
-                      });
-                    }
-                  }
-                },
-                backgroundColor: Colors.green,
-                icon: Icon(Icons.add_circle_outline, color: Colors.white,),
-                label: Text(
-                  AppLocalizations.of(context)!.joinEvent,
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width*0.40,
+              ),
+              child: Row(
+                children: [
+                  Flexible(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
+                      child: FloatingActionButton.extended(
+                        heroTag: "6",
+                        onPressed: () async {
+                          var result = await showDialog(
+                              context: context,
+                              builder: (_) {
+                                return JoinConfirmationDialog(text: AppLocalizations.of(context)!.joinEventConfirmation);
+                              }
+                          );
+                          if (result) {
+                            // Join Event
+                            setState(() {
+                              isLoadingBody = true;
+                            });
+                            bool hasJoined = await _accessDatabase.joinEvent(event!.id!, currentUser.id!);
+                            _notificationService.userJoinEvent(currentUser.id!, event!.brandID!, event!.id!);
+                            if (hasJoined) {
+                              getEventInfo();
+                              setState(() {
+                                isJoined = true;
+                                isLoadingBody = false;
+                              });
+                            }
+                          }
+                        },
+                        backgroundColor: Colors.green,
+                        icon: Icon(Icons.add_circle_outline, color: Colors.white,),
+                        label: Text(
+                          AppLocalizations.of(context)!.book,
+                          style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           );
@@ -1068,37 +1079,48 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
           return Padding(
             padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
             child: Container(
-              width: MediaQuery.of(context).size.width*0.45,
-              child: FloatingActionButton.extended(
-                heroTag: "50",
-                onPressed: () async {
-                  var result = await showDialog(
-                      context: context,
-                      builder: (_) {
-                        return LeaveConfirmationDialog(text: AppLocalizations.of(context)!.leaveEventConfirmation);
-                      }
-                  );
-                  if (result) {
-                    // Leave Event
-                    setState(() {
-                      isLoadingBody = true;
-                    });
-                    bool hasJoined = await _accessDatabase.leaveEvent(event!.id!, currentUser.id!, false);
-                    _notificationService.userLeaveEvent(currentUser.id!, event!.brandID!, event!.id!);
-                    if (hasJoined) {
-                      getEventInfo();
-                      setState(() {
-                        isJoined = false;
-                        isLoadingBody = false;
-                      });
-                    }
-                  }
-                },
-                backgroundColor: Colors.red,
-                icon: Icon(Icons.cancel_outlined, color: Colors.white,),
-                label: Text(
-                  AppLocalizations.of(context)!.leaveEvent,
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width*0.40,
+              ),
+              child: Row(
+                children: [
+                  Flexible(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
+                      child: FloatingActionButton.extended(
+                        heroTag: "50",
+                        onPressed: () async {
+                          var result = await showDialog(
+                              context: context,
+                              builder: (_) {
+                                return LeaveConfirmationDialog(text: AppLocalizations.of(context)!.leaveEventConfirmation);
+                              }
+                          );
+                          if (result) {
+                            // Leave Event
+                            setState(() {
+                              isLoadingBody = true;
+                            });
+                            bool hasJoined = await _accessDatabase.leaveEvent(event!.id!, currentUser.id!, false);
+                            _notificationService.userLeaveEvent(currentUser.id!, event!.brandID!, event!.id!);
+                            if (hasJoined) {
+                              getEventInfo();
+                              setState(() {
+                                isJoined = false;
+                                isLoadingBody = false;
+                              });
+                            }
+                          }
+                        },
+                        backgroundColor: Colors.red,
+                        icon: Icon(Icons.cancel_outlined, color: Colors.white,),
+                        label: Text(
+                          AppLocalizations.of(context)!.leave,
+                          style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           );
