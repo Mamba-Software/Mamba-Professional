@@ -66,9 +66,49 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.01,
-              vertical: MediaQuery.of(context).size.height * 0.01),
+          padding: (messages[index].messageType == "sender"
+              ?EdgeInsets.only(
+              left:
+              MediaQuery.of(context)
+                  .size
+                  .width *
+                  0.5,
+              right:
+              MediaQuery.of(context)
+                  .size
+                  .width *
+                  0.01,
+              top:
+              MediaQuery.of(context)
+                  .size
+                  .height *
+                  0.01,
+              bottom:
+              MediaQuery.of(context)
+                  .size
+                  .height *
+                  0.01)
+              :EdgeInsets.only(
+              left:
+              MediaQuery.of(context)
+                  .size
+                  .width *
+                  0.01,
+              right:
+              MediaQuery.of(context)
+                  .size
+                  .width *
+                  0.5,
+              top:
+              MediaQuery.of(context)
+                  .size
+                  .height *
+                  0.01,
+              bottom:
+              MediaQuery.of(context)
+                  .size
+                  .height *
+                  0.01)),
           child: Align(
             alignment: (messages[index].messageType == "sender"
                 ? Alignment.topRight
@@ -78,7 +118,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 color: (messages[index].messageType == "sender"
-                    ? Styles.mainColor
+                    ? Styles.mainColorTrans
                     : Colors.grey.shade200),
               ),
               padding: EdgeInsets.symmetric(
@@ -128,9 +168,49 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           style: TextStyle(fontSize: 15),
         ),
         Container(
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.01,
-              vertical: MediaQuery.of(context).size.height * 0.01),
+          padding: (messages[index].messageType == "sender"
+              ?EdgeInsets.only(
+              left:
+              MediaQuery.of(context)
+                  .size
+                  .width *
+                  0.5,
+              right:
+              MediaQuery.of(context)
+                  .size
+                  .width *
+                  0.01,
+              top:
+              MediaQuery.of(context)
+                  .size
+                  .height *
+                  0.01,
+              bottom:
+              MediaQuery.of(context)
+                  .size
+                  .height *
+                  0.01)
+              :EdgeInsets.only(
+              left:
+              MediaQuery.of(context)
+                  .size
+                  .width *
+                  0.01,
+              right:
+              MediaQuery.of(context)
+                  .size
+                  .width *
+                  0.5,
+              top:
+              MediaQuery.of(context)
+                  .size
+                  .height *
+                  0.01,
+              bottom:
+              MediaQuery.of(context)
+                  .size
+                  .height *
+                  0.01)),
           child: Align(
             alignment: (messages[index].messageType == "sender"
                 ? Alignment.topRight
@@ -140,7 +220,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 color: (messages[index].messageType == "sender"
-                    ? Styles.mainColor
+                    ? Styles.mainColorTrans
                     : Colors.grey.shade200),
               ),
               padding: EdgeInsets.symmetric(
@@ -283,9 +363,28 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.03,
                   ),
-                  Text(
-                    widget.user.name!,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Theme.of(context).primaryColor),
+
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.70,
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: TextField(
+                            enabled: false,
+                            decoration: InputDecoration(
+                              hintStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Theme.of(context).primaryColor),
+                              hintText: widget.user.name!,
+                              contentPadding: EdgeInsets.all(0),
+                              isDense: true,
+                              enabledBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
