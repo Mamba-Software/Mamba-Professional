@@ -470,7 +470,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
             alignment: Alignment.bottomCenter,
             children: [
               Container(
-                height: MediaQuery.of(context).size.height*0.22,
+                height: MediaQuery.of(context).size.height*0.26,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: theImage!.image,
@@ -479,7 +479,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                 ),
               ),
               Container(
-                height: MediaQuery.of(context).size.height*0.22,
+                height: MediaQuery.of(context).size.height*0.26,
                 decoration: new BoxDecoration(
                   color: Colors.white,
                   gradient: LinearGradient(
@@ -500,7 +500,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
             ],
           ),
           Positioned(
-            top: MediaQuery.of(context).size.height*0.19,
+            top: MediaQuery.of(context).size.height*0.23,
             bottom: 0,
             left: 0,
             right: 0,
@@ -558,7 +558,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
             ),
           ),
           Positioned(
-            top: MediaQuery.of(context).size.height*0.28,
+            top: MediaQuery.of(context).size.height*0.32,
             bottom: 0,
             left: 0,
             right: 0,
@@ -805,7 +805,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
-                                    height: MediaQuery.of(context).size.height*0.20,
+                                    height: MediaQuery.of(context).size.height*0.15,
                                     width: MediaQuery.of(context).size.width*0.99,
                                     child: ListView.builder(
                                         shrinkWrap: true,
@@ -918,7 +918,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
-                                    height: MediaQuery.of(context).size.height*0.20,
+                                    height: MediaQuery.of(context).size.height*0.15,
                                     width: MediaQuery.of(context).size.width,
                                     child: ListView.builder(
                                         shrinkWrap: true,
@@ -1015,7 +1015,9 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                     ],
                   ),
                 )
-            ) : LoadingViewPurple(),
+            ) : Padding(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.13),
+                child: LoadingViewPurple()),
           ),
         ],
       ),

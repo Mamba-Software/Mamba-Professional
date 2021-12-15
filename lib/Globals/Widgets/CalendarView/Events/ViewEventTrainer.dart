@@ -193,6 +193,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
 
   Future<void> getAllTrainersFromBrand() async {
     allTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
+    brandTrainersSelectedBool = [];
     List<Usuario> temp = [];
     for (var i=0; i < allTrainers.length; i++) {
       var trainer = allTrainers[i];
@@ -337,6 +338,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
@@ -365,6 +367,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                     ),
                   ],
                 ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
               ],
             ),
           ),
@@ -864,12 +867,14 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                                   });
                                                   var result = await Navigator.push(
                                                       context,
-                                                    CupertinoPageRoute<Null>(
+                                                    CupertinoPageRoute<String>(
                                                       builder: (context) => MyLocationsSelect(
                                                           brandId: currentBrand.id!,
                                                         ),
                                                       )
                                                   );
+                                                  print("result");
+                                                  print(result);
                                                   if (result != null) {
                                                     await getLocation(result);
                                                     setState(() {
@@ -949,7 +954,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   isEditing ? Container(
-                                    height: MediaQuery.of(context).size.height*0.20,
+                                    height: MediaQuery.of(context).size.height*0.15,
                                     width: MediaQuery.of(context).size.width*0.99,
                                     child: ListView.builder(
                                         shrinkWrap: true,
@@ -1016,7 +1021,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                     ),
                                   ) :
                                   Container(
-                                    height: MediaQuery.of(context).size.height*0.20,
+                                    height: MediaQuery.of(context).size.height*0.15,
                                     width: MediaQuery.of(context).size.width*0.99,
                                     child: ListView.builder(
                                         shrinkWrap: true,
@@ -1115,44 +1120,48 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                             ),
                             isEditing ? Padding(
                               padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Icon(Icons.person, color: Theme.of(context).accentColor,),
-                                  Container(
-                                    padding: EdgeInsets.only(left: 20),
-                                    width: MediaQuery.of(context).size.width*0.30,
-                                    child: GestureDetector(
-                                        onTap: () {
-                                          selectSlot(context, 2);
-                                        },
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            new Flexible(
-                                              child: TextFormField(
-                                                controller: membersController,
-                                                readOnly: true,
-                                                enabled: false,
-                                                style: Styles.purpleTextStyle,
-                                                decoration: InputDecoration(
-                                                  labelStyle: Styles.purpleTextStyle,
-                                                  border: InputBorder.none,
-                                                  focusedBorder: InputBorder.none,
-                                                  enabledBorder: InputBorder.none,
-                                                  errorBorder: InputBorder.none,
-                                                  disabledBorder: InputBorder.none,
-                                                ),
-                                                textAlign: TextAlign.start,
+                              child: GestureDetector(
+                                onTap: () {
+                                  selectSlot(context, 2);
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Icon(Icons.person, color: Theme.of(context).accentColor,),
+                                    Container(
+                                      padding: EdgeInsets.only(left: 20),
+                                      width: MediaQuery.of(context).size.width*0.18,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          new Flexible(
+                                            child: TextFormField(
+                                              controller: membersController,
+                                              readOnly: true,
+                                              enabled: false,
+                                              style: Styles.purpleTextStyle,
+                                              decoration: InputDecoration(
+                                                labelStyle: Styles.purpleTextStyle,
+                                                border: InputBorder.none,
+                                                focusedBorder: InputBorder.none,
+                                                enabledBorder: InputBorder.none,
+                                                errorBorder: InputBorder.none,
+                                                disabledBorder: InputBorder.none,
                                               ),
+                                              textAlign: TextAlign.start,
                                             ),
-                                          ],
-                                        )
+                                          ),
+                                        ],
+                                      )
                                     ),
-                                  ),
-                                ],
+                                    Text(
+                                      AppLocalizations.of(context)!.members.toLowerCase(),
+                                      style: Styles.purpleTextStyle,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ) : Padding(
                               padding: EdgeInsets.only(top: 0),
@@ -1231,14 +1240,17 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                 ],
                               ),
                             ),
-                            widget.canEdit ? SizedBox(height: MediaQuery.of(context).size.height*0.20) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                            isEditing ? SizedBox(height: MediaQuery.of(context).size.height*0.10) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                            widget.canEdit ? SizedBox(height: MediaQuery.of(context).size.height*0.15) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           ],
                         ),
                       ),
                     ],
                   ),
                 )
-            ) : LoadingViewPurple(),
+            ) : Padding(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.13),
+                child: LoadingViewPurple()),
           ),
         ],
       ),
@@ -1281,6 +1293,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                               errorDate = true;
                             });
                           }
+                          print(brandTrainersSelectedBool);
                           if (!brandTrainersSelectedBool.contains(true)) {
                             hasError = true;
                             setState(() {

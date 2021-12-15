@@ -190,6 +190,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
@@ -218,6 +219,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                   ),
                 ],
               ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
             ],
           ),
         ),
@@ -507,7 +509,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                             });
                                             var result = await Navigator.push(
                                                 context,
-                                              CupertinoPageRoute<Null>(
+                                              CupertinoPageRoute<String>(
                                                 builder: (context) => MyLocationsSelect(
                                                     brandId: currentBrand.id!,
                                                   ),
@@ -849,7 +851,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             Container(
-                                              height: MediaQuery.of(context).size.height*0.20,
+                                              height: MediaQuery.of(context).size.height*0.15,
                                               width: MediaQuery.of(context).size.width,
                                               child: ListView.builder(
                                                   shrinkWrap: true,
@@ -1016,44 +1018,48 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            Icon(Icons.person, color: Theme.of(context).accentColor,),
-                                            Container(
-                                              padding: EdgeInsets.only(left: 20),
-                                              width: MediaQuery.of(context).size.width*0.30,
-                                              child: GestureDetector(
-                                                  onTap: () {
-                                                    selectSlot(context, 2);
-                                                  },
-                                                  child: Row(
-                                                    mainAxisSize: MainAxisSize.max,
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    children: <Widget>[
-                                                      new Flexible(
-                                                        child: TextFormField(
-                                                          controller: membersController,
-                                                          readOnly: true,
-                                                          enabled: false,
-                                                          style: Styles.purpleTextStyle,
-                                                          decoration: InputDecoration(
-                                                            labelStyle: Styles.purpleTextStyle,
-                                                            border: InputBorder.none,
-                                                            focusedBorder: InputBorder.none,
-                                                            enabledBorder: InputBorder.none,
-                                                            errorBorder: InputBorder.none,
-                                                            disabledBorder: InputBorder.none,
-                                                          ),
-                                                          textAlign: TextAlign.start,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            selectSlot(context, 2);
+                                          },
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: <Widget>[
+                                              Icon(Icons.person, color: Theme.of(context).accentColor,),
+                                              Container(
+                                                padding: EdgeInsets.only(left: 20),
+                                                width: MediaQuery.of(context).size.width*0.11,
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    new Flexible(
+                                                      child: TextFormField(
+                                                        controller: membersController,
+                                                        readOnly: true,
+                                                        enabled: false,
+                                                        style: Styles.purpleTextStyle,
+                                                        decoration: InputDecoration(
+                                                          labelStyle: Styles.purpleTextStyle,
+                                                          border: InputBorder.none,
+                                                          focusedBorder: InputBorder.none,
+                                                          enabledBorder: InputBorder.none,
+                                                          errorBorder: InputBorder.none,
+                                                          disabledBorder: InputBorder.none,
                                                         ),
+                                                        textAlign: TextAlign.start,
                                                       ),
-                                                    ],
-                                                  )
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                              Text(
+                                                AppLocalizations.of(context)!.members.toLowerCase(),
+                                                style: Styles.purpleTextStyle,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ]
