@@ -87,13 +87,23 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
       return Column(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(
-                horizontal:
+            padding:  EdgeInsets.only(
+                left:
+                MediaQuery.of(context)
+                    .size
+                    .width *
+                    0.5,
+                right:
                 MediaQuery.of(context)
                     .size
                     .width *
                     0.01,
-                vertical:
+                top:
+                MediaQuery.of(context)
+                    .size
+                    .height *
+                    0.01,
+                bottom:
                 MediaQuery.of(context)
                     .size
                     .height *
@@ -113,7 +123,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                   color: (messages[index]
                       .messageType ==
                       "sender"
-                      ? Styles.mainColor
+                      ? Styles.mainColorTrans
                       : Colors.grey.shade200),
                 ),
                 padding: EdgeInsets.symmetric(
@@ -186,13 +196,24 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.symmetric(
-              horizontal:
+          //width: MediaQuery.of(context).size.width * 0.80,
+          padding: EdgeInsets.only(
+              left:
               MediaQuery.of(context)
                   .size
                   .width *
                   0.01,
-              vertical:
+              right:
+              MediaQuery.of(context)
+                  .size
+                  .width *
+                  0.5,
+              top:
+              MediaQuery.of(context)
+                  .size
+                  .height *
+                  0.01,
+              bottom:
               MediaQuery.of(context)
                   .size
                   .height *
@@ -212,7 +233,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                 color: (messages[index]
                     .messageType ==
                     "sender"
-                    ? Styles.mainColor
+                    ? Styles.mainColorTrans
                     : Colors.grey.shade200),
               ),
               padding: EdgeInsets.symmetric(
@@ -237,6 +258,34 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                     mainAxisSize:
                     MainAxisSize.min,
                     children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        child: Row(
+                          children: [
+                            Flexible(
+                              child: TextField(
+                                enabled: false,
+                                textAlign: TextAlign.left,
+                                decoration: InputDecoration(
+                                  hintStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: matCol.shade200,
+                                  ),
+                                  hintText:  userSent!,
+                                  contentPadding: EdgeInsets.all(0),
+                                  isDense: true,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      /*
                       Text(
                         userSent!,
                         style: TextStyle(
@@ -245,6 +294,8 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                           color: matCol.shade200,
                         ),
                       ),
+
+                       */
                       SizedBox(
                         width: MediaQuery.of(
                             context)
@@ -317,13 +368,23 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
             style: TextStyle(fontSize: 15),
           ),
           Container(
-            padding: EdgeInsets.symmetric(
-                horizontal:
+            padding: EdgeInsets.only(
+                left:
+                MediaQuery.of(context)
+                    .size
+                    .width *
+                    0.5,
+                right:
                 MediaQuery.of(context)
                     .size
                     .width *
                     0.01,
-                vertical:
+                top:
+                MediaQuery.of(context)
+                    .size
+                    .height *
+                    0.01,
+                bottom:
                 MediaQuery.of(context)
                     .size
                     .height *
@@ -343,7 +404,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                   color: (messages[index]
                       .messageType ==
                       "sender"
-                      ? Styles.mainColor
+                      ? Styles.mainColorTrans
                       : Colors.grey.shade200),
                 ),
                 padding: EdgeInsets.symmetric(
@@ -422,13 +483,24 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
           style: TextStyle(fontSize: 15),
         ),
         Container(
-          padding: EdgeInsets.symmetric(
-              horizontal:
+          //width: MediaQuery.of(context).size.width * 0.80,
+          padding: EdgeInsets.only(
+              left:
               MediaQuery.of(context)
                   .size
                   .width *
                   0.01,
-              vertical:
+              right:
+              MediaQuery.of(context)
+                  .size
+                  .width *
+                  0.5,
+              top:
+              MediaQuery.of(context)
+                  .size
+                  .height *
+                  0.01,
+              bottom:
               MediaQuery.of(context)
                   .size
                   .height *
@@ -448,7 +520,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                 color: (messages[index]
                     .messageType ==
                     "sender"
-                    ? Styles.mainColor
+                    ? Styles.mainColorTrans
                     : Colors.grey.shade200),
               ),
               padding: EdgeInsets.symmetric(
@@ -473,14 +545,44 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                     mainAxisSize:
                     MainAxisSize.min,
                     children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        child: Row(
+                          children: [
+                            Flexible(
+                              child: TextField(
+                                enabled: false,
+                                textAlign: TextAlign.left,
+                                decoration: InputDecoration(
+                                  hintStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: matCol.shade200,
+                                  ),
+                                  hintText:  userSent!,
+                                  contentPadding: EdgeInsets.all(0),
+                                  isDense: true,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      /*
                       Text(
                         userSent!,
                         style: TextStyle(
-                            fontSize: 15,
-                        fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
                           color: matCol.shade200,
-                          ),
+                        ),
                       ),
+
+                       */
                       SizedBox(
                         width: MediaQuery.of(
                             context)
@@ -538,6 +640,8 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
             ),
           ),
         ),
+
+
       ],
     );
   }
@@ -620,10 +724,28 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        currentBrand.name!,
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Theme.of(context).primaryColor),
-                        textAlign: TextAlign.left,
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.70,
+                        child: Row(
+                          children: [
+                            Flexible(
+                              child: TextField(
+                                enabled: false,
+                                textAlign: TextAlign.left,
+                                decoration: InputDecoration(
+                                  hintStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Theme.of(context).primaryColor),
+                                  hintText: currentBrand.name!,
+                                  contentPadding: EdgeInsets.all(0),
+                                  isDense: true,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.005,
@@ -697,6 +819,8 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                                 }
                               },
                             );
+
+
                           }
                           else {
                             return ListView.builder(
@@ -874,6 +998,249 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                 ],
               ),
             ),
+            /*
+            Stack(
+                children: <Widget>[
+                  Container(
+                    //height: MediaQuery.of(context).size.height * 0.77,
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.08),
+                    child: StreamBuilder<QuerySnapshot>(
+                        stream:
+                        _accessDatabase.getConversationMessages(conversationId),
+                        builder: (context, snapshot) {
+                          if (snapshot.data != null) {
+                            timeDayGolbal = '';
+                            messages = documentsToMessages(snapshot.data!.docs);
+                            return ListView.builder(
+                              controller: scrollController,
+                              reverse: true,
+                              scrollDirection: Axis.vertical,
+                              itemCount: messages.length,
+                              shrinkWrap: true,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                  MediaQuery.of(context).size.width * 0.03,
+                                  vertical:
+                                  MediaQuery.of(context).size.height * 0.03),
+                              //physics: BouncingScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                String timeHour = getTimeHour(index);
+                                String timeDay = getTimeDay(index);
+                                if(index + 1 == messages.length) timeDayGolbal = '';
+                                else {
+                                  timeDayGolbal = getTimeDay(index + 1);
+                                }
+                                if (timeDay != timeDayGolbal) {
+                                  timeDayGolbal = timeDay;
+                                  return FutureBuilder<String?>(
+                                      future: getUser(messages[index].messageType),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.data != null) {
+                                          userSent = snapshot.data;
+                                          return messageTextNewData(index, timeHour, timeDay);
+                                        } else {
+                                          return Container();
+                                        }
+                                      }
+                                  );
+                                } else {
+                                  return FutureBuilder<String?>(
+                                      future: getUser(messages[index].messageType),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.data != null) {
+                                          userSent = snapshot.data;
+                                          return messageTextNotNewData(index, timeHour);
+                                        } else {
+                                          return Container();
+                                        }
+                                      }
+                                  );
+                                }
+                              },
+                            );
+
+
+                          }
+                          else {
+                            return ListView.builder(
+                              controller: scrollController,
+                              reverse: true,
+                              scrollDirection: Axis.vertical,
+                              itemCount: messages.length,
+                              shrinkWrap: true,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                  MediaQuery.of(context).size.width * 0.03,
+                                  vertical:
+                                  MediaQuery.of(context).size.height * 0.03),
+                              //physics: BouncingScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                String timeHour = getTimeHour(index);
+                                String timeDay = getTimeDay(index);
+                                if(index + 1 == messages.length) timeDayGolbal = '';
+                                else {
+                                  timeDayGolbal = getTimeDay(index + 1);
+                                }
+                                if (timeDay != timeDayGolbal) {
+                                  timeDayGolbal = timeDay;
+                                  return FutureBuilder<String?>(
+                                      future: getUser(messages[index].messageType),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.data != null) {
+                                          userSent = snapshot.data;
+                                          return messageTextNewData(index, timeHour, timeDay);
+                                        } else {
+                                          return Container();
+                                        }
+                                      }
+                                  );
+                                } else {
+                                  return FutureBuilder<String?>(
+                                      future: getUser(messages[index].messageType),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.data != null) {
+                                          userSent = snapshot.data;
+                                          return messageTextNotNewData(index, timeHour);
+                                        } else {
+                                          return Container();
+                                        }
+                                      }
+                                  );
+                                }
+                              },
+                            );
+                          }
+                        }),
+                  ),
+
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.02,
+                          vertical: MediaQuery.of(context).size.height * 0.01),
+                      height: MediaQuery.of(context).size.height * 0.10,
+                      width: double.infinity,
+                      color: Colors.white,
+                      child: Row(
+                        children: <Widget>[
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.03,
+                          ),
+                          Expanded(
+                            child: TextField(
+                              minLines: 1,
+                              maxLines: 10,
+                              textCapitalization: TextCapitalization.sentences,
+                              controller: editingController,
+                              decoration: InputDecoration(
+                                  hintText: AppLocalizations.of(context)!.writeMessage,
+                                  hintStyle: TextStyle(color: Colors.black54),
+                                  border: InputBorder.none),
+                            ),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.03,
+                          ),
+                          FloatingActionButton(
+                            onPressed: () async {
+                              DateTime today = DateTime.now();
+                              String minute, hour, second;
+                              if (today.minute.toString().length == 1)
+                                minute = '0' + today.minute.toString();
+                              else
+                                minute = today.minute.toString();
+
+                              if (today.hour.toString().length == 1)
+                                hour = '0' + today.hour.toString();
+                              else
+                                hour = today.hour.toString();
+
+                              if (today.second.toString().length == 1)
+                                second = '0' + today.second.toString();
+                              else
+                                second = today.second.toString();
+
+                              if (editingController.text != '') {
+
+                                List<Map> userMessagesRead = [];
+                                //userMessagesRead.add(toMapisMessageRead(currentUser.id, false));
+
+                                List<Usuario> users = await _accessDatabase.getAllTrainersFromBrand(widget.brand.id!);
+
+                                for(int i = 0; i < users.length; ++i) {
+                                  if(users[i].id == currentUser.id) {
+                                    userMessagesRead.add(toMapisMessageRead(
+                                        users[i].id, false));
+                                  }
+                                  else {
+                                    userMessagesRead.add(toMapisMessageRead(
+                                        users[i].id, true));
+                                  }
+                                }
+
+                                users = await _accessDatabase.getAllClientsFromBrand(widget.brand.id!);
+                                for(int i = 0; i < users.length; ++i) {
+                                  if(users[i].id == currentUser.id) {
+                                    userMessagesRead.add(toMapisMessageRead(
+                                        users[i].id, false));
+                                  }
+                                  else {
+                                    userMessagesRead.add(toMapisMessageRead(
+                                        users[i].id, true));
+                                  }
+                                }
+
+                                await _accessDatabase.updateConversation(
+                                  conversationId,
+                                  userMessagesRead,
+                                  editingController.text,
+                                  today.year.toString(),
+                                  today.month.toString(),
+                                  today.day.toString(),
+                                  hour,
+                                  minute,
+                                  second,
+                                );
+                                _accessDatabase.addMessage(
+                                    editingController.text.trim(),
+                                    currentUser.id,
+                                    today.year.toString(),
+                                    today.month.toString(),
+                                    today.day.toString(),
+                                    hour,
+                                    minute,
+                                    second,
+                                    conversationId);
+
+                                editingController.text = '';
+
+
+                                setState(() {});
+                              }
+                            },
+                            child: Icon(
+                              Icons.send,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                            backgroundColor: Styles.mainColor,
+                            elevation: 0,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+
+                ],
+              ),
+
+             */
+            /*
+
+
+             */
           );
   }
 }
