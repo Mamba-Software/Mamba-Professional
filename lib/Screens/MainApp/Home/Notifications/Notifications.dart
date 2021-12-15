@@ -112,6 +112,28 @@ class _NotificationsState extends State<Notifications> {
       }
       notifications.add(notification);
     }
+    /*
+    notifications.sort((a,b) {
+      var aDate =  DateTime(
+        int.parse(a.year!),
+        int.parse(a.month!),
+        int.parse(a.day!),
+        int.parse(a.hour!),
+        int.parse(a.minutes!),
+        int.parse(a.seconds!),
+      );
+      var bDate =  DateTime(
+        int.parse(b.year!),
+        int.parse(b.month!),
+        int.parse(b.day!),
+        int.parse(b.hour!),
+        int.parse(b.minutes!),
+        int.parse(b.seconds!),
+      );
+      return aDate.compareTo(bDate);
+    });
+    notificationsList = List.from(notifications.reversed);
+     */
     notificationsList = notifications;
     usersList = users;
     brandsList = brands;
