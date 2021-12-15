@@ -254,10 +254,11 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                   Row(
                     mainAxisAlignment:
                     MainAxisAlignment
-                        .end,
+                        .start,
                     mainAxisSize:
                     MainAxisSize.min,
                     children: [
+                      /*
                       Container(
                         width: MediaQuery.of(context).size.width * 0.3,
                         child: Row(
@@ -285,7 +286,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                           ],
                         ),
                       ),
-                      /*
+
                       Text(
                         userSent!,
                         style: TextStyle(
@@ -296,6 +297,26 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                       ),
 
                        */
+                      Container(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width*0.6,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                userSent!,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: matCol.shade200,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       SizedBox(
                         width: MediaQuery.of(
                             context)
@@ -545,6 +566,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                     mainAxisSize:
                     MainAxisSize.min,
                     children: [
+                      /*
                       Container(
                         width: MediaQuery.of(context).size.width * 0.3,
                         child: Row(
@@ -572,7 +594,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                           ],
                         ),
                       ),
-                      /*
+
                       Text(
                         userSent!,
                         style: TextStyle(
@@ -581,8 +603,27 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                           color: matCol.shade200,
                         ),
                       ),
-
-                       */
+                      */
+                      Container(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width*0.6,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                userSent!,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: matCol.shade200,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       SizedBox(
                         width: MediaQuery.of(
                             context)
