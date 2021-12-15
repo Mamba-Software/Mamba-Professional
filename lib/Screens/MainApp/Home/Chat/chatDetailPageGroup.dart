@@ -92,7 +92,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                 MediaQuery.of(context)
                     .size
                     .width *
-                    0.5,
+                    0.2,
                 right:
                 MediaQuery.of(context)
                     .size
@@ -207,7 +207,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
               MediaQuery.of(context)
                   .size
                   .width *
-                  0.5,
+                  0.2,
               top:
               MediaQuery.of(context)
                   .size
@@ -373,7 +373,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                 MediaQuery.of(context)
                     .size
                     .width *
-                    0.5,
+                    0.2,
                 right:
                 MediaQuery.of(context)
                     .size
@@ -494,7 +494,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
               MediaQuery.of(context)
                   .size
                   .width *
-                  0.5,
+                  0.2,
               top:
               MediaQuery.of(context)
                   .size

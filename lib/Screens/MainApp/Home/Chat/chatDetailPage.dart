@@ -67,13 +67,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     return Column(
       children: [
         Container(
-          padding: (messages[index].messageType == "sender"
-              ?EdgeInsets.only(
+          padding: (messages[index].messageType == "sender" ?
+              EdgeInsets.only(
               left:
               MediaQuery.of(context)
                   .size
                   .width *
-                  0.5,
+                  0.2,
               right:
               MediaQuery.of(context)
                   .size
@@ -99,7 +99,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               MediaQuery.of(context)
                   .size
                   .width *
-                  0.5,
+                  0.2,
               top:
               MediaQuery.of(context)
                   .size
@@ -175,7 +175,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               MediaQuery.of(context)
                   .size
                   .width *
-                  0.5,
+                  0.2,
               right:
               MediaQuery.of(context)
                   .size
@@ -201,7 +201,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               MediaQuery.of(context)
                   .size
                   .width *
-                  0.5,
+                  0.2,
               top:
               MediaQuery.of(context)
                   .size
