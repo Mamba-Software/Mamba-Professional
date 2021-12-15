@@ -382,16 +382,15 @@ class _PerfilClientState extends State<PerfilClient> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            //46%
             Container(
-              height: MediaQuery.of(context).size.height*0.46,
+              height: MediaQuery.of(context).size.height*0.3,
               child: Stack(
                   alignment: Alignment.topCenter,
                   fit: StackFit.expand,
                   children: <Widget>[
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.29,
+                      bottom: MediaQuery.of(context).size.height*0.13,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.70,
                       child: IconButton(
@@ -426,7 +425,7 @@ class _PerfilClientState extends State<PerfilClient> {
                     ),
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.29,
+                      bottom: MediaQuery.of(context).size.height*0.13,
                       left: MediaQuery.of(context).size.width*0.70,
                       right: 0,
                       child: IconButton(
@@ -476,113 +475,101 @@ class _PerfilClientState extends State<PerfilClient> {
                         ],
                       ),
                     ),
-                    Positioned(
-                      top: MediaQuery.of(context).size.height*0.27,
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                                child: Text(
-                                    "${currentUser.name!}",
-                                    style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 24, fontFamily: "Helvetica"),
-                                    textAlign: TextAlign.center
-                                )
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: MediaQuery.of(context).size.height*0.40,
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Material(
-                            //elevation: 4,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.all(
-                                const Radius.circular(10.0),
-                              ),
-                            ),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.81,
-                              height: MediaQuery.of(context).size.height * 0.10,
-                              decoration: new BoxDecoration(
-                                color: Colors.white,
-                                //border: Border.all(color: Theme.of(context).primaryColor, width: 1),
-                                borderRadius: new BorderRadius.all(
-                                  const Radius.circular(10.0),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: MediaQuery.of(context).size.height * 0.10,
-                                    width: MediaQuery.of(context).size.width * 0.38,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: <Widget>[
-                                        Text(
-                                          totalEvents.toString(),
-                                          style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
-                                        ),
-                                        SizedBox(height: 2),
-                                        Text(
-                                          AppLocalizations.of(context)!.allEvents,
-                                          style: Styles.purpleTextStyle.copyWith(fontSize: 12),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width * 0.05,
-                                    height: MediaQuery.of(context).size.height * 0.03,
-                                    child: VerticalDivider(color: Theme.of(context).primaryColor,),
-                                  ),
-                                  Container(
-                                    height: MediaQuery.of(context).size.height * 0.10,
-                                    width: MediaQuery.of(context).size.width * 0.38,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: <Widget>[
-                                        Text(
-                                          thisMonthEvents.toString(),
-                                          style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
-                                        ),
-                                        SizedBox(height: 2),
-                                        Text(
-                                          AppLocalizations.of(context)!.monthEvents,
-                                          style: Styles.purpleTextStyle.copyWith(fontSize: 12),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ]
               ),
             ),
-            //4%
             SizedBox(height: MediaQuery.of(context).size.height*0.03),
-            // 33% - 8%
+            Container(
+              padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                      child: Text(
+                          "${currentUser.name!}",
+                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 24, fontFamily: "Helvetica"),
+                          textAlign: TextAlign.center
+                      )
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Material(
+                  //elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.all(
+                      const Radius.circular(10.0),
+                    ),
+                  ),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.81,
+                    height: MediaQuery.of(context).size.height * 0.10,
+                    decoration: new BoxDecoration(
+                      color: Colors.white,
+                      //border: Border.all(color: Theme.of(context).primaryColor, width: 1),
+                      borderRadius: new BorderRadius.all(
+                        const Radius.circular(10.0),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.10,
+                          width: MediaQuery.of(context).size.width * 0.38,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Text(
+                                totalEvents.toString(),
+                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                AppLocalizations.of(context)!.allEvents,
+                                style: Styles.purpleTextStyle.copyWith(fontSize: 12),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.05,
+                          height: MediaQuery.of(context).size.height * 0.03,
+                          child: VerticalDivider(color: Theme.of(context).primaryColor,),
+                        ),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.10,
+                          width: MediaQuery.of(context).size.width * 0.38,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Text(
+                                thisMonthEvents.toString(),
+                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                AppLocalizations.of(context)!.monthEvents,
+                                style: Styles.purpleTextStyle.copyWith(fontSize: 12),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.02),
             todayEvents.length != 0 ? Container(
               height: MediaQuery.of(context).size.height*0.31,
               child: Column(
@@ -715,7 +702,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                               children: [
                                                 Flexible(
                                                   child: Text(event.title!,
-                                                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                                                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 20, fontFamily: "Helvetica"), textAlign: TextAlign.left),
                                                 ),
                                                 SizedBox(width: MediaQuery.of(context).size.width*0.05),
                                                 returnBadge(index),
@@ -824,7 +811,6 @@ class _PerfilClientState extends State<PerfilClient> {
               ),
             ),
             Platform.isAndroid ? SizedBox(height: MediaQuery.of(context).size.height*0.01) : Container(),
-            // 12%
             Column(
               children: [
                 GestureDetector(
@@ -881,7 +867,6 @@ class _PerfilClientState extends State<PerfilClient> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.04),
               ],
             ),
-            // 20%
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -964,7 +949,6 @@ class _PerfilClientState extends State<PerfilClient> {
                 ),
               ),
             ),
-            // 4%
             SizedBox(height: MediaQuery.of(context).size.height*0.04),
             GestureDetector(
               onTap: () {
@@ -1054,18 +1038,18 @@ class _PerfilClientState extends State<PerfilClient> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              height: MediaQuery.of(context).size.height*0.46,
+              height: MediaQuery.of(context).size.height*0.3,
               child: Stack(
                   alignment: Alignment.topCenter,
                   fit: StackFit.expand,
                   children: <Widget>[
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.29,
+                      bottom: MediaQuery.of(context).size.height*0.13,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.70,
                       child: IconButton(
-                        icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 50,),
+                        icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
                         alignment: Alignment.center,
                         onPressed: () {
                           Navigator.push(
@@ -1096,11 +1080,11 @@ class _PerfilClientState extends State<PerfilClient> {
                     ),
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.29,
+                      bottom: MediaQuery.of(context).size.height*0.13,
                       left: MediaQuery.of(context).size.width*0.70,
                       right: 0,
                       child: IconButton(
-                        icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: 50,),
+                        icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -1146,111 +1130,101 @@ class _PerfilClientState extends State<PerfilClient> {
                         ],
                       ),
                     ),
-                    Positioned(
-                      top: MediaQuery.of(context).size.height*0.27,
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                                child: Text(
-                                    "${currentUser.name!}",
-                                    style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 24, fontFamily: "Helvetica"),
-                                    textAlign: TextAlign.center
-                                )
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: MediaQuery.of(context).size.height*0.40,
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Material(
-                            //elevation: 4,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.all(
-                                const Radius.circular(10.0),
-                              ),
-                            ),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.81,
-                              height: MediaQuery.of(context).size.height * 0.10,
-                              decoration: new BoxDecoration(
-                                color: Colors.white,
-                                //border: Border.all(color: Theme.of(context).primaryColor, width: 1),
-                                borderRadius: new BorderRadius.all(
-                                  const Radius.circular(10.0),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: MediaQuery.of(context).size.height * 0.10,
-                                    width: MediaQuery.of(context).size.width * 0.38,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: <Widget>[
-                                        Text(
-                                          totalEvents.toString(),
-                                          style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
-                                        ),
-                                        SizedBox(height: 2),
-                                        Text(
-                                          AppLocalizations.of(context)!.allEvents,
-                                          style: Styles.purpleTextStyle.copyWith(fontSize: 12),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width * 0.05,
-                                    height: MediaQuery.of(context).size.height * 0.03,
-                                    child: VerticalDivider(color: Theme.of(context).primaryColor,),
-                                  ),
-                                  Container(
-                                    height: MediaQuery.of(context).size.height * 0.10,
-                                    width: MediaQuery.of(context).size.width * 0.38,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: <Widget>[
-                                        Text(
-                                          thisMonthEvents.toString(),
-                                          style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
-                                        ),
-                                        SizedBox(height: 2),
-                                        Text(
-                                          AppLocalizations.of(context)!.monthEvents,
-                                          style: Styles.purpleTextStyle.copyWith(fontSize: 12),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ]
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+            SizedBox(height: MediaQuery.of(context).size.height*0.03),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                      child: Text(
+                          "${currentUser.name!}",
+                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 24, fontFamily: "Helvetica"),
+                          textAlign: TextAlign.center
+                      )
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Material(
+                  //elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.all(
+                      const Radius.circular(10.0),
+                    ),
+                  ),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.81,
+                    height: MediaQuery.of(context).size.height * 0.10,
+                    decoration: new BoxDecoration(
+                      color: Colors.white,
+                      //border: Border.all(color: Theme.of(context).primaryColor, width: 1),
+                      borderRadius: new BorderRadius.all(
+                        const Radius.circular(10.0),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.10,
+                          width: MediaQuery.of(context).size.width * 0.38,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Text(
+                                totalEvents.toString(),
+                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                AppLocalizations.of(context)!.allEvents,
+                                style: Styles.purpleTextStyle.copyWith(fontSize: 12),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.05,
+                          height: MediaQuery.of(context).size.height * 0.03,
+                          child: VerticalDivider(color: Theme.of(context).primaryColor,),
+                        ),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.10,
+                          width: MediaQuery.of(context).size.width * 0.38,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Text(
+                                thisMonthEvents.toString(),
+                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                AppLocalizations.of(context)!.monthEvents,
+                                style: Styles.purpleTextStyle.copyWith(fontSize: 12),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.02),
             request.id == null ?
             Column(
               children: [
