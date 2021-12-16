@@ -198,16 +198,16 @@ class _SettingsBrandState extends State<SettingsBrand> {
                       );
                       if (result) {
                         NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
-                        Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID); //12/12/2021
-                        await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
-                        await _accessDatabase.leaveBrand(currentUser.id!);
                         //12/12/2021
+                        Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID);
                         for(int i = 0; i < conv.users.length; ++i) {
                           if(conv.users[i]['uid'] == currentUser.id) {
                             conv.users.removeAt(i);
                           }
                         }
                         await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
+                        await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
+                        await _accessDatabase.leaveBrand(currentUser.id!);
                         Navigator.pushReplacement(
                             context,
                             CupertinoPageRoute<Null>(
@@ -245,7 +245,6 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         String? brandId = currentBrand.id;
                         await _accessDatabase.deleteBrand(currentBrand.id!);
                         await _accessDatabase.deleteBrandConversations(brandId);
-
                         Navigator.pushReplacement(
                             context,
                             CupertinoPageRoute<Null>(
@@ -326,6 +325,10 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
                 ),
                 Flexible(
                   child: Text("${AppLocalizations.of(context)!.writeDeleteBrand} ", style: Styles.purpleTextStyle.copyWith(fontSize: 16), textAlign: TextAlign.center,),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+                Flexible(
+                  child: Text(currentBrand.name!, style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, left: 15, right: 15),

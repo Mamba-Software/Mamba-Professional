@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/ChatUsers.dart';
 import 'package:mamba_castelldefels/Models/Conversation.dart';
@@ -460,6 +461,7 @@ class FirebaseDatabaseService {
     brandUsers.addAll(await this.getAllTrainersFromBrand(brandId));
     // All Users Leave Brand
     for (var i = 0; i < brandUsers.length; i++) {
+      NotificationService().userLeavesBrand(brandUsers[i].id!, brandId);
       await this.leaveBrand(brandUsers[i].id!);
     }
     // Delete Brand
@@ -904,8 +906,7 @@ class FirebaseDatabaseService {
   }
 
   // Delete User from All Existing Events
-  Future<void> deleteUserFromAllBrandEvents(
-      String uid, String brandId, bool isTrainer) async {
+  Future<void> deleteUserFromAllBrandEvents(String uid, String brandId, bool isTrainer) async {
     List<Event> userEvents = [];
     if (isTrainer) {
       userEvents = await this.getAllTrainerEventsFromBrand(uid, brandId);
@@ -917,7 +918,7 @@ class FirebaseDatabaseService {
       userEvents = await this.getAllClientEventsFromBrand(uid, brandId);
       for (var i = 0; i < userEvents.length; i++) {
         Event event = userEvents[i];
-        await this.leaveEvent(event.id!, uid, true);
+        await this.leaveEvent(event.id!, uid, false);
       }
     }
   }
@@ -991,6 +992,15 @@ class FirebaseDatabaseService {
   // Leave an Event
   Future<bool> leaveEvent(String eid, String uid, bool isTrainer) async {
     bool isFound = false;
+    Event event = await this.getSingleEvent(eid);
+    DateTime now = DateTime.now();
+    var startDate = DateTime(
+      int.parse(event.year!),
+      int.parse(event.month!),
+      int.parse(event.day!),
+      int.parse(event.hour!),
+      int.parse(event.minute!),
+    );
     List<String> eventUsers = [];
     if (isTrainer) {
       eventUsers = await this.getEventTrainers(eid);
@@ -998,7 +1008,11 @@ class FirebaseDatabaseService {
         String trainerid = eventUsers[i];
         if (trainerid == uid) {
           isFound = true;
-          eventUsers.removeAt(i);
+          if (startDate.isBefore(now)) {
+            eventUsers[i] = "notfound";
+          } else {
+            eventUsers.removeAt(i);
+          }
           break;
         }
       }
@@ -1010,7 +1024,11 @@ class FirebaseDatabaseService {
         String trainerid = eventUsers[i];
         if (trainerid == uid) {
           isFound = true;
-          eventUsers.removeAt(i);
+          if (startDate.isBefore(now)) {
+            eventUsers[i] = "notfound";
+          } else {
+            eventUsers.removeAt(i);
+          }
           break;
         }
       }

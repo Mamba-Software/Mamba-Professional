@@ -420,6 +420,8 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                 }
                               }
                               await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
+                              await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
+                              await _accessDatabase.leaveBrand(currentUser.id!);
                             }
                             Navigator.pushAndRemoveUntil(
                               context,

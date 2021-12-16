@@ -1050,7 +1050,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                   },
                                   shrinkWrap: true,
                                 ),
-                                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                //SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                 _breakList.length < breakLimit ? Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [

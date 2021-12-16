@@ -9,8 +9,6 @@ import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/LeaveBrandConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/BrandLocations.dart';
@@ -18,7 +16,6 @@ import 'package:mamba_castelldefels/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/BrandEventsToday.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/SettingsBrandClient.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'TodosMiembrosClient.dart';
@@ -143,16 +140,16 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                                 isLoading = true;
                               });
                               NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
-                              Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID); //12/12/2021
-                              await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
-                              await _accessDatabase.leaveBrand(currentUser.id!);
                               //12/12/2021
+                              Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID);
                               for(int i = 0; i < conv.users.length; ++i) {
                                 if(conv.users[i]['uid'] == currentUser.id) {
                                   conv.users.removeAt(i);
                                 }
                               }
                               await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
+                              await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
+                              await _accessDatabase.leaveBrand(currentUser.id!);
                               Navigator.pushReplacement(
                                   context,
                                   CupertinoPageRoute<Null>(

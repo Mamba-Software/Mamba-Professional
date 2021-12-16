@@ -80,6 +80,9 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   var placeDetails;
   // BackGround image
   Image? theImage;
+  // String Deleted Photo
+  String deletedObject = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/not-found-image.jpg?alt=media&token=70687295-6a17-4735-9c0a-e5749c777319";
+
 
   String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
   String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
@@ -207,6 +210,12 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
         brandTrainersSelectedBool.add(false);
       }
     }
+    for (var i=0; i < event!.selectedTrainers.length; i++) {
+      String user = event!.selectedTrainers[i];
+      if (user == "notfound") {
+        temp.add(Usuario(name: AppLocalizations.of(context)!.notFoundUser, imageUrl: deletedObject));
+      }
+    }
     if (mounted) {
       setState(() {
         brandTrainersSelected = temp;
@@ -228,6 +237,12 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
         } else {
           temp.add(client);
         }
+      }
+    }
+    for (var i=0; i < event!.joinedMembers.length; i++) {
+      String user = event!.joinedMembers[i];
+      if (user == "notfound") {
+        temp.add(Usuario(name: AppLocalizations.of(context)!.notFoundUser, imageUrl: deletedObject, isPrivate: false));
       }
     }
     setState(() {
@@ -838,7 +853,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                       children: [
                                                         Expanded(
                                                           child: Text(
-                                                            splitCommonName(trainer.name!),
+                                                            trainer.name! != AppLocalizations.of(context)!.notFoundUser ? splitCommonName(trainer.name!) : trainer.name!,
                                                             style: Styles.purpleTextStyle.copyWith(fontSize: 15),
                                                             textAlign: TextAlign.center,
                                                           ),
@@ -951,7 +966,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                         children: [
                                                           Expanded(
                                                             child: Text(
-                                                              splitCommonName(client.name!),
+                                                              client.name! != AppLocalizations.of(context)!.notFoundUser ? splitCommonName(client.name!) : client.name!,
                                                               style: Styles.purpleTextStyle.copyWith(fontSize: 15, color: Theme.of(context).primaryColor.withOpacity(0.3)),
                                                               textAlign: TextAlign.center,
                                                             ),
@@ -988,7 +1003,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                         children: [
                                                           Expanded(
                                                             child: Text(
-                                                              splitCommonName(client.name!),
+                                                              client.name! != AppLocalizations.of(context)!.notFoundUser ? splitCommonName(client.name!) : client.name!,
                                                               style: Styles.purpleTextStyle.copyWith(fontSize: 15),
                                                               textAlign: TextAlign.center,
                                                             ),

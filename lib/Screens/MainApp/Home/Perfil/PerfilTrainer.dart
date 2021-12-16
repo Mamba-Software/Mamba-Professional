@@ -109,6 +109,16 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
           )
       );
     }
+    // Check for no brand
+    if ((currentUser.brandID == "null" || currentUser.brandID == null) && (currentBrand.id != null) ) {
+      Navigator.pushReplacement(
+          context,
+          CupertinoPageRoute<Null>(
+            builder: (context) => SplashScreen(),
+            settings: RouteSettings(name: 'SplashScreen'),
+          )
+      );
+    }
   }
 
   // Gets user events today.

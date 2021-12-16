@@ -75,7 +75,7 @@ class _NotificationsState extends State<Notifications> {
             if (coverInformation[0] != "Error") {
               user = Usuario(id: notification.parameters[0], name: coverInformation[0], imageUrl: coverInformation[1]);
             } else {
-              user = Usuario(name: AppLocalizations.of(context)!.deletedUser, imageUrl: deletedObject);
+              user = Usuario(name: AppLocalizations.of(context)!.deletedUser.toLowerCase(), imageUrl: deletedObject);
             }
           }
           users.add(user);
@@ -89,7 +89,7 @@ class _NotificationsState extends State<Notifications> {
             if (coverInformation[0] != "Error") {
               brand = Brand(id: notification.parameters[1], name: coverInformation[0], logoUrl: coverInformation[1]);
             } else {
-              brand = Brand(name: AppLocalizations.of(context)!.deletedBrand, logoUrl: deletedObject);
+              brand = Brand(name: AppLocalizations.of(context)!.deletedBrand.toLowerCase(), logoUrl: deletedObject);
             }
           }
           brands.add(brand);

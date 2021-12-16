@@ -445,6 +445,10 @@
   "@creator":{
     "description": "createBrand Text"
   },
+  "notFoundUser": "Usuario no encontrado",
+  "@notFoundUser":{
+    "description": "createBrand Text"
+  },
   "deletedUser": "Usuario eliminado",
   "@deletedUser":{
     "description": "createBrand Text"
@@ -1305,7 +1309,7 @@
       }
     }
   },
-  "userCancelRequestToBrandUserSubtitle": "Ahora puedes solicitar unirte a otra marca.",
+  "userCancelRequestToBrandUserSubtitle": "Ahora puedes solicitar unirte a otra marca",
   "@userCancelRequestToBrandUserSubtitle": {
     "description": "userJoinsBrandUser message"
   },
@@ -1334,6 +1338,33 @@
   "userCreatesBrandUserSubtitle": "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece MAMBA",
   "@userCreatesBrandUserSubtitle": {
     "description": "userJoinsBrandUser message"
+  },
+  "userDeletesBrandOwner": "Has eliminado tu marca {brand}",
+  "@userDeletesBrandOwner": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "userDeletesBrandUser": "El propietario de {brand} ha eliminado la marca",
+  "@userDeletesBrandUser": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "userDeletesBrandSubtitle": "Ahora puedes unirte a otra marca",
+  "@userDeletesBrandOwnerSubtitle": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
   },
   "myLocationsBaseLocationDesc": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.",
   "@myLocationsBaseLocationDesc": {

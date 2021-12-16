@@ -26,6 +26,22 @@ class NotificationService {
     _accessDatabase.sendNotification(userId, "UserCreatesBrand_User", parameters);
   }
 
+  Future<void> userDeletesBrand(String userId, String brandId) async {
+    // Notification to the User Joining
+    var parameters = ["null", brandId, "null"];
+    _accessDatabase.sendNotification(userId, "UserDeletesBrand_Owner", parameters);
+    /*
+    List<Usuario> brandUsers = await _accessDatabase.getAllClientsFromBrand(brandId);
+    brandUsers.addAll(await _accessDatabase.getAllTrainersFromBrand(brandId));
+    for (var i=0; i<brandUsers.length; i++) {
+      Usuario user = brandUsers[i];
+      if (user.id! != userId) {
+        _accessDatabase.sendNotification(user.id!, "UserDeletesBrand_User", parameters);
+      }
+    }
+     */
+  }
+
   Future<void> userJoinsBrand(String userId, String brandId) async {
     // Notification to the User Joining
     Brand brand = await _accessDatabase.getBrandDetails(brandId);

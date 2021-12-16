@@ -76,6 +76,9 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
   var placeDetails;
   // BackGround image
   Image? theImage;
+  // String Deleted Photo
+  String deletedObject = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/not-found-image.jpg?alt=media&token=70687295-6a17-4735-9c0a-e5749c777319";
+
 
   String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
   String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
@@ -204,6 +207,12 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
         brandTrainersSelectedBool.add(false);
       }
     }
+    for (var i=0; i < event!.selectedTrainers.length; i++) {
+      String user = event!.selectedTrainers[i];
+      if (user == "notfound") {
+        temp.add(Usuario(name: AppLocalizations.of(context)!.notFoundUser, imageUrl: deletedObject));
+      }
+    }
     if (mounted) {
       setState(() {
         brandTrainersSelected = temp;
@@ -218,6 +227,12 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
       var client = allClients[i];
       if (event!.joinedMembers.contains(client.id)) {
         temp.add(client);
+      }
+    }
+    for (var i=0; i < event!.joinedMembers.length; i++) {
+      String user = event!.joinedMembers[i];
+      if (user == "notfound") {
+        temp.add(Usuario(name: AppLocalizations.of(context)!.notFoundUser, imageUrl: deletedObject));
       }
     }
     setState(() {
@@ -1054,7 +1069,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                                       children: [
                                                         Expanded(
                                                           child: Text(
-                                                            splitCommonName(trainer.name!),
+                                                            trainer.name! != AppLocalizations.of(context)!.notFoundUser ? splitCommonName(trainer.name!) : trainer.name!,
                                                             style: Styles.purpleTextStyle.copyWith(fontSize: 15),
                                                             textAlign: TextAlign.center,
                                                           ),
@@ -1189,7 +1204,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
-                                    height: MediaQuery.of(context).size.height*0.20,
+                                    height: MediaQuery.of(context).size.height*0.15,
                                     width: MediaQuery.of(context).size.width,
                                     child: ListView.builder(
                                         shrinkWrap: true,
@@ -1222,7 +1237,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                                       children: [
                                                         Expanded(
                                                           child: Text(
-                                                            splitCommonName(client.name!),
+                                                            client.name! != AppLocalizations.of(context)!.notFoundUser ? splitCommonName(client.name!) : client.name!,
                                                             style: Styles.purpleTextStyle.copyWith(fontSize: 15),
                                                             textAlign: TextAlign.center,
                                                           ),
