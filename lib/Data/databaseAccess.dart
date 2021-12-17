@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Message.dart';
+import 'package:mamba_castelldefels/Models/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Models/Question.dart';
 import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
@@ -111,6 +112,7 @@ class DatabaseAccess {
   Future<RequestToBrand?> hasPendingRequest(String userId) => _firebase.hasPendingRequest(userId);
 
   // Notifications
+  Future<List<NotificationEvent>> getAllNotificationsUser(String userId) => _firebase.getAllNotificationsUser(userId);
   Future<void> sendNotification(String userId, String type, var parameters) => _firebase.sendNotification(userId, type, parameters);
   Future<int> numberUnreadNotifications(String userId) => _firebase.numberUnreadNotifications(userId);
   Future<void> markNotificationAsRead(String notificationId) => _firebase.markNotificationAsRead(notificationId);
@@ -167,7 +169,7 @@ class DatabaseAccess {
   Stream<QuerySnapshot> getAllRequestsBrand(String brandId) => _firebase.getAllRequestsBrand(brandId);
 
   // Request
-  Stream<QuerySnapshot> getAllNotificationsUser(String userId) => _firebase.getAllNotificationsUser(userId);
+  Stream<QuerySnapshot> getAllNotificationsUserStream(String userId) => _firebase.getAllNotificationsUserStream(userId);
 
   //Questions
   Stream<QuerySnapshot> getAllQuestions() => _firebase.getAllQuestions();

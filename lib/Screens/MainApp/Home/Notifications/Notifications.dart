@@ -33,6 +33,8 @@ class _NotificationsState extends State<Notifications> {
 
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  // Acceso a Base de Datos
+  bool isLoading = true;
   // Notification List
   List<NotificationEvent> notificationsList = [];
   List<Usuario> usersList = [];
@@ -48,6 +50,96 @@ class _NotificationsState extends State<Notifications> {
   @override
   initState() {
     super.initState();
+    isLoading = true;
+    getAllNotifications();
+  }
+
+  Future<void> getAllNotifications () async {
+    List<Usuario> users = [];
+    List<Brand> brands = [];
+    List<Event> events = [];
+    notificationsList = await _accessDatabase.getAllNotificationsUser(currentUser.id!);
+    // Order Notification List Descending Time
+    notificationsList.sort((a,b) {
+      var aDate =  DateTime(
+        int.parse(a.year!),
+        int.parse(a.month!),
+        int.parse(a.day!),
+        int.parse(a.hour!),
+        int.parse(a.minutes!),
+        int.parse(a.seconds!),
+      );
+      var bDate =  DateTime(
+        int.parse(b.year!),
+        int.parse(b.month!),
+        int.parse(b.day!),
+        int.parse(b.hour!),
+        int.parse(b.minutes!),
+        int.parse(b.seconds!),
+      );
+      return aDate.compareTo(bDate);
+    });
+    notificationsList = List.from(notificationsList.reversed);
+    // Get User, Brand and Events when needed
+    for(int i = 0; i < notificationsList.length; i++) {
+      NotificationEvent notification = notificationsList[i];
+      if (notification.isRead == false && hasUnread == false) {
+        Future.delayed(Duration.zero, () async {
+          setState(() {
+            hasUnread = true;
+          });
+        });
+      }
+      if (notification.parameters.length > 0) {
+        if (notification.parameters[0] != "null") {
+          Usuario user = users.firstWhere((element) => element.id == notification.parameters[0], orElse: () => Usuario());
+          if (user.id == null) {
+            List<String> coverInformation = await _accessDatabase.getUserCover(notification.parameters[0]);
+            if (coverInformation[0] != "Error") {
+              user = Usuario(id: notification.parameters[0], name: coverInformation[0], imageUrl: coverInformation[1]);
+            } else {
+              user = Usuario(name: AppLocalizations.of(context)!.deletedUser.toLowerCase(), imageUrl: deletedObject);
+            }
+          }
+          users.add(user);
+        } else {
+          users.add(Usuario());
+        }
+        if (notification.parameters[1] != "null") {
+          Brand brand = brands.firstWhere((element) => element.id == notification.parameters[1], orElse: () => Brand());
+          if (brand.id == null) {
+            List<String> coverInformation = await _accessDatabase.getBrandCover(notification.parameters[1]);
+            if (coverInformation[0] != "Error") {
+              brand = Brand(id: notification.parameters[1], name: coverInformation[0], logoUrl: coverInformation[1]);
+            } else {
+              brand = Brand(name: AppLocalizations.of(context)!.deletedBrand.toLowerCase(), logoUrl: deletedObject);
+            }
+          }
+          brands.add(brand);
+        } else {
+          brands.add(Brand());
+        }
+        if (notification.parameters[2] != "null") {
+          Event event = events.firstWhere((element) => element.id == notification.parameters[2], orElse: () => Event());
+          if (event.id == null) {
+            event = await _accessDatabase.getSingleEvent(notification.parameters[2]);
+          }
+          events.add(event);
+        } else {
+          events.add(Event());
+        }
+      } else {
+        users.add(Usuario());
+        brands.add(Brand());
+        events.add(Event());
+      }
+    }
+    usersList = users;
+    brandsList = brands;
+    eventList = events;
+    setState(() {
+      isLoading = false;
+    });
   }
 
   String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
@@ -198,55 +290,30 @@ class _NotificationsState extends State<Notifications> {
           SizedBox(width: MediaQuery.of(context).size.width*0.03,),
         ],
       ),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            StreamBuilder<QuerySnapshot>(
-                stream: _accessDatabase.getAllNotificationsUser(currentUser.id!),
-                builder: (context, snapshot) {
-                  if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
-                    return Container(
-                        height: MediaQuery.of(context).size.height*0.65,
-                        child: Center(
-                            child: LoadingViewPurple()
-                        )
-                    );
-                  } else {
-                    return FutureBuilder<List<NotificationEvent>>(
-                        future: documentsToNotifications(snapshot.data!.docs),
-                        builder: (context, snapshot) {
-                          if (snapshot.data != null) {
-                            notificationsList = snapshot.data!;
-                            return ListView.builder(
-                                physics: BouncingScrollPhysics(),
-                                shrinkWrap: true,
-                                scrollDirection: Axis.vertical,
-                                itemCount: notificationsList.length,
-                                itemBuilder: (context, index) {
-                                  NotificationEvent notification = notificationsList[index];
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
-                                    child: returnNotification(index, notification),
-                                  );
-                                }
-                            );
-                          } else {
-                            return Container(
-                                height: MediaQuery.of(context).size.height*0.80,
-                                child: Center(
-                                    child: LoadingViewPurple()
-                                )
-                            );
-                          }
-                        }
-                    );
-                  }
-                }
-            ),
-          ],
-        ),
-      ),
+      body: !isLoading ? RefreshIndicator(
+        displacement: MediaQuery.of(context).size.height*0.05,
+        color: Theme.of(context).accentColor,
+        onRefresh: () {
+          return Future.delayed(
+            Duration(seconds: 1), () {
+              this.getAllNotifications();
+            },
+          );
+        },
+        child: ListView.builder(
+              physics: AlwaysScrollableScrollPhysics(),
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              itemCount: notificationsList.length,
+              itemBuilder: (context, index) {
+                NotificationEvent notification = notificationsList[index];
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                  child: returnNotification(index, notification),
+                );
+              }
+          ),
+      ) : LoadingViewPurple(),
     );
   }
 

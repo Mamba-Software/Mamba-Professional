@@ -1316,6 +1316,23 @@ class FirebaseDatabaseService {
 
   // Notifications
 
+  // Get All Notifications
+  Future<List<NotificationEvent>> getAllNotificationsUser(String userId) async {
+    List<NotificationEvent> notis = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Notifications")
+        .where("userId", isEqualTo: userId)
+        .orderBy("year", descending: true)
+        .orderBy("month", descending: true)
+        .orderBy("day", descending: true)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      NotificationEvent notif = NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      notis.add(notif);
+    }
+    return notis;
+  }
+
   // Send Notification
   Future<void> sendNotification(String userId, String type, var parameters) async {
     var uid = Uuid().v1();
@@ -1724,7 +1741,7 @@ class FirebaseDatabaseService {
   }
 
   // Notifications
-  Stream<QuerySnapshot> getAllNotificationsUser(String userId) {
+  Stream<QuerySnapshot> getAllNotificationsUserStream(String userId) {
     return _firestore
         .collection("Notifications")
         .where("userId", isEqualTo: userId)

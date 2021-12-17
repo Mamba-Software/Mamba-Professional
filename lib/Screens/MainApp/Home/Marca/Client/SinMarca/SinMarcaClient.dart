@@ -292,237 +292,248 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
         physics: BouncingScrollPhysics(),
         child: brandList.length > 0 ? Column(
           children: [
-            ListView.builder(
-                physics: BouncingScrollPhysics(),
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                itemCount: brandList.length,
-                itemBuilder: (context, int index) {
-                  Brand brand = brandList[index];
-                  return Column(
-                    children: [
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                      Container(
-                        height: MediaQuery.of(context).size.height*0.05,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              CircularImage(
-                                size: MediaQuery.of(context).size.width*0.10,
-                                image: brand.logoUrl,
-                                color: Theme.of(context).accentColor,
-                                borderWidth: 1,
-                              ),
-                              SizedBox(width: MediaQuery.of(context).size.width*0.03),
-                              Expanded(
-                                child: Text(
-                                  brand.name!,
-                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.left,
+            RefreshIndicator(
+              displacement: MediaQuery.of(context).size.height*0.05,
+              color: Theme.of(context).accentColor,
+              onRefresh: () {
+                return Future.delayed(
+                  Duration(seconds: 1), () {
+                  getAllBrands();
+                },
+                );
+              },
+              child: ListView.builder(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: brandList.length,
+                  itemBuilder: (context, int index) {
+                    Brand brand = brandList[index];
+                    return Column(
+                      children: [
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        Container(
+                          height: MediaQuery.of(context).size.height*0.05,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                CircularImage(
+                                  size: MediaQuery.of(context).size.width*0.10,
+                                  image: brand.logoUrl,
+                                  color: Theme.of(context).accentColor,
+                                  borderWidth: 1,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.35,
-                        child: RectangularImage(
-                          image: brand.logoUrl!,
-                          size: MediaQuery.of(context).size.width,
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                      Row(
-                        children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height*0.08,
-                            width: MediaQuery.of(context).size.width,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(Icons.calendar_today_outlined, size: 30, color: Theme.of(context).primaryColor),
-                                        padding: EdgeInsets.all(0),
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                            CupertinoPageRoute<Null>(
-                                              builder: (context) => CalendarWidgetClient(
-                                                    brandID: brand.id!,
-                                                    onlyView: true,
-                                                  )
-                                              )
-                                          );
-                                        },
-                                      ),
-                                      Text(
-                                        AppLocalizations.of(context)!.calendar,
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ],
+                                SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                                Expanded(
+                                  child: Text(
+                                    brand.name!,
+                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.left,
                                   ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(Icons.groups_outlined, size: 35, color: Theme.of(context).primaryColor),
-                                        padding: EdgeInsets.all(0),
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                            CupertinoPageRoute<Null>(
-                                              builder: (context) => TodosMiembrosClient(
-                                                    brandID: brand.id!,
-                                                    brandAdmin: brand.adminID!,
-                                                    viewOnly: true,
-                                                  )
-                                              )
-                                          );
-                                        },
-                                      ),
-                                      Text(
-                                        AppLocalizations.of(context)!.members,
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(Icons.question_answer_outlined, size: 35, color: Theme.of(context).primaryColor),
-                                        padding: EdgeInsets.all(0),
-                                        onPressed: () async {
-                                          Usuario adminUser = await _accessDatabase.getUserDetails(brand.adminID!);
-                                          if(adminUser == null) LoadingView();
-                                          else {
-                                          Navigator.push(context, CupertinoPageRoute<Null>(
-                                            builder: (context) => ChatDetailPage(adminUser)
-                                          ),);
-                                          }
-                                        },
-                                      ),
-                                      Text(
-                                        AppLocalizations.of(context)!.contact,
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(brandIdRequest == brand.id! ? Icons.schedule_send : Icons.send_outlined, size: 35, color: brandIdRequest == brand.id! ? Theme.of(context).accentColor : request == null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.3)),
-                                        padding: EdgeInsets.all(0),
-                                        onPressed: request == null || brandIdRequest == brand.id! ? () async {
-                                          if (brandIdRequest == brand.id!) {
-                                            var result = await showDialog(
-                                                context: context,
-                                                builder: (_) {
-                                                  return CancelRequestConfirmationDialog(
-                                                    text: AppLocalizations.of(context)!.cancelRequestConfirmation,
-                                                    brand: brand,
-                                                  );
-                                                }
-                                            );
-                                            if (result) {
-                                              setState(() {
-                                                brandIdRequest = "";
-                                              });
-                                              NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
-                                              _accessDatabase.deleteRequest(request!.id!);
-                                              getUserPendingRequests();
-                                            }
-                                          } else {
-                                            var result = await showDialog(
-                                                context: context,
-                                                builder: (_) {
-                                                  return SendRequestConfirmationDialog(
-                                                    text: AppLocalizations.of(context)!.sendRequestConfirmation,
-                                                    brand: brand,
-                                                  );
-                                                }
-                                            );
-                                            if (result) {
-                                              setState(() {
-                                                brandIdRequest = brand.id!;
-                                              });
-                                              await _accessDatabase.sendRequest(brand.id!, currentUser.name! ,currentUser.isTrainer!);
-                                              NotificationService().userSendRequestToBrand(currentUser.id!, brand.id!);
-                                              getUserPendingRequests();
-                                            }
-                                          }
-                                        } : null,
-                                      ),
-                                      Text(
-                                        brandIdRequest == brand.id! ? AppLocalizations.of(context)!.sent : AppLocalizations.of(context)!.join,
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: brandIdRequest == brand.id! ? Theme.of(context).accentColor : request == null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.3)),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                        child: Row(
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.35,
+                          child: RectangularImage(
+                            image: brand.logoUrl!,
+                            size: MediaQuery.of(context).size.width,
+                          ),
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                        Row(
                           children: [
-                            Expanded(
-                              child: RichText(
-                                textAlign: TextAlign.start,
-                                text: TextSpan(
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                            Container(
+                              height: MediaQuery.of(context).size.height*0.08,
+                              width: MediaQuery.of(context).size.width,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    TextSpan(text: '${brand.name!} ', style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
-                                    TextSpan(text: brand.description!),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.calendar_today_outlined, size: 30, color: Theme.of(context).primaryColor),
+                                          padding: EdgeInsets.all(0),
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                              CupertinoPageRoute<Null>(
+                                                builder: (context) => CalendarWidgetClient(
+                                                      brandID: brand.id!,
+                                                      onlyView: true,
+                                                    )
+                                                )
+                                            );
+                                          },
+                                        ),
+                                        Text(
+                                          AppLocalizations.of(context)!.calendar,
+                                          style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.groups_outlined, size: 35, color: Theme.of(context).primaryColor),
+                                          padding: EdgeInsets.all(0),
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                              CupertinoPageRoute<Null>(
+                                                builder: (context) => TodosMiembrosClient(
+                                                      brandID: brand.id!,
+                                                      brandAdmin: brand.adminID!,
+                                                      viewOnly: true,
+                                                    )
+                                                )
+                                            );
+                                          },
+                                        ),
+                                        Text(
+                                          AppLocalizations.of(context)!.members,
+                                          style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.question_answer_outlined, size: 35, color: Theme.of(context).primaryColor),
+                                          padding: EdgeInsets.all(0),
+                                          onPressed: () async {
+                                            Usuario adminUser = await _accessDatabase.getUserDetails(brand.adminID!);
+                                            if(adminUser == null) LoadingView();
+                                            else {
+                                            Navigator.push(context, CupertinoPageRoute<Null>(
+                                              builder: (context) => ChatDetailPage(adminUser)
+                                            ),);
+                                            }
+                                          },
+                                        ),
+                                        Text(
+                                          AppLocalizations.of(context)!.contact,
+                                          style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(brandIdRequest == brand.id! ? Icons.schedule_send : Icons.send_outlined, size: 35, color: brandIdRequest == brand.id! ? Theme.of(context).accentColor : request == null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.3)),
+                                          padding: EdgeInsets.all(0),
+                                          onPressed: request == null || brandIdRequest == brand.id! ? () async {
+                                            if (brandIdRequest == brand.id!) {
+                                              var result = await showDialog(
+                                                  context: context,
+                                                  builder: (_) {
+                                                    return CancelRequestConfirmationDialog(
+                                                      text: AppLocalizations.of(context)!.cancelRequestConfirmation,
+                                                      brand: brand,
+                                                    );
+                                                  }
+                                              );
+                                              if (result) {
+                                                setState(() {
+                                                  brandIdRequest = "";
+                                                });
+                                                NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
+                                                _accessDatabase.deleteRequest(request!.id!);
+                                                getUserPendingRequests();
+                                              }
+                                            } else {
+                                              var result = await showDialog(
+                                                  context: context,
+                                                  builder: (_) {
+                                                    return SendRequestConfirmationDialog(
+                                                      text: AppLocalizations.of(context)!.sendRequestConfirmation,
+                                                      brand: brand,
+                                                    );
+                                                  }
+                                              );
+                                              if (result) {
+                                                setState(() {
+                                                  brandIdRequest = brand.id!;
+                                                });
+                                                await _accessDatabase.sendRequest(brand.id!, currentUser.name! ,currentUser.isTrainer!);
+                                                NotificationService().userSendRequestToBrand(currentUser.id!, brand.id!);
+                                                getUserPendingRequests();
+                                              }
+                                            }
+                                          } : null,
+                                        ),
+                                        Text(
+                                          brandIdRequest == brand.id! ? AppLocalizations.of(context)!.sent : AppLocalizations.of(context)!.join,
+                                          style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: brandIdRequest == brand.id! ? Theme.of(context).accentColor : request == null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.3)),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ),
                             ),
                           ],
                         ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                AppLocalizations.of(context)!.memberSince(brand.dateJoined!),
-                                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
-                                textAlign: TextAlign.left,
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: RichText(
+                                  textAlign: TextAlign.start,
+                                  text: TextSpan(
+                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                    children: [
+                                      TextSpan(text: '${brand.name!} ', style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
+                                      TextSpan(text: brand.description!),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                    ],
-                  );
-                }
+                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  AppLocalizations.of(context)!.memberSince(brand.dateJoined!),
+                                  style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                      ],
+                    );
+                  }
+              ),
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.01),
           ],
