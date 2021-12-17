@@ -6,6 +6,7 @@ import 'package:mamba_castelldefels/Globals/NotificationService/NotificationServ
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
@@ -412,7 +413,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                           } else {
                             await _accessDatabase.deleteUserMemberConversations(toMap(userId));
                             if (currentUser.brandID != "null" && currentUser.brandID != null) {
-                              NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
+                              // 12/12/2021
                               Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID); //12/12/2021
                               for(int i = 0; i < conv.users.length; ++i) {
                                 if(conv.users[i]['uid'] == currentUser.id) {
@@ -420,8 +421,20 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                 }
                               }
                               await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
-                              await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
-                              await _accessDatabase.leaveBrand(currentUser.id!);
+                              if (currentUser.isTrainer!) {
+                                Brand? result = await _accessDatabase.checkUserIsBrandCreator(currentUser.id!);
+                                if (result != null) {
+                                  await _accessDatabase.deleteBrand(result.id!);
+                                } else {
+                                  NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
+                                  await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
+                                  await _accessDatabase.leaveBrand(currentUser.id!);
+                                }
+                              } else {
+                                NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
+                                await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
+                                await _accessDatabase.leaveBrand(currentUser.id!);
+                              }
                             }
                             Navigator.pushAndRemoveUntil(
                               context,

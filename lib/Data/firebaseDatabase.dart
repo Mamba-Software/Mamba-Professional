@@ -76,6 +76,9 @@ class FirebaseDatabaseService {
         error = true;
       });
       if (error) return false;
+      if (currentUser.imageUrl != "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53") {
+        await this.deleteUserPhoto(user.uid);
+      }
       await _firestore.collection("Users").doc(user.uid).delete();
       await user.delete();
       return true;
@@ -83,6 +86,19 @@ class FirebaseDatabaseService {
       print(e.toString());
       return false;
     }
+  }
+
+  Future<Brand?> checkUserIsBrandCreator(String userId) async {
+    Brand brand = Brand();
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Brands")
+        .where("adminID", isEqualTo: userId)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      brand = Brand.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+    }
+    if (brand.id == null) return null;
+    else return brand;
   }
 
   Future<bool> checkCurrentUser() async {
@@ -283,6 +299,10 @@ class FirebaseDatabaseService {
     return imageURL;
   }
 
+  Future<void> deleteUserPhoto(String userId) async {
+    await _firebaseStorage.ref().child("userPics/" + userId + ".png").delete();
+  }
+
   Future<void> updateCurrentUserDatosPerifl(
       String name, int gender, String? dateOfBirth) async {
     User? currentUser = await getCurrentUser();
@@ -464,6 +484,8 @@ class FirebaseDatabaseService {
       NotificationService().userLeavesBrand(brandUsers[i].id!, brandId);
       await this.leaveBrand(brandUsers[i].id!);
     }
+    // Delete Brand Photo
+    await this.deleteBrandPhoto(brandId);
     // Delete Brand
     await _firestore.collection("Brands").doc(brandId).delete();
   }
@@ -491,6 +513,10 @@ class FirebaseDatabaseService {
       });
     });
     return result;
+  }
+
+  Future<void> deleteBrandPhoto(String brandID) async {
+    await _firebaseStorage.ref().child("brandPics/" + brandID + ".png").delete();
   }
 
   Future<void> updateBrandInfo(String brandID, String name, String description,

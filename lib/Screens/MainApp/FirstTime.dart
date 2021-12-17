@@ -1167,14 +1167,11 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                         });
                       } else if (_selectedIndex == 3) {
                         _tabController!.animateTo(_selectedIndex += 1);
-                        if (!locatorDialog) {
-                          currentPosition = await _determinePosition();
-                        }
                         setState(() {
-                          locatorDialog = true;
                           addEventTabValue += 0.166;
                           tabs[4] = true;
                         });
+                        currentPosition = await _determinePosition();
                       } else if (_selectedIndex == 4) {
                         if (validateTypeOfUser()) {
                           _tabController!.animateTo(_selectedIndex += 1);
