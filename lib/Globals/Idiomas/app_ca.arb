@@ -103,6 +103,7 @@
   "notFoundUser": "Usuari no trobat",
   "deletedUser": "Usuari eliminat",
   "deletedBrand": "Marca eliminada",
+  "deletedEvent": "Esdeveniment eliminat",
   "createBrand": "Crea la teva marca",
   "createBrandTitle": "Aquí pots crear la teva marca en quatre simples passos:",
   "createBrandPortada": "Afegeix el nom i el logo",

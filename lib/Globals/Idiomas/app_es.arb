@@ -457,6 +457,10 @@
   "@deletedBrand":{
     "description": "createBrand Text"
   },
+  "deletedEvent": "Evento eliminado",
+  "@deletedEvent":{
+    "description": "createBrand Text"
+  },
   "createBrand": "Crea tu marca",
   "@createBrand":{
     "description": "createBrand Text"

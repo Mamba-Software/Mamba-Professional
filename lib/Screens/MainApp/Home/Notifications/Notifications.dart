@@ -124,6 +124,10 @@ class _NotificationsState extends State<Notifications> {
           if (event.id == null) {
             event = await _accessDatabase.getSingleEvent(notification.parameters[2]);
           }
+          // Falta fer un contro
+          if (event.id == null) {
+            events.add(Event(title: AppLocalizations.of(context)!.deletedEvent.toLowerCase()));
+          }
           events.add(event);
         } else {
           events.add(Event());
@@ -143,123 +147,6 @@ class _NotificationsState extends State<Notifications> {
   }
 
   String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
-
-  Future<List<NotificationEvent>> documentsToNotifications(List<DocumentSnapshot> documents) async {
-    List<NotificationEvent> notifications = [];
-    List<Usuario> users = [];
-    List<Brand> brands = [];
-    List<Event> events = [];
-
-    for(int i = 0; i < documents.length; i++) {
-      NotificationEvent notification = NotificationEvent.fromObject(documents[i], documents[i].id);
-      if (notification.isRead == false && hasUnread == false) {
-        Future.delayed(Duration.zero, () async {
-          setState(() {
-            hasUnread = true;
-          });
-        });
-      }
-      if (notification.parameters.length > 0) {
-        if (notification.parameters[0] != "null") {
-          Usuario user = users.firstWhere((element) => element.id == notification.parameters[0], orElse: () => Usuario());
-          if (user.id == null) {
-            List<String> coverInformation = await _accessDatabase.getUserCover(notification.parameters[0]);
-            if (coverInformation[0] != "Error") {
-              user = Usuario(id: notification.parameters[0], name: coverInformation[0], imageUrl: coverInformation[1]);
-            } else {
-              user = Usuario(name: AppLocalizations.of(context)!.deletedUser.toLowerCase(), imageUrl: deletedObject);
-            }
-          }
-          users.add(user);
-        } else {
-          users.add(Usuario());
-        }
-        if (notification.parameters[1] != "null") {
-          Brand brand = brands.firstWhere((element) => element.id == notification.parameters[1], orElse: () => Brand());
-          if (brand.id == null) {
-            List<String> coverInformation = await _accessDatabase.getBrandCover(notification.parameters[1]);
-            if (coverInformation[0] != "Error") {
-              brand = Brand(id: notification.parameters[1], name: coverInformation[0], logoUrl: coverInformation[1]);
-            } else {
-              brand = Brand(name: AppLocalizations.of(context)!.deletedBrand.toLowerCase(), logoUrl: deletedObject);
-            }
-          }
-          brands.add(brand);
-        } else {
-          brands.add(Brand());
-        }
-        if (notification.parameters[2] != "null") {
-          Event event = events.firstWhere((element) => element.id == notification.parameters[2], orElse: () => Event());
-          if (event.id == null) {
-            event = await _accessDatabase.getSingleEvent(notification.parameters[2]);
-          }
-          events.add(event);
-        } else {
-          events.add(Event());
-        }
-      } else {
-        users.add(Usuario());
-        brands.add(Brand());
-        events.add(Event());
-      }
-      notifications.add(notification);
-    }
-    /*
-    notifications.sort((a,b) {
-      var aDate =  DateTime(
-        int.parse(a.year!),
-        int.parse(a.month!),
-        int.parse(a.day!),
-        int.parse(a.hour!),
-        int.parse(a.minutes!),
-        int.parse(a.seconds!),
-      );
-      var bDate =  DateTime(
-        int.parse(b.year!),
-        int.parse(b.month!),
-        int.parse(b.day!),
-        int.parse(b.hour!),
-        int.parse(b.minutes!),
-        int.parse(b.seconds!),
-      );
-      return aDate.compareTo(bDate);
-    });
-    notificationsList = List.from(notifications.reversed);
-     */
-    notificationsList = notifications;
-    usersList = users;
-    brandsList = brands;
-    eventList = events;
-    return notifications;
-  }
-
-  Future<void> countUnreadNotifications () async {
-    int count = 0;
-    count = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
-    if (count != numberUnreadNotifications) {
-      numberUnreadNotifications = count;
-      setState(() {
-        unreadNotifications = numberUnreadNotifications;
-      });
-    }
-  }
-
-  void unreadNotificationsFunction (List<NotificationEvent> list) {
-    int count = 0;
-    for (int i = 0; i < list.length; i++) {
-      NotificationEvent notification = list[i];
-      if (notification.isRead == false) {
-        count += 1;
-      }
-    }
-    WidgetsBinding.instance!.addPostFrameCallback((_){
-      if (mounted) {
-        setState(() {
-          unreadNotifications = count;
-        });
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -363,6 +250,9 @@ class _NotificationsState extends State<Notifications> {
           ),
           onTap: () async {
             await _accessDatabase.markNotificationAsRead(notification.id!);
+            setState(() {
+              notificationsList[index].isRead = true;
+            });
             returnActionOnTap(index,notification);
           },
         );
@@ -397,7 +287,10 @@ class _NotificationsState extends State<Notifications> {
           ),
           onTap: () async {
             await _accessDatabase.markNotificationAsRead(notification.id!);
-            returnActionOnTap(index,notification);
+
+            setState(() {
+              notificationsList[index].isRead = true;
+            });
           },
         );
       }
@@ -430,7 +323,9 @@ class _NotificationsState extends State<Notifications> {
           ),
           onTap: () async {
             await _accessDatabase.markNotificationAsRead(notification.id!);
-            returnActionOnTap(index,notification);
+            setState(() {
+              notificationsList[index].isRead = true;
+            });
           },
         );
       }
@@ -463,7 +358,9 @@ class _NotificationsState extends State<Notifications> {
           ),
           onTap: () async {
             await _accessDatabase.markNotificationAsRead(notification.id!);
-            returnActionOnTap(index,notification);
+            setState(() {
+              notificationsList[index].isRead = true;
+            });
           },
         );
       }
@@ -496,6 +393,9 @@ class _NotificationsState extends State<Notifications> {
           ),
           onTap: () async {
             await _accessDatabase.markNotificationAsRead(notification.id!);
+            setState(() {
+              notificationsList[index].isRead = true;
+            });
             returnActionOnTap(index,notification);
           },
         );
@@ -529,6 +429,9 @@ class _NotificationsState extends State<Notifications> {
           ),
           onTap: () async {
             await _accessDatabase.markNotificationAsRead(notification.id!);
+            setState(() {
+              notificationsList[index].isRead = true;
+            });
             returnActionOnTap(index,notification);
           },
         );
@@ -562,6 +465,9 @@ class _NotificationsState extends State<Notifications> {
           ),
           onTap: () async {
             await _accessDatabase.markNotificationAsRead(notification.id!);
+            setState(() {
+              notificationsList[index].isRead = true;
+            });
             returnActionOnTap(index,notification);
           },
         );
@@ -595,6 +501,9 @@ class _NotificationsState extends State<Notifications> {
           ),
           onTap: () async {
             await _accessDatabase.markNotificationAsRead(notification.id!);
+            setState(() {
+              notificationsList[index].isRead = true;
+            });
             returnActionOnTap(index,notification);
           },
         );
@@ -628,6 +537,9 @@ class _NotificationsState extends State<Notifications> {
           ),
           onTap: () async {
             await _accessDatabase.markNotificationAsRead(notification.id!);
+            setState(() {
+              notificationsList[index].isRead = true;
+            });
             returnActionOnTap(index,notification);
           },
         );
@@ -661,159 +573,289 @@ class _NotificationsState extends State<Notifications> {
           ),
           onTap: () async {
             await _accessDatabase.markNotificationAsRead(notification.id!);
+            setState(() {
+              notificationsList[index].isRead = true;
+            });
             returnActionOnTap(index,notification);
           },
         );
       }
       case "UserJoinEvent_User": {
-        var startDate = DateTime(
-          int.parse(event.year!),
-          int.parse(event.month!),
-          int.parse(event.day!),
-          int.parse(event.hour!),
-          int.parse(event.minute!),
-        );
-        String eventTimeDay = DateFormat('EE dd-MM-yy', Localizations.localeOf(context).languageCode).format(startDate);
-        String eventTimeTime = "${event.hour.toString()}:${event.minute=="0" ? "00" : event.minute.toString()}h";
-        return ListTile(
-          leading: CircularImage(
-            size: MediaQuery.of(context).size.width*0.15,
-            image: brand.logoUrl!,
-            color: Theme.of(context).primaryColor,
-            borderWidth: 1.0,
-          ),
-          title: Text(
-            AppLocalizations.of(context)!.userJoinEventUser(event.title!),
-            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              Text(
-                AppLocalizations.of(context)!.userJoinEventUserSubtitle(eventTimeDay, eventTimeTime),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+        if (event.id != null) {
+          var startDate = DateTime(
+            int.parse(event.year!),
+            int.parse(event.month!),
+            int.parse(event.day!),
+            int.parse(event.hour!),
+            int.parse(event.minute!),
+          );
+          String eventTimeDay = DateFormat('EE dd-MM-yy', Localizations.localeOf(context).languageCode).format(startDate);
+          String eventTimeTime = "${event.hour.toString()}:${event.minute=="0" ? "00" : event.minute.toString()}h";
+          return ListTile(
+            leading: CircularImage(
+              size: MediaQuery.of(context).size.width*0.15,
+              image: brand.logoUrl!,
+              color: Theme.of(context).primaryColor,
+              borderWidth: 1.0,
+            ),
+            title: Text(
+              AppLocalizations.of(context)!.userJoinEventUser(event.title!),
+              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  AppLocalizations.of(context)!.userJoinEventUserSubtitle(eventTimeDay, eventTimeTime),
+                  style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  time.toUpperCase(),
+                  style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                ),
+              ],
+            ),
+            onTap: () async {
+              await _accessDatabase.markNotificationAsRead(notification.id!);
+              setState(() {
+                notificationsList[index].isRead = true;
+              });
+              returnActionOnTap(index,notification);
+            },
+          );
+        } else {
+          return ListTile(
+            leading: SizedBox(
+              width: MediaQuery.of(context).size.width*0.15,
+              child: Center(
+                child: Image(
+                    width: MediaQuery.of(context).size.width*0.10,
+                    image: AssetImage(Constants.emptyCalendar)
+                ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              Text(
-                time.toUpperCase(),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
-              ),
-            ],
-          ),
-          onTap: () async {
-            await _accessDatabase.markNotificationAsRead(notification.id!);
-            returnActionOnTap(index,notification);
-          },
-        );
+            ),
+            title: Text(
+                AppLocalizations.of(context)!.userJoinEventUser(event.title!),
+              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  time.toUpperCase(),
+                  style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                ),
+              ],
+            ),
+            onTap: () {
+
+            },
+          );
+        }
       }
       case "UserJoinEvent_Trainer": {
-        return ListTile(
-          leading: CircularImage(
-            size: MediaQuery.of(context).size.width*0.15,
-            image: user.imageUrl,
-            color: Theme.of(context).primaryColor,
-            borderWidth: 1.0,
-          ),
-          title: Text(
-            AppLocalizations.of(context)!.userJoinEventBrand(user.name!, event.title!),
-            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              Text(
-                AppLocalizations.of(context)!.userJoinEventBrandSubtitle(event.joinedMembers.length.toString(), event.maxMembers.toString() ),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+        if (event.id != null) {
+          return ListTile(
+            leading: CircularImage(
+              size: MediaQuery.of(context).size.width*0.15,
+              image: user.imageUrl,
+              color: Theme.of(context).primaryColor,
+              borderWidth: 1.0,
+            ),
+            title: Text(
+              AppLocalizations.of(context)!.userJoinEventBrand(user.name!, event.title!),
+              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  AppLocalizations.of(context)!.userJoinEventBrandSubtitle(event.joinedMembers.length.toString(), event.maxMembers.toString() ),
+                  style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  time.toUpperCase(),
+                  style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                ),
+              ],
+            ),
+            onTap: () async {
+              await _accessDatabase.markNotificationAsRead(notification.id!);
+              setState(() {
+                notificationsList[index].isRead = true;
+              });
+              returnActionOnTap(index,notification);
+            },
+          );
+        } else {
+          return ListTile(
+            leading: SizedBox(
+              width: MediaQuery.of(context).size.width*0.15,
+              child: Center(
+                child: Image(
+                    width: MediaQuery.of(context).size.width*0.10,
+                    image: AssetImage(Constants.emptyCalendar)
+                ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              Text(
-                time.toUpperCase(),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
-              ),
-            ],
-          ),
-          onTap: () async {
-            await _accessDatabase.markNotificationAsRead(notification.id!);
-            returnActionOnTap(index,notification);
-          },
-        );
+            ),
+            title: Text(
+              AppLocalizations.of(context)!.userJoinEventBrand(user.name!, event.title!),
+              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  time.toUpperCase(),
+                  style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                ),
+              ],
+            ),
+            onTap: ()  {
+
+            },
+          );
+        }
       }
       case "UserLeaveEvent_User": {
-        var startDate = DateTime(
-          int.parse(event.year!),
-          int.parse(event.month!),
-          int.parse(event.day!),
-          int.parse(event.hour!),
-          int.parse(event.minute!),
-        );
-        String eventTimeDay = DateFormat('EE dd/MM/yy', Localizations.localeOf(context).languageCode).format(startDate);
-        String eventTimeTime = "${event.hour.toString()}:${event.minute=="0" ? "00" : event.minute.toString()}h";
-        return ListTile(
-          leading: CircularImage(
-            size: MediaQuery.of(context).size.width*0.15,
-            image: brand.logoUrl!,
-            color: Theme.of(context).primaryColor,
-            borderWidth: 1.0,
-          ),
-          title: Text(
-            AppLocalizations.of(context)!.userLeavesEventUser(event.title!),
-            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              Text(
-                AppLocalizations.of(context)!.userLeavesEventUserSubtitle,
-                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+        if (event.id != null) {
+          return ListTile(
+            leading: CircularImage(
+              size: MediaQuery.of(context).size.width*0.15,
+              image: brand.logoUrl!,
+              color: Theme.of(context).primaryColor,
+              borderWidth: 1.0,
+            ),
+            title: Text(
+              AppLocalizations.of(context)!.userLeavesEventUser(event.title!),
+              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  AppLocalizations.of(context)!.userLeavesEventUserSubtitle,
+                  style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  time.toUpperCase(),
+                  style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                ),
+              ],
+            ),
+            onTap: () async {
+              await _accessDatabase.markNotificationAsRead(notification.id!);
+              setState(() {
+                notificationsList[index].isRead = true;
+              });
+              returnActionOnTap(index,notification);
+            },
+          );
+        } else {
+          return ListTile(
+            leading: SizedBox(
+              width: MediaQuery.of(context).size.width*0.15,
+              child: Center(
+                child: Image(
+                    width: MediaQuery.of(context).size.width*0.10,
+                    image: AssetImage(Constants.emptyCalendar)
+                ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              Text(
-                time.toUpperCase(),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
-              ),
-            ],
-          ),
-          onTap: () async {
-            await _accessDatabase.markNotificationAsRead(notification.id!);
-            returnActionOnTap(index,notification);
-          },
-        );
+            ),
+            title: Text(
+              AppLocalizations.of(context)!.userLeavesEventUser(event.title!),
+              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  time.toUpperCase(),
+                  style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                ),
+              ],
+            ),
+            onTap: ()  {
+
+            },
+          );
+        }
       }
       case "UserLeaveEvent_Trainer": {
-        return ListTile(
-          leading: CircularImage(
-            size: MediaQuery.of(context).size.width*0.15,
-            image: user.imageUrl,
-            color: Theme.of(context).primaryColor,
-            borderWidth: 1.0,
-          ),
-          title: Text(
-            AppLocalizations.of(context)!.userLeavesEventBrand(user.name!, event.title!),
-            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              Text(
-                AppLocalizations.of(context)!.userLeavesEventBrandSubtitle(event.joinedMembers.length.toString(), event.maxMembers.toString() ),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+        if (event.id != null) {
+          return ListTile(
+            leading: CircularImage(
+              size: MediaQuery.of(context).size.width*0.15,
+              image: user.imageUrl,
+              color: Theme.of(context).primaryColor,
+              borderWidth: 1.0,
+            ),
+            title: Text(
+              AppLocalizations.of(context)!.userLeavesEventBrand(user.name!, event.title!),
+              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  AppLocalizations.of(context)!.userLeavesEventBrandSubtitle(event.joinedMembers.length.toString(), event.maxMembers.toString() ),
+                  style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  time.toUpperCase(),
+                  style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                ),
+              ],
+            ),
+            onTap: () async {
+              await _accessDatabase.markNotificationAsRead(notification.id!);
+              setState(() {
+                notificationsList[index].isRead = true;
+              });
+              returnActionOnTap(index,notification);
+            },
+          );
+        } else {
+          return ListTile(
+            leading: SizedBox(
+              width: MediaQuery.of(context).size.width*0.15,
+              child: Center(
+                child: Image(
+                    width: MediaQuery.of(context).size.width*0.10,
+                    image: AssetImage(Constants.emptyCalendar)
+                ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              Text(
-                time.toUpperCase(),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
-              ),
-            ],
-          ),
-          onTap: () async {
-            await _accessDatabase.markNotificationAsRead(notification.id!);
-            returnActionOnTap(index,notification);
-          },
-        );
+            ),
+            title: Text(
+              AppLocalizations.of(context)!.userLeavesEventBrand(user.name!, event.title!),
+              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  time.toUpperCase(),
+                  style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                ),
+              ],
+            ),
+            onTap: ()  {
+
+            },
+          );
+        }
       }
       default: {
         return Container();
