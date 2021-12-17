@@ -510,7 +510,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                 else
                                   second = today.second.toString();
 
-                                if (editingController.text != '') {
+                                if (editingController.text.trim() != '') {
                                   List<Map> userMessagesRead = [];
                                   userMessagesRead.add(
                                       toMapisMessageRead(currentUser.id, false));

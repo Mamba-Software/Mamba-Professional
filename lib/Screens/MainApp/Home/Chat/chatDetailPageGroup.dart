@@ -962,7 +962,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                                 else
                                   second = today.second.toString();
 
-                                if (editingController.text != '') {
+                                if (editingController.text.trim() != '') {
 
                                   List<Map> userMessagesRead = [];
                                   //userMessagesRead.add(toMapisMessageRead(currentUser.id, false));
