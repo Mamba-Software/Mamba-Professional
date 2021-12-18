@@ -75,7 +75,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
       body:  isLoading ?
       Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.myLocations, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+          title: Text(AppLocalizations.of(context)!.locations, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back, size: 25,),
@@ -89,7 +89,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
           :
       Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.myLocations, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+          title: Text(AppLocalizations.of(context)!.locations, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back, size: 25,),

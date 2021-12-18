@@ -150,7 +150,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                             Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor),
                             SizedBox(width: 10),
                             Text(
-                              AppLocalizations.of(context)!.myLocations,
+                              AppLocalizations.of(context)!.locations,
                               style: Styles.purpleTextStyle,
                             ),
                           ],
