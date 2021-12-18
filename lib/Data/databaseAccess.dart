@@ -135,6 +135,7 @@ class DatabaseAccess {
   Future<bool> checkIfAnswersExist(String? groupOfQuestionsID) => _firebase.checkIfAnswersExist(groupOfQuestionsID);
 
   //Conversations
+  Future<int> numberUnreadConversations(String userId) => _firebase.numberUnreadConversations(userId);
   Future<String> addConversation( var users, var messagesRead, String? brandId, String? year, String? month, String? day, String? hour, String? minute, String? second, String? lastMessage) => _firebase.addConversation(users!, messagesRead, brandId, year, month, day, hour, minute, second, lastMessage);
   Future<void> updateConversation(String? uid, var messagesRead, String lastMessage, String year, String month, String day, String hour, String minute, String second) => _firebase.updateConversation(uid, messagesRead, lastMessage, year, month, day, hour, minute, second);
   Future<void> updateConversationUsers(String? uid, var users) => _firebase.updateConversationUsers(uid, users);

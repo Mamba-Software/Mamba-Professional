@@ -1532,6 +1532,19 @@ class FirebaseDatabaseService {
     }
   }
 
+  // Number Unread Conversations
+  Future<int> numberUnreadConversations(String userId) async {
+    List<Conversation> conv = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection("Conversations")
+        .where("messagesRead", arrayContains: toMapisMessageRead(userId, true))
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      conv.add(Conversation.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return conv.length;
+  }
+
   Future<String> addConversation(
       var users,
       var messagesRead,
