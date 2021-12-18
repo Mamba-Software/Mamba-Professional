@@ -815,7 +815,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                             timeDayGolbal = '';
                             messages = documentsToMessages(snapshot.data!.docs);
                             return ListView.builder(
-                              //controller: scrollController,
+                              controller: scrollController,
                               reverse: true,
                               scrollDirection: Axis.vertical,
                               itemCount: messages.length,
@@ -863,7 +863,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                             );
                           } else {
                             return ListView.builder(
-                              //controller: scrollController,
+                              controller: scrollController,
                               reverse: true,
                               scrollDirection: Axis.vertical,
                               itemCount: messages.length,
