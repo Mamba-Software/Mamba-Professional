@@ -80,7 +80,7 @@ class _FeedBackState extends State<FeedBack> {
             }
           ),
         ),
-        body: !alreadyAnswered ?
+        body: alreadyAnswered ?
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
