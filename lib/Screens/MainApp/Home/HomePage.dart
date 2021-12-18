@@ -100,7 +100,8 @@ class _HomePageState extends State<HomePage> {
           Notifications(),
           UserChat(),
         ],
-        onPageChanged: (page) {
+        onPageChanged: (page) async {
+          unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
           setState(() {
             currentIndex = page;
           });
@@ -113,7 +114,6 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       currentIndex = value;
     });
-    unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
     _pageController.jumpToPage(value);
   }
 

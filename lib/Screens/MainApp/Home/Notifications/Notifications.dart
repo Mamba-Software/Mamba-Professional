@@ -40,8 +40,6 @@ class _NotificationsState extends State<Notifications> {
   List<Usuario> usersList = [];
   List<Brand> brandsList = [];
   List<Event> eventList = [];
-  // Unread Notifications
-  int numberUnreadNotifications = 0;
   // Has unread notifications
   bool hasUnread = false;
   // String Deleted Photo
@@ -83,13 +81,6 @@ class _NotificationsState extends State<Notifications> {
     // Get User, Brand and Events when needed
     for(int i = 0; i < notificationsList.length; i++) {
       NotificationEvent notification = notificationsList[i];
-      if (notification.isRead == false && hasUnread == false) {
-        Future.delayed(Duration.zero, () async {
-          setState(() {
-            hasUnread = true;
-          });
-        });
-      }
       if (notification.parameters.length > 0) {
         if (notification.parameters[0] != "null") {
           Usuario user = users.firstWhere((element) => element.id == notification.parameters[0], orElse: () => Usuario());
@@ -161,19 +152,21 @@ class _NotificationsState extends State<Notifications> {
         ),
         centerTitle: false,
         actions: [
-          hasUnread ? TextButton.icon(
+          TextButton.icon(
             icon: Icon(Icons.mark_email_read_outlined, color: Theme.of(context).primaryColor,),
             label: Text(
               AppLocalizations.of(context)!.markAsRead,
               style: TextStyle(color: Colors.black),
             ),
             onPressed: () async {
+              for (NotificationEvent notif in notificationsList) {
+                setState(() {
+                  notif.isRead = true;
+                });
+              }
               await _accessDatabase.markALLNotificationAsRead(currentUser.id!);
-              setState(() {
-                hasUnread = false;
-              });
             },
-          ) : Container(),
+          ),
           SizedBox(width: MediaQuery.of(context).size.width*0.03,),
         ],
       ),
@@ -182,7 +175,7 @@ class _NotificationsState extends State<Notifications> {
         color: Theme.of(context).accentColor,
         onRefresh: () {
           return Future.delayed(
-            Duration(seconds: 1), () {
+            Duration(seconds: 1), () async {
               this.getAllNotifications();
             },
           );

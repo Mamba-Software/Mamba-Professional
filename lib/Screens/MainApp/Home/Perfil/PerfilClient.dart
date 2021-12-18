@@ -78,7 +78,6 @@ class _PerfilClientState extends State<PerfilClient> {
 
   // Init for Brand Home
   initProfileHome() async {
-    unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
     getUser();
     if (currentUser.brandID == "null" || currentUser.brandID == null) {
       await getUserPendingRequests();
