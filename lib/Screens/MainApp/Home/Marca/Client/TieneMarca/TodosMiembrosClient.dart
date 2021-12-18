@@ -189,9 +189,9 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
               children: [
                 Column(
                   children: [
-                    filteredTrainers.length > 1 ?
+                    allTrainers.length > 1 ?
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.02),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.04),
                       child: TextField(
                           controller: searchTrainersController,
                           onChanged: (value) {
@@ -223,7 +223,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                             contentPadding: EdgeInsets.all(0),
                           ),
                         )
-                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     Expanded(
                       child: Container(
                         child: ListView.builder(
@@ -233,7 +233,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                           itemBuilder: (context, index) {
                             Usuario user = filteredTrainers[index];
                             return Padding(
-                              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
+                              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
                               child: ListTile(
                                 leading: CircularImage(
                                   size: MediaQuery.of(context).size.width*0.15,
@@ -296,9 +296,9 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                 ),
                 Column(
                   children: [
-                    filteredClients.length > 1 ?
+                    allClients.length > 1 ?
                     Padding(
-                      padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.04,left: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.03, bottom: MediaQuery.of(context).size.width*0.02),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.04),
                       child: TextField(
                         controller: searchClientsController,
                         onChanged: (value) {
@@ -330,7 +330,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                           contentPadding: EdgeInsets.all(0),
                         ),
                       )
-                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     filteredClients.length != 0 ?
                       Expanded(
                         child: Container(
@@ -344,7 +344,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                 Usuario user = filteredClients[index];
                                 if (user.isPrivate! && user.id != currentUser.id) {
                                   return Padding(
-                                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.015),
+                                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
                                     child: ListTile(
                                       leading: CircularImage(
                                         size: MediaQuery.of(context).size.width*0.15,
@@ -364,53 +364,56 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                     ),
                                   );
                                 } else {
-                                  return ListTile(
-                                    leading: CircularImage(
-                                      size: MediaQuery.of(context).size.width*0.15,
-                                      image: user.imageUrl,
-                                      color: Theme.of(context).primaryColor,
-                                      borderWidth: 1.0,
-                                    ),
-                                    title: Text(
-                                      user.name!,
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                    subtitle: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "@${user.nick!}",
-                                          style: TextStyle(color: Colors.grey, fontSize: 14),
-                                        ),
-                                      ],
-                                    ),
-                                    trailing: widget.viewOnly || user.id! == currentUser.id ? IconButton(
-                                      icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                                      alignment: Alignment.centerRight,
-                                      padding: EdgeInsets.all(0),
-                                      onPressed: false ? () {
-                                      } : null,
-                                    ) : IconButton(
-                                      icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
-                                      alignment: Alignment.centerRight,
-                                      padding: EdgeInsets.all(0),
-                                      onPressed: () {
-                                        Navigator.push(context, CupertinoPageRoute<Null>(
-                                          builder: (context) => ChatDetailPage(user)),);
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                                    child: ListTile(
+                                      leading: CircularImage(
+                                        size: MediaQuery.of(context).size.width*0.15,
+                                        image: user.imageUrl,
+                                        color: Theme.of(context).primaryColor,
+                                        borderWidth: 1.0,
+                                      ),
+                                      title: Text(
+                                        user.name!,
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      subtitle: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "@${user.nick!}",
+                                            style: TextStyle(color: Colors.grey, fontSize: 14),
+                                          ),
+                                        ],
+                                      ),
+                                      trailing: widget.viewOnly || user.id! == currentUser.id ? IconButton(
+                                        icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+                                        alignment: Alignment.centerRight,
+                                        padding: EdgeInsets.all(0),
+                                        onPressed: false ? () {
+                                        } : null,
+                                      ) : IconButton(
+                                        icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
+                                        alignment: Alignment.centerRight,
+                                        padding: EdgeInsets.all(0),
+                                        onPressed: () {
+                                          Navigator.push(context, CupertinoPageRoute<Null>(
+                                            builder: (context) => ChatDetailPage(user)),);
+                                        },
+                                      ),
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                          CupertinoPageRoute<Null>(
+                                            builder: (context) => ProfileViewUser(
+                                                  userID: user.id!,
+                                                  viewOnly: widget.viewOnly,
+                                                )
+                                            )
+                                        );
                                       },
                                     ),
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                        CupertinoPageRoute<Null>(
-                                          builder: (context) => ProfileViewUser(
-                                                userID: user.id!,
-                                                viewOnly: widget.viewOnly,
-                                              )
-                                          )
-                                      );
-                                    },
                                   );
                                 }
                               }

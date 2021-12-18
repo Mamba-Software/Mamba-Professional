@@ -319,6 +319,7 @@ class _NotificationsState extends State<Notifications> {
             setState(() {
               notificationsList[index].isRead = true;
             });
+            returnActionOnTap(index,notification);
           },
         );
       }
@@ -354,6 +355,7 @@ class _NotificationsState extends State<Notifications> {
             setState(() {
               notificationsList[index].isRead = true;
             });
+            returnActionOnTap(index,notification);
           },
         );
       }

@@ -183,16 +183,16 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                   ),
                 ),
               ],
-          ),
+            ),
           ),
           backgroundColor: Colors.transparent,
           body: TabBarView(
               children: [
                 Column(
                   children: [
-                    filteredClients.length > 1 ?
+                    allClients.length > 1 ?
                     Padding(
-                      padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.04,left: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.03, bottom: MediaQuery.of(context).size.width*0.02),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.04),
                       child: TextField(
                         controller: searchClientsController,
                         onChanged: (value) {
@@ -224,7 +224,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                           contentPadding: EdgeInsets.all(0),
                         ),
                       )
-                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                    ) : Container(),
                     filteredClients.length != 0 ?
                       Expanded(
                         child: Container(
@@ -274,16 +274,22 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                           builder: (context) => ChatDetailPage(user)),);
                                       },
                                     ),
-                                    onTap: () {
-                                      Navigator.push(
+                                    onTap: () async {
+                                      var result = await Navigator.push(
                                           context,
-                                        CupertinoPageRoute<Null>(
-                                          builder: (context) => ProfileViewUser(
+                                          CupertinoPageRoute<bool?>(
+                                              builder: (context) => ProfileViewUser(
                                                 userID: user.id!,
                                                 viewOnly: false,
                                               )
                                           )
                                       );
+                                      if (result == true) {
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                        getAllUsers();
+                                      }
                                     },
                                   ),
                                 );
@@ -310,9 +316,9 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                 ),
                 Column(
                   children: [
-                    filteredTrainers.length > 1 ?
+                    allTrainers.length > 1 ?
                     Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.02),
+                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.04),
                         child: TextField(
                           controller: searchTrainersController,
                           onChanged: (value) {
@@ -344,10 +350,9 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                             contentPadding: EdgeInsets.all(0),
                           ),
                         )
-                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.only(top: 0),
                         child: ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.vertical,
@@ -355,7 +360,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                           itemBuilder: (context, index) {
                             Usuario user = filteredTrainers[index];
                             return Padding(
-                              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
+                              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
                               child: ListTile(
                                 leading: CircularImage(
                                   size: MediaQuery.of(context).size.width*0.15,
@@ -397,16 +402,22 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                       builder: (context) => ChatDetailPage(user)),);
                                   },
                                 ),
-                                onTap: () {
-                                  Navigator.push(
+                                onTap: () async {
+                                  var result = await Navigator.push(
                                       context,
-                                    CupertinoPageRoute<Null>(
-                                      builder: (context) => ProfileViewUser(
+                                      CupertinoPageRoute<bool?>(
+                                          builder: (context) => ProfileViewUser(
                                             userID: user.id!,
                                             viewOnly: false,
                                           )
                                       )
                                   );
+                                  if (result == true) {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    getAllUsers();
+                                  }
                                 },
                               ),
                             );

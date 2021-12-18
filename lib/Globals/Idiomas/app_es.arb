@@ -702,6 +702,19 @@
   "@confirmDeleteUser":{
     "description": "notInBrand text"
   },
+  "deleteFromBrand": "Eliminar de {brand}",
+  "@deleteFromBrand":{
+    "description": "notInBrand text",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFromBrandConfirmation": "¿Estás seguro que quieres eliminar a este miembro de tu marca?",
+  "@deleteFromBrandConfirmation":{
+    "description": "notInBrand text"
+  },
   "delete": "Eliminar",
   "@delete":{
     "description": "notInBrand text"

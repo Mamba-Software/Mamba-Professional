@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
+import 'package:mamba_castelldefels/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteFromBrandConfirmationDialog.dart';
 
 import '../../Constants.dart';
 import '../../Styles.dart';
@@ -242,6 +244,82 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                   ),
                 ],
               ),
+              canDeleteFromBrand() ? Column(
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () async {
+                          var result = await showDialog(
+                              context: context,
+                              builder: (_) {
+                                return DeleteFromBrandConfirmationDialog(
+                                  text: AppLocalizations.of(context)!.deleteFromBrandConfirmation,
+                                  userId: widget.userID,
+                                );
+                              }
+                          );
+                          if (result) {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            NotificationService().userLeavesBrand(widget.userID, currentUser.brandID!);
+                            //12/12/2021
+                            Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID);
+                            for(int i = 0; i < conv.users.length; ++i) {
+                              if(conv.users[i]['uid'] == currentUser.id) {
+                                conv.users.removeAt(i);
+                              }
+                            }
+                            await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
+                            await _accessDatabase.deleteUserFromAllBrandEvents(user!.id!, currentUser.brandID!, user!.isTrainer!);
+                            await _accessDatabase.leaveBrand(user!.id!);
+                            Navigator.pop(context, true);
+                          }
+                        },
+                        child: Material(
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                          ),
+                          child: Container(
+                            height: MediaQuery.of(context).size.height*0.04,
+                            constraints: BoxConstraints(
+                              maxWidth: MediaQuery.of(context).size.width*0.50,
+                            ),
+                            decoration: BoxDecoration(
+                                color: Colors.red, borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Flexible(
+                                    child: Text(AppLocalizations.of(context)!.deleteFromBrand(currentBrand.name!),
+                                        style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                                  ),
+                                  SizedBox(width: MediaQuery.of(context).size.width*0.01,),
+                                  Icon(
+                                    Icons.delete_outlined,
+                                    color: Colors.white,
+                                    size: MediaQuery.of(context).size.height*0.02,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ) : Container(),
               SizedBox(height: MediaQuery.of(context).size.height*0.00),
               /*
               Row(
@@ -574,5 +652,21 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
           ),
         ),
     );
+  }
+
+  bool canDeleteFromBrand() {
+    if (widget.viewOnly || currentUser.id! == user!.id! ) {
+      return false;
+    } else {
+      // Si es entrenador i mira a un client
+      if (currentUser.isTrainer! && !(user!.isTrainer!)) {
+        return true;
+      }
+      // Si es entrenador i mira a un entrenador, ha de ser admin ID.
+      if (currentUser.isTrainer! && user!.isTrainer! && currentUser.id! == currentBrand.adminID) {
+        return true;
+      }
+      return false;
+    }
   }
 }

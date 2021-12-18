@@ -163,6 +163,8 @@
   "wantDeleteUser": "¿Vols eliminar el teu usuari?",
   "writeDeleteUser": "Escriu la teva contrasenya per confirmar aquesta acció:",
   "confirmDeleteUser": "per confirmar aquesta acció:",
+  "deleteFromBrand": "Eliminar de {brand}",
+  "deleteFromBrandConfirmation": "Seguro que vols eliminar a aquest membre de la teva marca?",
   "delete": "Eliminar",
   "edit": "Editar",
   "save": "Guardar",

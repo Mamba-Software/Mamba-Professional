@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -266,7 +267,8 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                     ),
                   ],
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                Platform.isAndroid ? SizedBox(height: MediaQuery.of(context).size.height*0.02) : Container(),
                 todayEvents.length > 0 ? Column(
                   children: [
                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
