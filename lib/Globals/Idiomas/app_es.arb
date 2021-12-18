@@ -715,6 +715,15 @@
   "@deleteFromBrandConfirmation":{
     "description": "notInBrand text"
   },
+  "deleteFromEventConfirmation": "¿Estás seguro que quieres eliminar a este miembro del evento {name}?\n\nEn caso afirmativo, se actualizará el evento para indicar que nunca asistió a él.",
+  "@deleteFromEventConfirmation":{
+    "description": "notInBrand text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "delete": "Eliminar",
   "@delete":{
     "description": "notInBrand text"

@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteFromBrandConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteFromEventConfirmationDialog.dart';
 
 import '../../Constants.dart';
 import '../../Styles.dart';
@@ -53,6 +54,9 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   }
   // Gets the user info from firebase.
   void getUser() async {
+    totalEvents  = 0;
+    thisMonthEvents  = 0;
+    listEvents = [];
     user = await _accessDatabase.getUserDetails(widget.userID);
     if (user!.isTrainer!) {
       getTrainerEventsDone();
@@ -603,19 +607,53 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                   ),
                                 ],
                               ),
-                              trailing: Icon(
+                              trailing: !canDeleteFromEvent(event.selectedTrainers.length) ? Icon(
                                 Icons.arrow_forward_ios,
                                 color: Theme.of(context).primaryColor,
                                 size: 20,
+                              ) : GestureDetector(
+                                onTap: () async {
+                                  var result = await showDialog(
+                                      context: context,
+                                      builder: (_) {
+                                        return DeleteFromEventConfirmationDialog(
+                                          text: AppLocalizations.of(context)!.deleteFromEventConfirmation(event.title!),
+                                          userId: widget.userID,
+                                        );
+                                      }
+                                  );
+                                  if (result) {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    if (user!.isTrainer!) {
+                                      List<String> selectedTrainers = [];
+                                      for (var trainer in event.selectedTrainers!) {
+                                        selectedTrainers.add(trainer);
+                                      }
+                                      int index = selectedTrainers.indexOf(user!.id!);
+                                      selectedTrainers.removeAt(index);
+                                      _accessDatabase.updateEventTrainers(event.id!, selectedTrainers);
+                                    } else {
+                                      List<String> joinedMembers = [];
+                                      for (var client in event.joinedMembers!) {
+                                        joinedMembers.add(client);
+                                      }
+                                      int index = joinedMembers.indexOf(user!.id!);
+                                      joinedMembers.removeAt(index);
+                                      _accessDatabase.updateEventClients(event.id!, joinedMembers);
+                                    }
+                                    getUser();
+                                  }
+                                },
+                                child: Icon(
+                                  Icons.close,
+                                  color: Colors.red,
+                                  size: 25,
+                                ),
                               ),
                             ),
                           ),
-                          /*
-                          Container(
-                            height: 1,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                           */
                         ],
                       );
                     },
@@ -664,6 +702,22 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
       }
       // Si es entrenador i mira a un entrenador, ha de ser admin ID.
       if (currentUser.isTrainer! && user!.isTrainer! && currentUser.id! == currentBrand.adminID) {
+        return true;
+      }
+      return false;
+    }
+  }
+
+  bool canDeleteFromEvent(int selectedTrainers) {
+    if (widget.viewOnly) {
+      return false;
+    } else {
+      // Si es entrenador i mira a un client
+      if (currentUser.isTrainer! && !(user!.isTrainer!)) {
+        return true;
+      }
+      // Si es entrenador i mira a un entrenador, ha de ser admin ID.
+      if (currentUser.isTrainer! && user!.isTrainer! && currentUser.id! == currentBrand.adminID && selectedTrainers > 1) {
         return true;
       }
       return false;
