@@ -800,13 +800,14 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                 ],
               ),
             ),
-            resizeToAvoidBottomInset: true,
-            body: SingleChildScrollView(
+            extendBodyBehindAppBar: true,
+            body: SafeArea(
               child: Column(
                 children: <Widget>[
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.77,
-                    child: StreamBuilder<QuerySnapshot>(
+                  Expanded(
+                    child: Container(
+                      //height: MediaQuery.of(context).size.height * 0.77,
+                      child: StreamBuilder<QuerySnapshot>(
                         stream:
                         _accessDatabase.getConversationMessages(conversationId),
                         builder: (context, snapshot) {
@@ -814,7 +815,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                             timeDayGolbal = '';
                             messages = documentsToMessages(snapshot.data!.docs);
                             return ListView.builder(
-                              controller: scrollController,
+                              //controller: scrollController,
                               reverse: true,
                               scrollDirection: Axis.vertical,
                               itemCount: messages.length,
@@ -860,12 +861,9 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                                 }
                               },
                             );
-
-
-                          }
-                          else {
+                          } else {
                             return ListView.builder(
-                              controller: scrollController,
+                              //controller: scrollController,
                               reverse: true,
                               scrollDirection: Axis.vertical,
                               itemCount: messages.length,
@@ -912,126 +910,118 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                               },
                             );
                           }
-                        }),
+                        }
+                      ),
+                    ),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.02,
-                        vertical: MediaQuery.of(context).size.height * 0.01),
-                    height: MediaQuery.of(context).size.height * 0.10,
-                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02, vertical: MediaQuery.of(context).size.width * 0.02),
                     color: Colors.white,
-                    child: Column(
-                      children: [
-                        Row(
-                          children: <Widget>[
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.03,
-                            ),
-                            Expanded(
-                              child: TextField(
-                                minLines: 1,
-                                maxLines: 10,
-                                textCapitalization: TextCapitalization.sentences,
-                                controller: editingController,
-                                decoration: InputDecoration(
-                                    hintText: AppLocalizations.of(context)!.writeMessage,
-                                    hintStyle: TextStyle(color: Colors.black54),
-                                    border: InputBorder.none),
-                              ),
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.03,
-                            ),
-                            FloatingActionButton(
-                              onPressed: () async {
-                                DateTime today = DateTime.now();
-                                String minute, hour, second;
-                                if (today.minute.toString().length == 1)
-                                  minute = '0' + today.minute.toString();
-                                else
-                                  minute = today.minute.toString();
-
-                                if (today.hour.toString().length == 1)
-                                  hour = '0' + today.hour.toString();
-                                else
-                                  hour = today.hour.toString();
-
-                                if (today.second.toString().length == 1)
-                                  second = '0' + today.second.toString();
-                                else
-                                  second = today.second.toString();
-
-                                if (editingController.text.trim() != '') {
-
-                                  List<Map> userMessagesRead = [];
-                                  //userMessagesRead.add(toMapisMessageRead(currentUser.id, false));
-
-                                  List<Usuario> users = await _accessDatabase.getAllTrainersFromBrand(widget.brand.id!);
-
-                                  for(int i = 0; i < users.length; ++i) {
-                                    if(users[i].id == currentUser.id) {
-                                      userMessagesRead.add(toMapisMessageRead(
-                                          users[i].id, false));
-                                    }
-                                    else {
-                                      userMessagesRead.add(toMapisMessageRead(
-                                          users[i].id, true));
-                                    }
-                                  }
-
-                                  users = await _accessDatabase.getAllClientsFromBrand(widget.brand.id!);
-                                  for(int i = 0; i < users.length; ++i) {
-                                    if(users[i].id == currentUser.id) {
-                                      userMessagesRead.add(toMapisMessageRead(
-                                          users[i].id, false));
-                                    }
-                                    else {
-                                      userMessagesRead.add(toMapisMessageRead(
-                                          users[i].id, true));
-                                    }
-                                  }
-
-                                  await _accessDatabase.updateConversation(
-                                    conversationId,
-                                    userMessagesRead,
-                                    editingController.text,
-                                    today.year.toString(),
-                                    today.month.toString(),
-                                    today.day.toString(),
-                                    hour,
-                                    minute,
-                                    second,
-                                  );
-                                  _accessDatabase.addMessage(
-                                      editingController.text.trim(),
-                                      currentUser.id,
-                                      today.year.toString(),
-                                      today.month.toString(),
-                                      today.day.toString(),
-                                      hour,
-                                      minute,
-                                      second,
-                                      conversationId);
-
-                                  editingController.text = '';
-
-
-                                  setState(() {});
-                                }
-                              },
-                              child: Icon(
-                                Icons.send,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                              backgroundColor: Styles.mainColor,
-                              elevation: 0,
-                            ),
-                          ],
+                    child: Row(
+                      children: <Widget>[
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.03,
+                        ),
+                        Expanded(
+                          child: TextField(
+                            controller: editingController,
+                            keyboardType: TextInputType.multiline,
+                            textCapitalization: TextCapitalization.sentences,
+                            minLines: 1,
+                            maxLines: 10,
+                            decoration: InputDecoration(
+                                hintText: AppLocalizations.of(context)!.writeMessage,
+                                hintStyle: TextStyle(color: Colors.black54),
+                                border: InputBorder.none),
+                          ),
                         ),
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.01,
+                          width: MediaQuery.of(context).size.width * 0.03,
+                        ),
+                        FloatingActionButton(
+                          onPressed: () async {
+                            DateTime today = DateTime.now();
+                            String minute, hour, second;
+                            if (today.minute.toString().length == 1)
+                              minute = '0' + today.minute.toString();
+                            else
+                              minute = today.minute.toString();
+
+                            if (today.hour.toString().length == 1)
+                              hour = '0' + today.hour.toString();
+                            else
+                              hour = today.hour.toString();
+
+                            if (today.second.toString().length == 1)
+                              second = '0' + today.second.toString();
+                            else
+                              second = today.second.toString();
+
+                            if (editingController.text.trim() != '') {
+
+                              List<Map> userMessagesRead = [];
+                              //userMessagesRead.add(toMapisMessageRead(currentUser.id, false));
+
+                              List<Usuario> users = await _accessDatabase.getAllTrainersFromBrand(widget.brand.id!);
+
+                              for(int i = 0; i < users.length; ++i) {
+                                if(users[i].id == currentUser.id) {
+                                  userMessagesRead.add(toMapisMessageRead(
+                                      users[i].id, false));
+                                }
+                                else {
+                                  userMessagesRead.add(toMapisMessageRead(
+                                      users[i].id, true));
+                                }
+                              }
+
+                              users = await _accessDatabase.getAllClientsFromBrand(widget.brand.id!);
+                              for(int i = 0; i < users.length; ++i) {
+                                if(users[i].id == currentUser.id) {
+                                  userMessagesRead.add(toMapisMessageRead(
+                                      users[i].id, false));
+                                }
+                                else {
+                                  userMessagesRead.add(toMapisMessageRead(
+                                      users[i].id, true));
+                                }
+                              }
+
+                              await _accessDatabase.updateConversation(
+                                conversationId,
+                                userMessagesRead,
+                                editingController.text,
+                                today.year.toString(),
+                                today.month.toString(),
+                                today.day.toString(),
+                                hour,
+                                minute,
+                                second,
+                              );
+                              _accessDatabase.addMessage(
+                                  editingController.text.trim(),
+                                  currentUser.id,
+                                  today.year.toString(),
+                                  today.month.toString(),
+                                  today.day.toString(),
+                                  hour,
+                                  minute,
+                                  second,
+                                  conversationId);
+
+                              editingController.text = '';
+
+
+                              setState(() {});
+                            }
+                          },
+                          child: Icon(
+                            Icons.send,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                          backgroundColor: Styles.mainColor,
+                          elevation: 0,
                         ),
                       ],
                     ),
@@ -1039,249 +1029,6 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                 ],
               ),
             ),
-            /*
-            Stack(
-                children: <Widget>[
-                  Container(
-                    //height: MediaQuery.of(context).size.height * 0.77,
-                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.08),
-                    child: StreamBuilder<QuerySnapshot>(
-                        stream:
-                        _accessDatabase.getConversationMessages(conversationId),
-                        builder: (context, snapshot) {
-                          if (snapshot.data != null) {
-                            timeDayGolbal = '';
-                            messages = documentsToMessages(snapshot.data!.docs);
-                            return ListView.builder(
-                              controller: scrollController,
-                              reverse: true,
-                              scrollDirection: Axis.vertical,
-                              itemCount: messages.length,
-                              shrinkWrap: true,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                  MediaQuery.of(context).size.width * 0.03,
-                                  vertical:
-                                  MediaQuery.of(context).size.height * 0.03),
-                              //physics: BouncingScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                String timeHour = getTimeHour(index);
-                                String timeDay = getTimeDay(index);
-                                if(index + 1 == messages.length) timeDayGolbal = '';
-                                else {
-                                  timeDayGolbal = getTimeDay(index + 1);
-                                }
-                                if (timeDay != timeDayGolbal) {
-                                  timeDayGolbal = timeDay;
-                                  return FutureBuilder<String?>(
-                                      future: getUser(messages[index].messageType),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.data != null) {
-                                          userSent = snapshot.data;
-                                          return messageTextNewData(index, timeHour, timeDay);
-                                        } else {
-                                          return Container();
-                                        }
-                                      }
-                                  );
-                                } else {
-                                  return FutureBuilder<String?>(
-                                      future: getUser(messages[index].messageType),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.data != null) {
-                                          userSent = snapshot.data;
-                                          return messageTextNotNewData(index, timeHour);
-                                        } else {
-                                          return Container();
-                                        }
-                                      }
-                                  );
-                                }
-                              },
-                            );
-
-
-                          }
-                          else {
-                            return ListView.builder(
-                              controller: scrollController,
-                              reverse: true,
-                              scrollDirection: Axis.vertical,
-                              itemCount: messages.length,
-                              shrinkWrap: true,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                  MediaQuery.of(context).size.width * 0.03,
-                                  vertical:
-                                  MediaQuery.of(context).size.height * 0.03),
-                              //physics: BouncingScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                String timeHour = getTimeHour(index);
-                                String timeDay = getTimeDay(index);
-                                if(index + 1 == messages.length) timeDayGolbal = '';
-                                else {
-                                  timeDayGolbal = getTimeDay(index + 1);
-                                }
-                                if (timeDay != timeDayGolbal) {
-                                  timeDayGolbal = timeDay;
-                                  return FutureBuilder<String?>(
-                                      future: getUser(messages[index].messageType),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.data != null) {
-                                          userSent = snapshot.data;
-                                          return messageTextNewData(index, timeHour, timeDay);
-                                        } else {
-                                          return Container();
-                                        }
-                                      }
-                                  );
-                                } else {
-                                  return FutureBuilder<String?>(
-                                      future: getUser(messages[index].messageType),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.data != null) {
-                                          userSent = snapshot.data;
-                                          return messageTextNotNewData(index, timeHour);
-                                        } else {
-                                          return Container();
-                                        }
-                                      }
-                                  );
-                                }
-                              },
-                            );
-                          }
-                        }),
-                  ),
-
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: MediaQuery.of(context).size.width * 0.02,
-                          vertical: MediaQuery.of(context).size.height * 0.01),
-                      height: MediaQuery.of(context).size.height * 0.10,
-                      width: double.infinity,
-                      color: Colors.white,
-                      child: Row(
-                        children: <Widget>[
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.03,
-                          ),
-                          Expanded(
-                            child: TextField(
-                              minLines: 1,
-                              maxLines: 10,
-                              textCapitalization: TextCapitalization.sentences,
-                              controller: editingController,
-                              decoration: InputDecoration(
-                                  hintText: AppLocalizations.of(context)!.writeMessage,
-                                  hintStyle: TextStyle(color: Colors.black54),
-                                  border: InputBorder.none),
-                            ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.03,
-                          ),
-                          FloatingActionButton(
-                            onPressed: () async {
-                              DateTime today = DateTime.now();
-                              String minute, hour, second;
-                              if (today.minute.toString().length == 1)
-                                minute = '0' + today.minute.toString();
-                              else
-                                minute = today.minute.toString();
-
-                              if (today.hour.toString().length == 1)
-                                hour = '0' + today.hour.toString();
-                              else
-                                hour = today.hour.toString();
-
-                              if (today.second.toString().length == 1)
-                                second = '0' + today.second.toString();
-                              else
-                                second = today.second.toString();
-
-                              if (editingController.text != '') {
-
-                                List<Map> userMessagesRead = [];
-                                //userMessagesRead.add(toMapisMessageRead(currentUser.id, false));
-
-                                List<Usuario> users = await _accessDatabase.getAllTrainersFromBrand(widget.brand.id!);
-
-                                for(int i = 0; i < users.length; ++i) {
-                                  if(users[i].id == currentUser.id) {
-                                    userMessagesRead.add(toMapisMessageRead(
-                                        users[i].id, false));
-                                  }
-                                  else {
-                                    userMessagesRead.add(toMapisMessageRead(
-                                        users[i].id, true));
-                                  }
-                                }
-
-                                users = await _accessDatabase.getAllClientsFromBrand(widget.brand.id!);
-                                for(int i = 0; i < users.length; ++i) {
-                                  if(users[i].id == currentUser.id) {
-                                    userMessagesRead.add(toMapisMessageRead(
-                                        users[i].id, false));
-                                  }
-                                  else {
-                                    userMessagesRead.add(toMapisMessageRead(
-                                        users[i].id, true));
-                                  }
-                                }
-
-                                await _accessDatabase.updateConversation(
-                                  conversationId,
-                                  userMessagesRead,
-                                  editingController.text,
-                                  today.year.toString(),
-                                  today.month.toString(),
-                                  today.day.toString(),
-                                  hour,
-                                  minute,
-                                  second,
-                                );
-                                _accessDatabase.addMessage(
-                                    editingController.text.trim(),
-                                    currentUser.id,
-                                    today.year.toString(),
-                                    today.month.toString(),
-                                    today.day.toString(),
-                                    hour,
-                                    minute,
-                                    second,
-                                    conversationId);
-
-                                editingController.text = '';
-
-
-                                setState(() {});
-                              }
-                            },
-                            child: Icon(
-                              Icons.send,
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                            backgroundColor: Styles.mainColor,
-                            elevation: 0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-
-                ],
-              ),
-
-             */
-            /*
-
-
-             */
           );
   }
 }

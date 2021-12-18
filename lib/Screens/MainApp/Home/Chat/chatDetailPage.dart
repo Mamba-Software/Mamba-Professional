@@ -389,15 +389,16 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                 ],
               ),
             ),
-            resizeToAvoidBottomInset: true,
-            body: SingleChildScrollView(
+            //resizeToAvoidBottomInset: true,
+            extendBodyBehindAppBar: true,
+            body: SafeArea(
               child: Column(
                 children: <Widget>[
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.77,
-                    child: StreamBuilder<QuerySnapshot>(
-                        stream: _accessDatabase
-                            .getConversationMessages(conversationId),
+                  Expanded(
+                    child: Container(
+                      //height: MediaQuery.of(context).size.height * 0.77,
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: _accessDatabase.getConversationMessages(conversationId),
                         builder: (context, snapshot) {
                           if (snapshot.data != null) {
                             timeDayGolbal = '';
@@ -408,11 +409,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                               scrollDirection: Axis.vertical,
                               itemCount: messages.length,
                               shrinkWrap: true,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                      MediaQuery.of(context).size.width * 0.03,
-                                  vertical: MediaQuery.of(context).size.height *
-                                      0.03),
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.03, vertical: MediaQuery.of(context).size.height * 0.03),
                               //physics: BouncingScrollPhysics(),
                               itemBuilder: (context, index) {
                                 String timeHour = getTimeHour(index);
@@ -462,120 +459,114 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                               },
                             );
                           }
-                        }),
+                        }
+                      ),
+                    ),
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.10,
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02, vertical: MediaQuery.of(context).size.height * 0.01),
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02, vertical: MediaQuery.of(context).size.width * 0.02),
                     color: Colors.white,
-                    child: Column(
-                      children: [
-                        Row(
-                          children: <Widget>[
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.03,
-                            ),
-                            Expanded(
-                              child: TextField(
-                                controller: editingController,
-                                textCapitalization: TextCapitalization.sentences,
-                                minLines: 1,
-                                maxLines: 10,
-                                decoration: InputDecoration(
-                                    hintText: AppLocalizations.of(context)!.writeMessage,
-                                    hintStyle: TextStyle(color: Colors.black54),
-                                    border: InputBorder.none),
-                              ),
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.03,
-                            ),
-                            FloatingActionButton(
-                              onPressed: () async {
-                                DateTime today = DateTime.now();
-                                String minute, hour, second;
-                                if (today.minute.toString().length == 1)
-                                  minute = '0' + today.minute.toString();
-                                else
-                                  minute = today.minute.toString();
-
-                                if (today.hour.toString().length == 1)
-                                  hour = '0' + today.hour.toString();
-                                else
-                                  hour = today.hour.toString();
-
-                                if (today.second.toString().length == 1)
-                                  second = '0' + today.second.toString();
-                                else
-                                  second = today.second.toString();
-
-                                if (editingController.text.trim() != '') {
-                                  List<Map> userMessagesRead = [];
-                                  userMessagesRead.add(
-                                      toMapisMessageRead(currentUser.id, false));
-                                  userMessagesRead.add(
-                                      toMapisMessageRead(widget.user.id, true));
-
-                                  if (messages.length == 0) {
-                                    List<Map> chatUsers = [];
-
-                                    chatUsers.add(toMap(currentUser.id));
-                                    chatUsers.add(toMap(widget.user.id));
-
-                                    conversationId =
-                                        await _accessDatabase.addConversation(
-                                            chatUsers,
-                                            userMessagesRead,
-                                            null,
-                                            today.year.toString(),
-                                            today.month.toString(),
-                                            today.day.toString(),
-                                            hour,
-                                            minute,
-                                            second,
-                                            editingController.text);
-                                  } else {
-                                    await _accessDatabase.updateConversation(
-                                      conversationId,
-                                      userMessagesRead,
-                                      editingController.text,
-                                      today.year.toString(),
-                                      today.month.toString(),
-                                      today.day.toString(),
-                                      hour,
-                                      minute,
-                                      second,
-                                    );
-                                  }
-                                  _accessDatabase.addMessage(
-                                      editingController.text.trim(),
-                                      currentUser.id,
-                                      today.year.toString(),
-                                      today.month.toString(),
-                                      today.day.toString(),
-                                      hour,
-                                      minute,
-                                      second,
-                                      conversationId);
-
-                                  editingController.text = '';
-
-                                  setState(() {});
-                                }
-                              },
-                              child: Icon(
-                                Icons.send,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                              backgroundColor: Styles.mainColor,
-                              elevation: 0,
-                            ),
-                          ],
+                    child: Row(
+                      children: <Widget>[
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.03,
+                        ),
+                        Expanded(
+                          child: TextField(
+                            controller: editingController,
+                            keyboardType: TextInputType.multiline,
+                            textCapitalization: TextCapitalization.sentences,
+                            minLines: 1,
+                            maxLines: 10,
+                            decoration: InputDecoration(
+                                hintText: AppLocalizations.of(context)!.writeMessage,
+                                hintStyle: TextStyle(color: Colors.black54),
+                                border: InputBorder.none),
+                          ),
                         ),
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.01,
+                          width: MediaQuery.of(context).size.width * 0.03,
+                        ),
+                        FloatingActionButton(
+                          onPressed: () async {
+                            DateTime today = DateTime.now();
+                            String minute, hour, second;
+                            if (today.minute.toString().length == 1)
+                              minute = '0' + today.minute.toString();
+                            else
+                              minute = today.minute.toString();
+
+                            if (today.hour.toString().length == 1)
+                              hour = '0' + today.hour.toString();
+                            else
+                              hour = today.hour.toString();
+
+                            if (today.second.toString().length == 1)
+                              second = '0' + today.second.toString();
+                            else
+                              second = today.second.toString();
+
+                            if (editingController.text.trim() != '') {
+                              List<Map> userMessagesRead = [];
+                              userMessagesRead.add(
+                                  toMapisMessageRead(currentUser.id, false));
+                              userMessagesRead.add(
+                                  toMapisMessageRead(widget.user.id, true));
+
+                              if (messages.length == 0) {
+                                List<Map> chatUsers = [];
+
+                                chatUsers.add(toMap(currentUser.id));
+                                chatUsers.add(toMap(widget.user.id));
+
+                                conversationId =
+                                await _accessDatabase.addConversation(
+                                    chatUsers,
+                                    userMessagesRead,
+                                    null,
+                                    today.year.toString(),
+                                    today.month.toString(),
+                                    today.day.toString(),
+                                    hour,
+                                    minute,
+                                    second,
+                                    editingController.text);
+                              } else {
+                                await _accessDatabase.updateConversation(
+                                  conversationId,
+                                  userMessagesRead,
+                                  editingController.text,
+                                  today.year.toString(),
+                                  today.month.toString(),
+                                  today.day.toString(),
+                                  hour,
+                                  minute,
+                                  second,
+                                );
+                              }
+                              _accessDatabase.addMessage(
+                                  editingController.text.trim(),
+                                  currentUser.id,
+                                  today.year.toString(),
+                                  today.month.toString(),
+                                  today.day.toString(),
+                                  hour,
+                                  minute,
+                                  second,
+                                  conversationId);
+
+                              editingController.text = '';
+
+                              setState(() {});
+                            }
+                          },
+                          child: Icon(
+                            Icons.send,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                          backgroundColor: Styles.mainColor,
+                          elevation: 0,
                         ),
                       ],
                     ),
