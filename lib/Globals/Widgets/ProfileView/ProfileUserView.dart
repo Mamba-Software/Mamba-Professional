@@ -198,19 +198,52 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
             },
           ),
           actions: [
-            !isLoading ?
-            widget.viewOnly || user!.id! == currentUser.id ? Container() : Padding(
-              padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.03),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.push(context, CupertinoPageRoute<Null>(
-                    builder: (context) => ChatDetailPage(user!)
-                  ),
-                  );
-                } ,
-                icon: Icon(Icons.chat_outlined)
-              ),
-            ) : Container()
+            !isLoading ? Row(
+              children: [
+                canDeleteFromBrand() ? IconButton(
+                    onPressed: () async {
+                      var result = await showDialog(
+                          context: context,
+                          builder: (_) {
+                            return DeleteFromBrandConfirmationDialog(
+                              text: AppLocalizations.of(context)!.deleteFromBrandConfirmation,
+                              userId: widget.userID,
+                            );
+                          }
+                      );
+                      if (result) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        NotificationService().userLeavesBrand(widget.userID, currentUser.brandID!);
+                        //12/12/2021
+                        Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID);
+                        for(int i = 0; i < conv.users.length; ++i) {
+                          if(conv.users[i]['uid'] == user!.id!) {
+                            conv.users.removeAt(i);
+                          }
+                        }
+                        await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
+                        await _accessDatabase.deleteUserFromAllBrandEvents(user!.id!, currentUser.brandID!, user!.isTrainer!);
+                        await _accessDatabase.leaveBrand(user!.id!);
+                        Navigator.pop(context, true);
+                      }
+                    } ,
+                    icon: Icon(Icons.delete_outlined, color: Colors.red)
+                ) : Container(),
+                widget.viewOnly || user!.id! == currentUser.id ? Container() : IconButton(
+                    onPressed: () {
+                      Navigator.push(context, CupertinoPageRoute<Null>(
+                          builder: (context) => ChatDetailPage(user!)
+                      ),
+                      );
+                    } ,
+                    icon: Icon(Icons.chat_outlined)
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width*0.01)
+              ],
+            ) : Container(),
+
           ],
         ),
         body: isLoading ?
@@ -248,82 +281,6 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                   ),
                 ],
               ),
-              canDeleteFromBrand() ? Column(
-                children: [
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () async {
-                          var result = await showDialog(
-                              context: context,
-                              builder: (_) {
-                                return DeleteFromBrandConfirmationDialog(
-                                  text: AppLocalizations.of(context)!.deleteFromBrandConfirmation,
-                                  userId: widget.userID,
-                                );
-                              }
-                          );
-                          if (result) {
-                            setState(() {
-                              isLoading = true;
-                            });
-                            NotificationService().userLeavesBrand(widget.userID, currentUser.brandID!);
-                            //12/12/2021
-                            Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID);
-                            for(int i = 0; i < conv.users.length; ++i) {
-                              if(conv.users[i]['uid'] == currentUser.id) {
-                                conv.users.removeAt(i);
-                              }
-                            }
-                            await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
-                            await _accessDatabase.deleteUserFromAllBrandEvents(user!.id!, currentUser.brandID!, user!.isTrainer!);
-                            await _accessDatabase.leaveBrand(user!.id!);
-                            Navigator.pop(context, true);
-                          }
-                        },
-                        child: Material(
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              const Radius.circular(10.0),
-                            ),
-                          ),
-                          child: Container(
-                            height: MediaQuery.of(context).size.height*0.04,
-                            constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width*0.50,
-                            ),
-                            decoration: BoxDecoration(
-                                color: Colors.red, borderRadius: BorderRadius.circular(10)
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Flexible(
-                                    child: Text(AppLocalizations.of(context)!.deleteFromBrand(currentBrand.name!),
-                                        style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
-                                  ),
-                                  SizedBox(width: MediaQuery.of(context).size.width*0.01,),
-                                  Icon(
-                                    Icons.delete_outlined,
-                                    color: Colors.white,
-                                    size: MediaQuery.of(context).size.height*0.02,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              ) : Container(),
               SizedBox(height: MediaQuery.of(context).size.height*0.00),
               /*
               Row(

@@ -70,7 +70,10 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: Theme.of(context).primaryColor,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
+            icon: unreadChats > 0 ? buildCustomBadge(
+              counter: unreadChats,
+              child: Icon(Icons.chat),
+            ) : Icon(Icons.chat),
             label: AppLocalizations.of(context)!.chatBottomNav,
             backgroundColor: Theme.of(context).primaryColor,
           ),
@@ -102,6 +105,7 @@ class _HomePageState extends State<HomePage> {
         ],
         onPageChanged: (page) async {
           unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
+          unreadChats = await _accessDatabase.numberUnreadConversations(currentUser.id!);
           setState(() {
             currentIndex = page;
           });

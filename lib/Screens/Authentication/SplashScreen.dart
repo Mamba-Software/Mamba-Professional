@@ -49,6 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
     //if(firebaseUser != null && firebaseUser.emailVerified) {
       currentUser = await _accessDatabase.getCurrentUserDetails();
       unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
+      unreadChats = await _accessDatabase.numberUnreadConversations(currentUser.id!);
       if (currentUser.brandID != "null" && currentUser.brandID != null) {
         currentBrand = await _accessDatabase.getBrandDetails(currentUser.brandID!);
       } else {

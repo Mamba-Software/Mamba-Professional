@@ -86,9 +86,11 @@ class _PerfilClientState extends State<PerfilClient> {
     }
     await getUserEventsToday();
     _scrollController = ScrollController(initialScrollOffset: MediaQuery.of(context).size.width * scrollIndex);
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   // Gets the user info from firebase.
