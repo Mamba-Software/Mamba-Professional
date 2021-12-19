@@ -44,10 +44,10 @@ class FirebaseDatabaseService {
     if (error) return -1;
     if (authResult == null)
       return -1;
-    //if (authResult.user != null) {
-    //if (authResult.user!.emailVerified) return 0;
-    //else return -2;
-    //}
+    if (authResult.user != null) {
+      if (authResult.user!.emailVerified) return 0;
+      else return -2;
+    }
     else
       return 0;
   }
