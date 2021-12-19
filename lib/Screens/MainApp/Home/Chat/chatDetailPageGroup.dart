@@ -808,106 +808,113 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                     child: Container(
                       //height: MediaQuery.of(context).size.height * 0.77,
                       child: StreamBuilder<QuerySnapshot>(
-                        stream:
-                        _accessDatabase.getConversationMessages(conversationId),
+                        stream: _accessDatabase.getConversationMessages(conversationId),
                         builder: (context, snapshot) {
                           if (snapshot.data != null) {
                             timeDayGolbal = '';
                             messages = documentsToMessages(snapshot.data!.docs);
-                            return ListView.builder(
-                              controller: scrollController,
-                              reverse: true,
-                              scrollDirection: Axis.vertical,
-                              itemCount: messages.length,
-                              shrinkWrap: true,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                  MediaQuery.of(context).size.width * 0.03,
-                                  vertical:
-                                  MediaQuery.of(context).size.height * 0.03),
-                              //physics: BouncingScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                String timeHour = getTimeHour(index);
-                                String timeDay = getTimeDay(index);
-                                if(index + 1 == messages.length) timeDayGolbal = '';
-                                else {
-                                  timeDayGolbal = getTimeDay(index + 1);
-                                }
-                                if (timeDay != timeDayGolbal) {
-                                  timeDayGolbal = timeDay;
-                                  return FutureBuilder<String?>(
-                                      future: getUser(messages[index].messageType),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.data != null) {
-                                          userSent = snapshot.data;
-                                          return messageTextNewData(index, timeHour, timeDay);
-                                        } else {
-                                          return Container();
+                            return SingleChildScrollView(
+                              child: ListView.builder(
+                                controller: scrollController,
+                                physics: NeverScrollableScrollPhysics(),
+                                reverse: true,
+                                scrollDirection: Axis.vertical,
+                                itemCount: messages.length,
+                                shrinkWrap: true,
+                                addAutomaticKeepAlives: true,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                    MediaQuery.of(context).size.width * 0.03,
+                                    vertical:
+                                    MediaQuery.of(context).size.height * 0.03),
+                                //physics: BouncingScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  String timeHour = getTimeHour(index);
+                                  String timeDay = getTimeDay(index);
+                                  if(index + 1 == messages.length) timeDayGolbal = '';
+                                  else {
+                                    timeDayGolbal = getTimeDay(index + 1);
+                                  }
+                                  if (timeDay != timeDayGolbal) {
+                                    timeDayGolbal = timeDay;
+                                    return FutureBuilder<String?>(
+                                        future: getUser(messages[index].messageType),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.data != null) {
+                                            userSent = snapshot.data;
+                                            return messageTextNewData(index, timeHour, timeDay);
+                                          } else {
+                                            return Container();
+                                          }
                                         }
-                                      }
-                                  );
-                                } else {
-                                  return FutureBuilder<String?>(
-                                      future: getUser(messages[index].messageType),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.data != null) {
-                                          userSent = snapshot.data;
-                                          return messageTextNotNewData(index, timeHour);
-                                        } else {
-                                          return Container();
+                                    );
+                                  } else {
+                                    return FutureBuilder<String?>(
+                                        future: getUser(messages[index].messageType),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.data != null) {
+                                            userSent = snapshot.data;
+                                            return messageTextNotNewData(index, timeHour);
+                                          } else {
+                                            return Container();
+                                          }
                                         }
-                                      }
-                                  );
-                                }
-                              },
+                                    );
+                                  }
+                                },
+                              ),
                             );
                           } else {
-                            return ListView.builder(
-                              controller: scrollController,
-                              reverse: true,
-                              scrollDirection: Axis.vertical,
-                              itemCount: messages.length,
-                              shrinkWrap: true,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                  MediaQuery.of(context).size.width * 0.03,
-                                  vertical:
-                                  MediaQuery.of(context).size.height * 0.03),
-                              //physics: BouncingScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                String timeHour = getTimeHour(index);
-                                String timeDay = getTimeDay(index);
-                                if(index + 1 == messages.length) timeDayGolbal = '';
-                                else {
-                                  timeDayGolbal = getTimeDay(index + 1);
-                                }
-                                if (timeDay != timeDayGolbal) {
-                                  timeDayGolbal = timeDay;
-                                  return FutureBuilder<String?>(
-                                      future: getUser(messages[index].messageType),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.data != null) {
-                                          userSent = snapshot.data;
-                                          return messageTextNewData(index, timeHour, timeDay);
-                                        } else {
-                                          return Container();
+                            return SingleChildScrollView(
+                              child: ListView.builder(
+                                controller: scrollController,
+                                reverse: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                scrollDirection: Axis.vertical,
+                                itemCount: messages.length,
+                                shrinkWrap: true,
+                                addAutomaticKeepAlives: true,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                    MediaQuery.of(context).size.width * 0.03,
+                                    vertical:
+                                    MediaQuery.of(context).size.height * 0.03),
+                                //physics: BouncingScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  String timeHour = getTimeHour(index);
+                                  String timeDay = getTimeDay(index);
+                                  if(index + 1 == messages.length) timeDayGolbal = '';
+                                  else {
+                                    timeDayGolbal = getTimeDay(index + 1);
+                                  }
+                                  if (timeDay != timeDayGolbal) {
+                                    timeDayGolbal = timeDay;
+                                    return FutureBuilder<String?>(
+                                        future: getUser(messages[index].messageType),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.data != null) {
+                                            userSent = snapshot.data;
+                                            return messageTextNewData(index, timeHour, timeDay);
+                                          } else {
+                                            return Container();
+                                          }
                                         }
-                                      }
-                                  );
-                                } else {
-                                  return FutureBuilder<String?>(
-                                      future: getUser(messages[index].messageType),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.data != null) {
-                                          userSent = snapshot.data;
-                                          return messageTextNotNewData(index, timeHour);
-                                        } else {
-                                          return Container();
+                                    );
+                                  } else {
+                                    return FutureBuilder<String?>(
+                                        future: getUser(messages[index].messageType),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.data != null) {
+                                            userSent = snapshot.data;
+                                            return messageTextNotNewData(index, timeHour);
+                                          } else {
+                                            return Container();
+                                          }
                                         }
-                                      }
-                                  );
-                                }
-                              },
+                                    );
+                                  }
+                                },
+                              ),
                             );
                           }
                         }
