@@ -132,9 +132,11 @@ class _NotificationsState extends State<Notifications> {
     usersList = users;
     brandsList = brands;
     eventList = events;
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
