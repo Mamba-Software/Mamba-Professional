@@ -562,7 +562,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                             Text("-", style: Styles.purpleTextStyle.copyWith(fontSize: 30, color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),),
                             TextButton(
                               onPressed: _breakList.length < breakLimit ? () {
-                                selectSlot(context, 4, true);
+                                selectSlot(context, 4, false);
                               } : null,
                               child: Container(
                                 padding: EdgeInsets.all(8),
