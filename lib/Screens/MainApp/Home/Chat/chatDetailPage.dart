@@ -507,6 +507,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                               second = today.second.toString();
 
                             if (editingController.text.trim() != '') {
+
+                              String auxText = editingController.text;
+                              editingController.text = '';
+
                               List<Map> userMessagesRead = [];
                               userMessagesRead.add(
                                   toMapisMessageRead(currentUser.id, false));
@@ -530,12 +534,12 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                     hour,
                                     minute,
                                     second,
-                                    editingController.text);
+                                    auxText);
                               } else {
                                 await _accessDatabase.updateConversation(
                                   conversationId,
                                   userMessagesRead,
-                                  editingController.text,
+                                  auxText,
                                   today.year.toString(),
                                   today.month.toString(),
                                   today.day.toString(),
@@ -545,7 +549,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                 );
                               }
                               _accessDatabase.addMessage(
-                                  editingController.text.trim(),
+                                  auxText.trim(),
                                   currentUser.id,
                                   today.year.toString(),
                                   today.month.toString(),
@@ -554,8 +558,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                   minute,
                                   second,
                                   conversationId);
-
-                              editingController.text = '';
 
                               setState(() {});
                             }
