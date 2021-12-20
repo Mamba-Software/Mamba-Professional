@@ -835,11 +835,12 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                                 }
                                 if (timeDay != timeDayGolbal) {
                                   timeDayGolbal = timeDay;
-                                  return FutureBuilder<String?>(
+                                  return FutureBuilder<Usuario?>(
                                       future: getUser(messages[index].messageType),
                                       builder: (context, snapshot) {
                                         if (snapshot.data != null) {
-                                          userSent = snapshot.data;
+                                          userToShow = snapshot.data!;
+                                          userSent = userToShow.name;
                                           return messageTextNewData(index, timeHour, timeDay);
                                         } else {
                                           return Container();
@@ -847,11 +848,12 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                                       }
                                   );
                                 } else {
-                                  return FutureBuilder<String?>(
+                                  return FutureBuilder<Usuario?>(
                                       future: getUser(messages[index].messageType),
                                       builder: (context, snapshot) {
                                         if (snapshot.data != null) {
-                                          userSent = snapshot.data;
+                                          userToShow = snapshot.data!;
+                                          userSent = userToShow.name;
                                           return messageTextNotNewData(index, timeHour);
                                         } else {
                                           return Container();
@@ -885,11 +887,12 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                                 }
                                 if (timeDay != timeDayGolbal) {
                                   timeDayGolbal = timeDay;
-                                  return FutureBuilder<String?>(
+                                  return FutureBuilder<Usuario?>(
                                       future: getUser(messages[index].messageType),
                                       builder: (context, snapshot) {
                                         if (snapshot.data != null) {
-                                          userSent = snapshot.data;
+                                          userToShow = snapshot.data!;
+                                          userSent = userToShow.name;
                                           return messageTextNewData(index, timeHour, timeDay);
                                         } else {
                                           return Container();
@@ -897,11 +900,12 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                                       }
                                   );
                                 } else {
-                                  return FutureBuilder<String?>(
+                                  return FutureBuilder<Usuario?>(
                                       future: getUser(messages[index].messageType),
                                       builder: (context, snapshot) {
                                         if (snapshot.data != null) {
-                                          userSent = snapshot.data;
+                                          userToShow = snapshot.data!;
+                                          userSent = userToShow.name;
                                           return messageTextNotNewData(index, timeHour);
                                         } else {
                                           return Container();
