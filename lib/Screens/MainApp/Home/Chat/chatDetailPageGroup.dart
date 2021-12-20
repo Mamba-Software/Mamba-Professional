@@ -74,16 +74,15 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
     getConversationId();
   }
 
-  Future<String?> getUser(String? userId) async {
-    if(userId == "sender") return userId;
+  Future<Usuario?> getUser(String? userId) async {
+    if(userId == "sender") return await this._accessDatabase.getUserDetails(currentUser.id!);
     Usuario user = await this._accessDatabase.getUserDetails(userId!);
-    userToShow = user;
-    return user.name;
+    return user;
   }
 
   Column messageTextNotNewData(var index, String timeHour) {
     MaterialColor matCol;
-    if(userSent == "sender") {
+    if(userSent == currentUser.name) {
       return Column(
         children: [
           Container(
@@ -381,7 +380,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
   Column messageTextNewData(var index, String timeHour, String timeDay) {
     MaterialColor matCol;
 
-    if(userSent == "sender") {
+    if(userSent == currentUser.name) {
       return Column(
         children: [
           Text(
@@ -837,11 +836,12 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                                   }
                                   if (timeDay != timeDayGolbal) {
                                     timeDayGolbal = timeDay;
-                                    return FutureBuilder<String?>(
+                                    return FutureBuilder<Usuario?>(
                                         future: getUser(messages[index].messageType),
                                         builder: (context, snapshot) {
                                           if (snapshot.data != null) {
-                                            userSent = snapshot.data;
+                                            userToShow = snapshot.data!;
+                                            userSent = userToShow.name;
                                             return messageTextNewData(index, timeHour, timeDay);
                                           } else {
                                             return Container();
@@ -849,11 +849,12 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                                         }
                                     );
                                   } else {
-                                    return FutureBuilder<String?>(
+                                    return FutureBuilder<Usuario?>(
                                         future: getUser(messages[index].messageType),
                                         builder: (context, snapshot) {
                                           if (snapshot.data != null) {
-                                            userSent = snapshot.data;
+                                            userToShow = snapshot.data!;
+                                            userSent = userToShow.name;
                                             return messageTextNotNewData(index, timeHour);
                                           } else {
                                             return Container();
@@ -889,11 +890,12 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                                   }
                                   if (timeDay != timeDayGolbal) {
                                     timeDayGolbal = timeDay;
-                                    return FutureBuilder<String?>(
+                                    return FutureBuilder<Usuario?>(
                                         future: getUser(messages[index].messageType),
                                         builder: (context, snapshot) {
                                           if (snapshot.data != null) {
-                                            userSent = snapshot.data;
+                                            userToShow = snapshot.data!;
+                                            userSent = userToShow.name;
                                             return messageTextNewData(index, timeHour, timeDay);
                                           } else {
                                             return Container();
@@ -901,11 +903,12 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                                         }
                                     );
                                   } else {
-                                    return FutureBuilder<String?>(
+                                    return FutureBuilder<Usuario?>(
                                         future: getUser(messages[index].messageType),
                                         builder: (context, snapshot) {
                                           if (snapshot.data != null) {
-                                            userSent = snapshot.data;
+                                            userToShow = snapshot.data!;
+                                            userSent = userToShow.name;
                                             return messageTextNotNewData(index, timeHour);
                                           } else {
                                             return Container();
@@ -966,6 +969,8 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
 
                             if (editingController.text.trim() != '') {
 
+                              String auxText = editingController.text;
+                              editingController.text = '';
                               List<Map> userMessagesRead = [];
                               //userMessagesRead.add(toMapisMessageRead(currentUser.id, false));
 
@@ -997,7 +1002,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                               await _accessDatabase.updateConversation(
                                 conversationId,
                                 userMessagesRead,
-                                editingController.text,
+                                auxText,
                                 today.year.toString(),
                                 today.month.toString(),
                                 today.day.toString(),
@@ -1006,7 +1011,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                                 second,
                               );
                               _accessDatabase.addMessage(
-                                  editingController.text.trim(),
+                                  auxText.trim(),
                                   currentUser.id,
                                   today.year.toString(),
                                   today.month.toString(),
@@ -1016,7 +1021,7 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
                                   second,
                                   conversationId);
 
-                              editingController.text = '';
+
 
 
                               setState(() {});
