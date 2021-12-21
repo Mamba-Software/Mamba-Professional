@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:331547241606:android:b352fbacbdd2666a7d3507",
         "android_client_info": {
-          "package_name": "com.mamba.castelldefels.mamba_castelldefels"
+          "package_name": "com.mambastyle.mambastyle"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "331547241606-hi9v6golhte2j8m8s5p7q9vij3cuaefm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.mamba.castelldefels.mamba_castelldefels",
+            "package_name": "com.mambastyle.mambastyle",
             "certificate_hash": "67f83f4ad4da7194a490fff6d21d6f6ead660648"
           }
         },
