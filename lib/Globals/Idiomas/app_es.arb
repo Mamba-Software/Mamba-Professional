@@ -368,9 +368,17 @@
   "@typeProfilePrivate":{
     "description": "typeProfile Text"
   },
+  "typeProfilePrivateDescription": "Tu perfil solo podrá ser visto por los entrenadores de tu marca en caso de formar parte de una.",
+  "@typeProfilePrivateDescription":{
+    "description": "Entrenador Text"
+  },
   "typeProfilePublic": "Público",
   "@typeProfilePublic":{
     "description": "typeProfile Text"
+  },
+  "typeProfilePublicDescription": "Tu perfil podrá ser visto por todos los usuarios de MAMBA. Podrán ver tu información personal así como los eventos a los que has asistido.",
+  "@typeProfilePublicDescription":{
+    "description": "Entrenador Text"
   },
   "title": "Título",
   "@title":{
@@ -1066,7 +1074,7 @@
   "@notifications": {
     "description": "Wellcome message"
   },
-  "mySessions": "Mis sesiones",
+  "mySessions": "Historial de sesiones",
   "@mySessions": {
     "description": "Wellcome message"
   },
@@ -1100,6 +1108,10 @@
   },
   "yourBrand": "Tu marca",
   "@yourBrand": {
+    "description": "Wellcome message"
+  },
+  "editYourPrivacy": "Cambia el tipo de perfil",
+  "@editYourPrivacy": {
     "description": "Wellcome message"
   },
   "editYourInfo": "Edita tu información personal",
@@ -1501,6 +1513,17 @@
   "locationPermision": "Una de las funcionalidades más potentes de MAMBA es el localizador de marcas. Basándonos en tu ubicación cuando abras nuestra app, te mostraremos las marcas más cercanas a ti.\n\nPara ello es necesario que nos des permisos de localización.",
   "@locationPermision": {
     "description": "membersOfBrand message"
+  },
+  "termsAndConditions": "Términos y Condiciones",
+  "@termsAndConditions": {
+    "description": "membersOfBrand message"
+  },
+  "findBrandClientText": "Encuentra una marca o añade tu código de invitación para desbloquear todas nuestras herramientas",
+  "@findBrandClientText": {
+    "description": "membersOfBrand message"
+  },
+  "findBrandTrainerText": "Crea tu marca o únete a una para desbloquear todas nuestras herramientas",
+  "@findBrandTrainerText": {
+    "description": "membersOfBrand message"
   }
-
 }

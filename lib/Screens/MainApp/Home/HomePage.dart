@@ -25,8 +25,6 @@ class _HomePageState extends State<HomePage> {
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
   bool isLoading = false;
-  // Page Controller
-  final PageController _pageController = PageController(initialPage: currentIndex);
 
   @override
   void initState() {
@@ -95,7 +93,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: PageView(
         //physics: NeverScrollableScrollPhysics(),
-        controller: _pageController,
+        controller: pageController,
         //allowImplicitScrolling: true,
         children: <Widget>[
           Perfil(),
@@ -118,7 +116,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       currentIndex = value;
     });
-    _pageController.jumpToPage(value);
+    pageController.jumpToPage(value);
   }
 
   Widget buildCustomBadge({required int counter, required Widget child}) {

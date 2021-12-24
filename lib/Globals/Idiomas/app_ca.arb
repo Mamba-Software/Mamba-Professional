@@ -82,7 +82,9 @@
   "selectDateOfBirth": "Selecciona la teva data de naixement",
   "typeProfile": "Tipus de perfil",
   "typeProfilePrivate": "Privat",
+  "typeProfilePrivateDescription": "El teu perfil només podrà ser vist pels entrenadors de la teva marca en cas de formar part d'una.",
   "typeProfilePublic": "Públic",
+  "typeProfilePublicDescription": "El teu perfil podrà ser vist per tots els usuaris de MAMBA. Podran veure la teva informació personal així com els esdeveniments als quals has assistit.",
   "title": "Títol",
   "titleHint": "Introdueix un títol",
   "titleError": "Introdueix un títol si us plau",
@@ -245,16 +247,16 @@
   "addLocation": "Afegir ubicació",
   "historial": "Control",
   "notifications": "Notificacions",
-  "mySessions": "Les meves sessions",
+  "mySessions": "Historial de sessions",
   "mySchedule": "La meva agenda",
   "myScheduleText": "Mira totes les teves sessions",
   "planSessions": "Planifica més sessions",
   "myProgress": "Control i seguiment",
   "myProgressText": "Vols veure el teu progrés?",
   "events": "Esdeveniments",
-
   "yourInfo": "Les teves dades",
   "yourBrand": "La teva marca",
+  "editYourPrivacy": "Canvia el tipus de perfil",
   "editYourInfo": "Edita la teva informació personal",
   "profilePhoto": "Foto de perfil",
   "profilePhotoOptional": "En cas que no vulguis escollir la teva foto de perfil en aquest moment, pots saltart-te aquest pas.",
@@ -329,5 +331,8 @@
   "writeMessage": "Escriu un missatge",
   "noMessages": "Encara no has començat cap conversa",
   "membersOfBrand": "Grup amb tots els membres de la marca",
-  "locationPermision": "Una de les funcionalitats més potents de MAMBA és el localitzador de marques. Basant-nos en la teva ubicació quan obris la nostra app, et mostrarem les marques més properes a tu.\n\nPer això és necessari que ens donis permisos de localització."
+  "locationPermision": "Una de les funcionalitats més potents de MAMBA és el localitzador de marques. Basant-nos en la teva ubicació quan obris la nostra app, et mostrarem les marques més properes a tu.\n\nPer això és necessari que ens donis permisos de localització.",
+  "termsAndConditions": "Termes i Condicions",
+  "findBrandClientText": "Troba una marca o afegeix el teu codi d'invitació per desbloquejar totes les nostres eines",
+  "findBrandTrainerText": "Crea la teva marca o uneix-te a una per desbloquejar totes les nostres eines"
 }
