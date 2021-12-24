@@ -1441,6 +1441,30 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                       )
                   ),
                 ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  child: ListTile(
+                    leading: Icon(Icons.groups, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
+                    title: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            AppLocalizations.of(context)!.findBrandTrainerText,
+                            style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: Theme.of(context).primaryColor), textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ],
+                    ),
+                    trailing: Icon(Icons.arrow_forward_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+                    onTap: () async {
+                      setState(() {
+                        currentIndex = 1;
+                      });
+                      pageController.animateToPage(currentIndex, duration: Duration(milliseconds: 500), curve: Curves.ease);
+                    },
+                  ),
+                ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.03),
               ],
             ) :

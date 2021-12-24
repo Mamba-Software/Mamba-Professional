@@ -1,4 +1,5 @@
 // This file contains all the Global Variabels used throgh the App.
+import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
@@ -25,5 +26,7 @@ var unreadChats = 0;
 Position? currentPosition;
 String? currentAddress;
 
+// Page Controller
+final PageController pageController = PageController(initialPage: currentIndex);
 // Current Index BotomNavigation
 int currentIndex = 0;

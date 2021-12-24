@@ -1517,5 +1517,13 @@
   "termsAndConditions": "Términos y Condiciones",
   "@termsAndConditions": {
     "description": "membersOfBrand message"
+  },
+  "findBrandClientText": "Encuentra una marca o añade tu código de invitación para ver desbloquear todas nuestras herramientas",
+  "@findBrandClientText": {
+    "description": "membersOfBrand message"
+  },
+  "findBrandTrainerText": "Crea tu marca o únete a una para desbloquear todas nuestras herramientas",
+  "@findBrandTrainerText": {
+    "description": "membersOfBrand message"
   }
 }
