@@ -1518,7 +1518,7 @@
   "@termsAndConditions": {
     "description": "membersOfBrand message"
   },
-  "findBrandClientText": "Encuentra una marca o añade tu código de invitación para ver desbloquear todas nuestras herramientas",
+  "findBrandClientText": "Encuentra una marca o añade tu código de invitación para desbloquear todas nuestras herramientas",
   "@findBrandClientText": {
     "description": "membersOfBrand message"
   },

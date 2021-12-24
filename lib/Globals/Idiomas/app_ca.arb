@@ -333,6 +333,6 @@
   "membersOfBrand": "Grup amb tots els membres de la marca",
   "locationPermision": "Una de les funcionalitats més potents de MAMBA és el localitzador de marques. Basant-nos en la teva ubicació quan obris la nostra app, et mostrarem les marques més properes a tu.\n\nPer això és necessari que ens donis permisos de localització.",
   "termsAndConditions": "Termes i Condicions",
-  "findBrandClientText": "Troba una marca o afegeix el teu codi d'invitació per a veure desbloquejar totes les nostres eines",
-  "findBrandTrainerText": "Crea la teva marca o uneix-te a una per a desbloquejar totes les nostres eines"
+  "findBrandClientText": "Troba una marca o afegeix el teu codi d'invitació per desbloquejar totes les nostres eines",
+  "findBrandTrainerText": "Crea la teva marca o uneix-te a una per desbloquejar totes les nostres eines"
 }
