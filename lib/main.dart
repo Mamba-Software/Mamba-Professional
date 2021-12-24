@@ -35,7 +35,7 @@ void main() async {
   );
 }
 
-// Launching the Splash Screen after Apps basic data is filled.
+// Launching the Splash Screen
 class Mamba extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
