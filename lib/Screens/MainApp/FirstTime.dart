@@ -319,7 +319,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.fitness_center_rounded, color: tabs[4] ? Theme.of(context).accentColor : Colors.white)
+                            Icon(Icons.groups, color: tabs[4] ? Theme.of(context).accentColor : Colors.white)
                           ],
                         ),
                       ),

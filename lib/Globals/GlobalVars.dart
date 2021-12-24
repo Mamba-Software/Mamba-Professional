@@ -2,8 +2,9 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Models/Event.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
+
+// App Version
+var version = "MAMBA v0.1";
 
 // API Keys
 var placesAPIAndroid = "AIzaSyBjUcoI0sYFY9H8mb2n0IoBv26GxnPTRgs";
