@@ -156,7 +156,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                           ],
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     ],
                   ),
                   false ? Column(

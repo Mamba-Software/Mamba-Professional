@@ -13,7 +13,6 @@ import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/EditPhotoPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/TusDatos.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
@@ -233,7 +232,7 @@ class _SettingsState extends State<Settings> {
                       ],
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   TextButton(
                     onPressed: () async {
                       showDialog(
@@ -255,11 +254,22 @@ class _SettingsState extends State<Settings> {
                       ],
                     ),
                   ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        version,
+                        style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).primaryColor),
+                        textAlign: TextAlign.left,
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
           ),
-    );
+      );
   }
 }
 

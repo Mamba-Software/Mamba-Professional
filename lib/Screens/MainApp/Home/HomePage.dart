@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
             //backgroundColor: Theme.of(context).primaryColor,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.fitness_center_rounded),
+            icon: Icon(Icons.groups),
             label: AppLocalizations.of(context)!.brandBottomNav,
             backgroundColor: Theme.of(context).primaryColor,
           ),

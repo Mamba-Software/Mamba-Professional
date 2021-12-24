@@ -59,7 +59,7 @@
   "@email":{
     "description": "Email Text"
   },
-  "emailError": "Escribe tu email porfavor",
+  "emailError": "Escribe tu email por favor",
   "@emailError":{
     "description": "Email Error Text"
   },
@@ -340,7 +340,7 @@
   "@closeSession":{
     "description": "Cerrar sesión Text"
   },
-  "closeSessionConfirmation": "¿Estás seguro que quieres cerrar tu sesión actual?",
+  "closeSessionConfirmation": "¿Estás seguro de que quieres cerrar tu sesión actual?",
   "@closeSessionConfirmation":{
     "description": "Cerrar sesión Text"
   },
@@ -392,7 +392,7 @@
   "@descriptionHint":{
     "description": "Descripción Text"
   },
-  "noDescription": "No se ha añadido ningna descripción",
+  "noDescription": "No se ha añadido ninguna descripción",
   "@noDescription":{
     "description": "Descripción Text"
   },
@@ -412,7 +412,7 @@
   "@errorSent":{
     "description": "errorSent Text"
   },
-  "choseOption": "Escoje una opción",
+  "choseOption": "Escoge una opción",
   "@choseOption":{
     "description": "choseOption Text"
   },
@@ -489,7 +489,7 @@
   "@createBrandCover":{
     "description": "createBrand Text"
   },
-  "createBrandCoverDescription": "Crea la portada de tu marca. Escoje tu logo y tu nombre.",
+  "createBrandCoverDescription": "Crea la portada de tu marca. Escoge tu logo y tu nombre.",
   "@createBrandCoverDescription":{
     "description": "createBrand Text"
   },
@@ -505,7 +505,7 @@
   "@createBrandBaseLocation":{
     "description": "createBrand Text"
   },
-  "createBrandLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.\n\nEn caso de no tener una dirección fija, introduce una ubicación utilizada frequentemente.",
+  "createBrandLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.\n\nEn caso de no tener una dirección fija, introduce una ubicación utilizada frecuentemente.",
   "@createBrandLocationDescription":{
     "description": "createBrand Text"
   },
@@ -517,11 +517,11 @@
   "@createBrandWorkshiftDescription":{
     "description": "createBrand Text"
   },
-  "createBrandBreakDescription": "En caso de que siempre te tomes un descanso a la misma hora, por ejemplo a la hora de comer, añadelo para que conste en tu calendario.",
+  "createBrandBreakDescription": "En caso de que siempre te tomes un descanso a la misma hora, por ejemplo a la hora de comer, añádelo para que conste en tu calendario.",
   "@createBrandBreakDescription":{
     "description": "createBrand Text"
   },
-  "createBrandAddDescription": "Haz click en AÑADIR para guardar tu tiempo de descanso",
+  "createBrandAddDescription": "Haz clic en AÑADIR para guardar tu tiempo de descanso",
   "@createBrandAddDescription":{
     "description": "createBrand Text"
   },
@@ -569,7 +569,7 @@
   "@rankingBrandText":{
     "description": "baseLocation text"
   },
-  "baseLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.\n\nEn caso de no tener una dirección fija, introduce una ubicación utilizada frequentemente.",
+  "baseLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.\n\nEn caso de no tener una dirección fija, introduce una ubicación utilizada frecuentemente.",
   "@baseLocationDescription":{
     "description": "baseLocation text"
   },
@@ -617,7 +617,7 @@
   "@enterAddressError":{
     "description": "zipCode text"
   },
-  "brandDescription": "Lo primero que leerán tus clientes sobre tu marca y tu forma de trabajar es esta pequeña descripción. En un par de lineas, transmite tus valores fundamentales y beneficios de trabajar de tu mano.",
+  "brandDescription": "Lo primero que leerán tus clientes sobre tu marca y tu forma de trabajar es esta pequeña descripción. En un par de líneas, transmite tus valores fundamentales y beneficios de trabajar de tu mano.",
   "@brandDescription":{
     "description": "zipCode text"
   },
@@ -641,7 +641,7 @@
   "@lunchBreak":{
     "description": "Descansos text"
   },
-  "lunchBreakDescription": "En caso de que siempre te tomes un descanso a la misma hora, por ejemplo a la hora de comer, añadelo para que conste en tu calendario. Puedes añadir un máximo de tres descansos durante el dia.",
+  "lunchBreakDescription": "En caso de que siempre te tomes un descanso a la misma hora, por ejemplo a la hora de comer, añádelo para que conste en tu calendario. Puedes añadir un máximo de tres descansos durante el día.",
   "@lunchBreakDescription":{
     "description": "workingHours text"
   },
@@ -682,7 +682,7 @@
   "@brandFound":{
     "description": "disponibilidad text"
   },
-  "brandNotFound": "No encontramos esta marca. Por favor asegúrate que has introducido el cógido correctamente",
+  "brandNotFound": "No encontramos esta marca. Por favor asegúrate que has introducido el código correctamente",
   "@brandNotFound":{
     "description": "disponibilidad text"
   },
@@ -711,11 +711,11 @@
       }
     }
   },
-  "deleteFromBrandConfirmation": "¿Estás seguro que quieres eliminar a este miembro de tu marca?",
+  "deleteFromBrandConfirmation": "¿Estás seguro de que quieres eliminar a este miembro de tu marca?",
   "@deleteFromBrandConfirmation":{
     "description": "notInBrand text"
   },
-  "deleteFromEventConfirmation": "¿Estás seguro que quieres eliminar a este miembro del evento {name}?\n\nEn caso afirmativo, se actualizará el evento para indicar que nunca asistió a él.",
+  "deleteFromEventConfirmation": "¿Estás seguro de que quieres eliminar a este miembro del evento {name}?\n\nEn caso afirmativo, se actualizará el evento para indicar que nunca asistió a él.",
   "@deleteFromEventConfirmation":{
     "description": "notInBrand text",
     "placeholders": {
@@ -804,7 +804,7 @@
   "@inviteCodeOptional":{
     "description": "inviteCode text"
   },
-  "copyCodeMessage": "Envia tu código de invitación",
+  "copyCodeMessage": "Envía tu código de invitación",
   "@copyCodeMessage":{
     "description": "inviteCode text"
   },
@@ -1110,7 +1110,7 @@
   "@profilePhoto": {
     "description": "Wellcome message"
   },
-  "profilePhotoOptional": "En caso que no quieras escoger tu foto de perfil en este momento, puedes saltarte este paso.",
+  "profilePhotoOptional": "En caso de que no quieras escoger tu foto de perfil en este momento, puedes saltarte este paso.",
   "@profilePhotoOptional": {
     "description": "Wellcome message"
   },
@@ -1130,7 +1130,7 @@
   "@editBrandLogo": {
     "description": "Wellcome message"
   },
-  "addBrandPhotos": "Añade imagenes para la marca",
+  "addBrandPhotos": "Añade imágenes para la marca",
   "@addBrandPhotos": {
     "description": "Wellcome message"
   },
@@ -1179,7 +1179,7 @@
   "@joinEvent": {
     "description": "Wellcome message"
   },
-  "joinEventConfirmation": "¿Estás seguro que quieres reservar una plaza para esta sessión?\n\nLos organizadores recibirán una notificación.",
+  "joinEventConfirmation": "¿Estás seguro de que quieres reservar una plaza para esta sessión?\n\nLos organizadores recibirán una notificación.",
   "@joinEventConfirmation": {
     "description": "Wellcome message"
   },
@@ -1187,7 +1187,7 @@
   "@leaveEvent": {
     "description": "Wellcome message"
   },
-  "leaveEventConfirmation": "¿Estás seguro que quieres cancelar tu reserva para esta sessión?\n\nLos organizadores recibirán una notificación.",
+  "leaveEventConfirmation": "¿Estás seguro de que quieres cancelar tu reserva para esta sessión?\n\nLos organizadores recibirán una notificación.",
   "@leaveEventConfirmation": {
     "description": "Wellcome message"
   },
@@ -1199,7 +1199,7 @@
   "@monthEvents": {
     "description": "Wellcome message"
   },
-  "sendRequestConfirmation": "¿Estás seguro que quieres enviar una solicitud a esta marca?\n\nLos organizadores recibirán una notificación. Hasta que esta no sea aceptada o rechazada no podrás enviar otra solicitud a ninguna marca.",
+  "sendRequestConfirmation": "¿Estás seguro de que quieres enviar una solicitud a esta marca?\n\nLos organizadores recibirán una notificación. Hasta que esta no sea aceptada o rechazada no podrás enviar otra solicitud a ninguna marca.",
   "@sendRequestConfirmation": {
     "description": "Wellcome message"
   },
@@ -1400,7 +1400,7 @@
   "@myLocationsBaseLocationClientDesc": {
     "description": "Wellcome message"
   },
-  "myLocationsDeleteDescription": "¿Estás seguro que quieres borrar esta ubicación?\n\nEn caso que esta ubicación este siendo usada en cualquier evento, actualizaremos la ubicación de este a tu ubicación base.",
+  "myLocationsDeleteDescription": "¿Estás seguro de que quieres borrar esta ubicación?\n\nEn caso de que esta ubicación esté siendo usada en cualquier evento, actualizaremos la ubicación de este a tu ubicación base.",
   "@myLocationsOtherLocationsDesc": {
     "description": "Wellcome message"
   },
@@ -1498,7 +1498,7 @@
   "@membersOfBrand": {
     "description": "membersOfBrand message"
   },
-  "locationPermision": "Una de las funcionalidades más potentes de MAMBA és el localizador de marcas. Basándonos en tu ubicación cuando abras nuestra app, te mostraremos las marcas más cercanas a ti.\n\nPara ello es necessario que nos des permisos de localización.",
+  "locationPermision": "Una de las funcionalidades más potentes de MAMBA es el localizador de marcas. Basándonos en tu ubicación cuando abras nuestra app, te mostraremos las marcas más cercanas a ti.\n\nPara ello es necesario que nos des permisos de localización.",
   "@locationPermision": {
     "description": "membersOfBrand message"
   }
