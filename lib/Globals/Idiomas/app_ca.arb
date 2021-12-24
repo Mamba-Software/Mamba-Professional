@@ -329,5 +329,6 @@
   "writeMessage": "Escriu un missatge",
   "noMessages": "Encara no has començat cap conversa",
   "membersOfBrand": "Grup amb tots els membres de la marca",
-  "locationPermision": "Una de les funcionalitats més potents de MAMBA és el localitzador de marques. Basant-nos en la teva ubicació quan obris la nostra app, et mostrarem les marques més properes a tu.\n\nPer això és necessari que ens donis permisos de localització."
+  "locationPermision": "Una de les funcionalitats més potents de MAMBA és el localitzador de marques. Basant-nos en la teva ubicació quan obris la nostra app, et mostrarem les marques més properes a tu.\n\nPer això és necessari que ens donis permisos de localització.",
+  "termsAndConditions": "Termes i Condicions"
 }

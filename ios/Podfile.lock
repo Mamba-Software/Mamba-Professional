@@ -491,6 +491,8 @@ PODS:
     - FMDB (>= 2.7.5)
   - survey_kit (0.0.1):
     - Flutter
+  - url_launcher_ios (0.0.1):
+    - Flutter
   - video_player (0.0.1):
     - Flutter
   - wakelock (0.0.1):
@@ -509,6 +511,7 @@ DEPENDENCIES:
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - survey_kit (from `.symlinks/plugins/survey_kit/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
 
@@ -559,6 +562,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite/ios"
   survey_kit:
     :path: ".symlinks/plugins/survey_kit/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
   video_player:
     :path: ".symlinks/plugins/video_player/ios"
   wakelock:
@@ -596,6 +601,7 @@ SPEC CHECKSUMS:
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   survey_kit: fabd7496d806f0b9679e5a448414da27d8b1a731
+  url_launcher_ios: 02f1989d4e14e998335b02b67a7590fa34f971af
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
 

@@ -16,6 +16,7 @@ import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/Tus
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -193,6 +194,24 @@ class _SettingsState extends State<Settings> {
                       SizedBox(height: MediaQuery.of(context).size.height*0.02),
                     ],
                   ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                  TextButton(
+                    onPressed: () async {
+                      if (!await launch(termsAndConditions)) throw 'Could not launch $termsAndConditions';
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.policy_outlined, color: Theme.of(context).primaryColor),
+                        SizedBox(width: 10),
+                        Text(
+                          AppLocalizations.of(context)!.termsAndConditions,
+                          style: Styles.purpleTextStyle,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   TextButton(
                     onPressed: () async {
                       var result = await showDialog(
