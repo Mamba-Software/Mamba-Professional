@@ -18,6 +18,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'SettingsPrivacy.dart';
+
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
   @override
@@ -164,14 +166,26 @@ class _SettingsState extends State<Settings> {
                         style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                      ProfileTypeWidget(
-                        key: _typeProfileKey,
-                        user: currentUser,
-                        selectedProfileTypeChanged: (isPrivate) {
-                          setState(() {
-                            _isPrivate = isPrivate;
-                          });
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute<String>(
+                                builder: (context) => SettingsPrivacy(),
+                              )
+                          );
                         },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.visibility_outlined, color: Theme.of(context).primaryColor),
+                            SizedBox(width: 10),
+                            Text(
+                              AppLocalizations.of(context)!.editYourPrivacy,
+                              style: Styles.purpleTextStyle,
+                            ),
+                          ],
+                        ),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.02),
                     ],
