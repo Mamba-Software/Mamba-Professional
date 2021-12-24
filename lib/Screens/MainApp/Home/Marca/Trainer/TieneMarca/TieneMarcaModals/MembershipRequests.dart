@@ -94,11 +94,7 @@ class _MembershipRequestsState extends State<MembershipRequests> {
                       AppLocalizations.of(context)!.copyCodeMessage,
                       style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).accentColor),
                     ),
-                    trailing: IconButton(
-                      onPressed: () {
-                      },
-                      icon: Icon(Icons.send_outlined, color: Theme.of(context).accentColor, size: 25,),
-                    ),
+                    trailing: Icon(Icons.send_outlined, color: Theme.of(context).accentColor, size: 25,),
                   ),
               ),
               Container(
