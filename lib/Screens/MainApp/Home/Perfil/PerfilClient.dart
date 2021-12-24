@@ -1417,6 +1417,7 @@ class _PerfilClientState extends State<PerfilClient> {
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                Platform.isAndroid ? SizedBox(height: MediaQuery.of(context).size.height*0.02) : Container(),
               ],
             ) :
             Column(

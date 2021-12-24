@@ -106,7 +106,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                        height: MediaQuery.of(context).size.height*0.15,
+                        height: MediaQuery.of(context).size.height*0.20,
                         child: Image.asset(Constants.publicProfileImage)
                     ),
                   ],
@@ -153,7 +153,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                        height: MediaQuery.of(context).size.height*0.15,
+                        height: MediaQuery.of(context).size.height*0.20,
                         child: Image.asset(Constants.privateProfileImage)
                     ),
                   ],

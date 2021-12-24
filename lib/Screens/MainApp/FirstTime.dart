@@ -856,7 +856,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                    height: MediaQuery.of(context).size.height*0.15,
+                                    height: MediaQuery.of(context).size.height*0.20,
                                     child: Image.asset(Constants.personalTrainerImage)
                                 ),
                               ],
@@ -903,7 +903,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                    height: MediaQuery.of(context).size.height*0.15,
+                                    height: MediaQuery.of(context).size.height*0.20,
                                     child: Image.asset(Constants.clientImage)
                                 ),
                               ],
