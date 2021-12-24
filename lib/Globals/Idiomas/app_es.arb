@@ -1074,7 +1074,7 @@
   "@notifications": {
     "description": "Wellcome message"
   },
-  "mySessions": "Mis sesiones",
+  "mySessions": "Historial de sesiones",
   "@mySessions": {
     "description": "Wellcome message"
   },
