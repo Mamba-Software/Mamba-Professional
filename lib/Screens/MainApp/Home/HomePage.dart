@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
@@ -23,15 +24,44 @@ class _HomePageState extends State<HomePage> {
 
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  // Firebase Messaging
+  late FirebaseMessaging messaging;
   // Boolean Loading
   bool isLoading = false;
-
   @override
   void initState() {
     super.initState();
     isLoading = true;
     getUserAndBrand();
-    // Faltaria ficar aqui totes les altres inicialitzacions...
+    messaging = FirebaseMessaging.instance;
+    messaging.getToken().then((value){
+      print("Message Token:");
+      print(value);
+    });
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      print("message recieved");
+      print(event.notification!.body);
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Notification"),
+              content: Text(event.notification!.body!),
+              actions: [
+                TextButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });
+      print("hola");
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print('Message clicked!');
+    });
   }
   // Gets the user info from firebase.
   void getUserAndBrand() async {
