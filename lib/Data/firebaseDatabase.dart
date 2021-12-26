@@ -166,6 +166,7 @@ class FirebaseDatabaseService {
         await _firestore.collection("Users").doc(userCredential.user!.uid).set({
           "name": null,
           "nick": null,
+          "notificationToken": null,
           "email": email,
           "imageUrl": null,
           "noImageUrl":
@@ -235,6 +236,12 @@ class FirebaseDatabaseService {
       "dateOfBirth": dateOfBirth,
     }).catchError((err) {
       print(err);
+    });
+  }
+  // Add User Notification Token
+  Future<void> addUserNotificationToken(String uid, String token) async {
+    await _firestore.collection("Users").doc(uid).update({
+      "notificationToken": token,
     });
   }
 

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Usuario {
 
   String? id;
+  String? notificationToken;
   String? email;
   String? name;
   String? nick;
@@ -22,6 +23,7 @@ class Usuario {
 
   Usuario({
     this.id,
+    this.notificationToken,
     this.email,
     this.name,
     this.nick,
@@ -41,6 +43,7 @@ class Usuario {
 
   Map toMap(Usuario user) {
     var data = Map<String, dynamic>();
+    data['notificationToken'] = user.notificationToken;
     data['email'] = user.email;
     data['name'] = user.name;
     data['nick'] = user.nick;
@@ -61,6 +64,7 @@ class Usuario {
 
   Usuario.fromMap(Map<String, dynamic> mapData, String documentId) {
     this.id = documentId;
+    this.notificationToken = mapData['notificationToken'].toString();
     this.email = mapData['email'].toString();
     this.name = mapData['name'].toString();
     this.nick = mapData['nick'].toString();
@@ -80,6 +84,7 @@ class Usuario {
 
   Usuario.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
     this.id = documentId;
+    this.notificationToken = documentSnapshot.get("notificationToken").toString();
     this.email = documentSnapshot.get("email").toString();
     this.name = documentSnapshot.get("name").toString();
     this.nick = documentSnapshot.get("nick").toString();

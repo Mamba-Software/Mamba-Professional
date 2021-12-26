@@ -34,6 +34,7 @@ class DatabaseAccess {
 
   Future<int> registerUser(String email, String password, String idioma) => _firebase.registerUser(email, password, idioma);
   Future<void> addUser(String uid, String name, String nick, String dateOfBirth, int gender, File? image, bool isTrainer) => _firebase.addUser(uid, name, nick, dateOfBirth, gender, image, isTrainer);
+  Future<void> addUserNotificationToken(String uid, String token) => _firebase.addUserNotificationToken(uid, token);
   Future<bool> checkIfAliasExists(String alias) => _firebase.checkIfAliasExists(alias);
 
   Future<void> updateCurrentUserFirstTime() => _firebase.updateCurrentUserFirstTime();

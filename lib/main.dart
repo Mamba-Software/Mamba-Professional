@@ -31,9 +31,13 @@ Future<void> _backgroundMessageHandler(RemoteMessage message) async {
 // Starting app function. After initialitzation, we define the global providers:
 // - Language Provider: To change the Language of the App.
 void main() async {
+  // Initialize App
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  // Firebse Messaging
   FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
+  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
+  // System and Top Bar Style
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
