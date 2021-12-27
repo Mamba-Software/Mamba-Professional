@@ -171,7 +171,7 @@
   "@nicknameOcuppied":{
     "description": "LogIn Text "
   },
-  "nameCompleto": "Nombre completo",
+  "nameCompleto": "Nombre y apellidos",
   "@nameCompleto":{
     "description": "Nombre Completo Text "
   },
@@ -860,7 +860,7 @@
   "@sundayLetter":{
     "description": "tuesdarLetter text"
   },
-  "errorDate": "Has introducido una fecha y hora inválida",
+  "errorDate": "Has introducido una fecha y/o hora inválida",
   "@errorDate":{
     "description": "tuesdarLetter text"
   },
