@@ -22,9 +22,24 @@ import 'package:uuid/uuid.dart';
 
 // Firebase Service Class. All calls to Firebase are in this class.
 class FirebaseDatabaseService {
+  // Firebase Instances
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  // Firebase collections
+  String users = isProduction ? 'Users' : '7777 Users';
+  String brands = isProduction ? 'Brands' : '7777 Brands';
+  String events = isProduction ? 'Events' : '7777 Events';
+  String locations = isProduction ? 'Locations' : '7777 Locations';
+  String groupOfQuestions = isProduction ? 'GroupOfQuestions' : '7777 GroupOfQuestions';
+  String questions = isProduction ? 'Questions' : '7777 Questions';
+  String answers = isProduction ? 'Answers' : '7777 Answers';
+  String conversations = isProduction ? 'Conversations' : '7777 Conversations';
+  String messages = isProduction ? 'Messages' : '7777 Messages';
+  String errors = isProduction ? 'Errors' : '7777 Errors';
+  String requests = isProduction ? 'Requests' : '7777 Requests';
+  String notifications = isProduction ? 'Notifications' : '7777 Notifications';
+
 
   Map<String, dynamic> toMapisMessageRead(String? id, bool? isMessageRead) {
     return {
@@ -79,7 +94,7 @@ class FirebaseDatabaseService {
       if (currentUser.imageUrl != "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53") {
         await this.deleteUserPhoto(user.uid);
       }
-      await _firestore.collection("Users").doc(user.uid).delete();
+      await _firestore.collection(users).doc(user.uid).delete();
       await user.delete();
       return true;
     } catch (e) {
@@ -91,7 +106,7 @@ class FirebaseDatabaseService {
   Future<Brand?> checkUserIsBrandCreator(String userId) async {
     Brand brand = Brand();
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Brands")
+        .collection(brands)
         .where("adminID", isEqualTo: userId)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
@@ -128,19 +143,19 @@ class FirebaseDatabaseService {
   Future<Usuario> getCurrentUserDetails() async {
     User? currentUser = await getCurrentUser();
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Users").doc(currentUser!.uid).get();
+        await _firestore.collection(users).doc(currentUser!.uid).get();
     return Usuario.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
 
   Future<Usuario> getUserDetails(String uid) async {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Users").doc(uid).get();
+        await _firestore.collection(users).doc(uid).get();
     return Usuario.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
 
   Future<List<String>> getUserCover(String uid) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Users").doc(uid).get();
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(users).doc(uid).get();
       String name = _documentSnapshot.get("name");
       String image = _documentSnapshot.get("imageUrl");
       List<String> result = [name, image];
@@ -163,7 +178,7 @@ class FirebaseDatabaseService {
         .createUserWithEmailAndPassword(email: email, password: password)
         .then((userCredential) async {
       if (userCredential != null && userCredential.user != null) {
-        await _firestore.collection("Users").doc(userCredential.user!.uid).set({
+        await _firestore.collection(users).doc(userCredential.user!.uid).set({
           "name": null,
           "nick": null,
           "email": email,
@@ -207,7 +222,7 @@ class FirebaseDatabaseService {
   // Check If Alias Exists
   Future<bool> checkIfAliasExists(String nickname) async {
     bool result = true;
-    QuerySnapshot querySnapshot = await _firestore.collection("Users").get();
+    QuerySnapshot querySnapshot = await _firestore.collection(users).get();
     for (var doc in querySnapshot.docs) {
       if (doc.get('nick') == nickname) {
         result = false;
@@ -225,7 +240,7 @@ class FirebaseDatabaseService {
     if (image != null) {
       imageUrl = await updateCurrentUserPhoto(image);
     }
-    await _firestore.collection("Users").doc(uid).update({
+    await _firestore.collection(users).doc(uid).update({
       "name": name,
       "nick": nick,
       "imageUrl": imageUrl,
@@ -244,7 +259,7 @@ class FirebaseDatabaseService {
     var uid = Uuid().v1();
     User? currentUser = await getCurrentUser();
     try {
-      await _firestore.collection("Errors").doc(uid).set({
+      await _firestore.collection(errors).doc(uid).set({
         "userID": currentUser!.uid,
         "title": title,
         "descripcion": description,
@@ -260,7 +275,7 @@ class FirebaseDatabaseService {
   // Updates
   Future<void> updateCurrentUserFirstTime() async {
     User? currentUser = await getCurrentUser();
-    await _firestore.collection("Users").doc(currentUser!.uid).update({
+    await _firestore.collection(users).doc(currentUser!.uid).update({
       "isFirst": false,
     });
   }
@@ -268,7 +283,7 @@ class FirebaseDatabaseService {
   Future<int> updateCurrentUserBrand(String brandID) async {
     User? currentUser = await getCurrentUser();
     bool firestoreError = false;
-    await _firestore.collection("Users").doc(currentUser!.uid).update({
+    await _firestore.collection(users).doc(currentUser!.uid).update({
       "brandID": brandID,
     }).catchError((err) {
       print(err);
@@ -291,7 +306,7 @@ class FirebaseDatabaseService {
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
         imageURL = value;
-        await _firestore.collection("Users").doc(firebaseUser.uid).update({
+        await _firestore.collection(users).doc(firebaseUser.uid).update({
           "imageUrl": value,
         });
       });
@@ -306,7 +321,7 @@ class FirebaseDatabaseService {
   Future<void> updateCurrentUserDatosPerifl(
       String name, int gender, String? dateOfBirth) async {
     User? currentUser = await getCurrentUser();
-    await _firestore.collection("Users").doc(currentUser!.uid).update({
+    await _firestore.collection(users).doc(currentUser!.uid).update({
       "name": name,
       "gender": gender,
       "dateOfBirth": dateOfBirth,
@@ -316,7 +331,7 @@ class FirebaseDatabaseService {
   Future<void> updateCurrentUserSettingsPerifl(
       bool isPrivate, String idioma, String previousIdioma) async {
     User? currentUser = await getCurrentUser();
-    await _firestore.collection("Users").doc(currentUser!.uid).update({
+    await _firestore.collection(users).doc(currentUser!.uid).update({
       "isPrivate": isPrivate,
       "idioma": idioma,
       "previousIdioma": previousIdioma,
@@ -324,7 +339,7 @@ class FirebaseDatabaseService {
   }
 
   Future<void> leaveBrand(String uid) async {
-    await _firestore.collection("Users").doc(uid).update({
+    await _firestore.collection(users).doc(uid).update({
       "brandID": null,
     }).catchError((err) {
       print(err);
@@ -333,7 +348,7 @@ class FirebaseDatabaseService {
 
   Future<void> updateConversation(String? uid, var messagesRead, String lastMessage, String year,
       String month, String day, String hour, String minute, String second) async {
-    await _firestore.collection("Conversations").doc(uid).update({
+    await _firestore.collection(conversations).doc(uid).update({
       "lastMessage": lastMessage,
       "messagesRead": messagesRead,
       "year": year,
@@ -346,7 +361,7 @@ class FirebaseDatabaseService {
   }
 
   Future<void> updateConversationUsers(String? uid, var users) async {
-    await _firestore.collection("Conversations").doc(uid).update({
+    await _firestore.collection(conversations).doc(uid).update({
       "users": users,
     });
   }
@@ -354,7 +369,7 @@ class FirebaseDatabaseService {
   Future<void> updateConversationNewUser(String? brandId, String? userId) async {
 
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Conversations")
+        .collection(conversations)
         .where("brandId", isEqualTo: brandId)
         .get();
 
@@ -362,7 +377,7 @@ class FirebaseDatabaseService {
         querySnapshot.docs[0], querySnapshot.docs[0].id);
 
     DocumentSnapshot<Map<String, dynamic>> _docu =
-    await _firestore.collection("Users").doc(userId).get();
+    await _firestore.collection(users).doc(userId).get();
     Usuario user = Usuario.fromMap(_docu.data()!, _docu.id);
     conversation.users.add({
       'uid': user.id,
@@ -378,21 +393,21 @@ class FirebaseDatabaseService {
 
     // userMessagesRead.add(toMapisMessageRead(user.id, true));
 
-    await _firestore.collection("Conversations").doc(
+    await _firestore.collection(conversations).doc(
         conversation.conversationId).update({
       "users": conversation.users,
     });
   }
 
     Future<void> updateReadMessage(String? uid, var messagesRead) async {
-      await _firestore.collection("Conversations").doc(uid).update({
+      await _firestore.collection(conversations).doc(uid).update({
         "messagesRead": messagesRead,
       });
     }
 
   Future<void> deleteUserMemberConversations(Map<String, dynamic> currentUser)async {
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Conversations")
+        .collection(conversations)
         .where("users", arrayContains: currentUser)
         .get();
 
@@ -400,7 +415,7 @@ class FirebaseDatabaseService {
 
     for (var conv in querySnapshot.docs) {
       querySnapshotMessages = await _firestore
-          .collection("Messages")
+          .collection(messages)
           .where("conversationId", isEqualTo: conv.id)
           .get();
 
@@ -426,7 +441,7 @@ class FirebaseDatabaseService {
     Conversation conv = await getConversationByBrand(brandId);
 
     QuerySnapshot querySnapshotMessages = await _firestore
-        .collection("Messages")
+        .collection(messages)
         .where("conversationId", isEqualTo: conv.conversationId)
         .get();
 
@@ -447,7 +462,7 @@ class FirebaseDatabaseService {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
-    await _firestore.collection("Brands").doc(uid).set({
+    await _firestore.collection(brands).doc(uid).set({
       "adminID": firebaseUser!.uid,
       "logoUrl": "",
       "name": name,
@@ -487,13 +502,13 @@ class FirebaseDatabaseService {
     // Delete Brand Photo
     await this.deleteBrandPhoto(brandId);
     // Delete Brand
-    await _firestore.collection("Brands").doc(brandId).delete();
+    await _firestore.collection(brands).doc(brandId).delete();
   }
 
   Future<void> updateNumberMembers(String brandID) async {
     List<Usuario> trainers = await this.getAllTrainersFromBrand(brandID);
     List<Usuario> clients = await this.getAllClientsFromBrand(brandID);
-    await _firestore.collection("Brands").doc(brandID).update({
+    await _firestore.collection(brands).doc(brandID).update({
       "numberClients": clients.length,
       "numberTrainers": trainers.length,
     });
@@ -507,7 +522,7 @@ class FirebaseDatabaseService {
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
         result = value;
-        await _firestore.collection("Brands").doc(brandID).update({
+        await _firestore.collection(brands).doc(brandID).update({
           "logoUrl": value,
         });
       });
@@ -521,7 +536,7 @@ class FirebaseDatabaseService {
 
   Future<void> updateBrandInfo(String brandID, String name, String description,
       int maxMembers, List<double> workShift) async {
-    await _firestore.collection("Brands").doc(brandID).update({
+    await _firestore.collection(brands).doc(brandID).update({
       "name": name,
       "description": description,
       "maxMembers": maxMembers,
@@ -532,30 +547,30 @@ class FirebaseDatabaseService {
   Future<void> updateBrandBaseLocation(
       String brandID, String locationID) async {
     await _firestore
-        .collection("Brands")
+        .collection(brands)
         .doc(brandID)
         .update({"baseLocation": locationID});
   }
 
   Future<List<Brand>> getAllBrands() async {
-    List<Brand> brands = [];
-    QuerySnapshot querySnapshot = await _firestore.collection("Brands").get();
+    List<Brand> brandList = [];
+    QuerySnapshot querySnapshot = await _firestore.collection(brands).get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      brands.add(
+      brandList.add(
           Brand.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
-    return brands;
+    return brandList;
   }
 
   Future<Brand> getBrandDetails(String brandID) async {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Brands").doc(brandID).get();
+        await _firestore.collection(brands).doc(brandID).get();
     return Brand.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
 
   Future<List<String>> getBrandCover(String brandID) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Brands").doc(brandID).get();
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandID).get();
       String name = _documentSnapshot.get("name");
       String image = _documentSnapshot.get("logoUrl");
       List<String> result = [name, image];
@@ -567,35 +582,35 @@ class FirebaseDatabaseService {
   }
 
   Future<List<Usuario>> getAllTrainersFromBrand(String brandId) async {
-    List<Usuario> users = [];
+    List<Usuario> usersList = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Users")
+        .collection(users)
         .where("brandID", isEqualTo: brandId)
         .where("isTrainer", isEqualTo: true)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      users.add(
+      usersList.add(
           Usuario.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
-    return users;
+    return usersList;
   }
 
   Future<List<Usuario>> getAllClientsFromBrand(String brandId) async {
-    List<Usuario> users = [];
+    List<Usuario> usersList = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Users")
+        .collection(users)
         .where("brandID", isEqualTo: brandId)
         .where("isTrainer", isEqualTo: false)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      users.add(
+      usersList.add(
           Usuario.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
-    return users;
+    return usersList;
   }
 
   Future<bool> checkIfBrandExists(String brandID) async {
-    var userDocRef = await _firestore.collection('Brands').doc(brandID);
+    var userDocRef = await _firestore.collection(brands).doc(brandID);
     var doc = await userDocRef.get();
     if (doc.exists) {
       return true;
@@ -622,7 +637,7 @@ class FirebaseDatabaseService {
     var eventID = Uuid().v1();
     User? currentUser = await getCurrentUser();
     try {
-      await _firestore.collection("Events").doc(eventID).set({
+      await _firestore.collection(events).doc(eventID).set({
         "brandID": currentBrand.id,
         "creatorID": currentUser!.uid,
         "title": title,
@@ -650,7 +665,7 @@ class FirebaseDatabaseService {
   Future<Event> getSingleEvent(String id) async {
     try {
       DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-      await _firestore.collection("Events").doc(id).get();
+      await _firestore.collection(events).doc(id).get();
       return Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
     } catch (e) {
       print(e);
@@ -660,58 +675,58 @@ class FirebaseDatabaseService {
 
   // Get All Events for Client
   Future<List<Event>> getAllEventsWithLocationId(String locationId) async {
-    List<Event> events = [];
+    List<Event> eventsList = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Events")
+        .collection(events)
         .where("locationId", isEqualTo: locationId)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      events.add(
+      eventsList.add(
           Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
-    return events;
+    return eventsList;
   }
 
   // Get All Events for Client
   Future<List<Event>> getAllEventsFromClient(String clientid) async {
-    List<Event> events = [];
+    List<Event> eventsList = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Events")
+        .collection(events)
         .orderBy("year", descending: true)
         .orderBy("month", descending: true)
         .orderBy("day", descending: true)
         .where("joinedMembers", arrayContains: clientid)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      events.add(
+      eventsList.add(
           Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
-    return events;
+    return eventsList;
   }
 
   // Get All Events for Trainer
   Future<List<Event>> getAllEventsFromTrainer(String trainerid) async {
-    List<Event> events = [];
+    List<Event> eventsList = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Events")
+        .collection(events)
         .orderBy("year", descending: true)
         .orderBy("month", descending: true)
         .orderBy("day", descending: true)
         .where("selectedTrainers", arrayContains: trainerid)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      events.add(
+      eventsList.add(
           Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
-    return events;
+    return eventsList;
   } // Get All Events for Client
 
   // Get All Events for Client
   Future<List<Event>> getAllClientEventsFromBrand(
       String clientid, String brandId) async {
-    List<Event> events = [];
+    List<Event> eventsList = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Events")
+        .collection(events)
         .orderBy("year", descending: true)
         .orderBy("month", descending: true)
         .orderBy("day", descending: true)
@@ -719,19 +734,19 @@ class FirebaseDatabaseService {
         .where("joinedMembers", arrayContains: clientid)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      events.add(
+      eventsList.add(
           Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
-    return events;
+    return eventsList;
   }
 
   // Get All Finished Events for Client
   Future<List<int>> getAllClientEventsFinished(String clientid, String brandId) async {
     DateTime today = DateTime.now();
-    List<Event> events = [];
+    List<Event> eventsList = [];
     List<Event> eventsMonth = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Events")
+        .collection(events)
         .where("brandID", isEqualTo: brandId)
         .where("joinedMembers", arrayContains: clientid)
         .get();
@@ -746,22 +761,22 @@ class FirebaseDatabaseService {
         int.parse(event.minute!),
       );
       if (today.isAfter(startDate)) {
-        events.add(event);
+        eventsList.add(event);
         if (today.year == int.parse(event.year!) && today.month == int.parse(event.month!)) {
           eventsMonth.add(event);
         }
       }
     }
-    List<int> result = [events.length, eventsMonth.length];
+    List<int> result = [eventsList.length, eventsMonth.length];
     return result;
   }
 
   // Get All Events for Trainer
   Future<List<Event>> getAllTrainerEventsFromBrand(
       String trainerid, String brandId) async {
-    List<Event> events = [];
+    List<Event> eventsList = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Events")
+        .collection(events)
         .orderBy("year", descending: true)
         .orderBy("month", descending: true)
         .orderBy("day", descending: true)
@@ -769,19 +784,19 @@ class FirebaseDatabaseService {
         .where("selectedTrainers", arrayContains: trainerid)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      events.add(
+      eventsList.add(
           Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
-    return events;
+    return eventsList;
   }
 
   // Get All Finished Events for Trainer
   Future<List<int>> getAllTrainerEventsFinished(String trainerid, String brandId) async {
     DateTime today = DateTime.now();
-    List<Event> events = [];
+    List<Event> eventsList = [];
     List<Event> eventsMonth = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Events")
+        .collection(events)
         .where("brandID", isEqualTo: brandId)
         .where("selectedTrainers", arrayContains: trainerid)
         .get();
@@ -796,22 +811,22 @@ class FirebaseDatabaseService {
         int.parse(event.minute!),
       );
       if (today.isAfter(startDate)) {
-        events.add(event);
+        eventsList.add(event);
         if (today.year == int.parse(event.year!) && today.month == int.parse(event.month!)) {
           eventsMonth.add(event);
         }
       }
     }
-    List<int> result = [events.length, eventsMonth.length];
+    List<int> result = [eventsList.length, eventsMonth.length];
     return result;
   }
 
   // Get All Events Finished Brand
   Future<int> getNumberEventsFinishedBrand(String brandId) async {
     DateTime today = DateTime.now();
-    List<Event> events = [];
+    List<Event> eventsList = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Events")
+        .collection(events)
         .where("brandID", isEqualTo: brandId)
         .get();
 
@@ -825,18 +840,18 @@ class FirebaseDatabaseService {
         int.parse(event.minute!),
       );
       if (today.isAfter(startDate)) {
-        events.add(event);
+        eventsList.add(event);
       }
     }
-    return events.length;
+    return eventsList.length;
   }
 
   // Get All Events Finished Brand
   Future<int> getNumberEventsToDoBrand(String brandId) async {
     DateTime today = DateTime.now();
-    List<Event> events = [];
+    List<Event> eventsList = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Events")
+        .collection(events)
         .where("brandID", isEqualTo: brandId)
         .get();
 
@@ -850,18 +865,18 @@ class FirebaseDatabaseService {
         int.parse(event.minute!),
       );
       if (today.isBefore(startDate)) {
-        events.add(event);
+        eventsList.add(event);
       }
     }
-    return events.length;
+    return eventsList.length;
   }
 
   // Get All Events for Today of Brand
   Future<List<Event>> getAllEventsTodayBrand(String brandId) async {
     DateTime today = DateTime.now();
-    List<Event> events = [];
+    List<Event> eventsList = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Events")
+        .collection(events)
         .where("year", isEqualTo: today.year.toString())
         .where("month", isEqualTo: today.month.toString())
         .where("day", isEqualTo: today.day.toString())
@@ -869,21 +884,21 @@ class FirebaseDatabaseService {
         .orderBy("hour", descending: false)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      events.add(
+      eventsList.add(
           Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
-    return events;
+    return eventsList;
   }
 
   // Get All Events for User Today
   Future<List<Event>> getAllEventsTodayUser(
       String userid, bool isTrainer) async {
     DateTime today = DateTime.now();
-    List<Event> events = [];
+    List<Event> eventsList = [];
     QuerySnapshot querySnapshot;
     if (isTrainer) {
       querySnapshot = await _firestore
-          .collection("Events")
+          .collection(events)
           .where("year", isEqualTo: today.year.toString())
           .where("month", isEqualTo: today.month.toString())
           .where("day", isEqualTo: today.day.toString())
@@ -892,7 +907,7 @@ class FirebaseDatabaseService {
           .get();
     } else {
       querySnapshot = await _firestore
-          .collection("Events")
+          .collection(events)
           .where("year", isEqualTo: today.year.toString())
           .where("month", isEqualTo: today.month.toString())
           .where("day", isEqualTo: today.day.toString())
@@ -901,16 +916,16 @@ class FirebaseDatabaseService {
           .get();
     }
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      events.add(
+      eventsList.add(
           Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
-    return events;
+    return eventsList;
   }
 
   // Delete Event
   Future<void> deleteEvent(String id) async {
     try {
-      await _firestore.collection("Events").doc(id).delete();
+      await _firestore.collection(events).doc(id).delete();
     } catch (e) {
       print(e.toString());
     }
@@ -920,7 +935,7 @@ class FirebaseDatabaseService {
   Future<void> deleteBrandEvents(String brandId) async {
     try {
       QuerySnapshot querySnapshot = await _firestore
-          .collection("Events")
+          .collection(events)
           .where("brandID", isEqualTo: brandId)
           .get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
@@ -953,7 +968,7 @@ class FirebaseDatabaseService {
   Future<List<String>> getEventTrainers(String eid) async {
     List<String> participants = [];
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Events").doc(eid).get();
+        await _firestore.collection(events).doc(eid).get();
     Event event =
         Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
     for (int i = 0; i < event.selectedTrainers.length; i++) {
@@ -966,7 +981,7 @@ class FirebaseDatabaseService {
   Future<List<String>> getEventClients(String eid) async {
     List<String> participants = [];
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Events").doc(eid).get();
+        await _firestore.collection(events).doc(eid).get();
     Event event =
         Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
     for (int i = 0; i < event.joinedMembers.length; i++) {
@@ -978,7 +993,7 @@ class FirebaseDatabaseService {
   // Update Event Trainers
   Future<bool> updateEventTrainers(String eid, var selectedTrainers) async {
     try {
-      await _firestore.collection("Events").doc(eid).update({
+      await _firestore.collection(events).doc(eid).update({
         "selectedTrainers": selectedTrainers,
       });
       return true;
@@ -991,7 +1006,7 @@ class FirebaseDatabaseService {
   // Update Event Trainers
   Future<bool> updateEventClients(String eid, var joinedMembers) async {
     try {
-      await _firestore.collection("Events").doc(eid).update({
+      await _firestore.collection(events).doc(eid).update({
         "joinedMembers": joinedMembers,
       });
       return true;
@@ -1078,7 +1093,7 @@ class FirebaseDatabaseService {
       int? maxMembers,
       var selectedTrainers) async {
     try {
-      await _firestore.collection("Events").doc(id).update({
+      await _firestore.collection(events).doc(id).update({
         "title": title,
         "description": description,
         "year": year,
@@ -1098,7 +1113,7 @@ class FirebaseDatabaseService {
   // Update Event Location
   Future<void> updateEventLocation(String eventId, String locationId) async {
     try {
-      await _firestore.collection("Events").doc(eventId).update({
+      await _firestore.collection(events).doc(eventId).update({
         "locationId": locationId,
       });
     } catch (e) {
@@ -1108,7 +1123,7 @@ class FirebaseDatabaseService {
 
   // Update Event Is Completed
   Future<void> updateEventCompleted(String id) async {
-    await _firestore.collection("Events").doc(id).update({
+    await _firestore.collection(events).doc(id).update({
       "isCompleted": true,
     });
   }
@@ -1132,7 +1147,7 @@ class FirebaseDatabaseService {
       double longitude) async {
     var uid = Uuid().v1();
     try {
-      await _firestore.collection("Locations").doc(uid).set({
+      await _firestore..collection(locations).doc(uid).set({
         "brandID": brandId,
         "placeId": placeId,
         "isBaseLocation": isBaseLocation,
@@ -1166,7 +1181,7 @@ class FirebaseDatabaseService {
       double longitude) async {
     var uid = Uuid().v1();
     try {
-      await _firestore.collection("Locations").doc(locationID).update({
+      await _firestore..collection(locations).doc(locationID).update({
         "brandID": brandId,
         "placeId": placeId,
         "isBaseLocation": isBaseLocation,
@@ -1193,7 +1208,7 @@ class FirebaseDatabaseService {
           await this.updateEventLocation(event.id!, baseLocation);
         }
       }
-      await _firestore.collection("Locations").doc(locationId).delete();
+      await _firestore..collection(locations).doc(locationId).delete();
       return true;
     } catch (e) {
       print(e.toString());
@@ -1206,7 +1221,7 @@ class FirebaseDatabaseService {
     try {
       try {
         QuerySnapshot querySnapshot = await _firestore
-            .collection("Locations")
+            .collection(locations)
             .where("brandID", isEqualTo: brandId)
             .get();
         for (int i = 0; i < querySnapshot.docs.length; i++) {
@@ -1223,7 +1238,7 @@ class FirebaseDatabaseService {
   // Get Single Location
   Future<Location> getSingleLocation(String locationId) async {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Locations").doc(locationId).get();
+        await _firestore.collection(locations).doc(locationId).get();
     return Location.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
 
@@ -1236,7 +1251,7 @@ class FirebaseDatabaseService {
     DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yy');
     final String formatted = formatter.format(now);
-    await _firestore.collection("Requests").doc(uid).set({
+    await _firestore.collection(requests).doc(uid).set({
       "brandId": brandId,
       "userId": currentUser!.uid,
       "name": name,
@@ -1252,25 +1267,25 @@ class FirebaseDatabaseService {
   Future<void> acceptRequest(String requestId) async {
     // Get the Request
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Requests").doc(requestId).get();
+        await _firestore.collection(requests).doc(requestId).get();
     RequestToBrand request =
         RequestToBrand.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
     // Accept the user to Brand
-    await _firestore.collection("Users").doc(request.userId).update({
+    await _firestore.collection(users).doc(request.userId).update({
       "brandID": request.brandId,
     });
     // Delete the Request
-    await _firestore.collection("Requests").doc(requestId).delete();
+    await _firestore.collection(requests).doc(requestId).delete();
 
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Conversations")
+        .collection(conversations)
         .where("brandId", isEqualTo: request.brandId)
         .get();
 
     Conversation conversation  = Conversation.fromObject(querySnapshot.docs[0], querySnapshot.docs[0].id);
 
     DocumentSnapshot<Map<String, dynamic>> _docu =
-    await _firestore.collection("Users").doc(request.userId).get();
+    await _firestore.collection(users).doc(request.userId).get();
     Usuario user = Usuario.fromMap(_docu.data()!, _docu.id);
     conversation.users.add({
       'uid': user.id,
@@ -1286,7 +1301,7 @@ class FirebaseDatabaseService {
 
    // userMessagesRead.add(toMapisMessageRead(user.id, true));
 
-    await _firestore.collection("Conversations").doc(conversation.conversationId).update({
+    await _firestore.collection(conversations).doc(conversation.conversationId).update({
       "users": conversation.users,
     });
 
@@ -1295,14 +1310,14 @@ class FirebaseDatabaseService {
   // Delete Request
   Future<void> deleteRequest(String requestId) async {
     // Delete the Request
-    await _firestore.collection("Requests").doc(requestId).delete();
+    await _firestore.collection(requests).doc(requestId).delete();
   }
 
   // Has Pending Request
   Future<RequestToBrand?> hasPendingRequest(String userId) async {
     RequestToBrand request;
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Requests")
+        .collection(requests)
         .where("userId", isEqualTo: userId)
         .get();
     if (querySnapshot.docs.length > 0) {
@@ -1320,7 +1335,7 @@ class FirebaseDatabaseService {
   Future<List<NotificationEvent>> getAllNotificationsUser(String userId) async {
     List<NotificationEvent> notis = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Notifications")
+        .collection(notifications)
         .where("userId", isEqualTo: userId)
         .orderBy("year", descending: true)
         .orderBy("month", descending: true)
@@ -1339,7 +1354,7 @@ class FirebaseDatabaseService {
     DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yy');
     final String formatted = formatter.format(now);
-    await _firestore.collection("Notifications").doc(uid).set({
+    await _firestore.collection(notifications).doc(uid).set({
       "userId": userId,
       "type": type,
       "isRead": false,
@@ -1356,21 +1371,21 @@ class FirebaseDatabaseService {
 
   // Number Unread Notifications
   Future<int> numberUnreadNotifications(String userId) async {
-    List<NotificationEvent> notifications = [];
+    List<NotificationEvent> notificationsList = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Notifications")
+        .collection(notifications)
         .where("userId", isEqualTo: userId)
         .where("isRead", isEqualTo: false)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      notifications.add(NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+      notificationsList.add(NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
-    return notifications.length;
+    return notificationsList.length;
   }
 
   // Mark as Read Notifications
   Future<void> markNotificationAsRead(String notificationId) async {
-    await _firestore.collection("Notifications").doc(notificationId).update({
+    await _firestore.collection(notifications).doc(notificationId).update({
       "isRead": true,
     });
   }
@@ -1378,7 +1393,7 @@ class FirebaseDatabaseService {
   // Mark ALL as Read Notifications
   Future<void> markALLNotificationAsRead(String userId) async {
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Notifications")
+        .collection(notifications)
         .where("userId", isEqualTo: userId)
         .where("isRead", isEqualTo: false)
         .get();
@@ -1393,7 +1408,7 @@ class FirebaseDatabaseService {
   //Get One Question
   Future<Question> getOneQuestion(String? id) async {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection("Questions").doc(id).get();
+        await _firestore.collection(questions).doc(id).get();
     return Question.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
 
@@ -1405,7 +1420,7 @@ class FirebaseDatabaseService {
     bool firestoreError = false;
     var uid = Uuid().v1();
     try {
-      await _firestore.collection("Questions").doc(questionID).set({
+      await _firestore.collection(questions).doc(questionID).set({
         "creatorID": currentUser!.uid,
         "questionCat": questionCat,
         "questionSpn": questionSpn,
@@ -1420,16 +1435,16 @@ class FirebaseDatabaseService {
 
   //Get all questions of a type
   Future<List<Question>> getAllQuestionsByType(String type) async {
-    List<Question> questions = [];
+    List<Question> questionsList = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Questions")
+        .collection(questions)
         .where("type", isEqualTo: type)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      questions.add(
+      questionsList.add(
           Question.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
-    return questions;
+    return questionsList;
   }
 
   //Group Of Questions
@@ -1443,7 +1458,7 @@ class FirebaseDatabaseService {
     var uid = Uuid().v1();
     try {
       await _firestore
-          .collection("GroupOfQuestions")
+          .collection(groupOfQuestions)
           .doc(groupOfQuestionsID)
           .set({
         "creatorID": currentUser!.uid,
@@ -1461,21 +1476,20 @@ class FirebaseDatabaseService {
   }
 
   //Get Active Group Of GroupOfQuestions
-
   Future<GroupOfQuestions?> getActiveGroupOfQuestions() async {
-    List<GroupOfQuestions> groupOfQuestions = [];
+    List<GroupOfQuestions> groupOfQuestionsList = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("GroupOfQuestions")
+        .collection(groupOfQuestions)
         .where("isActive", isEqualTo: true)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      groupOfQuestions.add(GroupOfQuestions.fromObject(
+      groupOfQuestionsList.add(GroupOfQuestions.fromObject(
           querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
     if (querySnapshot.docs.length == 0) {
       return null;
     }
-    return groupOfQuestions[0];
+    return groupOfQuestionsList[0];
   }
 
   //Answers
@@ -1488,7 +1502,7 @@ class FirebaseDatabaseService {
     bool firestoreError = false;
     var uid = Uuid().v1();
     try {
-      await _firestore.collection("Answers").doc(answerID).set({
+      await _firestore.collection(answers).doc(answerID).set({
         "userID": currentUser!.uid,
         "groupOfQuestionsID": groupOfQuestionsID,
         "answerOne": answerOne,
@@ -1507,7 +1521,7 @@ class FirebaseDatabaseService {
 
   Future<bool> checkIfAnswersExist(String? groupOfQuestionsId) async {
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Answers")
+        .collection(answers)
         .where("userID", isEqualTo: currentUser.id.toString())
         .where("groupOfQuestionsID", isEqualTo: groupOfQuestionsId.toString())
         .get();
@@ -1526,7 +1540,7 @@ class FirebaseDatabaseService {
   // Delete Conversation
   Future<void> deleteConversation(String id) async {
     try {
-      await _firestore.collection("Conversations").doc(id).delete();
+      await _firestore.collection(conversations).doc(id).delete();
     } catch (e) {
       print(e.toString());
     }
@@ -1536,7 +1550,7 @@ class FirebaseDatabaseService {
   Future<int> numberUnreadConversations(String userId) async {
     List<Conversation> conv = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Conversations")
+        .collection(conversations)
         .where("messagesRead", arrayContains: toMapisMessageRead(userId, true))
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
@@ -1559,7 +1573,7 @@ class FirebaseDatabaseService {
     print(users);
     var uid = Uuid().v1();
     try {
-      await _firestore.collection("Conversations").doc(uid).set({
+      await _firestore.collection(conversations).doc(uid).set({
         "users": users,
         "messagesRead": messagesRead,
         "brandId": brandId,
@@ -1592,7 +1606,7 @@ class FirebaseDatabaseService {
       String? conversationId) async {
     var uid = Uuid().v1();
     try {
-      await _firestore.collection("Messages").doc(uid).set({
+      await _firestore.collection(messages).doc(uid).set({
         "message": message,
         "userSent": userSent,
         "year": year,
@@ -1611,9 +1625,9 @@ class FirebaseDatabaseService {
   }
 
   Future<List<Message>> getConversationMessagesInit(String? conversationId) async {
-    List<Message> messages = [];
+    List<Message> messagesList = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Messages")
+        .collection(messages)
         .where("conversationId", isEqualTo: conversationId)
         .orderBy("year", descending: true)
         .orderBy("month", descending: true)
@@ -1623,17 +1637,16 @@ class FirebaseDatabaseService {
         .orderBy("second", descending: true)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      messages.add(Message.fromObject(
+      messagesList.add(Message.fromObject(
           querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
 
-    return messages;
+    return messagesList;
   }
 
   Future<String?> getLastUserMessageSent(String? conversationId) async {
-    List<Message> messages = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Messages")
+        .collection(messages)
         .where("conversationId", isEqualTo: conversationId)
         .orderBy("year", descending: false)
         .orderBy("month", descending: false)
@@ -1651,32 +1664,32 @@ class FirebaseDatabaseService {
 
   Future<List<Conversation>> getConversationByUsers(
       Map<String, dynamic> currentUser, Map<String, dynamic> user) async {
-    List<Conversation> conversations = [];
+    List<Conversation> conversationsList = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Conversations")
+        .collection(conversations)
         .where("users", arrayContains: currentUser)
         .get();
     QuerySnapshot querySnapshot2 = await _firestore
-        .collection("Conversations")
+        .collection(conversations)
         .where("users", arrayContains: user)
         .get();
 
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       for (int j = 0; j < querySnapshot2.docs.length; j++) {
         if (querySnapshot.docs[i].id == querySnapshot2.docs[j].id) {
-          conversations.add(Conversation.fromObject(
+          conversationsList.add(Conversation.fromObject(
               querySnapshot.docs[i], querySnapshot.docs[i].id));
          // i = querySnapshot.docs.length;
           //j = querySnapshot2.docs.length;
         }
       }
     }
-    return conversations;
+    return conversationsList;
   }
 
   Future<Conversation> getConversationByBrand(String? brandId) async {
     QuerySnapshot querySnapshot = await _firestore
-        .collection("Conversations")
+        .collection(conversations)
         .where("brandId", isEqualTo: brandId)
         .get();
 
@@ -1690,17 +1703,17 @@ class FirebaseDatabaseService {
 
   // Brands
   Stream<QuerySnapshot> getAllBrandsStream() {
-    return _firestore.collection("Brands").snapshots();
+    return _firestore.collection(brands).snapshots();
   }
 
   // Events
   Stream<DocumentSnapshot> getSingleEventStream(String eid) {
-    return _firestore.collection("Events").doc(eid).snapshots();
+    return _firestore.collection(events).doc(eid).snapshots();
   }
 
   Stream<QuerySnapshot> getAllEventsFromBrand(String brandid) {
     return _firestore
-        .collection("Events")
+        .collection(events)
         .where("brandID", isEqualTo: brandid)
         .snapshots();
   }
@@ -1708,7 +1721,7 @@ class FirebaseDatabaseService {
   Stream<QuerySnapshot> getAllEventsTodayBrandStream(String brandId) {
     DateTime today = DateTime.now();
     return _firestore
-        .collection("Events")
+        .collection(events)
         .where("year", isEqualTo: today.year.toString())
         .where("month", isEqualTo: today.month.toString())
         .where("day", isEqualTo: today.day.toString())
@@ -1720,7 +1733,7 @@ class FirebaseDatabaseService {
   Stream<QuerySnapshot> getAllEventsFromUser(String userid, bool isTrainer) {
     if (isTrainer) {
       return _firestore
-          .collection("Events")
+          .collection(events)
           .where("selectedTrainers", arrayContains: userid)
           .orderBy("year", descending: true)
           .orderBy("month", descending: true)
@@ -1728,7 +1741,7 @@ class FirebaseDatabaseService {
           .snapshots();
     } else {
       return _firestore
-          .collection("Events")
+          .collection(events)
           .where("joinedMembers", arrayContains: userid)
           .orderBy("year", descending: false)
           .orderBy("month", descending: false)
@@ -1740,7 +1753,7 @@ class FirebaseDatabaseService {
   // Locations
   Stream<QuerySnapshot> getAllLocationsBrand(String brandId) {
     return _firestore
-        .collection("Locations")
+        .collection(locations)
         .where("brandID", isEqualTo: brandId)
         .snapshots();
   }
@@ -1748,7 +1761,7 @@ class FirebaseDatabaseService {
   // Requests
   Stream<QuerySnapshot> getAllRequestsBrand(String brandId) {
     return _firestore
-        .collection("Requests")
+        .collection(requests)
         .where("brandId", isEqualTo: brandId)
         .snapshots();
   }
@@ -1756,7 +1769,7 @@ class FirebaseDatabaseService {
   // Notifications
   Stream<QuerySnapshot> getAllNotificationsUserStream(String userId) {
     return _firestore
-        .collection("Notifications")
+        .collection(notifications)
         .where("userId", isEqualTo: userId)
         .orderBy("year", descending: true)
         .orderBy("month", descending: true)
@@ -1777,13 +1790,13 @@ class FirebaseDatabaseService {
 
   //Question
   Stream<QuerySnapshot> getAllQuestions() {
-    return _firestore.collection("Questions").snapshots();
+    return _firestore.collection(questions).snapshots();
   }
 
   //Conversations
   Stream<QuerySnapshot> getUserConversations(Map<String, dynamic> mapUser) {
     return _firestore
-        .collection("Conversations")
+        .collection(conversations)
         .where("users", arrayContains: mapUser)
         .orderBy("year", descending: true)
         .orderBy("month", descending: true)
@@ -1798,7 +1811,7 @@ class FirebaseDatabaseService {
   //Messages
   Future<void> deleteMessage(String id) async {
     try {
-      await _firestore.collection("Messages").doc(id).delete();
+      await _firestore.collection(messages).doc(id).delete();
     } catch (e) {
       print(e.toString());
     }
@@ -1807,7 +1820,7 @@ class FirebaseDatabaseService {
   Stream<QuerySnapshot> getConversationMessages(String? conversationId) {
     print(conversationId);
     return _firestore
-        .collection("Messages")
+        .collection(messages)
         .where("conversationId", isEqualTo: conversationId)
         .orderBy("year", descending: true)
         .orderBy("month", descending: true)
@@ -1827,6 +1840,6 @@ class FirebaseDatabaseService {
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Future<Stream<QuerySnapshot>> getAllUsers() async {
-    return _firestore.collection("Users").snapshots();
+    return _firestore.collection(users).snapshots();
   }
 }
