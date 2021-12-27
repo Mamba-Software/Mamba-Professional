@@ -82,6 +82,7 @@ class _HomePageState extends State<HomePage> {
       enableVibration: true,
       importance: Importance.max,
       priority: Priority.high,
+      color: Color(0xFFF4AD1F),
     );
     IOSNotificationDetails iOSPlatformChannelSpecifics = IOSNotificationDetails();
     NotificationDetails platformChannelSpecifics =

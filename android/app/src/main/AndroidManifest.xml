@@ -44,6 +44,8 @@
             android:value="2" />
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/logo_foreground" />
+        <meta-data android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
     </application>
     <queries>
         <!-- If your app opens https URLs -->
