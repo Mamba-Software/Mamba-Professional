@@ -155,7 +155,131 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                     ),
                     appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
                       final Appointment appointment = details.appointments.first;
+                      final DateTime today = DateTime.now();
                       final Event event = getEvent(appointment.id.toString());
+                      bool isCompleted = appointment.endTime.isBefore(today);
+                      if (isCompleted) {
+                        return GestureDetector(
+                          onTap: !widget.onlyView ? () {
+                            _viewEvent(appointment.id.toString(), appointment.startTime);
+                          } : null,
+                          child: Center(
+                            child: Material(
+                              elevation: 2,
+                              child: Container(
+                                width: details.bounds.width,
+                                height: details.bounds.height,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  border: Border.all(width: 1, color: Colors.black),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(5),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
+                                        child: FittedBox(
+                                          fit: BoxFit.fitWidth,
+                                          child: Text(event.title!,
+                                            textAlign: TextAlign.center,
+                                            style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                        child: FittedBox(
+                                          fit: BoxFit.fitWidth,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.record_voice_over,
+                                                color: Colors.black,
+                                                size: 15,
+                                              ),
+                                              SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                              Text(
+                                                event.selectedTrainers.length.toString(),
+                                                style: TextStyle(color: Colors.black),
+                                              ),
+                                              SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                              Icon(
+                                                Icons.directions_run,
+                                                color: Colors.black,
+                                                size: 15,
+                                              ),
+                                              SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                              Text(
+                                                event.joinedMembers.length.toString(),
+                                                style: TextStyle(color: Colors.black),
+                                              ),
+
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      event.joinedMembers.contains(currentUser.id!) ? Column(
+                                        children: [
+                                          SizedBox(height: details.bounds.height*0.05,),
+                                          CircularImage(
+                                            size: details.bounds.width*0.6,
+                                            image: currentUser.imageUrl!,
+                                            color: Theme.of(context).accentColor,
+                                          ),
+                                        ],
+                                      ) : Container(),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return GestureDetector(
+                          onTap: !widget.onlyView ? () {
+                            _viewEvent(appointment.id.toString(), appointment.startTime);
+                          } : null,
+                          child: Center(
+                            child: Material(
+                              elevation: 2,
+                              child: Container(
+                                width: details.bounds.width,
+                                height: details.bounds.height,
+                                decoration: BoxDecoration(
+                                  color: appointment.color,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(5),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                                      event.joinedMembers.contains(currentUser.id!) ? Column(
+                                        children: [
+                                          SizedBox(height: details.bounds.height*0.05,),
+                                          CircularImage(
+                                            size: details.bounds.width*0.6,
+                                            image: currentUser.imageUrl!,
+                                            color: Theme.of(context).accentColor,
+                                          ),
+                                        ],
+                                      ) : Container(),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+
                       return GestureDetector(
                         onTap: !widget.onlyView ? () {
                           _viewEvent(appointment.id.toString(), appointment.startTime);
