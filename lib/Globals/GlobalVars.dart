@@ -7,8 +7,10 @@ import 'package:mamba_castelldefels/Models/Usuario.dart';
 // App Version
 var version = "MAMBA v0.1";
 // Website
-var website = "https://mambastyle.net/";
-var termsAndConditions = "https://mambastyle.net/terminos-y-condiciones/";
+var websiteES = "https://mambastyle.net/";
+var websiteCA = "https://mambastyle.net/ca/inici/";
+var termsAndConditionsES = "https://mambastyle.net/terminos-y-condiciones/";
+var termsAndConditionsCA = "https://mambastyle.net/ca/termes-i-condicions/";
 
 // API Keys
 var placesAPIAndroid = "AIzaSyBjUcoI0sYFY9H8mb2n0IoBv26GxnPTRgs";
