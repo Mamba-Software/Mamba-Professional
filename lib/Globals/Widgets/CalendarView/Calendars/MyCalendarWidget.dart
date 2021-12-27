@@ -479,7 +479,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                     width: details.bounds.width,
                                     height: details.bounds.height,
                                     decoration: BoxDecoration(
-                                      color: Theme.of(context).backgroundColor,
+                                      color: Theme.of(context).scaffoldBackgroundColor,
                                       border: Border.all(width: 1, color: Colors.black),
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(5),
