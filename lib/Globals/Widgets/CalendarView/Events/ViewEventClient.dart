@@ -245,9 +245,29 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
         temp.add(Usuario(name: AppLocalizations.of(context)!.notFoundUser, imageUrl: deletedObject, isPrivate: false));
       }
     }
+    temp = orderClientsPrivateLast(temp);
     setState(() {
       brandClientsJoining = temp;
     });
+  }
+
+  List<Usuario> orderClientsPrivateLast(List<Usuario> clients) {
+    List<Usuario> orderedUsers = [];
+    List<Usuario> privateUsers = [];
+    for (var i=0; i< clients.length; i++) {
+      Usuario client = clients[i];
+      if (client.id == currentUser.id) {
+        orderedUsers.insert(0, client);
+      } else {
+        if (client.isPrivate!) {
+          privateUsers.add(client);
+        } else {
+          orderedUsers.add(client);
+        }
+      }
+    }
+    orderedUsers.addAll(privateUsers);
+    return orderedUsers;
   }
 
   Future<void> getLocation(String locationId) async {
@@ -955,8 +975,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                     CircularImage(
                                                       size: MediaQuery.of(context).size.width*0.2,
                                                       image: client.noImageUrl,
-                                                      color: Theme.of(context).primaryColor,
-                                                    borderWidth: 1,
+                                                      color: Colors.grey,
+                                                      borderWidth: 1,
                                                     ),
                                                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                                     Container(
@@ -1094,7 +1114,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
               ),
             ),
           );
-        } else {
+        } else if (isJoined) {
           return Padding(
             padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
             child: Container(
@@ -1143,6 +1163,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
               ),
             ),
           );
+        } else {
+          return Container();
         }
       } else {
         return Container();

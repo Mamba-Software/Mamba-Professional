@@ -1,6 +1,4 @@
 // This class represents the Object <Question> that will be showed in the FeedBack Screen.
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class GroupOfQuestions {

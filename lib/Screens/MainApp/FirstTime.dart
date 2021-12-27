@@ -419,7 +419,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
-                                    AppLocalizations.of(context)!.name,
+                                    AppLocalizations.of(context)!.nameCompleto,
                                     style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
                                     textAlign: TextAlign.left,
                                   ),
