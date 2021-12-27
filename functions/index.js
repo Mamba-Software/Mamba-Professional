@@ -62,3 +62,31 @@ exports.sendNotification = functions.firestore
       })
     return null
   })
+
+exports.sendEmail = functions.firestore.document('users/{userId}')
+    .onUpdate((change, context) => {
+     const after = change.after.data();
+
+      if(after.status === 'VERIFIED'){
+        console.log('profile verified')
+        const db = admin.firestore();
+
+        return db.collection('users').doc(context.params.userId)  // get userId
+        .get()
+        .then(doc => {
+           const user = doc.data();
+           const msg = {
+             to: 'email',
+             from: 'email',
+             templateId: 'template id',
+             dynamic_template_data: {
+              subject: 'Profile verified',
+              name: 'name',
+          },
+         };
+         return sgMail.send(msg)
+     })
+     .then(() => console.log('email sent!') )
+     .catch(err => console.log(err) )
+      }
+    });
