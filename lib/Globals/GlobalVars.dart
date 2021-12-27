@@ -4,8 +4,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
+// IS PRODUCTION?
+bool isProduction = true;
+
 // App Version
 var version = "MAMBA v0.1";
+
 // Website
 var websiteES = "https://mambastyle.net/";
 var websiteCA = "https://mambastyle.net/ca/inici/";
@@ -30,5 +34,4 @@ String? currentAddress;
 
 // Page Controller
 final PageController pageController = PageController(initialPage: currentIndex);
-// Current Index BotomNavigation
 int currentIndex = 0;
