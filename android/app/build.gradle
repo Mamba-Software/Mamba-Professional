@@ -41,7 +41,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.mamba.mambastyleapp"
+        applicationId "com.mambastyle.mambastyle"
         minSdkVersion 20
         targetSdkVersion 30
         multiDexEnabled true
