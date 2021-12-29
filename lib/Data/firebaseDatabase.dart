@@ -59,12 +59,12 @@ class FirebaseDatabaseService {
     if (error) return -1;
     if (authResult == null)
       return -1;
-    if (authResult.user != null) {
+    if (authResult.user != null && isProduction) {
       if (authResult.user!.emailVerified) return 0;
       else return -2;
-    }
-    else
+    } else {
       return 0;
+    }
   }
 
   Future<void> signOut() async {
@@ -1799,7 +1799,6 @@ class FirebaseDatabaseService {
         .orderBy("hour", descending: true)
         .orderBy("minute", descending: true)
         .snapshots();
-
     /**/
   }
 

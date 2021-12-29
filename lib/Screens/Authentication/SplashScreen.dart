@@ -43,46 +43,101 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void checkAndGetCurrentUserDetails() async {
     User? firebaseUser = await _accessDatabase.getCurrentUser();
-    // EMAIL VERIFICATION DEACTIVATED
-    //if (firebaseUser != null) {
-    // EMAIL VERIFICATION ACTIVATED
-    if(firebaseUser != null && firebaseUser.emailVerified) {
-      currentUser = await _accessDatabase.getCurrentUserDetails();
-      unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
-      unreadChats = await _accessDatabase.numberUnreadConversations(currentUser.id!);
-      if (currentUser.brandID != "null" && currentUser.brandID != null) {
-        currentBrand = await _accessDatabase.getBrandDetails(currentUser.brandID!);
-      } else {
-        currentBrand = Brand();
-      }
-      Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
-      if(currentUser.isAdmin!) {
-        Navigator.pushReplacement(
+    if (firebaseUser != null) {
+      if (isProduction) {
+        if (firebaseUser.emailVerified) {
+          currentUser = await _accessDatabase.getCurrentUserDetails();
+          unreadNotifications =
+          await _accessDatabase.numberUnreadNotifications(currentUser.id!);
+          unreadChats =
+          await _accessDatabase.numberUnreadConversations(currentUser.id!);
+          if (currentUser.brandID != "null" && currentUser.brandID != null) {
+            currentBrand =
+            await _accessDatabase.getBrandDetails(currentUser.brandID!);
+          } else {
+            currentBrand = Brand();
+          }
+          Provider.of<LanguageProvider>(context, listen: false).setLocale(
+              Idiomas.getLocaleFromString(currentUser.idioma!));
+          if (currentUser.isAdmin!) {
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<Null>(
+                  builder: (context) => Admin(),
+                  settings: RouteSettings(name: 'Admin'),
+                )
+            );
+          } else {
+            if (!(currentUser.isFirst!)) {
+              Navigator.pushReplacement(
+                  context,
+                  CupertinoPageRoute<Null>(
+                    builder: (context) => HomePage(),
+                    settings: RouteSettings(name: 'HomePage'),
+                  )
+              );
+            } else {
+              Navigator.pushReplacement(
+                  context,
+                  CupertinoPageRoute<Null>(
+                    builder: (context) =>
+                        FirstTime(
+                          locale: Localizations.localeOf(context),
+                        ),
+                    settings: RouteSettings(name: 'FirstTimeWrapper'),
+                  )
+              );
+            }
+          }
+        } else {
+          Navigator.pushAndRemoveUntil(
             context,
             CupertinoPageRoute<Null>(
-              builder: (context) => Admin(),
-              settings: RouteSettings(name: 'Admin'),
-            )
-        );
+              builder: (context) => Login(),
+              settings: RouteSettings(name: 'Login'),
+            ),
+                (_) => false,
+          );
+        }
       } else {
-        if(!(currentUser.isFirst!)) {
+        currentUser = await _accessDatabase.getCurrentUserDetails();
+        unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
+        unreadChats = await _accessDatabase.numberUnreadConversations(currentUser.id!);
+        if (currentUser.brandID != "null" && currentUser.brandID != null) {
+          currentBrand = await _accessDatabase.getBrandDetails(currentUser.brandID!);
+        } else {
+          currentBrand = Brand();
+        }
+        Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
+        if (currentUser.isAdmin!) {
           Navigator.pushReplacement(
               context,
               CupertinoPageRoute<Null>(
-                builder: (context) => HomePage(),
-                settings: RouteSettings(name: 'HomePage'),
+                builder: (context) => Admin(),
+                settings: RouteSettings(name: 'Admin'),
               )
           );
         } else {
-          Navigator.pushReplacement(
-              context,
-              CupertinoPageRoute<Null>(
-                builder: (context) => FirstTime(
-                  locale: Localizations.localeOf(context),
-                ),
-                settings: RouteSettings(name: 'FirstTimeWrapper'),
-              )
-          );
+          if (!(currentUser.isFirst!)) {
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<Null>(
+                  builder: (context) => HomePage(),
+                  settings: RouteSettings(name: 'HomePage'),
+                )
+            );
+          } else {
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<Null>(
+                  builder: (context) =>
+                      FirstTime(
+                        locale: Localizations.localeOf(context),
+                      ),
+                  settings: RouteSettings(name: 'FirstTimeWrapper'),
+                )
+            );
+          }
         }
       }
     } else {
