@@ -94,23 +94,43 @@ class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfi
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        FloatingActionButton.extended(
-                          heroTag: "86",
-                          label: Text(AppLocalizations.of(context)!.delete),
-                          icon: Icon(Icons.delete_outlined),
-                          backgroundColor: Colors.red,
-                          foregroundColor: Styles.white,
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            elevation: 4.0,
+                            backgroundColor: Colors.red,
+                            fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(30),
+                              ),
+                            ),
+                          ),
+                          label: Text(
+                            AppLocalizations.of(context)!.delete,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          icon: Icon(Icons.delete_outline, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
                           onPressed: () {
                             Navigator.pop(context, true);
                           },
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                        FloatingActionButton.extended(
-                          heroTag: "87",
-                          icon: Icon(Icons.cancel_outlined, size: 30,),
-                          label: Text(AppLocalizations.of(context)!.cancel),
-                          backgroundColor: Colors.black,
-                          foregroundColor: Styles.white,
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            elevation: 4.0,
+                            backgroundColor: Colors.black,
+                            fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(30),
+                              ),
+                            ),
+                          ),
+                          label: Text(
+                            AppLocalizations.of(context)!.cancel,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
                           onPressed: () {
                             Navigator.pop(context, false);
                           },

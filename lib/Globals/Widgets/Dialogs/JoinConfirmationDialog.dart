@@ -43,24 +43,44 @@ class JoinConfirmationDialog extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      FloatingActionButton.extended(
-                        heroTag: "14",
-                        label: Text(AppLocalizations.of(context)!.book),
-                        icon: Icon(Icons.check_circle_outline),
-                        backgroundColor: Colors.green,
-                        foregroundColor: Styles.white,
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          elevation: 4.0,
+                          backgroundColor: Colors.green,
+                          fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30),
+                            ),
+                          ),
+                        ),
+                        label: Text(
+                          AppLocalizations.of(context)!.book,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        icon: Icon(Icons.event_available_outlined, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
                         onPressed: () {
                           Navigator.pop(context, true);
                         },
                       ),
                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                      FloatingActionButton.extended(
-                        heroTag: "15",
-                        icon: Icon(Icons.cancel_outlined, size: 30,),
-                        label: Text(AppLocalizations.of(context)!.cancel),
-                        backgroundColor: Theme.of(context).primaryColor,
-                        foregroundColor: Styles.white,
-                        onPressed: () async {
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          elevation: 4.0,
+                          backgroundColor: Colors.black,
+                          fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30),
+                            ),
+                          ),
+                        ),
+                        label: Text(
+                          AppLocalizations.of(context)!.cancel,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
+                        onPressed: () {
                           Navigator.pop(context, false);
                         },
                       ),

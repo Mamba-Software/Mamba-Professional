@@ -1103,7 +1103,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                           }
                         },
                         backgroundColor: Colors.green,
-                        icon: Icon(Icons.add_circle_outline, color: Colors.white,),
+                        icon: Icon(Icons.event_available_outlined, color: Colors.white,),
                         label: Text(
                           AppLocalizations.of(context)!.book,
                           style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
@@ -1152,7 +1152,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                           }
                         },
                         backgroundColor: Colors.red,
-                        icon: Icon(Icons.cancel_outlined, color: Colors.white,),
+                        icon: Icon(Icons.event_busy_outlined, color: Colors.white,),
                         label: Text(
                           AppLocalizations.of(context)!.leave,
                           style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
