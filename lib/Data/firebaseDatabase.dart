@@ -1518,18 +1518,13 @@ class FirebaseDatabaseService {
   }
 
   //Check if answers for user exists
-
   Future<bool> checkIfAnswersExist(String? groupOfQuestionsId) async {
     QuerySnapshot querySnapshot = await _firestore
         .collection(answers)
         .where("userID", isEqualTo: currentUser.id.toString())
         .where("groupOfQuestionsID", isEqualTo: groupOfQuestionsId.toString())
         .get();
-
-    print(currentUser.id.toString());
-    print(querySnapshot.docs.length);
     if (querySnapshot.docs.length == 0) {
-      print("false");
       return false;
     } else
       return true;
