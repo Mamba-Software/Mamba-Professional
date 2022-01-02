@@ -4,8 +4,15 @@ const functions = require("firebase-functions");
 const admin = require('firebase-admin')
 admin.initializeApp()
 
+// Chat, mensajes ...
+// onUpdate -> brandId -> lanzado a esta marca
+
+// exports -> funcion sea visible en otros archivos de este proyecto (funcion publica)
+
+//
+
 exports.sendNotification = functions.firestore
-  .document('messages/{groupId1}/{groupId2}/{message}')
+  .document('Users/{userId}/Brands/{brandId}')
   .onCreate((snap, context) => {
     console.log('----------------start function--------------------')
 
@@ -44,7 +51,7 @@ exports.sendNotification = functions.firestore
                     }
                   }
                   // Let push to the target device
-                  admin
+                  await admin
                     .messaging()
                     .sendToDevice(userTo.data().pushToken, payload)
                     .then(response => {
@@ -60,7 +67,7 @@ exports.sendNotification = functions.firestore
           }
         })
       })
-    return null
+    return null;
   })
 
 exports.sendEmail = functions.firestore.document('users/{userId}')
