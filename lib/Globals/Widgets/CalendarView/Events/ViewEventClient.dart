@@ -2,16 +2,20 @@ import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CancelRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/JoinConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/LeaveConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/SendRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocationsSelect.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
+import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -26,8 +30,9 @@ import '../../Images/CircularImage.dart';
 class ViewEventClient extends StatefulWidget {
   String eventId;
   bool canJoin;
+  bool? onlyView;
   Locale locale;
-  ViewEventClient({Key? key, required this.eventId, required this.canJoin, required this.locale}) : super(key: key);
+  ViewEventClient({Key? key,required this.eventId, required this.canJoin, required this.locale, this.onlyView}) : super(key: key);
 
   @override
   _ViewEventClientState createState() => _ViewEventClientState();
@@ -62,7 +67,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   // Participants
   TextEditingController membersController = TextEditingController();
   int members = 1;
-  int membersMax = currentBrand.maxMembers!;
+  int membersMax = 100;
   // Members Page
   bool isFull = false;
   bool isJoined = false;
@@ -76,12 +81,16 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   final formKeyTime = GlobalKey<FormState>();
   final formKeyMembers = GlobalKey<FormState>();
   // Event Retrieved From BD
+  Brand? brand;
   Event? event;
   var placeDetails;
   // BackGround image
   Image? theImage;
   // String Deleted Photo
   String deletedObject = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/not-found-image.jpg?alt=media&token=70687295-6a17-4735-9c0a-e5749c777319";
+  // Request To Brand
+  String brandIdRequest = "";
+  RequestToBrand? request;
 
 
   String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
@@ -162,7 +171,10 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   }
 
   void getEventInfo() async {
+    // Get Event
     event = await _accessDatabase.getSingleEvent(widget.eventId);
+    // Get Brand
+    brand = await _accessDatabase.getBrandDetails(event!.brandID!);
     titleController.text = "${event!.title}";
     titleString = "${event!.title}";
     descriptionController.text = "${event!.description}";
@@ -187,6 +199,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     getAllTrainersFromBrand();
     getAllClientsFromBrand();
     await getLocation(event!.locationId!);
+    if (widget.onlyView!) await getUserPendingRequests();
     if (mounted) {
       Future.delayed(const Duration(milliseconds: 1000), () {
         setState(() {
@@ -199,7 +212,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   }
 
   Future<void> getAllTrainersFromBrand() async {
-    allTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
+    allTrainers = await _accessDatabase.getAllTrainersFromBrand(brand!.id!);
     List<Usuario> temp = [];
     for (var i=0; i < allTrainers.length; i++) {
       var trainer = allTrainers[i];
@@ -224,7 +237,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   }
 
   Future<void> getAllClientsFromBrand() async {
-    List<Usuario> allClients = await _accessDatabase.getAllClientsFromBrand(currentBrand.id!);
+    List<Usuario> allClients = await _accessDatabase.getAllClientsFromBrand(brand!.id!);
     List<Usuario> temp = [];
     for (var i=0; i < allClients.length; i++) {
       var client = allClients[i];
@@ -425,8 +438,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     var min = duration.toStringAsFixed(2).split(".")[1];
     var endTime =  startTime.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
     // Computing the workshift
-    var workshift1 = currentBrand.workShift[0];
-    var workshift2 = currentBrand.workShift[1];
+    var workshift1 = brand!.workShift[0];
+    var workshift2 = brand!.workShift[1];
     var startWorkHour = workshift1.toStringAsFixed(2).split(".")[0];
     var startWorkMin = workshift1.toStringAsFixed(2).split(".")[1];
     var endWorkHour = workshift2.toStringAsFixed(2).split(".")[0];
@@ -442,10 +455,10 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
       return false;
     } else {
       // Can´t create event in break period of working hours
-      for (var i=2; i<currentBrand.workShift.length; i+=2) {
+      for (var i=2; i<brand!.workShift.length; i+=2) {
         // Breaks
-        var break1 = currentBrand.workShift[i];
-        var break2 = currentBrand.workShift[i];
+        var break1 = brand!.workShift[i];
+        var break2 = brand!.workShift[i];
         // Take the minute and the hour
         var startBreakHour = break1.toStringAsFixed(2).split(".")[0];
         var startBreakMin = break1.toStringAsFixed(2).split(".")[1];
@@ -479,6 +492,21 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
       return Colors.blue;
     }
     return Theme.of(context).accentColor;
+  }
+
+  Future<void> getUserPendingRequests() async {
+    RequestToBrand? req = await _accessDatabase.hasPendingRequest(currentUser.id!);
+    if (req != null) {
+      setState(() {
+        request = req;
+        brandIdRequest = request!.brandId!;
+      });
+    } else {
+      setState(() {
+        request = null;
+        brandIdRequest = "";
+      });
+    }
   }
 
   @override
@@ -1043,7 +1071,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                 ],
                               ),
                             ),
-                            widget.canJoin ? SizedBox(height: MediaQuery.of(context).size.height*0.15) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                            widget.canJoin || widget.onlyView! ? SizedBox(height: MediaQuery.of(context).size.height*0.17) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           ],
                         ),
                       ),
@@ -1073,6 +1101,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                 maxWidth: MediaQuery.of(context).size.width*0.40,
               ),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Flexible(
                     child: Padding(
@@ -1122,6 +1151,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                 maxWidth: MediaQuery.of(context).size.width*0.40,
               ),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Flexible(
                     child: Padding(
@@ -1166,9 +1196,105 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
         } else {
           return Container();
         }
-      } else {
-        return Container();
       }
+      if (widget.onlyView!) {
+        if (request == null || brandIdRequest == brand!.id!) {
+          if (brandIdRequest == brand!.id!) {
+            return Padding(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width*0.40,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
+                        child: FloatingActionButton.extended(
+                          heroTag: "1",
+                          onPressed: () async {
+                            var result = await showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return CancelRequestConfirmationDialog(
+                                    text: AppLocalizations.of(context)!.cancelRequestConfirmation,
+                                    brand: brand!,
+                                  );
+                                }
+                            );
+                            if (result) {
+                              setState(() {
+                                brandIdRequest = "";
+                              });
+                              NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
+                              _accessDatabase.deleteRequest(request!.id!);
+                              getUserPendingRequests();
+                            }
+                          },
+                          backgroundColor: Colors.red,
+                          icon: Icon(Icons.schedule_send, color: Colors.white,),
+                          label: Text(
+                            AppLocalizations.of(context)!.sent,
+                            style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return Padding(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width*0.40,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
+                        child: FloatingActionButton.extended(
+                          heroTag: "2",
+                          onPressed: () async {
+                            var result = await showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return SendRequestConfirmationDialog(
+                                    text: AppLocalizations.of(context)!.sendRequestConfirmation,
+                                    brand: brand!,
+                                  );
+                                }
+                            );
+                            if (result) {
+                              setState(() {
+                                brandIdRequest = brand!.id!;
+                              });
+                              await _accessDatabase.sendRequest(brand!.id!, currentUser.name! ,currentUser.isTrainer!);
+                              NotificationService().userSendRequestToBrand(currentUser.id!, brand!.id!);
+                              getUserPendingRequests();
+                            }
+                          },
+                          backgroundColor: Colors.green,
+                          icon: Icon(Icons.send_outlined, color: Colors.white,),
+                          label: Text(
+                            AppLocalizations.of(context)!.join,
+                            style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+        }
+      }
+      return Container();
     }
   }
 }
