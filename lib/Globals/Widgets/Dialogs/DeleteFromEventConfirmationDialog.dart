@@ -5,7 +5,7 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import '../../Styles.dart';
-import '../CircularImage.dart';
+import '../Images/CircularImage.dart';
 
 class DeleteFromEventConfirmationDialog extends StatefulWidget {
   final String text;

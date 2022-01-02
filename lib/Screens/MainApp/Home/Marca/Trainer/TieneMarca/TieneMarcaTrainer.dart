@@ -7,8 +7,9 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetTrainer.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/BrandEventsToday.dart';
@@ -92,7 +93,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.06),
+                SizedBox(height: MediaQuery.of(context).size.height*0.05),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   mainAxisSize: MainAxisSize.max,
@@ -126,10 +127,37 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 Row(
                   children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height*0.15,
-                      child: Center(
-                        child: CircularImage(size: MediaQuery.of(context).size.width * 0.33, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute<Null>(
+                                builder: (context) => FullScreenPage(
+                                  child:  Image.network(
+                                    currentBrand.logoUrl!,
+                                    loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          color: Theme.of(context).accentColor,
+                                          value: loadingProgress.expectedTotalBytes != null
+                                              ? loadingProgress.cumulativeBytesLoaded /
+                                              loadingProgress.expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  dark: false,
+                                )
+                            )
+                        );
+                      },
+                      child: Container(
+                        height: MediaQuery.of(context).size.height*0.15,
+                        child: Center(
+                          child: CircularImage(size: MediaQuery.of(context).size.width * 0.33, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                        ),
                       ),
                     ),
                     SizedBox(width: MediaQuery.of(context).size.width*0.05),
@@ -224,11 +252,10 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                     ),
                   ],
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                Platform.isAndroid ? SizedBox(height: MediaQuery.of(context).size.height*0.02) : Container(),
+                SizedBox(height: MediaQuery.of(context).size.height*0.04),
                 todayEvents.length > 0 ? Column(
                   children: [
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    Platform.isAndroid ? SizedBox(height: MediaQuery.of(context).size.height*0.01) : Container(),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(

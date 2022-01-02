@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import '../../Styles.dart';
-import '../CircularImage.dart';
+import '../Images/CircularImage.dart';
 
 class SendRequestConfirmationDialog extends StatelessWidget {
   final String text;

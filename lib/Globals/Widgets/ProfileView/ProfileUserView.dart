@@ -6,7 +6,8 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
@@ -255,7 +256,36 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(height: MediaQuery.of(context).size.height*0.03),
-              CircularImage(size: MediaQuery.of(context).size.width*0.45, image: user!.imageUrl, borderWidth: 1.5,),
+              GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute<Null>(
+                            builder: (context) => FullScreenPage(
+                              child:  Image.network(
+                                user!.imageUrl!,
+                                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                  if (loadingProgress == null) return child;
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      color: Theme.of(context).accentColor,
+                                      value: loadingProgress.expectedTotalBytes != null
+                                          ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                          : null,
+                                    ),
+                                  );
+                                },
+                              ),
+                              dark: false,
+                            )
+                        )
+                    );
+                  },
+                  child: CircularImage(
+                    size: MediaQuery.of(context).size.width*0.45,
+                    image: user!.imageUrl,
+                    borderWidth: 1.5,)),
               SizedBox(height: MediaQuery.of(context).size.height*0.03),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),

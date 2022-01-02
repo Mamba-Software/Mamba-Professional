@@ -20,7 +20,7 @@ import '../../../Constants.dart';
 import '../../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../Styles.dart';
-import '../../CircularImage.dart';
+import '../../Images/CircularImage.dart';
 
 
 class ViewEventClient extends StatefulWidget {
