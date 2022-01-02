@@ -957,7 +957,7 @@ class _NotificationsState extends State<Notifications> {
           Navigator.push(
               context,
               CupertinoPageRoute<Null>(
-                                  builder: (context) => ViewEventClient(
+                  builder: (context) => ViewEventClient(
                   eventId: event.id!,
                   canJoin: canAction,
                   locale: Localizations.localeOf(context),

@@ -398,7 +398,9 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                                 onlyView: true,
                                               )
                                           )
-                                      );
+                                      ).whenComplete(() {
+                                        getUserPendingRequests();
+                                      });
                                     },
                                   ),
                                   Text(
@@ -424,7 +426,9 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                                 viewOnly: true,
                                               )
                                           )
-                                      );
+                                      ).whenComplete(() {
+                                        getUserPendingRequests();
+                                      });
                                     },
                                   ),
                                   Text(
@@ -446,7 +450,9 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                       else {
                                         Navigator.push(context, CupertinoPageRoute<Null>(
                                             builder: (context) => ChatDetailPage(adminUser)
-                                        ),);
+                                        ),).whenComplete(() {
+                                          getUserPendingRequests();
+                                        });
                                       }
                                     },
                                   ),

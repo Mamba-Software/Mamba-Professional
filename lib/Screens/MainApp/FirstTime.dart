@@ -142,7 +142,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
       minimumDate: startDate.subtract(Duration(days: 365*80)),
       maximumDate: DateTime(startDate.year, startDate.month, 31, 0, 0),
       minimumYear: 1941,
-      maximumYear: 2021,
+      maximumYear: startDate.year,
       use24hFormat: true,
       onDateTimeChanged: (val) {
         setState(() {

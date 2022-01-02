@@ -98,7 +98,7 @@ class ConfirmationDialog extends StatelessWidget {
                       size: Size(70, 70), // button width and height
                       child: ClipOval(
                         child: Material(
-                          color: Theme.of(context).accentColor, // button color
+                          color: Theme.of(context).accentColor,
                           child: InkWell(
                             onTap: () async {
                             },

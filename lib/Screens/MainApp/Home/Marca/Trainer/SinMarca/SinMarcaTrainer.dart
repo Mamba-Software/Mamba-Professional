@@ -414,7 +414,9 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                                   onlyView: true,
                                                 )
                                             )
-                                        );
+                                        ).whenComplete((){
+                                          getUserPendingRequests();
+                                        });
                                       },
                                     ),
                                     Text(
@@ -440,7 +442,9 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                                   viewOnly: true,
                                                 )
                                             )
-                                        );
+                                        ).whenComplete(() {
+                                          getUserPendingRequests();
+                                        });
                                       },
                                     ),
                                     Text(
@@ -460,9 +464,13 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                         Usuario adminUser = await _accessDatabase.getUserDetails(brand.adminID!);
                                         if(adminUser == null) LoadingView();
                                         else {
-                                          Navigator.push(context, CupertinoPageRoute<Null>(
+                                          Navigator.push(
+                                              context, CupertinoPageRoute<Null>(
                                               builder: (context) => ChatDetailPage(adminUser)
-                                          ),);
+                                            )
+                                          ).whenComplete(() {
+                                            getUserPendingRequests();
+                                          });
                                         }
                                       },
                                     ),

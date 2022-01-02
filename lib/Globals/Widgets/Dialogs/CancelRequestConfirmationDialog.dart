@@ -30,7 +30,7 @@ class CancelRequestConfirmationDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 24.0, right: 10, left: 10),
+                  padding: const EdgeInsets.only(top: 16.0, bottom: 24.0, right: 10, left: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -102,7 +102,7 @@ class CancelRequestConfirmationDialog extends StatelessWidget {
                       color: Theme.of(context).accentColor,
                       borderWidth: 2,
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
                     Expanded(
                       child: Text(
                         brand.name!,
