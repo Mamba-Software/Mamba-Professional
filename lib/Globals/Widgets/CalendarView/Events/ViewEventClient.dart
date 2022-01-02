@@ -199,7 +199,9 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     getAllTrainersFromBrand();
     getAllClientsFromBrand();
     await getLocation(event!.locationId!);
-    if (widget.onlyView!) await getUserPendingRequests();
+    if (widget.onlyView != null) {
+      if (widget.onlyView!) await getUserPendingRequests();
+    }
     if (mounted) {
       Future.delayed(const Duration(milliseconds: 1000), () {
         setState(() {
@@ -1071,7 +1073,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                 ],
                               ),
                             ),
-                            widget.canJoin || widget.onlyView! ? SizedBox(height: MediaQuery.of(context).size.height*0.17) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                            widget.canJoin || (widget.onlyView != null) ? SizedBox(height: MediaQuery.of(context).size.height*0.17) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           ],
                         ),
                       ),
@@ -1197,100 +1199,102 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
           return Container();
         }
       }
-      if (widget.onlyView!) {
-        if (request == null || brandIdRequest == brand!.id!) {
-          if (brandIdRequest == brand!.id!) {
-            return Padding(
-              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
-              child: Container(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width*0.40,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Flexible(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
-                        child: FloatingActionButton.extended(
-                          heroTag: "1",
-                          onPressed: () async {
-                            var result = await showDialog(
-                                context: context,
-                                builder: (_) {
-                                  return CancelRequestConfirmationDialog(
-                                    text: AppLocalizations.of(context)!.cancelRequestConfirmation,
-                                    brand: brand!,
-                                  );
-                                }
-                            );
-                            if (result) {
-                              setState(() {
-                                brandIdRequest = "";
-                              });
-                              NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
-                              _accessDatabase.deleteRequest(request!.id!);
-                              getUserPendingRequests();
-                            }
-                          },
-                          backgroundColor: Colors.red,
-                          icon: Icon(Icons.schedule_send, color: Colors.white,),
-                          label: Text(
-                            AppLocalizations.of(context)!.sent,
-                            style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+      if (widget.onlyView != null) {
+        if (widget.onlyView!) {
+          if (request == null || brandIdRequest == brand!.id!) {
+            if (brandIdRequest == brand!.id!) {
+              return Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+                child: Container(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width*0.40,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Flexible(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
+                          child: FloatingActionButton.extended(
+                            heroTag: "1",
+                            onPressed: () async {
+                              var result = await showDialog(
+                                  context: context,
+                                  builder: (_) {
+                                    return CancelRequestConfirmationDialog(
+                                      text: AppLocalizations.of(context)!.cancelRequestConfirmation,
+                                      brand: brand!,
+                                    );
+                                  }
+                              );
+                              if (result) {
+                                setState(() {
+                                  brandIdRequest = "";
+                                });
+                                NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
+                                _accessDatabase.deleteRequest(request!.id!);
+                                getUserPendingRequests();
+                              }
+                            },
+                            backgroundColor: Colors.red,
+                            icon: Icon(Icons.schedule_send, color: Colors.white,),
+                            label: Text(
+                              AppLocalizations.of(context)!.sent,
+                              style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          } else {
-            return Padding(
-              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
-              child: Container(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width*0.40,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Flexible(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
-                        child: FloatingActionButton.extended(
-                          heroTag: "2",
-                          onPressed: () async {
-                            var result = await showDialog(
-                                context: context,
-                                builder: (_) {
-                                  return SendRequestConfirmationDialog(
-                                    text: AppLocalizations.of(context)!.sendRequestConfirmation,
-                                    brand: brand!,
-                                  );
-                                }
-                            );
-                            if (result) {
-                              setState(() {
-                                brandIdRequest = brand!.id!;
-                              });
-                              await _accessDatabase.sendRequest(brand!.id!, currentUser.name! ,currentUser.isTrainer!);
-                              NotificationService().userSendRequestToBrand(currentUser.id!, brand!.id!);
-                              getUserPendingRequests();
-                            }
-                          },
-                          backgroundColor: Colors.green,
-                          icon: Icon(Icons.send_outlined, color: Colors.white,),
-                          label: Text(
-                            AppLocalizations.of(context)!.join,
-                            style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+              );
+            } else {
+              return Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+                child: Container(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width*0.40,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Flexible(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
+                          child: FloatingActionButton.extended(
+                            heroTag: "2",
+                            onPressed: () async {
+                              var result = await showDialog(
+                                  context: context,
+                                  builder: (_) {
+                                    return SendRequestConfirmationDialog(
+                                      text: AppLocalizations.of(context)!.sendRequestConfirmation,
+                                      brand: brand!,
+                                    );
+                                  }
+                              );
+                              if (result) {
+                                setState(() {
+                                  brandIdRequest = brand!.id!;
+                                });
+                                await _accessDatabase.sendRequest(brand!.id!, currentUser.name! ,currentUser.isTrainer!);
+                                NotificationService().userSendRequestToBrand(currentUser.id!, brand!.id!);
+                                getUserPendingRequests();
+                              }
+                            },
+                            backgroundColor: Colors.green,
+                            icon: Icon(Icons.send_outlined, color: Colors.white,),
+                            label: Text(
+                              AppLocalizations.of(context)!.join,
+                              style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
+              );
+            }
           }
         }
       }
