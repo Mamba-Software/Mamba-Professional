@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import '../../Styles.dart';
-import '../CircularImage.dart';
+import '../Images/CircularImage.dart';
 
 class CancelRequestConfirmationDialog extends StatelessWidget {
   final String text;
@@ -30,7 +30,7 @@ class CancelRequestConfirmationDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 24.0, right: 10, left: 10),
+                  padding: const EdgeInsets.only(top: 16.0, bottom: 24.0, right: 10, left: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -45,23 +45,43 @@ class CancelRequestConfirmationDialog extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      FloatingActionButton.extended(
-                        heroTag: "10",
-                        label: Text(AppLocalizations.of(context)!.anular),
-                        icon: Icon(Icons.remove_circle_outline),
-                        backgroundColor: Colors.red,
-                        foregroundColor: Styles.white,
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          elevation: 4.0,
+                          backgroundColor: Colors.red,
+                          fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30),
+                            ),
+                          ),
+                        ),
+                        label: Text(
+                          AppLocalizations.of(context)!.anular,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        icon: Icon(Icons.remove_circle_outline, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
                         onPressed: () {
                           Navigator.pop(context, true);
                         },
                       ),
                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                      FloatingActionButton.extended(
-                        heroTag: "11",
-                        icon: Icon(Icons.cancel_outlined, size: 30,),
-                        label: Text(AppLocalizations.of(context)!.cancel),
-                        backgroundColor: Theme.of(context).primaryColor,
-                        foregroundColor: Styles.white,
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          elevation: 4.0,
+                          backgroundColor: Colors.black,
+                          fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30),
+                            ),
+                          ),
+                        ),
+                        label: Text(
+                          AppLocalizations.of(context)!.cancel,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
                         onPressed: () {
                           Navigator.pop(context, false);
                         },
@@ -82,7 +102,7 @@ class CancelRequestConfirmationDialog extends StatelessWidget {
                       color: Theme.of(context).accentColor,
                       borderWidth: 2,
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
                     Expanded(
                       child: Text(
                         brand.name!,

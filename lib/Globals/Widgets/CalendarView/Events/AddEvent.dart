@@ -13,7 +13,7 @@ import 'package:weekday_selector/weekday_selector.dart';
 import '../../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../Styles.dart';
-import '../../CircularImage.dart';
+import '../../Images/CircularImage.dart';
 
 
 class AddEvent extends StatefulWidget {
@@ -85,6 +85,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   Future<void> selectSlot(ctx, type) {
     // Initial Vars
     var startDate = DateTime.now();
+    var minimumDate = DateTime.now().subtract(Duration(days: 365));
+    var maximumDate = DateTime.now().add(Duration(days: 365));
     var title;
     var initialDuration = 1;
     var initialMembers = 1;
@@ -92,6 +94,16 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     // Init for differnt types
     if (type == 0) {
       startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
+      // Calcular el horari de la marca
+      // Hora Inactiva Matí
+      var startHourWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
+      var startMinWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[1]);
+      minimumDate = DateTime(startDate.year, startDate.month, startDate.day, startHourWS, startMinWS);
+      // Hora Inactiva Nit
+      var endHourWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
+      var endMinWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
+      var temp = DateTime(startDate.year, startDate.month, startDate.day, endHourWS, endMinWS);
+      maximumDate = temp.add(Duration(days: 365));
     } else if (type == 1) {
         initialDuration = durations.indexWhere((element) => element == duration);
     } else if (type == 2) {
@@ -100,9 +112,9 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     // Different types of pickers
     Widget dateTimePicker = CupertinoDatePicker(
       mode: CupertinoDatePickerMode.dateAndTime,
-      initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-      minimumDate: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-      maximumDate: startDate.add(Duration(days: 365)),
+      initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour, 0),
+      minimumDate: minimumDate,
+      maximumDate: maximumDate,
       use24hFormat: true,
       minuteInterval: 30,
       onDateTimeChanged: (val) {
@@ -1264,7 +1276,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       for (var i=2; i<currentBrand.workShift.length; i+=2) {
         // Breaks
         var break1 = currentBrand.workShift[i];
-        var break2 = currentBrand.workShift[i];
+        var break2 = currentBrand.workShift[i+1];
         // Take the minute and the hour
         var startBreakHour = break1.toStringAsFixed(2).split(".")[0];
         var startBreakMin = break1.toStringAsFixed(2).split(".")[1];

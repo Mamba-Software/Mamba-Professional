@@ -211,7 +211,13 @@ class _SettingsState extends State<Settings> {
                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   TextButton(
                     onPressed: () async {
-                      if (!await launch(termsAndConditions)) throw 'Could not launch $termsAndConditions';
+                      if (Localizations.localeOf(context).languageCode == 'es') {
+                        if (!await launch(termsAndConditionsES)) throw 'Could not launch $termsAndConditionsES';
+                      } else if (Localizations.localeOf(context).languageCode == 'ca') {
+                        if (!await launch(termsAndConditionsCA)) throw 'Could not launch $termsAndConditionsCA';
+                      } else {
+                        if (!await launch(termsAndConditionsES)) throw 'Could not launch $termsAndConditionsES';
+                      }
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -11,12 +12,14 @@ import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/Calen
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/MyCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CancelRequestConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
+import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';
@@ -60,6 +63,9 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
   var imagesEventsNum = [];
   Image? mySessions = Image.asset(Constants.calendarImage);
   Image? myProgress = Image.asset(Constants.myProgressImage);
+  // See if Answered
+  GroupOfQuestions? groupOfQuestions = new GroupOfQuestions();
+  bool alreadyAnswered = false;
 
   @override
   void initState() {
@@ -90,6 +96,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
     }
     await getUserEventsToday();
     _scrollController = ScrollController(initialScrollOffset: MediaQuery.of(context).size.width * scrollIndex);
+    await checkIfAnswered();
     if (mounted) {
       setState(() {
         isLoading = false;
@@ -169,7 +176,42 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
     }
   }
 
-// Return bade on events Today
+  // Check If Answered
+  Future<void> checkIfAnswered() async {
+    this.groupOfQuestions = await this._accessDatabase.getActiveGroupOfQuestions();
+    if (groupOfQuestions != null) {
+      alreadyAnswered = await this ._accessDatabase.checkIfAnswersExist(this.groupOfQuestions!.id);
+    } else {
+      alreadyAnswered = true;
+    }
+  }
+
+  // Build Custom Badge
+  Widget buildCustomBadge({required Widget child}) {
+    return Stack(
+      children: [
+        Positioned(
+          top: 0,
+          right: 0,
+          left: 0,
+          bottom: 0,
+          child: child,
+        ),
+        Positioned(
+          top: -MediaQuery.of(context).size.height*0.05,
+          right: -MediaQuery.of(context).size.width*0.17,
+          left: 0,
+          bottom: 0,
+          child: Icon(
+              Icons.feedback,
+              color: Theme.of(context).accentColor,
+              size: MediaQuery.of(context).size.height*0.04),
+        ),
+      ],
+    );
+  }
+
+  // Return bade on events Today
   Widget returnBadge(int index) {
     int label = todayEventsLabels[index];
     switch (label) {
@@ -408,7 +450,8 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                       bottom: MediaQuery.of(context).size.height*0.13,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.70,
-                      child: IconButton(
+                      child: alreadyAnswered ?
+                      IconButton(
                         icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
                         alignment: Alignment.center,
                         onPressed: () {
@@ -425,6 +468,27 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                             });
                           });
                         },
+                      )
+                          :
+                      buildCustomBadge(
+                          child: IconButton(
+                            icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
+                            alignment: Alignment.center,
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.bottomToTop,
+                                    child: FeedBack(),
+                                  )
+                              ).whenComplete(() {
+                                setState(() {
+                                  isLoading = true;
+                                  initProfileHome();
+                                });
+                              });
+                            },
+                          )
                       ),
                     ),
                     Positioned(
@@ -477,17 +541,38 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                       bottom: 0,
                       left: 0,
                       right: 0,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.23,
-                            child: Center(
-                              child: CircularImage(size: MediaQuery.of(context).size.height * 0.23, image: currentUser.imageUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
-                            ),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute<Null>(
+                                builder: (context) => FullScreenPage(
+                                  child:  Image.network(
+                                    currentUser.imageUrl!,
+                                    loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          color: Theme.of(context).accentColor,
+                                          value: loadingProgress.expectedTotalBytes != null
+                                              ? loadingProgress.cumulativeBytesLoaded /
+                                              loadingProgress.expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  dark: false,
+                                )
+                            )
+                          );
+                        },
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.23,
+                          child: Center(
+                            child: CircularImage(size: MediaQuery.of(context).size.height * 0.23, image: currentUser.imageUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ]
@@ -1083,24 +1168,46 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                       bottom: MediaQuery.of(context).size.height*0.13,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.70,
-                      child: IconButton(
-                        icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
-                        alignment: Alignment.center,
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.bottomToTop,
-                                child: FeedBack(),
-                              )
-                          ).whenComplete(() {
-                            setState(() {
-                              isLoading = true;
-                              initProfileHome();
+                      child: alreadyAnswered ?
+                        IconButton(
+                          icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
+                          alignment: Alignment.center,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                PageTransition(
+                                  type: PageTransitionType.bottomToTop,
+                                  child: FeedBack(),
+                                )
+                            ).whenComplete(() {
+                              setState(() {
+                                isLoading = true;
+                                initProfileHome();
+                              });
                             });
-                          });
-                        },
-                      ),
+                          },
+                        )
+                            :
+                        buildCustomBadge(
+                            child: IconButton(
+                              icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
+                              alignment: Alignment.center,
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    PageTransition(
+                                      type: PageTransitionType.bottomToTop,
+                                      child: FeedBack(),
+                                    )
+                                ).whenComplete(() {
+                                  setState(() {
+                                    isLoading = true;
+                                    initProfileHome();
+                                  });
+                                });
+                              },
+                            )
+                        ),
                     ),
                     Positioned(
                       top: MediaQuery.of(context).size.height*0.12,
@@ -1152,17 +1259,38 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                       bottom: 0,
                       left: 0,
                       right: 0,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.23,
-                            child: Center(
-                              child: CircularImage(size: MediaQuery.of(context).size.height * 0.23, image: currentUser.imageUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
-                            ),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute<Null>(
+                                  builder: (context) => FullScreenPage(
+                                    child:  Image.network(
+                                      currentUser.imageUrl!,
+                                      loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                        if (loadingProgress == null) return child;
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            color: Theme.of(context).accentColor,
+                                            value: loadingProgress.expectedTotalBytes != null
+                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                loadingProgress.expectedTotalBytes!
+                                                : null,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    dark: false,
+                                  )
+                              )
+                          );
+                        },
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.23,
+                          child: Center(
+                            child: CircularImage(size: MediaQuery.of(context).size.height * 0.23, image: currentUser.imageUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ]

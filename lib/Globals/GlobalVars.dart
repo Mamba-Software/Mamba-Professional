@@ -4,11 +4,17 @@ import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
+// IS PRODUCTION?
+bool isProduction = false;
+
 // App Version
-var version = "MAMBA v0.1";
+var version = "MAMBA v0.0.1";
+
 // Website
-var website = "https://mambastyle.net/";
-var termsAndConditions = "https://mambastyle.net/terminos-y-condiciones/";
+var websiteES = "https://mambastyle.net/";
+var websiteCA = "https://mambastyle.net/ca/inici/";
+var termsAndConditionsES = "https://mambastyle.net/terminos-y-condiciones/";
+var termsAndConditionsCA = "https://mambastyle.net/ca/termes-i-condicions/";
 
 // API Keys
 var placesAPIAndroid = "AIzaSyBjUcoI0sYFY9H8mb2n0IoBv26GxnPTRgs";
@@ -28,5 +34,4 @@ String? currentAddress;
 
 // Page Controller
 final PageController pageController = PageController(initialPage: currentIndex);
-// Current Index BotomNavigation
 int currentIndex = 0;

@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteConfirmationDialog.dart';
@@ -19,7 +18,7 @@ import '../../../Constants.dart';
 import '../../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../Styles.dart';
-import '../../CircularImage.dart';
+import '../../Images/CircularImage.dart';
 
 
 class ViewEventTrainer extends StatefulWidget {
@@ -251,6 +250,8 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
   Future<void> selectSlot(ctx, type) {
     // Initial Vars
     var startDate = DateTime.now();
+    var minimumDate = DateTime.now().subtract(Duration(days: 365));
+    var maximumDate = DateTime.now().add(Duration(days: 365));
     var title;
     var initialDuration = 1;
     var initialMembers = 1;
@@ -259,6 +260,16 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
     // Init for differnt types
     if (type == 0) {
       startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
+      // Calcular el horari de la marca
+      // Hora Inactiva Matí
+      var startHourWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
+      var startMinWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[1]);
+      minimumDate = DateTime(startDate.year, startDate.month, startDate.day, startHourWS, startMinWS);
+      // Hora Inactiva Nit
+      var endHourWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
+      var endMinWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
+      var temp = DateTime(startDate.year, startDate.month, startDate.day, endHourWS, endMinWS);
+      maximumDate = temp.add(Duration(days: 365));
     } else if (type == 1) {
       initialDuration = durations.indexWhere((element) => element == duration);
     } else if (type == 2) {
@@ -268,8 +279,8 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
     Widget dateTimePicker = CupertinoDatePicker(
         mode: CupertinoDatePickerMode.dateAndTime,
         initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-        minimumDate: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-        maximumDate: startDate.add(Duration(days: 365)),
+        minimumDate: minimumDate,
+        maximumDate: maximumDate,
         use24hFormat: true,
         minuteInterval: 30,
         onDateTimeChanged: (val) {
@@ -405,11 +416,12 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
     var endWorkMin = workshift2.toStringAsFixed(2).split(".")[1];
     var startWorkDay =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(startWorkHour),int.parse(startWorkMin));
     var endWorkDay =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(endWorkHour),int.parse(endWorkMin));
-    if ( // Can´t create event in the past
+    if (
+    // Can´t create event in the past
     startTime.isBefore(DateTime.now())|| startTime.isAtSameMomentAs(DateTime.now()) || endTime.isBefore(DateTime.now()) || endTime.isAtSameMomentAs(DateTime.now())
-        // Can´t create event outside of working hours
-        || startTime.isBefore(startWorkDay) || endTime.isBefore(startWorkDay)
-        || startTime.isAfter(endWorkDay) || endTime.isAfter(endWorkDay)
+    // Can´t create event outside of working hours
+    || startTime.isBefore(startWorkDay) || endTime.isBefore(startWorkDay)
+    || startTime.isAfter(endWorkDay) || endTime.isAfter(endWorkDay)
     ) {
       return false;
     } else {
@@ -417,7 +429,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
       for (var i=2; i<currentBrand.workShift.length; i+=2) {
         // Breaks
         var break1 = currentBrand.workShift[i];
-        var break2 = currentBrand.workShift[i];
+        var break2 = currentBrand.workShift[i+1];
         // Take the minute and the hour
         var startBreakHour = break1.toStringAsFixed(2).split(".")[0];
         var startBreakMin = break1.toStringAsFixed(2).split(".")[1];
@@ -728,8 +740,8 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                       children: <Widget>[
                                         Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
                                         Container(
-                                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                                            width: MediaQuery.of(context).size.width*0.72,
+                                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05),
+                                            width: MediaQuery.of(context).size.width*0.70,
                                             child: Row(
                                               mainAxisSize: MainAxisSize.max,
                                               children: <Widget>[
@@ -906,10 +918,10 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                           ],
                                         ),
                                         isEditing ? Padding(
-                                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, top:MediaQuery.of(context).size.width*0.01),
+                                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.1, top:MediaQuery.of(context).size.width*0.01),
                                           child: Container(
                                             height: 1,
-                                            width: MediaQuery.of(context).size.width*0.68,
+                                            width: MediaQuery.of(context).size.width*0.64,
                                             color: Colors.grey,
                                           ),
                                         ) : Container(),
@@ -1256,7 +1268,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                               ),
                             ),
                             isEditing ? SizedBox(height: MediaQuery.of(context).size.height*0.10) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                            widget.canEdit ? SizedBox(height: MediaQuery.of(context).size.height*0.15) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                            widget.canEdit ? SizedBox(height: MediaQuery.of(context).size.height*0.17) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           ],
                         ),
                       ),
@@ -1308,7 +1320,6 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                               errorDate = true;
                             });
                           }
-                          print(brandTrainersSelectedBool);
                           if (!brandTrainersSelectedBool.contains(true)) {
                             hasError = true;
                             setState(() {

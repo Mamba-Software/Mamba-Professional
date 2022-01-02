@@ -5,7 +5,7 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import '../../Styles.dart';
-import '../CircularImage.dart';
+import '../Images/CircularImage.dart';
 
 class RequestConfirmationDialog extends StatefulWidget {
   final String text;
@@ -94,23 +94,43 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        FloatingActionButton.extended(
-                          heroTag: "18",
-                          label: Text(AppLocalizations.of(context)!.accept),
-                          icon: Icon(Icons.check_circle_outline),
-                          backgroundColor: Colors.green,
-                          foregroundColor: Styles.white,
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            elevation: 4.0,
+                            backgroundColor: Colors.green,
+                            fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(30),
+                              ),
+                            ),
+                          ),
+                          label: Text(
+                            AppLocalizations.of(context)!.accept,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          icon: Icon(Icons.check_circle_outline, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
                           onPressed: () {
                             Navigator.pop(context, true);
                           },
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                        FloatingActionButton.extended(
-                          heroTag: "19",
-                          icon: Icon(Icons.cancel_outlined, size: 30,),
-                          label: Text(AppLocalizations.of(context)!.reject),
-                          backgroundColor: Colors.red,
-                          foregroundColor: Styles.white,
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            elevation: 4.0,
+                            backgroundColor: Colors.black,
+                            fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(30),
+                              ),
+                            ),
+                          ),
+                          label: Text(
+                            AppLocalizations.of(context)!.cancel,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
                           onPressed: () {
                             Navigator.pop(context, false);
                           },

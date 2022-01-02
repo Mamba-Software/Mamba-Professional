@@ -7,9 +7,10 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CancelRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/SendRequestConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
@@ -335,12 +336,39 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.35,
-                    child: RectangularImage(
-                      image: brand.logoUrl!,
-                      size: MediaQuery.of(context).size.width,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute<Null>(
+                              builder: (context) => FullScreenPage(
+                                child:  Image.network(
+                                  brand.logoUrl!,
+                                  loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        color: Theme.of(context).accentColor,
+                                        value: loadingProgress.expectedTotalBytes != null
+                                            ? loadingProgress.cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
+                                            : null,
+                                      ),
+                                    );
+                                  },
+                                ),
+                                dark: false,
+                              )
+                          )
+                      );
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.35,
+                      child: RectangularImage(
+                        image: brand.logoUrl!,
+                        size: MediaQuery.of(context).size.width,
+                      ),
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -370,7 +398,9 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                                 onlyView: true,
                                               )
                                           )
-                                      );
+                                      ).whenComplete(() {
+                                        getUserPendingRequests();
+                                      });
                                     },
                                   ),
                                   Text(
@@ -396,7 +426,9 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                                 viewOnly: true,
                                               )
                                           )
-                                      );
+                                      ).whenComplete(() {
+                                        getUserPendingRequests();
+                                      });
                                     },
                                   ),
                                   Text(
@@ -418,7 +450,9 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                       else {
                                         Navigator.push(context, CupertinoPageRoute<Null>(
                                             builder: (context) => ChatDetailPage(adminUser)
-                                        ),);
+                                        ),).whenComplete(() {
+                                          getUserPendingRequests();
+                                        });
                                       }
                                     },
                                   ),

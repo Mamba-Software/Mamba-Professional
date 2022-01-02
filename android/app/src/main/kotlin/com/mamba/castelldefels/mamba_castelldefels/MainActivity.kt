@@ -1,4 +1,4 @@
-package com.mamba.castelldefels.mamba_castelldefels
+package com.mambastyle.mambastyle
 
 import io.flutter.embedding.android.FlutterActivity
 

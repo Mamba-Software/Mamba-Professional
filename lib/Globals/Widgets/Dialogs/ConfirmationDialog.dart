@@ -43,24 +43,44 @@ class ConfirmationDialog extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      FloatingActionButton.extended(
-                        heroTag: "12",
-                        label: Text(AppLocalizations.of(context)!.confirm),
-                        icon: Icon(Icons.check_circle_outline),
-                        backgroundColor: Theme.of(context).accentColor,
-                        foregroundColor: Styles.white,
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          elevation: 4.0,
+                          backgroundColor: Theme.of(context).accentColor,
+                          fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30),
+                            ),
+                          ),
+                        ),
+                        label: Text(
+                          AppLocalizations.of(context)!.confirm,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        icon: Icon(Icons.check_circle_outline, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
                         onPressed: () {
                           Navigator.pop(context, true);
                         },
                       ),
                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                      FloatingActionButton.extended(
-                        heroTag: "13",
-                        icon: Icon(Icons.cancel_outlined, size: 30,),
-                        label: Text(AppLocalizations.of(context)!.cancel),
-                        backgroundColor: Theme.of(context).primaryColor,
-                        foregroundColor: Styles.white,
-                        onPressed: () async {
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          elevation: 4.0,
+                          backgroundColor: Colors.black,
+                          fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30),
+                            ),
+                          ),
+                        ),
+                        label: Text(
+                          AppLocalizations.of(context)!.cancel,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
+                        onPressed: () {
                           Navigator.pop(context, false);
                         },
                       ),
@@ -78,7 +98,7 @@ class ConfirmationDialog extends StatelessWidget {
                       size: Size(70, 70), // button width and height
                       child: ClipOval(
                         child: Material(
-                          color: Theme.of(context).accentColor, // button color
+                          color: Theme.of(context).accentColor,
                           child: InkWell(
                             onTap: () async {
                             },

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import '../../Styles.dart';
-import '../CircularImage.dart';
+import '../Images/CircularImage.dart';
 
 class LeaveBrandConfirmationDialog extends StatefulWidget {
   final String text;
@@ -71,23 +71,43 @@ class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDia
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      FloatingActionButton.extended(
-                        heroTag: "16",
-                        label: Text(AppLocalizations.of(context)!.leave),
-                        icon: Icon(Icons.exit_to_app),
-                        backgroundColor: Colors.red,
-                        foregroundColor: Styles.white,
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          elevation: 4.0,
+                          backgroundColor: Colors.red,
+                          fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30),
+                            ),
+                          ),
+                        ),
+                        label: Text(
+                          AppLocalizations.of(context)!.leave,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        icon: Icon(Icons.exit_to_app, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
                         onPressed: () {
                           Navigator.pop(context, true);
                         },
                       ),
                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                      FloatingActionButton.extended(
-                        heroTag: "17",
-                        icon: Icon(Icons.cancel_outlined, size: 30,),
-                        label: Text(AppLocalizations.of(context)!.cancel),
-                        backgroundColor: Theme.of(context).primaryColor,
-                        foregroundColor: Styles.white,
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          elevation: 4.0,
+                          backgroundColor: Colors.black,
+                          fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30),
+                            ),
+                          ),
+                        ),
+                        label: Text(
+                          AppLocalizations.of(context)!.cancel,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
                         onPressed: () {
                           Navigator.pop(context, false);
                         },

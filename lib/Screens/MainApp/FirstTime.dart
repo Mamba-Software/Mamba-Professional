@@ -6,7 +6,7 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -142,7 +142,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
       minimumDate: startDate.subtract(Duration(days: 365*80)),
       maximumDate: DateTime(startDate.year, startDate.month, 31, 0, 0),
       minimumYear: 1941,
-      maximumYear: 2021,
+      maximumYear: startDate.year,
       use24hFormat: true,
       onDateTimeChanged: (val) {
         setState(() {
@@ -394,7 +394,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                    height: MediaQuery.of(context).size.height*0.20,
+                                    height: MediaQuery.of(context).size.height*0.17,
                                     child: Image.asset(Constants.wellcomeImage)
                                 ),
                               ],
@@ -419,7 +419,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
-                                    AppLocalizations.of(context)!.name,
+                                    AppLocalizations.of(context)!.nameCompleto,
                                     style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
                                     textAlign: TextAlign.left,
                                   ),
@@ -856,7 +856,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                    height: MediaQuery.of(context).size.height*0.20,
+                                    height: MediaQuery.of(context).size.height*0.17,
                                     child: Image.asset(Constants.personalTrainerImage)
                                 ),
                               ],

@@ -288,7 +288,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                   width: details.bounds.width,
                                   height: details.bounds.height,
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: Theme.of(context).scaffoldBackgroundColor,
                                     border: Border.all(width: 1, color: Colors.black),
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(5),
@@ -467,29 +467,102 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                             );
                           }
                         } else {
-                          return GestureDetector(
-                            onTap: () {
-                              _viewEvent(appointment.id.toString(), appointment.startTime);
-                            },
-                            child: Center(
-                              child: Material(
-                                elevation: 2,
-                                child: Container(
-                                  width: details.bounds.width,
-                                  height: details.bounds.height,
-                                  decoration: BoxDecoration(
-                                    color: isCompleted ? Theme.of(context).accentColor : appointment.color,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
+                          if (isCompleted) {
+                            return GestureDetector(
+                              onTap: () {
+                                _viewEvent(appointment.id.toString(), appointment.startTime);
+                              },
+                              child: Center(
+                                child: Material(
+                                  elevation: 2,
+                                  child: Container(
+                                    width: details.bounds.width,
+                                    height: details.bounds.height,
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                      border: Border.all(width: 1, color: Colors.black),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
                                     ),
-                                  ),
-                                  child: Center(
-                                    child: Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
+                                            child: FittedBox(
+                                              fit: BoxFit.fitWidth,
+                                              child: Text(event.title!,
+                                                textAlign: TextAlign.center,
+                                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                            child: FittedBox(
+                                              fit: BoxFit.fitWidth,
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.record_voice_over,
+                                                    color: Colors.black,
+                                                    size: 15,
+                                                  ),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  Text(
+                                                    event.selectedTrainers.length.toString(),
+                                                    style: TextStyle(color: Colors.black),
+                                                  ),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  Icon(
+                                                    Icons.directions_run,
+                                                    color: Colors.black,
+                                                    size: 15,
+                                                  ),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  Text(
+                                                    event.joinedMembers.length.toString(),
+                                                    style: TextStyle(color: Colors.black),
+                                                  ),
+
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          );
+                            );
+                          } else {
+                            return GestureDetector(
+                              onTap: () {
+                                _viewEvent(appointment.id.toString(), appointment.startTime);
+                              },
+                              child: Center(
+                                child: Material(
+                                  elevation: 2,
+                                  child: Container(
+                                    width: details.bounds.width,
+                                    height: details.bounds.height,
+                                    decoration: BoxDecoration(
+                                      color: isCompleted ? Theme.of(context).accentColor : appointment.color,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5),
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
                         }
                       },
                     );

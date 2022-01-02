@@ -8,9 +8,10 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/LeaveBrandConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/BrandLocations.dart';
 import 'package:mamba_castelldefels/Models/Conversation.dart';
@@ -169,10 +170,37 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 Row(
                   children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height*0.15,
-                      child: Center(
-                        child: CircularImage(size: MediaQuery.of(context).size.width * 0.33, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute<Null>(
+                                builder: (context) => FullScreenPage(
+                                  child:  Image.network(
+                                    currentBrand.logoUrl!,
+                                    loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          color: Theme.of(context).accentColor,
+                                          value: loadingProgress.expectedTotalBytes != null
+                                              ? loadingProgress.cumulativeBytesLoaded /
+                                              loadingProgress.expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  dark: false,
+                                )
+                            )
+                        );
+                      },
+                      child: Container(
+                        height: MediaQuery.of(context).size.height*0.15,
+                        child: Center(
+                          child: CircularImage(size: MediaQuery.of(context).size.width * 0.33, image: currentBrand.logoUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                        ),
                       ),
                     ),
                     SizedBox(width: MediaQuery.of(context).size.width*0.05),

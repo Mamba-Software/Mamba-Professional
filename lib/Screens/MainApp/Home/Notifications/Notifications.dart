@@ -12,7 +12,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/Calen
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
@@ -957,7 +957,7 @@ class _NotificationsState extends State<Notifications> {
           Navigator.push(
               context,
               CupertinoPageRoute<Null>(
-                                  builder: (context) => ViewEventClient(
+                  builder: (context) => ViewEventClient(
                   eventId: event.id!,
                   canJoin: canAction,
                   locale: Localizations.localeOf(context),

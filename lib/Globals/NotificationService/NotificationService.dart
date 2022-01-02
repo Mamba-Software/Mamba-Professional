@@ -111,13 +111,13 @@ class NotificationService {
     // Notification to the User Joining Event
     var parameters = ["null", brandId, eventId];
     _accessDatabase.sendNotification(userId, "UserJoinEvent_User", parameters);
-    // Notification to All Brand Trainers
+    // Notification to All Event Trainers
     parameters = [userId, "null", eventId];
-    List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
-    for (var i=0; i<listUsers.length; i++) {
-      Usuario trainer = listUsers[i];
-      if (trainer.id! != userId) {
-        _accessDatabase.sendNotification(trainer.id!, "UserJoinEvent_Trainer", parameters);
+    Event event = await _accessDatabase.getSingleEvent(eventId);
+    for (var i=0; i < event.selectedTrainers.length; i++) {
+      String trainerId = event.selectedTrainers[i];
+      if (trainerId != userId) {
+        _accessDatabase.sendNotification(trainerId, "UserJoinEvent_Trainer", parameters);
       }
     }
   }
@@ -126,16 +126,14 @@ class NotificationService {
     // Notification to the User Joining Event
     var parameters = ["null", brandId, eventId];
     _accessDatabase.sendNotification(userId, "UserLeaveEvent_User", parameters);
-    // Notification to All Brand Trainers
+    // Notification to All Event Trainers
     parameters = [userId, "null", eventId];
-    List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
-    for (var i=0; i<listUsers.length; i++) {
-      Usuario trainer = listUsers[i];
-      if (trainer.id! != userId) {
-        _accessDatabase.sendNotification(trainer.id!, "UserLeaveEvent_Trainer", parameters);
+    Event event = await _accessDatabase.getSingleEvent(eventId);
+    for (var i=0; i < event.selectedTrainers.length; i++) {
+      String trainerId = event.selectedTrainers[i];
+      if (trainerId != userId) {
+        _accessDatabase.sendNotification(trainerId, "UserLeaveEvent_Trainer", parameters);
       }
     }
   }
-
-
 }
