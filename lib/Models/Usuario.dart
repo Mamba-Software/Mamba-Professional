@@ -84,21 +84,53 @@ class Usuario {
 
   Usuario.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
     this.id = documentId;
-    this.notificationToken = documentSnapshot.get("notificationToken").toString();
-    this.email = documentSnapshot.get("email").toString();
-    this.name = documentSnapshot.get("name").toString();
-    this.nick = documentSnapshot.get("nick").toString();
-    this.imageUrl = documentSnapshot.get("imageUrl").toString();
-    this.noImageUrl = documentSnapshot.get("noImageUrl").toString();
-    this.isFirst = documentSnapshot.get("isFirst");
-    this.isTrainer = documentSnapshot.get("isTrainer");
-    this.isPrivate = documentSnapshot.get("isPrivate");
-    this.isAdmin = documentSnapshot.get("isAdmin");
-    this.gender = documentSnapshot.get("gender");
-    this.dateJoined = documentSnapshot.get("dateJoined").toString();
-    this.dateOfBirth = documentSnapshot.get("dateOfBirth").toString();
-    this.idioma = documentSnapshot.get("idioma").toString();
-    this.previousIdioma = documentSnapshot.get("previousIdioma").toString();
-    this.brandID = documentSnapshot.get("brandID").toString();
+    if (documentSnapshot.get("notificationToken") != null) {
+      this.notificationToken = documentSnapshot.get("notificationToken").toString();
+    }
+    if (documentSnapshot.get("email") != null) {
+      this.email = documentSnapshot.get("email").toString();
+    }
+    if (documentSnapshot.get("name") != null) {
+      this.name = documentSnapshot.get("name").toString();
+    }
+    if (documentSnapshot.get("nick") != null) {
+      this.nick = documentSnapshot.get("nick").toString();
+    }
+    if (documentSnapshot.get("imageUrl") != null) {
+      this.imageUrl = documentSnapshot.get("imageUrl").toString();
+    }
+    if (documentSnapshot.get("noImageUrl") != null) {
+      this.noImageUrl = documentSnapshot.get("noImageUrl").toString();
+    }
+    if (documentSnapshot.get("isFirst") != null) {
+      this.isFirst = documentSnapshot.get("isFirst");
+    }
+    if (documentSnapshot.get("isTrainer") != null) {
+      this.isTrainer = documentSnapshot.get("isTrainer");
+    }
+    if (documentSnapshot.get("isPrivate") != null) {
+      this.isTrainer = documentSnapshot.get("isPrivate");
+    }
+    if (documentSnapshot.get("isAdmin") != null) {
+      this.isAdmin = documentSnapshot.get("isAdmin");
+    }
+    if (documentSnapshot.get("gender") != null) {
+      this.gender = documentSnapshot.get("gender");
+    }
+    if (documentSnapshot.get("dateJoined") != null) {
+      this.dateJoined = documentSnapshot.get("dateJoined").toString();
+    }
+    if (documentSnapshot.get("dateOfBirth") != null) {
+      this.dateOfBirth = documentSnapshot.get("dateOfBirth").toString();
+    }
+    if (documentSnapshot.get("idioma") != null) {
+      this.idioma = documentSnapshot.get("idioma").toString();
+    }
+    if (documentSnapshot.get("previousIdioma") != null) {
+      this.previousIdioma = documentSnapshot.get("previousIdioma").toString();
+    }
+    if (documentSnapshot.get("brandID") != null) {
+      this.brandID = documentSnapshot.get("brandID").toString();
+    }
   }
 }

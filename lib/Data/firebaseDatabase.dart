@@ -255,7 +255,7 @@ class FirebaseDatabaseService {
   }
   // Add User Notification Token
   Future<void> addUserNotificationToken(String uid, String token) async {
-    await _firestore.collection("Users").doc(uid).update({
+    await _firestore.collection(users).doc(uid).update({
       "notificationToken": token,
     });
   }
