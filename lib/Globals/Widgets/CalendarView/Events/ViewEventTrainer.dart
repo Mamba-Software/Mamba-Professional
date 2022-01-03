@@ -52,7 +52,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
   // Duration
   TextEditingController durationController = TextEditingController();
   String duration = "1.00";
-  List<String> durations = ["0.30","1.00","1.30","2.00","2.30","3.00","3.30","4.00"];
+  List<String> durations = ["0.30","0.45","1.00","1.15","1.30","1.45","2.00","2.15","2.30","2.45","3.00"];
   // Location
   Location location = Location();
   // Participants
@@ -282,7 +282,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
         minimumDate: minimumDate,
         maximumDate: maximumDate,
         use24hFormat: true,
-        minuteInterval: 30,
+        minuteInterval: 15,
         onDateTimeChanged: (val) {
           setState(() {
             startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(val);

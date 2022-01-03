@@ -502,7 +502,9 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                               keyboardType: TextInputType.name,
                                               validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nicknameError : null,
                                               onChanged: (val) {
-                                                nick = val;
+                                                nick = val.replaceAll(' ', '');
+                                                nickController.text = nick;
+                                                nickController.selection = TextSelection.fromPosition(TextPosition(offset: nickController.text.length));
                                                 checkIfNickExists(nick);
                                               },
                                               style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
