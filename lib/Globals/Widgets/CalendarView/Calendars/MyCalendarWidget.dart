@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -283,6 +284,11 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                 _viewEvent(appointment.id.toString(), appointment.startTime);
                               },
                               child: Material(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.all(
+                                    const Radius.circular(5.0),
+                                  ),
+                                ),
                                 elevation: 2,
                                 child: Container(
                                   width: details.bounds.width,
@@ -399,67 +405,117 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                               onTap: () {
                                 _viewEvent(appointment.id.toString(), appointment.startTime);
                               },
-                              child: Center(
-                                child: Material(
-                                  elevation: 2,
-                                  child: Container(
-                                    width: details.bounds.width,
-                                    height: details.bounds.height,
-                                    decoration: BoxDecoration(
-                                      color: appointment.color,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(5),
-                                      ),
+                              child: Material(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.all(
+                                    const Radius.circular(5.0),
+                                  ),
+                                ),
+                                elevation: 2,
+                                child: Container(
+                                  width: details.bounds.width,
+                                  height: details.bounds.height,
+                                  decoration: BoxDecoration(
+                                    color: appointment.color,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(5),
                                     ),
-                                    child: Center(
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(height: MediaQuery.of(context).size.height*0.006,),
+                                        Row(
                                           children: [
-                                            Flexible(child: Text(event.title!, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),)),
+                                            Flexible(
+                                                child: Text(event.title!,
+                                                  textAlign: TextAlign.start,
+                                                  style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 14),)
+                                            ),
+                                            /*
                                             SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                            Text(
-                                              "-",
-                                              style: TextStyle(color: Colors.white, fontSize: 14),
-                                            ),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                            Icon(
-                                              Icons.record_voice_over,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                            Text(
-                                              event.selectedTrainers.length.toString(),
-                                              style: TextStyle(color: Colors.white, fontSize: 14),
-                                            ),
-                                            Container(
-                                                height: 16,
-                                                width: 32,
-                                                child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
-                                            ),
-                                            Icon(
-                                              Icons.directions_run,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                            Text(
-                                              event.joinedMembers.length.toString(),
-                                              style: TextStyle(color: Colors.white, fontSize: 14),
-                                            ),
-                                            Text(
-                                              " / ",
-                                              style: TextStyle(color: Colors.white, fontSize: 14),
-                                            ),
-                                            Text(
-                                              event.maxMembers.toString(),
-                                              style: TextStyle(color: Colors.white, fontSize: 14),
-                                            ),
+                                            returnBadge(event),
+                                             */
                                           ],
                                         ),
-                                      ),
+                                        SizedBox(height: MediaQuery.of(context).size.height*0.006,),
+                                        Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                Icon(
+                                                  Icons.schedule,
+                                                  color: Colors.white,
+                                                  size: 15,
+                                                ),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                Text(
+                                                  event.hour.toString(),
+                                                  style: TextStyle(color: Colors.white, fontSize: 12),
+                                                ),
+                                                Text(
+                                                  ":",
+                                                  style: TextStyle(color: Colors.white, fontSize: 12),
+                                                ),
+                                                Text(
+                                                  event.minute=="0" ? "00" : event.minute.toString(),
+                                                  style: TextStyle(color: Colors.white, fontSize: 12),
+                                                ),
+                                                Container(
+                                                    height: 8,
+                                                    width: 32,
+                                                    child: VerticalDivider(color: Colors.white, width: 10, thickness: 1,)
+                                                ),
+                                                Icon(
+                                                  Icons.timer,
+                                                  color: Colors.white,
+                                                  size: 15,
+                                                ),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                Text(
+                                                  durationToString(event.duration!),
+                                                  style: TextStyle(color: Colors.white, fontSize: 12),
+                                                ),
+                                                Container(
+                                                    height: 8,
+                                                    width: 32,
+                                                    child: VerticalDivider(color: Colors.white, width: 10, thickness: 1,)
+                                                ),
+                                                Icon(
+                                                  Icons.record_voice_over,
+                                                  color: Colors.white,
+                                                  size: 15,
+                                                ),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                Text(
+                                                  event.selectedTrainers.length.toString(),
+                                                  style: TextStyle(color: Colors.white, fontSize: 12),
+                                                ),
+                                                Container(
+                                                    height: 8,
+                                                    width: 32,
+                                                    child: VerticalDivider(color: Colors.white, width: 10, thickness: 1,)
+                                                ),
+                                                Icon(
+                                                  Icons.directions_run,
+                                                  color: Colors.white,
+                                                  size: 15,
+                                                ),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                Text(
+                                                  event.joinedMembers.length.toString(),
+                                                  style: TextStyle(color: Colors.white, fontSize: 12),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: MediaQuery.of(context).size.height*0.003,),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -474,65 +530,34 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                               },
                               child: Center(
                                 child: Material(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: new BorderRadius.all(
+                                      const Radius.circular(5.0),
+                                    ),
+                                  ),
                                   elevation: 2,
                                   child: Container(
                                     width: details.bounds.width,
                                     height: details.bounds.height,
+                                    padding: EdgeInsets.all(details.bounds.width*0.1),
                                     decoration: BoxDecoration(
-                                      color: Theme.of(context).scaffoldBackgroundColor,
-                                      border: Border.all(width: 1, color: Colors.black),
+                                      color: Styles.lightGrey,
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(5),
                                       ),
                                     ),
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
-                                            child: FittedBox(
-                                              fit: BoxFit.fitWidth,
-                                              child: Text(event.title!,
-                                                textAlign: TextAlign.center,
-                                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                            child: FittedBox(
-                                              fit: BoxFit.fitWidth,
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    Icons.record_voice_over,
-                                                    color: Colors.black,
-                                                    size: 15,
-                                                  ),
-                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                  Text(
-                                                    event.selectedTrainers.length.toString(),
-                                                    style: TextStyle(color: Colors.black),
-                                                  ),
-                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                  Icon(
-                                                    Icons.directions_run,
-                                                    color: Colors.black,
-                                                    size: 15,
-                                                  ),
-                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                  Text(
-                                                    event.joinedMembers.length.toString(),
-                                                    style: TextStyle(color: Colors.black),
-                                                  ),
-
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        AutoSizeText(
+                                          event.title!,
+                                          style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w800),
+                                          textAlign: TextAlign.center,
+                                          wrapWords: false,
+                                          minFontSize: 1,
+                                          maxFontSize: 16,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -545,18 +570,45 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                               },
                               child: Center(
                                 child: Material(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: new BorderRadius.all(
+                                      const Radius.circular(5.0),
+                                    ),
+                                  ),
                                   elevation: 2,
                                   child: Container(
                                     width: details.bounds.width,
                                     height: details.bounds.height,
+                                    padding: EdgeInsets.all(details.bounds.width*0.1),
                                     decoration: BoxDecoration(
-                                      color: isCompleted ? Theme.of(context).accentColor : appointment.color,
+                                      color: appointment.color,
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(5),
                                       ),
                                     ),
-                                    child: Center(
-                                      child: Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        AutoSizeText(
+                                          event.title!,
+                                          style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w800),
+                                          textAlign: TextAlign.center,
+                                          wrapWords: false,
+                                          minFontSize: 1,
+                                          maxFontSize: 16,
+                                        ),
+                                        SizedBox(
+                                          width: details.bounds.width*0.4,
+                                          child: AutoSizeText(
+                                            appointment.subject,
+                                            style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w500),
+                                            textAlign: TextAlign.center,
+                                            wrapWords: false,
+                                            minFontSize: 1,
+                                            maxFontSize: 14,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
