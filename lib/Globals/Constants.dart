@@ -14,6 +14,7 @@ class Constants {
   static String chatImage = "assets/images/chatImage.png";
   static String emptyCalendar = "assets/images/emptyCalendar.png";
   static String emptyPeople = "assets/images/emptyPeople.png";
+
   // Event Background Pictures
   static String eventBackground = "assets/images/Eventbackground.jpg";
   static String eventBackground1 = "assets/images/Eventbackground1.jpg";
