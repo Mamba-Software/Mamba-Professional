@@ -37,12 +37,15 @@ class DatabaseAccess {
   Future<bool> checkIfAliasExists(String alias) => _firebase.checkIfAliasExists(alias);
 
   Future<void> updateCurrentUserFirstTime() => _firebase.updateCurrentUserFirstTime();
-  Future<int> updateCurrentUserBrand(String brandID) => _firebase.updateCurrentUserBrand(brandID);
   Future<String> updateCurrentUserPhoto(File image) => _firebase.updateCurrentUserPhoto(image);
   Future<void> updateCurrentUserDatosPerifl(String name, int gender, String dateOfBirth) => _firebase.updateCurrentUserDatosPerifl(name, gender, dateOfBirth);
   Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma, String previousIdioma) => _firebase.updateCurrentUserSettingsPerifl(isPrivate, idioma, previousIdioma);
 
-  Future<void> leaveBrand(String uid) => _firebase.leaveBrand(uid);
+  Future<int> updateCurrentUserBrand(String brandID) => _firebase.updateCurrentUserBrand(brandID);
+  Future<void> leaveBrandUser(String userId) => _firebase.leaveBrandUser(userId);
+
+  Future<void> joinBrand(String userId, String brandId) => _firebase.joinBrand(userId, brandId);
+  Future<void> leaveBrand(String userId, String brandId) => _firebase.leaveBrand(userId, brandId);
 
   // Brands
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) => _firebase.addBrand(name, image, description, workShift, maxMembers);
