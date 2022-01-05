@@ -155,19 +155,19 @@
   "@name":{
     "description": "Nombre"
   },
-  "nickname": "Alias",
+  "nickname": "Nombre de usuario",
   "@nickname":{
     "description": "Nombre"
   },
-  "nicknameError": "Introduce tu alias por favor",
+  "nicknameError": "Introduce tu nombre de usuario por favor",
   "@nicknameError":{
     "description": "LogIn Text "
   },
-  "nicknameAvailable": "Este alias está disponible",
+  "nicknameAvailable": "Este nombre de usuario está disponible",
   "@nicknameAvailable":{
     "description": "LogIn Text "
   },
-  "nicknameOcuppied": "Este alias ya está cogido",
+  "nicknameOcuppied": "Este nombre de usuario ya está cogido",
   "@nicknameOcuppied":{
     "description": "LogIn Text "
   },

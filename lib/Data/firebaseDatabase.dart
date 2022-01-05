@@ -296,6 +296,7 @@ class FirebaseDatabaseService {
       print(err);
       firestoreError = true;
     });
+    await this.joinBrand(currentUser.uid, brandID);
     if (firestoreError) {
       return -1;
     } else {
@@ -345,8 +346,37 @@ class FirebaseDatabaseService {
     });
   }
 
-  Future<void> leaveBrand(String uid) async {
-    await _firestore.collection(users).doc(uid).update({
+  Future<void> joinBrand(String userId, String brandId) async {
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final String formatted = formatter.format(now);
+    List<String> brandCover = await this.getBrandCover(brandId);
+    await _firestore
+      .collection(users)
+      .doc(userId)
+      .collection("Brands")
+      .doc(brandId)
+      .set({
+        "name": brandCover[0],
+        "logoUrl": brandCover[1],
+        "dateJoined": formatted,
+        "myMonthlySessions": 0,
+        "myTotalSessions": 0,
+      }).catchError((err) {
+        print(err);
+      });
+  }
+
+  Future<void> leaveBrand(String userId, String brandId) async {
+    await _firestore.collection(users).doc(userId).update({
+      "brandID": null,
+    }).catchError((err) {
+      print(err);
+    });
+  }
+
+  Future<void> leaveBrandUser(String userId) async {
+    await _firestore.collection(users).doc(userId).update({
       "brandID": null,
     }).catchError((err) {
       print(err);
@@ -504,7 +534,7 @@ class FirebaseDatabaseService {
     // All Users Leave Brand
     for (var i = 0; i < brandUsers.length; i++) {
       NotificationService().userLeavesBrand(brandUsers[i].id!, brandId);
-      await this.leaveBrand(brandUsers[i].id!);
+      await this.leaveBrandUser(brandUsers[i].id!);
     }
     // Delete Brand Photo
     await this.deleteBrandPhoto(brandId);
@@ -1281,6 +1311,7 @@ class FirebaseDatabaseService {
     await _firestore.collection(users).doc(request.userId).update({
       "brandID": request.brandId,
     });
+    await this.joinBrand(request.userId!, request.brandId!);
     // Delete the Request
     await _firestore.collection(requests).doc(requestId).delete();
 

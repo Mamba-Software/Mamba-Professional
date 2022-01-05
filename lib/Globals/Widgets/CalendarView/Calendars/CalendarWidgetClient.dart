@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -165,33 +166,45 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                           },
                           child: Center(
                             child: Material(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.all(
+                                  const Radius.circular(5.0),
+                                ),
+                              ),
                               elevation: 2,
                               child: Container(
                                 width: details.bounds.width,
                                 height: details.bounds.height,
+                                padding: EdgeInsets.all(details.bounds.width*0.1),
                                 decoration: BoxDecoration(
                                   color: appointment.color,
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(5),
                                   ),
                                 ),
-                                child: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
-                                      event.joinedMembers.contains(currentUser.id!) ? Column(
-                                        children: [
-                                          SizedBox(height: details.bounds.height*0.05,),
-                                          CircularImage(
-                                            size: details.bounds.width*0.6,
-                                            image: currentUser.imageUrl!,
-                                            color: Theme.of(context).accentColor,
-                                          ),
-                                        ],
-                                      ) : Container(),
-                                    ],
-                                  ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    AutoSizeText(
+                                      event.title!,
+                                      style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w800),
+                                      textAlign: TextAlign.center,
+                                      wrapWords: false,
+                                      minFontSize: 1,
+                                      maxFontSize: 16,
+                                    ),
+                                    SizedBox(
+                                      width: details.bounds.width*0.4,
+                                      child: AutoSizeText(
+                                        appointment.subject,
+                                        style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w500),
+                                        textAlign: TextAlign.center,
+                                        wrapWords: false,
+                                        minFontSize: 1,
+                                        maxFontSize: 14,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -205,75 +218,44 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                             },
                             child: Center(
                               child: Material(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.all(
+                                    const Radius.circular(5.0),
+                                  ),
+                                ),
                                 elevation: 2,
                                 child: Container(
                                   width: details.bounds.width,
                                   height: details.bounds.height,
+                                  padding: EdgeInsets.all(details.bounds.width*0.1),
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context).scaffoldBackgroundColor,
-                                    border: Border.all(width: 1, color: Colors.black),
+                                    color: Styles.lightGrey,
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(5),
                                     ),
                                   ),
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
-                                          child: FittedBox(
-                                            fit: BoxFit.fitWidth,
-                                            child: Text(event.title!,
-                                              textAlign: TextAlign.center,
-                                              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      AutoSizeText(
+                                        event.title!,
+                                        style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w800),
+                                        textAlign: TextAlign.center,
+                                        wrapWords: false,
+                                        minFontSize: 1,
+                                        maxFontSize: 16,
+                                      ),
+                                      event.joinedMembers.contains(currentUser.id!) ? Column(
+                                        children: [
+                                          SizedBox(height: details.bounds.height*0.1),
+                                          CircularImage(
+                                            size: details.bounds.width*0.25,
+                                            image: currentUser.imageUrl!,
+                                            color: Theme.of(context).accentColor,
                                           ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                          child: FittedBox(
-                                            fit: BoxFit.fitWidth,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  Icons.record_voice_over,
-                                                  color: Colors.black,
-                                                  size: 15,
-                                                ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Text(
-                                                  event.selectedTrainers.length.toString(),
-                                                  style: TextStyle(color: Colors.black),
-                                                ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Icon(
-                                                  Icons.directions_run,
-                                                  color: Colors.black,
-                                                  size: 15,
-                                                ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Text(
-                                                  event.joinedMembers.length.toString(),
-                                                  style: TextStyle(color: Colors.black),
-                                                ),
-
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        event.joinedMembers.contains(currentUser.id!) ? Column(
-                                          children: [
-                                            SizedBox(height: details.bounds.height*0.05,),
-                                            CircularImage(
-                                              size: details.bounds.width*0.6,
-                                              image: currentUser.imageUrl!,
-                                              color: Theme.of(context).accentColor,
-                                            ),
-                                          ],
-                                        ) : Container(),
-                                      ],
-                                    ),
+                                        ],
+                                      ) : Container(),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -286,33 +268,60 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                             },
                             child: Center(
                               child: Material(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.all(
+                                    const Radius.circular(5.0),
+                                  ),
+                                ),
                                 elevation: 2,
                                 child: Container(
                                   width: details.bounds.width,
                                   height: details.bounds.height,
+                                  padding: EdgeInsets.all(details.bounds.width*0.1),
                                   decoration: BoxDecoration(
                                     color: appointment.color,
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(5),
                                     ),
                                   ),
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(appointment.subject, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
-                                        event.joinedMembers.contains(currentUser.id!) ? Column(
-                                          children: [
-                                            SizedBox(height: details.bounds.height*0.05,),
-                                            CircularImage(
-                                              size: details.bounds.width*0.6,
-                                              image: currentUser.imageUrl!,
-                                              color: Theme.of(context).accentColor,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      AutoSizeText(
+                                        event.title!,
+                                        style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w800),
+                                        textAlign: TextAlign.center,
+                                        wrapWords: false,
+                                        minFontSize: 1,
+                                        maxFontSize: 16,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          event.joinedMembers.contains(currentUser.id!) ? Row(
+                                            children: [
+                                              CircularImage(
+                                                size: details.bounds.width*0.25,
+                                                image: currentUser.imageUrl!,
+                                                color: Theme.of(context).accentColor,
+                                              ),
+                                              SizedBox(width: details.bounds.width*0.1,)
+                                            ],
+                                          ) : Container(),
+                                          SizedBox(
+                                            width: details.bounds.width*0.4,
+                                            child: AutoSizeText(
+                                              appointment.subject,
+                                              style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w500),
+                                              textAlign: TextAlign.center,
+                                              wrapWords: false,
+                                              minFontSize: 1,
+                                              maxFontSize: 14,
                                             ),
-                                          ],
-                                        ) : Container(),
-                                      ],
-                                    ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
