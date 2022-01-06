@@ -64,7 +64,7 @@ exports.userJoinsBrand = functions
               brandDoc.name,
               brandDoc.logoUrl,
             );
-      // Send Notification To User
+      // Send Notification To User Joining Brand
       var payload = 0;
       if (userDoc.idioma == "es") {
         payload = {
@@ -85,11 +85,48 @@ exports.userJoinsBrand = functions
                 "Payload",
                 payload
               );
-      const response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+      var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
       functions.logger.log(
                 "Response",
                 response
               );
+      // Send Notification To Brand Owner
+      const adminSnapshot = await db.collection(users).doc(brandDoc.adminID).get();
+      const adminDoc = adminSnapshot.data();
+      functions.logger.log(
+            "Owner Cover Data:",
+            adminDoc.name,
+            adminDoc.nick,
+            adminDoc.imageUrl,
+            adminDoc.isTrainer,
+            adminDoc.notificationToken,
+          );
+      // TO DO: Aixo hauria de ser el length dels usuaris, aixi ya estaria contabilitzat l'ultim.
+      let numberMembers = brandDoc.numberClients + brandDoc.numberClients + 1
+      if (adminDoc.idioma == "es") {
+        payload = {
+              notification: {
+                title: userDoc.name+" se ha unido a "+brandDoc.name,
+                body: "Ya sois un total de "+numberMembers.toString()+" miembros",
+              }
+            };
+      } else {
+        payload = {
+              notification: {
+                title: userDoc.name+" s'ha unit a "+brandDoc.name,
+                body: "Ja sou un total de "+numberMembers.toString()+" membres",
+              }
+        }
+      }
+      functions.logger.log(
+                  "Payload",
+                  payload
+                );
+      response = await admin.messaging().sendToDevice(adminDoc.notificationToken, payload);
+      functions.logger.log(
+                  "Response",
+                  response
+                );
       return null;
     });
 
