@@ -6,6 +6,7 @@ import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'Chat/Chat.dart';
+import 'dart:io';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'Marca/Marca.dart';
@@ -26,6 +27,9 @@ class _HomePageState extends State<HomePage> {
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
   bool isLoading = false;
+  // Firebase Messaging
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -38,7 +42,69 @@ class _HomePageState extends State<HomePage> {
         _accessDatabase.addUserNotificationToken(currentUser.id!, token);
       }
     });
+    configLocalNotification();
+    registerNotification();
     getUserAndBrand();
+  }
+
+  // Configures Notifications
+  void configLocalNotification() {
+    AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('logo_foreground');
+    final IOSInitializationSettings initializationSettingsIOS =
+    IOSInitializationSettings(
+      requestSoundPermission: false,
+      requestBadgePermission: false,
+      requestAlertPermission: false,
+    );
+    InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  // Listens to Notifications When recieved
+  void registerNotification() {
+    firebaseMessaging.requestPermission();
+    // OnMessage for App in Foreground
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('onMessage: $message');
+      if (message.notification != null) {
+        showNotification(message.notification!);
+      }
+      currentIndex = 2;
+      pageController.jumpToPage(currentIndex);
+      return;
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published!');
+      if (message.notification != null) {
+        print("Hola");
+        showNotification(message.notification!);
+      }
+      return;
+    });
+  }
+
+  // Shows Notifications When recieved
+  void showNotification(RemoteNotification remoteNotification) async {
+    AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      Platform.isAndroid ? 'com.dfa.flutterchatdemo' : 'com.duytq.flutterchatdemo',
+      'Flutter chat demo',
+      channelDescription: 'your channel description',
+      playSound: true,
+      enableVibration: true,
+      importance: Importance.max,
+      priority: Priority.high,
+      color: Color(0xFFF4AD1F),
+    );
+    IOSNotificationDetails iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      remoteNotification.title,
+      remoteNotification.body,
+      platformChannelSpecifics,
+      payload: null,
+    );
   }
 
   // Gets the user info from firebase.

@@ -96,7 +96,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                SizedBox(height: MediaQuery.of(context).size.height*0.03),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   mainAxisSize: MainAxisSize.max,
