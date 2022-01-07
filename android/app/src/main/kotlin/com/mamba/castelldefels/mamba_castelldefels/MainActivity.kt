@@ -1,4 +1,4 @@
-package com.mambastyle.mambastyle
+package com.mamba.mambastyleapp
 
 import io.flutter.embedding.android.FlutterActivity
 

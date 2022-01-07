@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
@@ -15,6 +16,8 @@ import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/BrandEventsToday.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembrosTrainer.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import 'TieneMarcaModals/SettingsBrand.dart';
 
@@ -103,24 +106,47 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                           style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 25, fontFamily: "Helvetica"), textAlign: TextAlign.left
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.edit, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                      alignment: Alignment.centerRight,
-                      padding: EdgeInsets.all(0),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.bottomToTop,
-                              child: SettingsBrand(),
-                            )
-                        ).whenComplete(() {
-                          setState(() {
-                            isLoading = true;
-                            initBrandHome();
-                          });
-                        });
-                      },
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.qr_code_outlined, color: Colors.green, size: MediaQuery.of(context).size.height*0.03,),
+                          alignment: Alignment.centerRight,
+                          padding: EdgeInsets.all(0),
+                          onPressed: () {
+                            Clipboard.setData(new ClipboardData(text: currentBrand.id)).then((_){
+                              showTopSnackBar(
+                                context,
+                                CustomSnackBar.info(
+                                  icon: Container(),
+                                  iconRotationAngle: 0,
+                                  backgroundColor: Theme.of(context).accentColor,
+                                  message: AppLocalizations.of(context)!.copyCorrectCode,
+                                  textStyle: Styles.whiteTextStyle,
+                                ),
+                              );
+                            });
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.edit, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+                          alignment: Alignment.centerRight,
+                          padding: EdgeInsets.all(0),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                PageTransition(
+                                  type: PageTransitionType.bottomToTop,
+                                  child: SettingsBrand(),
+                                )
+                            ).whenComplete(() {
+                              setState(() {
+                                isLoading = true;
+                                initBrandHome();
+                              });
+                            });
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),

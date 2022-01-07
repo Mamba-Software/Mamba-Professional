@@ -68,6 +68,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
   int _value = 0;
   bool errorType = false;
   // Invite Code
+  bool? hasCode;
   var codeController = TextEditingController();
   String code = "";
   bool isSearchBrand = false;
@@ -951,132 +952,174 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                 ),
                               ],
                             ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.03),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Container(
-                                  width: MediaQuery.of(context).size.width * 0.85,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextFormField(
-                                          controller: codeController,
-                                          keyboardType: TextInputType.name,
-                                          validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.inviteCodeError : null,
-                                          onChanged: (val) {
-                                            code = val;
-                                            checkIfBrandExists(code);
-                                          },
-                                          style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
-                                          decoration: InputDecoration(
-                                            hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
-                                            hintText: AppLocalizations.of(context)!.inviteCodeError,
-                                            enabledBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.grey)
-                                            ),
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            focusedBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.grey)
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                FloatingActionButton.extended(
+                                  heroTag: "10",
+                                  label: Text(
+                                    AppLocalizations.of(context)!.yes,
+                                    style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
                                   ),
+                                  icon: Icon(Icons.check_circle_outline),
+                                  backgroundColor: hasCode != null && hasCode == false ? Colors.green[200] : Colors.green,
+                                  foregroundColor: Styles.white,
+                                  onPressed: () {
+                                    setState(() {
+                                      hasCode = true;
+                                    });
+                                  },
                                 ),
-                                isSearchBrand ? Center(
-                                  child: SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.05,
-                                    height: MediaQuery.of(context).size.height * 0.025,
-                                    child: CircularProgressIndicator(
-                                      color: Theme.of(context).primaryColor,
-                                      strokeWidth: 2.5,
-                                    ),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                                FloatingActionButton.extended(
+                                  heroTag: "11",
+                                  label: Text(
+                                    AppLocalizations.of(context)!.no,
+                                    style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
                                   ),
-                                ) : Container(),
+                                  icon: Icon(Icons.highlight_off),
+                                  backgroundColor: hasCode != null && hasCode == true ? Colors.red[200] : Colors.red,
+                                  foregroundColor: Styles.white,
+                                  onPressed: ()  {
+                                    setState(() {
+                                      hasCode = false;
+                                    });
+                                  },
+                                ),
                               ],
                             ),
-                            Container(
-                              height: MediaQuery.of(context).size.height*0.17,
-                              child: Column(
-                                children: [
-                                  brandOkay && !brandNotFound && codeController.text.isNotEmpty ? Column(
-                                    children: [
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                            SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                            hasCode != null && hasCode == true ? Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width * 0.83,
+                                      child: Row(
                                         children: [
-                                          Text(
-                                            AppLocalizations.of(context)!.brandFound,
-                                            style: Styles.purpleTextStyle.copyWith(fontSize: 14),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                          SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                          Icon(Icons.check, size: 25, color: Colors.green,),
-                                        ],
-                                      ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          CircularImage(
-                                            size: MediaQuery.of(context).size.width*0.2,
-                                            image: brand.logoUrl,
-                                            color: Theme.of(context).primaryColor,
-                                                    borderWidth: 1,
-                                          ),
-                                          SizedBox(width: MediaQuery.of(context).size.width*0.04),
                                           Expanded(
-                                            child: Text(
-                                              brand.name!,
-                                              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
-                                              textAlign: TextAlign.left,
+                                            child: TextFormField(
+                                              controller: codeController,
+                                              keyboardType: TextInputType.name,
+                                              validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.inviteCodeError : null,
+                                              onChanged: (val) {
+                                                code = val;
+                                                checkIfBrandExists(code);
+                                              },
+                                              style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+                                              decoration: InputDecoration(
+                                                hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                                hintText: AppLocalizations.of(context)!.inviteCodeError,
+                                                enabledBorder: UnderlineInputBorder(
+                                                    borderSide: BorderSide(color: Colors.grey)
+                                                ),
+                                                errorBorder: InputBorder.none,
+                                                disabledBorder: InputBorder.none,
+                                                focusedBorder: UnderlineInputBorder(
+                                                    borderSide: BorderSide(color: Colors.grey)
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  ) : Container(),
-                                  !brandOkay && brandNotFound && codeController.text.isNotEmpty ? Column(
+                                    ),
+                                    SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                    isSearchBrand ? Center(
+                                      child: SizedBox(
+                                        width: MediaQuery.of(context).size.width * 0.05,
+                                        height: MediaQuery.of(context).size.height * 0.025,
+                                        child: CircularProgressIndicator(
+                                          color: Theme.of(context).primaryColor,
+                                          strokeWidth: 2.5,
+                                        ),
+                                      ),
+                                    ) : Container(),
+                                  ],
+                                ),
+                                Container(
+                                  height: MediaQuery.of(context).size.height*0.17,
+                                  child: Column(
                                     children: [
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                                      Container(
-                                        width: MediaQuery.of(context).size.width * 0.90,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                AppLocalizations.of(context)!.brandNotFound,
+                                      brandOkay && !brandNotFound && codeController.text.isNotEmpty ? Column(
+                                        children: [
+                                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                AppLocalizations.of(context)!.brandFound,
                                                 style: Styles.purpleTextStyle.copyWith(fontSize: 14),
                                                 textAlign: TextAlign.left,
                                               ),
+                                              SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                              Icon(Icons.check, size: 25, color: Colors.green,),
+                                            ],
+                                          ),
+                                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              CircularImage(
+                                                size: MediaQuery.of(context).size.width*0.2,
+                                                image: brand.logoUrl,
+                                                color: Theme.of(context).primaryColor,
+                                                borderWidth: 1,
+                                              ),
+                                              SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                                              Expanded(
+                                                child: Text(
+                                                  brand.name!,
+                                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ) : Container(),
+                                      !brandOkay && brandNotFound && codeController.text.isNotEmpty ? Column(
+                                        children: [
+                                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                          Container(
+                                            width: MediaQuery.of(context).size.width * 0.90,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    AppLocalizations.of(context)!.brandNotFound,
+                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                                    textAlign: TextAlign.left,
+                                                  ),
+                                                ),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                                Icon(Icons.close, size: 25, color: Colors.red,),
+                                              ],
                                             ),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                            Icon(Icons.close, size: 25, color: Colors.red,),
-                                          ],
-                                        ),
-                                      ),
+                                          ),
+                                        ],
+                                      ) : Container(),
                                     ],
-                                  ) : Container(),
-                                ],
-                              ),
-                            ),
+                                  ),
+                                ),
+                              ],
+                            ) : Container(),
                             SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                            Row(
+                            hasCode != null && hasCode == false ? Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Expanded(
                                   child: Text(
                                     AppLocalizations.of(context)!.inviteCodeOptional,
-                                    style: Styles.purpleTextStyle.copyWith(color:  Theme.of(context).primaryColor, fontSize: 16),
+                                    style: Styles.purpleTextStyle,
                                     textAlign: TextAlign.left,
                                   ),
                                 ),
                               ],
-                            ),
+                            ) : Container(),
                             SizedBox(height: MediaQuery.of(context).size.height*0.04),
                           ],
                         ),
