@@ -5,7 +5,7 @@ import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
 // IS PRODUCTION?
-bool isProduction = true;
+bool isProduction = false;
 
 // App Version
 var version = "MAMBA v0.0.2";
