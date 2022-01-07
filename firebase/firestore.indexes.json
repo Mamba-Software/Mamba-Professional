@@ -317,6 +317,20 @@
       ]
     },
     {
+      "collectionGroup": "7777 Rooms",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userIds",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "updatedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "Conversations",
       "queryScope": "COLLECTION",
       "fields": [

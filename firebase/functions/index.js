@@ -71,14 +71,20 @@ exports.userJoinsBrand = functions
             notification: {
               title: "Te has unido a "+brandDoc.name,
               body: "Consulta el calendario para participar en tu primera sesión",
-            }
+            },
+            data: {
+                click_action: "FLUTTER_NOTIFICATION_CLICK",
+              },
           };
       } else {
         payload = {
             notification: {
               title: "T'has unit a "+brandDoc.name,
               body: "Consulta el calendari per participar en la teva primera sessió",
-            }
+            },
+            data: {
+                click_action: "FLUTTER_NOTIFICATION_CLICK",
+              },
           };
       }
       functions.logger.log(
@@ -108,14 +114,20 @@ exports.userJoinsBrand = functions
               notification: {
                 title: userDoc.name+" se ha unido a "+brandDoc.name,
                 body: "Ya sois un total de "+numberMembers.toString()+" miembros",
-              }
+              },
+              data: {
+                click_action: "FLUTTER_NOTIFICATION_CLICK",
+              },
             };
       } else {
         payload = {
               notification: {
                 title: userDoc.name+" s'ha unit a "+brandDoc.name,
                 body: "Ja sou un total de "+numberMembers.toString()+" membres",
-              }
+              },
+              data: {
+                click_action: "FLUTTER_NOTIFICATION_CLICK",
+              },
         }
       }
       functions.logger.log(
@@ -129,4 +141,3 @@ exports.userJoinsBrand = functions
                 );
       return null;
     });
-

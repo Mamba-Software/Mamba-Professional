@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     isLoading = true;
-    FirebaseMessaging.instance.getToken().then((token) {
+    firebaseMessaging.getToken().then((token) {
       print("token:");
       print(token);
       if (token != null) {
@@ -69,8 +69,6 @@ class _HomePageState extends State<HomePage> {
       if (message.notification != null) {
         showNotification(message.notification!);
       }
-      currentIndex = 2;
-      pageController.jumpToPage(currentIndex);
       return;
     });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
