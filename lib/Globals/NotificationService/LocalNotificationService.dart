@@ -19,16 +19,21 @@ class LocalNotificationService {
     _notificationsPlugin.initialize(initializationSettings, onSelectNotification: (String? route) async {
       print("NOTIFICATION CLICKED BY USER");
       if (route != null) {
-        final route = "SplashScreen2";
-        if (ModalRoute.of(context)!.isCurrent) {
-          print("Top Page, Moving to Notifications Page");
-          currentIndex = int.parse(route[route.length-1]);
-          pageController.jumpToPage(currentIndex);
-        } else {
-          print("Not in Home Page, Moving to Splash Screen");
+        if (route == "SplashScreen1") {
           String routeFromMessage = route.substring(0, route.length - 1);;
           currentIndex = int.parse(route[route.length-1]);
           Navigator.of(context).pushNamedAndRemoveUntil(routeFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
+        } else {
+          if (ModalRoute.of(context)!.isCurrent) {
+            print("Top Page, Moving to Notifications Page");
+            currentIndex = int.parse(route[route.length-1]);
+            pageController.jumpToPage(currentIndex);
+          } else {
+            print("Not in Home Page, Moving to Splash Screen");
+            String routeFromMessage = route.substring(0, route.length - 1);;
+            currentIndex = int.parse(route[route.length-1]);
+            Navigator.of(context).pushNamedAndRemoveUntil(routeFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
+          }
         }
       }
     });

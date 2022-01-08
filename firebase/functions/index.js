@@ -74,7 +74,7 @@ exports.userJoinsBrand = functions
               body: "Consulta el calendario para participar en tu primera sesión",
             },
             data: {
-              route: "SplashScreen",
+              route: "SplashScreen1",
             },
           };
       } else {
@@ -84,7 +84,7 @@ exports.userJoinsBrand = functions
               body: "Consulta el calendari per participar en la teva primera sessió",
             },
             data: {
-              route: "SplashScreen",
+              route: "SplashScreen1",
             },
           };
       }
@@ -117,7 +117,7 @@ exports.userJoinsBrand = functions
                 body: "Ya sois un total de "+numberMembers.toString()+" miembros",
               },
               data: {
-                route: "SplashScreen",
+                route: "SplashScreen2",
               },
             };
       } else {
@@ -127,7 +127,7 @@ exports.userJoinsBrand = functions
                 body: "Ja sou un total de "+numberMembers.toString()+" membres",
               },
               data: {
-                route: "SplashScreen",
+                route: "SplashScreen2",
               },
         }
       }
