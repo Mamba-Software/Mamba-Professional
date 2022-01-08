@@ -169,13 +169,14 @@ exports.changeLastMessage = functions
   .onUpdate((change, context) => {
     const message = change.after.data()
     if (message) {
-        functions.logger.log(
-                      "Message",
-                      message.updatedAt,
-                    );
+      const updatedAt = message.updatedAt;
+      functions.logger.log(
+                    "Message",
+                    message.updatedAt,
+                  );
       return db.doc(rooms + "/" + context.params.roomId).update({
         lastMessages: [message],
-        updatedAt: [message.updatedAt],
+        updatedAt: updatedAt,
       })
     } else {
       return null
