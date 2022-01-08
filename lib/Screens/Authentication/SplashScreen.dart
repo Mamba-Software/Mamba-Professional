@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
@@ -42,9 +43,14 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void checkAndGetCurrentUserDetails() async {
+    //_accessDatabase.signOut();
     User? firebaseUser = await _accessDatabase.getCurrentUser();
     if (firebaseUser != null) {
       if (isProduction) {
+        FirebaseChatCore.instance.setConfig(FirebaseChatCoreConfig(
+          'Rooms',
+          'Users',
+        ));
         if (firebaseUser.emailVerified) {
           currentUser = await _accessDatabase.getCurrentUserDetails();
           unreadNotifications =
@@ -100,6 +106,10 @@ class _SplashScreenState extends State<SplashScreen> {
           );
         }
       } else {
+        FirebaseChatCore.instance.setConfig(FirebaseChatCoreConfig(
+          '7777 Rooms',
+          '7777 Users',
+        ));
         currentUser = await _accessDatabase.getCurrentUserDetails();
         unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
         unreadChats = await _accessDatabase.numberUnreadConversations(currentUser.id!);
