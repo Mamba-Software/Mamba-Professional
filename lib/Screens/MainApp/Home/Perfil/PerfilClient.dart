@@ -439,30 +439,30 @@ class _PerfilClientState extends State<PerfilClient> {
                   children: <Widget>[
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.17,
+                      bottom: MediaQuery.of(context).size.height*0.13,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.70,
                       child: alreadyAnswered ?
-                        IconButton(
-                          icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
-                          alignment: Alignment.center,
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.bottomToTop,
-                                  child: FeedBack(),
-                                )
-                            ).whenComplete(() {
-                              setState(() {
-                                isLoading = true;
-                                initProfileHome();
-                              });
+                      IconButton(
+                        icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
+                        alignment: Alignment.center,
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.bottomToTop,
+                                child: FeedBack(),
+                              )
+                          ).whenComplete(() {
+                            setState(() {
+                              isLoading = true;
+                              initProfileHome();
                             });
-                          },
+                          });
+                        },
                       )
                           :
-                        buildCustomBadge(
+                      buildCustomBadge(
                           child: IconButton(
                             icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
                             alignment: Alignment.center,
@@ -481,10 +481,10 @@ class _PerfilClientState extends State<PerfilClient> {
                               });
                             },
                           )
-                        ),
+                      ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.1,
+                      top: MediaQuery.of(context).size.height*0.12,
                       bottom: 0,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.70,
@@ -496,7 +496,7 @@ class _PerfilClientState extends State<PerfilClient> {
                     ),
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.17,
+                      bottom: MediaQuery.of(context).size.height*0.13,
                       left: MediaQuery.of(context).size.width*0.70,
                       right: 0,
                       child: IconButton(
@@ -518,7 +518,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.1,
+                      top: MediaQuery.of(context).size.height*0.12,
                       bottom: 0,
                       left: MediaQuery.of(context).size.width*0.70,
                       right: 0,
@@ -1137,7 +1137,7 @@ class _PerfilClientState extends State<PerfilClient> {
                   children: <Widget>[
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.17,
+                      bottom: MediaQuery.of(context).size.height*0.13,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.70,
                       child: alreadyAnswered ?
@@ -1182,7 +1182,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.1,
+                      top: MediaQuery.of(context).size.height*0.12,
                       bottom: 0,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.70,
@@ -1194,7 +1194,7 @@ class _PerfilClientState extends State<PerfilClient> {
                     ),
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.17,
+                      bottom: MediaQuery.of(context).size.height*0.13,
                       left: MediaQuery.of(context).size.width*0.70,
                       right: 0,
                       child: IconButton(
@@ -1216,7 +1216,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.1,
+                      top: MediaQuery.of(context).size.height*0.12,
                       bottom: 0,
                       left: MediaQuery.of(context).size.width*0.70,
                       right: 0,

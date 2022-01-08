@@ -73,8 +73,8 @@ exports.userJoinsBrand = functions
               body: "Consulta el calendario para participar en tu primera sesión",
             },
             data: {
-                click_action: "FLUTTER_NOTIFICATION_CLICK",
-              },
+              route: "SplashScreen",
+            },
           };
       } else {
         payload = {
@@ -83,8 +83,8 @@ exports.userJoinsBrand = functions
               body: "Consulta el calendari per participar en la teva primera sessió",
             },
             data: {
-                click_action: "FLUTTER_NOTIFICATION_CLICK",
-              },
+              route: "SplashScreen",
+            },
           };
       }
       functions.logger.log(
@@ -108,7 +108,7 @@ exports.userJoinsBrand = functions
             adminDoc.notificationToken,
           );
       // TO DO: Aixo hauria de ser el length dels usuaris, aixi ya estaria contabilitzat l'ultim.
-      let numberMembers = brandDoc.numberClients + brandDoc.numberClients + 1
+      let numberMembers = brandDoc.numberClients + brandDoc.numberClients;
       if (adminDoc.idioma == "es") {
         payload = {
               notification: {
@@ -116,7 +116,7 @@ exports.userJoinsBrand = functions
                 body: "Ya sois un total de "+numberMembers.toString()+" miembros",
               },
               data: {
-                click_action: "FLUTTER_NOTIFICATION_CLICK",
+                route: "SplashScreen",
               },
             };
       } else {
@@ -126,7 +126,7 @@ exports.userJoinsBrand = functions
                 body: "Ja sou un total de "+numberMembers.toString()+" membres",
               },
               data: {
-                click_action: "FLUTTER_NOTIFICATION_CLICK",
+                route: "SplashScreen",
               },
         }
       }

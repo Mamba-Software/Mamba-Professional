@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'Chat/Chat.dart';
-import 'dart:io';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'Marca/Marca.dart';
 import 'Perfil/Perfil.dart';
 
@@ -27,82 +26,48 @@ class _HomePageState extends State<HomePage> {
   var _accessDatabase = new DatabaseAccess();
   // Boolean Loading
   bool isLoading = false;
-  // Firebase Messaging
-  final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
     super.initState();
     isLoading = true;
-    firebaseMessaging.getToken().then((token) {
-      print("token:");
+    // Get Token of User and Update in Firebase
+    FirebaseMessaging.instance.getToken().then((token) {
+      print("Token:");
       print(token);
-      if (token != null) {
-        _accessDatabase.addUserNotificationToken(currentUser.id!, token);
+      if (token != currentUser.notificationToken) {
+        print("New token updated");
+        _accessDatabase.addUserNotificationToken(currentUser.id!, token!);
       }
     });
-    configLocalNotification();
-    registerNotification();
+    // Init LocalNotificationsService
+    LocalNotificationService.initialize(context);
+    /// Message on which User has tapped from Terminated State
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        //final route = message.data["route"];
+        final route = "SplashScreen2";
+        String routeFromMessage = route.substring(0, route.length - 1);;
+        currentIndex = int.parse(route[route.length-1]);
+        Navigator.of(context).pushReplacementNamed(routeFromMessage, arguments: currentIndex);
+      }
+    });
+    // If App in Foreground.
+    FirebaseMessaging.onMessage.listen((message) {
+      print("App in Foreground Notification Trigger HomePage");
+      LocalNotificationService.display(message);
+    });
+    // If App in Background, Tap on Notification to be Opened
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print("App in Background Notification Trigger HomePage");
+      //final route = message.data["route"];
+      final route = "SplashScreen2";
+      String routeFromMessage = route.substring(0, route.length - 1);;
+      currentIndex = int.parse(route[route.length-1]);
+      Navigator.of(context).pushReplacementNamed(routeFromMessage, arguments: currentIndex);
+    });
+    pageController = PageController(initialPage: currentIndex);
     getUserAndBrand();
-  }
-
-  // Configures Notifications
-  void configLocalNotification() {
-    AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('logo_foreground');
-    final IOSInitializationSettings initializationSettingsIOS =
-    IOSInitializationSettings(
-      requestSoundPermission: false,
-      requestBadgePermission: false,
-      requestAlertPermission: false,
-    );
-    InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  }
-
-  // Listens to Notifications When recieved
-  void registerNotification() {
-    firebaseMessaging.requestPermission();
-    // OnMessage for App in Foreground
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('onMessage: $message');
-      if (message.notification != null) {
-        showNotification(message.notification!);
-      }
-      return;
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
-      if (message.notification != null) {
-        print("Hola");
-        showNotification(message.notification!);
-      }
-      return;
-    });
-  }
-
-  // Shows Notifications When recieved
-  void showNotification(RemoteNotification remoteNotification) async {
-    AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      Platform.isAndroid ? 'com.dfa.flutterchatdemo' : 'com.duytq.flutterchatdemo',
-      'Flutter chat demo',
-      channelDescription: 'your channel description',
-      playSound: true,
-      enableVibration: true,
-      importance: Importance.max,
-      priority: Priority.high,
-      color: Color(0xFFF4AD1F),
-    );
-    IOSNotificationDetails iOSPlatformChannelSpecifics = IOSNotificationDetails();
-    NotificationDetails platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      remoteNotification.title,
-      remoteNotification.body,
-      platformChannelSpecifics,
-      payload: null,
-    );
   }
 
   // Gets the user info from firebase.

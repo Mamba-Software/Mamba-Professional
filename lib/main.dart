@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -17,27 +18,18 @@ import 'Globals/GlobalVars.dart';
 // Starting app function. After initialitzation, we define the global providers:
 // - Language Provider: To change the Language of the App.
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-// Create Android Channel
-const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'high_importance_channel', // id
-    'High Importance Notifications',  // title
-    description: 'This channel is used for important notifications.', // description
-    importance: Importance.high,
-    playSound: true);
 // BackGroundNotificationHandler
 Future<void> _backgroundMessageHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  print('background message ${message.notification!.body}');
+  print(message.data.toString());
+  print(message.notification!.title.toString());
 }
 
 void main() async {
   // Initialize App
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  // Firebse Messaging
+  // Firebase Messaging Back Ground Message Handler
   FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
-  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
   // System and Top Bar Style
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -77,6 +69,9 @@ class Mamba extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
             home: SplashScreen(),
+            routes: {
+              "SplashScreen": (_) => SplashScreen(),
+            },
           );
         }
     );

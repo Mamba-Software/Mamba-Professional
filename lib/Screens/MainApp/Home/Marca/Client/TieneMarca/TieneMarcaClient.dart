@@ -97,7 +97,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                SizedBox(height: MediaQuery.of(context).size.height*0.05),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   mainAxisSize: MainAxisSize.max,
