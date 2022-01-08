@@ -16,6 +16,7 @@ const locations = isProduction ? "Locations" : "7777 Locations";
 const groupOfQuestions = isProduction ? "GroupOfQuestions" : "7777 GroupOfQuestions";
 const questions = isProduction ? "Questions" : "7777 Questions";
 const answers = isProduction ? "Answers" : "7777 Answers";
+const rooms = isProduction ? "Rooms" : "7777 Rooms";
 const conversations = isProduction ? "Conversations" : "7777 Conversations";
 const messages = isProduction ? "Messages" : "7777 Messages";
 const errors = isProduction ? "Errors" : "7777 Errors";
@@ -141,3 +142,42 @@ exports.userJoinsBrand = functions
                 );
       return null;
     });
+
+exports.changeMessageStatus = functions
+  .region("europe-west1")
+  .firestore
+  .document("/"+rooms+"/{roomId}/messages/{messageId}")
+  .onWrite((change) => {
+    const message = change.after.data()
+    if (message) {
+      if (['delivered', 'seen', 'sent'].includes(message.status)) {
+        return null
+      } else {
+        return change.after.ref.update({
+          status: 'delivered',
+        })
+      }
+    } else {
+      return null
+    }
+  })
+
+exports.changeLastMessage = functions
+  .region("europe-west1")
+  .firestore
+  .document("/"+rooms+"/{roomId}/messages/{messageId}")
+  .onUpdate((change, context) => {
+    const message = change.after.data()
+    if (message) {
+        functions.logger.log(
+                      "Message",
+                      message.updatedAt,
+                    );
+      return db.doc(rooms + "/" + context.params.roomId).update({
+        lastMessages: [message],
+        updatedAt: [message.updatedAt],
+      })
+    } else {
+      return null
+    }
+  })

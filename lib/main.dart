@@ -20,8 +20,7 @@ import 'Globals/GlobalVars.dart';
 
 // BackGroundNotificationHandler
 Future<void> _backgroundMessageHandler(RemoteMessage message) async {
-  print(message.data.toString());
-  print(message.notification!.title.toString());
+  currentIndex = 2;
 }
 
 void main() async {

@@ -44,12 +44,11 @@ class _HomePageState extends State<HomePage> {
     LocalNotificationService.initialize(context);
     /// Message on which User has tapped from Terminated State
     FirebaseMessaging.instance.getInitialMessage().then((message) {
+      print("App in Terminated State Notification Trigger HomePage");
       if (message != null) {
-        //final route = message.data["route"];
         final route = "SplashScreen2";
-        String routeFromMessage = route.substring(0, route.length - 1);;
         currentIndex = int.parse(route[route.length-1]);
-        Navigator.of(context).pushReplacementNamed(routeFromMessage, arguments: currentIndex);
+        pageController.jumpToPage(currentIndex);
       }
     });
     // If App in Foreground.
@@ -62,11 +61,20 @@ class _HomePageState extends State<HomePage> {
       print("App in Background Notification Trigger HomePage");
       //final route = message.data["route"];
       final route = "SplashScreen2";
-      String routeFromMessage = route.substring(0, route.length - 1);;
-      currentIndex = int.parse(route[route.length-1]);
-      Navigator.of(context).pushReplacementNamed(routeFromMessage, arguments: currentIndex);
+      if (ModalRoute.of(context)!.isCurrent) {
+        print("Top Page, Moving to Notifications Page");
+        currentIndex = int.parse(route[route.length-1]);
+        pageController.jumpToPage(currentIndex);
+      } else {
+        print("Not in Home Page, Moving to Splash Screen");
+        String routeFromMessage = route.substring(0, route.length - 1);;
+        currentIndex = int.parse(route[route.length-1]);
+        Navigator.of(context).pushNamedAndRemoveUntil(routeFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
+      }
     });
+    // Defining the Page Controller
     pageController = PageController(initialPage: currentIndex);
+    // Getting User Information
     getUserAndBrand();
   }
 

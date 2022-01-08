@@ -17,16 +17,21 @@ class LocalNotificationService {
     InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
 
     _notificationsPlugin.initialize(initializationSettings, onSelectNotification: (String? route) async {
+      print("NOTIFICATION CLICKED BY USER");
       if (route != null) {
-        print("OnTap Notification Trigger LocalNotificationService");
         final route = "SplashScreen2";
-        String routeFromMessage = route.substring(0, route.length - 1);;
-        currentIndex = int.parse(route[route.length-1]);
-        Navigator.of(context).pushReplacementNamed(routeFromMessage, arguments: currentIndex);
+        if (ModalRoute.of(context)!.isCurrent) {
+          print("Top Page, Moving to Notifications Page");
+          currentIndex = int.parse(route[route.length-1]);
+          pageController.jumpToPage(currentIndex);
+        } else {
+          print("Not in Home Page, Moving to Splash Screen");
+          String routeFromMessage = route.substring(0, route.length - 1);;
+          currentIndex = int.parse(route[route.length-1]);
+          Navigator.of(context).pushNamedAndRemoveUntil(routeFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
+        }
       }
     });
-
-
   }
 
   static void display(RemoteMessage message) async {
