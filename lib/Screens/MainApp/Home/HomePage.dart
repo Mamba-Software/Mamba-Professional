@@ -1,12 +1,13 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
-import 'package:preload_page_view/preload_page_view.dart';
 import 'Chat/Chat.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'Marca/Marca.dart';
 import 'Perfil/Perfil.dart';
 
@@ -30,9 +31,53 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     isLoading = true;
+    // Get Token of User and Update in Firebase
+    FirebaseMessaging.instance.getToken().then((token) {
+      print("Token:");
+      print(token);
+      if (token != currentUser.notificationToken) {
+        print("New token updated");
+        _accessDatabase.addUserNotificationToken(currentUser.id!, token!);
+      }
+    });
+    // Init LocalNotificationsService
+    LocalNotificationService.initialize(context);
+    /// Message on which User has tapped from Terminated State
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      print("App in Terminated State Notification Trigger HomePage");
+      if (message != null) {
+        final route = "SplashScreen2";
+        currentIndex = int.parse(route[route.length-1]);
+        pageController.jumpToPage(currentIndex);
+      }
+    });
+    // If App in Foreground.
+    FirebaseMessaging.onMessage.listen((message) {
+      print("App in Foreground Notification Trigger HomePage");
+      LocalNotificationService.display(message);
+    });
+    // If App in Background, Tap on Notification to be Opened
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print("App in Background Notification Trigger HomePage");
+      //final route = message.data["route"];
+      final route = "SplashScreen2";
+      if (ModalRoute.of(context)!.isCurrent) {
+        print("Top Page, Moving to Notifications Page");
+        currentIndex = int.parse(route[route.length-1]);
+        pageController.jumpToPage(currentIndex);
+      } else {
+        print("Not in Home Page, Moving to Splash Screen");
+        String routeFromMessage = route.substring(0, route.length - 1);;
+        currentIndex = int.parse(route[route.length-1]);
+        Navigator.of(context).pushNamedAndRemoveUntil(routeFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
+      }
+    });
+    // Defining the Page Controller
+    pageController = PageController(initialPage: currentIndex);
+    // Getting User Information
     getUserAndBrand();
-    // Faltaria ficar aqui totes les altres inicialitzacions...
   }
+
   // Gets the user info from firebase.
   void getUserAndBrand() async {
     currentUser = await _accessDatabase.getCurrentUserDetails();

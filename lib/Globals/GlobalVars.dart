@@ -33,5 +33,6 @@ Position? currentPosition;
 String? currentAddress;
 
 // Page Controller
-final PageController pageController = PageController(initialPage: currentIndex);
 int currentIndex = 0;
+PageController pageController = PageController(initialPage: currentIndex);
+

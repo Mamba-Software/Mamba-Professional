@@ -1169,45 +1169,45 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.70,
                       child: alreadyAnswered ?
-                        IconButton(
-                          icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
-                          alignment: Alignment.center,
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.bottomToTop,
-                                  child: FeedBack(),
-                                )
-                            ).whenComplete(() {
-                              setState(() {
-                                isLoading = true;
-                                initProfileHome();
-                              });
+                      IconButton(
+                        icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
+                        alignment: Alignment.center,
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.bottomToTop,
+                                child: FeedBack(),
+                              )
+                          ).whenComplete(() {
+                            setState(() {
+                              isLoading = true;
+                              initProfileHome();
                             });
-                          },
-                        )
-                            :
-                        buildCustomBadge(
-                            child: IconButton(
-                              icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
-                              alignment: Alignment.center,
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    PageTransition(
-                                      type: PageTransitionType.bottomToTop,
-                                      child: FeedBack(),
-                                    )
-                                ).whenComplete(() {
-                                  setState(() {
-                                    isLoading = true;
-                                    initProfileHome();
-                                  });
+                          });
+                        },
+                      )
+                          :
+                      buildCustomBadge(
+                          child: IconButton(
+                            icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
+                            alignment: Alignment.center,
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.bottomToTop,
+                                    child: FeedBack(),
+                                  )
+                              ).whenComplete(() {
+                                setState(() {
+                                  isLoading = true;
+                                  initProfileHome();
                                 });
-                              },
-                            )
-                        ),
+                              });
+                            },
+                          )
+                      ),
                     ),
                     Positioned(
                       top: MediaQuery.of(context).size.height*0.12,
