@@ -480,18 +480,16 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                             imageUrl: currentUser.imageUrl,
                                           );
                                           await FirebaseChatCore.instance.createUserInFirestore(myUser);*/
-                                          final roomAux = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
-                                            adminUser.id!: adminUser.name,
-                                            currentUser.id!: currentUser.name,
+                                          final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                                            adminUser.id!: adminUser.isTrainer,
+                                            currentUser.id!: currentUser.isTrainer,
                                           });
 
-                                          var userAux = roomAux.users.firstWhere(
-                                                (u) => u.id != currentUser.id,
-                                          );
-                                          final room =  roomAux.copyWith(imageUrl: roomAux.imageUrl, metadata: roomAux.metadata, name: roomAux.metadata![userAux.id], type: roomAux.type, updatedAt: roomAux.updatedAt, users: roomAux.users);
-                                          final roomy =  await FirebaseChatCore.instance.createGroupRoom(imageUrl: brand.logoUrl, metadata: {
-                                            "isGroup": "true",
-                                          }, name: brand.name!, users: [otherUser]);
+                                         // final room =  roomAux.copyWith(imageUrl: roomAux.imageUrl, metadata: roomAux.metadata, name: roomAux.metadata![userAux.id], type: roomAux.type, updatedAt: roomAux.updatedAt, users: roomAux.users);
+                                         /* final roomy =  await FirebaseChatCore.instance.createGroupRoom(imageUrl: brand.logoUrl, metadata: {
+                                            currentUser.id!: currentUser.isTrainer,
+                                            adminUser.id!: adminUser.isTrainer,
+                                          }, name: brand.name!, users: [otherUser]);*/
                                           Navigator.of(context).push(
                                             MaterialPageRoute(
                                               builder: (context) => ChatPage(

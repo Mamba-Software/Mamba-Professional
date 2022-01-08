@@ -208,72 +208,73 @@ class _ChatCoreState extends State<ChatCore> {
             SizedBox(width: MediaQuery.of(context).size.width*0.03,),
           ]
       ),
-      body: _user == null
-          ? Container(
-        alignment: Alignment.center,
-        margin: const EdgeInsets.only(
-          bottom: 200,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('Not authenticated'),
-            TextButton(
-              onPressed: () {
-
-              },
-              child: const Text('Login'),
-            ),
-          ],
-        ),
-      )
+      body
           : StreamBuilder<List<types.Room>>(
         stream: FirebaseChatCore.instance.rooms(orderByUpdatedAt: true),
         initialData: const [],
         builder: (context, snapshot) {
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          if (!snapshot.hasData) {
             return LoadingViewPurple();
           }
+          else if (allRooms.length == 0 && snapshot.data!.isEmpty) {
+            return Container(
+              height: MediaQuery.of(context).size.height *0.65,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Container(
+                        height: MediaQuery.of(context).size.height *0.25,
+                        child: Image.asset(Constants.chatImage)
+                    ),
+                  ),
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
+                      child: Text(AppLocalizations.of(context)!.noMessages, style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080)), textAlign: TextAlign.center,),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
           else {
-
-            if(snapshot.data!.length != 0) {
-              if(!isFiltered) {
-                allRooms = snapshot.data!;
+            allRooms = snapshot.data!;
+              if (!isFiltered) {
                 return ListView.builder(
                   itemCount: allRooms.length,
                   itemBuilder: (context, index) {
-                    final roomAux = allRooms[index];
-                    var userAux = roomAux.users.firstWhere(
+                    final room;
+                    room = allRooms[index];
+                    var userAux = room.users.firstWhere(
                           (u) => u.id != _user!.uid,
                     );
-                    final room;
-                    if(roomAux.type.toString() != "RoomType.group") {
-                      room =  roomAux.copyWith(imageUrl: roomAux.imageUrl, metadata: roomAux.metadata, name: roomAux.metadata![userAux.id], type: roomAux.type, updatedAt: roomAux.updatedAt, users: roomAux.users);
-                      allRooms[index] = room;
-                    }
-                    else  room = roomAux;
 
-                    var dt = DateTime.fromMillisecondsSinceEpoch(room.updatedAt);
+                    var dt = DateTime.fromMillisecondsSinceEpoch(
+                        room.updatedAt);
 
                     return GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => ChatPage(
-                              room: room,
-                            ),
+                            builder: (context) =>
+                                ChatPage(
+                                  room: room,
+                                ),
                           ),
                         );
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(
                             horizontal:
-                            MediaQuery.of(context)
+                            MediaQuery
+                                .of(context)
                                 .size
                                 .width *
                                 0.04,
                             vertical:
-                            MediaQuery.of(context)
+                            MediaQuery
+                                .of(context)
                                 .size
                                 .height *
                                 0.01),
@@ -283,26 +284,41 @@ class _ChatCoreState extends State<ChatCore> {
                               child: Row(
                                 children: <Widget>[
                                   CircularImage(
-                                    size: MediaQuery.of(context).size.width*0.15,
+                                    size: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width * 0.15,
                                     image: room.imageUrl,
-                                    color: Theme.of(context).primaryColor,
+                                    color: Theme
+                                        .of(context)
+                                        .primaryColor,
                                     borderWidth: 1,
                                   ),
-                                  SizedBox(width: MediaQuery.of(context).size.width*0.03,),
+                                  SizedBox(width: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width * 0.03,),
                                   Expanded(
                                     child: Container(
                                       color: Colors.transparent,
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment
+                                            .start,
                                         children: <Widget>[
-                                          Text(room.name ?? '', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-                                          SizedBox(height: MediaQuery.of(context).size.height*0.005,),
+                                          Text(room.name ?? '',
+                                            style: TextStyle(fontSize: 16,
+                                                fontWeight: FontWeight.bold),),
+                                          SizedBox(height: MediaQuery
+                                              .of(context)
+                                              .size
+                                              .height * 0.005,),
                                           TextField(
                                             enabled: false,
                                             decoration: InputDecoration(
-                                             // hintStyle: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),
-                                              //hintText: room.lastMessage,
-                                              hintText:"test last message",
+                                              // hintStyle: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),
+                                              hintText: room.lastMessages !=
+                                                  null ? room.lastMessages[0]
+                                                  .text : '',
                                               contentPadding: EdgeInsets.all(0),
                                               isDense: true,
                                               enabledBorder: InputBorder.none,
@@ -320,14 +336,29 @@ class _ChatCoreState extends State<ChatCore> {
                                 ],
                               ),
                             ),
-                            SizedBox(width: MediaQuery.of(context).size.width*0.04,),
+                            SizedBox(width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.04,),
                             Icon(
-                              Icons.groups,
-                              color: Theme.of(context).primaryColor,
-                              size: Icons.groups == Icons.groups ? 25 : 20,
+                              room.type.toString() == "RoomType.group" ? Icons
+                                  .groups : room.metadata![userAux.id] == true
+                                  ? Icons.record_voice_over
+                                  : Icons.directions_run,
+                              color: Theme
+                                  .of(context)
+                                  .primaryColor,
+                              size: room.type.toString() == "RoomType.group"
+                                  ? 25
+                                  : 20,
                             ),
-                            SizedBox(width: MediaQuery.of(context).size.width*0.04,),
-                            Text((DateFormat('dd/MM/yyyy, HH:mm').format(dt)).toString(),style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold),),
+                            SizedBox(width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.04,),
+                            Text((DateFormat('dd/MM/yyyy, HH:mm').format(dt))
+                                .toString(), style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.bold),),
                           ],
                         ),
                       ),
@@ -339,38 +370,37 @@ class _ChatCoreState extends State<ChatCore> {
                 return ListView.builder(
                   itemCount: rooms.length,
                   itemBuilder: (context, index) {
-                    final roomAux = rooms[index];
-                    var userAux = roomAux.users.firstWhere(
+                    final room;
+                    room = rooms[index];
+                    var userAux = room.users.firstWhere(
                           (u) => u.id != _user!.uid,
                     );
-                    final room;
-                    if(roomAux.type.toString() != "RoomType.group") {
-                      room =  roomAux.copyWith(imageUrl: roomAux.imageUrl, metadata: roomAux.metadata, name: roomAux.metadata![userAux.id], type: roomAux.type, updatedAt: roomAux.updatedAt, users: roomAux.users);
-                      rooms[index] = room;
-                    }
-                    else  room = roomAux;
 
-                    var dt = DateTime.fromMillisecondsSinceEpoch(room.updatedAt);
+                    var dt = DateTime.fromMillisecondsSinceEpoch(
+                        room.updatedAt);
 
                     return GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => ChatPage(
-                              room: room,
-                            ),
+                            builder: (context) =>
+                                ChatPage(
+                                  room: room,
+                                ),
                           ),
                         );
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(
                             horizontal:
-                            MediaQuery.of(context)
+                            MediaQuery
+                                .of(context)
                                 .size
                                 .width *
                                 0.04,
                             vertical:
-                            MediaQuery.of(context)
+                            MediaQuery
+                                .of(context)
                                 .size
                                 .height *
                                 0.01),
@@ -380,26 +410,41 @@ class _ChatCoreState extends State<ChatCore> {
                               child: Row(
                                 children: <Widget>[
                                   CircularImage(
-                                    size: MediaQuery.of(context).size.width*0.15,
+                                    size: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width * 0.15,
                                     image: room.imageUrl,
-                                    color: Theme.of(context).primaryColor,
+                                    color: Theme
+                                        .of(context)
+                                        .primaryColor,
                                     borderWidth: 1,
                                   ),
-                                  SizedBox(width: MediaQuery.of(context).size.width*0.03,),
+                                  SizedBox(width: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width * 0.03,),
                                   Expanded(
                                     child: Container(
                                       color: Colors.transparent,
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment
+                                            .start,
                                         children: <Widget>[
-                                          Text(room.name ?? '', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-                                          SizedBox(height: MediaQuery.of(context).size.height*0.005,),
+                                          Text(room.name ?? '',
+                                            style: TextStyle(fontSize: 16,
+                                                fontWeight: FontWeight.bold),),
+                                          SizedBox(height: MediaQuery
+                                              .of(context)
+                                              .size
+                                              .height * 0.005,),
                                           TextField(
                                             enabled: false,
                                             decoration: InputDecoration(
                                               // hintStyle: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),
-                                              //hintText: room.lastMessage,
-                                              hintText:"test last message",
+                                              hintText: room.lastMessages !=
+                                                  null ? room.lastMessages[0]
+                                                  .text : 'test',
                                               contentPadding: EdgeInsets.all(0),
                                               isDense: true,
                                               enabledBorder: InputBorder.none,
@@ -417,14 +462,29 @@ class _ChatCoreState extends State<ChatCore> {
                                 ],
                               ),
                             ),
-                            SizedBox(width: MediaQuery.of(context).size.width*0.04,),
+                            SizedBox(width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.04,),
                             Icon(
-                              Icons.groups,
-                              color: Theme.of(context).primaryColor,
-                              size: Icons.groups == Icons.groups ? 25 : 20,
+                              room.type.toString() == "RoomType.group" ? Icons
+                                  .groups : room.metadata![userAux.id] == true
+                                  ? Icons.record_voice_over
+                                  : Icons.directions_run,
+                              color: Theme
+                                  .of(context)
+                                  .primaryColor,
+                              size: room.type.toString() == "RoomType.group"
+                                  ? 25
+                                  : 20,
                             ),
-                            SizedBox(width: MediaQuery.of(context).size.width*0.04,),
-                            Text((DateFormat('dd/MM/yyyy, HH:mm').format(dt)).toString(),style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold),),
+                            SizedBox(width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.04,),
+                            Text((DateFormat('dd/MM/yyyy, HH:mm').format(dt))
+                                .toString(), style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.bold),),
                           ],
                         ),
                       ),
@@ -432,29 +492,6 @@ class _ChatCoreState extends State<ChatCore> {
                   },
                 );
               }
-            }
-            else {
-              return Container(
-                height: MediaQuery.of(context).size.height *0.65,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Center(
-                      child: Container(
-                          height: MediaQuery.of(context).size.height *0.25,
-                          child: Image.asset(Constants.chatImage)
-                      ),
-                    ),
-                    Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
-                        child: Text(AppLocalizations.of(context)!.noMessages, style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080)), textAlign: TextAlign.center,),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
           }
 /*
           return ListView.builder(
