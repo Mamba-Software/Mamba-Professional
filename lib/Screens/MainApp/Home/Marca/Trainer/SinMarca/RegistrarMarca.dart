@@ -1172,14 +1172,15 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                           chatUsers.add(toMap(currentUser.id));
                           var result = await _accessDatabase.addBrand(nameBrandController.text.trim(), _image, descriptionController.text.trim(), _workShift, membersMax);
                           String baseLocation = await _accessDatabase.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
+                          List<String> brandCover = await _accessDatabase.getBrandCover(result);
                           await _accessDatabase.updateBrandBaseLocation(result, baseLocation);
                           await _accessDatabase.updateCurrentUserBrand(result);
                           NotificationService().userCreatesBrand(currentUser.id!, result);
                           // Notification Trainer has created Brand
 
-                          await FirebaseChatCore.instance.createGroupRoom(imageUrl: currentBrand.logoUrl, metadata: {
+                          await FirebaseChatCore.instance.createGroupRoom(imageUrl: brandCover[1], metadata: {
                             currentUser.id!: currentUser.isTrainer,
-                          }, name: currentBrand.name!, users: []);
+                          }, name: brandCover[0], users: []);
 
                           setState(() {
                             currentIndex = 1;
