@@ -485,6 +485,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                             currentUser.id!: currentUser.isTrainer,
                                           });
 
+
                                          // final room =  roomAux.copyWith(imageUrl: roomAux.imageUrl, metadata: roomAux.metadata, name: roomAux.metadata![userAux.id], type: roomAux.type, updatedAt: roomAux.updatedAt, users: roomAux.users);
                                          /* final roomy =  await FirebaseChatCore.instance.createGroupRoom(imageUrl: brand.logoUrl, metadata: {
                                             currentUser.id!: currentUser.isTrainer,

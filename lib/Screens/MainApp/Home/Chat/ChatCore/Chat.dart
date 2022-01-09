@@ -15,6 +15,9 @@ import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/TodosMiembrosClient.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembrosTrainer.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/TodosMiembrosClient.dart';
 import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -241,11 +244,18 @@ class _ChatPageState extends State<ChatPage> {
                 borderWidth: 0.1,
               ),
               onTap: () {
-                Navigator.push(
+                widget.room.type.toString()
+                != "RoomType.group" ? Navigator.push(
                     context,
                     CupertinoPageRoute<Null>(
                         builder: (context) => ProfileViewUser(
-                            userID: userId.id!, viewOnly: true)));
+                            userID: userId.id!, viewOnly: true))) : currentUser.isTrainer == true ?  Navigator.push(
+                    context,
+                    CupertinoPageRoute<Null>(
+                        builder: (context) => TodosMiembrosTrainer())) : Navigator.push(
+                    context,
+                    CupertinoPageRoute<Null>(
+                        builder: (context) => TodosMiembrosClient(viewOnly: true, brandID: currentBrand.id!, brandAdmin: currentBrand.adminID!)));
               },
             ),
             SizedBox(
@@ -300,7 +310,7 @@ class _ChatPageState extends State<ChatPage> {
                     //backgroundColor: Colors.black,
                     inputTextColor: Colors.black,
                     inputTextCursorColor: Styles.mainColor,
-                    primaryColor: Styles.mainColorTrans,
+                    primaryColor: Styles.mainColor,
                     sentMessageBodyTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
                     sentEmojiMessageTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
                     sentMessageCaptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
@@ -321,8 +331,8 @@ class _ChatPageState extends State<ChatPage> {
                   onMessageTap: _handleMessageTap,
                   onPreviewDataFetched: _handlePreviewDataFetched,
                   onSendPressed: _handleSendPressed,
-                  showUserNames: true,
-                  showUserAvatars: true,
+                  showUserNames: widget.room.type.toString() == "RoomType.group" ? true : false,
+                  showUserAvatars: widget.room.type.toString() == "RoomType.group" ? true : false,
                   user: types.User(
                     id: FirebaseChatCore.instance.firebaseUser?.uid ?? '',
                   ),

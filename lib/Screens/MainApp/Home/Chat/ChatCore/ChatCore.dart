@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
@@ -213,10 +214,10 @@ class _ChatCoreState extends State<ChatCore> {
         stream: FirebaseChatCore.instance.rooms(orderByUpdatedAt: true),
         initialData: const [],
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+          if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting) {
             return LoadingViewPurple();
           }
-          else if (allRooms.length == 0 && snapshot.data!.isEmpty) {
+          else if (snapshot.data!.isEmpty) {
             return Container(
               height: MediaQuery.of(context).size.height *0.65,
               child: Column(
@@ -255,13 +256,13 @@ class _ChatCoreState extends State<ChatCore> {
 
                     return GestureDetector(
                       onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ChatPage(
-                                  room: room,
-                                ),
-                          ),
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute<Null>(
+                              builder: (context) => ChatPage(
+                                room: room,
+                              ),
+                            )
                         );
                       },
                       child: Container(
@@ -380,16 +381,16 @@ class _ChatCoreState extends State<ChatCore> {
                         room.updatedAt);
 
                     return GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ChatPage(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute<Null>(
+                                builder: (context) => ChatPage(
                                   room: room,
                                 ),
-                          ),
-                        );
-                      },
+                              )
+                          );
+                        },
                       child: Container(
                         padding: EdgeInsets.symmetric(
                             horizontal:
