@@ -808,7 +808,7 @@
   "@inviteCodeError":{
     "description": "inviteCode text"
   },
-  "inviteCodeOptional": "¿No tienes ningún código de invitación? ¡No te preocupes! Finaliza el proceso de bienvenida para ver todas las marcas dentro de MAMBA.",
+  "inviteCodeOptional": "Finaliza el proceso de bienvenida para ver todas las marcas dentro de MAMBA.",
   "@inviteCodeOptional":{
     "description": "inviteCode text"
   },
@@ -1510,7 +1510,7 @@
   "@membersOfBrand": {
     "description": "membersOfBrand message"
   },
-  "locationPermision": "Una de las funcionalidades más potentes de MAMBA es el localizador de marcas. Basándonos en tu ubicación cuando abras nuestra app, te mostraremos las marcas más cercanas a ti.\n\nPara ello es necesario que nos des permisos de localización.",
+  "locationPermision": "Usamos tu ubicación para encontrar las marcas más cercanas a ti.\n\nPara ello es necesario que nos des permisos de localización.",
   "@locationPermision": {
     "description": "membersOfBrand message"
   },

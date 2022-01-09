@@ -188,7 +188,7 @@
   "addMembers": "Afegir Membres",
   "inviteCode": "Codi d'invitació",
   "inviteCodeError": "Copia el codi d'invitació si us plau",
-  "inviteCodeOptional": "No tens cap codi d'invitació? No et preocupis! Finalitza el procés de benvinguda per veure totes les marques dins de MAMBA.",
+  "inviteCodeOptional": "Finalitza el procés de benvinguda per veure totes les marques dins de MAMBA.",
   "copyCodeMessage": "Envia el teu codi d'invitació",
   "copyCorrectCode": "Codi d'invitació copiat correctament",
   "copyCorrectLocation": "Ubicació copiada correctament",
@@ -331,7 +331,7 @@
   "writeMessage": "Escriu un missatge",
   "noMessages": "Encara no has començat cap conversa",
   "membersOfBrand": "Grup amb tots els membres de la marca",
-  "locationPermision": "Una de les funcionalitats més potents de MAMBA és el localitzador de marques. Basant-nos en la teva ubicació quan obris la nostra app, et mostrarem les marques més properes a tu.\n\nPer això és necessari que ens donis permisos de localització.",
+  "locationPermision": "Usem la teva ubicació per trobar les marques més pròximes a tu.\n\nPer a això és necessari que ens donis permisos de localització.",
   "termsAndConditions": "Termes i Condicions",
   "findBrandClientText": "Troba una marca o afegeix el teu codi d'invitació per desbloquejar totes les nostres eines",
   "findBrandTrainerText": "Crea la teva marca o uneix-te a una per desbloquejar totes les nostres eines"

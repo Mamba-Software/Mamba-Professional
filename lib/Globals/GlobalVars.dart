@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Models/Usuario.dart';
 bool isProduction = false;
 
 // App Version
-var version = "MAMBA v0.0.1";
+var version = "MAMBA v0.0.2";
 
 // Website
 var websiteES = "https://mambastyle.net/";
@@ -33,5 +33,6 @@ Position? currentPosition;
 String? currentAddress;
 
 // Page Controller
-final PageController pageController = PageController(initialPage: currentIndex);
 int currentIndex = 0;
+PageController pageController = PageController(initialPage: currentIndex);
+

@@ -97,7 +97,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.06),
+                SizedBox(height: MediaQuery.of(context).size.height*0.05),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   mainAxisSize: MainAxisSize.max,
@@ -150,7 +150,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                               }
                               await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
                               await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
-                              await _accessDatabase.leaveBrand(currentUser.id!);
+                              await _accessDatabase.leaveBrandUser(currentUser.id!);
                               Navigator.pushReplacement(
                                   context,
                                   CupertinoPageRoute<Null>(
