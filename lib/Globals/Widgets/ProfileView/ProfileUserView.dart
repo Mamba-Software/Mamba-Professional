@@ -15,6 +15,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteFromBrandConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteFromEventConfirmationDialog.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 import '../../Constants.dart';
 import '../../Styles.dart';
@@ -233,11 +236,20 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     icon: Icon(Icons.delete_outlined, color: Colors.red)
                 ) : Container(),
                 widget.viewOnly || user!.id! == currentUser.id ? Container() : IconButton(
-                    onPressed: () {
-                      Navigator.push(context, CupertinoPageRoute<Null>(
-                          builder: (context) => ChatDetailPage(user!)
-                      ),
+                    onPressed: () async {
+                      types.User otherUser = types.User(
+                        firstName: user!.name,
+                        lastName: user!.name,
+                        id: user!.id!, // UID from Firebase Authentication
+                        imageUrl: user!.imageUrl,
                       );
+                      final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                        user!.id!: user!.isTrainer,
+                        currentUser.id!: currentUser.isTrainer,
+                      });
+
+                      Navigator.push(context, CupertinoPageRoute<Null>(
+                          builder: (context) => ChatPage(room: room)),);
                     } ,
                     icon: Icon(Icons.chat_outlined)
                 ),

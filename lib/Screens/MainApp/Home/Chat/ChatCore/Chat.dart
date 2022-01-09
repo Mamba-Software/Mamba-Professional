@@ -22,6 +22,7 @@ import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:intl/intl.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({
@@ -40,6 +41,7 @@ class _ChatPageState extends State<ChatPage> {
   bool _isAttachmentUploading = false;
   bool isLoading = true;
   var userId;
+
 
   @override
   void initState() {
@@ -178,6 +180,7 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
+
   void _handleMessageTap(types.Message message) async {
     if (message is types.FileMessage) {
       var localPath = message.uri;
@@ -197,6 +200,14 @@ class _ChatPageState extends State<ChatPage> {
 
       await OpenFile.open(localPath);
     }
+
+    else {
+      Navigator.push(
+          context,
+          CupertinoPageRoute<Null>(
+              builder: (context) => ProfileViewUser(
+                  userID: userId.id!, viewOnly: true)));
+    }
   }
 
   void _handlePreviewDataFetched(
@@ -207,6 +218,11 @@ class _ChatPageState extends State<ChatPage> {
 
     FirebaseChatCore.instance.updateMessage(updatedMessage, widget.room.id);
   }
+
+  String _customDateHeaderText(DateTime dt) {
+    if(dt.year == DateTime.now().year && dt.month == DateTime.now().month && dt.day == DateTime.now().day) return (DateFormat('HH:mm').format(dt)).toString();
+    return (DateFormat('dd/MM/yyyy, HH:mm').format(dt)).toString();
+}
 
   void _handleSendPressed(types.PartialText message) {
     FirebaseChatCore.instance.sendMessage(
@@ -310,21 +326,48 @@ class _ChatPageState extends State<ChatPage> {
                     //backgroundColor: Colors.black,
                     inputTextColor: Colors.black,
                     inputTextCursorColor: Styles.mainColor,
-                    primaryColor: Styles.mainColor,
+                    primaryColor: Styles.mainColorTrans,
                     sentMessageBodyTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
                     sentEmojiMessageTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
                     sentMessageCaptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
                     sentMessageDocumentIconColor:Colors.black,
                     sentMessageLinkDescriptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
                     sentMessageLinkTitleTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-
                     receivedMessageBodyTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
                     receivedEmojiMessageTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
                     receivedMessageCaptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
                     receivedMessageDocumentIconColor:Colors.black,
                     receivedMessageLinkDescriptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
                     receivedMessageLinkTitleTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
+                    userNameTextStyle: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    userAvatarNameColors: [
+                      Color(0xffff6767),
+                      Color(0xff66e0da),
+                      Color(0xfff5a2d9),
+                      Color(0xfff0c722),
+                      Color(0xff6a85e5),
+                      Color(0xfffd9a6f),
+                      Color(0xff92db6e),
+                      Color(0xff73b8e5),
+                      Color(0xfffd7590),
+                      Color(0xffc78ae5),
+                    ],
+                    deliveredIcon: Icon(
+                      Icons.done,
+                      color: Colors.black,
+                    ),
+                    seenIcon: Icon(
+                      Icons.done_all,
+                      color: Colors.black,
+                    ),
+                    dateDividerTextStyle: TextStyle(fontSize: 15),
+
                   ),
+                  customDateHeaderText: _customDateHeaderText,
+                  //timeFormat: DateFormat('dd/MM/yyyy HH:mm'),
                   isAttachmentUploading: _isAttachmentUploading,
                   messages: snapshot.data ?? [],
                   onAttachmentPressed: _handleAtachmentPressed,

@@ -23,6 +23,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/Address
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+
 
 class RegistrarMarca extends StatefulWidget {
   Locale? locale;
@@ -1175,32 +1177,10 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                           NotificationService().userCreatesBrand(currentUser.id!, result);
                           // Notification Trainer has created Brand
 
-                          List<Map> userMessagesRead = [];
-                          List<Usuario> users = await _accessDatabase.getAllTrainersFromBrand(result);
+                          await FirebaseChatCore.instance.createGroupRoom(imageUrl: currentBrand.logoUrl, metadata: {
+                            currentUser.id!: currentUser.isTrainer,
+                          }, name: currentBrand.name!, users: []);
 
-                          for(int i = 0; i < users.length; ++i) {
-                            userMessagesRead.add(toMapisMessageRead(
-                                users[i].id, true));
-                          }
-
-                          users = await _accessDatabase.getAllClientsFromBrand(result);
-
-                          for(int i = 0; i < users.length; ++i) {
-                            userMessagesRead.add(toMapisMessageRead(
-                                users[i].id, true));
-                          }
-
-                          await _accessDatabase.addConversation(
-                              chatUsers,
-                              userMessagesRead,
-                              result,
-                              today.year.toString(),
-                              today.month.toString(),
-                              today.day.toString(),
-                              today.hour.toString(),
-                              today.minute.toString(),
-                              today.second.toString(),
-                              '');
                           setState(() {
                             currentIndex = 1;
                           });

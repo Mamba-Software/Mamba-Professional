@@ -12,6 +12,9 @@ import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class TodosMiembrosClient extends StatefulWidget {
   String brandID;
@@ -267,9 +270,20 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                   icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
                                   alignment: Alignment.centerRight,
                                   padding: EdgeInsets.all(0),
-                                  onPressed: () {
+                                  onPressed: () async {
+                                    types.User otherUser = types.User(
+                                      firstName: user.name,
+                                      lastName: user.name,
+                                      id: user.id!, // UID from Firebase Authentication
+                                      imageUrl: user.imageUrl,
+                                    );
+                                    final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                                      user.id!: user.isTrainer,
+                                      currentUser.id!: currentUser.isTrainer,
+                                    });
+
                                     Navigator.push(context, CupertinoPageRoute<Null>(
-                                      builder: (context) => ChatDetailPage(user)),);
+                                      builder: (context) => ChatPage(room: room)),);
                                   },
                                 ),
                                 onTap: () {

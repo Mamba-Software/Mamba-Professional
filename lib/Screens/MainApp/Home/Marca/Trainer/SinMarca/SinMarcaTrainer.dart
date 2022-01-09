@@ -469,45 +469,17 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                         else {
                                           types.User otherUser = types.User(
                                             firstName: adminUser.name,
+                                            lastName: adminUser.name,
                                             id: adminUser.id!, // UID from Firebase Authentication
                                             imageUrl: adminUser.imageUrl,
                                           );
-                                          print(otherUser);
-                                        /*  await FirebaseChatCore.instance.createUserInFirestore(otherUser);
-                                          types.User myUser = types.User(
-                                            firstName: currentUser.name,
-                                            id: currentUser.id!, // UID from Firebase Authentication
-                                            imageUrl: currentUser.imageUrl,
-                                          );
-                                          await FirebaseChatCore.instance.createUserInFirestore(myUser);*/
                                           final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
                                             adminUser.id!: adminUser.isTrainer,
                                             currentUser.id!: currentUser.isTrainer,
                                           });
 
-
-                                         // final room =  roomAux.copyWith(imageUrl: roomAux.imageUrl, metadata: roomAux.metadata, name: roomAux.metadata![userAux.id], type: roomAux.type, updatedAt: roomAux.updatedAt, users: roomAux.users);
-                                         /* final roomy =  await FirebaseChatCore.instance.createGroupRoom(imageUrl: brand.logoUrl, metadata: {
-                                            currentUser.id!: currentUser.isTrainer,
-                                            adminUser.id!: adminUser.isTrainer,
-                                          }, name: brand.name!, users: [otherUser]);*/
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) => ChatPage(
-                                                room: room,
-                                              ),
-                                            ),
-                                          );
-                                          /*
-                                          Navigator.push(
-                                              context, CupertinoPageRoute<Null>(
-                                              builder: (context) => ChatDetailPage(adminUser)
-                                            )
-                                          ).whenComplete(() {
-                                            getUserPendingRequests();
-                                          });
-
-                                           */
+                                          Navigator.push(context, CupertinoPageRoute<Null>(
+                                              builder: (context) => ChatPage(room: room)),);
                                         }
                                       },
                                     ),
