@@ -27,8 +27,10 @@ class _TusDatosState extends State<TusDatos> {
 
   // Form Values
   final _formKey = GlobalKey<FormState>();
-  var nombreCompletoController;
-  String nombreCompletoControllerTemp = "";
+  var firstNameController;
+  var lastNameController;
+  String firstNameControllerTemp = "";
+  String lastNameControllerTemp = "";
 
   // Gender Widget value
   int? genderTemp;
@@ -130,13 +132,16 @@ class _TusDatosState extends State<TusDatos> {
   Widget build(BuildContext context) {
     // Initialises some data the first time that the Widget is build and data is Loaded.
     if (firstBuild) {
-      nombreCompletoController = TextEditingController(text: currentUser.name);
+      firstNameController = TextEditingController(text: currentUser.firstName);
+      lastNameController = TextEditingController(text: currentUser.lastName);
       startDateController = TextEditingController(text: currentUser.dateOfBirth);
       firstBuild = false;
     }
     // Checking if there has been a change that has not been saved.
     if (!isLoading) {
-      if (nombreCompletoControllerTemp.trim() != currentUser.name! && nombreCompletoControllerTemp != "") {
+      if (firstNameController.text.trim() != currentUser.lastName! && firstNameControllerTemp != "") {
+        isUpdated = true;
+      } else if (lastNameController.text.trim() != currentUser.firstName! && lastNameControllerTemp != "") {
         isUpdated = true;
       } else if (genderTemp != currentUser.gender! && genderTemp != null) {
         isUpdated = true;
@@ -182,24 +187,55 @@ class _TusDatosState extends State<TusDatos> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Text(
-                            AppLocalizations.of(context)!.nameCompleto,
+                            AppLocalizations.of(context)!.firstName,
                             style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           Flexible(
                             child: new TextFormField(
-                              controller: nombreCompletoController,
+                              controller: firstNameController,
                               textCapitalization: TextCapitalization.words,
                               onChanged: (value) {
                                 setState(() {
-                                  nombreCompletoControllerTemp = value;
+                                  firstNameControllerTemp = value;
                                 });
                               },
                               validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
                               decoration: InputDecoration(
-                                hintText: AppLocalizations.of(context)!.nameCompleto,
+                                hintText: AppLocalizations.of(context)!.nameCompletoError,
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.grey)
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text(
+                            AppLocalizations.of(context)!.lastName,
+                            style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                          Flexible(
+                            child: new TextFormField(
+                              controller: lastNameController,
+                              textCapitalization: TextCapitalization.words,
+                              onChanged: (value) {
+                                setState(() {
+                                  lastNameControllerTemp = value;
+                                });
+                              },
+                              validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.lastNameError : null,
+                              decoration: InputDecoration(
+                                hintText: AppLocalizations.of(context)!.lastNameError,
+                                focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey)
                                 ),
                               ),
                             ),
@@ -349,8 +385,11 @@ class _TusDatosState extends State<TusDatos> {
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               if (isUpdated) {
-                if (nombreCompletoController.text.isNotEmpty) {
-                  currentUser.name = nombreCompletoController.text;
+                if (firstNameController.text.isNotEmpty) {
+                  currentUser.firstName = firstNameController.text;
+                };
+                if (lastNameController.text.isNotEmpty) {
+                  currentUser.lastName = lastNameController.text;
                 };
                 if (!(genderTemp == null)) {
                   currentUser.gender = genderTemp;
@@ -361,8 +400,9 @@ class _TusDatosState extends State<TusDatos> {
                 setState(() {
                   isLoading = true;
                 });
+                currentUser.name = currentUser.firstName!+" "+currentUser.lastName!;
                 await _accessDatabase.updateCurrentUserDatosPerifl(
-                    currentUser.name!, currentUser.gender!, currentUser.dateOfBirth!);
+                    currentUser.name!, currentUser.firstName!, currentUser.lastName!, currentUser.gender!, currentUser.dateOfBirth!);
               }
               Navigator.pop(context);
             }
