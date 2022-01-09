@@ -52,7 +52,38 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void getOtherUser() async {
-    if(!widget.room.metadata!.containsKey("isGroup")) {
+
+    int i;
+    if(widget.room.type.toString() != "RoomType.group" && widget.room.lastMessages != null && widget.room.lastMessages![0].metadata![currentUser.id] == "delivered") {
+      print("here");
+      widget.room.lastMessages![0].metadata![currentUser.id!] = "seen";
+      for(i = 0; i <= widget.room.users.length; ++i) {
+        if(widget.room.users[i].id != currentUser.id && widget.room.lastMessages![0].metadata![currentUser.id!] != "delivered") break;
+      }
+
+     /*
+      types.Message messageFinal =  types.Message(
+        author: widget.room.lastMessages![0].author,
+        createdAt: widget.room.lastMessages![0].createdAt,
+        id: widget.room.lastMessages![0].id,
+        metadata: widget.room.lastMessages![0].metadata,
+        remoteId: widget.room.lastMessages![0].remoteId,
+        roomId: widget.room.lastMessages![0].roomId,
+        status: widget.room.lastMessages![0].status,
+        type: widget.room.lastMessages![0].type,
+        updatedAt: widget.room.lastMessages![0].updatedAt,
+      );*/
+      types.Message messageFinal = widget.room.lastMessages![0].copyWith(metadata: widget.room.lastMessages![0].metadata,
+        remoteId: widget.room.lastMessages![0].remoteId,
+        status: widget.room.lastMessages![0].status,
+        updatedAt: widget.room.lastMessages![0].updatedAt);
+      //if(i == widget.room.users.length - 1) widget.room.lastMessages![0].status = "seen";
+      FirebaseChatCore.instance.updateMessage( widget.room.lastMessages![0], widget.room.id);
+
+
+    }
+
+    if(widget.room.type.toString() != "RoomType.group") {
       userId = widget.room.users.firstWhere(
             (u) => u.id != currentUser.id,
       );
@@ -225,10 +256,27 @@ class _ChatPageState extends State<ChatPage> {
 }
 
   void _handleSendPressed(types.PartialText message) {
-    FirebaseChatCore.instance.sendMessage(
-      message,
-      widget.room.id,
-    );
+
+    if(widget.room.type.toString() != "RoomType.group") {
+      types.PartialText messageFinal =  types.PartialText(
+        text: message.text,
+        metadata: {
+          userId.id!: "delivered",
+        },
+      );
+
+      FirebaseChatCore.instance.sendMessage(
+        messageFinal,
+        widget.room.id,
+      );
+    }
+
+    else {
+      FirebaseChatCore.instance.sendMessage(
+        message,
+        widget.room.id,
+      );
+    }
   }
 
   void _setAttachmentUploading(bool uploading) {

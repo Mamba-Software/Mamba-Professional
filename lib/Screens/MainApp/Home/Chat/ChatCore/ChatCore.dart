@@ -247,9 +247,17 @@ class _ChatCoreState extends State<ChatCore> {
                   itemBuilder: (context, index) {
                     final room;
                     room = allRooms[index];
-                    var userAux = room.users.firstWhere(
-                          (u) => u.id != _user!.uid,
-                    );
+
+                    var userAux;
+                    if (room.type.toString() != "RoomType.group") {
+                       userAux = room.users.firstWhere(
+                            (u) => u.id != _user!.uid,
+                      );
+                    }
+                    bool Read = true;
+                    if(room.type.toString() != "RoomType.group" && room.lastMessages != null && room.lastMessages[0].metadata[currentUser.id] == "delivered") {
+                      Read = false;
+                    }
 
                     var dt = DateTime.fromMillisecondsSinceEpoch(
                         room.updatedAt);
@@ -316,7 +324,7 @@ class _ChatCoreState extends State<ChatCore> {
                                           TextField(
                                             enabled: false,
                                             decoration: InputDecoration(
-                                              // hintStyle: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),
+                                              hintStyle: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: Read?FontWeight.normal:FontWeight.bold),
                                               hintText: room.lastMessages !=
                                                   null ? room.lastMessages[0]
                                                   .text : '',
@@ -373,9 +381,13 @@ class _ChatCoreState extends State<ChatCore> {
                   itemBuilder: (context, index) {
                     final room;
                     room = rooms[index];
-                    var userAux = room.users.firstWhere(
-                          (u) => u.id != _user!.uid,
-                    );
+
+                    var userAux;
+                    if (room.type.toString() != "RoomType.group") {
+                      userAux = room.users.firstWhere(
+                            (u) => u.id != _user!.uid,
+                      );
+                    }
 
                     var dt = DateTime.fromMillisecondsSinceEpoch(
                         room.updatedAt);
