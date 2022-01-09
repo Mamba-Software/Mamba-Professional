@@ -143,6 +143,74 @@ exports.userJoinsBrand = functions
       return null;
     });
 
+// User Sends Request
+exports.userSendsRequest = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+requests+"/{requestId}")
+    .onCreate( async (snap, context) => {
+      // Get the value of the context triggers.
+      const requestId = context.params.requestId;
+      // Get Data of the Request
+      const requestSnapshot = await db.collection(requests).doc(requestId).get();
+      const requestDoc = requestSnapshot.data();
+      functions.logger.log(
+            "Request Cover Data:",
+            requestDoc.brandId,
+            requestDoc.name,
+          );
+      // Get Notification Token for All Brand Trainers
+      // TO DO: Modificar aquesta funcion quan tinguem la base de dades acutualitzada.
+      const brandTrainersSnapshot = await db.collection(users)
+        .where("brandID", "=", requestDoc.brandId)
+        .where("isTrainer", "=", true)
+        .get();
+      for (var i in brandTrainersSnapshot.docs) {
+          const brandTrainersDoc = brandTrainersSnapshot.docs[i].data();
+          functions.logger.log(
+              "Brand Trainer Data:",
+              brandTrainersDoc
+            );
+          if (brandTrainersDoc.idioma == "es") {
+              payload = {
+                notification: {
+                  title: requestDoc.name+" ha enviado una solicitud de afiliación",
+                  body: "Enviada el "+requestDoc.dateSent,
+                },
+                data: {
+                  route: "SplashScreen2",
+                },
+              };
+            } else {
+              payload = {
+                notification: {
+                  title: requestDoc.name+" ha enviat una sol·licitud d'afiliació",
+                  body: "Enviada el "+requestDoc.dateSent,
+                },
+                data: {
+                  route: "SplashScreen2",
+                },
+              }
+            }
+            functions.logger.log(
+                "Payload",
+                payload
+              );
+            const notificationToken = brandTrainersDoc.notificationToken;
+            functions.logger.log(
+                "Notification Token",
+                notificationToken
+              );
+            const response = await admin.messaging().sendToDevice(notificationToken, payload);
+            functions.logger.log(
+              "Response",
+              response
+            );
+      }
+      return null;
+    });
+
+// Change Message Status
 exports.changeMessageStatus = functions
   .region("europe-west1")
   .firestore
@@ -162,6 +230,7 @@ exports.changeMessageStatus = functions
     }
   })
 
+// Change Last Message
 exports.changeLastMessage = functions
   .region("europe-west1")
   .firestore
