@@ -42,7 +42,8 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
   int _selectedIndex = 0;
   List<bool> tabs = [true, false, false, false, false, false];
   // Title Controller
-  var nameController = TextEditingController();
+  var firstNameController = TextEditingController();
+  var lastNameController = TextEditingController();
   // Nick Controller
   var nickController = TextEditingController();
   String nick = "";
@@ -417,62 +418,138 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                             children: [
                               SizedBox(height: MediaQuery.of(context).size.height*0.04),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.nameCompleto,
-                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
-                                    textAlign: TextAlign.left,
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.42,
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(context)!.firstName,
+                                              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                        Container(
+                                          width: MediaQuery.of(context).size.width * 0.42,
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: TextFormField(
+                                                  controller: firstNameController,
+                                                  keyboardType: TextInputType.name,
+                                                  validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nameCompletoError : null,
+                                                  style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
+                                                  textCapitalization: TextCapitalization.words,
+                                                  decoration: InputDecoration(
+                                                    hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                                    hintText: AppLocalizations.of(context)!.nameCompletoError,
+                                                    border: UnderlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color: Colors.grey,
+                                                            width: 1.0
+                                                        )
+                                                    ),
+                                                    enabledBorder: UnderlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color: Colors.grey,
+                                                            width: 1.0
+                                                        )
+                                                    ),
+                                                    focusedBorder: UnderlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color: Colors.grey,
+                                                            width: 1.0
+                                                        )
+                                                    ),
+                                                    errorBorder: UnderlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color: Colors.red,
+                                                            width: 1.0
+                                                        )
+                                                    ),
+                                                    disabledBorder: InputBorder.none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.42,
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(context)!.lastName,
+                                              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                        Container(
+                                          width: MediaQuery.of(context).size.width * 0.85,
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: TextFormField(
+                                                  controller: lastNameController,
+                                                  keyboardType: TextInputType.name,
+                                                  validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.lastNameError : null,
+                                                  style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
+                                                  textCapitalization: TextCapitalization.words,
+                                                  decoration: InputDecoration(
+                                                    hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                                    hintText: AppLocalizations.of(context)!.lastNameError,
+                                                    border: UnderlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color: Colors.grey,
+                                                            width: 1.0
+                                                        )
+                                                    ),
+                                                    enabledBorder: UnderlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color: Colors.grey,
+                                                            width: 1.0
+                                                        )
+                                                    ),
+                                                    focusedBorder: UnderlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color: Colors.grey,
+                                                            width: 1.0
+                                                        )
+                                                    ),
+                                                    errorBorder: UnderlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color: Colors.red,
+                                                            width: 1.0
+                                                        )
+                                                    ),
+                                                    disabledBorder: InputBorder.none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.85,
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: TextFormField(
-                                        controller: nameController,
-                                        keyboardType: TextInputType.name,
-                                        validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nameCompletoError : null,
-                                        style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
-                                        textCapitalization: TextCapitalization.words,
-                                        decoration: InputDecoration(
-                                          hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
-                                          hintText: AppLocalizations.of(context)!.nameCompletoError,
-                                          border: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey,
-                                                  width: 1.0
-                                              )
-                                          ),
-                                          enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey,
-                                                  width: 1.0
-                                              )
-                                          ),
-                                          focusedBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey,
-                                                  width: 1.0
-                                              )
-                                          ),
-                                          errorBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.red,
-                                                  width: 1.0
-                                              )
-                                          ),
-                                          disabledBorder: InputBorder.none,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -494,7 +571,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                       }
                                     },
                                     child: Container(
-                                      width: MediaQuery.of(context).size.width * 0.85,
+                                      width: MediaQuery.of(context).size.width * 0.87,
                                       child: Row(
                                         children: [
                                           Expanded(
@@ -546,11 +623,11 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                   ),
                                   isSearchAlias ? Center(
                                     child: SizedBox(
-                                      width: MediaQuery.of(context).size.width * 0.05,
-                                      height: MediaQuery.of(context).size.height * 0.025,
+                                      width: MediaQuery.of(context).size.width * 0.03,
+                                      height: MediaQuery.of(context).size.width * 0.03,
                                       child: CircularProgressIndicator(
                                         color: Theme.of(context).primaryColor,
-                                        strokeWidth: 2.5,
+                                        strokeWidth: 1,
                                       ),
                                     ),
                                   ) : Container(),
@@ -590,7 +667,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                   ),
                                 ],
                               ) : Container(),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.03),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -647,7 +724,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                   ),
                                 ],
                               ) : Container(),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.03),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -683,7 +760,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                   ),
                                 ],
                               ) : Container(),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.15),
                             ],
                           ),
                         ),
@@ -1393,9 +1470,10 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
       isLoading = true;
     });
     _notificationService = NotificationService();
+    String name = firstNameController.text.trim()+" "+lastNameController.text.trim();
     bool isTrainer = false;
     if (_value == 1) isTrainer = true;
-    await _accessDatabase.addUser(currentUser.id!, nameController.text, nick, startDateController.text, gender!, _image, isTrainer);
+    await _accessDatabase.addUser(currentUser.id!, name,firstNameController.text.trim(), lastNameController.text.trim(), nick, startDateController.text, gender!, _image, isTrainer);
     _notificationService!.wellcomeUser(currentUser.id!);
     if (brandOkay && !brandNotFound) {
       await _accessDatabase.updateCurrentUserBrand(brand.id!);

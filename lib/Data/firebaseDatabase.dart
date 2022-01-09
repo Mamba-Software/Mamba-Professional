@@ -142,15 +142,14 @@ class FirebaseDatabaseService {
 
   Future<Usuario> getCurrentUserDetails() async {
     User? currentUser = await getCurrentUser();
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection(users).doc(currentUser!.uid).get();
-    return Usuario.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(users).doc(currentUser!.uid).get();
+    return Usuario.fromObject(_documentSnapshot, _documentSnapshot.id);
   }
 
   Future<Usuario> getUserDetails(String uid) async {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
         await _firestore.collection(users).doc(uid).get();
-    return Usuario.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+    return Usuario.fromObject(_documentSnapshot, _documentSnapshot.id);
   }
 
   Future<List<String>> getUserCover(String uid) async {
@@ -180,6 +179,8 @@ class FirebaseDatabaseService {
       if (userCredential != null && userCredential.user != null) {
         await _firestore.collection(users).doc(userCredential.user!.uid).set({
           "name": null,
+          "firstName": null,
+          "lastName": null,
           "nick": null,
           "notificationToken": null,
           "email": email,
@@ -234,7 +235,7 @@ class FirebaseDatabaseService {
   }
 
   // Add User
-  Future<void> addUser(String uid, String name, String nick, String dateOfBirth,
+  Future<void> addUser(String uid, String name, String firstName, String lastName, String nick, String dateOfBirth,
       int gender, File? image, bool isTrainer) async {
     String imageUrl =
         "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
@@ -243,6 +244,8 @@ class FirebaseDatabaseService {
     }
     await _firestore.collection(users).doc(uid).update({
       "name": name,
+      "firstName": firstName,
+      "lastName": lastName,
       "nick": nick,
       "imageUrl": imageUrl,
       "isFirst": false,
@@ -326,11 +329,12 @@ class FirebaseDatabaseService {
     await _firebaseStorage.ref().child("userPics/" + userId + ".png").delete();
   }
 
-  Future<void> updateCurrentUserDatosPerifl(
-      String name, int gender, String? dateOfBirth) async {
+  Future<void> updateCurrentUserDatosPerifl(String name, String firstName, String lastName, int gender, String? dateOfBirth) async {
     User? currentUser = await getCurrentUser();
     await _firestore.collection(users).doc(currentUser!.uid).update({
       "name": name,
+      "firstName": firstName,
+      "lastName": lastName,
       "gender": gender,
       "dateOfBirth": dateOfBirth,
     });
@@ -415,7 +419,7 @@ class FirebaseDatabaseService {
 
     DocumentSnapshot<Map<String, dynamic>> _docu =
     await _firestore.collection(users).doc(userId).get();
-    Usuario user = Usuario.fromMap(_docu.data()!, _docu.id);
+    Usuario user = Usuario.fromObject(_docu, _docu.id);
     conversation.users.add({
       'uid': user.id,
     });
@@ -1324,7 +1328,7 @@ class FirebaseDatabaseService {
 
     DocumentSnapshot<Map<String, dynamic>> _docu =
     await _firestore.collection(users).doc(request.userId).get();
-    Usuario user = Usuario.fromMap(_docu.data()!, _docu.id);
+    Usuario user = Usuario.fromObject(_docu, _docu.id);
     conversation.users.add({
       'uid': user.id,
     });

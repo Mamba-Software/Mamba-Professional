@@ -7,6 +7,8 @@ class Usuario {
   String? notificationToken;
   String? email;
   String? name;
+  String? firstName;
+  String? lastName;
   String? nick;
   String? imageUrl;
   String? noImageUrl;
@@ -26,6 +28,8 @@ class Usuario {
     this.notificationToken,
     this.email,
     this.name,
+    this.firstName,
+    this.lastName,
     this.nick,
     this.imageUrl,
     this.noImageUrl,
@@ -41,95 +45,60 @@ class Usuario {
     this.brandID,
   });
 
-  Map toMap(Usuario user) {
-    var data = Map<String, dynamic>();
-    data['notificationToken'] = user.notificationToken;
-    data['email'] = user.email;
-    data['name'] = user.name;
-    data['nick'] = user.nick;
-    data['imageUrl'] = user.imageUrl;
-    data['noImageUrl'] = user.noImageUrl;
-    data['isFirst'] = user.isFirst;
-    data['isTrainer'] = user.isTrainer;
-    data['isPrivate'] = user.isPrivate;
-    data['isAdmin'] = user.isAdmin;
-    data['gender'] = user.gender;
-    data['dateJoined'] = user.dateJoined;
-    data['dateOfBirth'] = user.dateOfBirth;
-    data['idioma'] = user.idioma;
-    data['previousIdioma'] = user.previousIdioma;
-    data['brandID'] = user.brandID;
-    return data;
-  }
-
-  Usuario.fromMap(Map<String, dynamic> mapData, String documentId) {
-    this.id = documentId;
-    this.notificationToken = mapData['notificationToken'].toString();
-    this.email = mapData['email'].toString();
-    this.name = mapData['name'].toString();
-    this.nick = mapData['nick'].toString();
-    this.imageUrl = mapData['imageUrl'].toString();
-    this.noImageUrl = mapData['noImageUrl'].toString();
-    this.isFirst = mapData['isFirst'];
-    this.isTrainer = mapData['isTrainer'];
-    this.isPrivate = mapData['isPrivate'];
-    this.isAdmin = mapData['isAdmin'];
-    this.gender = mapData['gender'];
-    this.dateJoined = mapData['dateJoined'].toString();
-    this.dateOfBirth = mapData['dateOfBirth'].toString();
-    this.idioma = mapData['idioma'].toString();
-    this.previousIdioma = mapData['previousIdioma'].toString();
-    this.brandID = mapData['brandID'].toString();
-  }
-
   Usuario.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
     this.id = documentId;
-    if (documentSnapshot.get("notificationToken") != null) {
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('notificationToken')) {
       this.notificationToken = documentSnapshot.get("notificationToken").toString();
     }
-    if (documentSnapshot.get("email") != null) {
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('email')) {
       this.email = documentSnapshot.get("email").toString();
     }
-    if (documentSnapshot.get("name") != null) {
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('name')) {
       this.name = documentSnapshot.get("name").toString();
     }
-    if (documentSnapshot.get("nick") != null) {
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('firstName')) {
+      this.firstName = documentSnapshot.get("firstName").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('lastName')) {
+      this.lastName = documentSnapshot.get("lastName").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('nick')) {
       this.nick = documentSnapshot.get("nick").toString();
     }
-    if (documentSnapshot.get("imageUrl") != null) {
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('imageUrl')) {
       this.imageUrl = documentSnapshot.get("imageUrl").toString();
     }
-    if (documentSnapshot.get("noImageUrl") != null) {
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('noImageUrl')) {
       this.noImageUrl = documentSnapshot.get("noImageUrl").toString();
     }
-    if (documentSnapshot.get("isFirst") != null) {
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isFirst')) {
       this.isFirst = documentSnapshot.get("isFirst");
     }
-    if (documentSnapshot.get("isTrainer") != null) {
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isTrainer')) {
       this.isTrainer = documentSnapshot.get("isTrainer");
     }
-    if (documentSnapshot.get("isPrivate") != null) {
-      this.isTrainer = documentSnapshot.get("isPrivate");
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isPrivate')) {
+      this.isPrivate = documentSnapshot.get("isPrivate");
     }
-    if (documentSnapshot.get("isAdmin") != null) {
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isAdmin')) {
       this.isAdmin = documentSnapshot.get("isAdmin");
     }
-    if (documentSnapshot.get("gender") != null) {
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('gender')) {
       this.gender = documentSnapshot.get("gender");
     }
-    if (documentSnapshot.get("dateJoined") != null) {
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateJoined')) {
       this.dateJoined = documentSnapshot.get("dateJoined").toString();
     }
-    if (documentSnapshot.get("dateOfBirth") != null) {
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateOfBirth')) {
       this.dateOfBirth = documentSnapshot.get("dateOfBirth").toString();
     }
-    if (documentSnapshot.get("idioma") != null) {
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('idioma')) {
       this.idioma = documentSnapshot.get("idioma").toString();
     }
-    if (documentSnapshot.get("previousIdioma") != null) {
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('previousIdioma')) {
       this.previousIdioma = documentSnapshot.get("previousIdioma").toString();
     }
-    if (documentSnapshot.get("brandID") != null) {
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('brandID')) {
       this.brandID = documentSnapshot.get("brandID").toString();
     }
   }
