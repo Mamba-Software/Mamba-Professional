@@ -238,8 +238,8 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                 widget.viewOnly || user!.id! == currentUser.id ? Container() : IconButton(
                     onPressed: () async {
                       types.User otherUser = types.User(
-                        firstName: user!.name,
-                        lastName: user!.name,
+                        firstName: user!.firstName,
+                        lastName: user!.lastName,
                         id: user!.id!, // UID from Firebase Authentication
                         imageUrl: user!.imageUrl,
                       );

@@ -452,8 +452,8 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                       if(adminUser == null) LoadingView();
                                       else {
                                         types.User otherUser = types.User(
-                                          firstName: adminUser.name,
-                                          lastName: adminUser.name,
+                                          firstName: adminUser.firstName,
+                                          lastName: adminUser.lastName,
                                           id: adminUser.id!, // UID from Firebase Authentication
                                           imageUrl: adminUser.imageUrl,
                                         );

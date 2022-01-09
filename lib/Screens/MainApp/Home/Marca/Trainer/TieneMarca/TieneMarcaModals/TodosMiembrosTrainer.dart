@@ -274,8 +274,8 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                       padding: EdgeInsets.all(0),
                                       onPressed: () async {
                                         types.User otherUser = types.User(
-                                          firstName: user.name,
-                                          lastName: user.name,
+                                          firstName: user.firstName,
+                                          lastName: user.lastName,
                                           id: user.id!, // UID from Firebase Authentication
                                           imageUrl: user.imageUrl,
                                         );
