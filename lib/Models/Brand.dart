@@ -9,6 +9,7 @@ class Brand {
   String? name;
   String? description;
   String? dateJoined;
+  String? groupRoomId;
   String? baseLocation;
   int? numberClients;
   int? numberTrainers;
@@ -27,6 +28,7 @@ class Brand {
     this.name,
     this.description,
     this.dateJoined,
+    this.groupRoomId,
     this.baseLocation,
     this.numberClients,
     this.numberTrainers,
@@ -34,47 +36,40 @@ class Brand {
     this.maxMembers,
   });
 
-  Map toMap(Brand brand) {
-    var data = Map<String, dynamic>();
-    data['id'] = brand.id;
-    data['adminID'] = brand.adminID;
-    data['logoUrl'] = brand.logoUrl;
-    data['name'] = brand.name;
-    data['description'] = brand.description;
-    data['dateJoined'] = brand.dateJoined;
-    data['baseLocation'] = brand.baseLocation;
-    data['numberClients'] = brand.numberClients;
-    data['numberTrainers'] = brand.numberTrainers;
-    data['workShift'] = brand.workShift;
-    data['maxMembers'] = brand.maxMembers;
-    return data;
-  }
-
-  Brand.fromMap(Map<String, dynamic> mapData, String documentId) {
-    this.id = documentId;
-    this.adminID = mapData['adminID'].toString();
-    this.logoUrl = mapData['logoUrl'].toString();
-    this.name = mapData['name'].toString();
-    this.description = mapData['description'].toString();
-    this.dateJoined = mapData['dateJoined'].toString();
-    this.baseLocation = mapData['baseLocation'].toString();
-    this.numberClients = mapData['numberClients'];
-    this.numberTrainers = mapData['numberTrainers'];
-    this.workShift = mapData['workShift'];
-    this.maxMembers = mapData['maxMembers'];
-  }
-
   Brand.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
     this.id = documentId;
-    this.adminID = documentSnapshot.get("adminID").toString();
-    this.logoUrl = documentSnapshot.get("logoUrl").toString();
-    this.name = documentSnapshot.get("name").toString();
-    this.description = documentSnapshot.get("description").toString();
-    this.dateJoined = documentSnapshot.get("dateJoined").toString();
-    this.baseLocation = documentSnapshot.get("baseLocation").toString();
-    this.numberClients = documentSnapshot.get("numberClients");
-    this.numberTrainers = documentSnapshot.get("numberTrainers");
-    this.workShift = documentSnapshot.get("workShift");
-    this.maxMembers = documentSnapshot.get("maxMembers");
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('adminID')) {
+      this.adminID = documentSnapshot.get("adminID").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('logoUrl')) {
+      this.logoUrl = documentSnapshot.get("logoUrl").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('name')) {
+      this.name = documentSnapshot.get("name").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('description')) {
+      this.description = documentSnapshot.get("description").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateJoined')) {
+      this.dateJoined = documentSnapshot.get("dateJoined").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('groupRoomId')) {
+      this.groupRoomId = documentSnapshot.get("groupRoomId").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('baseLocation')) {
+      this.baseLocation = documentSnapshot.get("baseLocation").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numberClients')) {
+      this.numberClients = documentSnapshot.get("numberClients");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numberTrainers')) {
+      this.numberTrainers = documentSnapshot.get("numberTrainers");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('workShift')) {
+      this.workShift = documentSnapshot.get("workShift");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('maxMembers')) {
+      this.maxMembers = documentSnapshot.get("maxMembers");
+    }
   }
 }

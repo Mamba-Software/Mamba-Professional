@@ -505,6 +505,7 @@ class FirebaseDatabaseService {
       "name": name,
       "description": description,
       "dateJoined": formatted,
+      "groupRoomId": null,
       "baseLocation": null,
       "numberClients": 0,
       "numberTrainers": 1,
@@ -602,7 +603,7 @@ class FirebaseDatabaseService {
   Future<Brand> getBrandDetails(String brandID) async {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
         await _firestore.collection(brands).doc(brandID).get();
-    return Brand.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+    return Brand.fromObject(_documentSnapshot, _documentSnapshot.id);
   }
 
   Future<List<String>> getBrandCover(String brandID) async {
