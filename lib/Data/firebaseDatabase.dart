@@ -491,8 +491,7 @@ class FirebaseDatabaseService {
   // Brand Model Services
 
   // Add Brand
-  Future<String> addBrand(String name, File image, String description,
-      List<double> workShift, int maxMembers) async {
+  Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) async {
     User? firebaseUser = await getCurrentUser();
     bool firestoreError = false;
     var uid = Uuid().v4();
@@ -582,8 +581,7 @@ class FirebaseDatabaseService {
     });
   }
 
-  Future<void> updateBrandBaseLocation(
-      String brandID, String locationID) async {
+  Future<void> updateBrandBaseLocation(String brandID, String locationID) async {
     await _firestore
         .collection(brands)
         .doc(brandID)

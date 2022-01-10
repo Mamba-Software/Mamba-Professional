@@ -1150,68 +1150,10 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                         }
                       } else if (_selectedIndex == 3) {
                         if (validateTime()) {
-                          DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(startTimeController.text);
-                          DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(endTimeController.text);
-                          double toDouble(DateTime myTime) => myTime.hour + myTime.minute/60.0;
-                          double toDouble2(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
-                          _workShift.add(toDouble(start));
-                          _workShift.add(toDouble(end));
-                          for (var i=0; i < _breakList.length; i+=2) {
-                            if(!removedIndex.contains(i)) {
-                              _workShift.add(toDouble2(_breakList[i]));
-                              _workShift.add(toDouble2(_breakList[i+1]));
-                            }
-                          }
                           setState(() {
                             isLoading = true;
                           });
-                          DateTime today = DateTime.now();
-                          List<Map> chatUsers = [];
-                          chatUsers.add(toMap(currentUser.id));
-                          var result = await _accessDatabase.addBrand(nameBrandController.text.trim(), _image, descriptionController.text.trim(), _workShift, membersMax);
-                          String baseLocation = await _accessDatabase.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
-                          await _accessDatabase.updateBrandBaseLocation(result, baseLocation);
-                          await _accessDatabase.updateCurrentUserBrand(result);
-                          NotificationService().userCreatesBrand(currentUser.id!, result);
-                          // Notification Trainer has created Brand
-
-                          List<Map> userMessagesRead = [];
-                          List<Usuario> users = await _accessDatabase.getAllTrainersFromBrand(result);
-
-                          for(int i = 0; i < users.length; ++i) {
-                            userMessagesRead.add(toMapisMessageRead(
-                                users[i].id, true));
-                          }
-
-                          users = await _accessDatabase.getAllClientsFromBrand(result);
-
-                          for(int i = 0; i < users.length; ++i) {
-                            userMessagesRead.add(toMapisMessageRead(
-                                users[i].id, true));
-                          }
-
-                          await _accessDatabase.addConversation(
-                              chatUsers,
-                              userMessagesRead,
-                              result,
-                              today.year.toString(),
-                              today.month.toString(),
-                              today.day.toString(),
-                              today.hour.toString(),
-                              today.minute.toString(),
-                              today.second.toString(),
-                              '');
-                          setState(() {
-                            currentIndex = 1;
-                          });
-                          Navigator.pop(context);
-                          Navigator.pushReplacement(
-                              context,
-                              CupertinoPageRoute<Null>(
-                                builder: (context) => SplashScreen(),
-                                settings: RouteSettings(name: 'SplashScreen'),
-                              )
-                          );
+                          await registerBrand();
                         }
                       }
                     },
@@ -1310,5 +1252,69 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
       return false;
     }
     return true;
+  }
+
+  Future<void> registerBrand() async {
+    // Get Data About The Times Of The Brand
+    DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(startTimeController.text);
+    DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(endTimeController.text);
+    double toDouble(DateTime myTime) => myTime.hour + myTime.minute/60.0;
+    double toDouble2(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
+    _workShift.add(toDouble(start));
+    _workShift.add(toDouble(end));
+    for (var i=0; i < _breakList.length; i+=2) {
+      if(!removedIndex.contains(i)) {
+        _workShift.add(toDouble2(_breakList[i]));
+        _workShift.add(toDouble2(_breakList[i+1]));
+      }
+    }
+    // Create Brand
+    var result = await _accessDatabase.addBrand(nameBrandController.text.trim(), _image, descriptionController.text.trim(), _workShift, membersMax);
+    // Add Location
+    String baseLocation = await _accessDatabase.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
+    await _accessDatabase.updateBrandBaseLocation(result, baseLocation);
+    // Update Current User Brand
+    await _accessDatabase.updateCurrentUserBrand(result);
+    NotificationService().userCreatesBrand(currentUser.id!, result);
+    // Create Group Chat
+    // TO DO: Change this to Cloud Function
+    DateTime today = DateTime.now();
+    List<Map> chatUsers = [];
+    chatUsers.add(toMap(currentUser.id));
+    List<Map> userMessagesRead = [];
+    List<Usuario> users = await _accessDatabase.getAllTrainersFromBrand(result);
+    for(int i = 0; i < users.length; ++i) {
+      userMessagesRead.add(toMapisMessageRead(
+          users[i].id, true));
+    }
+    users = await _accessDatabase.getAllClientsFromBrand(result);
+    for(int i = 0; i < users.length; ++i) {
+      userMessagesRead.add(toMapisMessageRead(
+          users[i].id, true));
+    }
+    await _accessDatabase.addConversation(
+      chatUsers,
+      userMessagesRead,
+      result,
+      today.year.toString(),
+      today.month.toString(),
+      today.day.toString(),
+      today.hour.toString(),
+      today.minute.toString(),
+      today.second.toString(),
+      ''
+    );
+    // Pushing to Splash Screen
+    setState(() {
+      currentIndex = 1;
+    });
+    Navigator.pop(context);
+    Navigator.pushReplacement(
+      context,
+      CupertinoPageRoute<Null>(
+        builder: (context) => SplashScreen(),
+        settings: RouteSettings(name: 'SplashScreen'),
+      )
+    );
   }
 }
