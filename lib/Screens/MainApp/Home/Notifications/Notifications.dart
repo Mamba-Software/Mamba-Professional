@@ -244,7 +244,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _accessDatabase.markNotificationAsRead(notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -281,7 +281,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _accessDatabase.markNotificationAsRead(notification.id!);
 
             setState(() {
               notificationsList[index].isRead = true;
@@ -317,7 +317,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _accessDatabase.markNotificationAsRead(notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -353,7 +353,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _accessDatabase.markNotificationAsRead(notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -389,7 +389,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _accessDatabase.markNotificationAsRead(notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -425,7 +425,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _accessDatabase.markNotificationAsRead(notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -461,7 +461,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _accessDatabase.markNotificationAsRead(notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -497,7 +497,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _accessDatabase.markNotificationAsRead(notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -533,7 +533,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _accessDatabase.markNotificationAsRead(notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -569,7 +569,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _accessDatabase.markNotificationAsRead(notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -615,7 +615,7 @@ class _NotificationsState extends State<Notifications> {
               ],
             ),
             onTap: () async {
-              await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+              await _accessDatabase.markNotificationAsRead(notification.id!);
               setState(() {
                 notificationsList[index].isRead = true;
               });
@@ -682,7 +682,7 @@ class _NotificationsState extends State<Notifications> {
               ],
             ),
             onTap: () async {
-              await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+              await _accessDatabase.markNotificationAsRead(notification.id!);
               setState(() {
                 notificationsList[index].isRead = true;
               });
@@ -749,7 +749,7 @@ class _NotificationsState extends State<Notifications> {
               ],
             ),
             onTap: () async {
-              await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+              await _accessDatabase.markNotificationAsRead(notification.id!);
               setState(() {
                 notificationsList[index].isRead = true;
               });
@@ -816,7 +816,7 @@ class _NotificationsState extends State<Notifications> {
               ],
             ),
             onTap: () async {
-              await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+              await _accessDatabase.markNotificationAsRead(notification.id!);
               setState(() {
                 notificationsList[index].isRead = true;
               });

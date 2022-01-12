@@ -1392,6 +1392,8 @@ class FirebaseDatabaseService {
 
   // Notifications
 
+  /*
+
   // Get All Notifications
   Future<List<NotificationEvent>> getAllNotificationsUser(String userId) async {
     List<NotificationEvent> notis = [];
@@ -1465,6 +1467,82 @@ class FirebaseDatabaseService {
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       NotificationEvent notif = NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
       await this.markNotificationAsRead(userId, notif.id!);
+    }
+  }
+
+   */
+
+  // Notifications
+
+  // Get All Notifications
+  Future<List<NotificationEvent>> getAllNotificationsUser(String userId) async {
+    List<NotificationEvent> notis = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(notifications)
+        .where("userId", isEqualTo: userId)
+        .orderBy("year", descending: true)
+        .orderBy("month", descending: true)
+        .orderBy("day", descending: true)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      NotificationEvent notif = NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      notis.add(notif);
+    }
+    return notis;
+  }
+
+  // Send Notification
+  Future<void> sendNotification(String userId, String type, var parameters) async {
+    var uid = Uuid().v1();
+    DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yy');
+    final String formatted = formatter.format(now);
+    await _firestore.collection(notifications).doc(uid).set({
+      "userId": userId,
+      "type": type,
+      "isRead": false,
+      "dateSent": formatted,
+      "year": now.year.toString(),
+      "month": now.month.toString(),
+      "day": now.day.toString(),
+      "hour": now.hour.toString(),
+      "minutes": now.minute.toString(),
+      "seconds": now.second.toString(),
+      "parameters": parameters,
+    });
+  }
+
+  // Number Unread Notifications
+  Future<int> numberUnreadNotifications(String userId) async {
+    List<NotificationEvent> notificationsList = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(notifications)
+        .where("userId", isEqualTo: userId)
+        .where("isRead", isEqualTo: false)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      notificationsList.add(NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return notificationsList.length;
+  }
+
+  // Mark as Read Notifications
+  Future<void> markNotificationAsRead(String notificationId) async {
+    await _firestore.collection(notifications).doc(notificationId).update({
+      "isRead": true,
+    });
+  }
+
+  // Mark ALL as Read Notifications
+  Future<void> markALLNotificationAsRead(String userId) async {
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(notifications)
+        .where("userId", isEqualTo: userId)
+        .where("isRead", isEqualTo: false)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      NotificationEvent notif = NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      await this.markNotificationAsRead(notif.id!);
     }
   }
 

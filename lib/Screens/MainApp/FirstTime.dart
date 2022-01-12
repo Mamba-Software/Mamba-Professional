@@ -1474,7 +1474,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     bool isTrainer = false;
     if (_value == 1) isTrainer = true;
     await _accessDatabase.addUser(currentUser.id!, name,firstNameController.text.trim(), lastNameController.text.trim(), nick, startDateController.text, gender!, _image, isTrainer);
-    //_notificationService!.wellcomeUser(currentUser.id!);
+    _notificationService!.wellcomeUser(currentUser.id!);
     if (brandOkay && !brandNotFound) {
       await _accessDatabase.updateCurrentUserBrand(brand.id!);
       await _accessDatabase.updateConversationNewUser(brand.id, currentUser.id);
