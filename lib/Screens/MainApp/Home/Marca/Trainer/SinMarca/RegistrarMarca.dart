@@ -23,6 +23,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/Address
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+
 
 class RegistrarMarca extends StatefulWidget {
   Locale? locale;

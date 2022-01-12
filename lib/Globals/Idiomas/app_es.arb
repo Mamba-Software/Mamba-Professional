@@ -151,8 +151,16 @@
   "@transgender":{
     "description": "Otros Text "
   },
-  "name": "Nombre",
-  "@name":{
+  "firstName": "Nombre",
+  "@firstName":{
+    "description": "Nombre"
+  },
+  "lastName": "Apellidos",
+  "@lastName":{
+    "description": "Nombre"
+  },
+  "lastNameError": "Escribe tus apellidos",
+  "@lastNameError":{
     "description": "Nombre"
   },
   "nickname": "Nombre de usuario",

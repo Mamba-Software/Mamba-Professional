@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
@@ -18,10 +19,12 @@ import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/TodosMiembrosClient.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 
 class SinMarcaTrainer extends StatefulWidget {
@@ -464,13 +467,19 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                         Usuario adminUser = await _accessDatabase.getUserDetails(brand.adminID!);
                                         if(adminUser == null) LoadingView();
                                         else {
-                                          Navigator.push(
-                                              context, CupertinoPageRoute<Null>(
-                                              builder: (context) => ChatDetailPage(adminUser)
-                                            )
-                                          ).whenComplete(() {
-                                            getUserPendingRequests();
+                                          types.User otherUser = types.User(
+                                            firstName: adminUser.firstName,
+                                            lastName: adminUser.lastName,
+                                            id: adminUser.id!, // UID from Firebase Authentication
+                                            imageUrl: adminUser.imageUrl,
+                                          );
+                                          final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                                            adminUser.id!: adminUser.isTrainer,
+                                            currentUser.id!: currentUser.isTrainer,
                                           });
+
+                                          Navigator.push(context, CupertinoPageRoute<Null>(
+                                              builder: (context) => ChatPage(room: room)),);
                                         }
                                       },
                                     ),

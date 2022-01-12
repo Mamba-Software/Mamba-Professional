@@ -8,6 +8,8 @@ import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificatio
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'Chat/Chat.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'Chat/ChatCore/ChatCore.dart';
 import 'Marca/Marca.dart';
 import 'Perfil/Perfil.dart';
 
@@ -149,7 +151,7 @@ class _HomePageState extends State<HomePage> {
           Perfil(),
           Marca(),
           Notifications(),
-          UserChat(),
+          ChatCore(),
         ],
         onPageChanged: (page) async {
           unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
