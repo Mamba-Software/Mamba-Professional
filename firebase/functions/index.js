@@ -77,6 +77,140 @@ exports.userRegistersMamba = functions
       return null;
     });
 
+/* User Creates Brand
+exports.userCreatesBrand = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+brands+"/{brandId}")
+    .onCreate( async (snap, context) => {
+      // Get the value of the context triggers.
+      const brandId = context.params.brandId;
+      functions.logger.log(
+              "Brand created with ID",
+              brandId,
+            );
+      // Get Data of the Brand
+      const brandSnapshot = await db.collection(brands).doc(brandId).get();
+      const brandDoc = brandSnapshot.data();
+      functions.logger.log(
+        "Brand Cover Data:",
+        brandDoc.name,
+        brandDoc.logoUrl,
+      );
+      // Get Data of Admin Id
+      const userSnapshot = await db.collection(users).doc(userId).get();
+      const userDoc = userSnapshot.data();
+      // Add Brand to Admins Sub Brands Collection
+      // Add Location to Brands SubLocation
+      // Send Alert of Brand Created
+
+
+
+      // Get Data of the User
+      const userSnapshot = await db.collection(users).doc(userId).get();
+      const userDoc = userSnapshot.data();
+      functions.logger.log(
+              "User Cover Data:",
+              userDoc.name,
+              userDoc.nick,
+              userDoc.imageUrl,
+              userDoc.isTrainer,
+              userDoc.notificationToken,
+            );
+      // Add the User Cover Data to Users in Brands Collection
+      await db.doc("/"+brands+"/"+brandId+"/Users/"+userId+"").set({
+          "name": userDoc.name,
+          "nick": userDoc.nick,
+          "imageUrl": userDoc.imageUrl,
+          "isTrainer": userDoc.isTrainer,
+          "notificationToken": userDoc.notificationToken,
+        });
+      // Get Data of the Brand
+      const brandSnapshot = await db.collection(brands).doc(brandId).get();
+      const brandDoc = brandSnapshot.data();
+      functions.logger.log(
+              "Brand Cover Data:",
+              brandDoc.name,
+              brandDoc.logoUrl,
+            );
+      // Send Notification To User Joining Brand
+      var payload = 0;
+      if (userDoc.idioma == "es") {
+        payload = {
+            notification: {
+              title: "Te has unido a "+brandDoc.name,
+              body: "Consulta el calendario para participar en tu primera sesión",
+            },
+            data: {
+              route: "SplashScreen1",
+            },
+          };
+      } else {
+        payload = {
+            notification: {
+              title: "T'has unit a "+brandDoc.name,
+              body: "Consulta el calendari per participar en la teva primera sessió",
+            },
+            data: {
+              route: "SplashScreen1",
+            },
+          };
+      }
+      functions.logger.log(
+                "Payload",
+                payload
+              );
+      var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+      functions.logger.log(
+                "Response",
+                response
+              );
+      // Send Notification To Brand Owner
+      const adminSnapshot = await db.collection(users).doc(brandDoc.adminID).get();
+      const adminDoc = adminSnapshot.data();
+      functions.logger.log(
+            "Owner Cover Data:",
+            adminDoc.name,
+            adminDoc.nick,
+            adminDoc.imageUrl,
+            adminDoc.isTrainer,
+            adminDoc.notificationToken,
+          );
+      // TO DO: Aixo hauria de ser el length dels usuaris, aixi ya estaria contabilitzat l'ultim.
+      let numberMembers = brandDoc.numberClients + brandDoc.numberClients;
+      if (adminDoc.idioma == "es") {
+        payload = {
+              notification: {
+                title: userDoc.name+" se ha unido a "+brandDoc.name,
+                body: "Ya sois un total de "+numberMembers.toString()+" miembros",
+              },
+              data: {
+                route: "SplashScreen2",
+              },
+            };
+      } else {
+        payload = {
+              notification: {
+                title: userDoc.name+" s'ha unit a "+brandDoc.name,
+                body: "Ja sou un total de "+numberMembers.toString()+" membres",
+              },
+              data: {
+                route: "SplashScreen2",
+              },
+        }
+      }
+      functions.logger.log(
+                  "Payload",
+                  payload
+                );
+      response = await admin.messaging().sendToDevice(adminDoc.notificationToken, payload);
+      functions.logger.log(
+                  "Response",
+                  response
+                );
+      return null;
+    });
+*/
 
 // User Joins Brand
 exports.userJoinsBrand = functions

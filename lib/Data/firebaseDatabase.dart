@@ -522,6 +522,27 @@ class FirebaseDatabaseService {
     }
   }
 
+  Future<void> addUserToBrand(String userId, String brandId) async {
+
+    /*
+    await _firestore
+    .collection(brands)
+    .doc(brandId)
+    .collection("Users")
+    .doc(userId)
+    .set({
+      "name": firebaseUser!.uid,
+      "firstName": "",
+      "lastName": name,
+      "nick": nick,
+      "imageUrl": description,
+      "isTrainer": formatted,
+      "notificationToken": null,
+      "role": null,
+    });
+     */
+  }
+
   Future<void> deleteBrand(String brandId) async {
     // Delete All Events from Brand
     await this.deleteBrandEvents(brandId);
