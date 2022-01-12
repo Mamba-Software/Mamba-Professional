@@ -47,7 +47,7 @@ class NotificationEvent {
 
   NotificationEvent.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
     this.id = documentId;
-    //this.userId = documentSnapshot.get("userId").toString();
+    this.userId = documentSnapshot.get("userId").toString();
     this.type = documentSnapshot.get("type").toString();
     this.isRead = documentSnapshot.get("isRead");
     this.dateSent = documentSnapshot.get("dateSent").toString();

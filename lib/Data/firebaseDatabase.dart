@@ -520,31 +520,47 @@ class FirebaseDatabaseService {
 
     if (!firestoreError) {
       await updateCurrentBrandPhoto(uid, image);
+      await addUserToBrand(firebaseUser.uid,uid, 1);
       return uid;
     } else {
       return "Error";
     }
   }
 
-  Future<void> addUserToBrand(String userId, String brandId) async {
-
-    /*
+  // Add User To Brand
+  Future<void> addUserToBrand(String userId, String brandId, var role) async {
+    Usuario user = await this.getUserDetails(userId);
     await _firestore
     .collection(brands)
     .doc(brandId)
     .collection("Users")
     .doc(userId)
     .set({
-      "name": firebaseUser!.uid,
-      "firstName": "",
-      "lastName": name,
-      "nick": nick,
-      "imageUrl": description,
-      "isTrainer": formatted,
-      "notificationToken": null,
-      "role": null,
+      "name": user.name,
+      "firstName": user.firstName,
+      "lastName": user.lastName,
+      "nick": user.nick,
+      "imageUrl": user.imageUrl,
+      "isTrainer": user.isTrainer,
+      "notificationToken": user.notificationToken,
+      "role": role,
     });
-     */
+  }
+
+  // Add Location To Brand
+  Future<void> addLocationToBrand(String locationId, String brandId) async {
+    Location location = await this.getSingleLocation(locationId);
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Locations")
+        .doc(locationId)
+        .set({
+          "isBaseLocation": location.isBaseLocation,
+          "description": location.description,
+          "latitude": location.latitude,
+          "longitude": location.longitude,
+        });
   }
 
   Future<void> deleteBrand(String brandId) async {

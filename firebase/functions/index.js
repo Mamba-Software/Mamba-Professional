@@ -53,11 +53,6 @@ exports.userRegistersMamba = functions
       let year = date.getFullYear().toString();
       let result = year.slice(2, 4);
       var formatted = day+"-"+month+"-"+result;
-      functions.logger.log(
-                    "Date and Date Formatted",
-                    date,
-                    formatted,
-                  );
       await db
       .collection(users)
       .doc(userId)
@@ -77,7 +72,7 @@ exports.userRegistersMamba = functions
       return null;
     });
 
-/* User Creates Brand
+// User Creates Brand
 exports.userCreatesBrand = functions
     .region("europe-west1")
     .firestore
@@ -97,7 +92,7 @@ exports.userCreatesBrand = functions
         brandDoc.name,
         brandDoc.logoUrl,
       );
-      // Get Data of Admin Id
+      // Add Brand to the User´s Brand Collection
       const userSnapshot = await db.collection(users).doc(userId).get();
       const userDoc = userSnapshot.data();
       // Add Brand to Admins Sub Brands Collection
@@ -210,7 +205,7 @@ exports.userCreatesBrand = functions
                 );
       return null;
     });
-*/
+
 
 // User Joins Brand
 exports.userJoinsBrand = functions
