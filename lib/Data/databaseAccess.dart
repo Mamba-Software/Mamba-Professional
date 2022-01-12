@@ -121,7 +121,7 @@ class DatabaseAccess {
   Future<List<NotificationEvent>> getAllNotificationsUser(String userId) => _firebase.getAllNotificationsUser(userId);
   Future<void> sendNotification(String userId, String type, var parameters) => _firebase.sendNotification(userId, type, parameters);
   Future<int> numberUnreadNotifications(String userId) => _firebase.numberUnreadNotifications(userId);
-  Future<void> markNotificationAsRead(String notificationId) => _firebase.markNotificationAsRead(notificationId);
+  Future<void> markNotificationAsRead(String userId, String notificationId) => _firebase.markNotificationAsRead(userId,notificationId);
   Future<void> markALLNotificationAsRead(String userId) => _firebase.markALLNotificationAsRead(userId);
   //Future<void> readImportantNotification(String requestId) => _firebase.acceptRequest(requestId);
 

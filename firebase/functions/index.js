@@ -4,6 +4,9 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
 
+// Required NPM Packages
+const uuidv4 = require("uuid")
+
 // Firebase DataBase
 const db = admin.firestore();
 
@@ -22,6 +25,58 @@ const messages = isProduction ? "Messages" : "7777 Messages";
 const errors = isProduction ? "Errors" : "7777 Errors";
 const requests = isProduction ? "Requests" : "7777 Requests";
 const notifications = isProduction ? "Notifications" : "7777 Notifications";
+
+// User Registers To Mamba
+exports.userRegistersMamba = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+users+"/{userId}")
+    .onCreate( async (snap, context) => {
+      // Get the value of the context triggers.
+      const userId = context.params.userId;
+      functions.logger.log(
+              "User has registered with ID:",
+              userId,
+            );
+      // Send Wellcome Notificaction
+      var uid = uuidv4.v4();
+      functions.logger.log(
+          "Uid",
+          uid,
+        );
+      let date = new Date();
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      if (month < 10) {
+        month = "0"+month;
+      }
+      let year = date.getFullYear().toString();
+      let result = year.slice(2, 4);
+      var formatted = day+"-"+month+"-"+result;
+      functions.logger.log(
+                    "Date and Date Formatted",
+                    date,
+                    formatted,
+                  );
+      await db
+      .collection(users)
+      .doc(userId)
+      .collection("Notifications")
+      .doc(uid).set({
+        "type": "Wellcome_User",
+        "isRead": false,
+        "dateSent": formatted,
+        "year": date.getFullYear(),
+        "month": date.getMonth() + 1,
+        "day": date.getDate(),
+        "hour": date.getHours(),
+        "minutes": date.getMinutes(),
+        "seconds": date.getSeconds(),
+        "parameters": [],
+      });
+      return null;
+    });
+
 
 // User Joins Brand
 exports.userJoinsBrand = functions

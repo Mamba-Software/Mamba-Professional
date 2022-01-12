@@ -184,8 +184,7 @@ class FirebaseDatabaseService {
           "notificationToken": null,
           "email": email,
           "imageUrl": null,
-          "noImageUrl":
-              "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
+          "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
           "isFirst": true,
           "isTrainer": null,
           "isPrivate": true,
@@ -1372,11 +1371,9 @@ class FirebaseDatabaseService {
   Future<List<NotificationEvent>> getAllNotificationsUser(String userId) async {
     List<NotificationEvent> notis = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection(notifications)
-        .where("userId", isEqualTo: userId)
-        .orderBy("year", descending: true)
-        .orderBy("month", descending: true)
-        .orderBy("day", descending: true)
+        .collection(users)
+        .doc(userId)
+        .collection("Notifications")
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       NotificationEvent notif = NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
@@ -1410,8 +1407,9 @@ class FirebaseDatabaseService {
   Future<int> numberUnreadNotifications(String userId) async {
     List<NotificationEvent> notificationsList = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection(notifications)
-        .where("userId", isEqualTo: userId)
+        .collection(users)
+        .doc(userId)
+        .collection("Notifications")
         .where("isRead", isEqualTo: false)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
@@ -1421,10 +1419,15 @@ class FirebaseDatabaseService {
   }
 
   // Mark as Read Notifications
-  Future<void> markNotificationAsRead(String notificationId) async {
-    await _firestore.collection(notifications).doc(notificationId).update({
-      "isRead": true,
-    });
+  Future<void> markNotificationAsRead(String userId, String notificationId) async {
+    await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Notifications")
+        .doc(notificationId)
+        .update({
+          "isRead": true,
+        });
   }
 
   // Mark ALL as Read Notifications
@@ -1436,7 +1439,7 @@ class FirebaseDatabaseService {
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       NotificationEvent notif = NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
-      await this.markNotificationAsRead(notif.id!);
+      await this.markNotificationAsRead(userId, notif.id!);
     }
   }
 
