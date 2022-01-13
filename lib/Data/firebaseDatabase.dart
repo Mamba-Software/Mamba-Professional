@@ -298,7 +298,6 @@ class FirebaseDatabaseService {
       print(err);
       firestoreError = true;
     });
-    await this.joinBrand(currentUser.uid, brandID);
     if (firestoreError) {
       return -1;
     } else {
@@ -349,25 +348,25 @@ class FirebaseDatabaseService {
     });
   }
 
-  Future<void> joinBrand(String userId, String brandId) async {
-    final DateTime now = DateTime.now();
-    final DateFormat formatter = DateFormat('dd-MM-yyyy');
-    final String formatted = formatter.format(now);
-    List<String> brandCover = await this.getBrandCover(brandId);
+  Future<void> joinBrand(String userId, String brandId, int role) async {
+    Usuario user = await this.getUserDetails(userId);
     await _firestore
-      .collection(users)
-      .doc(userId)
-      .collection("Brands")
-      .doc(brandId)
-      .set({
-        "name": brandCover[0],
-        "logoUrl": brandCover[1],
-        "dateJoined": formatted,
-        "myMonthlySessions": 0,
-        "myTotalSessions": 0,
-      }).catchError((err) {
-        print(err);
-      });
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
+        .doc(userId)
+        .set({
+          "name": user.name,
+          "firstName": user.firstName,
+          "lastName": user.lastName,
+          "nick": user.nick,
+          "imageUrl": user.imageUrl,
+          "isTrainer": user.isTrainer,
+          "notificationToken": user.notificationToken,
+          "role": role,
+        }).catchError((err) {
+          print(err);
+        });
   }
 
   Future<void> leaveBrand(String userId, String brandId) async {
@@ -520,31 +519,11 @@ class FirebaseDatabaseService {
 
     if (!firestoreError) {
       await updateCurrentBrandPhoto(uid, image);
-      await addUserToBrand(firebaseUser.uid,uid, 1);
+      await joinBrand(firebaseUser.uid,uid, 1);
       return uid;
     } else {
       return "Error";
     }
-  }
-
-  // Add User To Brand
-  Future<void> addUserToBrand(String userId, String brandId, var role) async {
-    Usuario user = await this.getUserDetails(userId);
-    await _firestore
-    .collection(brands)
-    .doc(brandId)
-    .collection("Users")
-    .doc(userId)
-    .set({
-      "name": user.name,
-      "firstName": user.firstName,
-      "lastName": user.lastName,
-      "nick": user.nick,
-      "imageUrl": user.imageUrl,
-      "isTrainer": user.isTrainer,
-      "notificationToken": user.notificationToken,
-      "role": role,
-    });
   }
 
   // Add Location To Brand
@@ -1350,7 +1329,6 @@ class FirebaseDatabaseService {
     await _firestore.collection(users).doc(request.userId).update({
       "brandID": request.brandId,
     });
-    await this.joinBrand(request.userId!, request.brandId!);
     // Delete the Request
     await _firestore.collection(requests).doc(requestId).delete();
 
@@ -1526,6 +1504,32 @@ class FirebaseDatabaseService {
       "seconds": now.second.toString(),
       "parameters": parameters,
     });
+  }
+
+  // Send Notification
+  Future<void> sendNotificationToUser(String userId, String type, var parameters) async {
+    var uid = Uuid().v1();
+    DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yy');
+    final String formatted = formatter.format(now);
+    await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Notificaions")
+        .doc(uid)
+        .set({
+          "userId": userId,
+          "type": type,
+          "isRead": false,
+          "dateSent": formatted,
+          "year": now.year.toString(),
+          "month": now.month.toString(),
+          "day": now.day.toString(),
+          "hour": now.hour.toString(),
+          "minutes": now.minute.toString(),
+          "seconds": now.second.toString(),
+          "parameters": parameters,
+        });
   }
 
   // Number Unread Notifications

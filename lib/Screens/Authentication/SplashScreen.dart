@@ -43,7 +43,6 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void checkAndGetCurrentUserDetails() async {
-    //_accessDatabase.signOut();
     User? firebaseUser = await _accessDatabase.getCurrentUser();
     if (firebaseUser != null) {
       if (isProduction) {

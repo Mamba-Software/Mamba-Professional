@@ -45,12 +45,11 @@ class DatabaseAccess {
   Future<int> updateCurrentUserBrand(String brandID) => _firebase.updateCurrentUserBrand(brandID);
   Future<void> leaveBrandUser(String userId) => _firebase.leaveBrandUser(userId);
 
-  Future<void> joinBrand(String userId, String brandId) => _firebase.joinBrand(userId, brandId);
+  Future<void> joinBrand(String userId, String brandId, int role) => _firebase.joinBrand(userId, brandId, role);
   Future<void> leaveBrand(String userId, String brandId) => _firebase.leaveBrand(userId, brandId);
 
   // Brands
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) => _firebase.addBrand(name, image, description, workShift, maxMembers);
-  Future<void> addUserToBrand(String userId, String brandId, var role) => _firebase.addUserToBrand(userId, brandId, role);
   Future<void> addLocationToBrand(String locationId, String brandId) => _firebase.addLocationToBrand(locationId, brandId);
 
   Future<bool> checkIfBrandExists(String brandID) => _firebase.checkIfBrandExists(brandID);
@@ -122,6 +121,7 @@ class DatabaseAccess {
   // Notifications
   Future<List<NotificationEvent>> getAllNotificationsUser(String userId) => _firebase.getAllNotificationsUser(userId);
   Future<void> sendNotification(String userId, String type, var parameters) => _firebase.sendNotification(userId, type, parameters);
+  Future<void> sendNotificationToUser(String userId, String type, var parameters) => _firebase.sendNotificationToUser(userId, type, parameters);
   Future<int> numberUnreadNotifications(String userId) => _firebase.numberUnreadNotifications(userId);
   //Future<void> markNotificationAsRead(String userId, String notificationId) => _firebase.markNotificationAsRead(userId,notificationId);
   Future<void> markNotificationAsRead(String notificationId) => _firebase.markNotificationAsRead(notificationId);
