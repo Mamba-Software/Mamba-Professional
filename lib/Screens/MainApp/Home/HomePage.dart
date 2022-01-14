@@ -33,15 +33,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     isLoading = true;
-    // Get Token of User and Update in Firebase
-    FirebaseMessaging.instance.getToken().then((token) {
-      print("Token:");
-      print(token);
-      if (token != currentUser.notificationToken) {
-        print("New token updated");
-        _accessDatabase.addUserNotificationToken(currentUser.id!, token!);
-      }
-    });
     // Init LocalNotificationsService
     LocalNotificationService.initialize(context);
     /// Message on which User has tapped from Terminated State

@@ -1505,6 +1505,10 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                                         await _accessDatabase.updateCurrentUserBrand(_codigo);
                                         await _accessDatabase.updateConversationNewUser(_codigo, currentUser.id);
                                         NotificationService().userJoinsBrand(currentUser.id!, _codigo);
+                                        // New DataBase
+                                        int role = 5;
+                                        await _accessDatabase.joinBrand(currentUser.id!, _codigo.id!, role);
+                                        // Push To Splash Screen
                                         setState(() {
                                           currentIndex = 1;
                                         });

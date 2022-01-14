@@ -519,7 +519,6 @@ class FirebaseDatabaseService {
 
     if (!firestoreError) {
       await updateCurrentBrandPhoto(uid, image);
-      await joinBrand(firebaseUser.uid,uid, 1);
       return uid;
     } else {
       return "Error";

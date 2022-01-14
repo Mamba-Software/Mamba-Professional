@@ -50,7 +50,6 @@ class DatabaseAccess {
 
   // Brands
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) => _firebase.addBrand(name, image, description, workShift, maxMembers);
-  Future<void> addLocationToBrand(String locationId, String brandId) => _firebase.addLocationToBrand(locationId, brandId);
 
   Future<bool> checkIfBrandExists(String brandID) => _firebase.checkIfBrandExists(brandID);
   Future<Brand?> checkUserIsBrandCreator(String userId) => _firebase.checkUserIsBrandCreator(userId);

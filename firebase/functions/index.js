@@ -240,6 +240,32 @@ exports.userJoinsBrand = functions
       return null;
     });
 
+// User Adds Location
+exports.userAddsLocation = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+locations+"/{locationId}")
+    .onCreate( async (snap, context) => {
+      // Get the value of the context triggers.
+      const locationId = context.params.locationId;
+      // Get Data of the Location
+      const locationSnapshot = await db.collection(locations).doc(locationId).get();
+      const locationDoc = locationSnapshot.data();
+      functions.logger.log(
+            "Location Data:",
+            locationDoc
+          );
+      // Add Location to Brands Collection
+      await db.doc("/"+brands+"/"+locationDoc.brandID+"/Locations/"+locationId+"").set({
+         "isBaseLocation": locationDoc.isBaseLocation,
+         "description": locationDoc.description,
+         "latitude": locationDoc.latitude,
+         "longitude": locationDoc.longitude,
+      });
+      return null;
+    });
+
+
 // User Sends Request
 exports.userSendsRequest = functions
     .region("europe-west1")
