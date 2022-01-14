@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
@@ -64,6 +65,15 @@ class _SplashScreenState extends State<SplashScreen> {
           }
           Provider.of<LanguageProvider>(context, listen: false).setLocale(
               Idiomas.getLocaleFromString(currentUser.idioma!));
+          // Get Token of User and Update in Firebase
+          FirebaseMessaging.instance.getToken().then((token) {
+            print("Token:");
+            print(token);
+            if (token != currentUser.notificationToken) {
+              print("New token updated");
+              _accessDatabase.addUserNotificationToken(currentUser.id!, token!);
+            }
+          });
           if (currentUser.isAdmin!) {
             Navigator.pushReplacement(
                 context,
@@ -118,6 +128,15 @@ class _SplashScreenState extends State<SplashScreen> {
           currentBrand = Brand();
         }
         Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
+        // Get Token of User and Update in Firebase
+        FirebaseMessaging.instance.getToken().then((token) {
+          print("Token:");
+          print(token);
+          if (token != currentUser.notificationToken) {
+            print("New token updated");
+            _accessDatabase.addUserNotificationToken(currentUser.id!, token!);
+          }
+        });
         if (currentUser.isAdmin!) {
           Navigator.pushReplacement(
               context,
