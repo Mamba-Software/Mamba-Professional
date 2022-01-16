@@ -1233,6 +1233,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                 });
                                 NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
                                 _accessDatabase.deleteRequest(request!.id!);
+                                // New DataBase
+                                _accessDatabase.deleteRequestToBrand(request!.id!, request!.brandId!);
                                 getUserPendingRequests();
                               }
                             },

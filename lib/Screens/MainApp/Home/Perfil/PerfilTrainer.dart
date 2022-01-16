@@ -1649,6 +1649,8 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                         });
                         NotificationService().userCancelRequestToBrand(currentUser.id!, request.brandId!);
                         _accessDatabase.deleteRequest(request.id!);
+                        // New DataBase
+                        _accessDatabase.deleteRequestToBrand(request.id!, request.brandId!);
                         initProfileHome();
                       }
                     },

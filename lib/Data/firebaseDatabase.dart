@@ -1405,7 +1405,6 @@ class FirebaseDatabaseService {
     //else userMessagesRead = conversation.isMessageRead;
 
    // userMessagesRead.add(toMapisMessageRead(user.id, true));
-
     await _firestore.collection(conversations).doc(conversation.conversationId).update({
       "users": conversation.users,
     });
@@ -1416,6 +1415,16 @@ class FirebaseDatabaseService {
   Future<void> deleteRequest(String requestId) async {
     // Delete the Request
     await _firestore.collection(requests).doc(requestId).delete();
+  }
+
+  // Delete Request
+  Future<void> deleteRequestToBrand(String requestId, String brandId) async {
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Requests")
+        .doc(requestId)
+        .delete();
   }
 
   // Has Pending Request

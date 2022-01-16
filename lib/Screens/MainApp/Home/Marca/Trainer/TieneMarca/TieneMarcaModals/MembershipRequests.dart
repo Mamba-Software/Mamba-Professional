@@ -173,6 +173,8 @@ class _MembershipRequestsState extends State<MembershipRequests> {
                                     await _accessDatabase.joinBrand(request.userId!, request.brandId!, role);
                                   } else if (!result) {
                                     _accessDatabase.deleteRequest(request.id!);
+                                    // New DataBase
+                                    _accessDatabase.deleteRequestToBrand(request.id!, request.brandId!);
                                   }
                                 },
                               );

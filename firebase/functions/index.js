@@ -388,6 +388,34 @@ exports.userSendsRequest = functions
       return null;
     });
 
+// User Deletes Request
+exports.userDeletesRequest = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+brands+"/{brandId}/Requests/{requestId}")
+    .onDelete( async (snap, context) => {
+      // Get the value of the context triggers.
+      const requestId = context.params.requestId;
+      const brandId = context.params.brandId;
+      functions.logger.log(
+              "Deleting Request with ID:",
+              requestId,
+              "to Brand with ID",
+              brandId
+        );
+      // Get Data of Deleted Request
+      const requestDoc = snap.data();
+      // Delete the Request on Users Request collection
+      await db
+        .collection(users)
+        .doc(requestDoc.userId)
+        .collection("Requests")
+        .doc(requestId)
+        .delete();
+      return null;
+    });
+
+
 // Change Message Status
 exports.changeMessageStatus = functions
   .region("europe-west1")

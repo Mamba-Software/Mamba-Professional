@@ -126,6 +126,8 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                       });
                       NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
                       _accessDatabase.deleteRequest(request!.id!);
+                      // New DataBase
+                      _accessDatabase.deleteRequestToBrand(request!.id!, request!.brandId!);
                       getUserPendingRequests();
                     }
                   }
@@ -520,6 +522,8 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                             });
                                             NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
                                             _accessDatabase.deleteRequest(request!.id!);
+                                            // New DataBase
+                                            _accessDatabase.deleteRequestToBrand(request!.id!, request!.brandId!);
                                             getUserPendingRequests();
                                           }
                                         } else {
