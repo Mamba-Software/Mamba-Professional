@@ -270,31 +270,54 @@ exports.userAddsLocation = functions
 exports.userSendsRequest = functions
     .region("europe-west1")
     .firestore
-    .document("/"+requests+"/{requestId}")
+    .document("/"+brands+"/{brandId}/Requests/{requestId}")
     .onCreate( async (snap, context) => {
       // Get the value of the context triggers.
       const requestId = context.params.requestId;
+      const brandId = context.params.brandId;
       // Get Data of the Request
-      const requestSnapshot = await db.collection(requests).doc(requestId).get();
+      const requestSnapshot = await db.collection(brands).doc(brandId).collection("Requests").doc(requestId).get();
       const requestDoc = requestSnapshot.data();
       functions.logger.log(
             "Request Cover Data:",
             requestDoc.brandId,
             requestDoc.name,
           );
-      // Get Notification Token for All Brand Trainers
-      // TO DO: Modificar aquesta funcion quan tinguem la base de dades acutualitzada.
-      const brandTrainersSnapshot = await db.collection(users)
-        .where("brandID", "=", requestDoc.brandId)
-        .where("isTrainer", "=", true)
-        .get();
-      for (var i in brandTrainersSnapshot.docs) {
-          const brandTrainersDoc = brandTrainersSnapshot.docs[i].data();
+      // Get Data of the Brand
+      const brandSnapshot = await db.collection(brands).doc(brandId).get();
+      const brandDoc = brandSnapshot.data();
+      functions.logger.log(
+          "Brand Data:",
+          brandDoc,
+      );
+      // Add Request to Users Request collection
+      await db
+        .collection(users)
+        .doc(requestDoc.userId)
+        .collection("Requests")
+        .doc(requestId).set({
+            "brandId": requestDoc.brandId,
+            "userId": requestDoc.userId,
+            "name": requestDoc.name,
+            "isTrainer": requestDoc.isTrainer,
+            "dateSent": requestDoc.dateSent,
+            "year": requestDoc.year,
+            "month": requestDoc.month,
+            "day": requestDoc.day,
+        });
+      // Send Notification to Brand Owners
+      const brandOwnersSnapshot = await db.collection(brands)
+          .doc(brandId)
+          .collection("Users")
+          .where("role", "=", 1)
+          .get();
+      for (var i in brandOwnersSnapshot.docs) {
+          const brandOwnersDoc = brandOwnersSnapshot.docs[i].data();
           functions.logger.log(
-              "Brand Trainer Data:",
-              brandTrainersDoc
+              "Brand Owners Data:",
+              brandOwnersDoc
             );
-          if (brandTrainersDoc.idioma == "es") {
+          if (brandOwnersDoc.idioma == "es") {
               payload = {
                 notification: {
                   title: requestDoc.name+" ha enviado una solicitud de afiliación",
@@ -319,7 +342,7 @@ exports.userSendsRequest = functions
                 "Payload",
                 payload
               );
-            const notificationToken = brandTrainersDoc.notificationToken;
+            const notificationToken = brandOwnersDoc.notificationToken;
             functions.logger.log(
                 "Notification Token",
                 notificationToken

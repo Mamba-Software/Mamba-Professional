@@ -522,6 +522,8 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                           });
                                           await _accessDatabase.sendRequest(brand.id!, currentUser.name! ,currentUser.isTrainer!);
                                           NotificationService().userSendRequestToBrand(currentUser.id!, brand.id!);
+                                          // New DataBase
+                                          await _accessDatabase.sendRequestToBrand(brand.id!, currentUser.name! ,currentUser.isTrainer!);
                                           getUserPendingRequests();
                                         }
                                       }

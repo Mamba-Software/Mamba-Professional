@@ -113,6 +113,7 @@ class DatabaseAccess {
 
   // Requests
   Future<void> sendRequest(String brandId, String name, bool isTrainer) => _firebase.sendRequest(brandId, name, isTrainer);
+  Future<void> sendRequestToBrand(String brandId, String name, bool isTrainer) => _firebase.sendRequestToBrand(brandId, name, isTrainer);
   Future<void> acceptRequest(String requestId) => _firebase.acceptRequest(requestId);
   Future<void> deleteRequest(String requestId) => _firebase.deleteRequest(requestId);
   Future<RequestToBrand?> hasPendingRequest(String userId) => _firebase.hasPendingRequest(userId);

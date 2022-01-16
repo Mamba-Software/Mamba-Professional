@@ -263,17 +263,28 @@ class FirebaseDatabaseService {
   }
 
   // Add Error/ Report Bug
-  Future<bool> addError(String title, String description,
-      [String? stepsReproduce]) async {
+  Future<bool> addError(String title, String description, [String? stepsReproduce]) async {
     var uid = Uuid().v1();
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final String formatted = formatter.format(now);
     User? currentUser = await getCurrentUser();
     try {
       await _firestore.collection(errors).doc(uid).set({
         "userID": currentUser!.uid,
         "title": title,
         "descripcion": description,
-        "stepsReproduce": stepsReproduce
+        "stepsReproduce": stepsReproduce,
+        "dateSent": formatted,
       });
+      await _firestore
+        .collection(users)
+        .doc(currentUser.uid)
+        .collection("Errors")
+        .doc(uid)
+        .set({
+          "dateSent": formatted,
+        });
       return true;
     } catch (e) {
       print(e.toString());
@@ -1315,6 +1326,29 @@ class FirebaseDatabaseService {
       "month": now.month.toString(),
       "day": now.day.toString(),
     });
+  }
+
+  // Send Request
+  Future<void> sendRequestToBrand(String brandId, String name, bool isTrainer) async {
+    User? currentUser = await getCurrentUser();
+    var uid = Uuid().v1();
+    DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yy');
+    final String formatted = formatter.format(now);
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Requests")
+        .doc(uid).set({
+          "brandId": brandId,
+          "userId": currentUser!.uid,
+          "name": name,
+          "isTrainer": isTrainer,
+          "dateSent": formatted,
+          "year": now.year.toString(),
+          "month": now.month.toString(),
+          "day": now.day.toString(),
+        });
   }
 
   // Accept Request
