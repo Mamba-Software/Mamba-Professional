@@ -165,6 +165,12 @@ class _MembershipRequestsState extends State<MembershipRequests> {
                                   if (result) {
                                     _accessDatabase.acceptRequest(request.id!);
                                     NotificationService().userJoinsBrand(request.userId!, request.brandId!);
+                                    // New DataBase
+                                    int role = 0;
+                                    if (request.isTrainer!) {
+                                      role = 5;
+                                    }
+                                    await _accessDatabase.joinBrand(request.userId!, request.brandId!, role);
                                   } else if (!result) {
                                     _accessDatabase.deleteRequest(request.id!);
                                   }

@@ -257,9 +257,25 @@ class FirebaseDatabaseService {
   }
   // Add User Notification Token
   Future<void> addUserNotificationToken(String uid, String token) async {
+    // Update User Notification Token
     await _firestore.collection(users).doc(uid).update({
       "notificationToken": token,
     });
+    // Check If User in Brands too update notificationToken there as well.
+    var brandsCollection = await _firestore.collection(users).doc(uid).collection("Brands").get();
+    if (brandsCollection.docs.length > 0) {
+      for (var i=0; i<brandsCollection.docs.length; i++) {
+        var brandDocument = brandsCollection.docs[i];
+        await _firestore
+            .collection(brands)
+            .doc(brandDocument.id)
+            .collection("Users")
+            .doc(uid)
+            .update({
+              "notificationToken": token,
+            });
+      }
+    }
   }
 
   // Add Error/ Report Bug
@@ -381,11 +397,12 @@ class FirebaseDatabaseService {
   }
 
   Future<void> leaveBrand(String userId, String brandId) async {
-    await _firestore.collection(users).doc(userId).update({
-      "brandID": null,
-    }).catchError((err) {
-      print(err);
-    });
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
+        .doc(userId)
+        .delete();
   }
 
   Future<void> leaveBrandUser(String userId) async {

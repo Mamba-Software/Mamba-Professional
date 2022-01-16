@@ -151,6 +151,8 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                               await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
                               await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
                               await _accessDatabase.leaveBrandUser(currentUser.id!);
+                              // New DataBase Restructure
+                              await _accessDatabase.leaveBrand(currentUser.id!, currentUser.brandID!);
                               Navigator.pushReplacement(
                                   context,
                                   CupertinoPageRoute<Null>(

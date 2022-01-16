@@ -26,53 +26,6 @@ const errors = isProduction ? "Errors" : "7777 Errors";
 const requests = isProduction ? "Requests" : "7777 Requests";
 const notifications = isProduction ? "Notifications" : "7777 Notifications";
 
-/* User Registers To Mamba
-exports.userRegistersMamba = functions
-    .region("europe-west1")
-    .firestore
-    .document("/"+users+"/{userId}")
-    .onCreate( async (snap, context) => {
-      // Get the value of the context triggers.
-      const userId = context.params.userId;
-      functions.logger.log(
-              "User has registered with ID:",
-              userId,
-            );
-      // Send Wellcome Notificaction
-      var uid = uuidv4.v4();
-      functions.logger.log(
-          "Uid",
-          uid,
-        );
-      let date = new Date();
-      let day = date.getDate();
-      let month = date.getMonth() + 1;
-      if (month < 10) {
-        month = "0"+month;
-      }
-      let year = date.getFullYear().toString();
-      let result = year.slice(2, 4);
-      var formatted = day+"-"+month+"-"+result;
-      await db
-      .collection(users)
-      .doc(userId)
-      .collection("Notifications")
-      .doc(uid).set({
-        "type": "Wellcome_User",
-        "isRead": false,
-        "dateSent": formatted,
-        "year": date.getFullYear(),
-        "month": date.getMonth() + 1,
-        "day": date.getDate(),
-        "hour": date.getHours(),
-        "minutes": date.getMinutes(),
-        "seconds": date.getSeconds(),
-        "parameters": [],
-      });
-      return null;
-    });
-*/
-
 // User Joins Brand
 exports.userJoinsBrand = functions
     .region("europe-west1")
@@ -240,6 +193,85 @@ exports.userJoinsBrand = functions
       return null;
     });
 
+// User Leaves Brand
+exports.userLeavesBrand = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+brands+"/{brandId}/Users/{userId}")
+    .onDelete( async (snap, context) => {
+      // Get the value of the context triggers.
+      const brandId = context.params.brandId;
+      const userId = context.params.userId;
+      functions.logger.log(
+              "User with ID:",
+              userId,
+              "has left Brand with ID:",
+              brandId
+            );
+      // Get Data of Deleted User
+      const userDoc = snap.data();
+      // Get Data of the Brand
+      const brandSnapshot = await db.collection(brands).doc(brandId).get();
+      const brandDoc = brandSnapshot.data();
+      functions.logger.log(
+          "Brand Cover Data:",
+          brandDoc,
+        );
+      // Delete Brand in User´s Brand Subcollection
+      await db.collection(users).doc(userId).collection("Brands").doc(brandId).delete();
+      // Send Notification to Brand Owners
+      let numberMembers = brandDoc.numberClients + brandDoc.numberClients;
+      const brandOwnersSnapshot = await db.collection(brands)
+        .doc(brandId)
+        .collection("Users")
+        .where("role", "=", 1)
+        .get();
+      for (var i in brandOwnersSnapshot.docs) {
+        const brandOwnersDoc = brandOwnersSnapshot.docs[i].data();
+        functions.logger.log(
+            "Brand Owners Data:",
+            brandOwnersDoc
+          );
+        if (brandOwnersDoc.idioma == "es") {
+            payload = {
+              notification: {
+                title: userDoc.name+" ha abandonado a "+brandDoc.name,
+                body: "Ahora sois un total de "+numberMembers.toString()+" miembros",
+              },
+              data: {
+                route: "SplashScreen2",
+              },
+            };
+          } else {
+            payload = {
+              notification: {
+                title: userDoc.name+" ha abandonat a "+brandDoc.name,
+                body: "Ara sou un total de "+numberMembers.toString()+" membres",
+              },
+              data: {
+                route: "SplashScreen2",
+              },
+            }
+          }
+          functions.logger.log(
+              "Payload",
+              payload
+            );
+          const notificationToken = brandOwnersDoc.notificationToken;
+          functions.logger.log(
+              "Notification Token",
+              notificationToken
+            );
+          const response = await admin.messaging().sendToDevice(notificationToken, payload);
+          functions.logger.log(
+            "Response",
+            response
+          );
+      }
+      return null;
+    });
+
+
 // User Adds Location
 exports.userAddsLocation = functions
     .region("europe-west1")
@@ -327,7 +359,7 @@ exports.userSendsRequest = functions
                   route: "SplashScreen2",
                 },
               };
-            } else {
+          } else {
               payload = {
                 notification: {
                   title: requestDoc.name+" ha enviat una sol·licitud d'afiliació",
@@ -337,21 +369,21 @@ exports.userSendsRequest = functions
                   route: "SplashScreen2",
                 },
               }
-            }
-            functions.logger.log(
+          }
+          functions.logger.log(
                 "Payload",
                 payload
-              );
-            const notificationToken = brandOwnersDoc.notificationToken;
-            functions.logger.log(
+          );
+          const notificationToken = brandOwnersDoc.notificationToken;
+          functions.logger.log(
                 "Notification Token",
                 notificationToken
-              );
-            const response = await admin.messaging().sendToDevice(notificationToken, payload);
-            functions.logger.log(
+          );
+          const response = await admin.messaging().sendToDevice(notificationToken, payload);
+          functions.logger.log(
               "Response",
               response
-            );
+          );
       }
       return null;
     });

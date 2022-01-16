@@ -230,6 +230,8 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                         await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
                         await _accessDatabase.deleteUserFromAllBrandEvents(user!.id!, currentUser.brandID!, user!.isTrainer!);
                         await _accessDatabase.leaveBrandUser(user!.id!);
+                        // New Database
+                        await _accessDatabase.leaveBrand(widget.userID, currentUser.brandID!);
                         Navigator.pop(context, true);
                       }
                     } ,
