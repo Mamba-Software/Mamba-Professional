@@ -122,6 +122,7 @@ class _CalendarWidgetTrainerState extends State<CalendarWidgetTrainer> {
                     specialRegions: _getTimeRegions(),
                     timeRegionBuilder: timeRegionBuilder,
                     firstDayOfWeek: 1,
+                    todayHighlightColor: Theme.of(context).accentColor,
                     showCurrentTimeIndicator: true,
                     viewHeaderHeight: 50,
                     viewHeaderStyle: ViewHeaderStyle(

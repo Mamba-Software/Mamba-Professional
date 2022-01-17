@@ -201,6 +201,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                       specialRegions: _getTimeRegions(),
                       timeRegionBuilder: timeRegionBuilder,
                       firstDayOfWeek: 1,
+                      todayHighlightColor: Theme.of(context).accentColor,
                       showCurrentTimeIndicator: true,
                       selectionDecoration: BoxDecoration(
                           border: Border.all(width: 0.1, color: Colors.transparent)

@@ -109,6 +109,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
                 viewHeaderHeight: 0,
                 dataSource: _getCalendarDataSource(),
                 specialRegions: _getTimeRegions(),
+                todayHighlightColor: Theme.of(context).accentColor,
                 selectionDecoration: BoxDecoration(
                     border: Border.all(width: 0.1, color: Colors.transparent)
                 ),
