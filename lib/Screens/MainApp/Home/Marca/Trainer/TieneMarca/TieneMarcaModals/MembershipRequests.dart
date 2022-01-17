@@ -165,16 +165,12 @@ class _MembershipRequestsState extends State<MembershipRequests> {
                                   if (result) {
                                     _accessDatabase.acceptRequest(request.id!);
                                     NotificationService().userJoinsBrand(request.userId!, request.brandId!);
-                                    // New DataBase
-                                    int role = 0;
-                                    if (request.isTrainer!) {
-                                      role = 5;
-                                    }
-                                    await _accessDatabase.joinBrand(request.userId!, request.brandId!, role);
+                                    // New Databae
+                                    _accessDatabase.acceptRequestToBrand(request);
                                   } else if (!result) {
                                     _accessDatabase.deleteRequest(request.id!);
                                     // New DataBase
-                                    _accessDatabase.deleteRequestToBrand(request.id!, request.brandId!);
+                                    _accessDatabase.deleteRequestToBrand(request);
                                   }
                                 },
                               );

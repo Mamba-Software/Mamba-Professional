@@ -57,6 +57,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
   var _codigoController = TextEditingController();
   // Request To Brand
   RequestToBrand request = RequestToBrand();
+  RequestToBrand newRequest = RequestToBrand();
   Brand? brandRequested = Brand();
   // Images Of Events
   List<Image?> imagesEvents = [];
@@ -400,14 +401,17 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
     }
   }
 
-  //Get User Pending Requests
+  // Get user pending requests
   Future<void> getUserPendingRequests() async {
     RequestToBrand? req = await _accessDatabase.hasPendingRequest(currentUser.id!);
+    RequestToBrand? reqNew = await _accessDatabase.hasPendingRequestToBrand(currentUser.id!);
     if (req != null) {
       brandRequested = await _accessDatabase.getBrandDetails(req.brandId!);
       request = req;
+      newRequest = reqNew!;
     } else {
       request = RequestToBrand();
+      newRequest = RequestToBrand();
     }
   }
 
@@ -1650,7 +1654,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                         NotificationService().userCancelRequestToBrand(currentUser.id!, request.brandId!);
                         _accessDatabase.deleteRequest(request.id!);
                         // New DataBase
-                        _accessDatabase.deleteRequestToBrand(request.id!, request.brandId!);
+                        _accessDatabase.deleteRequestToBrand(newRequest);
                         initProfileHome();
                       }
                     },

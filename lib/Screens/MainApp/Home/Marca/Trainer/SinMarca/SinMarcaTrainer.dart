@@ -50,6 +50,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
   // Request To Brand
   String brandIdRequest = "";
   RequestToBrand? request;
+  RequestToBrand? newRequest;
 
   // init Widget state. Loading user info.
   @override
@@ -62,14 +63,17 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
 
   Future<void> getUserPendingRequests() async {
     RequestToBrand? req = await _accessDatabase.hasPendingRequest(currentUser.id!);
+    RequestToBrand? reqNew = await _accessDatabase.hasPendingRequestToBrand(currentUser.id!);
     if (req != null) {
       setState(() {
         request = req;
+        newRequest = reqNew;
         brandIdRequest = request!.brandId!;
       });
     } else {
       setState(() {
         request = null;
+        newRequest = null;
         brandIdRequest = "";
       });
     }
@@ -127,7 +131,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                       NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
                       _accessDatabase.deleteRequest(request!.id!);
                       // New DataBase
-                      _accessDatabase.deleteRequestToBrand(request!.id!, request!.brandId!);
+                      _accessDatabase.deleteRequestToBrand(newRequest!);
                       getUserPendingRequests();
                     }
                   }
@@ -523,7 +527,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                             NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
                                             _accessDatabase.deleteRequest(request!.id!);
                                             // New DataBase
-                                            _accessDatabase.deleteRequestToBrand(request!.id!, request!.brandId!);
+                                            _accessDatabase.deleteRequestToBrand(newRequest!);
                                             getUserPendingRequests();
                                           }
                                         } else {

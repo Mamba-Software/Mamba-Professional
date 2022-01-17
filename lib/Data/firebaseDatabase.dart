@@ -1411,6 +1411,42 @@ class FirebaseDatabaseService {
 
   }
 
+  // Accept Request To Brand
+  Future<void> acceptRequestToBrand(RequestToBrand request) async {
+    /* Get the Request
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+        .collection(brands)
+        .doc(request.brandId)
+        .collection("Requests")
+        .doc(request.id)
+        .get();
+    RequestToBrand request = RequestToBrand.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+     */
+    // Accept the user to Brand
+    int role = 0;
+    if (request.isTrainer!) {
+      role = 5;
+    }
+    this.joinBrand(request.userId!, request.brandId!, role);
+    // Delete the Request
+    this.deleteRequestToBrand(request);
+    // OLD CHAT
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(conversations)
+        .where("brandId", isEqualTo: request.brandId)
+        .get();
+    Conversation conversation  = Conversation.fromObject(querySnapshot.docs[0], querySnapshot.docs[0].id);
+    DocumentSnapshot<Map<String, dynamic>> _docu =
+    await _firestore.collection(users).doc(request.userId).get();
+    Usuario user = Usuario.fromObject(_docu, _docu.id);
+    conversation.users.add({
+      'uid': user.id,
+    });
+    await _firestore.collection(conversations).doc(conversation.conversationId).update({
+      "users": conversation.users,
+    });
+  }
+
   // Delete Request
   Future<void> deleteRequest(String requestId) async {
     // Delete the Request
@@ -1418,12 +1454,12 @@ class FirebaseDatabaseService {
   }
 
   // Delete Request
-  Future<void> deleteRequestToBrand(String requestId, String brandId) async {
+  Future<void> deleteRequestToBrand(RequestToBrand request) async {
     await _firestore
         .collection(brands)
-        .doc(brandId)
+        .doc(request.brandId)
         .collection("Requests")
-        .doc(requestId)
+        .doc(request.id)
         .delete();
   }
 
@@ -1437,6 +1473,22 @@ class FirebaseDatabaseService {
     if (querySnapshot.docs.length > 0) {
       request = RequestToBrand.fromObject(
           querySnapshot.docs[0], querySnapshot.docs[0].id);
+      return request;
+    } else {
+      return null;
+    }
+  }
+
+  // Has Pending Request To Brand
+  Future<RequestToBrand?> hasPendingRequestToBrand(String userId) async {
+    RequestToBrand request;
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Requests")
+        .get();
+    if (querySnapshot.docs.length > 0) {
+      request = RequestToBrand.fromObject(querySnapshot.docs[0], querySnapshot.docs[0].id);
       return request;
     } else {
       return null;

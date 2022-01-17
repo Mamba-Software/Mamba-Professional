@@ -92,6 +92,7 @@ class NotificationService {
 
   Future<void> userSendRequestToBrand(String userId, String brandId) async {
     // Notification to the User Joining
+    // TODO: Adapt to New Database
     RequestToBrand? req = await _accessDatabase.hasPendingRequest(userId);
     var parameters = ["null", brandId, "null",];
     _accessDatabase.sendNotification(userId, "UserSendRequestToBrand_User", parameters);
