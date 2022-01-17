@@ -297,6 +297,33 @@ exports.userAddsLocation = functions
       return null;
     });
 
+// User Deletes Location
+exports.userDeletesLocation = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+locations+"/{locationId}")
+    .onDelete( async (snap, context) => {
+        // Get the value of the context triggers.
+        const locationId = context.params.locationId;
+        // Get Data of Deleted Location
+        const locationDoc = snap.data();
+        functions.logger.log(
+                "Deleting Location with ID:",
+                locationId,
+                "to Brand with ID",
+                locationDoc.brandID
+          );
+        // Delete Location to Brands Collection
+        await db
+        .collection(brands)
+        .doc(locationDoc.brandID)
+        .collection("Locations")
+        .doc(locationId)
+        .delete();
+        return null;
+    });
+
+
 
 // User Sends Request
 exports.userSendsRequest = functions

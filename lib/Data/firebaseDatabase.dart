@@ -553,22 +553,6 @@ class FirebaseDatabaseService {
     }
   }
 
-  // Add Location To Brand
-  Future<void> addLocationToBrand(String locationId, String brandId) async {
-    Location location = await this.getSingleLocation(locationId);
-    await _firestore
-        .collection(brands)
-        .doc(brandId)
-        .collection("Locations")
-        .doc(locationId)
-        .set({
-          "isBaseLocation": location.isBaseLocation,
-          "description": location.description,
-          "latitude": location.latitude,
-          "longitude": location.longitude,
-        });
-  }
-
   Future<void> deleteBrand(String brandId) async {
     // Delete All Events from Brand
     await this.deleteBrandEvents(brandId);
