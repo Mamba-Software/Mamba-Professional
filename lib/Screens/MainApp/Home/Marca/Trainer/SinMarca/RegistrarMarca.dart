@@ -1276,7 +1276,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     // New Database
     await _accessDatabase.joinBrand(currentUser.id!,result, 1);
     // Add Location
-    await _accessDatabase.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
+    String baseLocation = await _accessDatabase.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
+    await _accessDatabase.updateBrandBaseLocation(result,baseLocation);
     // Update Current User Brand
     await _accessDatabase.updateCurrentUserBrand(result);
     NotificationService().userCreatesBrand(currentUser.id!, result);
