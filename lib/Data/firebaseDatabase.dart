@@ -173,36 +173,37 @@ class FirebaseDatabaseService {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
-    UserCredential? authResult = await _auth
-        .createUserWithEmailAndPassword(email: email, password: password)
-        .then((userCredential) async {
-      if (userCredential != null && userCredential.user != null) {
-        await _firestore.collection(users).doc(userCredential.user!.uid).set({
-          "name": null,
-          "firstName": null,
-          "lastName": null,
-          "nick": null,
-          "notificationToken": null,
-          "email": email,
-          "imageUrl": null,
-          "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
-          "isFirst": true,
-          "isTrainer": null,
-          "isPrivate": true,
-          "gender": null,
-          "dateJoined": formatted,
-          "dateOfBirth": null,
-          "idioma": idioma,
-          "previousIdioma": null,
-          "brandID": null,
-          "isAdmin": false,
-        }).catchError((err) {
-          print(err);
-          firestoreError = true;
-        });
-        await userCredential.user!.sendEmailVerification();
-      }
-      return userCredential;
+    UserCredential? authResult =
+      await _auth
+      .createUserWithEmailAndPassword(email: email, password: password)
+      .then((userCredential) async {
+        if (userCredential != null && userCredential.user != null) {
+          await _firestore.collection(users).doc(userCredential.user!.uid).set({
+            "name": null,
+            "firstName": null,
+            "lastName": null,
+            "nick": null,
+            "notificationToken": null,
+            "email": email,
+            "imageUrl": null,
+            "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
+            "isFirst": true,
+            "isTrainer": null,
+            "isPrivate": true,
+            "gender": null,
+            "dateJoined": formatted,
+            "dateOfBirth": null,
+            "idioma": idioma,
+            "previousIdioma": null,
+            "brandID": null,
+            "isAdmin": false,
+          }).catchError((err) {
+            print(err);
+            firestoreError = true;
+          });
+          await userCredential.user!.sendEmailVerification();
+        }
+        return userCredential;
     }).catchError((err) {
       print(err);
       authError = true;

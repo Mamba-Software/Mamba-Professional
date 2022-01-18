@@ -83,7 +83,7 @@ class _RegisterState extends State<Register> {
                             onChanged: (val) {
                               setState(() => email = val);
                             },
-                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w500),
                             decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.email,
                                 prefixIcon:  Padding(
                                   padding: EdgeInsets.all(0.0),
@@ -114,7 +114,7 @@ class _RegisterState extends State<Register> {
                               setState(() => password1 = val);
                             },
                             obscureText: !_passwordVisible,
-                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w500),
                             decoration: Styles.textFromInputDecoration.copyWith(
                                 labelText: AppLocalizations.of(context)!.password,
                                 suffixIcon: Padding(
@@ -148,7 +148,7 @@ class _RegisterState extends State<Register> {
                               setState(() => password2 = val);
                             },
                             obscureText: !_passwordVisible,
-                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w500),
                             decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.passworRepeat,
                                 suffixIcon: Padding(
                                     padding: EdgeInsets.all(0.0),

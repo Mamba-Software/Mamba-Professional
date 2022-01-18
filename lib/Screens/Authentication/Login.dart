@@ -66,7 +66,7 @@ class _LoginState extends State<Login> {
                               email = val;
                             });
                           },
-                          style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.w600),
+                          style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.w500),
                           decoration: Styles.textFromInputDecoration.copyWith(
                               labelText: AppLocalizations.of(context)!.email,
                               prefixIcon:  Padding(
@@ -86,7 +86,7 @@ class _LoginState extends State<Login> {
                                 password = val;
                               });
                             },
-                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.w600),
+                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.w500),
                             obscureText: !_passwordVisible,
                             decoration: Styles.textFromInputDecoration.copyWith(
                                 labelText: AppLocalizations.of(context)!.password,

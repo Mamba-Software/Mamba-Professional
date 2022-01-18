@@ -80,7 +80,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             onChanged: (val) {
                               setState(() => email = val);
                             },
-                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w500),
                             decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.email,
                                 prefixIcon:  Padding(
                                   padding: EdgeInsets.all(0.0),
