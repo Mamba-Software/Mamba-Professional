@@ -88,7 +88,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     var minimumDate = DateTime.now().subtract(Duration(days: 365));
     var maximumDate = DateTime.now().add(Duration(days: 365));
     var title;
-    var initialDuration = 1;
+    var initialDuration = 2;
     var initialMembers = 1;
     var widgetPicker;
     // Init for differnt types
@@ -105,7 +105,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       var temp = DateTime(startDate.year, startDate.month, startDate.day, endHourWS, endMinWS);
       maximumDate = temp.add(Duration(days: 365));
     } else if (type == 1) {
-        initialDuration = durations.indexWhere((element) => element == duration);
+      initialDuration = durations.indexWhere((element) => element == duration);
     } else if (type == 2) {
       initialMembers = members-1;
     }
@@ -267,8 +267,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     }
     titleController.text = "${currentBrand.name!.replaceAll(RegExp(r"\s+"), "")}";
     titleString = titleController.text;
-    var hour = durations[1].split(".")[0];
-    var min = durations[1].split(".")[1];
+    var hour = durations[2].split(".")[0];
+    var min = durations[2].split(".")[1];
     durationController.text = "${hour}h ${min}min";
     membersController.text = "${members.toString()}";
     getAllTrainersFromBrand();
@@ -371,7 +371,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
             )
           ),
         ),
-
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       resizeToAvoidBottomInset: false,
@@ -1180,71 +1179,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     );
   }
 
-  /*
-  Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              _selectedIndex != 0 ? Padding(
-                padding: const EdgeInsets.only(top: 15, bottom: 15),
-                child: FloatingActionButton.extended(
-                  onPressed: () {
-                    _tabController!.animateTo(_selectedIndex -= 1);
-                    setState(() {
-                      addEventTabValue -= 0.33;
-                    });
-                  },
-                  backgroundColor: Theme.of(context).primaryColor,
-                  icon: Container(),
-                  label: Text(AppLocalizations.of(context)!.back, style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
-                ),
-              ) : Container(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
-                child: FloatingActionButton.extended(
-                  onPressed: () {
-                    if (_selectedIndex == 0) {
-                      if (formKeyInfo.currentState!.validate()){
-                        _tabController!.animateTo(_selectedIndex += 1);
-                        setState(() {
-                          addEventTabValue += 0.33;
-                        });
-                      }
-                    } else if (_selectedIndex == 1) {
-                      setState(() {
-                        errorDate = false;
-                      });
-                      var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
-                      if (validateDateAndTime(startDate, double.parse(duration))) {
-                        _tabController!.animateTo(_selectedIndex += 1);
-                        setState(() {
-                          addEventTabValue += 0.33;
-                        });
-                      } else {
-                        setState(() {
-                          errorDate = true;
-                        });
-                      }
-                    } else if (_selectedIndex == 2) {
-                      if (!brandTrainersSelected.contains(true)) {
-                        setState(() {
-                          errorNoTrainerSelected = true;
-                        });
-                      } else {
-                        _addEvent();
-                      }
-                    }
-                  },
-                  backgroundColor: _selectedIndex == 2 ? Colors.green : Theme.of(context).accentColor,
-                  icon: Container(),
-                  label: Text(
-                    _selectedIndex == 2 ? AppLocalizations.of(context)!.createEvent : AppLocalizations.of(context)!.next,
-                    style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
-                ),
-              ),
-            ],
-          ),
-   */
-
   String splitCommonName(String name) {
     List<String> aux = name.split(" ");
     return aux[0];
@@ -1318,9 +1252,11 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         selectedTrainerId.add(brandTrainers[i].id);
       }
     }
+    // EVENT IS NOT RECURRENT
     if (!isRecurrent) {
       await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
     } else {
+      // EVENT IS RECURRENT
       await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
       var tempDate = startDate.add(Duration(days: 1));
       var weekDay = tempDate.weekday;

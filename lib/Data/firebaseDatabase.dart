@@ -699,7 +699,8 @@ class FirebaseDatabaseService {
       double? duration,
       String? locationId,
       int? maxMembers,
-      var selectedTrainers) async {
+      var selectedTrainers)
+  async {
     var eventID = Uuid().v1();
     User? currentUser = await getCurrentUser();
     try {
@@ -720,6 +721,27 @@ class FirebaseDatabaseService {
         "selectedTrainers": selectedTrainers,
         "isCompleted": false,
       });
+      await _firestore.collection(events).doc(eventID).collection("Brands").doc(currentBrand.id).set({
+        "name": currentBrand.name,
+        "logoUrl": currentBrand.logoUrl,
+      });
+      Location location = await this.getSingleLocation(locationId!);
+      await _firestore.collection(events).doc(eventID).collection("Locations").doc(locationId).set({
+        "description": location.description,
+      });
+      for (var i=0; i<selectedTrainers.length; i++) {
+        Usuario user = await this.getUserDetails(selectedTrainers[i]);
+        await _firestore.collection(events).doc(eventID).collection("Users").doc(user.id).set({
+          "name": user.name,
+          "firstName": user.firstName,
+          "lastName": user.lastName,
+          "imageUrl": user.imageUrl,
+          "noImageUrl": user.noImageUrl,
+          "isTrainer": user.isTrainer,
+          "isPrivate": user.isPrivate,
+          "notificationToken": user.notificationToken,
+        });
+      }
       return eventID;
     } catch (e) {
       print(e.toString());
