@@ -120,7 +120,7 @@ class _SplashScreenState extends State<SplashScreen> {
           '7777 Rooms',
           '7777 Users',
         ));
-        currentUser = await _accessDatabase.getUserDetails(currentUser.id!);
+        currentUser = await _accessDatabase.getUserDetails(firebaseUser.uid);
         unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
         unreadChats = await _accessDatabase.numberUnreadConversations(currentUser.id!);
         if (currentUser.brandID != "null" && currentUser.brandID != null) {

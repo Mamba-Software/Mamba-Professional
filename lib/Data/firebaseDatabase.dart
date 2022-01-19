@@ -141,12 +141,11 @@ class FirebaseDatabaseService {
   }
 
   Future<Usuario> getUserDetails(String uid) async {
-    Usuario user;
+    Usuario usuario;
     // Get Users Data in Main Document
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(users).doc(uid).get();
-
-
-    return Usuario.setData(_documentSnapshot.id, _documentSnapshot);
+    usuario = Usuario.setData(_documentSnapshot.id, _documentSnapshot);
+    return usuario;
   }
 
   Future<List<String>> getUserCover(String uid) async {
@@ -1511,7 +1510,7 @@ class FirebaseDatabaseService {
         .collection("Notifications")
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      NotificationEvent notif = NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      NotificationEvent notif = NotificationEvent.setData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
       notis.add(notif);
     }
     return notis;
@@ -1548,7 +1547,7 @@ class FirebaseDatabaseService {
         .where("isRead", isEqualTo: false)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      notificationsList.add(NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+      notificationsList.add(NotificationEvent.setData(querySnapshot.docs[i], querySnapshot.docs[i].id));
     }
     return notificationsList.length;
   }
@@ -1573,7 +1572,7 @@ class FirebaseDatabaseService {
         .where("isRead", isEqualTo: false)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      NotificationEvent notif = NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      NotificationEvent notif = NotificationEvent.setData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
       await this.markNotificationAsRead(userId, notif.id!);
     }
   }
@@ -1593,7 +1592,7 @@ class FirebaseDatabaseService {
         .orderBy("day", descending: true)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      NotificationEvent notif = NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      NotificationEvent notif = NotificationEvent.setData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
       notis.add(notif);
     }
     return notis;
@@ -1655,7 +1654,7 @@ class FirebaseDatabaseService {
         .where("isRead", isEqualTo: false)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      notificationsList.add(NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+      notificationsList.add(NotificationEvent.setData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return notificationsList.length;
   }
@@ -1675,7 +1674,7 @@ class FirebaseDatabaseService {
         .where("isRead", isEqualTo: false)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      NotificationEvent notif = NotificationEvent.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      NotificationEvent notif = NotificationEvent.setData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
       await this.markNotificationAsRead(notif.id!);
     }
   }

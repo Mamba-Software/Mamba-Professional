@@ -1,5 +1,6 @@
 // Model for a User in our App
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mamba_castelldefels/Models/NotificationEvent.dart';
 
 import 'Brand.dart';
 
@@ -138,8 +139,8 @@ class Usuario {
     for (int i = 0; i < brandsSnapshot.docs.length; i++) {
       Brand brand = Brand();
       brand.setCoverData(
-          brandsSnapshot.docs[i].id,
-          brandsSnapshot.docs[i]
+        brandsSnapshot.docs[i].id,
+        brandsSnapshot.docs[i]
       );
       brands.add(brand);
     }
