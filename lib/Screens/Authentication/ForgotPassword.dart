@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -15,7 +16,7 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   // Access to DataBaseService
-  var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
   // Password Visible
   bool isLoading = false;
   // Scaffold Messenger Key
@@ -119,7 +120,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                     if (!currentFocus.hasPrimaryFocus) {
                                       currentFocus.unfocus();
                                     }
-                                    result = await _accessDatabase.resetPassword(email);
+                                    result = await _userDataService.resetPassword(email);
                                     if (result == 1) {
                                       setState(() {
                                         isLoading = false;

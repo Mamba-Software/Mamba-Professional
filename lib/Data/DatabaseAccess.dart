@@ -11,7 +11,7 @@ import 'package:mamba_castelldefels/Models/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Models/Question.dart';
 import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
-import 'firebaseDatabase.dart';
+import 'FirebaseDatabaseService.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class DatabaseAccess {

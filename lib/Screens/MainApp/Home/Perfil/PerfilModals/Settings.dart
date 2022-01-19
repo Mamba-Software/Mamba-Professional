@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -29,7 +30,7 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
   // Boolean Loading
   bool isLoading = false;
   bool firstBuild = true;
@@ -87,7 +88,7 @@ class _SettingsState extends State<Settings> {
                   _idiomaChanged.currentState!.resetIdiomaChanged();
                   idiomaChanged = false;
                 });
-                await _accessDatabase.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!);
+                await _userDataService.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!);
               }
               Navigator.pop(context);
               },
@@ -245,7 +246,7 @@ class _SettingsState extends State<Settings> {
                           isLoading = true;
                         });
                         Future.delayed(Duration(seconds: 1), () async {
-                          _accessDatabase.signOut().then((value) =>
+                          _userDataService.signOut().then((value) =>
                               Navigator.pushAndRemoveUntil(
                                 context,
                                 CupertinoPageRoute<Null>(
@@ -323,6 +324,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
 
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
   // Delete Alert
   bool isLoading = false;
   bool firstBuild = true;
@@ -454,7 +456,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                           });
                           // Delete Function
                           String? userId = currentUser.id;
-                          var result = await _accessDatabase.deleteUser(deleteTemp);
+                          var result = await _userDataService.deleteUser(deleteTemp);
                           if (!result) {
                             setState(() {
                               wrongPassword = true;
