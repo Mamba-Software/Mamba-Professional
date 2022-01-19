@@ -141,7 +141,11 @@ class FirebaseDatabaseService {
   }
 
   Future<Usuario> getUserDetails(String uid) async {
+    Usuario user;
+    // Get Users Data in Main Document
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(users).doc(uid).get();
+
+
     return Usuario.setData(_documentSnapshot.id, _documentSnapshot);
   }
 

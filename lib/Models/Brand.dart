@@ -71,7 +71,7 @@ class Brand {
     }
   }
 
-  Brand.setCoverData(String documentId, DocumentSnapshot documentSnapshot) {
+  void setCoverData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('name')) {
       this.name = documentSnapshot.get("name").toString();
@@ -81,15 +81,15 @@ class Brand {
     }
   }
 
-  Brand.setUsers(QuerySnapshot usersSnapshot) {
+  void setUsers(QuerySnapshot usersSnapshot) {
     List<Usuario> users = [];
     for (int i = 0; i < usersSnapshot.docs.length; i++) {
-      users.add(
-        Usuario.setCoverData(
-          usersSnapshot.docs[i].id,
-          usersSnapshot.docs[i]
-        )
+      Usuario user = Usuario();
+      user.setCoverData(
+        usersSnapshot.docs[i].id,
+        usersSnapshot.docs[i]
       );
+      users.add(user);
     }
     this.users = users;
   }
