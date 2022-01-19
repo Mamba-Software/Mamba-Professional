@@ -14,13 +14,11 @@ import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'FirebaseDatabaseService.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
-class DatabaseAccess {
+class BrandDataService {
 
   final _firebase = FirebaseDatabaseService();
 
-  // Brands
-  Future<List<Brand>> getAllBrands() => _firebase.getAllBrands();
-  Future<List<Brand>> getAllBrandsFromUser(String userId) => _firebase.getAllBrandsFromUser(userId);
-
+  // Get Data
+  Future<Brand> getBrandDetails(String brandID) => _firebase.getBrandDetails(brandID);
 
 }

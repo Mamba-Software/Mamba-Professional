@@ -146,11 +146,11 @@ class Usuario {
     return requests;
   }
 
-  void set brandList(List<Brand> brandList) {
+  void set setBrandList(List<Brand> brandList) {
     this.brands = brandList;
   }
 
-  List<Brand> get brandList {
+  List<Brand> get getBrandList {
     return brands;
   }
 }

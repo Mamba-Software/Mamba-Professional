@@ -3,10 +3,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Providers/LanguageProvider.dart';
@@ -15,7 +16,6 @@ import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/FirstTime.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/services.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen({Key? key}) : super(key: key);
@@ -35,46 +35,43 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
 
   // Data Base Access
-  var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
+  var _brandDataService = new BrandDataService();
 
   @override
   initState() {
     super.initState();
-    checkAndgetUserDetails();
+    checkAndGetUserDetails();
   }
 
-  void checkAndgetUserDetails() async {
+  void checkAndGetUserDetails() async {
     //_accessDatabase.signOut();
-    User? firebaseUser = await _accessDatabase.getCurrentUser();
+    // 1. We get the Firebase User
+    User? firebaseUser = await _userDataService.getCurrentUser();
+    // 2. Check if we have a user logged in.
     if (firebaseUser != null) {
+      // 2.1 User is logged in.
+      // 3. Check if we are in production enviroment
       if (isProduction) {
-        FirebaseChatCore.instance.setConfig(FirebaseChatCoreConfig(
-          'Rooms',
-          'Users',
-        ));
+        // 3.1 We are in PROD. We checked if email has been verified.
         if (firebaseUser.emailVerified) {
-          currentUser = await _accessDatabase.getUserDetails(currentUser.id!);
-          unreadNotifications =
-          await _accessDatabase.numberUnreadNotifications(currentUser.id!);
-          unreadChats =
-          await _accessDatabase.numberUnreadConversations(currentUser.id!);
-          if (currentUser.brandID != "null" && currentUser.brandID != null) {
-            currentBrand =
-            await _accessDatabase.getBrandDetails(currentUser.brandID!);
-          } else {
-            currentBrand = Brand();
-          }
-          Provider.of<LanguageProvider>(context, listen: false).setLocale(
-              Idiomas.getLocaleFromString(currentUser.idioma!));
-          // Get Token of User and Update in Firebase
+          // 3.1.1 Email has been verified
+          // 4. Define Prod Config for FirebaseChatCore
+          FirebaseChatCore.instance.setConfig(FirebaseChatCoreConfig(
+            'Rooms',
+            'Users',
+          ));
+          // 5. Load Users Data
+          await getUserData(firebaseUser.uid);
+          // 6. Get Token for FirebaseMessaging
           FirebaseMessaging.instance.getToken().then((token) {
-            print("Token:");
-            print(token);
+            print("Token: $token");
             if (token != currentUser.notificationToken) {
               print("New token updated");
-              _accessDatabase.addUserNotificationToken(currentUser.id!, token!);
+              _userDataService.updateUserNotificationToken(currentUser.id!, token!);
             }
           });
+          // 7. Travel to Corresponding Screen
           if (currentUser.isAdmin!) {
             Navigator.pushReplacement(
                 context,
@@ -106,6 +103,7 @@ class _SplashScreenState extends State<SplashScreen> {
             }
           }
         } else {
+          // 3.1.2 Email has NOT been verified. Go back to Login.
           Navigator.pushAndRemoveUntil(
             context,
             CupertinoPageRoute<Null>(
@@ -116,28 +114,23 @@ class _SplashScreenState extends State<SplashScreen> {
           );
         }
       } else {
+        // 3.2 We are in DEVELOPMENT
+        // 4. Define Development Config for FirebaseCore
         FirebaseChatCore.instance.setConfig(FirebaseChatCoreConfig(
           '7777 Rooms',
           '7777 Users',
         ));
-        currentUser = await _accessDatabase.getUserDetails(firebaseUser.uid);
-        unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
-        unreadChats = await _accessDatabase.numberUnreadConversations(currentUser.id!);
-        if (currentUser.brandID != "null" && currentUser.brandID != null) {
-          currentBrand = await _accessDatabase.getBrandDetails(currentUser.brandID!);
-        } else {
-          currentBrand = Brand();
-        }
-        Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
-        // Get Token of User and Update in Firebase
+        // 5. Load Users Data
+        await getUserData(firebaseUser.uid);
+        // 6. Get Token for FirebaseMessaging
         FirebaseMessaging.instance.getToken().then((token) {
-          print("Token:");
-          print(token);
+          print("Token: $token");
           if (token != currentUser.notificationToken) {
             print("New token updated");
-            _accessDatabase.addUserNotificationToken(currentUser.id!, token!);
+            _userDataService.updateUserNotificationToken(currentUser.id!, token!);
           }
         });
+        // 7. Travel to Corresponding Screen
         if (currentUser.isAdmin!) {
           Navigator.pushReplacement(
               context,
@@ -170,6 +163,7 @@ class _SplashScreenState extends State<SplashScreen> {
         }
       }
     } else {
+      // 2.2 User is logged NOT in. We travel to the Login
       Navigator.pushAndRemoveUntil(
         context,
         CupertinoPageRoute<Null>(
@@ -178,6 +172,28 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
             (_) => false,
       );
+    }
+  }
+
+  Future<void> getUserData(String userId) async {
+    // Get Current User Main Data from Document
+    currentUser = await _userDataService.getUserDetails(userId);
+    // Set App Locale To User Preferred Language
+    Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
+    // Get Current User Unread Notifications and Chats
+    unreadNotifications = await _userDataService.numberUnreadNotificationsFromUser(currentUser.id!);
+    unreadChats = await _userDataService.numberUnreadConversationsFromUser(currentUser.id!);
+    // Get Current User Brand, if any.
+    List<Brand> brands = await _userDataService.getUserBrands(userId);
+    // Set the Brand List
+    currentUser.setBrandList = brands;
+    if (currentUser.getBrandList.isNotEmpty) {
+      // Put first brand to Current Brand
+      Brand brand = currentUser.getBrandList[0];
+      currentBrand = await _brandDataService.getBrandDetails(brand.id!);
+    } else {
+      // Empty Current Brand
+      currentBrand = Brand();
     }
   }
 

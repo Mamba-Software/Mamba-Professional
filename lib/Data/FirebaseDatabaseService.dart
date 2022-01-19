@@ -140,14 +140,8 @@ class FirebaseDatabaseService {
   }
 
   Future<Usuario> getUserDetails(String uid) async {
-    Usuario usuario;
-    // Get Users Data in Main Document
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(users).doc(uid).get();
-    usuario = Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
-    // Get User Requests
-    // Get User Brands
-    // Get User Events
-    return usuario;
+    return Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);;
   }
 
   Future<List<String>> getUserCover(String uid) async {
@@ -254,7 +248,7 @@ class FirebaseDatabaseService {
     });
   }
   // Add User Notification Token
-  Future<void> addUserNotificationToken(String uid, String token) async {
+  Future<void> updateUserNotificationToken(String uid, String token) async {
     // Update User Notification Token
     await _firestore.collection(users).doc(uid).update({
       "notificationToken": token,
