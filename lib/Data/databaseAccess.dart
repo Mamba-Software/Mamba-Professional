@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
-import 'package:mamba_castelldefels/Models/ChatUsers.dart';
 import 'package:mamba_castelldefels/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';

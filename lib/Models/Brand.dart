@@ -2,6 +2,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
+import 'RequestToBrand.dart';
+
 class Brand {
 
   String? id;
@@ -16,7 +18,7 @@ class Brand {
   int? numberTrainers;
   var workShift;
   int? maxMembers;
-  // Subcollections
+  List<RequestToBrand> requests = [];
   List<Usuario> users = [];
 
   Brand({
@@ -34,7 +36,9 @@ class Brand {
     this.maxMembers,
   });
 
-  Brand.setData(String documentId, DocumentSnapshot documentSnapshot) {
+  // Constructors
+
+  Brand.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('adminID')) {
       this.adminID = documentSnapshot.get("adminID").toString();
@@ -71,7 +75,7 @@ class Brand {
     }
   }
 
-  void setCoverData(String documentId, DocumentSnapshot documentSnapshot) {
+  Brand.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('name')) {
       this.name = documentSnapshot.get("name").toString();
@@ -81,16 +85,21 @@ class Brand {
     }
   }
 
-  void setUsers(QuerySnapshot usersSnapshot) {
-    List<Usuario> users = [];
-    for (int i = 0; i < usersSnapshot.docs.length; i++) {
-      Usuario user = Usuario();
-      user.setCoverData(
-        usersSnapshot.docs[i].id,
-        usersSnapshot.docs[i]
-      );
-      users.add(user);
-    }
-    this.users = users;
+  // Setters and Getters
+
+  void set requestList(List<RequestToBrand> requestList) {
+    this.requests = requestList;
+  }
+
+  List<RequestToBrand> get requestList {
+    return this.requests;
+  }
+
+  void set userList(List<Usuario> userList) {
+    this.users = userList;
+  }
+
+  List<Usuario> get userList {
+    return this.users;
   }
 }

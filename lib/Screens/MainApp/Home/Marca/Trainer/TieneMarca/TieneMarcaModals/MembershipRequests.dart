@@ -40,7 +40,7 @@ class _MembershipRequestsState extends State<MembershipRequests> {
   List<RequestToBrand> documentsToRequests(List<DocumentSnapshot> documents) {
     List<RequestToBrand> requests = [];
     for(int i = 0; i < documents.length; i++) {
-      RequestToBrand request = RequestToBrand.fromObject(documents[i], documents[i].id);
+      RequestToBrand request = RequestToBrand.fromObjectAllData(documents[i].id, documents[i]);
       requests.add(request);
     }
     return requests;

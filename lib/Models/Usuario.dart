@@ -3,10 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/Models/NotificationEvent.dart';
 
 import 'Brand.dart';
+import 'RequestToBrand.dart';
 
 class Usuario {
 
-  // Main data of user
   String? id;
   String? notificationToken;
   String? email;
@@ -26,7 +26,7 @@ class Usuario {
   String? idioma;
   String? previousIdioma;
   String? brandID;
-  // Subcollections
+  List<RequestToBrand> requests = [];
   List<Brand> brands = [];
 
   Usuario({
@@ -51,7 +51,9 @@ class Usuario {
     this.brandID,
   });
 
-  Usuario.setData(String documentId, DocumentSnapshot documentSnapshot) {
+  // Constructors
+
+  Usuario.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('notificationToken')) {
       this.notificationToken = documentSnapshot.get("notificationToken").toString();
@@ -106,7 +108,7 @@ class Usuario {
     }
   }
 
-  void setCoverData(String documentId, DocumentSnapshot documentSnapshot) {
+  Usuario.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('firstName')) {
       this.firstName = documentSnapshot.get("firstName").toString();
@@ -134,17 +136,21 @@ class Usuario {
     }
   }
 
-  void setBrands(QuerySnapshot brandsSnapshot) {
-    List<Brand> brands = [];
-    for (int i = 0; i < brandsSnapshot.docs.length; i++) {
-      Brand brand = Brand();
-      brand.setCoverData(
-        brandsSnapshot.docs[i].id,
-        brandsSnapshot.docs[i]
-      );
-      brands.add(brand);
-    }
-    this.brands = brands;
+  // Setters and Getters
+
+  void set requestList(List<RequestToBrand> requestList) {
+    this.requests = requestList;
   }
 
+  List<RequestToBrand> get requestList {
+    return requests;
+  }
+
+  void set brandList(List<Brand> brandList) {
+    this.brands = brandList;
+  }
+
+  List<Brand> get brandList {
+    return brands;
+  }
 }
