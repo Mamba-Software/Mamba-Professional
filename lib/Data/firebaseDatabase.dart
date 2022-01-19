@@ -110,7 +110,7 @@ class FirebaseDatabaseService {
         .where("adminID", isEqualTo: userId)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      brand = Brand.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      brand = Brand.setData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
     }
     if (brand.id == null) return null;
     else return brand;
@@ -140,16 +140,9 @@ class FirebaseDatabaseService {
     return currentUser;
   }
 
-  Future<Usuario> getCurrentUserDetails() async {
-    User? currentUser = await getCurrentUser();
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(users).doc(currentUser!.uid).get();
-    return Usuario.fromObject(_documentSnapshot, _documentSnapshot.id);
-  }
-
   Future<Usuario> getUserDetails(String uid) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection(users).doc(uid).get();
-    return Usuario.fromObject(_documentSnapshot, _documentSnapshot.id);
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(users).doc(uid).get();
+    return Usuario.setData(_documentSnapshot.id, _documentSnapshot);
   }
 
   Future<List<String>> getUserCover(String uid) async {
@@ -194,7 +187,6 @@ class FirebaseDatabaseService {
             "dateJoined": formatted,
             "dateOfBirth": null,
             "idioma": idioma,
-            "previousIdioma": null,
             "brandID": null,
             "isAdmin": false,
           }).catchError((err) {
@@ -446,7 +438,7 @@ class FirebaseDatabaseService {
 
     DocumentSnapshot<Map<String, dynamic>> _docu =
     await _firestore.collection(users).doc(userId).get();
-    Usuario user = Usuario.fromObject(_docu, _docu.id);
+    Usuario user = Usuario.setData(_docu.id, _docu);
     conversation.users.add({
       'uid': user.id,
     });
@@ -624,7 +616,7 @@ class FirebaseDatabaseService {
     QuerySnapshot querySnapshot = await _firestore.collection(brands).get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       brandList.add(
-          Brand.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+          Brand.setData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return brandList;
   }
@@ -632,7 +624,7 @@ class FirebaseDatabaseService {
   Future<Brand> getBrandDetails(String brandID) async {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
         await _firestore.collection(brands).doc(brandID).get();
-    return Brand.fromObject(_documentSnapshot, _documentSnapshot.id);
+    return Brand.setData(_documentSnapshot.id, _documentSnapshot);
   }
 
   Future<List<String>> getBrandCover(String brandID) async {
@@ -657,7 +649,7 @@ class FirebaseDatabaseService {
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       usersList.add(
-          Usuario.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+          Usuario.setData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return usersList;
   }
@@ -671,7 +663,7 @@ class FirebaseDatabaseService {
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       usersList.add(
-          Usuario.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+          Usuario.setData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return usersList;
   }
@@ -1398,7 +1390,7 @@ class FirebaseDatabaseService {
 
     DocumentSnapshot<Map<String, dynamic>> _docu =
     await _firestore.collection(users).doc(request.userId).get();
-    Usuario user = Usuario.fromObject(_docu, _docu.id);
+    Usuario user = Usuario.setData(_docu.id, _docu);
     conversation.users.add({
       'uid': user.id,
     });
@@ -1445,7 +1437,7 @@ class FirebaseDatabaseService {
     Conversation conversation  = Conversation.fromObject(querySnapshot.docs[0], querySnapshot.docs[0].id);
     DocumentSnapshot<Map<String, dynamic>> _docu =
     await _firestore.collection(users).doc(request.userId).get();
-    Usuario user = Usuario.fromObject(_docu, _docu.id);
+    Usuario user = Usuario.setData(_docu.id, _docu);
     conversation.users.add({
       'uid': user.id,
     });

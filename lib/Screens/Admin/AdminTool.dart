@@ -36,14 +36,14 @@ class _AdminToolState extends State<AdminTool> {
   void initState() {
     super.initState();
     isLoading = true;
-    getUsersList();
   }
 
+  /*
   Future<void> getUsersList() async {
     Stream<QuerySnapshot> snapshot = await _accessDatabase.getAllUsers();
     await snapshot.forEach((field) async {
       field.docs.asMap().forEach((index, value) {
-        var user = Usuario.fromObject(field.docs[index], field.docs[index].id);
+        var user = Usuario.setData(field.docs[index], field.docs[index].id);
         if (user.isTrainer!) {
           usersListTrainer.add(user);
         } else {
@@ -52,8 +52,8 @@ class _AdminToolState extends State<AdminTool> {
         fullusersListTrainer = usersListTrainer;
         fullusersListClient = usersListClient;
         //usersList.add(field.docs[index]["name"]);
-        //fullusersList.add(Usuario.fromObject(field.docs[index], field.docs[index].id));
-        //usersList.add(Usuario.fromObject(field.docs[index], field.docs[index].id));
+        //fullusersList.add(Usuario.setData(field.docs[index], field.docs[index].id));
+        //usersList.add(Usuario.setData(field.docs[index], field.docs[index].id));
       });
       setState(() {
         isLoading = false;
@@ -62,6 +62,7 @@ class _AdminToolState extends State<AdminTool> {
       print(usersListTrainer);
     });
   }
+   */
 
   @override
   Widget build(BuildContext context) {
@@ -309,7 +310,7 @@ class _AdminToolState extends State<AdminTool> {
   List<Usuario> documentsToUsers(List<DocumentSnapshot> documents) {
     List<Usuario> users = [];
     for (int i = 0; i < documents.length; i++) {
-      users.add(Usuario.fromObject(documents[i], documents[i].id));
+      //users.add(Usuario.setData(documents[i].id, documents[i]));
     }
     return users;
   }

@@ -34,7 +34,7 @@ class _MarcaState extends State<Marca> {
 
   // Gets the user info from firebase.
   void getUserBrand() async {
-    currentUser = await _accessDatabase.getCurrentUserDetails();
+    currentUser = await _accessDatabase.getUserDetails(currentUser.id!);
     // Check for new brand
     if (currentUser.brandID != currentBrand.id && currentUser.brandID != "null" && currentUser.brandID != null) {
       Navigator.pushReplacement(

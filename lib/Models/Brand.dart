@@ -1,5 +1,6 @@
 // Model for a Brand in our App
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mamba_castelldefels/Models/Usuario.dart';
 
 class Brand {
 
@@ -15,11 +16,8 @@ class Brand {
   int? numberTrainers;
   var workShift;
   int? maxMembers;
-  // Sector
-  // Disponibilitat
-  // Preus
-  // Xarxes Socials
-  // TOP 10 FOTOS
+  // Subcollections
+  List<Usuario> users = [];
 
   Brand({
     this.id,
@@ -36,7 +34,7 @@ class Brand {
     this.maxMembers,
   });
 
-  Brand.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
+  Brand.setData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('adminID')) {
       this.adminID = documentSnapshot.get("adminID").toString();
@@ -71,5 +69,28 @@ class Brand {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('maxMembers')) {
       this.maxMembers = documentSnapshot.get("maxMembers");
     }
+  }
+
+  Brand.setCoverData(String documentId, DocumentSnapshot documentSnapshot) {
+    this.id = documentId;
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('name')) {
+      this.name = documentSnapshot.get("name").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('logoUrl')) {
+      this.logoUrl = documentSnapshot.get("logoUrl").toString();
+    }
+  }
+
+  Brand.setUsers(QuerySnapshot usersSnapshot) {
+    List<Usuario> users = [];
+    for (int i = 0; i < usersSnapshot.docs.length; i++) {
+      users.add(
+        Usuario.setCoverData(
+          usersSnapshot.docs[i].id,
+          usersSnapshot.docs[i]
+        )
+      );
+    }
+    this.users = users;
   }
 }

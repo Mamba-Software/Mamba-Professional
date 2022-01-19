@@ -25,10 +25,7 @@ class DatabaseAccess {
   Future<int> resetPassword(String email) => _firebase.resetPassword(email);
   Future<bool> deleteUser(String password) => _firebase.deleteUser(password);
 
-  Future<bool> checkCurrentUser() => _firebase.checkCurrentUser();
-  Future<bool> checkIfItsMe(String uid) => _firebase.checkIfItsMe(uid);
   Future<User?> getCurrentUser() => _firebase.getCurrentUser();
-  Future<Usuario> getCurrentUserDetails() => _firebase.getCurrentUserDetails();
   Future<Usuario> getUserDetails(String uid) => _firebase.getUserDetails(uid);
   Future<List<String>> getUserCover(String uid) => _firebase.getUserCover(uid);
 

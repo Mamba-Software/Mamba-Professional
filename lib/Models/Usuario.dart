@@ -1,8 +1,11 @@
 // Model for a User in our App
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'Brand.dart';
+
 class Usuario {
 
+  // Main data of user
   String? id;
   String? notificationToken;
   String? email;
@@ -21,7 +24,9 @@ class Usuario {
   String? dateOfBirth;
   String? idioma;
   String? previousIdioma;
-  String? brandID; // UID of the user´s training brand.
+  String? brandID;
+  // Subcollections
+  List<Brand> brands = [];
 
   Usuario({
     this.id,
@@ -45,7 +50,7 @@ class Usuario {
     this.brandID,
   });
 
-  Usuario.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
+  Usuario.setData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('notificationToken')) {
       this.notificationToken = documentSnapshot.get("notificationToken").toString();
@@ -95,11 +100,50 @@ class Usuario {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('idioma')) {
       this.idioma = documentSnapshot.get("idioma").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('previousIdioma')) {
-      this.previousIdioma = documentSnapshot.get("previousIdioma").toString();
-    }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('brandID')) {
       this.brandID = documentSnapshot.get("brandID").toString();
     }
   }
+
+  Usuario.setCoverData(String documentId, DocumentSnapshot documentSnapshot) {
+    this.id = documentId;
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('firstName')) {
+      this.firstName = documentSnapshot.get("firstName").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('lastName')) {
+      this.lastName = documentSnapshot.get("lastName").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('nick')) {
+      this.nick = documentSnapshot.get("nick").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('imageUrl')) {
+      this.imageUrl = documentSnapshot.get("imageUrl").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('noImageUrl')) {
+      this.noImageUrl = documentSnapshot.get("noImageUrl").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isTrainer')) {
+      this.isTrainer = documentSnapshot.get("isTrainer");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isPrivate')) {
+      this.isPrivate = documentSnapshot.get("isPrivate");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('notificationToken')) {
+      this.notificationToken = documentSnapshot.get("notificationToken").toString();
+    }
+  }
+
+  Usuario.setBrands(QuerySnapshot brandsSnapshot) {
+    List<Brand> brands = [];
+    for (int i = 0; i < brandsSnapshot.docs.length; i++) {
+      brands.add(
+        Brand.setCoverData(
+          brandsSnapshot.docs[i].id,
+          brandsSnapshot.docs[i]
+        )
+      );
+    }
+    this.brands = brands;
+  }
+
 }

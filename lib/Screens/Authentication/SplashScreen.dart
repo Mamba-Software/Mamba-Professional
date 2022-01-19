@@ -40,10 +40,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   initState() {
     super.initState();
-    checkAndGetCurrentUserDetails();
+    checkAndgetUserDetails();
   }
 
-  void checkAndGetCurrentUserDetails() async {
+  void checkAndgetUserDetails() async {
     //_accessDatabase.signOut();
     User? firebaseUser = await _accessDatabase.getCurrentUser();
     if (firebaseUser != null) {
@@ -53,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen> {
           'Users',
         ));
         if (firebaseUser.emailVerified) {
-          currentUser = await _accessDatabase.getCurrentUserDetails();
+          currentUser = await _accessDatabase.getUserDetails(currentUser.id!);
           unreadNotifications =
           await _accessDatabase.numberUnreadNotifications(currentUser.id!);
           unreadChats =
@@ -120,7 +120,7 @@ class _SplashScreenState extends State<SplashScreen> {
           '7777 Rooms',
           '7777 Users',
         ));
-        currentUser = await _accessDatabase.getCurrentUserDetails();
+        currentUser = await _accessDatabase.getUserDetails(currentUser.id!);
         unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
         unreadChats = await _accessDatabase.numberUnreadConversations(currentUser.id!);
         if (currentUser.brandID != "null" && currentUser.brandID != null) {

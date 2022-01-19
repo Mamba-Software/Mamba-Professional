@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
 
   // Gets the user info from firebase.
   void getUserAndBrand() async {
-    currentUser = await _accessDatabase.getCurrentUserDetails();
+    currentUser = await _accessDatabase.getUserDetails(currentUser.id!);
     setState(() {
       isLoading = false;
     });
