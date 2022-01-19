@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -18,7 +19,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   // Access to DataBaseService
-  var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
   // Password Visible
   bool isLoading = false;
   // Scaffold Messenger Key
@@ -233,7 +234,7 @@ class _RegisterState extends State<Register> {
   }
 
   void signUp() async{
-      var result =  await _accessDatabase.registerUser(email.trim(), password1, Localizations.localeOf(context).languageCode);
+      var result =  await _userDataService.addUser(email.trim(), password1, Localizations.localeOf(context).languageCode);
       if (result == 0) {
         setState(() {
           isLoading = false;

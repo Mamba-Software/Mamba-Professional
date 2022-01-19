@@ -181,8 +181,8 @@ class _SplashScreenState extends State<SplashScreen> {
     // Set App Locale To User Preferred Language
     Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
     // Get Current User Unread Notifications and Chats
-    unreadNotifications = await _userDataService.numberUnreadNotificationsFromUser(currentUser.id!);
-    unreadChats = await _userDataService.numberUnreadConversationsFromUser(currentUser.id!);
+    unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
+    unreadChats = await _userDataService.getUnreadConversations(currentUser.id!);
     // Get Current User Brand, if any.
     List<Brand> brands = await _userDataService.getUserBrands(userId);
     // Set the Brand List

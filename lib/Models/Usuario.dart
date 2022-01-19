@@ -52,7 +52,6 @@ class Usuario {
   });
 
   // Constructors
-
   Usuario.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('notificationToken')) {
@@ -107,7 +106,6 @@ class Usuario {
       this.brandID = documentSnapshot.get("brandID").toString();
     }
   }
-
   Usuario.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('firstName')) {
@@ -137,20 +135,18 @@ class Usuario {
   }
 
   // Setters and Getters
-
-  void set requestList(List<RequestToBrand> requestList) {
-    this.requests = requestList;
-  }
-
-  List<RequestToBrand> get requestList {
+  // Requests
+  List<RequestToBrand> get getRequestList {
     return requests;
   }
-
-  void set setBrandList(List<Brand> brandList) {
-    this.brands = brandList;
+  void set setRequestList(List<RequestToBrand> requestList) {
+    this.requests = requestList;
   }
-
+  // Brands
   List<Brand> get getBrandList {
     return brands;
+  }
+  void set setBrandList(List<Brand> brandList) {
+    this.brands = brandList;
   }
 }

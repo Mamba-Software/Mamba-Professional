@@ -13,6 +13,7 @@ const db = admin.firestore();
 // Firebase collections
 const isProduction = false;
 const users = isProduction ? "Users" : "7777 Users";
+const nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
 const brands = isProduction ? "Brands" : "7777 Brands";
 const events = isProduction ? "Events" : "7777 Events";
 const locations = isProduction ? "Locations" : "7777 Locations";

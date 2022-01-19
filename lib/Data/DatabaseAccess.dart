@@ -26,12 +26,11 @@ class DatabaseAccess {
 
   Future<User?> getCurrentUser() => _firebase.getCurrentUser();
   Future<Usuario> getUserDetails(String uid) => _firebase.getUserDetails(uid);
-  Future<List<String>> getUserCover(String uid) => _firebase.getUserCover(uid);
+  Future<List<String>> getUserCoverDetails(String uid) => _firebase.getUserCoverDetails(uid);
 
-  Future<int> registerUser(String email, String password, String idioma) => _firebase.registerUser(email, password, idioma);
-  Future<void> addUser(String uid, String name, String firstName, String lastName, String nick, String dateOfBirth, int gender, File? image, bool isTrainer) => _firebase.addUser(uid, name, firstName, lastName, nick, dateOfBirth, gender, image, isTrainer);
-  Future<void> addUserNotificationToken(String uid, String token) => _firebase.updateUserNotificationToken(uid, token);
-  Future<bool> checkIfAliasExists(String alias) => _firebase.checkIfAliasExists(alias);
+  Future<int> addUser(String email, String password, String idioma) => _firebase.addUser(email, password, idioma);
+  Future<void> updateUser(String uid, String name, String firstName, String lastName, String nick, String dateOfBirth, int gender, File? image, bool isTrainer) => _firebase.updateUser(uid, name, firstName, lastName, nick, dateOfBirth, gender, image, isTrainer);
+  Future<void> updateUserNotificationToken(String uid, String token) => _firebase.updateUserNotificationToken(uid, token);
 
   Future<void> updateCurrentUserFirstTime() => _firebase.updateCurrentUserFirstTime();
   Future<String> updateCurrentUserPhoto(File image) => _firebase.updateCurrentUserPhoto(image);
@@ -121,7 +120,7 @@ class DatabaseAccess {
   // Notifications
   Future<List<NotificationEvent>> getAllNotificationsUser(String userId) => _firebase.getAllNotificationsUser(userId);
   Future<void> sendNotificationToUser(String userId, String type, var parameters) => _firebase.sendNotificationToUser(userId, type, parameters);
-  Future<int> numberUnreadNotifications(String userId) => _firebase.numberUnreadNotifications(userId);
+  Future<int> getUnreadNotifications(String userId) => _firebase.getUnreadNotifications(userId);
   Future<void> markNotificationAsRead(String userId, String notificationId) => _firebase.markNotificationAsRead(userId,notificationId);
   Future<void> markALLNotificationAsRead(String userId) => _firebase.markALLNotificationAsRead(userId);
 
@@ -139,7 +138,7 @@ class DatabaseAccess {
   Future<bool> checkIfAnswersExist(String? groupOfQuestionsID) => _firebase.checkIfAnswersExist(groupOfQuestionsID);
 
   //Conversations
-  Future<int> numberUnreadConversations(String userId) => _firebase.numberUnreadConversations(userId);
+  Future<int> getUnreadConversations(String userId) => _firebase.getUnreadConversations(userId);
   Future<String> addConversation( var users, var messagesRead, String? brandId, String? year, String? month, String? day, String? hour, String? minute, String? second, String? lastMessage) => _firebase.addConversation(users!, messagesRead, brandId, year, month, day, hour, minute, second, lastMessage);
   Future<void> updateConversation(String? uid, var messagesRead, String lastMessage, String year, String month, String day, String hour, String minute, String second) => _firebase.updateConversation(uid, messagesRead, lastMessage, year, month, day, hour, minute, second);
   Future<void> updateConversationUsers(String? uid, var users) => _firebase.updateConversationUsers(uid, users);

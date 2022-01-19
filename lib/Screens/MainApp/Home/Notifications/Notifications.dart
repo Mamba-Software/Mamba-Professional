@@ -85,7 +85,7 @@ class _NotificationsState extends State<Notifications> {
         if (notification.parameters[0] != "null") {
           Usuario user = users.firstWhere((element) => element.id == notification.parameters[0], orElse: () => Usuario());
           if (user.id == null) {
-            List<String> coverInformation = await _accessDatabase.getUserCover(notification.parameters[0]);
+            List<String> coverInformation = await _accessDatabase.getUserCoverDetails(notification.parameters[0]);
             if (coverInformation[0] != "Error") {
               user = Usuario(id: notification.parameters[0], name: coverInformation[0], imageUrl: coverInformation[1]);
             } else {

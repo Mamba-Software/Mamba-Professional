@@ -28,6 +28,7 @@ class FirebaseDatabaseService {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   // Firebase collections
   String users = isProduction ? 'Users' : '7777 Users';
+  String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
   String brands = isProduction ? 'Brands' : '7777 Brands';
   String events = isProduction ? 'Events' : '7777 Events';
   String locations = isProduction ? 'Locations' : '7777 Locations';
@@ -144,7 +145,7 @@ class FirebaseDatabaseService {
     return Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);;
   }
 
-  Future<List<String>> getUserCover(String uid) async {
+  Future<List<String>> getUserCoverDetails(String uid) async {
     try {
       DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(users).doc(uid).get();
       String name = _documentSnapshot.get("name");
@@ -159,7 +160,7 @@ class FirebaseDatabaseService {
 
   // User Model Services
   // Register User
-  Future<int> registerUser(String email, String password, String idioma) async {
+  Future<int> addUser(String email, String password, String idioma) async {
     bool authError = false;
     bool firestoreError = false;
     final DateTime now = DateTime.now();
@@ -212,21 +213,25 @@ class FirebaseDatabaseService {
     }
   }
 
+  // Register User
+  Future<void> addUserNickname(String userId, String nickname) async {
+    await _firestore.collection(nicknames).doc(nickname).set({
+      "userId": userId,
+    });
+  }
+
   // Check If Alias Exists
-  Future<bool> checkIfAliasExists(String nickname) async {
-    bool result = true;
-    QuerySnapshot querySnapshot = await _firestore.collection(users).get();
-    for (var doc in querySnapshot.docs) {
-      if (doc.get('nick') == nickname) {
-        result = false;
-        break;
-      }
+  Future<bool> checkIfNicknameExists(String nickname) async {
+    DocumentSnapshot documentSnapshot = await _firestore.collection(nicknames).doc(nickname).get();
+    if (documentSnapshot.exists) {
+      return false;
+    } else {
+      return true;
     }
-    return result;
   }
 
   // Add User
-  Future<void> addUser(String uid, String name, String firstName, String lastName, String nick, String dateOfBirth,
+  Future<void> updateUser(String uid, String name, String firstName, String lastName, String nick, String dateOfBirth,
       int gender, File? image, bool isTrainer) async {
     String imageUrl =
         "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
@@ -1547,7 +1552,7 @@ class FirebaseDatabaseService {
   }
 
   // Number Unread Notifications
-  Future<int> numberUnreadNotifications(String userId) async {
+  Future<int> getUnreadNotifications(String userId) async {
     QuerySnapshot querySnapshot = await _firestore
         .collection(users)
         .doc(userId)
@@ -1721,7 +1726,7 @@ class FirebaseDatabaseService {
   }
 
   // Number Unread Conversations
-  Future<int> numberUnreadConversations(String userId) async {
+  Future<int> getUnreadConversations(String userId) async {
     List<Conversation> conv = [];
     QuerySnapshot querySnapshot = await _firestore
         .collection(conversations)

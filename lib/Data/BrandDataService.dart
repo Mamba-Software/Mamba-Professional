@@ -18,7 +18,18 @@ class BrandDataService {
 
   final _firebase = FirebaseDatabaseService();
 
+  // Check Data
+  Future<bool> checkIfBrandExists(String brandID) => _firebase.checkIfBrandExists(brandID);
+
   // Get Data
   Future<Brand> getBrandDetails(String brandID) => _firebase.getBrandDetails(brandID);
+
+  // Add Data
+  Future<void> joinBrand(String userId, String brandId, int role) => _firebase.joinBrand(userId, brandId, role);
+
+  // Update Data
+
+  // Delete Data
+  Future<void> leaveBrand(String userId, String brandId) => _firebase.leaveBrand(userId, brandId);
 
 }

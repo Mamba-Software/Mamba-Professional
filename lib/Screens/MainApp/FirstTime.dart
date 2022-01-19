@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
@@ -27,6 +29,8 @@ class FirstTime extends StatefulWidget {
 class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMixin{
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
+  var _brandDataService = new BrandDataService();
   // Geolocator
   final Geolocator geolocator = Geolocator();
   bool locatorDialog = false;
@@ -84,7 +88,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     setState(() {
       isSearchAlias = true;
     });
-    bool result = await _accessDatabase.checkIfAliasExists(nick);
+    bool result = await _userDataService.checkIfNicknameExists(nick);
     if (result) {
       Future.delayed(Duration(milliseconds: 500), () async {
         setState(() {
@@ -110,10 +114,10 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
       isSearchBrand = true;
     });
     if (brandId.isNotEmpty) {
-      result = await _accessDatabase.checkIfBrandExists(brandId);
+      result = await _brandDataService.checkIfBrandExists(brandId);
     }
     if (result) {
-      brand = await _accessDatabase.getBrandDetails(brandId);
+      brand = await _brandDataService.getBrandDetails(brandId);
       Future.delayed(Duration(milliseconds: 500), () async {
         setState(() {
           brandOkay = true;
@@ -209,6 +213,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     );
     return Future.value("");
   }
+
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
     var image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -217,6 +222,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     });
     retrieveLostData();
   }
+
   // Retrieve lost data of Gallery if it crashes becasue of Android.
   Future<void> retrieveLostData() async {
     final LostDataResponse response =
@@ -229,6 +235,171 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
         _image = response.file;
       });
     }
+  }
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        // Permissions are denied forever, handle appropriately.
+        return Future.error(
+            'Location permissions are permanently denied, we cannot request permissions.');
+      }
+
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error(
+            'Location permissions are denied');
+      }
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    return Geolocator.getCurrentPosition(forceAndroidLocationManager: true, desiredAccuracy: LocationAccuracy.best);
+  }
+
+  bool validateInformation() {
+    bool result = true;
+    if (!_formKey.currentState!.validate()) {
+      result = false;
+    }
+    if (nickUsed) {
+      result = false;
+    }
+    if (startDateController.text == nullDate) {
+      setState(() {
+        errorDate = true;
+      });
+      result = false;
+    }
+    if (startDateController.text != nullDate) {
+      setState(() {
+        errorDate = false;
+      });
+    }
+    if (gender == null) {
+      setState(() {
+        errorGender = true;
+      });
+      result = false;
+    }
+    if (gender != null) {
+      setState(() {
+        errorGender = false;
+      });
+    }
+    return result;
+  }
+
+  bool validateTypeOfUser() {
+    bool result = true;
+    if (_value == 0) {
+      setState(() {
+        errorType = true;
+      });
+      result = false;
+    }
+    if (_value != 0) {
+      setState(() {
+        errorType = false;
+      });
+    }
+    return result;
+  }
+
+  Color getColor(Set<MaterialState> states) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed,
+      MaterialState.hovered,
+      MaterialState.focused,
+    };
+    if (states.any(interactiveStates.contains)) {
+      return Colors.blue;
+    }
+    return Theme.of(context).accentColor;
+  }
+
+  Widget getTitle() {
+    if (tabs[0] && !tabs[1] && !tabs[2] && !tabs[3] && !tabs[4] && !tabs[5]) {
+      return Text(
+        AppLocalizations.of(context)!.wellcome,
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    } else if (tabs[0] && tabs[1] && !tabs[2] && !tabs[3] && !tabs[4] && !tabs[5]) {
+      return Text(
+        AppLocalizations.of(context)!.yourInfo,
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    } else if (tabs[0] && tabs[1] && tabs[2] && !tabs[3] && !tabs[4] && !tabs[5]) {
+      return Text(
+        AppLocalizations.of(context)!.uploadPhoto,
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    } else if (tabs[0] && tabs[1] && tabs[2] && tabs[3] && !tabs[4] && !tabs[5]) {
+      return Text(
+        AppLocalizations.of(context)!.location,
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    } else if (tabs[0] && tabs[1] && tabs[2] && tabs[3] && tabs[4] && !tabs[5]) {
+      return Text(
+        AppLocalizations.of(context)!.typeProfile,
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    } else if (tabs[0] && tabs[1] && tabs[2] && tabs[3] && tabs[4] && tabs[5]) {
+      return Text(
+        AppLocalizations.of(context)!.inviteCode,
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    } else {
+      return Text(AppLocalizations.of(context)!.wellcome, style: Theme.of(context).appBarTheme.titleTextStyle,);
+    }
+  }
+
+  Future<void> addUser() async {
+    setState(() {
+      isLoading = true;
+    });
+    _notificationService = NotificationService();
+    String name = firstNameController.text.trim()+" "+lastNameController.text.trim();
+    bool isTrainer = false;
+    int role = 0;
+    if (_value == 1) {
+      isTrainer = true;
+      role = 5;
+    }
+    await _userDataService.updateUser(currentUser.id!, name,firstNameController.text.trim(), lastNameController.text.trim(), nick, startDateController.text, gender!, _image, isTrainer);
+    _notificationService!.wellcomeUser(currentUser.id!);
+    if (brandOkay && !brandNotFound) {
+      await _accessDatabase.updateCurrentUserBrand(brand.id!);
+      await _accessDatabase.updateConversationNewUser(brand.id, currentUser.id);
+      _notificationService!.userJoinsBrand(currentUser.id!, brand.id!);
+      // New DataBase
+      await _brandDataService.joinBrand(currentUser.id!, brand.id!, role);
+    }
+    Navigator.pushReplacement(
+        context,
+        CupertinoPageRoute<Null>(
+          builder: (context) => SplashScreen(),
+          settings: RouteSettings(name: 'SplashScreen'),
+        )
+    );
   }
 
   @override
@@ -1317,181 +1488,6 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
             ],
           ),
       ),
-    );
-  }
-
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.deniedForever) {
-        // Permissions are denied forever, handle appropriately.
-        return Future.error(
-            'Location permissions are permanently denied, we cannot request permissions.');
-      }
-
-      if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-        return Future.error(
-            'Location permissions are denied');
-      }
-    }
-
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
-    return Geolocator.getCurrentPosition(forceAndroidLocationManager: true, desiredAccuracy: LocationAccuracy.best);
-  }
-
-  Future<void> _getCurrentLocation() async {
-    await Geolocator.getCurrentPosition(forceAndroidLocationManager: true, desiredAccuracy: LocationAccuracy.best)
-        .then((Position position) {
-        currentPosition = position;
-        print(currentPosition);
-      }).catchError((e) {
-        print(e);
-      });
-  }
-
-  bool validateInformation() {
-   bool result = true;
-    if (!_formKey.currentState!.validate()) {
-      result = false;
-   }
-   if (nickUsed) {
-     result = false;
-   }
-   if (startDateController.text == nullDate) {
-     setState(() {
-       errorDate = true;
-     });
-     result = false;
-   }
-   if (startDateController.text != nullDate) {
-     setState(() {
-       errorDate = false;
-     });
-   }
-   if (gender == null) {
-     setState(() {
-       errorGender = true;
-     });
-     result = false;
-   }
-   if (gender != null) {
-     setState(() {
-       errorGender = false;
-     });
-   }
-   return result;
- }
-
-  bool validateTypeOfUser() {
-    bool result = true;
-    if (_value == 0) {
-      setState(() {
-        errorType = true;
-      });
-      result = false;
-    }
-    if (_value != 0) {
-      setState(() {
-        errorType = false;
-      });
-    }
-    return result;
-  }
-
-  Color getColor(Set<MaterialState> states) {
-    const Set<MaterialState> interactiveStates = <MaterialState>{
-      MaterialState.pressed,
-      MaterialState.hovered,
-      MaterialState.focused,
-    };
-    if (states.any(interactiveStates.contains)) {
-      return Colors.blue;
-    }
-    return Theme.of(context).accentColor;
-  }
-
-  Widget getTitle() {
-    if (tabs[0] && !tabs[1] && !tabs[2] && !tabs[3] && !tabs[4] && !tabs[5]) {
-      return Text(
-        AppLocalizations.of(context)!.wellcome,
-        style: Theme.of(context).appBarTheme.titleTextStyle,
-      );
-    } else if (tabs[0] && tabs[1] && !tabs[2] && !tabs[3] && !tabs[4] && !tabs[5]) {
-      return Text(
-        AppLocalizations.of(context)!.yourInfo,
-        style: Theme.of(context).appBarTheme.titleTextStyle,
-      );
-    } else if (tabs[0] && tabs[1] && tabs[2] && !tabs[3] && !tabs[4] && !tabs[5]) {
-      return Text(
-        AppLocalizations.of(context)!.uploadPhoto,
-        style: Theme.of(context).appBarTheme.titleTextStyle,
-      );
-    } else if (tabs[0] && tabs[1] && tabs[2] && tabs[3] && !tabs[4] && !tabs[5]) {
-      return Text(
-        AppLocalizations.of(context)!.location,
-        style: Theme.of(context).appBarTheme.titleTextStyle,
-      );
-    } else if (tabs[0] && tabs[1] && tabs[2] && tabs[3] && tabs[4] && !tabs[5]) {
-      return Text(
-        AppLocalizations.of(context)!.typeProfile,
-        style: Theme.of(context).appBarTheme.titleTextStyle,
-      );
-    } else if (tabs[0] && tabs[1] && tabs[2] && tabs[3] && tabs[4] && tabs[5]) {
-      return Text(
-        AppLocalizations.of(context)!.inviteCode,
-        style: Theme.of(context).appBarTheme.titleTextStyle,
-      );
-    } else {
-      return Text(AppLocalizations.of(context)!.wellcome, style: Theme.of(context).appBarTheme.titleTextStyle,);
-    }
-  }
-
-  Future<void> addUser() async {
-    setState(() {
-      isLoading = true;
-    });
-    _notificationService = NotificationService();
-    String name = firstNameController.text.trim()+" "+lastNameController.text.trim();
-    bool isTrainer = false;
-    int role = 0;
-    if (_value == 1) {
-      isTrainer = true;
-      role = 5;
-    }
-    await _accessDatabase.addUser(currentUser.id!, name,firstNameController.text.trim(), lastNameController.text.trim(), nick, startDateController.text, gender!, _image, isTrainer);
-    _notificationService!.wellcomeUser(currentUser.id!);
-    if (brandOkay && !brandNotFound) {
-      await _accessDatabase.updateCurrentUserBrand(brand.id!);
-      await _accessDatabase.updateConversationNewUser(brand.id, currentUser.id);
-      _notificationService!.userJoinsBrand(currentUser.id!, brand.id!);
-      // New DataBase
-      await _accessDatabase.joinBrand(currentUser.id!, brand.id!, role);
-    }
-    Navigator.pushReplacement(
-        context,
-        CupertinoPageRoute<Null>(
-          builder: (context) => SplashScreen(),
-          settings: RouteSettings(name: 'SplashScreen'),
-        )
     );
   }
 }
