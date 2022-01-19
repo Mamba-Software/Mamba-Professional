@@ -121,13 +121,10 @@ class DatabaseAccess {
 
   // Notifications
   Future<List<NotificationEvent>> getAllNotificationsUser(String userId) => _firebase.getAllNotificationsUser(userId);
-  Future<void> sendNotification(String userId, String type, var parameters) => _firebase.sendNotification(userId, type, parameters);
   Future<void> sendNotificationToUser(String userId, String type, var parameters) => _firebase.sendNotificationToUser(userId, type, parameters);
   Future<int> numberUnreadNotifications(String userId) => _firebase.numberUnreadNotifications(userId);
-  //Future<void> markNotificationAsRead(String userId, String notificationId) => _firebase.markNotificationAsRead(userId,notificationId);
-  Future<void> markNotificationAsRead(String notificationId) => _firebase.markNotificationAsRead(notificationId);
+  Future<void> markNotificationAsRead(String userId, String notificationId) => _firebase.markNotificationAsRead(userId,notificationId);
   Future<void> markALLNotificationAsRead(String userId) => _firebase.markALLNotificationAsRead(userId);
-  //Future<void> readImportantNotification(String requestId) => _firebase.acceptRequest(requestId);
 
   //Questions
   Future<Question> getOneQuestion(String? id) => _firebase.getOneQuestion(id);
@@ -178,9 +175,6 @@ class DatabaseAccess {
 
   // Request
   Stream<QuerySnapshot> getAllRequestsBrand(String brandId) => _firebase.getAllRequestsBrand(brandId);
-
-  // Request
-  Stream<QuerySnapshot> getAllNotificationsUserStream(String userId) => _firebase.getAllNotificationsUserStream(userId);
 
   //Questions
   Stream<QuerySnapshot> getAllQuestions() => _firebase.getAllQuestions();

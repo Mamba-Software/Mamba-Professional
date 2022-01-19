@@ -24,7 +24,6 @@ const conversations = isProduction ? "Conversations" : "7777 Conversations";
 const messages = isProduction ? "Messages" : "7777 Messages";
 const errors = isProduction ? "Errors" : "7777 Errors";
 const requests = isProduction ? "Requests" : "7777 Requests";
-const notifications = isProduction ? "Notifications" : "7777 Notifications";
 
 // User Joins Brand
 exports.userJoinsBrand = functions
