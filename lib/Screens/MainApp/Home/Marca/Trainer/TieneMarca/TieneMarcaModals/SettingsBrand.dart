@@ -252,7 +252,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         // New DataBase
                         await _brandDataService.deleteBrandUsers(brandId);
                         currentUser.setBrandList = [];
-                        await Future.delayed(const Duration(seconds: 2));
+                        await Future.delayed(const Duration(seconds: 4));
                         Navigator.pushReplacement(
                             context,
                             CupertinoPageRoute<Null>(

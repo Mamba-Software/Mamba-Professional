@@ -1312,7 +1312,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     setState(() {
       currentIndex = 1;
     });
-    await Future.delayed(const Duration(seconds: 1)); // Ensure listener fires
+    await Future.delayed(const Duration(seconds: 2)); // Ensure listener fires
     Navigator.pushAndRemoveUntil(
       context,
       CupertinoPageRoute<Null>(
