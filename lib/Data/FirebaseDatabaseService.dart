@@ -372,7 +372,7 @@ class FirebaseDatabaseService {
     });
   }
 
-  Future<void> joinBrand(String userId, String brandId, int role) async {
+  Future<void> addUserToBrand(String userId, String brandId, int role) async {
     Usuario user = await this.getUserDetails(userId);
     await _firestore
         .collection(brands)
@@ -394,7 +394,7 @@ class FirebaseDatabaseService {
         });
   }
 
-  Future<void> leaveBrand(String userId, String brandId) async {
+  Future<void> deleteUserFromBrand(String userId, String brandId) async {
     await _firestore
         .collection(brands)
         .doc(brandId)
@@ -668,6 +668,12 @@ class FirebaseDatabaseService {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
         await _firestore.collection(brands).doc(brandID).get();
     return Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+  }
+
+  Future<Brand> getBrandCoverDetails(String brandID) async {
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    await _firestore.collection(brands).doc(brandID).get();
+    return Brand.fromObjectOnlyCoverData(_documentSnapshot.id, _documentSnapshot);
   }
 
   Future<List<String>> getBrandCover(String brandID) async {
@@ -1395,12 +1401,12 @@ class FirebaseDatabaseService {
     final DateFormat formatter = DateFormat('dd-MM-yy');
     final String formatted = formatter.format(now);
     await _firestore
-        .collection(brands)
-        .doc(brandId)
+        .collection(users)
+        .doc(currentUser!.uid)
         .collection("Requests")
         .doc(uid).set({
           "brandId": brandId,
-          "userId": currentUser!.uid,
+          "userId": currentUser.uid,
           "name": name,
           "isTrainer": isTrainer,
           "dateSent": formatted,
@@ -1453,7 +1459,7 @@ class FirebaseDatabaseService {
   }
 
   // Accept Request To Brand
-  Future<void> acceptRequestToBrand(RequestToBrand request) async {
+  Future<void> acceptRequestFromUser(RequestToBrand request) async {
     /* Get the Request
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
         .collection(brands)
@@ -1468,7 +1474,12 @@ class FirebaseDatabaseService {
     if (request.isTrainer!) {
       role = 5;
     }
-    this.joinBrand(request.userId!, request.brandId!, role);
+    // TODO: Easy fix for now.
+    await _firestore.collection(users).doc(request.userId).update({
+      "brandID": request.brandId,
+    });
+    // New Database
+    this.addUserToBrand(request.userId!, request.brandId!, role);
     // Delete the Request
     this.deleteRequestToBrand(request);
     // OLD CHAT
@@ -1489,19 +1500,29 @@ class FirebaseDatabaseService {
   }
 
   // Delete Request
-  Future<void> deleteRequest(String requestId) async {
-    // Delete the Request
-    await _firestore.collection(requests).doc(requestId).delete();
-  }
-
-  // Delete Request
-  Future<void> deleteRequestToBrand(RequestToBrand request) async {
+  Future<void> deleteRequestFromUser(RequestToBrand request) async {
     await _firestore
         .collection(brands)
         .doc(request.brandId)
         .collection("Requests")
         .doc(request.id)
         .delete();
+  }
+
+  // Delete Request
+  Future<void> deleteRequestToBrand(RequestToBrand request) async {
+    await _firestore
+        .collection(users)
+        .doc(request.userId)
+        .collection("Requests")
+        .doc(request.id)
+        .delete();
+  }
+
+  // Delete Request
+  Future<void> deleteRequest(String requestId) async {
+    // Delete the Request
+    await _firestore.collection(requests).doc(requestId).delete();
   }
 
   // Has Pending Request
@@ -1964,10 +1985,11 @@ class FirebaseDatabaseService {
   }
 
   // Requests
-  Stream<QuerySnapshot> getAllRequestsBrand(String brandId) {
+  Stream<QuerySnapshot> getBrandRequests(String brandId) {
     return _firestore
-        .collection(requests)
-        .where("brandId", isEqualTo: brandId)
+        .collection(brands)
+        .doc(brandId)
+        .collection("Requests")
         .snapshots();
   }
 

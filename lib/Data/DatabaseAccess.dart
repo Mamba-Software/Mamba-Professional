@@ -40,8 +40,8 @@ class DatabaseAccess {
   Future<int> updateCurrentUserBrand(String brandID) => _firebase.updateCurrentUserBrand(brandID);
   Future<void> leaveBrandUser(String userId) => _firebase.leaveBrandUser(userId);
 
-  Future<void> joinBrand(String userId, String brandId, int role) => _firebase.joinBrand(userId, brandId, role);
-  Future<void> leaveBrand(String userId, String brandId) => _firebase.leaveBrand(userId, brandId);
+  Future<void> addUserToBrand(String userId, String brandId, int role) => _firebase.addUserToBrand(userId, brandId, role);
+  Future<void> deleteUserFromBrand(String userId, String brandId) => _firebase.deleteUserFromBrand(userId, brandId);
 
   // Brands
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) => _firebase.addBrand(name, image, description, workShift, maxMembers);
@@ -106,17 +106,6 @@ class DatabaseAccess {
   Future<void> deleteBrandLocations(String brandId) => _firebase.deleteBrandLocations(brandId);
   Future<Location> getSingleLocation(String locationId) => _firebase.getSingleLocation(locationId);
 
-  // Requests
-  Future<void> sendRequest(String brandId, String name, bool isTrainer) => _firebase.sendRequest(brandId, name, isTrainer);
-  Future<void> acceptRequest(String requestId) => _firebase.acceptRequest(requestId);
-  Future<void> deleteRequest(String requestId) => _firebase.deleteRequest(requestId);
-  Future<RequestToBrand?> hasPendingRequest(String userId) => _firebase.hasPendingRequest(userId);
-
-  Future<void> sendRequestToBrand(String brandId, String name, bool isTrainer) => _firebase.sendRequestToBrand(brandId, name, isTrainer);
-  Future<void> acceptRequestToBrand(RequestToBrand request) => _firebase.acceptRequestToBrand(request);
-  Future<void> deleteRequestToBrand(RequestToBrand request) => _firebase.deleteRequestToBrand(request);
-  Future<RequestToBrand?> hasPendingRequestToBrand(String userId) => _firebase.hasPendingRequestToBrand(userId);
-
   // Notifications
   Future<List<NotificationEvent>> getAllNotificationsUser(String userId) => _firebase.getAllNotificationsUser(userId);
   Future<void> sendNotificationToUser(String userId, String type, var parameters) => _firebase.sendNotificationToUser(userId, type, parameters);
@@ -172,7 +161,7 @@ class DatabaseAccess {
   Stream<QuerySnapshot> getAllLocationsBrand(String brandId) => _firebase.getAllLocationsBrand(brandId);// Locations
 
   // Request
-  Stream<QuerySnapshot> getAllRequestsBrand(String brandId) => _firebase.getAllRequestsBrand(brandId);
+  //Stream<QuerySnapshot> getAllRequestsBrand(String brandId) => _firebase.getAllRequestsBrand(brandId);
 
   //Questions
   Stream<QuerySnapshot> getAllQuestions() => _firebase.getAllQuestions();

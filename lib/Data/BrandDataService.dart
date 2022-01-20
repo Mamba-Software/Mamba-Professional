@@ -23,14 +23,17 @@ class BrandDataService {
 
   // Get Data
   Future<Brand> getBrandDetails(String brandID) => _firebase.getBrandDetails(brandID);
+  Future<Brand> getBrandCoverDetails(String brandID) => _firebase.getBrandCoverDetails(brandID);
+  Stream<QuerySnapshot> getBrandRequests(String brandID) => _firebase.getBrandRequests(brandID);
 
   // Add Data
-  Future<void> joinBrand(String userId, String brandId, int role) => _firebase.joinBrand(userId, brandId, role);
+  Future<void> addUserToBrand(String userId, String brandId, int role) => _firebase.addUserToBrand(userId, brandId, role);
 
   // Update Data
+  Future<void> acceptRequestFromUser(RequestToBrand request) => _firebase.acceptRequestFromUser(request);
 
   // Delete Data
-  Future<void> leaveBrand(String userId, String brandId) => _firebase.leaveBrand(userId, brandId);
+  Future<void> deleteUserFromBrand(String userId, String brandId) => _firebase.deleteUserFromBrand(userId, brandId);
   Future<void> deleteBrandUsers(String brandId) => _firebase.deleteBrandUsers(brandId);
 
 }

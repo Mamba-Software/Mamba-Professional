@@ -1,4 +1,5 @@
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
@@ -8,6 +9,7 @@ class NotificationService {
 
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
 
   NotificationService();
 
@@ -82,12 +84,13 @@ class NotificationService {
   Future<void> userSendRequestToBrand(String userId, String brandId) async {
     // Notification to the User Joining
     // TODO: Adapt to New Database
-    RequestToBrand? req = await _accessDatabase.hasPendingRequest(userId);
+    List<RequestToBrand> requests = await _userDataService.getUserRequests(userId);
+    RequestToBrand req = requests[0];
     var parameters = ["null", brandId, "null",];
     // New Notification
     _accessDatabase.sendNotificationToUser(userId, "UserSendRequestToBrand_User", parameters);
     // Notification to All Brand Trainers
-    parameters = [userId, brandId, "null", req!.dateSent!,];
+    parameters = [userId, brandId, "null", req.dateSent!,];
     List<Usuario> listUsers = await _accessDatabase.getAllTrainersFromBrand(brandId);
     for (var i=0; i<listUsers.length; i++) {
       Usuario trainer = listUsers[i];

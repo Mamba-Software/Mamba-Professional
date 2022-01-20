@@ -60,7 +60,6 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
   var _codigoController = TextEditingController();
   // Request To Brand
   RequestToBrand request = RequestToBrand();
-  RequestToBrand newRequest = RequestToBrand();
   Brand? brandRequested = Brand();
   // Images Of Events
   List<Image?> imagesEvents = [];
@@ -405,15 +404,18 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
 
   // Get user pending requests
   Future<void> getUserPendingRequests() async {
-    RequestToBrand? req = await _accessDatabase.hasPendingRequest(currentUser.id!);
-    RequestToBrand? reqNew = await _accessDatabase.hasPendingRequestToBrand(currentUser.id!);
-    if (req != null) {
-      brandRequested = await _accessDatabase.getBrandDetails(req.brandId!);
-      request = req;
-      newRequest = reqNew!;
+    List<RequestToBrand> req = await _userDataService.getUserRequests(currentUser.id!);
+    if (req.isNotEmpty) {
+      // At this moment, only 1 requests possible
+      var brandReq = await _brandDataService.getBrandCoverDetails(req[0].brandId!);
+      setState(() {
+        request = req[0];
+        brandRequested = brandReq;
+      });
     } else {
-      request = RequestToBrand();
-      newRequest = RequestToBrand();
+      setState(() {
+        request = RequestToBrand();
+      });
     }
   }
 
@@ -1513,7 +1515,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                                         NotificationService().userJoinsBrand(currentUser.id!, _codigo);
                                         // New DataBase
                                         int role = 5;
-                                        await _accessDatabase.joinBrand(currentUser.id!, _codigo, role);
+                                        await _accessDatabase.addUserToBrand(currentUser.id!, _codigo, role);
                                         // Push To Splash Screen
                                         setState(() {
                                           currentIndex = 1;
@@ -1651,14 +1653,9 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                           }
                       );
                       if (result) {
-                        setState(() {
-                          isLoading = true;
-                        });
                         NotificationService().userCancelRequestToBrand(currentUser.id!, request.brandId!);
-                        _accessDatabase.deleteRequest(request.id!);
-                        // New DataBase
-                        _accessDatabase.deleteRequestToBrand(newRequest);
-                        initProfileHome();
+                        await _userDataService.deleteRequestToBrand(request);
+                        getUserPendingRequests();
                       }
                     },
                   ),

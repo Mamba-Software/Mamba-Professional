@@ -118,7 +118,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                         OutlinedButton.icon(
                           style: OutlinedButton.styleFrom(
                             elevation: 4.0,
-                            backgroundColor: Colors.black,
+                            backgroundColor: Colors.red,
                             fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                             shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(
@@ -127,7 +127,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                             ),
                           ),
                           label: Text(
-                            AppLocalizations.of(context)!.cancel,
+                            AppLocalizations.of(context)!.delete,
                             style: TextStyle(color: Colors.white),
                           ),
                           icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
@@ -151,7 +151,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                         color: Theme.of(context).accentColor,
                         borderWidth: 2,
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
                       Container(
                         width: MediaQuery.of(context).size.width*0.9,
                         child: Padding(

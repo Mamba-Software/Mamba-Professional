@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
@@ -36,6 +38,8 @@ class PerfilClient extends StatefulWidget {
 class _PerfilClientState extends State<PerfilClient> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
+  var _brandDataService = new BrandDataService();
   // Boolean Loading
   bool isLoading = false;
   // Events
@@ -53,7 +57,6 @@ class _PerfilClientState extends State<PerfilClient> {
   var _codigoController = TextEditingController();
   // Request To Brand
   RequestToBrand request = RequestToBrand();
-  RequestToBrand newRequest = RequestToBrand();
   Brand? brandRequested = Brand();
   // Images Of Events
   List<Image?> imagesEvents = [];
@@ -395,15 +398,18 @@ class _PerfilClientState extends State<PerfilClient> {
 
   // Get user pending requests
   Future<void> getUserPendingRequests() async {
-    RequestToBrand? req = await _accessDatabase.hasPendingRequest(currentUser.id!);
-    RequestToBrand? reqNew = await _accessDatabase.hasPendingRequestToBrand(currentUser.id!);
-    if (req != null) {
-      brandRequested = await _accessDatabase.getBrandDetails(req.brandId!);
-      request = req;
-      newRequest = reqNew!;
+    List<RequestToBrand> req = await _userDataService.getUserRequests(currentUser.id!);
+    if (req.isNotEmpty) {
+      // At this moment, only 1 requests possible
+      var brandReq = await _brandDataService.getBrandCoverDetails(req[0].brandId!);
+      setState(() {
+        request = req[0];
+        brandRequested = brandReq;
+      });
     } else {
-      request = RequestToBrand();
-      newRequest = RequestToBrand();
+      setState(() {
+        request = RequestToBrand();
+      });
     }
   }
 
@@ -1458,7 +1464,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                         NotificationService().userJoinsBrand(currentUser.id!, _codigo);
                                         // New DataBase
                                         int role = 0;
-                                        await _accessDatabase.joinBrand(currentUser.id!, _codigo, role);
+                                        await _accessDatabase.addUserToBrand(currentUser.id!, _codigo, role);
                                         // Push To Splash Screen
                                         setState(() {
                                           currentIndex = 1;
@@ -1598,14 +1604,9 @@ class _PerfilClientState extends State<PerfilClient> {
                           }
                       );
                       if (result) {
-                        setState(() {
-                          isLoading = true;
-                        });
                         NotificationService().userCancelRequestToBrand(currentUser.id!, request.brandId!);
-                        _accessDatabase.deleteRequest(request.id!);
-                        // New DataBase
-                        _accessDatabase.deleteRequestToBrand(newRequest);
-                        initProfileHome();
+                        await _userDataService.deleteRequestToBrand(request);
+                        getUserPendingRequests();
                       }
                     },
                   ),

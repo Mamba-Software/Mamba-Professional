@@ -392,7 +392,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
       await _accessDatabase.updateConversationNewUser(brand.id, currentUser.id);
       _notificationService!.userJoinsBrand(currentUser.id!, brand.id!);
       // New DataBase
-      await _brandDataService.joinBrand(currentUser.id!, brand.id!, role);
+      await _brandDataService.addUserToBrand(currentUser.id!, brand.id!, role);
     }
     Navigator.pushReplacement(
         context,

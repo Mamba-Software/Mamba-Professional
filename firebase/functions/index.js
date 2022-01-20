@@ -329,13 +329,13 @@ exports.userDeletesLocation = functions
 exports.userSendsRequest = functions
     .region("europe-west1")
     .firestore
-    .document("/"+brands+"/{brandId}/Requests/{requestId}")
+    .document("/"+users+"/{userId}/Requests/{requestId}")
     .onCreate( async (snap, context) => {
       // Get the value of the context triggers.
       const requestId = context.params.requestId;
-      const brandId = context.params.brandId;
+      const userId = context.params.userId;
       // Get Data of the Request
-      const requestSnapshot = await db.collection(brands).doc(brandId).collection("Requests").doc(requestId).get();
+      const requestSnapshot = await db.collection(users).doc(userId).collection("Requests").doc(requestId).get();
       const requestDoc = requestSnapshot.data();
       functions.logger.log(
             "Request Cover Data:",
@@ -343,16 +343,17 @@ exports.userSendsRequest = functions
             requestDoc.name,
           );
       // Get Data of the Brand
+      const brandId = requestDoc.brandId;
       const brandSnapshot = await db.collection(brands).doc(brandId).get();
       const brandDoc = brandSnapshot.data();
       functions.logger.log(
           "Brand Data:",
           brandDoc,
       );
-      // Add Request to Users Request collection
+      // Add Request to Brands Request collection
       await db
-        .collection(users)
-        .doc(requestDoc.userId)
+        .collection(brands)
+        .doc(brandId)
         .collection("Requests")
         .doc(requestId).set({
             "brandId": requestDoc.brandId,
@@ -419,23 +420,23 @@ exports.userSendsRequest = functions
 exports.userDeletesRequest = functions
     .region("europe-west1")
     .firestore
-    .document("/"+brands+"/{brandId}/Requests/{requestId}")
+    .document("/"+users+"/{userId}/Requests/{requestId}")
     .onDelete( async (snap, context) => {
       // Get the value of the context triggers.
       const requestId = context.params.requestId;
-      const brandId = context.params.brandId;
+      const userId = context.params.userId;
+      // Get Data of Deleted Request
+      const requestDoc = snap.data();
       functions.logger.log(
               "Deleting Request with ID:",
               requestId,
               "to Brand with ID",
-              brandId
+              requestDoc.brandId
         );
-      // Get Data of Deleted Request
-      const requestDoc = snap.data();
       // Delete the Request on Users Request collection
       await db
-        .collection(users)
-        .doc(requestDoc.userId)
+        .collection(brands)
+        .doc(requestDoc.brandId)
         .collection("Requests")
         .doc(requestId)
         .delete();

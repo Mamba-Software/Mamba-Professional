@@ -1274,7 +1274,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     var result = await _accessDatabase.addBrand(nameBrandController.text.trim(), _image, descriptionController.text.trim(), _workShift, membersMax);
     // Add User To Brand
     // New Database
-    await _accessDatabase.joinBrand(currentUser.id!,result, 1);
+    await _accessDatabase.addUserToBrand(currentUser.id!,result, 1);
     // Add Location
     String baseLocation = await _accessDatabase.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
     await _accessDatabase.updateBrandBaseLocation(result,baseLocation);

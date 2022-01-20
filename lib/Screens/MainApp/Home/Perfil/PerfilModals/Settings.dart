@@ -481,14 +481,14 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                   await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
                                   await _accessDatabase.leaveBrandUser(currentUser.id!);
                                   // New DataBase Restructure
-                                  await _accessDatabase.leaveBrand(currentUser.id!, currentUser.brandID!);
+                                  await _accessDatabase.deleteUserFromBrand(currentUser.id!, currentUser.brandID!);
                                 }
                               } else {
                                 NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
                                 await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
                                 await _accessDatabase.leaveBrandUser(currentUser.id!);
                                 // New DataBase Restructure
-                                await _accessDatabase.leaveBrand(currentUser.id!, currentUser.brandID!);
+                                await _accessDatabase.deleteUserFromBrand(currentUser.id!, currentUser.brandID!);
                               }
                             }
                             Navigator.pushAndRemoveUntil(

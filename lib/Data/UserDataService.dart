@@ -31,6 +31,7 @@ class UserDataService {
   // Add Data
   Future<int> addUser(String email, String password, String idioma) => _firebase.addUser(email, password, idioma);
   Future<void> addUserNickname(String userId, String nickname) => _firebase.addUserNickname(userId, nickname);
+  Future<void> sendRequestToBrand(String brandId, String name, bool isTrainer) => _firebase.sendRequestToBrand(brandId, name, isTrainer);
 
   // Update Data
   Future<void> updateUser(String uid, String name, String firstName, String lastName, String nick, String dateOfBirth, int gender, File? image, bool isTrainer) => _firebase.updateUser(uid, name, firstName, lastName, nick, dateOfBirth, gender, image, isTrainer);
@@ -40,10 +41,8 @@ class UserDataService {
   Future<void> updateCurrentUserDatosPerifl(String name, String firstName, String lastName, int gender, String dateOfBirth) => _firebase.updateCurrentUserDatosPerifl(name, firstName, lastName, gender, dateOfBirth);
   Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma, String previousIdioma) => _firebase.updateCurrentUserSettingsPerifl(isPrivate, idioma, previousIdioma);
 
+  // Delete Data
+  Future<void> deleteRequestToBrand(RequestToBrand request) => _firebase.deleteRequestToBrand(request);
 
-// Delete Data
-  // Notifications
-
-  // Chats
 
 }

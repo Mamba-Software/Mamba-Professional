@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CancelRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/JoinConfirmationDialog.dart';
@@ -41,6 +42,7 @@ class ViewEventClient extends StatefulWidget {
 class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProviderStateMixin {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
   // Acceso a Base de Datos
   NotificationService _notificationService = NotificationService();
   // Boolean Loading
@@ -91,7 +93,6 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   // Request To Brand
   String brandIdRequest = "";
   RequestToBrand? request;
-  RequestToBrand? newRequest;
 
 
   String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
@@ -497,20 +498,18 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     return Theme.of(context).accentColor;
   }
 
+  // Get user pending requests
   Future<void> getUserPendingRequests() async {
-    RequestToBrand? req = await _accessDatabase.hasPendingRequest(currentUser.id!);
-    RequestToBrand? reqNew = await _accessDatabase.hasPendingRequestToBrand(currentUser.id!);
-    if (req != null) {
+    List<RequestToBrand> req = await _userDataService.getUserRequests(currentUser.id!);
+    if (req.isNotEmpty) {
+      // At this moment, only 1 requests possible
       setState(() {
-        request = req;
-        newRequest = reqNew;
+        request = req[0];
         brandIdRequest = request!.brandId!;
       });
     } else {
       setState(() {
         request = null;
-        newRequest = null;
-        brandIdRequest = "";
       });
     }
   }
@@ -1236,9 +1235,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                   brandIdRequest = "";
                                 });
                                 NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
-                                _accessDatabase.deleteRequest(request!.id!);
                                 // New DataBase
-                                _accessDatabase.deleteRequestToBrand(newRequest!);
+                                _userDataService.deleteRequestToBrand(request!);
                                 getUserPendingRequests();
                               }
                             },
@@ -1283,10 +1281,9 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                 setState(() {
                                   brandIdRequest = brand!.id!;
                                 });
-                                await _accessDatabase.sendRequest(brand!.id!, currentUser.name! ,currentUser.isTrainer!);
-                                NotificationService().userSendRequestToBrand(currentUser.id!, brand!.id!);
                                 // New DataBase
-                                await _accessDatabase.sendRequestToBrand(brand!.id!, currentUser.name! ,currentUser.isTrainer!);
+                                await _userDataService.sendRequestToBrand(brand!.id!, currentUser.name! ,currentUser.isTrainer!);
+                                NotificationService().userSendRequestToBrand(currentUser.id!, brand!.id!);
                                 getUserPendingRequests();
                               }
                             },

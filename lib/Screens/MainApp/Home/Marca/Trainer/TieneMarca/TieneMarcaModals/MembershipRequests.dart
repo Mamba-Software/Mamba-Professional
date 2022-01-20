@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -24,7 +26,8 @@ class MembershipRequests extends StatefulWidget {
 class _MembershipRequestsState extends State<MembershipRequests> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _brandDataService = new BrandDataService();
+  var _userDataService = new UserDataService();
   // Boolean Loading
   bool isLoading = false;
   // Request List
@@ -103,7 +106,7 @@ class _MembershipRequestsState extends State<MembershipRequests> {
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               StreamBuilder<QuerySnapshot>(
-                  stream: _accessDatabase.getAllRequestsBrand(widget.brandId),
+                  stream: _brandDataService.getBrandRequests(widget.brandId),
                   builder: (context, snapshot) {
                     if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
                       return Container(
@@ -128,52 +131,51 @@ class _MembershipRequestsState extends State<MembershipRequests> {
                               } else {
                                 type = AppLocalizations.of(context)!.client.toLowerCase();
                               }
-                              return ListTile(
-                                leading: Icon(request.isTrainer! ? Icons.record_voice_over : Icons.directions_run, color: Theme.of(context).primaryColor, size: 25,),
-                                title: Container(
-                                  child: RichText(
-                                    text: TextSpan(
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16),
-                                      children: [
-                                        TextSpan(text: request.name!, style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
-                                        TextSpan(text: AppLocalizations.of(context)!.requestFromUser(type)),
-                                      ],
+                              //if () {
+                                return ListTile(
+                                  leading: Icon(request.isTrainer! ? Icons.record_voice_over : Icons.directions_run, color: Theme.of(context).primaryColor, size: 25,),
+                                  title: Container(
+                                    child: RichText(
+                                      text: TextSpan(
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                        children: [
+                                          TextSpan(text: request.name!, style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
+                                          TextSpan(text: AppLocalizations.of(context)!.requestFromUser(type)),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                    Text(
-                                      AppLocalizations.of(context)!.requestSent(request.dateSent!),
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
-                                    ),
-                                  ],
-                                ),
-                                trailing: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 30,),
-                                onTap: () async {
-                                  var result = await showDialog(
-                                      context: context,
-                                      builder: (_) {
-                                        return RequestConfirmationDialog(
-                                          text: AppLocalizations.of(context)!.requestConfirmation,
-                                          userId: request.userId!,
-                                        );
-                                      }
-                                  );
-                                  if (result) {
-                                    _accessDatabase.acceptRequest(request.id!);
-                                    NotificationService().userJoinsBrand(request.userId!, request.brandId!);
-                                    // New Databae
-                                    _accessDatabase.acceptRequestToBrand(request);
-                                  } else if (!result) {
-                                    _accessDatabase.deleteRequest(request.id!);
-                                    // New DataBase
-                                    _accessDatabase.deleteRequestToBrand(request);
-                                  }
-                                },
-                              );
+                                  subtitle: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                      Text(
+                                        AppLocalizations.of(context)!.requestSent(request.dateSent!),
+                                        style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                  trailing: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 30,),
+                                  onTap: () async {
+                                    var result = await showDialog(
+                                        context: context,
+                                        builder: (_) {
+                                          return RequestConfirmationDialog(
+                                            text: AppLocalizations.of(context)!.requestConfirmation,
+                                            userId: request.userId!,
+                                          );
+                                        }
+                                    );
+                                    if (result) {
+                                      NotificationService().userJoinsBrand(request.userId!, request.brandId!);
+                                      _brandDataService.acceptRequestFromUser(request);
+                                    } else if (!result) {
+                                      _userDataService.deleteRequestToBrand(request);
+                                    }
+                                  },
+                                );
+                              //}
+
                             }
                         );
                       } else {

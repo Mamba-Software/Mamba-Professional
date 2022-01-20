@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
@@ -37,6 +38,7 @@ class SinMarcaTrainer extends StatefulWidget {
 class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
   // Boolean isLoading
   bool isLoading = false;
   // Brand List
@@ -50,7 +52,6 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
   // Request To Brand
   String brandIdRequest = "";
   RequestToBrand? request;
-  RequestToBrand? newRequest;
 
   // init Widget state. Loading user info.
   @override
@@ -61,19 +62,18 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
     super.initState();
   }
 
+  // Get user pending requests
   Future<void> getUserPendingRequests() async {
-    RequestToBrand? req = await _accessDatabase.hasPendingRequest(currentUser.id!);
-    RequestToBrand? reqNew = await _accessDatabase.hasPendingRequestToBrand(currentUser.id!);
-    if (req != null) {
+    List<RequestToBrand> req = await _userDataService.getUserRequests(currentUser.id!);
+    if (req.isNotEmpty) {
+      // At this moment, only 1 requests possible
       setState(() {
-        request = req;
-        newRequest = reqNew;
+        request = req[0];
         brandIdRequest = request!.brandId!;
       });
     } else {
       setState(() {
         request = null;
-        newRequest = null;
         brandIdRequest = "";
       });
     }
@@ -129,9 +129,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                         brandIdRequest = "";
                       });
                       NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
-                      _accessDatabase.deleteRequest(request!.id!);
-                      // New DataBase
-                      _accessDatabase.deleteRequestToBrand(newRequest!);
+                      _userDataService.deleteRequestToBrand(request!);
                       getUserPendingRequests();
                     }
                   }
@@ -248,7 +246,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                         if (currentUser.isTrainer!) {
                                           role = 5;
                                         }
-                                        await _accessDatabase.joinBrand(currentUser.id!, _codigo, role);
+                                        await _accessDatabase.addUserToBrand(currentUser.id!, _codigo, role);
                                         // Push To Splash Screen
                                         setState(() {
                                           currentIndex = 1;
@@ -329,6 +327,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
             return Future.delayed(
               Duration(seconds: 1), () {
               getAllBrands();
+              getUserPendingRequests();
             },
             );
           },
@@ -526,9 +525,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                               brandIdRequest = "";
                                             });
                                             NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
-                                            _accessDatabase.deleteRequest(request!.id!);
-                                            // New DataBase
-                                            _accessDatabase.deleteRequestToBrand(newRequest!);
+                                            _userDataService.deleteRequestToBrand(request!);
                                             getUserPendingRequests();
                                           }
                                         } else {
@@ -545,10 +542,9 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                             setState(() {
                                               brandIdRequest = brand.id!;
                                             });
-                                            await _accessDatabase.sendRequest(brand.id!, currentUser.name! ,currentUser.isTrainer!);
-                                            NotificationService().userSendRequestToBrand(currentUser.id!, brand.id!);
                                             // New DataBase
-                                            await _accessDatabase.sendRequestToBrand(brand.id!, currentUser.name! ,currentUser.isTrainer!);
+                                            await _userDataService.sendRequestToBrand(brand.id!, currentUser.name! ,currentUser.isTrainer!);
+                                            NotificationService().userSendRequestToBrand(currentUser.id!, brand.id!);
                                             getUserPendingRequests();
                                           }
                                         }
