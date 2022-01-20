@@ -402,6 +402,18 @@ class FirebaseDatabaseService {
         .delete();
   }
 
+  Future<void> deleteBrandUsers(String brandId) async {
+    await _firestore
+      .collection(brands)
+      .doc(brandId)
+      .collection("Users")
+      .get().then((snapshot) async {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          await doc.reference.delete();
+        }
+      });
+  }
+
   Future<void> leaveBrandUser(String userId) async {
     await _firestore.collection(users).doc(userId).update({
       "brandID": null,

@@ -1282,7 +1282,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     await _accessDatabase.updateCurrentUserBrand(result);
     NotificationService().userCreatesBrand(currentUser.id!, result);
     // Create Group Chat
-    // TO DO: Change this to Cloud Function
     DateTime today = DateTime.now();
     List<Map> chatUsers = [];
     chatUsers.add(toMap(currentUser.id));
@@ -1313,13 +1312,14 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     setState(() {
       currentIndex = 1;
     });
-    Navigator.pop(context);
-    Navigator.pushReplacement(
+    await Future.delayed(const Duration(seconds: 1)); // Ensure listener fires
+    Navigator.pushAndRemoveUntil(
       context,
       CupertinoPageRoute<Null>(
         builder: (context) => SplashScreen(),
         settings: RouteSettings(name: 'SplashScreen'),
-      )
+      ),
+      (_) => false,
     );
   }
 }

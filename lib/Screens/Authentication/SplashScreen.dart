@@ -185,6 +185,7 @@ class _SplashScreenState extends State<SplashScreen> {
     unreadChats = await _userDataService.getUnreadConversations(currentUser.id!);
     // Get Current User Brand, if any.
     List<Brand> brands = await _userDataService.getUserBrands(userId);
+    print(brands);
     // Set the Brand List
     currentUser.setBrandList = brands;
     if (currentUser.getBrandList.isNotEmpty) {

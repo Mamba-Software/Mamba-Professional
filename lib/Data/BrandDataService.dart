@@ -31,5 +31,6 @@ class BrandDataService {
 
   // Delete Data
   Future<void> leaveBrand(String userId, String brandId) => _firebase.leaveBrand(userId, brandId);
+  Future<void> deleteBrandUsers(String brandId) => _firebase.deleteBrandUsers(brandId);
 
 }
