@@ -2,9 +2,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'Chat/Chat.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -26,6 +29,8 @@ class _HomePageState extends State<HomePage> {
 
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
+  var _brandDataService = new BrandDataService();
   // Boolean Loading
   bool isLoading = false;
 
@@ -78,7 +83,15 @@ class _HomePageState extends State<HomePage> {
 
   // Gets the user info from firebase.
   void getUserAndBrand() async {
-    currentUser = await _accessDatabase.getUserDetails(currentUser.id!);
+    // Get User Main Data
+    currentUser = await _userDataService.getUserDetails(currentUser.id!);
+    // Get User Brand
+    List<Brand> brands = await _userDataService.getUserBrands(currentUser.id!);
+    currentUser.setBrandList = brands;
+    if (currentUser.getBrandList.isNotEmpty) {
+      Brand brand = currentUser.getBrandList[0];
+      currentBrand = await _brandDataService.getBrandDetails(brand.id!);
+    }
     setState(() {
       isLoading = false;
     });

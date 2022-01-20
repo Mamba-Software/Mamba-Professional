@@ -385,6 +385,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
       role = 5;
     }
     await _userDataService.updateUser(currentUser.id!, name,firstNameController.text.trim(), lastNameController.text.trim(), nick, startDateController.text, gender!, _image, isTrainer);
+    await _userDataService.addUserNickname(currentUser.id!, nick);
     _notificationService!.wellcomeUser(currentUser.id!);
     if (brandOkay && !brandNotFound) {
       await _accessDatabase.updateCurrentUserBrand(brand.id!);

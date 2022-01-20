@@ -45,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void checkAndGetUserDetails() async {
-    //_accessDatabase.signOut();
+    //_userDataService.signOut();
     // 1. We get the Firebase User
     User? firebaseUser = await _userDataService.getCurrentUser();
     // 2. Check if we have a user logged in.

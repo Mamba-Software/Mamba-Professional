@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
+import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'FirebaseDatabaseService.dart';
 
@@ -23,6 +24,7 @@ class UserDataService {
   Future<Usuario> getUserDetails(String userId) => _firebase.getUserDetails(userId);
   Future<List<String>> getUserCoverDetails(String userId) => _firebase.getUserCoverDetails(userId);
   Future<List<Brand>> getUserBrands(String userId) => _firebase.getAllBrandsFromUser(userId);
+  Future<List<RequestToBrand>> getUserRequests(String userId) => _firebase.getUserRequests(userId);
   Future<int> getUnreadNotifications(String userId) => _firebase.getUnreadNotifications(userId);
   Future<int> getUnreadConversations(String userId) => _firebase.getUnreadConversations(userId);
 
