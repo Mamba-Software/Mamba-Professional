@@ -91,7 +91,6 @@ class _PerfilClientState extends State<PerfilClient> {
       await getClientEventsDone();
     }
     await getUserEventsToday();
-    _scrollController = ScrollController(initialScrollOffset: MediaQuery.of(context).size.width * scrollIndex);
     await checkIfAnswered();
     if (mounted) {
       setState(() {
@@ -170,6 +169,7 @@ class _PerfilClientState extends State<PerfilClient> {
     if (!indexFound) {
       scrollIndex = todayEvents.length-1;
     }
+    _scrollController = ScrollController(initialScrollOffset: MediaQuery.of(context).size.width * scrollIndex);
   }
 
   // Check If Answered

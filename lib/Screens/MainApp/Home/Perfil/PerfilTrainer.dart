@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
@@ -39,9 +41,10 @@ class PerfilTrainer extends StatefulWidget {
 class _PerfilTrainerState extends State<PerfilTrainer> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
+  var _brandDataService = new BrandDataService();
   // Boolean Loading
   bool isLoading = true;
-  bool isFirstBuild = true;
   // Event List
   int totalEvents = 0;
   int thisMonthEvents  = 0;
@@ -72,7 +75,6 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
   void initState() {
     super.initState();
     isLoading = true;
-    isFirstBuild = true;
     initProfileHome();
   }
 
@@ -96,7 +98,6 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
       await getTrainerEventsDone();
     }
     await getUserEventsToday();
-    _scrollController = ScrollController(initialScrollOffset: MediaQuery.of(context).size.width * scrollIndex);
     await checkIfAnswered();
     if (mounted) {
       setState(() {
@@ -175,6 +176,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
     if (!indexFound) {
       scrollIndex = todayEvents.length-1;
     }
+    _scrollController = ScrollController(initialScrollOffset: MediaQuery.of(context).size.width * scrollIndex);
   }
 
   // Check If Answered
