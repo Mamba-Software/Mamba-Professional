@@ -1372,26 +1372,7 @@ class FirebaseDatabaseService {
     return Location.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
   }
 
-  // Brand Requests
-
-  // Send Request
-  Future<void> sendRequest(String brandId, String name, bool isTrainer) async {
-    User? currentUser = await getCurrentUser();
-    var uid = Uuid().v1();
-    DateTime now = DateTime.now();
-    final DateFormat formatter = DateFormat('dd-MM-yy');
-    final String formatted = formatter.format(now);
-    await _firestore.collection(requests).doc(uid).set({
-      "brandId": brandId,
-      "userId": currentUser!.uid,
-      "name": name,
-      "isTrainer": isTrainer,
-      "dateSent": formatted,
-      "year": now.year.toString(),
-      "month": now.month.toString(),
-      "day": now.day.toString(),
-    });
-  }
+  // Requests
 
   // Send Request
   Future<void> sendRequestToBrand(String brandId, String name, bool isTrainer) async {
@@ -1416,46 +1397,14 @@ class FirebaseDatabaseService {
         });
   }
 
-  // Accept Request
-  Future<void> acceptRequest(String requestId) async {
-    // Get the Request
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-        await _firestore.collection(requests).doc(requestId).get();
-    RequestToBrand request = RequestToBrand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
-    // Accept the user to Brand
-    await _firestore.collection(users).doc(request.userId).update({
-      "brandID": request.brandId,
-    });
-    // Delete the Request
-    await _firestore.collection(requests).doc(requestId).delete();
-
-    QuerySnapshot querySnapshot = await _firestore
-        .collection(conversations)
-        .where("brandId", isEqualTo: request.brandId)
-        .get();
-
-    Conversation conversation  = Conversation.fromObject(querySnapshot.docs[0], querySnapshot.docs[0].id);
-
-    DocumentSnapshot<Map<String, dynamic>> _docu =
-    await _firestore.collection(users).doc(request.userId).get();
-    Usuario user = Usuario.fromObjectAllData(_docu.id, _docu);
-    conversation.users.add({
-      'uid': user.id,
-    });
-
-    //List<Map> userMessagesRead = [];
-
-    /*for(int i = 0; i < conversation.isMessageRead.length; ++i) {
-      userMessagesRead.add(conversation.isMessageRead[i]);
-    }*/
-    //if(conversation.isMessageRead is Map) userMessagesRead.add(conversation.isMessageRead);
-    //else userMessagesRead = conversation.isMessageRead;
-
-   // userMessagesRead.add(toMapisMessageRead(user.id, true));
-    await _firestore.collection(conversations).doc(conversation.conversationId).update({
-      "users": conversation.users,
-    });
-
+  // Delete Request
+  Future<void> deleteRequestToBrand(RequestToBrand request) async {
+    await _firestore
+        .collection(users)
+        .doc(request.userId)
+        .collection("Requests")
+        .doc(request.id)
+        .delete();
   }
 
   // Accept Request To Brand
@@ -1497,47 +1446,6 @@ class FirebaseDatabaseService {
     await _firestore.collection(conversations).doc(conversation.conversationId).update({
       "users": conversation.users,
     });
-  }
-
-  // Delete Request
-  Future<void> deleteRequestFromUser(RequestToBrand request) async {
-    await _firestore
-        .collection(brands)
-        .doc(request.brandId)
-        .collection("Requests")
-        .doc(request.id)
-        .delete();
-  }
-
-  // Delete Request
-  Future<void> deleteRequestToBrand(RequestToBrand request) async {
-    await _firestore
-        .collection(users)
-        .doc(request.userId)
-        .collection("Requests")
-        .doc(request.id)
-        .delete();
-  }
-
-  // Delete Request
-  Future<void> deleteRequest(String requestId) async {
-    // Delete the Request
-    await _firestore.collection(requests).doc(requestId).delete();
-  }
-
-  // Has Pending Request
-  Future<RequestToBrand?> hasPendingRequest(String userId) async {
-    RequestToBrand request;
-    QuerySnapshot querySnapshot = await _firestore
-        .collection(requests)
-        .where("userId", isEqualTo: userId)
-        .get();
-    if (querySnapshot.docs.length > 0) {
-      request = RequestToBrand.fromObjectAllData(querySnapshot.docs[0].id, querySnapshot.docs[0]);
-      return request;
-    } else {
-      return null;
-    }
   }
 
   // Has Pending Request To Brand
