@@ -380,12 +380,13 @@ class FirebaseDatabaseService {
         .collection("Users")
         .doc(userId)
         .set({
-          "name": user.name,
           "firstName": user.firstName,
           "lastName": user.lastName,
           "nick": user.nick,
           "imageUrl": user.imageUrl,
+          "noImageUrl": user.noImageUrl,
           "isTrainer": user.isTrainer,
+          "isPrivate": user.isPrivate,
           "notificationToken": user.notificationToken,
           "role": role,
         }).catchError((err) {

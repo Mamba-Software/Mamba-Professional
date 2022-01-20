@@ -1458,11 +1458,12 @@ class _PerfilClientState extends State<PerfilClient> {
                                         NotificationService().userJoinsBrand(currentUser.id!, _codigo);
                                         // New DataBase
                                         int role = 0;
-                                        await _accessDatabase.joinBrand(currentUser.id!, _codigo.id!, role);
+                                        await _accessDatabase.joinBrand(currentUser.id!, _codigo, role);
                                         // Push To Splash Screen
                                         setState(() {
                                           currentIndex = 1;
                                         });
+                                        await Future.delayed(const Duration(seconds: 3)); // Ensure listener fires
                                         Navigator.pushReplacement(
                                             context,
                                             CupertinoPageRoute<Null>(

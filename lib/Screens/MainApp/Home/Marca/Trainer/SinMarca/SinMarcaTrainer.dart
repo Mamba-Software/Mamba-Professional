@@ -248,11 +248,12 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                         if (currentUser.isTrainer!) {
                                           role = 5;
                                         }
-                                        await _accessDatabase.joinBrand(currentUser.id!, _codigo.id!, role);
+                                        await _accessDatabase.joinBrand(currentUser.id!, _codigo, role);
                                         // Push To Splash Screen
                                         setState(() {
                                           currentIndex = 1;
                                         });
+                                        await Future.delayed(const Duration(seconds: 3));
                                         Navigator.pushReplacement(
                                             context,
                                             CupertinoPageRoute<Null>(

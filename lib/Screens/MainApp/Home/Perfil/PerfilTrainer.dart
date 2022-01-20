@@ -1513,11 +1513,12 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                                         NotificationService().userJoinsBrand(currentUser.id!, _codigo);
                                         // New DataBase
                                         int role = 5;
-                                        await _accessDatabase.joinBrand(currentUser.id!, _codigo.id!, role);
+                                        await _accessDatabase.joinBrand(currentUser.id!, _codigo, role);
                                         // Push To Splash Screen
                                         setState(() {
                                           currentIndex = 1;
                                         });
+                                        await Future.delayed(const Duration(seconds: 3));
                                         Navigator.pushReplacement(
                                             context,
                                             CupertinoPageRoute<Null>(

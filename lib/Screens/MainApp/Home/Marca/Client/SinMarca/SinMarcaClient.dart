@@ -237,6 +237,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                       setState(() {
                                         currentIndex = 1;
                                       });
+                                      await Future.delayed(const Duration(seconds: 3));
                                       Navigator.pushReplacement(
                                           context,
                                           CupertinoPageRoute<Null>(
