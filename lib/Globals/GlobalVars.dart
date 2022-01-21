@@ -23,6 +23,7 @@ var placesAPIIOS = "AIzaSyAYFglgzIMLYXB9XQPaZ977MKUMseCJCvY";
 // User & Brand Global Variables
 var currentUser = Usuario();
 var currentBrand = Brand();
+bool hasBrand = false;
 
 // Unread Notifications and Chats
 var unreadNotifications = 0;

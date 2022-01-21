@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'Chat/Chat.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -160,6 +161,30 @@ class _HomePageState extends State<HomePage> {
         onPageChanged: (page) async {
           unreadNotifications = await _accessDatabase.getUnreadNotifications(currentUser.id!);
           unreadChats = await _accessDatabase.getUnreadConversations(currentUser.id!);
+          // Check User´s Brand List
+          List<Brand> brands = await _userDataService.getUserBrands(currentUser.id!);
+          currentUser.setBrandList = brands;
+          // Check If User has New Brand
+          if (hasBrand == false && currentUser.getBrandList.isNotEmpty) {
+            print("hola1");
+            print(currentUser.getBrandList[0].id!);
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<Null>(
+                  builder: (context) => SplashScreen(),
+                  settings: RouteSettings(name: 'SplashScreen'),
+                )
+            );
+          } else if (hasBrand == true && currentUser.getBrandList.isEmpty)  {
+            print("hola2");
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<Null>(
+                  builder: (context) => SplashScreen(),
+                  settings: RouteSettings(name: 'SplashScreen'),
+                )
+            );
+          }
           setState(() {
             currentIndex = page;
           });

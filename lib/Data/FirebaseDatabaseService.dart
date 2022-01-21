@@ -1423,10 +1423,6 @@ class FirebaseDatabaseService {
     if (request.isTrainer!) {
       role = 5;
     }
-    // TODO: Easy fix for now.
-    await _firestore.collection(users).doc(request.userId).update({
-      "brandID": request.brandId,
-    });
     // New Database
     this.addUserToBrand(request.userId!, request.brandId!, role);
     // Delete the Request

@@ -219,20 +219,22 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                         setState(() {
                           isLoading = true;
                         });
-                        NotificationService().userLeavesBrand(widget.userID, currentUser.brandID!);
+                        NotificationService().userLeavesBrand(widget.userID, currentBrand.id!);
                         //12/12/2021
-                        Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID);
+                        Conversation conv = await _accessDatabase.getConversationByBrand(currentBrand.id!);
                         for(int i = 0; i < conv.users.length; ++i) {
                           if(conv.users[i]['uid'] == user!.id!) {
                             conv.users.removeAt(i);
                           }
                         }
                         await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
-                        await _accessDatabase.deleteUserFromAllBrandEvents(user!.id!, currentUser.brandID!, user!.isTrainer!);
+                        await _accessDatabase.deleteUserFromAllBrandEvents(user!.id!, currentBrand.id!, user!.isTrainer!);
                         await _accessDatabase.leaveBrandUser(user!.id!);
                         // New Database
-                        await _accessDatabase.deleteUserFromBrand(widget.userID, currentUser.brandID!);
-                        Navigator.pop(context, true);
+                        await _accessDatabase.deleteUserFromBrand(widget.userID, currentBrand.id!);
+                        // TODO: Revisar Pq True, yo crec que es per recagar els users a todos los miemrbos
+                        //  Navigator.pop(context, true);
+                        Navigator.pop(context);
                       }
                     } ,
                     icon: Icon(Icons.delete_outlined, color: Colors.red)

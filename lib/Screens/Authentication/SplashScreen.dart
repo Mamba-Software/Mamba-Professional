@@ -193,9 +193,13 @@ class _SplashScreenState extends State<SplashScreen> {
       // Put first brand to Current Brand
       Brand brand = currentUser.getBrandList[0];
       currentBrand = await _brandDataService.getBrandDetails(brand.id!);
+      hasBrand = true;
+      print("This user has a Brand");
     } else {
       // Empty Current Brand
       currentBrand = Brand();
+      hasBrand = false;
+      print("User with NO Brand");
     }
   }
 

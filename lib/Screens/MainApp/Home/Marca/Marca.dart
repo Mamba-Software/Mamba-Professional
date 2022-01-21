@@ -28,7 +28,6 @@ class _MarcaState extends State<Marca> {
   // init Widget state. Loading user info.
   @override
   void initState() {
-    getUserBrand();
     super.initState();
   }
 

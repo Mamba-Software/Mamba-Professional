@@ -88,7 +88,7 @@ class _PerfilClientState extends State<PerfilClient> {
   // Init for Brand Home
   initProfileHome() async {
     getUser();
-    if (currentUser.brandID == "null" || currentUser.brandID == null) {
+    if (hasBrand == false) {
       await getUserPendingRequests();
     } else {
       await getClientEventsDone();
@@ -105,7 +105,7 @@ class _PerfilClientState extends State<PerfilClient> {
   // Gets the user info from firebase.
   void getUser() async {
     currentUser = await _accessDatabase.getUserDetails(currentUser.id!);
-    // Check for new brand
+    /* Check for new brand
     if (currentUser.brandID != currentBrand.id && currentUser.brandID != "null" && currentUser.brandID != null) {
       Navigator.pushReplacement(
           context,
@@ -125,6 +125,7 @@ class _PerfilClientState extends State<PerfilClient> {
           )
       );
     }
+     */
   }
 
   // Gets user events today.

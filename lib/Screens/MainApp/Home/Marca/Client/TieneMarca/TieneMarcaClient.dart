@@ -140,19 +140,19 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                               setState(() {
                                 isLoading = true;
                               });
-                              NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
+                              NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
                               //12/12/2021
-                              Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID);
+                              Conversation conv = await _accessDatabase.getConversationByBrand(currentBrand.id!);
                               for(int i = 0; i < conv.users.length; ++i) {
                                 if(conv.users[i]['uid'] == currentUser.id) {
                                   conv.users.removeAt(i);
                                 }
                               }
                               await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
-                              await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
+                              await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentBrand.id!, currentUser.isTrainer!);
                               await _accessDatabase.leaveBrandUser(currentUser.id!);
                               // New DataBase Restructure
-                              await _accessDatabase.deleteUserFromBrand(currentUser.id!, currentUser.brandID!);
+                              await _accessDatabase.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
                               Navigator.pushReplacement(
                                   context,
                                   CupertinoPageRoute<Null>(
