@@ -671,9 +671,13 @@ class FirebaseDatabaseService {
   }
 
   Future<Brand> getBrandCoverDetails(String brandID) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-    await _firestore.collection(brands).doc(brandID).get();
-    return Brand.fromObjectOnlyCoverData(_documentSnapshot.id, _documentSnapshot);
+    try {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandID).get();
+      return Brand.fromObjectOnlyCoverData(_documentSnapshot.id, _documentSnapshot);
+    } catch (e) {
+      print(e.toString());
+      return Brand();
+    }
   }
 
   Future<List<String>> getBrandCover(String brandID) async {
@@ -1471,7 +1475,7 @@ class FirebaseDatabaseService {
         .collection("Notifications")
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      notis.add(NotificationEvent.setData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      notis.add(NotificationEvent.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return notis;
   }
@@ -1894,6 +1898,15 @@ class FirebaseDatabaseService {
         .collection(brands)
         .doc(brandId)
         .collection("Requests")
+        .snapshots();
+  }
+
+  // Notifications
+  Stream<QuerySnapshot> getAllNotificationsUserStream(String userId) {
+    return _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Notifications")
         .snapshots();
   }
 

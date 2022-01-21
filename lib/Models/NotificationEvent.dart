@@ -30,7 +30,7 @@ class NotificationEvent {
     this.parameters,
   });
 
-  NotificationEvent.setData(String documentId, DocumentSnapshot documentSnapshot) {
+  NotificationEvent.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
     this.userId = documentSnapshot.get("userId").toString();
     this.type = documentSnapshot.get("type").toString();
