@@ -166,8 +166,9 @@ class _HomePageState extends State<HomePage> {
           currentUser.setBrandList = brands;
           // Check If User has New Brand
           if (hasBrand == false && currentUser.getBrandList.isNotEmpty) {
-            print("hola1");
-            print(currentUser.getBrandList[0].id!);
+            setState(() {
+              currentIndex = 1;
+            });
             Navigator.pushReplacement(
                 context,
                 CupertinoPageRoute<Null>(
@@ -176,7 +177,9 @@ class _HomePageState extends State<HomePage> {
                 )
             );
           } else if (hasBrand == true && currentUser.getBrandList.isEmpty)  {
-            print("hola2");
+            setState(() {
+              currentIndex = 1;
+            });
             Navigator.pushReplacement(
                 context,
                 CupertinoPageRoute<Null>(

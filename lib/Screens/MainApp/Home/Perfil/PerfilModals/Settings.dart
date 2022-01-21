@@ -463,9 +463,9 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             });
                           } else {
                             await _accessDatabase.deleteUserMemberConversations(toMap(userId));
-                            if (currentUser.brandID != "null" && currentUser.brandID != null) {
+                            if (hasBrand) {
                               // 12/12/2021
-                              Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID); //12/12/2021
+                              Conversation conv = await _accessDatabase.getConversationByBrand(currentBrand.id!); //12/12/2021
                               for(int i = 0; i < conv.users.length; ++i) {
                                 if(conv.users[i]['uid'] == currentUser.id) {
                                   conv.users.removeAt(i);
@@ -477,18 +477,18 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                 if (result != null) {
                                   await _accessDatabase.deleteBrand(result.id!);
                                 } else {
-                                  NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
-                                  await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
+                                  NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
+                                  await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentBrand.id!, currentUser.isTrainer!);
                                   await _accessDatabase.leaveBrandUser(currentUser.id!);
                                   // New DataBase Restructure
-                                  await _accessDatabase.deleteUserFromBrand(currentUser.id!, currentUser.brandID!);
+                                  await _accessDatabase.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
                                 }
                               } else {
-                                NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
-                                await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
+                                NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
+                                await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentBrand.id!, currentUser.isTrainer!);
                                 await _accessDatabase.leaveBrandUser(currentUser.id!);
                                 // New DataBase Restructure
-                                await _accessDatabase.deleteUserFromBrand(currentUser.id!, currentUser.brandID!);
+                                await _accessDatabase.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
                               }
                             }
                             Navigator.pushAndRemoveUntil(

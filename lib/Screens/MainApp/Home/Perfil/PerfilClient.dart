@@ -105,27 +105,6 @@ class _PerfilClientState extends State<PerfilClient> {
   // Gets the user info from firebase.
   void getUser() async {
     currentUser = await _accessDatabase.getUserDetails(currentUser.id!);
-    /* Check for new brand
-    if (currentUser.brandID != currentBrand.id && currentUser.brandID != "null" && currentUser.brandID != null) {
-      Navigator.pushReplacement(
-          context,
-          CupertinoPageRoute<Null>(
-            builder: (context) => SplashScreen(),
-            settings: RouteSettings(name: 'SplashScreen'),
-          )
-      );
-    }
-    // Check for no brand
-    if ((currentUser.brandID == "null" || currentUser.brandID == null) && (currentBrand.id != null) ) {
-      Navigator.pushReplacement(
-          context,
-          CupertinoPageRoute<Null>(
-            builder: (context) => SplashScreen(),
-            settings: RouteSettings(name: 'SplashScreen'),
-          )
-      );
-    }
-     */
   }
 
   // Gets user events today.
