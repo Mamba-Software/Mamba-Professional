@@ -45,29 +45,20 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
   List<Usuario> filteredTrainers = [];
 
   Future<void> getAllUsers() async {
-    await getAllTrainersFromBrand();
-    await getAllClientsFromBrand();
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  Future<void> getAllTrainersFromBrand() async {
-    allTrainers = await _accessDatabase.getAllTrainersFromBrand(widget.brandID);
-    filteredTrainers = allTrainers;
-  }
-
-  Future<void> getAllClientsFromBrand() async {
-    allClients = await _accessDatabase.getAllClientsFromBrand(widget.brandID);
-    for (var i=0; i< allClients.length; i++) {
-      Usuario client = allClients[i];
-      if (client.id == currentUser.id) {
-        filteredClients.insert(0, client);
+    for (var i=0; i< currentBrand.getUserList.length; i++) {
+      Usuario user = currentBrand.getUserList[i];
+      if (user.isTrainer! == false) {
+        if (user.id == currentUser.id) {
+          filteredClients.insert(0, user);
+        } else {
+          filteredClients.add(user);
+        }
+        allClients.add(user);
       } else {
-        filteredClients.add(client);
+        filteredTrainers.add(user);
+        allTrainers.add(user);
       }
     }
-    filteredClients = orderClientsPrivateLast(filteredClients);
   }
 
   void filterSearchResults(String query, bool isTrainer) {
@@ -124,6 +115,10 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
     return orderedUsers;
   }
 
+  String getUsersFullName(Usuario user) {
+    return "${user.firstName} ${user.lastName}";
+  }
+
   String splitCommonName(String name) {
     List<String> aux = name.split(" ");
     return aux[0];
@@ -131,7 +126,6 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
 
   @override
   initState() {
-    isLoading = true;
     getAllUsers();
   }
 
@@ -242,7 +236,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                   borderWidth: 1.0,
                                 ),
                                 title: Text(
-                                  user.name!,
+                                  getUsersFullName(user),
                                   style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.left,
                                 ),
@@ -364,7 +358,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                         borderWidth: 1.0,
                                       ),
                                       title: Text(
-                                        splitCommonName(user.name!),
+                                        user.firstName!,
                                         style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor.withOpacity(0.3)),
                                         textAlign: TextAlign.left,
                                       ),
@@ -385,7 +379,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                         borderWidth: 1.0,
                                       ),
                                       title: Text(
-                                        user.name!,
+                                        getUsersFullName(user),
                                         style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
                                         textAlign: TextAlign.left,
                                       ),

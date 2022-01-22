@@ -92,6 +92,7 @@ class _HomePageState extends State<HomePage> {
     if (currentUser.getBrandList.isNotEmpty) {
       Brand brand = currentUser.getBrandList[0];
       currentBrand = await _brandDataService.getBrandDetails(brand.id!);
+      currentBrand.setUserList = await _brandDataService.getBrandUsers(brand.id!);
     }
     setState(() {
       isLoading = false;

@@ -87,19 +87,19 @@ class Brand {
 
   // Setters and Getters
 
-  void set requestList(List<RequestToBrand> requestList) {
+  void set setRequestList(List<RequestToBrand> requestList) {
     this.requests = requestList;
   }
 
-  List<RequestToBrand> get requestList {
+  List<RequestToBrand> get getRequestList {
     return this.requests;
   }
 
-  void set userList(List<Usuario> userList) {
+  void set setUserList(List<Usuario> userList) {
     this.users = userList;
   }
 
-  List<Usuario> get userList {
+  List<Usuario> get getUserList {
     return this.users;
   }
 }

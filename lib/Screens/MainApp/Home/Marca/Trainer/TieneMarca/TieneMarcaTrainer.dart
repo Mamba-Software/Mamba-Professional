@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -31,6 +32,7 @@ class TieneMarcaTrainer extends StatefulWidget {
 class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  var _brandDataService = new BrandDataService();
   // Boolean isLoading
   bool isLoading = false;
   // Brand Events Today
@@ -65,7 +67,8 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
 
   // Gets the user info from firebase.
   Future<void> getBrand() async {
-    currentBrand = await _accessDatabase.getBrandDetails(currentBrand.id!);
+    currentBrand = await _brandDataService.getBrandDetails(currentBrand.id!);
+    currentBrand.setUserList = await _brandDataService.getBrandUsers(currentBrand.id!);
   }
 
   // Gets number of finished events

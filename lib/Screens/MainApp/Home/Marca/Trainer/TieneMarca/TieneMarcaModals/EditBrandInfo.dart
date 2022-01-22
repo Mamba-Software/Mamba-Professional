@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -25,6 +26,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
 
   // DataBase Access
   var _accessDatabase = new DatabaseAccess();
+  var _brandDataService = new BrandDataService();
   // Boolean isLoading
   bool isLoading = false;
   bool isUpdated = false;
@@ -201,7 +203,8 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
 
   // Gets the user info from firebase.
   Future<void> getBrand() async {
-    currentBrand = await _accessDatabase.getBrandDetails(currentBrand.id!);
+    currentBrand = await _brandDataService.getBrandDetails(currentBrand.id!);
+    currentBrand.setUserList = await _brandDataService.getBrandUsers(currentBrand.id!);
   }
 
   @override

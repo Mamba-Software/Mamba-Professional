@@ -106,6 +106,7 @@ class Usuario {
       this.brandID = documentSnapshot.get("brandID").toString();
     }
   }
+
   Usuario.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('firstName')) {

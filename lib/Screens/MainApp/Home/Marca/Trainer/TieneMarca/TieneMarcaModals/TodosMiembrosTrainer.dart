@@ -47,29 +47,20 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
   var chatUsers = [];
 
   Future<void> getAllUsers() async {
-    await getAllTrainersFromBrand();
-    await getAllClientsFromBrand();
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  Future<void> getAllTrainersFromBrand() async {
-    allTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
-    filteredTrainers = [];
-    for (var i=0; i< allTrainers.length; i++) {
-      Usuario trainer = allTrainers[i];
-      if (trainer.id == currentUser.id) {
-        filteredTrainers.insert(0, trainer);
+    for (var i=0; i< currentBrand.getUserList.length; i++) {
+      Usuario user = currentBrand.getUserList[i];
+      if (user.isTrainer!) {
+        if (user.id == currentUser.id) {
+          filteredTrainers.insert(0, user);
+        } else {
+          filteredTrainers.add(user);
+        }
+        allTrainers.add(user);
       } else {
-        filteredTrainers.add(trainer);
+        filteredClients.add(user);
+        allClients.add(user);
       }
     }
-  }
-
-  Future<void> getAllClientsFromBrand() async {
-    allClients = await _accessDatabase.getAllClientsFromBrand(currentBrand.id!);
-    filteredClients = allClients;
   }
 
   void filterSearchResults(String query, bool isTrainer) {
@@ -107,9 +98,12 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
     }
   }
 
+  String getUsersFullName(Usuario user) {
+    return "${user.firstName} ${user.lastName}";
+  }
+
   @override
   initState() {
-    isLoading = true;
     getAllUsers();
   }
 
@@ -249,7 +243,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                       borderWidth: 1.0,
                                     ),
                                     title: Text(
-                                      user.name!,
+                                      getUsersFullName(user),
                                       style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.left,
                                     ),
@@ -383,7 +377,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                   borderWidth: 1.0,
                                 ),
                                 title: Text(
-                                  user.name!,
+                                  getUsersFullName(user),
                                   style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.left,
                                 ),

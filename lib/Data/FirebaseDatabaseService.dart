@@ -693,6 +693,20 @@ class FirebaseDatabaseService {
     }
   }
 
+  Future<List<Usuario>> getBrandUsers(String brandId) async {
+    List<Usuario> users = [];
+    try {
+      await  _firestore.collection(brands).doc(brandId).collection("Users").get().then((snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          users.add(Usuario.fromObjectOnlyCoverData(doc.id, doc));
+        }});
+      return users;
+    } catch (e) {
+      print(e.toString());
+      return users;
+    }
+  }
+
   Future<List<String>> getBrandCover(String brandID) async {
     try {
       DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandID).get();
