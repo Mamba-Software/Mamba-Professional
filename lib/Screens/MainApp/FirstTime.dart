@@ -393,6 +393,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
       _notificationService!.userJoinsBrand(currentUser.id!, brand.id!);
       // New DataBase
       await _brandDataService.addUserToBrand(currentUser.id!, brand.id!, role);
+      hasBrand = true;
     }
     Navigator.pushReplacement(
         context,

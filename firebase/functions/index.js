@@ -157,8 +157,13 @@ exports.userJoinsBrand = functions
               adminDoc.isTrainer,
               adminDoc.notificationToken,
             );
-        // TO DO: Aixo hauria de ser el length dels usuaris, aixi ya estaria contabilitzat l'ultim.
-        let numberMembers = brandDoc.numberClients + brandDoc.numberClients;
+        // Count the number of Members
+        const brandUsersSnapshot = await db.collection(brands).doc(brandId).collection("Users").get();
+        let numberMembers = brandUsersSnapshot.size;
+        functions.logger.log(
+          "Number Members",
+          numberMembers,
+        );
         if (adminDoc.idioma == "es") {
           payload = {
                 notification: {
@@ -220,12 +225,18 @@ exports.userLeavesBrand = functions
       // Delete Brand in User´s Brand Subcollection
       await db.collection(users).doc(userId).collection("Brands").doc(brandId).delete();
       // Send Notification to Brand Owners
-      let numberMembers = brandDoc.numberClients + brandDoc.numberClients;
       const brandOwnersSnapshot = await db.collection(brands)
-        .doc(brandId)
-        .collection("Users")
-        .where("role", "=", 1)
-        .get();
+          .doc(brandId)
+          .collection("Users")
+          .where("role", "=", 1)
+          .get();
+      // Count the number of Members
+      const brandUsersSnapshot = await db.collection(brands).doc(brandId).collection("Users").get();
+      let numberMembers = brandUsersSnapshot.size;
+      functions.logger.log(
+        "Number Members",
+        numberMembers,
+      );
       for (var i in brandOwnersSnapshot.docs) {
         const brandOwnersDoc = brandOwnersSnapshot.docs[i].data();
         functions.logger.log(
@@ -235,7 +246,7 @@ exports.userLeavesBrand = functions
         if (brandOwnersDoc.idioma == "es") {
             payload = {
               notification: {
-                title: userDoc.name+" ha abandonado a "+brandDoc.name,
+                title: userDoc.firstName+" "+userDoc.lastName+" ha abandonado a "+brandDoc.name,
                 body: "Ahora sois un total de "+numberMembers.toString()+" miembros",
               },
               data: {
@@ -245,7 +256,7 @@ exports.userLeavesBrand = functions
           } else {
             payload = {
               notification: {
-                title: userDoc.name+" ha abandonat a "+brandDoc.name,
+                title: userDoc.firstName+" "+userDoc.lastName+" ha abandonat a "+brandDoc.name,
                 body: "Ara sou un total de "+numberMembers.toString()+" membres",
               },
               data: {

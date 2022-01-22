@@ -44,6 +44,7 @@ class UserDataService {
 
   // Delete Data
   Future<void> deleteRequestToBrand(RequestToBrand request) => _firebase.deleteRequestToBrand(request);
+  Future<void> deleteUserNickname(String nickname) => _firebase.deleteUserNickname(nickname);
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // STREAMS

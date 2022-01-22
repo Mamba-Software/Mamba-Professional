@@ -26,6 +26,7 @@ class FirebaseDatabaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  final batch = FirebaseFirestore.instance.batch();
   // Firebase collections
   String users = isProduction ? 'Users' : '7777 Users';
   String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
@@ -94,7 +95,14 @@ class FirebaseDatabaseService {
       if (currentUser.imageUrl != "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53") {
         await this.deleteUserPhoto(user.uid);
       }
+      // Delete Notifications
+      await _firestore.collection(users).doc(user.uid).collection("Notifications").get().then((snapshot) {
+        for (DocumentSnapshot ds in snapshot.docs){
+          batch.delete(ds.reference);
+        }});
+      // Delete Users Collection
       await _firestore.collection(users).doc(user.uid).delete();
+      // Delete Firebase Auth
       await user.delete();
       return true;
     } catch (e) {
@@ -218,6 +226,11 @@ class FirebaseDatabaseService {
     await _firestore.collection(nicknames).doc(nickname).set({
       "userId": userId,
     });
+  }
+
+  // Register User
+  Future<void> deleteUserNickname(String nickname) async {
+    await _firestore.collection(nicknames).doc(nickname).delete();
   }
 
   // Check If Alias Exists
