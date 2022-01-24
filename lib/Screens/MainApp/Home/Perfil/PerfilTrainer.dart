@@ -107,7 +107,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
 
   // Gets the user info from firebase.
   void getUser() async {
-    currentUser = await _accessDatabase.getUserDetails(currentUser.id!);
+    currentUser.setBasticData = await _accessDatabase.getUserDetails(currentUser.id!);
   }
 
   // Gets user events today.

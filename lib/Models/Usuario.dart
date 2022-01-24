@@ -51,7 +51,7 @@ class Usuario {
     this.brandID,
   });
 
-  // Constructors
+  //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
 
   Usuario.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
@@ -136,14 +136,35 @@ class Usuario {
     }
   }
 
-  // Setters
+  //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
+
+  // Set Basic Data
+  set setBasticData(Usuario user) {
+    this.name = user.name;
+    this.firstName = user.firstName;
+    this.lastName = user.lastName;
+    this.nick = user.nick;
+    this.email = user.email;
+    this.imageUrl = user.imageUrl;
+    this.noImageUrl = user.noImageUrl;
+    this.isTrainer = user.isTrainer;
+    this.isPrivate = user.isPrivate;
+    this.isFirst = user.isFirst;
+    this.isAdmin = user.isAdmin;
+    this.notificationToken = user.notificationToken;
+    this.gender = user.gender;
+    this.dateJoined = user.dateJoined;
+    this.dateOfBirth = user.dateOfBirth;
+    this.idioma = user.idioma;
+    this.brandID = user.brandID;
+  }
 
   // Requests
-  void set setRequestList(List<RequestToBrand> requestList) {
+  set setRequestList(List<RequestToBrand> requestList) {
     this.requestsList = requestList;
   }
   // Brands
-  void set setBrandList(List<Brand> brandList) {
+  set setBrandList(List<Brand> brandList) {
     this.brandsList = brandList;
   }
 }

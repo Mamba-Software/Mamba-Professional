@@ -36,7 +36,7 @@ class Brand {
     this.maxMembers,
   });
 
-  // Constructors
+  //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
 
   Brand.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
@@ -85,13 +85,30 @@ class Brand {
     }
   }
 
-  // Setters and Getters
+  //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
 
-  void set setRequestList(List<RequestToBrand> requestList) {
+  // Set Basic Data
+  set setBasticData(Brand brand) {
+    this.name = brand.name;
+    this.logoUrl = brand.logoUrl;
+    this.adminID = brand.adminID;
+    this.description = brand.description;
+    this.dateJoined = brand.dateJoined;
+    this.groupRoomId = brand.groupRoomId;
+    this.baseLocation = brand.baseLocation;
+    this.numberClients = brand.numberClients;
+    this.numberTrainers = brand.numberTrainers;
+    this.workShift = brand.workShift;
+    this.maxMembers = brand.maxMembers;
+  }
+
+  // Requests
+  set setRequestList(List<RequestToBrand> requestList) {
     this.requestsList = requestList;
   }
 
-  void set setUserList(List<Usuario> userList) {
+  // Users
+  set setUserList(List<Usuario> userList) {
     this.usersList = userList;
   }
 }

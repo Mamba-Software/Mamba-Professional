@@ -85,13 +85,14 @@ class _HomePageState extends State<HomePage> {
   // Gets the user info from firebase.
   void getUserAndBrand() async {
     // Get User Main Data
-    currentUser = await _userDataService.getUserDetails(currentUser.id!);
+    currentUser.setBasticData = await _userDataService.getUserDetails(currentUser.id!);
     // Get User Brand
     List<Brand> brands = await _userDataService.getUserBrands(currentUser.id!);
     currentUser.setBrandList = brands;
     if (currentUser.brandsList.isNotEmpty) {
+      // Setting the Brand to the User
       Brand brand = currentUser.brandsList[0];
-      currentBrand = await _brandDataService.getBrandDetails(brand.id!);
+      currentBrand.setBasticData = await _brandDataService.getBrandDetails(brand.id!);
       currentBrand.setUserList = await _brandDataService.getBrandUsers(brand.id!);
     }
     setState(() {

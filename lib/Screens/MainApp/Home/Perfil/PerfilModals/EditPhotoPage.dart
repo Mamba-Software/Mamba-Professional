@@ -60,7 +60,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
 
   // Gets the user info from firebase.
   Future<void> getUser() async {
-    currentUser = await _accessDatabase.getUserDetails(currentUser.id!);
+    currentUser.setBasticData = await _accessDatabase.getUserDetails(currentUser.id!);
     _imageUrl = currentUser.imageUrl;
     setState(() {
       isLoading = false;
