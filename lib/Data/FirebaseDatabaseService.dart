@@ -760,20 +760,7 @@ class FirebaseDatabaseService {
 
   // Events Calendar
   // Add Event
-  Future<String> addEvent(
-      String? brandID,
-      String? title,
-      String? description,
-      String? year,
-      String? month,
-      String? day,
-      String? hour,
-      String? minute,
-      double? duration,
-      String? locationId,
-      int? maxMembers,
-      var selectedTrainers)
-  async {
+  Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) async {
     var eventID = Uuid().v1();
     User? currentUser = await getCurrentUser();
     try {
@@ -801,6 +788,8 @@ class FirebaseDatabaseService {
       Location location = await this.getSingleLocation(locationId!);
       await _firestore.collection(events).doc(eventID).collection("Locations").doc(locationId).set({
         "description": location.description,
+        "longitude": location.longitude,
+        "latitude": location.latitude,
       });
       for (var i=0; i<selectedTrainers.length; i++) {
         Usuario user = await this.getUserDetails(selectedTrainers[i]);
@@ -1086,6 +1075,22 @@ class FirebaseDatabaseService {
   // Delete Event
   Future<void> deleteEvent(String id) async {
     try {
+      // Delete Brands
+      await _firestore.collection(events).doc(id).collection("Brands").get().then((snapshot) async {
+        for (DocumentSnapshot ds in snapshot.docs) {
+          await _firestore.collection(events).doc(id).collection("Brands").doc(ds.id).delete();
+        }});
+      // Delete Users
+      await _firestore.collection(events).doc(id).collection("Users").get().then((snapshot) async {
+        for (DocumentSnapshot ds in snapshot.docs){
+          await _firestore.collection(events).doc(id).collection("Users").doc(ds.id).delete();
+        }});
+      // Delete Locations
+      await _firestore.collection(events).doc(id).collection("Locations").get().then((snapshot) async {
+        for (DocumentSnapshot ds in snapshot.docs){
+          await _firestore.collection(events).doc(id).collection("Locations").doc(ds.id).delete();
+        }});
+      // Delete Event
       await _firestore.collection(events).doc(id).delete();
     } catch (e) {
       print(e.toString());

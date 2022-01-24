@@ -462,39 +462,147 @@ exports.userAddsEvent = functions
     .onCreate( async (snap, context) => {
       // Get the value of the context triggers.
       const eventId = context.params.eventId;
-      // Add Event to Brands Event Subcollection
-      // Add Event to User Event Subcollection
-      // Get Data of the Request
-      const requestSnapshot = await db.collection(users).doc(userId).collection("Requests").doc(requestId).get();
-      const requestDoc = requestSnapshot.data();
+      // Get Data of the Event
+      const eventSnapshot = await db.collection(events).doc(eventId).get();
+      const eventDoc = eventSnapshot.data();
+      // Get Data of the Event Brand
+      const eventBrandSnapshot = await db.collection(events).doc(eventId).collection("Brands").get();
+      // Get Data of the Event Users
+      const eventUsersSnapshot = await db.collection(events).doc(eventId).collection("Users").get();
+      // Get Data of the Event Location
+      const eventLocationsSnapshot = await db.collection(events).doc(eventId).collection("Locations").get();
       functions.logger.log(
-            "Request Cover Data:",
-            requestDoc.brandId,
-            requestDoc.name,
-          );
-      // Get Data of the Brand
-      const brandId = requestDoc.brandId;
-      const brandSnapshot = await db.collection(brands).doc(brandId).get();
-      const brandDoc = brandSnapshot.data();
+          "Event Cover Data with ID:",
+          eventId,
+          "with Name:",
+          eventDoc.title,
+        );
+      // Count the Number of Clients and Trainers
+      let numClients = 0;
+      let numTrainers = 0;
+      for (var i in eventUsersSnapshot.docs) {
+        const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+        if (eventUsersDoc.isTrainer) {
+          numTrainers += 1;
+        } else {
+          numClients += 1;
+        }
+      }
       functions.logger.log(
-          "Brand Data:",
-          brandDoc,
+        "numClients",
+        numClients,
+        "numTrainers",
+        numTrainers,
       );
-      // Add Request to Brands Request collection
-      await db
+      // Add Event to Brands Event Subcollection
+      for (var i in eventBrandSnapshot.docs) {
+        const id = eventBrandSnapshot.docs[i].id;
+        await db
         .collection(brands)
-        .doc(brandId)
-        .collection("Requests")
-        .doc(requestId).set({
-            "brandId": requestDoc.brandId,
-            "userId": requestDoc.userId,
-            "name": requestDoc.name,
-            "isTrainer": requestDoc.isTrainer,
-            "dateSent": requestDoc.dateSent,
-            "year": requestDoc.year,
-            "month": requestDoc.month,
-            "day": requestDoc.day,
+        .doc(id)
+        .collection("Events")
+        .doc(eventId).set({
+          "title": eventDoc.title,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": numTrainers,
+          "numClients": numClients,
         });
+      }
+      // Add Event to Users Event Subcollection
+      for (var i in eventUsersSnapshot.docs) {
+        const id = eventUsersSnapshot.docs[i].id;
+        await db
+        .collection(users)
+        .doc(id)
+        .collection("Events")
+        .doc(eventId).set({
+          "title": eventDoc.title,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": numTrainers,
+          "numClients": numClients,
+        });
+      }
+      // Add Event to Locations Event Subcollection
+      for (var i in eventLocationsSnapshot.docs) {
+        const id = eventLocationsSnapshot.docs[i].id;
+        await db
+        .collection(locations)
+        .doc(id)
+        .collection("Events")
+        .doc(eventId).set({
+          "title": eventDoc.title,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": numTrainers,
+          "numClients": numClients,
+        });
+      }
+      return null;
+    });
+
+// User Deletes Event
+exports.userDeletesEvent = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+events+"/{eventId}")
+    .onDelete( async (snap, context) => {
+      // Get the value of the context triggers.
+      const eventId = context.params.eventId;
+      // Get Data of Deleted Event
+      const eventDoc = snap.data();
+      // Get Data of the Event Brand
+      const eventBrandSnapshot = await db.collection(events).doc(eventId).collection("Brands").get();
+      // Get Data of the Event Users
+      const eventUsersSnapshot = await db.collection(events).doc(eventId).collection("Users").get();
+      // Get Data of the Event Locations
+      const eventLocationsSnapshot = await db.collection(events).doc(eventId).collection("Locations").get();
+      functions.logger.log(
+          "Event Deleted with ID:",
+          eventId,
+          "and Name:",
+          eventDoc.title,
+        );
+      // Delete Event in Brands Subcollection
+      for (var i in eventBrandSnapshot.docs) {
+        await db
+        .collection(brands)
+        .doc(eventBrandSnapshot.docs[i].id)
+        .collection("Events")
+        .doc(eventId)
+        .delete();
+      }
+      // Delete Event in Users Subcollection
+      for (var i in eventUsersSnapshot.docs) {
+        await db
+        .collection(users)
+        .doc(eventUsersSnapshot.docs[i].id)
+        .collection("Events")
+        .doc(eventId)
+        .delete();
+      }
+      // Delete Event in Users Subcollection
+      for (var i in eventLocationsSnapshot.docs) {
+        await db
+        .collection(locations)
+        .doc(eventLocationsSnapshot.docs[i].id)
+        .collection("Events")
+        .doc(eventId)
+        .delete();
+      }
       return null;
     });
 
