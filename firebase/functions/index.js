@@ -454,6 +454,97 @@ exports.userDeletesRequest = functions
       return null;
     });
 
+// User Adds Event
+exports.userAddsEvent = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+brands+"/{brandId}/Event/{eventId}")
+    .onCreate( async (snap, context) => {
+      // Get the value of the context triggers.
+      const requestId = context.params.requestId;
+      const userId = context.params.userId;
+      // Get Data of the Request
+      const requestSnapshot = await db.collection(users).doc(userId).collection("Requests").doc(requestId).get();
+      const requestDoc = requestSnapshot.data();
+      functions.logger.log(
+            "Request Cover Data:",
+            requestDoc.brandId,
+            requestDoc.name,
+          );
+      // Get Data of the Brand
+      const brandId = requestDoc.brandId;
+      const brandSnapshot = await db.collection(brands).doc(brandId).get();
+      const brandDoc = brandSnapshot.data();
+      functions.logger.log(
+          "Brand Data:",
+          brandDoc,
+      );
+      // Add Request to Brands Request collection
+      await db
+        .collection(brands)
+        .doc(brandId)
+        .collection("Requests")
+        .doc(requestId).set({
+            "brandId": requestDoc.brandId,
+            "userId": requestDoc.userId,
+            "name": requestDoc.name,
+            "isTrainer": requestDoc.isTrainer,
+            "dateSent": requestDoc.dateSent,
+            "year": requestDoc.year,
+            "month": requestDoc.month,
+            "day": requestDoc.day,
+        });
+      // Send Notification to Brand Owners
+      const brandOwnersSnapshot = await db.collection(brands)
+          .doc(brandId)
+          .collection("Users")
+          .where("role", "=", 1)
+          .get();
+      for (var i in brandOwnersSnapshot.docs) {
+          const brandOwnersDoc = brandOwnersSnapshot.docs[i].data();
+          functions.logger.log(
+              "Brand Owners Data:",
+              brandOwnersDoc
+            );
+          if (brandOwnersDoc.idioma == "es") {
+              payload = {
+                notification: {
+                  title: requestDoc.name+" ha enviado una solicitud de afiliación",
+                  body: "Enviada el "+requestDoc.dateSent,
+                },
+                data: {
+                  route: "SplashScreen2",
+                },
+              };
+          } else {
+              payload = {
+                notification: {
+                  title: requestDoc.name+" ha enviat una sol·licitud d'afiliació",
+                  body: "Enviada el "+requestDoc.dateSent,
+                },
+                data: {
+                  route: "SplashScreen2",
+                },
+              }
+          }
+          functions.logger.log(
+                "Payload",
+                payload
+          );
+          const notificationToken = brandOwnersDoc.notificationToken;
+          functions.logger.log(
+                "Notification Token",
+                notificationToken
+          );
+          const response = await admin.messaging().sendToDevice(notificationToken, payload);
+          functions.logger.log(
+              "Response",
+              response
+          );
+      }
+      return null;
+    });
+
 
 // Change Message Status
 exports.changeMessageStatus = functions
