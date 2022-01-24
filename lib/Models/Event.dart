@@ -38,27 +38,9 @@ class Event {
     this.isCompleted,
   });
 
-  Event.fromMap(Map<String, dynamic> mapData, String documentId) {
-    this.id = documentId;
-    this.creatorID = mapData['creatorID'].toString();
-    this.brandID = mapData['brandID'].toString();
-    this.title = mapData['title'].toString();
-    this.description = mapData['description'].toString();
-    this.year = mapData['year'].toString();
-    this.month = mapData['month'].toString();
-    this.day = mapData['day'].toString();
-    this.hour = mapData['hour'].toString();
-    this.minute = mapData['minute'].toString();
-    this.duration = mapData['duration'];
-    this.locationId = mapData['locationId'].toString();
-    this.maxMembers = mapData['maxMembers'];
-    this.joinedMembers = mapData['joinedMembers'];
-    this.selectedTrainers = mapData['selectedTrainers'];
-    this.isCompleted = mapData['isCompleted'];
-  }
+  //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
 
-
-  Event.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
+  Event.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
     this.creatorID = documentSnapshot.get("creatorID").toString();
     this.brandID = documentSnapshot.get("brandID").toString();

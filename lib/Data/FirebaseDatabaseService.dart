@@ -827,7 +827,7 @@ class FirebaseDatabaseService {
     try {
       DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
       await _firestore.collection(events).doc(id).get();
-      return Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+      return Event.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
     } catch (e) {
       print(e);
       return Event();
@@ -843,7 +843,7 @@ class FirebaseDatabaseService {
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       eventsList.add(
-          Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+          Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return eventsList;
   }
@@ -860,7 +860,7 @@ class FirebaseDatabaseService {
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       eventsList.add(
-          Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+          Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return eventsList;
   }
@@ -877,7 +877,7 @@ class FirebaseDatabaseService {
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       eventsList.add(
-          Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+          Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return eventsList;
   } // Get All Events for Client
@@ -896,7 +896,7 @@ class FirebaseDatabaseService {
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       eventsList.add(
-          Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+          Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return eventsList;
   }
@@ -913,7 +913,7 @@ class FirebaseDatabaseService {
         .get();
 
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      Event event = Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
       var startDate = DateTime(
         int.parse(event.year!),
         int.parse(event.month!),
@@ -946,7 +946,7 @@ class FirebaseDatabaseService {
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       eventsList.add(
-          Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+          Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return eventsList;
   }
@@ -963,7 +963,7 @@ class FirebaseDatabaseService {
         .get();
 
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      Event event = Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
       var startDate = DateTime(
         int.parse(event.year!),
         int.parse(event.month!),
@@ -992,7 +992,7 @@ class FirebaseDatabaseService {
         .get();
 
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      Event event = Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
       var startDate = DateTime(
         int.parse(event.year!),
         int.parse(event.month!),
@@ -1017,7 +1017,7 @@ class FirebaseDatabaseService {
         .get();
 
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      Event event = Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id);
+      Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
       var startDate = DateTime(
         int.parse(event.year!),
         int.parse(event.month!),
@@ -1046,7 +1046,7 @@ class FirebaseDatabaseService {
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       eventsList.add(
-          Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+          Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return eventsList;
   }
@@ -1078,7 +1078,7 @@ class FirebaseDatabaseService {
     }
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       eventsList.add(
-          Event.fromObject(querySnapshot.docs[i], querySnapshot.docs[i].id));
+          Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return eventsList;
   }
@@ -1131,7 +1131,7 @@ class FirebaseDatabaseService {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
         await _firestore.collection(events).doc(eid).get();
     Event event =
-        Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+        Event.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
     for (int i = 0; i < event.selectedTrainers.length; i++) {
       participants.add(event.selectedTrainers[i]);
     }
@@ -1144,7 +1144,7 @@ class FirebaseDatabaseService {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
         await _firestore.collection(events).doc(eid).get();
     Event event =
-        Event.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+        Event.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
     for (int i = 0; i < event.joinedMembers.length; i++) {
       participants.add(event.joinedMembers[i]);
     }

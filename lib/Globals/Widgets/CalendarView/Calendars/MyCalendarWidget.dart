@@ -718,7 +718,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
   List<Event> documentsToEvents(List<DocumentSnapshot> documents) {
     List<Event> events = [];
     for(int i = 0; i < documents.length; i++) {
-      events.add(Event.fromObject(documents[i], documents[i].id));
+      events.add(Event.fromObjectAllData(documents[i].id, documents[i]));
     }
     return events;
   }
