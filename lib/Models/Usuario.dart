@@ -26,8 +26,8 @@ class Usuario {
   String? idioma;
   String? previousIdioma;
   String? brandID;
-  List<RequestToBrand> requests = [];
-  List<Brand> brands = [];
+  List<RequestToBrand> requestsList = [];
+  List<Brand> brandsList = [];
 
   Usuario({
     this.id,
@@ -52,6 +52,7 @@ class Usuario {
   });
 
   // Constructors
+
   Usuario.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('notificationToken')) {
@@ -135,19 +136,14 @@ class Usuario {
     }
   }
 
-  // Setters and Getters
+  // Setters
+
   // Requests
-  List<RequestToBrand> get getRequestList {
-    return requests;
-  }
   void set setRequestList(List<RequestToBrand> requestList) {
-    this.requests = requestList;
+    this.requestsList = requestList;
   }
   // Brands
-  List<Brand> get getBrandList {
-    return brands;
-  }
   void set setBrandList(List<Brand> brandList) {
-    this.brands = brandList;
+    this.brandsList = brandList;
   }
 }

@@ -18,8 +18,8 @@ class Brand {
   int? numberTrainers;
   var workShift;
   int? maxMembers;
-  List<RequestToBrand> requests = [];
-  List<Usuario> users = [];
+  List<RequestToBrand> requestsList = [];
+  List<Usuario> usersList = [];
 
   Brand({
     this.id,
@@ -88,18 +88,10 @@ class Brand {
   // Setters and Getters
 
   void set setRequestList(List<RequestToBrand> requestList) {
-    this.requests = requestList;
-  }
-
-  List<RequestToBrand> get getRequestList {
-    return this.requests;
+    this.requestsList = requestList;
   }
 
   void set setUserList(List<Usuario> userList) {
-    this.users = userList;
-  }
-
-  List<Usuario> get getUserList {
-    return this.users;
+    this.usersList = userList;
   }
 }

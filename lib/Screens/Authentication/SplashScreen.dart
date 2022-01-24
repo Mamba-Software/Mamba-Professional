@@ -189,9 +189,9 @@ class _SplashScreenState extends State<SplashScreen> {
     List<Brand> brands = await _userDataService.getUserBrands(userId);
     // Set the Brand List
     currentUser.setBrandList = brands;
-    if (currentUser.getBrandList.isNotEmpty) {
+    if (currentUser.brandsList.isNotEmpty) {
       // Put first brand to Current Brand
-      Brand brand = currentUser.getBrandList[0];
+      Brand brand = currentUser.brandsList[0];
       currentBrand = await _brandDataService.getBrandDetails(brand.id!);
       hasBrand = true;
       print("This user has a Brand");

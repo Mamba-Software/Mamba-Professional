@@ -47,8 +47,8 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
   var chatUsers = [];
 
   Future<void> getAllUsers() async {
-    for (var i=0; i< currentBrand.getUserList.length; i++) {
-      Usuario user = currentBrand.getUserList[i];
+    for (var i=0; i< currentBrand.usersList.length; i++) {
+      Usuario user = currentBrand.usersList[i];
       if (user.isTrainer!) {
         if (user.id == currentUser.id) {
           filteredTrainers.insert(0, user);

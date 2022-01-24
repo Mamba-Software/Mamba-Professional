@@ -45,8 +45,8 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
   List<Usuario> filteredTrainers = [];
 
   Future<void> getAllUsers() async {
-    for (var i=0; i< currentBrand.getUserList.length; i++) {
-      Usuario user = currentBrand.getUserList[i];
+    for (var i=0; i< currentBrand.usersList.length; i++) {
+      Usuario user = currentBrand.usersList[i];
       if (user.isTrainer! == false) {
         if (user.id == currentUser.id) {
           filteredClients.insert(0, user);

@@ -89,8 +89,8 @@ class _HomePageState extends State<HomePage> {
     // Get User Brand
     List<Brand> brands = await _userDataService.getUserBrands(currentUser.id!);
     currentUser.setBrandList = brands;
-    if (currentUser.getBrandList.isNotEmpty) {
-      Brand brand = currentUser.getBrandList[0];
+    if (currentUser.brandsList.isNotEmpty) {
+      Brand brand = currentUser.brandsList[0];
       currentBrand = await _brandDataService.getBrandDetails(brand.id!);
       currentBrand.setUserList = await _brandDataService.getBrandUsers(brand.id!);
     }
@@ -166,7 +166,7 @@ class _HomePageState extends State<HomePage> {
           List<Brand> brands = await _userDataService.getUserBrands(currentUser.id!);
           currentUser.setBrandList = brands;
           // Check If User has New Brand
-          if (hasBrand == false && currentUser.getBrandList.isNotEmpty) {
+          if (hasBrand == false && currentUser.brandsList.isNotEmpty) {
             setState(() {
               currentIndex = 1;
             });
@@ -177,7 +177,7 @@ class _HomePageState extends State<HomePage> {
                   settings: RouteSettings(name: 'SplashScreen'),
                 )
             );
-          } else if (hasBrand == true && currentUser.getBrandList.isEmpty)  {
+          } else if (hasBrand == true && currentUser.brandsList.isEmpty)  {
             setState(() {
               currentIndex = 1;
             });
