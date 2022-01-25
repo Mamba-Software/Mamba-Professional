@@ -67,7 +67,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
 
   // Gets the user info from firebase.
   Future<void> getBrand() async {
-    currentBrand.setBasticData = await _brandDataService.getBrandDetails(currentBrand.id!);
+    currentBrand.setBasicData = await _brandDataService.getBrandDetails(currentBrand.id!);
     currentBrand.setUserList = await _brandDataService.getBrandUsers(currentBrand.id!);
   }
 

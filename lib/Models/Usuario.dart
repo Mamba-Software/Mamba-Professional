@@ -1,5 +1,6 @@
 // Model for a User in our App
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/NotificationEvent.dart';
 
 import 'Brand.dart';
@@ -26,8 +27,10 @@ class Usuario {
   String? idioma;
   String? previousIdioma;
   String? brandID;
+
   List<RequestToBrand> requestsList = [];
   List<Brand> brandsList = [];
+  List<Event> eventsList = [];
 
   Usuario({
     this.id,
@@ -139,7 +142,7 @@ class Usuario {
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
 
   // Set Basic Data
-  set setBasticData(Usuario user) {
+  set setBasicData(Usuario user) {
     this.name = user.name;
     this.firstName = user.firstName;
     this.lastName = user.lastName;
@@ -163,8 +166,14 @@ class Usuario {
   set setRequestList(List<RequestToBrand> requestList) {
     this.requestsList = requestList;
   }
+
   // Brands
   set setBrandList(List<Brand> brandList) {
     this.brandsList = brandList;
+  }
+
+  // Events
+  set setEventsList(List<Event> eventsList) {
+    this.eventsList = eventsList;
   }
 }

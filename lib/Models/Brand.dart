@@ -1,5 +1,6 @@
 // Model for a Brand in our App
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
 import 'RequestToBrand.dart';
@@ -18,8 +19,10 @@ class Brand {
   int? numberTrainers;
   var workShift;
   int? maxMembers;
+
   List<RequestToBrand> requestsList = [];
   List<Usuario> usersList = [];
+  List<Event> eventsList = [];
 
   Brand({
     this.id,
@@ -88,7 +91,7 @@ class Brand {
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
 
   // Set Basic Data
-  set setBasticData(Brand brand) {
+  set setBasicData(Brand brand) {
     this.name = brand.name;
     this.logoUrl = brand.logoUrl;
     this.adminID = brand.adminID;
@@ -110,5 +113,10 @@ class Brand {
   // Users
   set setUserList(List<Usuario> userList) {
     this.usersList = userList;
+  }
+
+  // Events
+  set setEventsList(List<Event> eventsList) {
+    this.eventsList = eventsList;
   }
 }

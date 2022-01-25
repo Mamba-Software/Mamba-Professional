@@ -36,7 +36,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
 
   Future<void> activeGroup() async {
 
-    currentUser.setBasticData = await _accessDatabase.getUserDetails(currentUser.id!);
+    currentUser.setBasicData = await _accessDatabase.getUserDetails(currentUser.id!);
 
     this.groupOfQuestions = await this._accessDatabase.getActiveGroupOfQuestions();
 

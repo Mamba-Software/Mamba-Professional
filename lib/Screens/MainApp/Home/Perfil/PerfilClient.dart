@@ -104,7 +104,7 @@ class _PerfilClientState extends State<PerfilClient> {
 
   // Gets the user info from firebase.
   void getUser() async {
-    currentUser.setBasticData = await _accessDatabase.getUserDetails(currentUser.id!);
+    currentUser.setBasicData = await _accessDatabase.getUserDetails(currentUser.id!);
   }
 
   // Gets user events today.

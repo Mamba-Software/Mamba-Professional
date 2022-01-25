@@ -1075,22 +1075,6 @@ class FirebaseDatabaseService {
   // Delete Event
   Future<void> deleteEvent(String id) async {
     try {
-      /* Delete Brands
-      await _firestore.collection(events).doc(id).collection("Brands").get().then((snapshot) async {
-        for (DocumentSnapshot ds in snapshot.docs) {
-          await _firestore.collection(events).doc(id).collection("Brands").doc(ds.id).delete();
-        }});
-      // Delete Users
-      await _firestore.collection(events).doc(id).collection("Users").get().then((snapshot) async {
-        for (DocumentSnapshot ds in snapshot.docs){
-          await _firestore.collection(events).doc(id).collection("Users").doc(ds.id).delete();
-        }});
-      // Delete Locations
-      await _firestore.collection(events).doc(id).collection("Locations").get().then((snapshot) async {
-        for (DocumentSnapshot ds in snapshot.docs){
-          await _firestore.collection(events).doc(id).collection("Locations").doc(ds.id).delete();
-        }});
-      // Delete Event*/
       await _firestore.collection(events).doc(id).delete();
     } catch (e) {
       print(e.toString());
