@@ -513,25 +513,6 @@ exports.userAddsEvent = functions
           "numClients": numClients,
         });
       }
-      // Add Event to Users Event Subcollection
-      for (var i in eventUsersSnapshot.docs) {
-        const id = eventUsersSnapshot.docs[i].id;
-        await db
-        .collection(users)
-        .doc(id)
-        .collection("Events")
-        .doc(eventId).set({
-          "title": eventDoc.title,
-          "year": eventDoc.year,
-          "month": eventDoc.month,
-          "day": eventDoc.day,
-          "hour": eventDoc.hour,
-          "minute": eventDoc.minute,
-          "duration": eventDoc.duration,
-          "numTrainers": numTrainers,
-          "numClients": numClients,
-        });
-      }
       // Add Event to Locations Event Subcollection
       for (var i in eventLocationsSnapshot.docs) {
         const id = eventLocationsSnapshot.docs[i].id;
@@ -564,18 +545,39 @@ exports.userDeletesEvent = functions
       const eventId = context.params.eventId;
       // Get Data of Deleted Event
       const eventDoc = snap.data();
+      functions.logger.log(
+        "Event Deleted with ID:",
+        eventId,
+        "and Name:",
+        eventDoc.title,
+      );
+      // Get Data of the Event Locations
+      const eventUsersSnapshot = await db.collection(events).doc(eventId).collection("Users").get();
+      functions.logger.log(
+        "eventUsersSnapshot size",
+        eventUsersSnapshot.size,
+      );
       // Get Data of the Event Brand
       const eventBrandSnapshot = await db.collection(events).doc(eventId).collection("Brands").get();
-      // Get Data of the Event Users
-      const eventUsersSnapshot = await db.collection(events).doc(eventId).collection("Users").get();
+      functions.logger.log(
+        "eventBrandSnapshot size",
+        eventBrandSnapshot.size,
+      );
       // Get Data of the Event Locations
       const eventLocationsSnapshot = await db.collection(events).doc(eventId).collection("Locations").get();
       functions.logger.log(
-          "Event Deleted with ID:",
-          eventId,
-          "and Name:",
-          eventDoc.title,
-        );
+          "eventLocationsSnapshot size",
+          eventLocationsSnapshot.size,
+      );
+      // Delete Users Subcollection in Event
+      for (var i in eventUsersSnapshot.docs) {
+          await db
+          .collection(events)
+          .doc(eventId)
+          .collection("Users")
+          .doc(eventUsersSnapshot.docs[i].id)
+          .delete();
+      }
       // Delete Event in Brands Subcollection
       for (var i in eventBrandSnapshot.docs) {
         await db
@@ -584,17 +586,15 @@ exports.userDeletesEvent = functions
         .collection("Events")
         .doc(eventId)
         .delete();
-      }
-      // Delete Event in Users Subcollection
-      for (var i in eventUsersSnapshot.docs) {
+        // Delete Brands in Event
         await db
-        .collection(users)
-        .doc(eventUsersSnapshot.docs[i].id)
-        .collection("Events")
+        .collection(events)
         .doc(eventId)
+        .collection("Brands")
+        .doc(eventBrandSnapshot.docs[i].id)
         .delete();
       }
-      // Delete Event in Users Subcollection
+      // Delete Event in Locations Subcollection
       for (var i in eventLocationsSnapshot.docs) {
         await db
         .collection(locations)
@@ -602,7 +602,76 @@ exports.userDeletesEvent = functions
         .collection("Events")
         .doc(eventId)
         .delete();
+        // Delete Locations in Event
+        await db
+        .collection(events)
+        .doc(eventId)
+        .collection("Locations")
+        .doc(eventLocationsSnapshot.docs[i].id)
+        .delete();
       }
+      return null;
+    });
+
+// User Joins Event
+exports.userJoinsEvent = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+events+"/{eventId}/Users/{userId}")
+    .onCreate( async (change, context) => {
+      // Get the value of the context triggers.
+      const eventId = context.params.eventId;
+      const userId = context.params.userId;
+      // Get Event Data
+      const eventSnapshot = await db.collection(events).doc(eventId).get();
+      const eventDoc = eventSnapshot.data();
+      // Count the Number of Clients and Trainers
+      const eventUsersSnapshot = await db.collection(events).doc(eventId).collection("Users").get();
+      let numClients = 0;
+      let numTrainers = 0;
+      for (var i in eventUsersSnapshot.docs) {
+        const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+        if (eventUsersDoc.isTrainer) {
+          numTrainers += 1;
+        } else {
+          numClients += 1;
+        }
+      }
+      // Add Event To Users Event Subcollection
+      await db
+      .collection(users)
+      .doc(userId)
+      .collection("Events")
+      .doc(eventId).set({
+        "title": eventDoc.title,
+        "year": eventDoc.year,
+        "month": eventDoc.month,
+        "day": eventDoc.day,
+        "hour": eventDoc.hour,
+        "minute": eventDoc.minute,
+        "duration": eventDoc.duration,
+        "numTrainers": numTrainers,
+        "numClients": numClients,
+      });
+      return null;
+    });
+
+// User Joins Event
+exports.userLeavesEvent = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+events+"/{eventId}/Users/{userId}")
+    .onDelete( async (change, context) => {
+      // Get the value of the context triggers.
+      const eventId = context.params.eventId;
+      const userId = context.params.userId;
+      // Add Event To Users Event Subcollection
+      await db
+      .collection(users)
+      .doc(userId)
+      .collection("Events")
+      .doc(eventId)
+      .delete();
       return null;
     });
 

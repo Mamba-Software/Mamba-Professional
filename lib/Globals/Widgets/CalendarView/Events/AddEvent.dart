@@ -1,3 +1,4 @@
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
@@ -29,6 +30,7 @@ class AddEvent extends StatefulWidget {
 class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin{
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  var _eventDataService = new EventDataService();
   // Boolean Loading
   bool isLoading = false;
   // Boolean isUpdated
@@ -1254,17 +1256,17 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     }
     // EVENT IS NOT RECURRENT
     if (!isRecurrent) {
-      await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+      await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
     } else {
       // EVENT IS RECURRENT
-      await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+      await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
       var tempDate = startDate.add(Duration(days: 1));
       var weekDay = tempDate.weekday;
       if (_value == 1) {
         // One Week
         for (var i=0; i<6; i++) {
           if(values[weekDay-1]!) {
-            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+            await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;
@@ -1273,7 +1275,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         // Two Weeks
         for (var i=0; i<13; i++) {
           if(values[weekDay-1]!) {
-            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+            await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;

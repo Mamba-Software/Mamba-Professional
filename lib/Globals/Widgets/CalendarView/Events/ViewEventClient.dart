@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CancelRequestConfirmationDialog.dart';
@@ -43,6 +44,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
   var _userDataService = new UserDataService();
+  var _eventDataService = new EventDataService();
   // Acceso a Base de Datos
   NotificationService _notificationService = NotificationService();
   // Boolean Loading
@@ -1126,6 +1128,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                               isLoadingBody = true;
                             });
                             bool hasJoined = await _accessDatabase.joinEvent(event!.id!, currentUser.id!);
+                            await _eventDataService.addUserToEvent(event!.id!, currentUser.id!);
                             _notificationService.userJoinEvent(currentUser.id!, event!.brandID!, event!.id!);
                             if (hasJoined) {
                               getEventInfo();
@@ -1176,6 +1179,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                               isLoadingBody = true;
                             });
                             bool hasJoined = await _accessDatabase.leaveEvent(event!.id!, currentUser.id!, false);
+                            await _eventDataService.deleteUserFromEvent(event!.id!, currentUser.id!);
                             _notificationService.userLeaveEvent(currentUser.id!, event!.brandID!, event!.id!);
                             if (hasJoined) {
                               getEventInfo();

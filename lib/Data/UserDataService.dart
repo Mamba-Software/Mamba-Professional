@@ -51,6 +51,4 @@ class UserDataService {
 
   Stream<QuerySnapshot> getAllNotificationsUserStream(String userId) => _firebase.getAllNotificationsUserStream(userId);
 
-
-
 }

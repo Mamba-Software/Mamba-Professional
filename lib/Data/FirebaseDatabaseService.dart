@@ -1075,7 +1075,7 @@ class FirebaseDatabaseService {
   // Delete Event
   Future<void> deleteEvent(String id) async {
     try {
-      // Delete Brands
+      /* Delete Brands
       await _firestore.collection(events).doc(id).collection("Brands").get().then((snapshot) async {
         for (DocumentSnapshot ds in snapshot.docs) {
           await _firestore.collection(events).doc(id).collection("Brands").doc(ds.id).delete();
@@ -1090,7 +1090,7 @@ class FirebaseDatabaseService {
         for (DocumentSnapshot ds in snapshot.docs){
           await _firestore.collection(events).doc(id).collection("Locations").doc(ds.id).delete();
         }});
-      // Delete Event
+      // Delete Event*/
       await _firestore.collection(events).doc(id).delete();
     } catch (e) {
       print(e.toString());
@@ -1174,6 +1174,53 @@ class FirebaseDatabaseService {
     try {
       await _firestore.collection(events).doc(eid).update({
         "joinedMembers": joinedMembers,
+      });
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  // User Joins Event
+  Future<bool> addUserToEvent(String eid, String uid,) async {
+    try {
+      Usuario user = await this.getUserDetails(uid);
+      await _firestore
+      .collection(events)
+      .doc(eid)
+      .collection("Users")
+      .doc(uid)
+      .set({
+        "firstName": user.firstName,
+        "lastName": user.lastName,
+        "nick": user.nick,
+        "imageUrl": user.imageUrl,
+        "noImageUrl": user.noImageUrl,
+        "isTrainer": user.isTrainer,
+        "isPrivate": user.isPrivate,
+        "notificationToken": user.notificationToken,
+      }).catchError((err) {
+        print(err);
+      });
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  // User Joins Event
+  Future<bool> deleteUserFromEvent(String eid, String uid,) async {
+    try {
+      await _firestore
+      .collection(events)
+      .doc(eid)
+      .collection("Users")
+      .doc(uid)
+      .delete()
+      .catchError((err) {
+        print(err);
       });
       return true;
     } catch (e) {
