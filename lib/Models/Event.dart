@@ -1,4 +1,6 @@
 // This class represents the Object <Event> that will be showed in the Calendar Widget.
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
@@ -18,6 +20,8 @@ class Event {
   String? minute;
   double? duration;
   String? locationId;
+  int? numClients;
+  int? numTrainers;
   int? maxMembers;
   var joinedMembers;
   var selectedTrainers;
@@ -39,6 +43,8 @@ class Event {
     this.minute,
     this.duration,
     this.locationId,
+    this.numClients,
+    this.numTrainers,
     this.maxMembers,
     this.joinedMembers,
     this.selectedTrainers,
@@ -76,10 +82,16 @@ class Event {
       this.minute = documentSnapshot.get("minute").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('duration')) {
-      this.duration = documentSnapshot.get("duration");
+      this.duration = double.parse(documentSnapshot.get("duration").toString());
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('locationId')) {
       this.locationId = documentSnapshot.get("locationId").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numberClients')) {
+      this.numClients = documentSnapshot.get("numberClients");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numberTrainers')) {
+      this.numTrainers = documentSnapshot.get("numberTrainers");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('maxMembers')) {
       this.maxMembers = documentSnapshot.get("maxMembers");
@@ -113,10 +125,13 @@ class Event {
       this.minute = documentSnapshot.get("minute").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('duration')) {
-      this.duration = documentSnapshot.get("duration");
+      this.duration = double.parse(documentSnapshot.get("duration").toString());
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('locationId')) {
-      this.locationId = documentSnapshot.get("locationId").toString();
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numClients')) {
+      this.numClients = documentSnapshot.get("numClients");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numTrainers')) {
+      this.numTrainers = documentSnapshot.get("numTrainers");
     }
   }
 
@@ -135,6 +150,8 @@ class Event {
     this.minute = event.minute;
     this.duration = event.duration;
     this.locationId = event.locationId;
+    this.numClients = event.numClients;
+    this.numTrainers = event.numTrainers;
     this.maxMembers = event.maxMembers;
     this.joinedMembers = event.joinedMembers;
     this.selectedTrainers = event.selectedTrainers;

@@ -154,9 +154,6 @@ class DatabaseAccess {
   // Brands
   Stream<QuerySnapshot> getAllBrandsStream() => _firebase.getAllBrandsStream();
 
-  // Events
-  Stream<DocumentSnapshot> getSingleEventStream(String id) => _firebase.getSingleEventStream(id);
-
   // Locations
   Stream<QuerySnapshot> getAllLocationsBrand(String brandId) => _firebase.getAllLocationsBrand(brandId);
 

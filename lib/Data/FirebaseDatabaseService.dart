@@ -677,6 +677,38 @@ class FirebaseDatabaseService {
     return requestList;
   }
 
+  Future<List<Event>> getUserEvents(String userId) async {
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Events")
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+    }
+    return events;
+  }
+
+  Future<List<Event>> getUserEventsToday(String userId) async {
+    DateTime today = DateTime.now();
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Events")
+        .where("year", isEqualTo: today.year.toString())
+        .where("month", isEqualTo: today.month.toString())
+        .where("day", isEqualTo: today.day.toString())
+        .orderBy("hour", descending: false)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+    }
+    return events;
+  }
+
+
   Future<Brand> getBrandDetails(String brandID) async {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
         await _firestore.collection(brands).doc(brandID).get();
@@ -776,10 +808,11 @@ class FirebaseDatabaseService {
         "minute": minute,
         "duration": duration,
         "locationId": locationId,
+        "numClients": 0,
+        "numTrainers": selectedTrainers.length,
         "maxMembers": maxMembers,
         "joinedMembers": [],
         "selectedTrainers": selectedTrainers,
-        "isCompleted": false,
       });
       await _firestore.collection(events).doc(eventID).collection("Brands").doc(currentBrand.id).set({
         "name": currentBrand.name,
@@ -1901,11 +1934,6 @@ class FirebaseDatabaseService {
   // Brands
   Stream<QuerySnapshot> getAllBrandsStream() {
     return _firestore.collection(brands).snapshots();
-  }
-
-  // Events
-  Stream<DocumentSnapshot> getSingleEventStream(String eid) {
-    return _firestore.collection(events).doc(eid).snapshots();
   }
 
   Stream<QuerySnapshot> getAllEventsFromBrand(String brandid) {

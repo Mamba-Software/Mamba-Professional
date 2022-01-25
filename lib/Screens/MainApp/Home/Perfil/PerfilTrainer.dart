@@ -1,11 +1,11 @@
 import 'dart:math';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -43,6 +43,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
   var _accessDatabase = new DatabaseAccess();
   var _userDataService = new UserDataService();
   var _brandDataService = new BrandDataService();
+  var _eventDataService = new EventDataService();
   // Boolean Loading
   bool isLoading = true;
   // Event List
@@ -78,14 +79,14 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
   }
 
   // Did Change Dependencies
-    @override
-    didChangeDependencies() {
-      super.didChangeDependencies();
-      precacheImage(mySessions!.image, context);
-      precacheImage(myProgress!.image, context);
-      for (var i=0; i<imagesEvents.length; i++) {
-        precacheImage(imagesEvents[i]!.image, context);
-      }
+  @override
+  didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(mySessions!.image, context);
+    precacheImage(myProgress!.image, context);
+    for (var i=0; i<imagesEvents.length; i++) {
+      precacheImage(imagesEvents[i]!.image, context);
+    }
   }
 
   // Init for Brand Home
@@ -107,14 +108,14 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
 
   // Gets the user info from firebase.
   void getUser() async {
-    currentUser.setBasicData = await _accessDatabase.getUserDetails(currentUser.id!);
+    currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
   }
 
   // Gets user events today.
   Future<void> getUserEventsToday() async {
     bool indexFound = false;
     DateTime now = DateTime.now();
-    todayEvents = await _accessDatabase.getAllEventsTodayUser(currentUser.id!, currentUser.isTrainer!);
+    todayEvents = await _eventDataService.getUserEventsToday(currentUser.id!);
     todayEventsLabels = [];
     for (var i=0; i < todayEvents.length; i++) {
       Event event = todayEvents[i];
@@ -166,6 +167,39 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
     } else {
       alreadyAnswered = true;
     }
+  }
+
+  // Get user pending requests
+  Future<void> getUserPendingRequests() async {
+    List<RequestToBrand> req = await _userDataService.getUserRequests(currentUser.id!);
+    if (req.isNotEmpty) {
+      // At this moment, only 1 requests possible
+      var brandReq = await _brandDataService.getBrandCoverDetails(req[0].brandId!);
+      setState(() {
+        request = req[0];
+        brandRequested = brandReq;
+      });
+    } else {
+      setState(() {
+        request = RequestToBrand();
+      });
+    }
+  }
+
+  // Gets the events passed by the trainer.
+  Future<void> getTrainerEventsDone() async {
+    List<int> res = await _accessDatabase.getAllTrainerEventsFinished(currentUser.id!, currentBrand.id!);
+    totalEvents = res[0];
+    thisMonthEvents = res[1];
+  }
+
+  // Gets a double and returns a String Duration to be shown
+  durationToString(double duration) {
+    String temp = "";
+    temp = duration.toStringAsFixed(2);
+    var hour = temp.split(".")[0];
+    var min = temp.split(".")[1];
+    return "${hour}h ${min}m ";
   }
 
   // Build Custom Badge
@@ -380,38 +414,6 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
         return Image.asset(Constants.eventBackground, gaplessPlayback: true,);
       }
     }
-  }
-
-  // Get user pending requests
-  Future<void> getUserPendingRequests() async {
-    List<RequestToBrand> req = await _userDataService.getUserRequests(currentUser.id!);
-    if (req.isNotEmpty) {
-      // At this moment, only 1 requests possible
-      var brandReq = await _brandDataService.getBrandCoverDetails(req[0].brandId!);
-      setState(() {
-        request = req[0];
-        brandRequested = brandReq;
-      });
-    } else {
-      setState(() {
-        request = RequestToBrand();
-      });
-    }
-  }
-
-  // Gets the events passed by the trainer.
-  Future<void> getTrainerEventsDone() async {
-    List<int> res = await _accessDatabase.getAllTrainerEventsFinished(currentUser.id!, currentBrand.id!);
-    totalEvents = res[0];
-    thisMonthEvents = res[1];
-  }
-
-  durationToString(double duration) {
-    String temp = "";
-    temp = duration.toStringAsFixed(2);
-    var hour = temp.split(".")[0];
-    var min = temp.split(".")[1];
-    return "${hour}h ${min}m ";
   }
 
   Widget build(BuildContext context) {
@@ -866,7 +868,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                                               ),
                                               SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                               Text(
-                                                event.selectedTrainers.length.toString(),
+                                                event.numTrainers.toString(),
                                                 style: TextStyle(color: Colors.white, fontSize: 14),
                                               ),
                                               Container(
@@ -881,7 +883,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                                               ),
                                               SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                               Text(
-                                                event.joinedMembers.length.toString(),
+                                                event.numClients.toString(),
                                                 style: TextStyle(color: Colors.white, fontSize: 14),
                                               ),
                                             ],
@@ -1481,7 +1483,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                                       setState(() {
                                         isLoadingCodigo = true;
                                       });
-                                      var result = await _accessDatabase.checkIfBrandExists(_codigo);
+                                      var result = await _brandDataService.checkIfBrandExists(_codigo);
                                       if (!result) {
                                         Future.delayed(const Duration(milliseconds: 500), () {
                                           setState(() {
@@ -1490,12 +1492,10 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                                           });
                                         });
                                       } else {
-                                        await _accessDatabase.updateCurrentUserBrand(_codigo);
-                                        await _accessDatabase.updateConversationNewUser(_codigo, currentUser.id);
-                                        NotificationService().userJoinsBrand(currentUser.id!, _codigo);
                                         // New DataBase
+                                        NotificationService().userJoinsBrand(currentUser.id!, _codigo);
                                         int role = 5;
-                                        await _accessDatabase.addUserToBrand(currentUser.id!, _codigo, role);
+                                        await _brandDataService.addUserToBrand(currentUser.id!, _codigo, role);
                                         // Push To Splash Screen
                                         setState(() {
                                           currentIndex = 1;

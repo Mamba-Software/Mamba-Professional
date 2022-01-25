@@ -625,6 +625,10 @@ exports.userJoinsEvent = functions
       // Get Event Data
       const eventSnapshot = await db.collection(events).doc(eventId).get();
       const eventDoc = eventSnapshot.data();
+      // Get Event Brands Data
+      const eventBrandsSnapshot = await db.collection(events).doc(eventId).collection("Brands").get();
+      // Get Data of the Event Locations
+      const eventLocationsSnapshot = await db.collection(events).doc(eventId).collection("Locations").get();
       // Count the Number of Clients and Trainers
       const eventUsersSnapshot = await db.collection(events).doc(eventId).collection("Users").get();
       let numClients = 0;
@@ -637,22 +641,70 @@ exports.userJoinsEvent = functions
           numClients += 1;
         }
       }
+      // Update Event Assisting Members
+      await db
+      .collection(events)
+      .doc(eventId)
+      .update({
+        "numClients": numClients,
+        "numTrainers": numTrainers,
+      });
       // Add Event To Users Event Subcollection
       await db
-      .collection(users)
-      .doc(userId)
-      .collection("Events")
-      .doc(eventId).set({
-        "title": eventDoc.title,
-        "year": eventDoc.year,
-        "month": eventDoc.month,
-        "day": eventDoc.day,
-        "hour": eventDoc.hour,
-        "minute": eventDoc.minute,
-        "duration": eventDoc.duration,
-        "numTrainers": numTrainers,
-        "numClients": numClients,
+        .collection(users)
+        .doc(userId)
+        .collection("Events")
+        .doc(eventId).set({
+          "title": eventDoc.title,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": numTrainers,
+          "numClients": numClients,
       });
+      // Update Number of Client and Trainers on Each of Event Subcollection
+      // User´s Event First
+      for (var i in eventUsersSnapshot.docs) {
+        const id = eventUsersSnapshot.docs[i].id;
+        await db
+        .collection(users)
+        .doc(id)
+        .collection("Events")
+        .doc(eventId)
+        .update({
+          "numClients": numClients,
+          "numTrainers": numTrainers,
+        });
+      }
+      // Brand´s Event Second
+      for (var i in eventBrandsSnapshot.docs) {
+        const id = eventBrandsSnapshot.docs[i].id;
+        await db
+        .collection(brands)
+        .doc(id)
+        .collection("Events")
+        .doc(eventId)
+        .update({
+          "numClients": numClients,
+          "numTrainers": numTrainers,
+        });
+      }
+      // Location´s Event Third
+      for (var i in eventLocationsSnapshot.docs) {
+          const id = eventLocationsSnapshot.docs[i].id;
+          await db
+          .collection(locations)
+          .doc(id)
+          .collection("Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+      }
       return null;
     });
 
@@ -665,13 +717,75 @@ exports.userLeavesEvent = functions
       // Get the value of the context triggers.
       const eventId = context.params.eventId;
       const userId = context.params.userId;
-      // Add Event To Users Event Subcollection
+      // Get Event Brands Data
+      const eventBrandsSnapshot = await db.collection(events).doc(eventId).collection("Brands").get();
+      // Count the Number of Clients and Trainers
+      const eventUsersSnapshot = await db.collection(events).doc(eventId).collection("Users").get();
+      let numClients = 0;
+      let numTrainers = 0;
+      for (var i in eventUsersSnapshot.docs) {
+          const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+          if (eventUsersDoc.isTrainer) {
+            numTrainers += 1;
+          } else {
+            numClients += 1;
+          }
+      }
+      // Delete Event To Users Event Subcollection
       await db
       .collection(users)
       .doc(userId)
       .collection("Events")
       .doc(eventId)
       .delete();
+      // Update Event Assisting Members
+      await db
+      .collection(events)
+      .doc(eventId)
+      .update({
+        "numClients": numClients,
+        "numTrainers": numTrainers,
+      });
+      // Update Number of Client and Trainers on Each of Event Subcollection
+      // User´s Event First
+      for (var i in eventUsersSnapshot.docs) {
+          const id = eventUsersSnapshot.docs[i].id;
+          await db
+          .collection(users)
+          .doc(id)
+          .collection("Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+      }
+      // Brand´s Event Second
+      for (var i in eventBrandsSnapshot.docs) {
+          const id = eventBrandsSnapshot.docs[i].id;
+          await db
+          .collection(brands)
+          .doc(id)
+          .collection("Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+      }
+      // Location´s Event Third
+      for (var i in eventLocationsSnapshot.docs) {
+        const id = eventLocationsSnapshot.docs[i].id;
+        await db
+        .collection(locations)
+        .doc(id)
+        .collection("Events")
+        .doc(eventId)
+        .update({
+          "numClients": numClients,
+          "numTrainers": numTrainers,
+        });
+      }
       return null;
     });
 
