@@ -302,6 +302,7 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
+                                          /*
                                           event.joinedMembers.contains(currentUser.id!) ? Row(
                                             children: [
                                               CircularImage(
@@ -312,6 +313,7 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                                               SizedBox(width: details.bounds.width*0.1,)
                                             ],
                                           ) : Container(),
+                                           */
                                           SizedBox(
                                             width: details.bounds.width*0.4,
                                             child: AutoSizeText(

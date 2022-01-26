@@ -112,7 +112,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                     Row(
                       children: [
                         IconButton(
-                          icon: Icon(Icons.qr_code_outlined, color: Colors.green, size: MediaQuery.of(context).size.height*0.03,),
+                          icon: Icon(Icons.qr_code_outlined, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.height*0.03,),
                           alignment: Alignment.centerRight,
                           padding: EdgeInsets.all(0),
                           onPressed: () {
