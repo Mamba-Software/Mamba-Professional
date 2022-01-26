@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
@@ -37,8 +38,8 @@ class SinMarcaTrainer extends StatefulWidget {
 
 class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
   var _userDataService = new UserDataService();
+  var _brandDataService = new BrandDataService();
   // Boolean isLoading
   bool isLoading = false;
   // Brand List
@@ -80,7 +81,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
   }
 
   Future<void> getAllBrands() async {
-    brandList = await _accessDatabase.getAllBrands();
+    brandList = await _brandDataService.getAllBrands();
     setState(() {
       isLoading = false;
     });
@@ -229,7 +230,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                       setState(() {
                                         isLoadingCodigo = true;
                                       });
-                                      var result = await _accessDatabase.checkIfBrandExists(_codigo);
+                                      var result = await _brandDataService.checkIfBrandExists(_codigo);
                                       if (!result) {
                                         Future.delayed(const Duration(milliseconds: 500), () {
                                           setState(() {
@@ -238,15 +239,13 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                           });
                                         });
                                       } else {
-                                        await _accessDatabase.updateCurrentUserBrand(_codigo);
-                                        await _accessDatabase.updateConversationNewUser(_codigo, currentUser.id);
                                         NotificationService().userJoinsBrand(currentUser.id!, _codigo);
                                         // New DataBase
                                         int role = 0;
                                         if (currentUser.isTrainer!) {
                                           role = 5;
                                         }
-                                        await _accessDatabase.addUserToBrand(currentUser.id!, _codigo, role);
+                                        await _brandDataService.addUserToBrand(currentUser.id!, _codigo, role);
                                         // Push To Splash Screen
                                         setState(() {
                                           currentIndex = 1;
@@ -477,7 +476,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                       icon: Icon(Icons.question_answer_outlined, size: 35, color: Theme.of(context).primaryColor),
                                       padding: EdgeInsets.all(0),
                                       onPressed: () async {
-                                        Usuario adminUser = await _accessDatabase.getUserDetails(brand.adminID!);
+                                        Usuario adminUser = await _userDataService.getUserDetails(brand.adminID!);
                                         if(adminUser == null) LoadingView();
                                         else {
                                           types.User otherUser = types.User(

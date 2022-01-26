@@ -83,12 +83,11 @@ class _SettingsState extends State<Settings> {
                   };
                   if (idiomaChanged) {
                     currentUser.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
-                    currentUser.previousIdioma = "";
                   };
                   _idiomaChanged.currentState!.resetIdiomaChanged();
                   idiomaChanged = false;
                 });
-                await _userDataService.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!);
+                await _userDataService.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!);
               }
               Navigator.pop(context);
               },

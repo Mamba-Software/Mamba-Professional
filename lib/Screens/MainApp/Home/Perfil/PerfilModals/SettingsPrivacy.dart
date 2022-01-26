@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -16,7 +17,7 @@ class SettingsPrivacy extends StatefulWidget {
 class _SettingsPrivacyState extends State<SettingsPrivacy> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
   // Boolean Loading
   bool isLoading = false;
   // Boolean isUpdated
@@ -178,7 +179,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
               isPrivate = true;
             }
             currentUser.isPrivate = isPrivate;
-            await _accessDatabase.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!);
+            await _userDataService.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!);
             Future.delayed(const Duration(milliseconds: 500), () {
               Navigator.pop(context);
             });

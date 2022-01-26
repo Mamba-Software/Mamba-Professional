@@ -18,26 +18,9 @@ class DatabaseAccess {
 
   final _firebase = FirebaseDatabaseService();
 
-  // Users
-  Future<int> signIn(String email, String password) => _firebase.signIn(email, password);
-  Future<void> signOut() => _firebase.signOut();
-  Future<int> resetPassword(String email) => _firebase.resetPassword(email);
-  Future<bool> deleteUser(String password) => _firebase.deleteUser(password);
-
-  Future<User?> getCurrentUser() => _firebase.getCurrentUser();
   Future<Usuario> getUserDetails(String uid) => _firebase.getUserDetails(uid);
   Future<List<String>> getUserCoverDetails(String uid) => _firebase.getUserCoverDetails(uid);
 
-  Future<int> addUser(String email, String password, String idioma) => _firebase.addUser(email, password, idioma);
-  Future<void> updateUser(String uid, String name, String firstName, String lastName, String nick, String dateOfBirth, int gender, File? image, bool isTrainer) => _firebase.updateUser(uid, name, firstName, lastName, nick, dateOfBirth, gender, image, isTrainer);
-  Future<void> updateUserNotificationToken(String uid, String token) => _firebase.updateUserNotificationToken(uid, token);
-
-  Future<void> updateCurrentUserFirstTime() => _firebase.updateCurrentUserFirstTime();
-  Future<String> updateCurrentUserPhoto(File image) => _firebase.updateCurrentUserPhoto(image);
-  Future<void> updateCurrentUserDatosPerifl(String name, String firstName, String lastName, int gender, String dateOfBirth) => _firebase.updateCurrentUserDatosPerifl(name, firstName, lastName, gender, dateOfBirth);
-  Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma, String previousIdioma) => _firebase.updateCurrentUserSettingsPerifl(isPrivate, idioma, previousIdioma);
-
-  Future<int> updateCurrentUserBrand(String brandID) => _firebase.updateCurrentUserBrand(brandID);
   Future<void> leaveBrandUser(String userId) => _firebase.leaveBrandUser(userId);
 
   Future<void> addUserToBrand(String userId, String brandId, int role) => _firebase.addUserToBrand(userId, brandId, role);

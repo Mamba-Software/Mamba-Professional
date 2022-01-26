@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
@@ -16,7 +17,7 @@ class EditPhotoPage extends StatefulWidget {
 class _EditPhotoPageState extends State<EditPhotoPage> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
   // Boolean Loading
   bool isLoading = false;
   // _Image File
@@ -50,7 +51,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
     setState(() {
       isLoading = true;
     });
-    String temp = await _accessDatabase.updateCurrentUserPhoto(_image!);
+    String temp = await _userDataService.updateCurrentUserPhoto(_image!);
     setState(() {
       _imageUrl = temp;
       isLoading = false;
@@ -60,7 +61,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
 
   // Gets the user info from firebase.
   Future<void> getUser() async {
-    currentUser.setBasicData = await _accessDatabase.getUserDetails(currentUser.id!);
+    currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
     _imageUrl = currentUser.imageUrl;
     setState(() {
       isLoading = false;

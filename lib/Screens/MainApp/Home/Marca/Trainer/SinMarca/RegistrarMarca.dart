@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
@@ -37,6 +38,7 @@ class RegistrarMarca extends StatefulWidget {
 class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProviderStateMixin {
   // DataBase Access
   var _accessDatabase = new DatabaseAccess();
+  var _brandDataService = new BrandDataService();
   // Boolean isLoading
   bool isLoading = false;
   bool isFirstTime = false;
@@ -1274,12 +1276,11 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     var result = await _accessDatabase.addBrand(nameBrandController.text.trim(), _image, descriptionController.text.trim(), _workShift, membersMax);
     // Add User To Brand
     // New Database
-    await _accessDatabase.addUserToBrand(currentUser.id!,result, 1);
+    await _brandDataService.addUserToBrand(currentUser.id!,result, 1);
     // Add Location
     String baseLocation = await _accessDatabase.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
     await _accessDatabase.updateBrandBaseLocation(result,baseLocation);
     // Update Current User Brand
-    await _accessDatabase.updateCurrentUserBrand(result);
     NotificationService().userCreatesBrand(currentUser.id!, result);
     // Create Group Chat
     DateTime today = DateTime.now();

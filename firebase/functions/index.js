@@ -27,6 +27,104 @@ const errors = isProduction ? "Errors" : "7777 Errors";
 const requests = isProduction ? "Requests" : "7777 Requests";
 
 // User Joins Brand
+exports.userUpdatesCoverData = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+users+"/{userId}")
+    .onUpdate( async (change, context) => {
+      // Get the value of the context triggers.
+      const userId = context.params.userId;
+      // Get Value of the Change
+      const before = change.before.data();
+      const after = change.after.data();
+      functions.logger.log(
+        "BEFORE:",
+        before,
+      );
+      functions.logger.log(
+          "AFTER:",
+          after,
+      );
+      // Check if Cover Data has changed:
+      // COVER DATA: firstName, lastName, nick, imageUrl, noImageUrl, isTrainer, isPrivate, notificationToken
+      let coverDataChange = false;
+      if (before.firstName != after.firstName) {
+        coverDataChange = true;
+      } else if (before.lastName != after.lastName) {
+        coverDataChange = true;
+      } else if (before.nick != after.nick) {
+        coverDataChange = true;
+      } else if (before.imageUrl != after.imageUrl) {
+        coverDataChange = true;
+      } else if (before.noImageUrl != after.noImageUrl) {
+        coverDataChange = true;
+      } else if (before.isTrainer != after.isTrainer) {
+        coverDataChange = true;
+      } else if (before.isPrivate != after.isPrivate) {
+        coverDataChange = true;
+      } else if (before.notificationToken != after.notificationToken) {
+        coverDataChange = true;
+      }
+      functions.logger.log(
+        "COVER DATA CHANGED?",
+        coverDataChange,
+      );
+      if (coverDataChange) {
+        // Update the Users Subcollection in Brands
+        const userBrandsSnapshot = await db.collection(users).doc(userId).collection("Brands").get();
+        functions.logger.log(
+            "User Brands Num =",
+            userBrandsSnapshot.size,
+          );
+        for (var i in userBrandsSnapshot.docs) {
+          const id = userBrandsSnapshot.docs[i].id;
+          await db
+          .collection(brands)
+          .doc(id)
+          .collection("Users")
+          .doc(userId)
+          .update({
+            "name": after.firstName+" "+after.lastName,
+            "firstName": after.firstName,
+            "lastName": after.lastName,
+            "nick": after.nick,
+            "imageUrl": after.imageUrl,
+            "noImageUrl": after.noImageUrl,
+            "isTrainer": after.isTrainer,
+            "isPrivate": after.isPrivate,
+            "notificationToken": after.notificationToken,
+          });
+        }
+        // Update the Users Subcollection in Brands
+        const userEventsSnapshot = await db.collection(users).doc(userId).collection("Events").get();
+        functions.logger.log(
+            "User Events Num =",
+            userEventsSnapshot.size,
+          );
+        for (var i in userEventsSnapshot.docs) {
+          const id = userEventsSnapshot.docs[i].id;
+          await db
+          .collection(events)
+          .doc(id)
+          .collection("Users")
+          .doc(userId)
+          .update({
+            "name": after.firstName+" "+after.lastName,
+            "firstName": after.firstName,
+            "lastName": after.lastName,
+            "nick": after.nick,
+            "imageUrl": after.imageUrl,
+            "noImageUrl": after.noImageUrl,
+            "isTrainer": after.isTrainer,
+            "isPrivate": after.isPrivate,
+            "notificationToken": after.notificationToken,
+          });
+        }
+      }
+      return null;
+    });
+
+// User Joins Brand
 exports.userJoinsBrand = functions
     .region("europe-west1")
     .firestore
@@ -282,7 +380,6 @@ exports.userLeavesBrand = functions
       return null;
     });
 
-
 // User Adds Location
 exports.userAddsLocation = functions
     .region("europe-west1")
@@ -333,8 +430,6 @@ exports.userDeletesLocation = functions
         .delete();
         return null;
     });
-
-
 
 // User Sends Request
 exports.userSendsRequest = functions
@@ -788,7 +883,6 @@ exports.userLeavesEvent = functions
       }
       return null;
     });
-
 
 // Change Message Status
 exports.changeMessageStatus = functions

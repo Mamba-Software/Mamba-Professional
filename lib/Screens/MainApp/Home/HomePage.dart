@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
     // Get User Main Data
     currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
     // Get User Brand
-    List<Brand> brands = await _userDataService.getUserBrands(currentUser.id!);
+    List<Brand> brands = await _brandDataService.getAllBrandsFromUser(currentUser.id!);
     currentUser.setBrandList = brands;
     if (currentUser.brandsList.isNotEmpty) {
       // Setting the Brand to the User
@@ -164,7 +164,7 @@ class _HomePageState extends State<HomePage> {
           unreadNotifications = await _accessDatabase.getUnreadNotifications(currentUser.id!);
           unreadChats = await _accessDatabase.getUnreadConversations(currentUser.id!);
           // Check User´s Brand List
-          List<Brand> brands = await _userDataService.getUserBrands(currentUser.id!);
+          List<Brand> brands = await _brandDataService.getAllBrandsFromUser(currentUser.id!);
           currentUser.setBrandList = brands;
           // Check If User has New Brand
           if (hasBrand == false && currentUser.brandsList.isNotEmpty) {

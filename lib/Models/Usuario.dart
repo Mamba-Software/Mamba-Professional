@@ -25,7 +25,6 @@ class Usuario {
   String? dateJoined;
   String? dateOfBirth;
   String? idioma;
-  String? previousIdioma;
   String? brandID;
 
   List<RequestToBrand> requestsList = [];
@@ -50,7 +49,6 @@ class Usuario {
     this.dateJoined,
     this.dateOfBirth,
     this.idioma,
-    this.previousIdioma,
     this.brandID,
   });
 

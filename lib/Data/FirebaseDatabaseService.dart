@@ -376,12 +376,11 @@ class FirebaseDatabaseService {
   }
 
   Future<void> updateCurrentUserSettingsPerifl(
-      bool isPrivate, String idioma, String previousIdioma) async {
+      bool isPrivate, String idioma) async {
     User? currentUser = await getCurrentUser();
     await _firestore.collection(users).doc(currentUser!.uid).update({
       "isPrivate": isPrivate,
       "idioma": idioma,
-      "previousIdioma": previousIdioma,
     });
   }
 

@@ -1,15 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
 import 'package:mamba_castelldefels/Data/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/UserFeedBack.dart';
-import 'package:page_transition/page_transition.dart';
-
 import 'ReportBug.dart';
 
 // Feedback Widget.
@@ -24,7 +21,6 @@ class FeedBack extends StatefulWidget {
 class _FeedBackState extends State<FeedBack> {
   // Feedback Data Service
   var _feedbackDataService = new FeedbackDataService();
-  var _accessDatabase = new DatabaseAccess();
   // Boolean New Feedback
   bool newFeedback = false;
   GroupOfQuestions? groupOfQuestions = new GroupOfQuestions();

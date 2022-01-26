@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -20,25 +21,21 @@ class TusDatos extends StatefulWidget {
 class _TusDatosState extends State<TusDatos> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
   // Boolean Loading
   bool isLoading = false;
   bool firstBuild = true;
-
   // Form Values
   final _formKey = GlobalKey<FormState>();
   var firstNameController;
   var lastNameController;
   String firstNameControllerTemp = "";
   String lastNameControllerTemp = "";
-
   // Gender Widget value
   int? genderTemp;
   final _genderKey = GlobalKey<_GenderWidgetState>();
-
   // Date of Birth
   TextEditingController startDateController = TextEditingController();
-
   // Boolean isUpdated
   bool isUpdated = false;
 
@@ -401,9 +398,9 @@ class _TusDatosState extends State<TusDatos> {
                   isLoading = true;
                 });
                 currentUser.name = currentUser.firstName!+" "+currentUser.lastName!;
-                await _accessDatabase.updateCurrentUserDatosPerifl(
-                    currentUser.name!, currentUser.firstName!, currentUser.lastName!, currentUser.gender!, currentUser.dateOfBirth!);
+                await _userDataService.updateCurrentUserDatosPerifl(currentUser.name!, currentUser.firstName!, currentUser.lastName!, currentUser.gender!, currentUser.dateOfBirth!);
               }
+              await Future.delayed(const Duration(seconds: 1));
               Navigator.pop(context);
             }
           },
