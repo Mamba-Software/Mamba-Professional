@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
 import 'package:mamba_castelldefels/Data/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -40,10 +41,10 @@ class PerfilTrainer extends StatefulWidget {
 
 class _PerfilTrainerState extends State<PerfilTrainer> {
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
   var _userDataService = new UserDataService();
   var _brandDataService = new BrandDataService();
   var _eventDataService = new EventDataService();
+  var _feedbackDataService = new FeedbackDataService();
   // Boolean Loading
   bool isLoading = true;
   // Event List
@@ -150,7 +151,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
         indexFound = true;
       }
       // Load Images
-      Image? image = returnRandomImage(imagesEventsNum);
+      Image? image = buildRandomImage(imagesEventsNum);
       imagesEvents.add(image);
     }
     if (!indexFound) {
@@ -161,9 +162,9 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
 
   // Check If Answered
   Future<void> checkIfAnswered() async {
-    this.groupOfQuestions = await this._accessDatabase.getActiveGroupOfQuestions();
+    this.groupOfQuestions = await _feedbackDataService.getActiveGroupOfQuestions();
     if (groupOfQuestions != null) {
-      alreadyAnswered = await this ._accessDatabase.checkIfAnswersExist(this.groupOfQuestions!.id);
+      alreadyAnswered = await _feedbackDataService.checkIfAnswersExist(this.groupOfQuestions!.id);
     } else {
       alreadyAnswered = true;
     }
@@ -188,7 +189,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
 
   // Gets the events passed by the trainer.
   Future<void> getTrainerEventsDone() async {
-    List<int> res = await _accessDatabase.getAllTrainerEventsFinished(currentUser.id!, currentBrand.id!);
+    List<int> res = await _eventDataService.getUserEventsFinished(currentUser.id!);
     totalEvents = res[0];
     thisMonthEvents = res[1];
   }
@@ -228,7 +229,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
   }
 
   // Return bade on events Today
-  Widget returnBadge(int index) {
+  Widget buildBadge(int index) {
     int label = todayEventsLabels[index];
     switch (label) {
     // To Do
@@ -349,7 +350,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
   }
 
   // Gets Random Image for each Event.
-  Image? returnRandomImage(var prohibited) {
+  Image? buildRandomImage(var prohibited) {
     Random random = new Random();
     bool isOkay = false;
     int randomNumber = 0;
@@ -815,7 +816,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                                                       style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 20, fontFamily: "Helvetica"), textAlign: TextAlign.left),
                                                 ),
                                                 SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                                                returnBadge(index),
+                                                buildBadge(index),
                                               ],
                                             ),
                                           ),

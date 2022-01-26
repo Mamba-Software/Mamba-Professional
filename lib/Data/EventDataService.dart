@@ -23,6 +23,7 @@ class EventDataService {
   // Get Data
   Future<List<Event>> getUserEvents(String userId) => _firebase.getUserEvents(userId);
   Future<List<Event>> getUserEventsToday(String userId) => _firebase.getUserEventsToday(userId);
+  Future<List<int>> getUserEventsFinished(String userId) => _firebase.getUserEventsFinished(userId);
 
   // Add Data
   Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.addEvent(brandID, title, description, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);

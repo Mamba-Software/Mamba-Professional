@@ -5,6 +5,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -37,9 +39,10 @@ class PerfilClient extends StatefulWidget {
 
 class _PerfilClientState extends State<PerfilClient> {
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
   var _userDataService = new UserDataService();
   var _brandDataService = new BrandDataService();
+  var _eventDataService = new EventDataService();
+  var _feedbackDataService = new FeedbackDataService();
   // Boolean Loading
   bool isLoading = false;
   // Events
@@ -104,14 +107,14 @@ class _PerfilClientState extends State<PerfilClient> {
 
   // Gets the user info from firebase.
   void getUser() async {
-    currentUser.setBasicData = await _accessDatabase.getUserDetails(currentUser.id!);
+    currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
   }
 
   // Gets user events today.
   Future<void> getUserEventsToday() async {
     bool indexFound = false;
     DateTime now = DateTime.now();
-    todayEvents = await _accessDatabase.getAllEventsTodayUser(currentUser.id!, currentUser.isTrainer!);
+    todayEvents = await _eventDataService.getUserEventsToday(currentUser.id!);
     todayEventsLabels = [];
     for (var i=0; i < todayEvents.length; i++) {
       Event event = todayEvents[i];
@@ -146,7 +149,7 @@ class _PerfilClientState extends State<PerfilClient> {
         indexFound = true;
       }
       // Load Images
-      Image? image = returnRandomImage(imagesEventsNum);
+      Image? image = buildRandomImage(imagesEventsNum);
       imagesEvents.add(image);
     }
     if (!indexFound) {
@@ -157,12 +160,44 @@ class _PerfilClientState extends State<PerfilClient> {
 
   // Check If Answered
   Future<void> checkIfAnswered() async {
-    this.groupOfQuestions = await this._accessDatabase.getActiveGroupOfQuestions();
+    this.groupOfQuestions = await _feedbackDataService.getActiveGroupOfQuestions();
     if (groupOfQuestions != null) {
-      alreadyAnswered = await this ._accessDatabase.checkIfAnswersExist(this.groupOfQuestions!.id);
+      alreadyAnswered = await _feedbackDataService.checkIfAnswersExist(this.groupOfQuestions!.id);
     } else {
       alreadyAnswered = true;
     }
+  }
+
+  // Get user pending requests
+  Future<void> getUserPendingRequests() async {
+    List<RequestToBrand> req = await _userDataService.getUserRequests(currentUser.id!);
+    if (req.isNotEmpty) {
+      // At this moment, only 1 requests possible
+      var brandReq = await _brandDataService.getBrandCoverDetails(req[0].brandId!);
+      setState(() {
+        request = req[0];
+        brandRequested = brandReq;
+      });
+    } else {
+      setState(() {
+        request = RequestToBrand();
+      });
+    }
+  }
+
+  Future<void> getClientEventsDone() async {
+    List<int> res = await _eventDataService.getUserEventsFinished(currentUser.id!);
+    totalEvents = res[0];
+    thisMonthEvents = res[1];
+  }
+
+  // Gets a double and returns a String Duration to be shown
+  durationToString(double duration) {
+    String temp = "";
+    temp = duration.toStringAsFixed(2);
+    var hour = temp.split(".")[0];
+    var min = temp.split(".")[1];
+    return "${hour}h ${min}m ";
   }
 
   // Build Custom Badge
@@ -188,7 +223,7 @@ class _PerfilClientState extends State<PerfilClient> {
   }
 
   // Return bade on events Today
-  Widget returnBadge(int index) {
+  Widget buildBadge(int index) {
     int label = todayEventsLabels[index];
     switch (label) {
     // To Do
@@ -309,7 +344,7 @@ class _PerfilClientState extends State<PerfilClient> {
   }
 
   // Gets Random Image for each Event.
-  Image? returnRandomImage(var prohibited) {
+  Image? buildRandomImage(var prohibited) {
     Random random = new Random();
     bool isOkay = false;
     int randomNumber = 0;
@@ -374,37 +409,6 @@ class _PerfilClientState extends State<PerfilClient> {
         return Image.asset(Constants.eventBackground, gaplessPlayback: true,);
       }
     }
-  }
-
-  // Get user pending requests
-  Future<void> getUserPendingRequests() async {
-    List<RequestToBrand> req = await _userDataService.getUserRequests(currentUser.id!);
-    if (req.isNotEmpty) {
-      // At this moment, only 1 requests possible
-      var brandReq = await _brandDataService.getBrandCoverDetails(req[0].brandId!);
-      setState(() {
-        request = req[0];
-        brandRequested = brandReq;
-      });
-    } else {
-      setState(() {
-        request = RequestToBrand();
-      });
-    }
-  }
-
-  Future<void> getClientEventsDone() async {
-    List<int> res = await _accessDatabase.getAllClientEventsFinished(currentUser.id!, currentBrand.id!);
-    totalEvents = res[0];
-    thisMonthEvents = res[1];
-  }
-
-  durationToString(double duration) {
-    String temp = "";
-    temp = duration.toStringAsFixed(2);
-    var hour = temp.split(".")[0];
-    var min = temp.split(".")[1];
-    return "${hour}h ${min}m ";
   }
 
   Widget build(BuildContext context) {
@@ -787,7 +791,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                                       style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 20, fontFamily: "Helvetica"), textAlign: TextAlign.left),
                                                 ),
                                                 SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                                                returnBadge(index),
+                                                buildBadge(index),
                                               ],
                                             ),
                                           ),
@@ -1430,7 +1434,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                       setState(() {
                                         isLoadingCodigo = true;
                                       });
-                                      var result = await _accessDatabase.checkIfBrandExists(_codigo);
+                                      var result = await _brandDataService.checkIfBrandExists(_codigo);
                                       if (!result) {
                                         Future.delayed(const Duration(milliseconds: 500), () {
                                           setState(() {
@@ -1439,12 +1443,10 @@ class _PerfilClientState extends State<PerfilClient> {
                                           });
                                         });
                                       } else {
-                                        await _accessDatabase.updateCurrentUserBrand(_codigo);
-                                        await _accessDatabase.updateConversationNewUser(_codigo, currentUser.id);
                                         NotificationService().userJoinsBrand(currentUser.id!, _codigo);
                                         // New DataBase
                                         int role = 0;
-                                        await _accessDatabase.addUserToBrand(currentUser.id!, _codigo, role);
+                                        await _brandDataService.addUserToBrand(currentUser.id!, _codigo, role);
                                         // Push To Splash Screen
                                         setState(() {
                                           currentIndex = 1;

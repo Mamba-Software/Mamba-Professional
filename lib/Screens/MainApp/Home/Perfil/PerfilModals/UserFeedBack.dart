@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:mamba_castelldefels/Data/FeedbackDataService.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:survey_kit/survey_kit.dart';
@@ -21,8 +23,9 @@ class UserFeedBack extends StatefulWidget {
 
 class _UserFeedBackState extends State<UserFeedBack> {
   //DataBase Access
-  var _accessDatabase = new DatabaseAccess();
-
+  var _feedbackDataService = new FeedbackDataService();
+  var _userDataService = new UserDataService();
+  // Variables
   GroupOfQuestions? groupOfQuestions = new GroupOfQuestions();
   bool isLoading = true;
   String questionOne = "", questionTwo = "", questionThree = "", questionFour = "";
@@ -35,24 +38,21 @@ class _UserFeedBackState extends State<UserFeedBack> {
   }
 
   Future<void> activeGroup() async {
-
-    currentUser.setBasicData = await _accessDatabase.getUserDetails(currentUser.id!);
-
-    this.groupOfQuestions = await this._accessDatabase.getActiveGroupOfQuestions();
+    currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
+    this.groupOfQuestions = await _feedbackDataService.getActiveGroupOfQuestions();
 
     if(currentUser.idioma == "ca") {
-      questionOne = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions!.questionOne)).questionCat!;
-      questionTwo = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions!.questionTwo)).questionCat!;
-      questionThree = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions!.questionThree)).questionCat!;
-      questionFour = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions!.questionFour)).questionCat!;
+      questionOne = (await this._feedbackDataService.getOneQuestion(this.groupOfQuestions!.questionOne)).questionCat!;
+      questionTwo = (await this._feedbackDataService.getOneQuestion(this.groupOfQuestions!.questionTwo)).questionCat!;
+      questionThree = (await this._feedbackDataService.getOneQuestion(this.groupOfQuestions!.questionThree)).questionCat!;
+      questionFour = (await this._feedbackDataService.getOneQuestion(this.groupOfQuestions!.questionFour)).questionCat!;
     }
     else {
-      questionOne = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions!.questionOne)).questionSpn!;
-      questionTwo = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions!.questionTwo)).questionSpn!;
-      questionThree = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions!.questionThree)).questionSpn!;
-      questionFour = (await this._accessDatabase.getOneQuestion(this.groupOfQuestions!.questionFour)).questionSpn!;
+      questionOne = (await this._feedbackDataService.getOneQuestion(this.groupOfQuestions!.questionOne)).questionSpn!;
+      questionTwo = (await this._feedbackDataService.getOneQuestion(this.groupOfQuestions!.questionTwo)).questionSpn!;
+      questionThree = (await this._feedbackDataService.getOneQuestion(this.groupOfQuestions!.questionThree)).questionSpn!;
+      questionFour = (await this._feedbackDataService.getOneQuestion(this.groupOfQuestions!.questionFour)).questionSpn!;
     }
-
     setState(() {
       isLoading = false;
     });
@@ -78,7 +78,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
                  return SurveyKit(
                    onResult: (SurveyResult result) {
                      if(result.finishReason.toString() == "FinishReason.COMPLETED") {
-                       this._accessDatabase.addAnswers(
+                       this._feedbackDataService.addAnswers(
                          this.groupOfQuestions!.id, result.results[0]
                          .results[0].valueIdentifier, result.results[1]
                          .results[0].valueIdentifier,

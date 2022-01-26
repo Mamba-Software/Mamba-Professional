@@ -115,11 +115,11 @@ class _NotificationsState extends State<Notifications> {
           if (event.id == null) {
             event = await _accessDatabase.getSingleEvent(notification.parameters[2]);
           }
-          // Falta fer un contro
           if (event.id == null) {
             events.add(Event(title: AppLocalizations.of(context)!.deletedEvent.toLowerCase()));
+          } else {
+            events.add(event);
           }
-          events.add(event);
         } else {
           events.add(Event());
         }

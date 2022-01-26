@@ -150,7 +150,7 @@ class FirebaseDatabaseService {
 
   Future<Usuario> getUserDetails(String uid) async {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(users).doc(uid).get();
-    return Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);;
+    return Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
   }
 
   Future<List<String>> getUserCoverDetails(String uid) async {
@@ -706,6 +706,35 @@ class FirebaseDatabaseService {
       events.add(Event.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return events;
+  }
+
+  Future<List<int>> getUserEventsFinished(String userId) async {
+    List<Event> eventsList = [];
+    List<Event> eventsMonth = [];
+    DateTime today = DateTime.now();
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Events")
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+      var startDate = DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
+      if (today.isAfter(startDate)) {
+        eventsList.add(event);
+        if (today.year == int.parse(event.year!) && today.month == int.parse(event.month!)) {
+          eventsMonth.add(event);
+        }
+      }
+    }
+    List<int> result = [eventsList.length, eventsMonth.length];
+    return result;
   }
 
 
