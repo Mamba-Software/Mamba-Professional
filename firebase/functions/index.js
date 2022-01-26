@@ -606,6 +606,7 @@ exports.userAddsEvent = functions
           "duration": eventDoc.duration,
           "numTrainers": numTrainers,
           "numClients": numClients,
+          "maxMembers": eventDoc.maxMembers,
         });
       }
       // Add Event to Locations Event Subcollection
@@ -625,6 +626,7 @@ exports.userAddsEvent = functions
           "duration": eventDoc.duration,
           "numTrainers": numTrainers,
           "numClients": numClients,
+          "maxMembers": eventDoc.maxMembers,
         });
       }
       return null;
@@ -759,6 +761,7 @@ exports.userJoinsEvent = functions
           "duration": eventDoc.duration,
           "numTrainers": numTrainers,
           "numClients": numClients,
+          "maxMembers": eventDoc.maxMembers,
       });
       // Update Number of Client and Trainers on Each of Event Subcollection
       // User´s Event First
@@ -803,7 +806,7 @@ exports.userJoinsEvent = functions
       return null;
     });
 
-// User Joins Event
+// User Leaves Event
 exports.userLeavesEvent = functions
     .region("europe-west1")
     .firestore

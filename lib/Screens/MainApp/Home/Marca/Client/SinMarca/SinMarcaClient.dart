@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
@@ -21,9 +19,7 @@ import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/TodosMiembrosClient.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
@@ -475,8 +471,15 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                           adminUser.id!: adminUser.isTrainer,
                                           currentUser.id!: currentUser.isTrainer,
                                         });
-                                        Navigator.push(context, CupertinoPageRoute<Null>(
-                                            builder: (context) => ChatPage(room: room)),);
+                                        Navigator.push(
+                                          context,
+                                          CupertinoPageRoute<Null>(
+                                            builder: (context) => ChatPage(
+                                                room: room)
+                                          )
+                                        ).whenComplete(() {
+                                          getUserPendingRequests();
+                                        });
                                       }
                                     },
                                   ),

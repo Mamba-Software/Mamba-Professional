@@ -133,6 +133,9 @@ class Event {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numTrainers')) {
       this.numTrainers = documentSnapshot.get("numTrainers");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('maxMembers')) {
+      this.maxMembers = documentSnapshot.get("maxMembers");
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////

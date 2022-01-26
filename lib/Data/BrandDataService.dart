@@ -31,7 +31,11 @@ class BrandDataService {
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // STREAMS
-  
+
+  // Requests
   Stream<QuerySnapshot> getBrandRequests(String brandId) => _firebase.getBrandRequests(brandId);
+
+  // Events
+  Stream<QuerySnapshot> getAllEventsFromBrand(String brandId) => _firebase.getAllEventsFromBrand(brandId);
 
 }

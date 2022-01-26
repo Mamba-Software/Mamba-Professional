@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -28,8 +29,8 @@ class TodosMiembrosTrainer extends StatefulWidget {
 
 class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
 
-  // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  // Brand Data Service
+  var _brandDataService = BrandDataService();
   // Boolean Loading
   bool isLoading = false;
   // Boolean isUpdated
@@ -47,8 +48,9 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
   var chatUsers = [];
 
   Future<void> getAllUsers() async {
-    for (var i=0; i< currentBrand.usersList.length; i++) {
-      Usuario user = currentBrand.usersList[i];
+    List<Usuario> brandUsers = await _brandDataService.getBrandUsers(currentBrand.id!);
+    for (var i=0; i< brandUsers.length; i++) {
+      Usuario user = brandUsers[i];
       if (user.isTrainer!) {
         if (user.id == currentUser.id) {
           filteredTrainers.insert(0, user);
@@ -61,6 +63,10 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
         allClients.add(user);
       }
     }
+    await Future.delayed(const Duration(milliseconds: 500));
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void filterSearchResults(String query, bool isTrainer) {
@@ -104,6 +110,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
 
   @override
   initState() {
+    isLoading = true;
     getAllUsers();
   }
 

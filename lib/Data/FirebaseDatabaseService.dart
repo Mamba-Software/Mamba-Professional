@@ -1964,10 +1964,11 @@ class FirebaseDatabaseService {
     return _firestore.collection(brands).snapshots();
   }
 
-  Stream<QuerySnapshot> getAllEventsFromBrand(String brandid) {
+  Stream<QuerySnapshot> getAllEventsFromBrand(String brandId) {
     return _firestore
-        .collection(events)
-        .where("brandID", isEqualTo: brandid)
+        .collection(brands)
+        .doc(brandId)
+        .collection("Events")
         .snapshots();
   }
 
