@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -24,7 +25,7 @@ class AdminFeedBack extends StatefulWidget {
 
 class _AdminFeedBackState extends State<AdminFeedBack> {
   //DataBase Access
-  var _accessDatabase = new DatabaseAccess();
+  var _feedbackDataService = new FeedbackDataService();
 
   String? displayType = "Selecciona un tipus";
   String? displayQuestion1 = "Selecciona una pregunta",
@@ -180,7 +181,7 @@ class _AdminFeedBackState extends State<AdminFeedBack> {
                               style: TextStyle(fontSize: 20.0),
                             ),
                             onPressed: () {
-                              this._accessDatabase.addQuestion(
+                              this._feedbackDataService.addQuestion(
                                   editingControllerCat.text,
                                   editingControllerSpn.text,
                                   this.displayType);
@@ -189,7 +190,7 @@ class _AdminFeedBackState extends State<AdminFeedBack> {
                         ],
                       ),
                       StreamBuilder<QuerySnapshot>(
-                        stream: _accessDatabase.getAllQuestions(),
+                        stream: _feedbackDataService.getAllQuestions(),
                         builder: (context, snapshot) {
                           if (snapshot.data == null) {
                             return LoadingView();
@@ -316,7 +317,7 @@ class _AdminFeedBackState extends State<AdminFeedBack> {
                                     style: TextStyle(fontSize: 20.0),
                                   ),
                                   onPressed: () {
-                                    this._accessDatabase.addGroupOfQuestions(
+                                    this._feedbackDataService.addGroupOfQuestions(
                                         this.questionOne,
                                         this.questionTwo,
                                         this.questionThree,

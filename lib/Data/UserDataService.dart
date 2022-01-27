@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
+import 'package:mamba_castelldefels/Models/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'FirebaseDatabaseService.dart';
@@ -24,14 +25,16 @@ class UserDataService {
 
   // Get Data
   Future<Usuario> getUserDetails(String userId) => _firebase.getUserDetails(userId);
-  Future<List<String>> getUserCoverDetails(String userId) => _firebase.getUserCoverDetails(userId);
+  Future<Usuario> getUserCoverDetails(String userId) => _firebase.getUserCoverDetails(userId);
   Future<List<RequestToBrand>> getUserRequests(String userId) => _firebase.getUserRequests(userId);
+  Future<List<NotificationEvent>> getUserNotifications(String userId) => _firebase.getAllNotificationsUser(userId);
   Future<int> getUnreadNotifications(String userId) => _firebase.getUnreadNotifications(userId);
   Future<int> getUnreadConversations(String userId) => _firebase.getUnreadConversations(userId);
 
   // Add Data
   Future<int> addUser(String email, String password, String idioma) => _firebase.addUser(email, password, idioma);
   Future<void> addUserNickname(String userId, String nickname) => _firebase.addUserNickname(userId, nickname);
+  Future<void> sendNotificationToUser(String userId, String type, var parameters) => _firebase.sendNotificationToUser(userId, type, parameters);
   Future<void> sendRequestToBrand(String brandId, String name, bool isTrainer) => _firebase.sendRequestToBrand(brandId, name, isTrainer);
 
   // Update Data
@@ -41,6 +44,8 @@ class UserDataService {
   Future<String> updateCurrentUserPhoto(File image) => _firebase.updateCurrentUserPhoto(image);
   Future<void> updateCurrentUserDatosPerifl(String name, String firstName, String lastName, int gender, String dateOfBirth) => _firebase.updateCurrentUserDatosPerifl(name, firstName, lastName, gender, dateOfBirth);
   Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma) => _firebase.updateCurrentUserSettingsPerifl(isPrivate, idioma);
+  Future<void> markNotificationAsRead(String userId, String notificationId) => _firebase.markNotificationAsRead(userId,notificationId);
+  Future<void> markALLNotificationAsRead(String userId) => _firebase.markALLNotificationAsRead(userId);
 
   // Delete Data
   Future<void> deleteRequestToBrand(RequestToBrand request) => _firebase.deleteRequestToBrand(request);

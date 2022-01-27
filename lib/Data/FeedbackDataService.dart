@@ -18,21 +18,26 @@ class FeedbackDataService {
 
   final _firebase = FirebaseDatabaseService();
 
-  //Questions
-  Future<Question> getOneQuestion(String? id) => _firebase.getOneQuestion(id);
-  Future<String> addQuestion(String? questionCat, String? questionSpn, String? type) => _firebase.addQuestion(questionCat, questionSpn, type);
+  // Check Data
+  Future<bool> checkIfAnswersExist(String? groupOfQuestionsID) => _firebase.checkIfAnswersExist(groupOfQuestionsID);
 
-  //GroupOfQuestions
-  Future<String> addGroupOfQuestions(String? questionOne, String? questionTwo, String? questionThree, String? questionFour) => _firebase.addGroupOfQuestions(questionOne, questionTwo, questionThree, questionFour);
+  // Get Data
+  Future<Question> getOneQuestion(String? id) => _firebase.getOneQuestion(id);
   Future<GroupOfQuestions?> getActiveGroupOfQuestions() => _firebase.getActiveGroupOfQuestions();
 
-  //Answers
+  // Add Data
+  Future<bool> addError(String title, String description, String stepsReproduce) => _firebase.addError(title, description, stepsReproduce);
+  Future<String> addQuestion(String? questionCat, String? questionSpn, String? type) => _firebase.addQuestion(questionCat, questionSpn, type);
+  Future<String> addGroupOfQuestions(String? questionOne, String? questionTwo, String? questionThree, String? questionFour) => _firebase.addGroupOfQuestions(questionOne, questionTwo, questionThree, questionFour);
   Future<String> addAnswers(String? groupOfQuestionsID, String? answerOne, String? answerTwo, String? answerThree, String? answerFour) => _firebase.addAnswers(groupOfQuestionsID, answerOne, answerTwo, answerThree, answerFour);
-  Future<bool> checkIfAnswersExist(String? groupOfQuestionsID) => _firebase.checkIfAnswersExist(groupOfQuestionsID);
+
+  // Update Data
+
+  // Delete Data
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams
 
-
+  Stream<QuerySnapshot> getAllQuestions() => _firebase.getAllQuestions();
 
 }

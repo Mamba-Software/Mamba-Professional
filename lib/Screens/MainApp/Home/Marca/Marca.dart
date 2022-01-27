@@ -22,9 +22,6 @@ class Marca extends StatefulWidget {
 
 class _MarcaState extends State<Marca> {
 
-  // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
-
   // init Widget state. Loading user info.
   @override
   void initState() {

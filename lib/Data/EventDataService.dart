@@ -21,6 +21,7 @@ class EventDataService {
   // Check Data
 
   // Get Data
+  Future<Event> getSingleEvent(String eventId) => _firebase.getSingleEvent(eventId);
   Future<List<Event>> getUserEvents(String userId) => _firebase.getUserEvents(userId);
   Future<List<Event>> getUserEventsToday(String userId) => _firebase.getUserEventsToday(userId);
   Future<List<int>> getUserEventsFinished(String userId) => _firebase.getUserEventsFinished(userId);
@@ -49,7 +50,7 @@ class EventDataService {
   Future<bool> joinEvent(String eid, String uid) => _firebase.joinEvent(eid, uid);
   Future<bool> leaveEvent(String eid, String uid, bool isTrainer) => _firebase.leaveEvent(eid, uid, isTrainer);
 
-  Future<Event> getSingleEvent(String eventId) => _firebase.getSingleEvent(eventId);
+
   Future<List<Event>> getAllEventsWithLocationId(String locationId) => _firebase.getAllEventsWithLocationId(locationId);
 
   Future<List<Event>> getAllEventsFromClient(String clientid) => _firebase.getAllEventsFromClient(clientid);

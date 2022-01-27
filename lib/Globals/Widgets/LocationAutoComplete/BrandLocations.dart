@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/LocationDataService.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
@@ -28,7 +29,7 @@ class BrandLocations extends StatefulWidget {
 class _BrandLocationsState extends State<BrandLocations> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _locationDataService = new LocationDataService();
   // Boolean Loading
   bool isLoading = false;
   // Locations From Brand
@@ -89,7 +90,7 @@ class _BrandLocationsState extends State<BrandLocations> {
           children: [
             SizedBox(height: MediaQuery.of(context).size.height*0.01),
             StreamBuilder<QuerySnapshot>(
-                stream: _accessDatabase.getAllLocationsBrand(currentBrand.id!),
+                stream: _locationDataService.getAllLocationsBrand(currentBrand.id!),
                 builder: (context, snapshot) {
                   if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
                     return Container(

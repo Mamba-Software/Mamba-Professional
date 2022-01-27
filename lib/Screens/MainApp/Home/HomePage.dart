@@ -29,7 +29,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
   var _userDataService = new UserDataService();
   var _brandDataService = new BrandDataService();
   // Boolean Loading
@@ -161,8 +160,8 @@ class _HomePageState extends State<HomePage> {
           UserChat(),
         ],
         onPageChanged: (page) async {
-          unreadNotifications = await _accessDatabase.getUnreadNotifications(currentUser.id!);
-          unreadChats = await _accessDatabase.getUnreadConversations(currentUser.id!);
+          unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
+          unreadChats = await _userDataService.getUnreadConversations(currentUser.id!);
           // Check User´s Brand List
           List<Brand> brands = await _brandDataService.getAllBrandsFromUser(currentUser.id!);
           currentUser.setBrandList = brands;

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/LocationDataService.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteConfirmationDialog.dart';
@@ -27,7 +28,7 @@ class MyLocations extends StatefulWidget {
 class _MyLocationsState extends State<MyLocations> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _locationDataService = new LocationDataService();
   // Google APIS
   googlePlace.GooglePlace? gPlace;
   googlePlace.DetailsResult? detailsResult;
@@ -128,7 +129,7 @@ class _MyLocationsState extends State<MyLocations> {
                         location.longitude = detailsResult!.geometry!.location!.lng!;
                       }
                       // Save location to DataBase
-                      await _accessDatabase.addLocation(widget.brandId, false, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
+                      await _locationDataService.addLocation(widget.brandId, false, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
                     }
                   },
                   leading: Icon(
@@ -147,7 +148,7 @@ class _MyLocationsState extends State<MyLocations> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.01),
             StreamBuilder<QuerySnapshot>(
-                stream: _accessDatabase.getAllLocationsBrand(widget.brandId),
+                stream: _locationDataService.getAllLocationsBrand(widget.brandId),
                 builder: (context, snapshot) {
                   if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
                     return Container(
@@ -205,7 +206,7 @@ class _MyLocationsState extends State<MyLocations> {
                                           loc.longitude = detailsResult!.geometry!.location!.lng!;
                                         }
                                         // Save location to DataBase
-                                        await _accessDatabase.updateLocation(location.id!,widget.brandId, true, loc.placeId!, loc.description!, loc.street!, loc.streetNumber!, loc.city!, loc.zipCode!, loc.latitude!, loc.longitude!);
+                                        await _locationDataService.updateLocation(location.id!,widget.brandId, true, loc.placeId!, loc.description!, loc.street!, loc.streetNumber!, loc.city!, loc.zipCode!, loc.latitude!, loc.longitude!);
                                       }
                                     },
                                     icon: Icon(Icons.edit, color: Theme.of(context).accentColor, size: 25,),
@@ -253,7 +254,7 @@ class _MyLocationsState extends State<MyLocations> {
                                       }
                                   );
                                   if (result) {
-                                    _accessDatabase.deleteLocation(location.id!, baseLocationId);
+                                    _locationDataService.deleteLocation(location.id!, baseLocationId);
                                   }
                                 },
                                 icon: Icon(Icons.delete_outline, color: Colors.red, size: 25,),

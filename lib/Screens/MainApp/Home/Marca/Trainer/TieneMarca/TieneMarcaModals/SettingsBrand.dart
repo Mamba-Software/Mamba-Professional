@@ -280,8 +280,6 @@ class DeleteBrandDialog extends StatefulWidget {
 
 class _DeleteDialogState extends State<DeleteBrandDialog> {
 
-  // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
   // Delete Alert
   bool firstBuild = true;
   bool canDelete = false;

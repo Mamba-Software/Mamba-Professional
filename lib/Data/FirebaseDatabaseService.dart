@@ -153,16 +153,13 @@ class FirebaseDatabaseService {
     return Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
   }
 
-  Future<List<String>> getUserCoverDetails(String uid) async {
+  Future<Usuario> getUserCoverDetails(String uid) async {
     try {
       DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(users).doc(uid).get();
-      String name = _documentSnapshot.get("name");
-      String image = _documentSnapshot.get("imageUrl");
-      List<String> result = [name, image];
-      return result;
+      return Usuario.fromObjectOnlyCoverData(_documentSnapshot.id, _documentSnapshot);
     } catch (e) {
       print(e);
-      return ["Error"];
+      return Usuario();
     }
   }
 
@@ -750,6 +747,38 @@ class FirebaseDatabaseService {
       await  _firestore.collection(brands).doc(brandId).collection("Users").get().then((snapshot) {
         for (DocumentSnapshot doc in snapshot.docs) {
           users.add(Usuario.fromObjectOnlyCoverData(doc.id, doc));
+        }});
+      return users;
+    } catch (e) {
+      print(e.toString());
+      return users;
+    }
+  }
+
+  Future<List<Usuario>> getBrandTrainers(String brandId) async {
+    List<Usuario> users = [];
+    try {
+      await  _firestore.collection(brands).doc(brandId).collection("Users").get().then((snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          if (doc.get("isTrainer") == true) {
+            users.add(Usuario.fromObjectOnlyCoverData(doc.id, doc));
+          }
+        }});
+      return users;
+    } catch (e) {
+      print(e.toString());
+      return users;
+    }
+  }
+
+  Future<List<Usuario>> getBrandClients(String brandId) async {
+    List<Usuario> users = [];
+    try {
+      await  _firestore.collection(brands).doc(brandId).collection("Users").get().then((snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          if (doc.get("isTrainer") == false) {
+            users.add(Usuario.fromObjectOnlyCoverData(doc.id, doc));
+          }
         }});
       return users;
     } catch (e) {

@@ -4,7 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -32,7 +35,9 @@ class Notifications extends StatefulWidget {
 class _NotificationsState extends State<Notifications> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
+  var _brandDataService = new BrandDataService();
+  var _eventDataService = new EventDataService();
   // Acceso a Base de Datos
   bool isLoading = true;
   // Notification List
@@ -56,7 +61,7 @@ class _NotificationsState extends State<Notifications> {
     List<Usuario> users = [];
     List<Brand> brands = [];
     List<Event> events = [];
-    notificationsList = await _accessDatabase.getAllNotificationsUser(currentUser.id!);
+    notificationsList = await _userDataService.getUserNotifications(currentUser.id!);
     // Order Notification List Descending Time
     notificationsList.sort((a,b) {
       var aDate =  DateTime(
@@ -85,10 +90,8 @@ class _NotificationsState extends State<Notifications> {
         if (notification.parameters[0] != "null") {
           Usuario user = users.firstWhere((element) => element.id == notification.parameters[0], orElse: () => Usuario());
           if (user.id == null) {
-            List<String> coverInformation = await _accessDatabase.getUserCoverDetails(notification.parameters[0]);
-            if (coverInformation[0] != "Error") {
-              user = Usuario(id: notification.parameters[0], name: coverInformation[0], imageUrl: coverInformation[1]);
-            } else {
+            user = await _userDataService.getUserCoverDetails(notification.parameters[0]);
+            if (user.id == null) {
               user = Usuario(name: AppLocalizations.of(context)!.deletedUser.toLowerCase(), imageUrl: deletedObject);
             }
           }
@@ -99,10 +102,8 @@ class _NotificationsState extends State<Notifications> {
         if (notification.parameters[1] != "null") {
           Brand brand = brands.firstWhere((element) => element.id == notification.parameters[1], orElse: () => Brand());
           if (brand.id == null) {
-            List<String> coverInformation = await _accessDatabase.getBrandCover(notification.parameters[1]);
-            if (coverInformation[0] != "Error") {
-              brand = Brand(id: notification.parameters[1], name: coverInformation[0], logoUrl: coverInformation[1]);
-            } else {
+            brand = await _brandDataService.getBrandCoverDetails(notification.parameters[1]);
+            if (brand.id == null) {
               brand = Brand(name: AppLocalizations.of(context)!.deletedBrand.toLowerCase(), logoUrl: deletedObject);
             }
           }
@@ -113,7 +114,7 @@ class _NotificationsState extends State<Notifications> {
         if (notification.parameters[2] != "null") {
           Event event = events.firstWhere((element) => element.id == notification.parameters[2], orElse: () => Event());
           if (event.id == null) {
-            event = await _accessDatabase.getSingleEvent(notification.parameters[2]);
+            event = await _eventDataService.getSingleEvent(notification.parameters[2]);
           }
           if (event.id == null) {
             events.add(Event(title: AppLocalizations.of(context)!.deletedEvent.toLowerCase()));
@@ -166,7 +167,7 @@ class _NotificationsState extends State<Notifications> {
                   notif.isRead = true;
                 });
               }
-              await _accessDatabase.markALLNotificationAsRead(currentUser.id!);
+              await _userDataService.markALLNotificationAsRead(currentUser.id!);
             },
           ),
           SizedBox(width: MediaQuery.of(context).size.width*0.03,),
@@ -244,7 +245,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -281,7 +282,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
 
             setState(() {
               notificationsList[index].isRead = true;
@@ -317,7 +318,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -353,7 +354,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -389,7 +390,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -425,7 +426,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -461,7 +462,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -497,7 +498,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -533,7 +534,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -569,7 +570,7 @@ class _NotificationsState extends State<Notifications> {
             ],
           ),
           onTap: () async {
-            await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+            await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
             setState(() {
               notificationsList[index].isRead = true;
             });
@@ -615,7 +616,7 @@ class _NotificationsState extends State<Notifications> {
               ],
             ),
             onTap: () async {
-              await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+              await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
               setState(() {
                 notificationsList[index].isRead = true;
               });
@@ -682,7 +683,7 @@ class _NotificationsState extends State<Notifications> {
               ],
             ),
             onTap: () async {
-              await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+              await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
               setState(() {
                 notificationsList[index].isRead = true;
               });
@@ -749,7 +750,7 @@ class _NotificationsState extends State<Notifications> {
               ],
             ),
             onTap: () async {
-              await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+              await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
               setState(() {
                 notificationsList[index].isRead = true;
               });
@@ -816,7 +817,7 @@ class _NotificationsState extends State<Notifications> {
               ],
             ),
             onTap: () async {
-              await _accessDatabase.markNotificationAsRead(currentUser.id!, notification.id!);
+              await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
               setState(() {
                 notificationsList[index].isRead = true;
               });

@@ -19,8 +19,6 @@ class AdminTool extends StatefulWidget {
 }
 
 class _AdminToolState extends State<AdminTool> {
-  //DataBase Access
-  var _accessDatabase = new DatabaseAccess();
   List<Usuario> usersListTrainer = [];
   List<Usuario> usersListClient = [];
   List<Usuario> usersList = [];

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
@@ -18,15 +17,11 @@ class DatabaseAccess {
 
   final _firebase = FirebaseDatabaseService();
 
-  Future<List<String>> getUserCoverDetails(String uid) => _firebase.getUserCoverDetails(uid);
-
   Future<void> leaveBrandUser(String userId) => _firebase.leaveBrandUser(userId);
 
   Future<void> deleteUserFromBrand(String userId, String brandId) => _firebase.deleteUserFromBrand(userId, brandId);
 
   // Brands
-
-
   Future<bool> checkIfBrandExists(String brandID) => _firebase.checkIfBrandExists(brandID);
   Future<Brand?> checkUserIsBrandCreator(String userId) => _firebase.checkUserIsBrandCreator(userId);
   Future<Brand> getBrandDetails(String brandID) => _firebase.getBrandDetails(brandID);
@@ -86,13 +81,6 @@ class DatabaseAccess {
   Future<void> deleteBrandLocations(String brandId) => _firebase.deleteBrandLocations(brandId);
   Future<Location> getSingleLocation(String locationId) => _firebase.getSingleLocation(locationId);
 
-  // Notifications
-  Future<List<NotificationEvent>> getAllNotificationsUser(String userId) => _firebase.getAllNotificationsUser(userId);
-  Future<void> sendNotificationToUser(String userId, String type, var parameters) => _firebase.sendNotificationToUser(userId, type, parameters);
-  Future<int> getUnreadNotifications(String userId) => _firebase.getUnreadNotifications(userId);
-  Future<void> markNotificationAsRead(String userId, String notificationId) => _firebase.markNotificationAsRead(userId,notificationId);
-  Future<void> markALLNotificationAsRead(String userId) => _firebase.markALLNotificationAsRead(userId);
-
   //Questions
   Future<Question> getOneQuestion(String? id) => _firebase.getOneQuestion(id);
   Future<String> addQuestion(String? questionCat, String? questionSpn, String? type) => _firebase.addQuestion(questionCat, questionSpn, type);
@@ -125,20 +113,6 @@ class DatabaseAccess {
   Future<Conversation> getConversationByBrand(String? brandId) => _firebase.getConversationByBrand(brandId);
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams
-
-  Stream<QuerySnapshot> getAllEventsTodayBrandStream(String brandId) => _firebase.getAllEventsTodayBrandStream(brandId);
-
-  // Brands
-  Stream<QuerySnapshot> getAllBrandsStream() => _firebase.getAllBrandsStream();
-
-  // Locations
-  Stream<QuerySnapshot> getAllLocationsBrand(String brandId) => _firebase.getAllLocationsBrand(brandId);
-
-  // Request
-  //Stream<QuerySnapshot> getAllRequestsBrand(String brandId) => _firebase.getAllRequestsBrand(brandId);
-
-  //Questions
-  Stream<QuerySnapshot> getAllQuestions() => _firebase.getAllQuestions();
 
   //Conversations
   Stream<QuerySnapshot> getUserConversations(Map<String, dynamic> mapUser) => _firebase.getUserConversations(mapUser);

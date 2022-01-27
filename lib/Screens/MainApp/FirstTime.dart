@@ -28,7 +28,6 @@ class FirstTime extends StatefulWidget {
 
 class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMixin{
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
   var _userDataService = new UserDataService();
   var _brandDataService = new BrandDataService();
   // Geolocator

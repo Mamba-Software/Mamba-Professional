@@ -14,11 +14,13 @@ class BrandDataService {
   Future<bool> checkIfBrandExists(String brandId) => _firebase.checkIfBrandExists(brandId);
 
   // Get Data
-  Future<List<Brand>> getAllBrands() => _firebase.getAllBrands();
-  Future<List<Brand>> getAllBrandsFromUser(String userId) => _firebase.getAllBrandsFromUser(userId);
   Future<Brand> getBrandDetails(String brandId) => _firebase.getBrandDetails(brandId);
   Future<Brand> getBrandCoverDetails(String brandId) => _firebase.getBrandCoverDetails(brandId);
   Future<List<Usuario>> getBrandUsers(String brandId) => _firebase.getBrandUsers(brandId);
+  Future<List<Usuario>> getBrandTrainers(String brandId) => _firebase.getBrandTrainers(brandId);
+  Future<List<Usuario>> getBrandClients(String brandId) => _firebase.getBrandClients(brandId);
+  Future<List<Brand>> getAllBrands() => _firebase.getAllBrands();
+  Future<List<Brand>> getAllBrandsFromUser(String userId) => _firebase.getAllBrandsFromUser(userId);
 
   // Add Data
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) => _firebase.addBrand(name, image, description, workShift, maxMembers);

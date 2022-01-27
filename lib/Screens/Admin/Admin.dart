@@ -20,8 +20,6 @@ class Admin extends StatefulWidget {
 
 class _AdminState extends State<Admin> {
 
-  //DataBase Access
-  var _accessDatabase = new DatabaseAccess();
   // List strings
   List<String> Names = [
     'Usuaris','Errors','FeedBack'
