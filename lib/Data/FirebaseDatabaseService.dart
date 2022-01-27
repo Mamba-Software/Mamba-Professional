@@ -1053,7 +1053,7 @@ class FirebaseDatabaseService {
   }
 
   // Get All Events Finished Brand
-  Future<int> getNumberEventsFinishedBrand(String brandId) async {
+  Future<int> getBrandsEventsFinished(String brandId) async {
     DateTime today = DateTime.now();
     List<Event> eventsList = [];
     QuerySnapshot querySnapshot = await _firestore
@@ -1078,7 +1078,7 @@ class FirebaseDatabaseService {
   }
 
   // Get All Events Finished Brand
-  Future<int> getNumberEventsToDoBrand(String brandId) async {
+  Future<int> getBrandsEventsUpcoming(String brandId) async {
     DateTime today = DateTime.now();
     List<Event> eventsList = [];
     QuerySnapshot querySnapshot = await _firestore

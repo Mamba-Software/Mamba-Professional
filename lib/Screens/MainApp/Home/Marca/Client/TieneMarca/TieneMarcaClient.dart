@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
@@ -34,6 +36,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
   var _brandDataService = new BrandDataService();
+  var _eventDataService = new EventDataService();
   // Boolean isLoading
   bool isLoading = false;
   // Brand Events Today
@@ -68,12 +71,12 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
 
   // Gets number of finished events
   Future<void> getNumberFinishedEvents() async {
-    numberEventsFinished = await _accessDatabase.getNumberEventsFinishedBrand(currentBrand.id!);
-    numberEventsToDo = await _accessDatabase.getNumberEventsToDoBrand(currentBrand.id!);
+    numberEventsFinished = await _eventDataService.getBrandsEventsFinished(currentBrand.id!);
+    numberEventsToDo = await _eventDataService.getBrandsEventsUpcoming(currentBrand.id!);
   }
   // Gets all events of today.
   Future<void> getAllEventsTodayBrand() async {
-    todayEvents = await _accessDatabase.getAllEventsTodayBrand(currentBrand.id!);
+    todayEvents = await _eventDataService.getAllEventsTodayBrand(currentBrand.id!);
   }
 
   String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
