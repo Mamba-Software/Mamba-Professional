@@ -31,7 +31,6 @@ class SettingsBrand extends StatefulWidget {
 class _SettingsBrandState extends State<SettingsBrand> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
   var _brandDataService = new BrandDataService();
   // Boolean Loading
   bool isLoading = false;
@@ -200,18 +199,9 @@ class _SettingsBrandState extends State<SettingsBrand> {
                       );
                       if (result) {
                         NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
-                        //12/12/2021
-                        Conversation conv = await _accessDatabase.getConversationByBrand(currentBrand.id!);
-                        for(int i = 0; i < conv.users.length; ++i) {
-                          if(conv.users[i]['uid'] == currentUser.id) {
-                            conv.users.removeAt(i);
-                          }
-                        }
-                        await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
-                        await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentBrand.id!, currentUser.isTrainer!);
-                        await _accessDatabase.leaveBrandUser(currentUser.id!);
+                        // TODO: NEW CHAT HERE
                         // New DataBase Restructure
-                        await _accessDatabase.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
+                        await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
                         Navigator.pushReplacement(
                             context,
                             CupertinoPageRoute<Null>(
@@ -246,10 +236,8 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         setState(() {
                           isLoading = true;
                         });
-                        String? brandId = currentBrand.id;
-                        await _accessDatabase.deleteBrand(brandId!);
                         // New DataBase
-                        await _brandDataService.deleteBrandUsers(brandId);
+                        await _brandDataService.deleteBrandUsers(currentBrand.id!);
                         currentUser.setBrandList = [];
                         await Future.delayed(const Duration(seconds: 4));
                         Navigator.pushReplacement(

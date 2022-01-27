@@ -26,7 +26,7 @@ const messages = isProduction ? "Messages" : "7777 Messages";
 const errors = isProduction ? "Errors" : "7777 Errors";
 const requests = isProduction ? "Requests" : "7777 Requests";
 
-// User Joins Brand
+// User Updates Cover Data
 exports.userUpdatesCoverData = functions
     .region("europe-west1")
     .firestore
@@ -118,6 +118,78 @@ exports.userUpdatesCoverData = functions
             "isTrainer": after.isTrainer,
             "isPrivate": after.isPrivate,
             "notificationToken": after.notificationToken,
+          });
+        }
+      }
+      return null;
+    });
+
+// User Updates Cover Data
+exports.brandUpdatesCoverData = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+brands+"/{brandId}")
+    .onUpdate( async (change, context) => {
+      // Get the value of the context triggers.
+      const brandId = context.params.brandId;
+      // Get Value of the Change
+      const before = change.before.data();
+      const after = change.after.data();
+      functions.logger.log(
+        "BEFORE:",
+        before,
+      );
+      functions.logger.log(
+          "AFTER:",
+          after,
+      );
+      // Check if Cover Data has changed:
+      // COVER DATA: name, logoUrl
+      let coverDataChange = false;
+      if (before.name != after.name) {
+        coverDataChange = true;
+      } else if (before.logoUrl != after.logoUrl) {
+        coverDataChange = true;
+      }
+      functions.logger.log(
+        "COVER DATA CHANGED?",
+        coverDataChange,
+      );
+      if (coverDataChange) {
+        // Update the Brands Subcollection in Users
+        const brandsUsersSnapshot = await db.collection(brands).doc(brandId).collection("Users").get();
+        functions.logger.log(
+            "Brands Users Num =",
+            brandsUsersSnapshot.size,
+          );
+        for (var i in brandsUsersSnapshot.docs) {
+          const id = brandsUsersSnapshot.docs[i].id;
+          await db
+          .collection(users)
+          .doc(id)
+          .collection("Brands")
+          .doc(brandId)
+          .update({
+            "name": after.name,
+            "logoUrl": after.logoUrl,
+          });
+        }
+        // Update the Brands Subcollection in Events
+        const brandEventsSnapshot = await db.collection(brands).doc(brandId).collection("Events").get();
+        functions.logger.log(
+            "Brand Events Num =",
+            brandEventsSnapshot.size,
+          );
+        for (var i in brandEventsSnapshot.docs) {
+          const id = brandEventsSnapshot.docs[i].id;
+          await db
+          .collection(events)
+          .doc(id)
+          .collection("Brands")
+          .doc(brandId)
+          .update({
+            "name": after.name,
+            "logoUrl": after.logoUrl,
           });
         }
       }

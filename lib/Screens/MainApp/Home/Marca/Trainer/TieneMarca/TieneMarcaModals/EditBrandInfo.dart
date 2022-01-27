@@ -25,7 +25,6 @@ class EditBrandInfo extends StatefulWidget {
 class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProviderStateMixin {
 
   // DataBase Access
-  var _accessDatabase = new DatabaseAccess();
   var _brandDataService = new BrandDataService();
   // Boolean isLoading
   bool isLoading = false;
@@ -761,7 +760,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
               setState(() {
                 isLoading = true;
               });
-              await _accessDatabase.updateBrandInfo(currentBrand.id!, nameBrandController.text, descriptionController.text, members, _workShift);
+              await _brandDataService.updateBrandInfo(currentBrand.id!, nameBrandController.text, descriptionController.text, members, _workShift);
               await getBrand();
               Navigator.pop(context);
             }

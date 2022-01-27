@@ -1528,15 +1528,6 @@ class FirebaseDatabaseService {
 
   // Accept Request To Brand
   Future<void> acceptRequestFromUser(RequestToBrand request) async {
-    /* Get the Request
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
-        .collection(brands)
-        .doc(request.brandId)
-        .collection("Requests")
-        .doc(request.id)
-        .get();
-    RequestToBrand request = RequestToBrand.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
-     */
     // Accept the user to Brand
     int role = 0;
     if (request.isTrainer!) {

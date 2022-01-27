@@ -17,7 +17,6 @@ class EditLogoPage extends StatefulWidget {
 class _EditLogoPageState extends State<EditLogoPage> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
   var _brandDataService = new BrandDataService();
   // Boolean Loading
   bool isLoading = false;
@@ -52,7 +51,7 @@ class _EditLogoPageState extends State<EditLogoPage> {
     setState(() {
       isLoading = true;
     });
-    String temp = await _accessDatabase.updateCurrentBrandPhoto(currentBrand.id!, _image!);
+    String temp = await _brandDataService.updateCurrentBrandPhoto(currentBrand.id!, _image!);
     setState(() {
       _imageUrl = temp;
       isLoading = false;
