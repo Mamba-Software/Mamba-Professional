@@ -15,8 +15,8 @@ class Brand {
   String? dateJoined;
   String? groupRoomId;
   String? baseLocation;
-  int? numberClients;
-  int? numberTrainers;
+  int? numClients;
+  int? numTrainers;
   var workShift;
   int? maxMembers;
 
@@ -33,8 +33,8 @@ class Brand {
     this.dateJoined,
     this.groupRoomId,
     this.baseLocation,
-    this.numberClients,
-    this.numberTrainers,
+    this.numClients,
+    this.numTrainers,
     this.workShift,
     this.maxMembers,
   });
@@ -64,11 +64,11 @@ class Brand {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('baseLocation')) {
       this.baseLocation = documentSnapshot.get("baseLocation").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numberClients')) {
-      this.numberClients = documentSnapshot.get("numberClients");
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numClients')) {
+      this.numClients = documentSnapshot.get("numClients");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numberTrainers')) {
-      this.numberTrainers = documentSnapshot.get("numberTrainers");
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numTrainers')) {
+      this.numTrainers = documentSnapshot.get("numTrainers");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('workShift')) {
       this.workShift = documentSnapshot.get("workShift");
@@ -99,8 +99,8 @@ class Brand {
     this.dateJoined = brand.dateJoined;
     this.groupRoomId = brand.groupRoomId;
     this.baseLocation = brand.baseLocation;
-    this.numberClients = brand.numberClients;
-    this.numberTrainers = brand.numberTrainers;
+    this.numClients = brand.numClients;
+    this.numTrainers = brand.numTrainers;
     this.workShift = brand.workShift;
     this.maxMembers = brand.maxMembers;
   }

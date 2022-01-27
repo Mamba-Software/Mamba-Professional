@@ -37,7 +37,6 @@ class DatabaseAccess {
 
   Future<void> deleteBrand(String brandId) => _firebase.deleteBrand(brandId);
 
-  Future<void> updateNumberMembers(String brandID) => _firebase.updateNumberMembers(brandID);
   Future<String> updateCurrentBrandPhoto(String brandID, File image) => _firebase.updateCurrentBrandPhoto(brandID, image);
   Future<void> updateBrandInfo(String brandID, String name,String description, int maxMembers, List<double> workShift) => _firebase.updateBrandInfo(brandID, name, description, maxMembers, workShift);
 
@@ -128,9 +127,6 @@ class DatabaseAccess {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams
 
-  // Users
-  Stream<QuerySnapshot> getAllEventsFromUser(String userid, bool isTrainer) => _firebase.getAllEventsFromUser(userid, isTrainer);
-  Stream<QuerySnapshot> getAllEventsFromBrand(String brandId) => _firebase.getAllEventsFromBrand(brandId);
   Stream<QuerySnapshot> getAllEventsTodayBrandStream(String brandId) => _firebase.getAllEventsTodayBrandStream(brandId);
 
   // Brands

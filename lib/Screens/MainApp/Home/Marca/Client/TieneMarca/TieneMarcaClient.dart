@@ -50,7 +50,6 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
 
   // Init for Brand Home
   initBrandHome() async {
-    await updateMembers();
     await getBrand();
     await getNumberFinishedEvents();
     await getAllEventsTodayBrand();
@@ -59,11 +58,6 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
         isLoading = false;
       });
     }
-  }
-
-  // Update Number of Members.
-  Future<void> updateMembers() async {
-    await _accessDatabase.updateNumberMembers(currentBrand.id!);
   }
 
   // Gets the user info from firebase.
@@ -226,7 +220,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                                     Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
                                     SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
                                     Text(
-                                      currentBrand.numberClients.toString(),
+                                      currentBrand.numClients.toString(),
                                       style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
                                     SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
                                     Flexible(child: Text(AppLocalizations.of(context)!.clients.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,))
@@ -246,7 +240,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                                     Icon(Icons.record_voice_over, color: Theme.of(context).accentColor,),
                                     SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
                                     Text(
-                                      currentBrand.numberTrainers.toString(),
+                                      currentBrand.numTrainers.toString(),
                                       style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
                                     SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
                                     Flexible(child: Text(AppLocalizations.of(context)!.trainers.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,))

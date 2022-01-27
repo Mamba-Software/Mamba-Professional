@@ -293,6 +293,32 @@ exports.userJoinsBrand = functions
                     response
                   );
       }
+      // Count Brand Members
+      brandUsersSnapshot = await db.collection(brands).doc(brandId).collection("Users").get();
+      let numClients = 0;
+      let numTrainers = 0;
+      for (var i in brandUsersSnapshot.docs) {
+        const brandUsersDoc = brandUsersSnapshot.docs[i].data();
+        if (brandUsersDoc.isTrainer) {
+          numTrainers += 1;
+        } else {
+          numClients += 1;
+        }
+      }
+      functions.logger.log(
+        "numClients",
+        numClients,
+        "numTrainers",
+        numTrainers,
+      );
+      // Update Brand Members
+      await db
+      .collection(brands)
+      .doc(brandId)
+      .update({
+        "numClients": numClients,
+        "numTrainers": numTrainers,
+      });
       return null;
     });
 
@@ -377,6 +403,31 @@ exports.userLeavesBrand = functions
             response
           );
       }
+      // Count Brand Members
+      let numClients = 0;
+      let numTrainers = 0;
+      for (var i in brandUsersSnapshot.docs) {
+        const brandUsersDoc = brandUsersSnapshot.docs[i].data();
+        if (brandUsersDoc.isTrainer) {
+          numTrainers += 1;
+        } else {
+          numClients += 1;
+        }
+      }
+      functions.logger.log(
+        "numClients",
+        numClients,
+        "numTrainers",
+        numTrainers,
+      );
+      // Update Brand Members
+      await db
+      .collection(brands)
+      .doc(brandId)
+      .update({
+        "numClients": numClients,
+        "numTrainers": numTrainers,
+      });
       return null;
     });
 

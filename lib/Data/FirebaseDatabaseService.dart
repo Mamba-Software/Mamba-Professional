@@ -558,8 +558,8 @@ class FirebaseDatabaseService {
       "dateJoined": formatted,
       "groupRoomId": null,
       "baseLocation": null,
-      "numberClients": 0,
-      "numberTrainers": 1,
+      "numClients": 0,
+      "numTrainers": 1,
       "workShift": workShift,
       "maxMembers": maxMembers,
     }).catchError((err) {
@@ -592,15 +592,6 @@ class FirebaseDatabaseService {
     await this.deleteBrandPhoto(brandId);
     // Delete Brand
     await _firestore.collection(brands).doc(brandId).delete();
-  }
-
-  Future<void> updateNumberMembers(String brandID) async {
-    List<Usuario> trainers = await this.getAllTrainersFromBrand(brandID);
-    List<Usuario> clients = await this.getAllClientsFromBrand(brandID);
-    await _firestore.collection(brands).doc(brandID).update({
-      "numberClients": clients.length,
-      "numberTrainers": trainers.length,
-    });
   }
 
   Future<String> updateCurrentBrandPhoto(String brandID, File image) async {
@@ -1969,6 +1960,19 @@ class FirebaseDatabaseService {
         .collection(brands)
         .doc(brandId)
         .collection("Events")
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot>  getBrandsEventsTodayStream(String brandId) {
+    DateTime today = DateTime.now();
+    return _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Events")
+        .where("year", isEqualTo: today.year.toString())
+        .where("month", isEqualTo: today.month.toString())
+        .where("day", isEqualTo: today.day.toString())
+        .orderBy("hour", descending: false)
         .snapshots();
   }
 

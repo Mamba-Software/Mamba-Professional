@@ -212,6 +212,7 @@ class _CalendarWidgetTrainerState extends State<CalendarWidgetTrainer> {
                                       minFontSize: 1,
                                       maxFontSize: 16,
                                     ),
+                                    /*
                                     event.selectedTrainers.contains(currentUser.id!) ? Column(
                                       children: [
                                         SizedBox(height: details.bounds.height*0.1),
@@ -222,6 +223,7 @@ class _CalendarWidgetTrainerState extends State<CalendarWidgetTrainer> {
                                         ),
                                       ],
                                     ) : Container(),
+                                     */
                                   ],
                                 ),
                               ),
