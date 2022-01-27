@@ -4,7 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
@@ -28,7 +30,8 @@ class MyCalendarWidget extends StatefulWidget {
 
 class _MyCalendarWidgetState extends State<MyCalendarWidget> {
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _brandDataService = new BrandDataService();
+  var _eventDataService = new EventDataService();
   // Boolean Loading
   bool isLoading = false;
   // Boolean Loading
@@ -58,7 +61,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
   }
 
   void getBrandDetails() async {
-    _brand = await _accessDatabase.getBrandDetails(widget.brandID);
+    _brand = await _brandDataService.getBrandDetails(widget.brandID);
     initCalendar();
   }
 
@@ -186,7 +189,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
             ],
           ),
           body: StreamBuilder<QuerySnapshot>(
-              stream: _accessDatabase.getAllEventsFromUser(currentUser.id!, currentUser.isTrainer!),
+              stream: _eventDataService.getUserEventsStream(currentUser.id!),
               builder: (context, snapshot) {
                 if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
                   return LoadingViewPurple();
@@ -372,7 +375,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                                 ),
                                                 SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                                 Text(
-                                                  event.selectedTrainers.length.toString(),
+                                                  event.numTrainers.toString(),
                                                   style: TextStyle(color: Colors.black, fontSize: 12),
                                                 ),
                                                 Container(
@@ -387,7 +390,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                                 ),
                                                 SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                                 Text(
-                                                  event.joinedMembers.length.toString(),
+                                                  event.numClients.toString(),
                                                   style: TextStyle(color: Colors.black, fontSize: 12),
                                                 ),
                                               ],
@@ -690,10 +693,12 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
       var min = event.duration!.toStringAsFixed(2).split(".")[1];
       var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
       // Subject
-      var subject = "${event.joinedMembers.length}/${event.maxMembers}";
+      var subject = "${event.numClients}/${event.maxMembers}";
       // Colors
       var color;
-      double bookedCapacity = event.joinedMembers.length/event.maxMembers;
+      double numClients = double.parse(event.numClients.toString());
+      double maxMembers = double.parse(event.maxMembers.toString());
+      double bookedCapacity = numClients/maxMembers;
       if(bookedCapacity <= 0.20) color = Colors.green;
       else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = Color(0xFFA8C76C);
       else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = Color(0xFFECE014);
@@ -718,7 +723,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
   List<Event> documentsToEvents(List<DocumentSnapshot> documents) {
     List<Event> events = [];
     for(int i = 0; i < documents.length; i++) {
-      events.add(Event.fromObjectAllData(documents[i].id, documents[i]));
+      events.add(Event.fromObjectOnlyCoverData(documents[i].id, documents[i]));
     }
     return events;
   }

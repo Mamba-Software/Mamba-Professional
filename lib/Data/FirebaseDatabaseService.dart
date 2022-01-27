@@ -2004,6 +2004,17 @@ class FirebaseDatabaseService {
     }
   }
 
+  Stream<QuerySnapshot> getUserEventsStream(String userid) {
+    return _firestore
+      .collection(users)
+      .doc(userid)
+      .collection("Events")
+      .orderBy("year", descending: true)
+      .orderBy("month", descending: true)
+      .orderBy("day", descending: true)
+      .snapshots();
+  }
+
   // Locations
   Stream<QuerySnapshot> getAllLocationsBrand(String brandId) {
     return _firestore

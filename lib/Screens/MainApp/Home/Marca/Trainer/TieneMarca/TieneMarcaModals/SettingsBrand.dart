@@ -191,7 +191,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                   ) : Container(),
                   currentUser.id != currentBrand.adminID ? TextButton(
                     onPressed: () async {
-                      // DeleteDialog
+                      // Leaves Brand
                       var result = await showDialog(
                           context: context,
                           builder: (_) {
@@ -248,7 +248,6 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         });
                         String? brandId = currentBrand.id;
                         await _accessDatabase.deleteBrand(brandId!);
-                        await _accessDatabase.deleteBrandConversations(brandId);
                         // New DataBase
                         await _brandDataService.deleteBrandUsers(brandId);
                         currentUser.setBrandList = [];
