@@ -18,7 +18,6 @@ class DatabaseAccess {
 
   final _firebase = FirebaseDatabaseService();
 
-  Future<Usuario> getUserDetails(String uid) => _firebase.getUserDetails(uid);
   Future<List<String>> getUserCoverDetails(String uid) => _firebase.getUserCoverDetails(uid);
 
   Future<void> leaveBrandUser(String userId) => _firebase.leaveBrandUser(userId);

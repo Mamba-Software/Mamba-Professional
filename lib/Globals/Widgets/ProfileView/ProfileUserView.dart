@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
@@ -35,6 +36,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
 
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
   // Boolean Loading
   bool isLoading = false;
   // Usuario
@@ -61,7 +63,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     totalEvents  = 0;
     thisMonthEvents  = 0;
     listEvents = [];
-    user = await _accessDatabase.getUserDetails(widget.userID);
+    user = await _userDataService.getUserDetails(widget.userID);
     if (user!.isTrainer!) {
       getTrainerEventsDone();
     } else {

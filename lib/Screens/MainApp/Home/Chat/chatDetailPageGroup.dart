@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
@@ -26,7 +27,9 @@ class ChatDetailPageGroup extends StatefulWidget {
 }
 
 class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
+
   var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
 
   String? conversationId;
 
@@ -75,8 +78,8 @@ class _ChatDetailPageGroupState extends State<ChatDetailPageGroup> {
   }
 
   Future<Usuario?> getUser(String? userId) async {
-    if(userId == "sender") return await this._accessDatabase.getUserDetails(currentUser.id!);
-    Usuario user = await this._accessDatabase.getUserDetails(userId!);
+    if(userId == "sender") return await this._userDataService.getUserDetails(currentUser.id!);
+    Usuario user = await this._userDataService.getUserDetails(userId!);
     return user;
   }
 

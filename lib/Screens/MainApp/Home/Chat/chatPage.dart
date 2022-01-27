@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -22,6 +23,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
 
   var searchController = TextEditingController();
 
@@ -279,7 +281,7 @@ class _ChatPageState extends State<ChatPage> {
         if(conv.isMessageRead[0]['uid'] == currentUser.id) isMessageRead = conv.isMessageRead[0]['isMessageRead'];
         else isMessageRead = conv.isMessageRead[1]['isMessageRead'];
         if (conv.users[0]['uid'] == currentUser.id) {
-          user = await _accessDatabase.getUserDetails(conv.users[1]['uid']);
+          user = await _userDataService.getUserDetails(conv.users[1]['uid']);
           if(user.isTrainer!) iconData = Icons.record_voice_over;
           else iconData = Icons.directions_run;
           chatUsers.add(ChatUsers(
@@ -292,7 +294,7 @@ class _ChatPageState extends State<ChatPage> {
               isGroup: false,
               iconData: iconData));
         } else {
-          user = await _accessDatabase.getUserDetails(conv.users[0]['uid']);
+          user = await _userDataService.getUserDetails(conv.users[0]['uid']);
           if(user.isTrainer!) iconData = Icons.record_voice_over;
           else iconData = Icons.directions_run;
           chatUsers.add(ChatUsers(
@@ -312,7 +314,7 @@ class _ChatPageState extends State<ChatPage> {
         }
         String? userId = await _accessDatabase.getLastUserMessageSent(conv.conversationId);
         if(userId != '' && userId != currentUser.id) {
-          user = await _accessDatabase.getUserDetails(userId!);
+          user = await _userDataService.getUserDetails(userId!);
           chatUsers.add(ChatUsers(
               name: currentBrand.name!,
               messageText: user.name! + ': ' + conv.lastMessage!,

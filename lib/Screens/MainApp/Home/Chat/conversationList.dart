@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
@@ -29,6 +30,7 @@ class ConversationList extends StatefulWidget{
 class _ConversationListState extends State<ConversationList> {
 
   var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
   bool isLoading = true;
 
   void initState() {
@@ -47,7 +49,7 @@ class _ConversationListState extends State<ConversationList> {
      return GestureDetector(
       onTap: () async {
         if (!widget.isGroup) {
-          Usuario user = await this._accessDatabase.getUserDetails(widget.userId);
+          Usuario user = await this._userDataService.getUserDetails(widget.userId);
           Navigator.push(context, CupertinoPageRoute(builder: (context) {
             return ChatDetailPage(user);
           }));
