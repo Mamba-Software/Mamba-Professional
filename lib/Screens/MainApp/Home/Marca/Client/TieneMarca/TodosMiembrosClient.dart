@@ -276,12 +276,16 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                       imageUrl: user.imageUrl,
                                     );
                                     final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
-                                      user.id!: user.isTrainer,
-                                      currentUser.id!: currentUser.isTrainer,
+                                      "trainer" + user.id!: user.isTrainer,
+                                      "trainer" + currentUser.id!: currentUser.isTrainer,
+                                      "active" + user.id!: false,
+                                      "active" + currentUser.id!: true,
                                     });
 
                                     Navigator.push(context, CupertinoPageRoute<Null>(
-                                      builder: (context) => ChatPage(room: room)),);
+                                        builder: (context) => ChatPage(room: room)),).whenComplete(() {
+                                      if(room.lastMessages!.length == 0) _accessDatabase.deleteRoom(room.id);
+                                    });
                                   },
                                 ),
                                 onTap: () {

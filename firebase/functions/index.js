@@ -229,6 +229,35 @@ exports.userJoinsBrand = functions
           "Brand Cover Data:",
           brandDoc,
         );
+       //Get Data of the Room
+       const roomSnapshot = await db.collection(rooms).doc(brandDoc.roomId).get();
+       const roomDoc = roomSnapshot.data();
+
+       var metadataMessage = {};
+       var metadataRoom = {};
+
+        functions.logger.log(
+                     "UserIds",
+                     roomDoc.userIds,
+                   );
+       roomDoc.userIds.push(userId);
+
+      if(roomDoc.lastMessages.length != 0) {
+      metadataMessage = roomDoc.lastMessages[0].metadata;
+      metadataMessage[userId] = "delivered";
+      await db.doc(rooms + "/" + brandDoc.roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
+        metadata: metadataMessage,
+        status: "delivered",
+      })
+      }
+
+      metadataRoom = roomDoc.metadata;
+      metadataRoom["trainer" + userId] = userDoc.isTrainer;
+      metadataRoom["active" + userId] = false;
+      await db.doc(rooms + "/" + brandDoc.roomId).update({
+            metadata: metadataRoom,
+            userIds: roomDoc.userIds,
+      })
       // Add the User Cover Data to Users in Brands Collection
       let date = new Date();
       let day = date.getDate();
@@ -1015,30 +1044,126 @@ exports.changeMessageStatus = functions
   .region("europe-west1")
   .firestore
   .document("/"+rooms+"/{roomId}/messages/{messageId}")
-  .onWrite((change) => {
-    const message = change.after.data()
-    if (message) {
+  .onWrite(async (change, context) => {
+    const message = change.after.data();
+    const previousValue = change.before.data();
+    const roomId = context.params.roomId;
+    const messageId = context.params.messageId;
+    var payload = 0;
+    const roomSnapshot =  await db.collection(rooms).doc(roomId).get();
+         const roomDoc = roomSnapshot.data();
+         functions.logger.log(
+                             "PreviousValue",
+
+
+                           );
+    if (message && previousValue === undefined) {
+    //Get Data of the Room
+
+     var messageStatus = "seen";
+     var metadata = {};
+     var userSnapshot;
+     var userDoc;
+     functions.logger.log(
+                         "MessageTest",
+                         roomDoc.metadata,
+
+                       );
+     for(let i = 0; i < roomDoc.userIds.length; ++i) {
+     functions.logger.log(
+                              "Incremental",
+                              roomDoc.userIds[i],
+
+                            );
+           if(roomDoc.metadata["active" + roomDoc.userIds[i]] == false) {
+           functions.logger.log(
+                                         "Es activo",
+                                         roomDoc.userIds[i],
+
+                                       );
+             messageStatus = "delivered";
+             metadata[roomDoc.userIds[i]] = "delivered";
+               userSnapshot = await db.collection(users).doc(roomDoc.userIds[i]).get();
+                        userDoc = userSnapshot.data();
+             // Send Notification To Users who received the message and not active
+             if(roomDoc.type == "group") {
+             payload = {
+                                   notification: {
+                                   title: roomDoc.name,
+                                                       body: userDoc.firstName + '' + userDoc.lastName + ': ' + message.text,
+                                                     },
+                                                     data: {
+                                                       route: "SplashScreen3",
+                                                     },
+                                                   };
+             }
+             else {
+             payload = {
+                                   notification: {
+                                   title: userDoc.firstName + '' + userDoc.lastName + ':',
+                                                       body: message.text,
+                                                     },
+                                                     data: {
+                                                       route: "SplashScreen3",
+                                                     },
+                                                   };
+             }
+
+                                  var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+                                  functions.logger.log(
+                                            "Response",
+                                            response
+                                          );
+           }
+           else {
+           metadata[roomDoc.userIds[i]] = "seen";
+           }
+         }
       if (['delivered', 'seen', 'sent'].includes(message.status)) {
         return null
       } else {
-        return change.after.ref.update({
-          status: 'delivered',
-        })
+        change.after.ref.update({
+          status: messageStatus,
+          metadata: metadata,
+          remoteId: messageId,
+        });
+        message.status = messageStatus;
+        message.metadata = metadata;
+        message.remoteId = messageId;
+              return db.doc(rooms + "/" + roomId).update({
+                lastMessages: [message],
+                updatedAt: message.updatedAt,
+                })
       }
-    } else {
+    }
+    else if (roomDoc.lastMessages[0].remoteId == message.remoteId)
+    {
+         return db.doc(rooms + "/" + roomId).update({
+                        lastMessages: [message],
+                        })
+    }
+
+    else {
       return null
     }
   })
 
+/*
 // Change Last Message
 exports.changeLastMessage = functions
   .region("europe-west1")
   .firestore
   .document("/"+rooms+"/{roomId}/messages/{messageId}")
-  .onUpdate((change, context) => {
+  .onUpdate(async (change, context) => {
+    var metadata = {};
+    const roomId = context.params.roomId;
+    const roomSnapshot =  await db.collection(rooms).doc(roomId).get();
+         const roomDoc = roomSnapshot.data();
     const message = change.after.data()
     if (message) {
       const updatedAt = message.updatedAt;
+      metadata = roomDoc.metadata;
+      metadata["alreadyChanged"] = true;
       functions.logger.log(
                     "Message",
                     message.updatedAt,
@@ -1046,8 +1171,84 @@ exports.changeLastMessage = functions
       return db.doc(rooms + "/" + context.params.roomId).update({
         lastMessages: [message],
         updatedAt: updatedAt,
+        metadata: metadata,
       })
     } else {
       return null
     }
   })
+*/
+
+/*
+  // Updated Room message Status changes
+  exports.updateMessageStatus= functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+rooms+"/{roomId}")
+    .onUpdate(async (change, context) => {
+
+  const newValue = change.after.data();
+  const newFieldValue = newValue.lastMessages[0];
+
+  // ...or the previous value before this update
+  const previousValue = change.before.data();
+  const previousFieldValue = previousValue.lastMessages[0];
+functions.logger.log(
+                      "Activo o no activo",
+                      previousFieldValue,
+                    );
+                    functions.logger.log(
+                                          "Activo o no activo",
+                                          newFieldValue,
+                                        );
+
+  if (previousFieldValue.remoteId == newFieldValue.remoteId && newValue.metadata["alreadyChanged"] == false && newFieldValue.status != "seen") {
+  functions.logger.log(
+                      "Activo o no activo DENTRO",
+                      previousFieldValue,
+                    );
+    const roomId = context.params.roomId;
+    const roomSnapshot =  await db.collection(rooms).doc(roomId).get();
+             const roomDoc = roomSnapshot.data();
+
+    const messageSnapshot =  await db.collection(rooms + "/" + roomId + "/messages/").doc(roomDoc.lastMessages[0].remoteId).get();
+    const message = messageSnapshot.data();
+         var messageStatus = "seen";
+         var metadata = {};
+
+         functions.logger.log(
+                             "MessageTest",
+                             message.metadata,
+
+                           );
+         for(let i = 0; i < roomDoc.userIds.length; ++i) {
+               if(roomDoc.metadata["active" + roomDoc.userIds[i]] == false) {
+                 messageStatus = "delivered";
+                 metadata[roomDoc.userIds[i]] = "delivered";
+               }
+               else {
+               metadata[roomDoc.userIds[i]] = "seen";
+               }
+             }
+             if(messageStatus == "seen") {
+             const messageSnapshotFinal =  await db.collection(rooms + "/" + roomId + "/messages").get();
+                          const messageDoc = messageSnapshotFinal.data();
+                          for(let j = 0; j < messageDoc.length; ++j) {
+                                      await db.doc(rooms + "/" + roomId + "/messages/" + messageDoc[j].remoteId).update({
+                                                        metadata: metadata,
+                                                        status: messageStatus,
+                                                      })
+                          }
+
+             }
+
+
+          return await db.doc(rooms + "/" + roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
+                  metadata: metadata,
+                  status: messageStatus,
+                })
+        }
+
+        else return null;
+
+      });*/

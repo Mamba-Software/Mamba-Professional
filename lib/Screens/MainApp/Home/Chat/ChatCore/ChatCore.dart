@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,6 +47,7 @@ class _ChatCoreState extends State<ChatCore> {
     super.initState();
   }
 
+
   void filterSearchResults(String query) {
     List<types.Room> roomsFiltered = [];
     if (query.isNotEmpty || query != "") {
@@ -89,21 +92,6 @@ class _ChatCoreState extends State<ChatCore> {
 
   Widget _buildAvatar(types.Room room) {
     var color = Colors.transparent;
-
-    if (room.type == types.RoomType.direct) {
-      try {
-        final otherUser = room.users.firstWhere(
-              (u) => u.id != _user!.uid,
-        );
-
-        print(otherUser);
-        final _otherUser =  otherUser.copyWith(firstName: room.metadata![otherUser.id], imageUrl: otherUser.imageUrl);
-        print(_otherUser);
-        color = getUserAvatarNameColor(_otherUser);
-      } catch (e) {
-        // Do nothing if other user is not found
-      }
-    }
 
     final hasImage = room.imageUrl != null;
     final name = room.name ?? '';
@@ -242,6 +230,7 @@ class _ChatCoreState extends State<ChatCore> {
           else {
             allRooms = snapshot.data!;
               if (!isFiltered) {
+                print("hola");
                 return ListView.builder(
                   itemCount: allRooms.length,
                   itemBuilder: (context, index) {
@@ -255,7 +244,7 @@ class _ChatCoreState extends State<ChatCore> {
                       );
                     }
                     bool Read = true;
-                    if(room.type.toString() != "RoomType.group" && room.lastMessages != null && room.lastMessages[0].metadata[currentUser.id] == "delivered") {
+                    if(room.lastMessages != null && room.lastMessages[0].metadata[currentUser.id] == "delivered") {
                       Read = false;
                     }
 
@@ -271,7 +260,10 @@ class _ChatCoreState extends State<ChatCore> {
                                 room: room,
                               ),
                             )
-                        );
+                        ).whenComplete(() {
+                          room.metadata!["active" + currentUser.id!] = false;
+                          _accessDatabase.updateRoom(room.id, room.metadata!);
+                        });
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(
@@ -326,8 +318,8 @@ class _ChatCoreState extends State<ChatCore> {
                                             decoration: InputDecoration(
                                               hintStyle: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: Read?FontWeight.normal:FontWeight.bold),
                                               hintText: room.lastMessages !=
-                                                  null ? room.lastMessages[0]
-                                                  .text : '',
+                                                  null ? room.type.toString() == "RoomType.group"? room.lastMessages[0].author.id != currentUser.id ? room.lastMessages[0].author.firstName + ' ' + room.lastMessages[0].author.lastName + ': ' + room.lastMessages[0]
+                                                  .text : room.lastMessages[0].text : room.lastMessages[0].text : '',
                                               contentPadding: EdgeInsets.all(0),
                                               isDense: true,
                                               enabledBorder: InputBorder.none,
@@ -351,7 +343,7 @@ class _ChatCoreState extends State<ChatCore> {
                                 .width * 0.04,),
                             Icon(
                               room.type.toString() == "RoomType.group" ? Icons
-                                  .groups : room.metadata![userAux.id] == true
+                                  .groups : room.metadata!["trainer" + userAux.id] == true
                                   ? Icons.record_voice_over
                                   : Icons.directions_run,
                               color: Theme
@@ -401,7 +393,10 @@ class _ChatCoreState extends State<ChatCore> {
                                   room: room,
                                 ),
                               )
-                          );
+                          ).whenComplete(() {
+                            room.metadata!["active" + currentUser.id!] = false;
+                            _accessDatabase.updateRoom(room.id, room.metadata!);
+                          });
                         },
                       child: Container(
                         padding: EdgeInsets.symmetric(
@@ -481,7 +476,7 @@ class _ChatCoreState extends State<ChatCore> {
                                 .width * 0.04,),
                             Icon(
                               room.type.toString() == "RoomType.group" ? Icons
-                                  .groups : room.metadata![userAux.id] == true
+                                  .groups : room.metadata!["trainer" + userAux.id] == true
                                   ? Icons.record_voice_over
                                   : Icons.directions_run,
                               color: Theme

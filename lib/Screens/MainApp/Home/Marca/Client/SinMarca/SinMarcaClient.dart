@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
@@ -468,8 +469,10 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                           imageUrl: adminUser.imageUrl,
                                         );
                                         final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
-                                          adminUser.id!: adminUser.isTrainer,
-                                          currentUser.id!: currentUser.isTrainer,
+                                          "trainer" + adminUser.id!: adminUser.isTrainer,
+                                          "trainer" + currentUser.id!: currentUser.isTrainer,
+                                          "active" + adminUser.id!: false,
+                                          "active" + currentUser.id!: true,
                                         });
                                         Navigator.push(
                                           context,
@@ -478,6 +481,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                                 room: room)
                                           )
                                         ).whenComplete(() {
+                                          if(room.lastMessages!.length == 0) _accessDatabase.deleteRoom(room.id);
                                           getUserPendingRequests();
                                         });
                                       }

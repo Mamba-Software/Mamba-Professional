@@ -40,6 +40,8 @@ class FirebaseDatabaseService {
   String messages = isProduction ? 'Messages' : '7777 Messages';
   String errors = isProduction ? 'Errors' : '7777 Errors';
   String requests = isProduction ? 'Requests' : '7777 Requests';
+  String notifications = isProduction ? 'Notifications' : '7777 Notifications';
+  String rooms = isProduction ? 'Rooms' : '7777 Rooms';
 
 
   Map<String, dynamic> toMapisMessageRead(String? id, bool? isMessageRead) {
@@ -621,6 +623,14 @@ class FirebaseDatabaseService {
     });
   }
 
+  Future<void> updateBrandRoom(String brandID, String roomId) async {
+    await _firestore.collection(brands).doc(brandID).update({
+      "roomId": roomId,
+    });
+  }
+
+  Future<void> updateBrandBaseLocation(
+      String brandID, String locationID) async {
   Future<void> updateBrandBaseLocation(String brandID, String locationID) async {
     await _firestore
         .collection(brands)
@@ -1859,6 +1869,22 @@ class FirebaseDatabaseService {
       print(e.toString());
       return "Error";
     }
+  }
+
+  Future<void> updateRoom(String? roomId, Map<String, dynamic> metadata) async {
+    await _firestore.collection(rooms).doc(roomId).update({
+      "metadata": metadata
+    });
+  }
+
+  Future<void> updateRoomLastMessage(String? roomId, var lastMessages) async {
+    await _firestore.collection(rooms).doc(roomId).update({
+      "lastMessages": lastMessages,
+    });
+  }
+
+  Future<void> deleteRoom(String roomId) async {
+      await _firestore.collection(rooms).doc(roomId).delete();
   }
 
   //Messages
