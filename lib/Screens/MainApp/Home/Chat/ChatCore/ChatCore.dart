@@ -9,6 +9,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -33,7 +34,7 @@ class _ChatCoreState extends State<ChatCore> {
   bool _initialized = false;
   User? _user;
 
-  var _accessDatabase = new DatabaseAccess();
+  var _roomDataService = new RoomDataService();
   var searchController = TextEditingController();
   bool searchClicked = false;
   bool isFiltered = false;
@@ -262,7 +263,7 @@ class _ChatCoreState extends State<ChatCore> {
                             )
                         ).whenComplete(() {
                           room.metadata!["active" + currentUser.id!] = false;
-                          _accessDatabase.updateRoom(room.id, room.metadata!);
+                          _roomDataService.updateRoom(room.id, room.metadata!);
                         });
                       },
                       child: Container(
@@ -395,7 +396,7 @@ class _ChatCoreState extends State<ChatCore> {
                               )
                           ).whenComplete(() {
                             room.metadata!["active" + currentUser.id!] = false;
-                            _accessDatabase.updateRoom(room.id, room.metadata!);
+                            _roomDataService.updateRoom(room.id, room.metadata!);
                           });
                         },
                       child: Container(

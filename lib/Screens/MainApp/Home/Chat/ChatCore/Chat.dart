@@ -11,6 +11,7 @@ import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
@@ -39,7 +40,8 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  var _accessDatabase = new DatabaseAccess();
+
+  var _roomDataService = new RoomDataService();
   bool _isAttachmentUploading = false;
   bool isLoading = true;
   var userId;
@@ -70,12 +72,12 @@ class _ChatPageState extends State<ChatPage> {
     Map<String, dynamic> metadata = {};
     widget.room.metadata!["active" + currentUser.id!] = true;
     widget.room.metadata!["alreadyChanged"] = false;
-    await _accessDatabase.updateRoom(widget.room.id, widget.room.metadata!);
+    await _roomDataService.updateRoom(widget.room.id, widget.room.metadata!);
 
     //actualitzar el missatge i el last message per el currentuser el posi amb estat "seen" si ja no hi esta
-    print(widget.room.lastMessages![0].status.toString());
+
     //if last message != seen
-    if(widget.room.lastMessages![0].status.toString() != "Status.seen") {
+    if(widget.room.lastMessages != null &&  widget.room.lastMessages![0].status.toString() != "Status.seen") {
       //Comprovo si algun usuari del last message té el estat a delivered
       for (int i = 0; i < widget.room.users.length; ++i) {
         if (widget.room.lastMessages![0].metadata![widget.room.users[i].id] ==

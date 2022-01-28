@@ -157,7 +157,7 @@ class _HomePageState extends State<HomePage> {
           Perfil(),
           Marca(),
           Notifications(),
-          UserChat(),
+          ChatCore(),
         ],
         onPageChanged: (page) async {
           unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);

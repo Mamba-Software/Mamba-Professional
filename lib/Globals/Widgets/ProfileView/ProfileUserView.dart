@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
@@ -37,6 +39,8 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   // Acceso a Base de Datos
   var _accessDatabase = new DatabaseAccess();
   var _userDataService = new UserDataService();
+  var _brandDataService = new BrandDataService();
+  var _roomDataService = new RoomDataService();
   // Boolean Loading
   bool isLoading = false;
   // Usuario
@@ -222,18 +226,8 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                           isLoading = true;
                         });
                         NotificationService().userLeavesBrand(widget.userID, currentBrand.id!);
-                        //12/12/2021
-                        Conversation conv = await _accessDatabase.getConversationByBrand(currentBrand.id!);
-                        for(int i = 0; i < conv.users.length; ++i) {
-                          if(conv.users[i]['uid'] == user!.id!) {
-                            conv.users.removeAt(i);
-                          }
-                        }
-                        await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
-                        await _accessDatabase.deleteUserFromAllBrandEvents(user!.id!, currentBrand.id!, user!.isTrainer!);
-                        await _accessDatabase.leaveBrandUser(user!.id!);
                         // New Database
-                        await _accessDatabase.deleteUserFromBrand(widget.userID, currentBrand.id!);
+                        await _brandDataService.deleteUserFromBrand(widget.userID, currentBrand.id!);
                         // TODO: Revisar Pq True, yo crec que es per recagar els users a todos los miemrbos
                         //  Navigator.pop(context, true);
                         Navigator.pop(context);
@@ -258,7 +252,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
 
                       Navigator.push(context, CupertinoPageRoute<Null>(
                           builder: (context) => ChatPage(room: room)),).whenComplete(() {
-                        if(room.lastMessages!.length == 0) _accessDatabase.deleteRoom(room.id);
+                        if(room.lastMessages!.length == 0) _roomDataService.deleteRoom(room.id);
                       });
                     } ,
                     icon: Icon(Icons.chat_outlined)

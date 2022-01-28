@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Data/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -36,6 +37,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
 // Acceso a Base de Datos
   var _userDataService = new UserDataService();
   var _brandDataService = new BrandDataService();
+  var _roomDataService = new RoomDataService();
   // Boolean isLoading
   bool isLoading = false;
   // Brand List
@@ -481,7 +483,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                                 room: room)
                                           )
                                         ).whenComplete(() {
-                                          if(room.lastMessages!.length == 0) _accessDatabase.deleteRoom(room.id);
+                                          if (room.lastMessages!.length == 0) _roomDataService.deleteRoom(room.id);
                                           getUserPendingRequests();
                                         });
                                       }

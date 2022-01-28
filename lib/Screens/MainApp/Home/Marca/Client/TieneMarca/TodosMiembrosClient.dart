@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -27,8 +28,9 @@ class TodosMiembrosClient extends StatefulWidget {
 
 class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
 
-  // Brand Data Service
+  // Data Service
   var _brandDataService = BrandDataService();
+  var _roomDataService = new RoomDataService();
   // Boolean Loading
   bool isLoading = true;
   // Boolean isUpdated
@@ -284,7 +286,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
 
                                     Navigator.push(context, CupertinoPageRoute<Null>(
                                         builder: (context) => ChatPage(room: room)),).whenComplete(() {
-                                      if(room.lastMessages!.length == 0) _accessDatabase.deleteRoom(room.id);
+                                      if(room.lastMessages!.length == 0) _roomDataService.deleteRoom(room.id);
                                     });
                                   },
                                 ),

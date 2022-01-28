@@ -12,7 +12,7 @@ import 'package:mamba_castelldefels/Models/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Models/Question.dart';
 import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
-import 'firebaseDatabase.dart';
+import 'FirebaseDatabaseService.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class DatabaseAccess {
@@ -28,25 +28,14 @@ class DatabaseAccess {
   Future<bool> checkCurrentUser() => _firebase.checkCurrentUser();
   Future<bool> checkIfItsMe(String uid) => _firebase.checkIfItsMe(uid);
   Future<User?> getCurrentUser() => _firebase.getCurrentUser();
-  Future<Usuario> getCurrentUserDetails() => _firebase.getCurrentUserDetails();
   Future<Usuario> getUserDetails(String uid) => _firebase.getUserDetails(uid);
-  Future<List<String>> getUserCover(String uid) => _firebase.getUserCover(uid);
-
-  Future<int> registerUser(String email, String password, String idioma) => _firebase.registerUser(email, password, idioma);
-  Future<void> addUser(String uid, String name, String firstName, String lastName, String nick, String dateOfBirth, int gender, File? image, bool isTrainer) => _firebase.addUser(uid, name, firstName, lastName, nick, dateOfBirth, gender, image, isTrainer);
-  Future<void> addUserNotificationToken(String uid, String token) => _firebase.addUserNotificationToken(uid, token);
-  Future<bool> checkIfAliasExists(String alias) => _firebase.checkIfAliasExists(alias);
 
   Future<void> updateCurrentUserFirstTime() => _firebase.updateCurrentUserFirstTime();
   Future<String> updateCurrentUserPhoto(File image) => _firebase.updateCurrentUserPhoto(image);
   Future<void> updateCurrentUserDatosPerifl(String name, String firstName, String lastName, int gender, String dateOfBirth) => _firebase.updateCurrentUserDatosPerifl(name, firstName, lastName, gender, dateOfBirth);
-  Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma, String previousIdioma) => _firebase.updateCurrentUserSettingsPerifl(isPrivate, idioma, previousIdioma);
 
   Future<int> updateCurrentUserBrand(String brandID) => _firebase.updateCurrentUserBrand(brandID);
   Future<void> leaveBrandUser(String userId) => _firebase.leaveBrandUser(userId);
-
-  Future<void> joinBrand(String userId, String brandId) => _firebase.joinBrand(userId, brandId);
-  Future<void> leaveBrand(String userId, String brandId) => _firebase.leaveBrand(userId, brandId);
 
   // Brands
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) => _firebase.addBrand(name, image, description, workShift, maxMembers);
@@ -60,7 +49,6 @@ class DatabaseAccess {
 
   Future<void> deleteBrand(String brandId) => _firebase.deleteBrand(brandId);
 
-  Future<void> updateNumberMembers(String brandID) => _firebase.updateNumberMembers(brandID);
   Future<String> updateCurrentBrandPhoto(String brandID, File image) => _firebase.updateCurrentBrandPhoto(brandID, image);
   Future<void> updateBrandInfo(String brandID, String name,String description, int maxMembers, List<double> workShift) => _firebase.updateBrandInfo(brandID, name, description, maxMembers, workShift);
   Future<void> updateBrandRoom(String brandID, String roomId) => _firebase.updateBrandRoom(brandID, roomId);
@@ -99,9 +87,6 @@ class DatabaseAccess {
   Future<List<Event>> getAllTrainerEventsFromBrand(String trainerid, String brandId) => _firebase.getAllTrainerEventsFromBrand(trainerid, brandId);
   Future<List<int>> getAllTrainerEventsFinished(String trainerid, String brandId) => _firebase.getAllTrainerEventsFinished(trainerid, brandId);
 
-  Future<int> getNumberEventsFinishedBrand(String brandId) => _firebase.getNumberEventsFinishedBrand(brandId);
-  Future<int> getNumberEventsToDoBrand(String brandId) => _firebase.getNumberEventsToDoBrand(brandId);
-
   Future<List<Event>> getAllEventsTodayBrand(String brandId) => _firebase.getAllEventsTodayBrand(brandId);
   Future<List<Event>> getAllEventsTodayUser(String userid, bool isTrainer) => _firebase.getAllEventsTodayUser(userid, isTrainer);
 
@@ -112,17 +97,8 @@ class DatabaseAccess {
   Future<void> deleteBrandLocations(String brandId) => _firebase.deleteBrandLocations(brandId);
   Future<Location> getSingleLocation(String locationId) => _firebase.getSingleLocation(locationId);
 
-  // Requests
-  Future<void> sendRequest(String brandId, String name, bool isTrainer) => _firebase.sendRequest(brandId, name, isTrainer);
-  Future<void> acceptRequest(String requestId) => _firebase.acceptRequest(requestId);
-  Future<void> deleteRequest(String requestId) => _firebase.deleteRequest(requestId);
-  Future<RequestToBrand?> hasPendingRequest(String userId) => _firebase.hasPendingRequest(userId);
-
   // Notifications
   Future<List<NotificationEvent>> getAllNotificationsUser(String userId) => _firebase.getAllNotificationsUser(userId);
-  Future<void> sendNotification(String userId, String type, var parameters) => _firebase.sendNotification(userId, type, parameters);
-  Future<int> numberUnreadNotifications(String userId) => _firebase.numberUnreadNotifications(userId);
-  Future<void> markNotificationAsRead(String notificationId) => _firebase.markNotificationAsRead(notificationId);
   Future<void> markALLNotificationAsRead(String userId) => _firebase.markALLNotificationAsRead(userId);
   //Future<void> readImportantNotification(String requestId) => _firebase.acceptRequest(requestId);
 
@@ -140,7 +116,6 @@ class DatabaseAccess {
   Future<bool> checkIfAnswersExist(String? groupOfQuestionsID) => _firebase.checkIfAnswersExist(groupOfQuestionsID);
 
   //Conversations
-  Future<int> numberUnreadConversations(String userId) => _firebase.numberUnreadConversations(userId);
   Future<String> addConversation( var users, var messagesRead, String? brandId, String? year, String? month, String? day, String? hour, String? minute, String? second, String? lastMessage) => _firebase.addConversation(users!, messagesRead, brandId, year, month, day, hour, minute, second, lastMessage);
   Future<void> updateConversation(String? uid, var messagesRead, String lastMessage, String year, String month, String day, String hour, String minute, String second) => _firebase.updateConversation(uid, messagesRead, lastMessage, year, month, day, hour, minute, second);
   Future<void> updateConversationUsers(String? uid, var users) => _firebase.updateConversationUsers(uid, users);
@@ -152,11 +127,6 @@ class DatabaseAccess {
   Future<String> addMessage(String? message, String? userSent, String? year, String? month, String? day, String? hour, String? minute,String? second, String? conversationId) => _firebase.addMessage(message, userSent, year, month, day, hour, minute, second, conversationId);
   Future<List<Message>> getConversationMessagesInit(String? conversationId) => _firebase.getConversationMessagesInit(conversationId);
   Future<String?> getLastUserMessageSent(String? conversationId) => _firebase.getLastUserMessageSent(conversationId);
-
-  //Room
-  Future<void> updateRoom(String? roomId, Map<String, dynamic> metadata) => _firebase.updateRoom(roomId, metadata);
-  Future<void> updateRoomLastMessage(String? roomId, var lastMessages) => _firebase.updateRoomLastMessage(roomId, lastMessages);
-  Future<void> deleteRoom(String roomId) => _firebase.deleteRoom(roomId);
 
   Future<List<Conversation>> getConversationByUsers(Map<String, dynamic> currentUser, Map<String, dynamic> user) => _firebase.getConversationByUsers(currentUser, user);
 
@@ -172,14 +142,10 @@ class DatabaseAccess {
   // Brands
   Stream<QuerySnapshot> getAllBrandsStream() => _firebase.getAllBrandsStream();
 
-  // Events
-  Stream<DocumentSnapshot> getSingleEventStream(String id) => _firebase.getSingleEventStream(id);
-
   // Locations
   Stream<QuerySnapshot> getAllLocationsBrand(String brandId) => _firebase.getAllLocationsBrand(brandId);// Locations
 
   // Request
-  Stream<QuerySnapshot> getAllRequestsBrand(String brandId) => _firebase.getAllRequestsBrand(brandId);
 
   // Request
   Stream<QuerySnapshot> getAllNotificationsUserStream(String userId) => _firebase.getAllNotificationsUserStream(userId);

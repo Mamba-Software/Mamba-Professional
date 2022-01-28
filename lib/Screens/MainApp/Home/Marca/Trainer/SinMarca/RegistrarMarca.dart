@@ -2,6 +2,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/LocationDataService.dart';
+import 'package:mamba_castelldefels/Data/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
@@ -39,6 +42,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
   // DataBase Access
   var _brandDataService = new BrandDataService();
   var _locationDataService = new LocationDataService();
+  var _roomDataService = new RoomDataService();
   // Boolean isLoading
   bool isLoading = false;
   bool isFirstTime = false;
@@ -1283,12 +1287,12 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     // Update Current User Brand
     NotificationService().userCreatesBrand(currentUser.id!, result);
     // Create Group Chat
-    final room = await FirebaseChatCore.instance.createGroupRoom(imageUrl: brandCover[1], metadata: {
+    String logoUrl = await _brandDataService.getBrandLogoUrl(result);
+    final room = await FirebaseChatCore.instance.createGroupRoom(imageUrl: logoUrl, metadata: {
       "trainer" + currentUser.id!: currentUser.isTrainer,
       "active" + currentUser.id!: false,
     }, name: nameBrandController.text.trim(), users: []);
-
-    _accessDatabase.updateBrandRoom(result, room.id);
+    _brandDataService.updateBrandRoom(result, room.id);
     // Pushing to Splash Screen
     setState(() {
       currentIndex = 1;
