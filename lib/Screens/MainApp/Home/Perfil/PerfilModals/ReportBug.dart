@@ -5,7 +5,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
-import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

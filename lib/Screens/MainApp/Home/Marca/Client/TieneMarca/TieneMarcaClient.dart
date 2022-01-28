@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+
 import 'package:mamba_castelldefels/Data/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';

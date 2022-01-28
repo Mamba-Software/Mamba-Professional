@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/RoomDataService.dart';
@@ -11,7 +12,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
+
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
@@ -413,8 +414,9 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                         alignment: Alignment.centerRight,
                                         padding: EdgeInsets.all(0),
                                         onPressed: () {
+                                          /* TODO: Navegar al User Chat que toca.
                                           Navigator.push(context, CupertinoPageRoute<Null>(
-                                            builder: (context) => ChatDetailPage(user)),);
+                                            builder: (context) => Chat(user)),);*/
                                         },
                                       ),
                                       onTap: () {

@@ -4,7 +4,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+
 import 'package:mamba_castelldefels/Data/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -13,7 +13,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
+
 import 'package:page_transition/page_transition.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
@@ -419,8 +419,9 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                   alignment: Alignment.centerRight,
                                   padding: EdgeInsets.all(0),
                                   onPressed: () {
-                                    Navigator.push(context, CupertinoPageRoute<Null>(
-                                      builder: (context) => ChatDetailPage(user)),);
+                                    /* TODO: Navegar al User Chat que toca.
+                                          Navigator.push(context, CupertinoPageRoute<Null>(
+                                            builder: (context) => Chat(user)),);*/
                                   },
                                 ),
                                 onTap: () async {

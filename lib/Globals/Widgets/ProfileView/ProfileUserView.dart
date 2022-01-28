@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+
 import 'package:mamba_castelldefels/Data/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
@@ -16,7 +16,7 @@ import 'package:mamba_castelldefels/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
+
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteFromBrandConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteFromEventConfirmationDialog.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';

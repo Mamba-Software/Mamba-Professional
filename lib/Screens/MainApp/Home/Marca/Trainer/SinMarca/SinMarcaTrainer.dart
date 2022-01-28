@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
@@ -23,7 +23,7 @@ import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
+
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/TodosMiembrosClient.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';
 import 'package:page_transition/page_transition.dart';

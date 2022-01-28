@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';

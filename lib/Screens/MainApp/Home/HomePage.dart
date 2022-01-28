@@ -3,14 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
-import 'Chat/Chat.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'Chat/ChatCore/ChatCore.dart';

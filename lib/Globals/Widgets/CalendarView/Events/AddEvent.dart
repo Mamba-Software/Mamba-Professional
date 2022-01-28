@@ -1,5 +1,7 @@
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Data/LocationDataService.dart';
+
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
@@ -29,8 +31,9 @@ class AddEvent extends StatefulWidget {
 
 class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin{
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _brandDataService = new BrandDataService();
   var _eventDataService = new EventDataService();
+  var _locationDataService = new LocationDataService();
   // Boolean Loading
   bool isLoading = false;
   // Boolean isUpdated
@@ -278,7 +281,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   }
 
   Future<void> getAllTrainersFromBrand() async {
-    brandTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
+    brandTrainers = await _brandDataService.getBrandTrainers(currentBrand.id!);
     for (var i=0; i < brandTrainers.length; i++) {
       Usuario trainer = brandTrainers[i];
       if (trainer.id == currentUser.id) {
@@ -286,7 +289,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       } else {
         brandTrainersSelected.add(false);
       }
-
     }
     setState(() {
       isLoading = false;
@@ -294,7 +296,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   }
 
   void getLocation(String locationId) async {
-    location = await _accessDatabase.getSingleLocation(locationId);
+    location = await _locationDataService.getSingleLocation(locationId);
     setState(() {
       isLoading = false;
     });
@@ -1284,7 +1286,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         // One Month
         for (var i=0; i<29; i++) {
           if(values[weekDay-1]!) {
-            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+            await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;
