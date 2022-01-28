@@ -12,6 +12,7 @@ class BrandDataService {
 
   // Check Data
   Future<bool> checkIfBrandExists(String brandId) => _firebase.checkIfBrandExists(brandId);
+  Future<Brand?> checkUserIsBrandCreator(String userId) => _firebase.checkUserIsBrandCreator(userId);
 
   // Get Data
   Future<Brand> getBrandDetails(String brandId) => _firebase.getBrandDetails(brandId);
@@ -33,6 +34,7 @@ class BrandDataService {
   Future<void> updateBrandBaseLocation(String brandID, String locationID) => _firebase.updateBrandBaseLocation(brandID, locationID);
 
   // Delete Data
+  Future<void> deleteBrand(String brandId) => _firebase.deleteBrand(brandId);
   Future<void> deleteUserFromBrand(String userId, String brandId) => _firebase.deleteUserFromBrand(userId, brandId);
   Future<void> deleteBrandUsers(String brandId) => _firebase.deleteBrandUsers(brandId);
 

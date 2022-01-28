@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -31,6 +32,7 @@ class _SettingsState extends State<Settings> {
 
   // Acceso a Base de Datos
   var _userDataService = new UserDataService();
+  var _brandDataService = new BrandDataService();
   // Boolean Loading
   bool isLoading = false;
   bool firstBuild = true;
@@ -322,8 +324,8 @@ class DeleteDialog extends StatefulWidget {
 class _DeleteDialogState extends State<DeleteDialog> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
   var _userDataService = new UserDataService();
+  var _brandDataService = new BrandDataService();
   // Delete Alert
   bool isLoading = false;
   bool firstBuild = true;
@@ -462,33 +464,19 @@ class _DeleteDialogState extends State<DeleteDialog> {
                               wrongPassword = true;
                             });
                           } else {
-                            await _accessDatabase.deleteUserMemberConversations(toMap(userId));
                             if (hasBrand) {
-                              // 12/12/2021
-                              Conversation conv = await _accessDatabase.getConversationByBrand(currentBrand.id!); //12/12/2021
-                              for(int i = 0; i < conv.users.length; ++i) {
-                                if(conv.users[i]['uid'] == currentUser.id) {
-                                  conv.users.removeAt(i);
-                                }
-                              }
-                              await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
                               if (currentUser.isTrainer!) {
-                                Brand? result = await _accessDatabase.checkUserIsBrandCreator(currentUser.id!);
+                                Brand? result = await _brandDataService.checkUserIsBrandCreator(currentUser.id!);
                                 if (result != null) {
-                                  await _accessDatabase.deleteBrand(result.id!);
+                                  await _brandDataService.deleteBrand(result.id!);
                                 } else {
                                   NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
-                                  await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentBrand.id!, currentUser.isTrainer!);
-                                  await _accessDatabase.leaveBrandUser(currentUser.id!);
                                   // New DataBase Restructure
-                                  await _accessDatabase.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
+                                  await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
                                 }
                               } else {
                                 NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
-                                await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentBrand.id!, currentUser.isTrainer!);
-                                await _accessDatabase.leaveBrandUser(currentUser.id!);
-                                // New DataBase Restructure
-                                await _accessDatabase.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
+                                await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
                               }
                             }
                             Navigator.pushAndRemoveUntil(
