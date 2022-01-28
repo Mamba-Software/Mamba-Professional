@@ -458,12 +458,16 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                           imageUrl: adminUser.imageUrl,
                                         );
                                         final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
-                                          adminUser.id!: adminUser.isTrainer,
-                                          currentUser.id!: currentUser.isTrainer,
+                                          "trainer" + adminUser.id!: adminUser.isTrainer,
+                                          "trainer" + currentUser.id!: currentUser.isTrainer,
+                                          "active" + adminUser.id!: false,
+                                          "active" + currentUser.id!: true,
                                         });
 
                                         Navigator.push(context, CupertinoPageRoute<Null>(
-                                            builder: (context) => ChatPage(room: room)),);
+                                            builder: (context) => ChatPage(room: room)),).whenComplete(() {
+                                          if(room.lastMessages!.length == 0) _accessDatabase.deleteRoom(room.id);
+                                        });
                                       }
                                     },
                                   ),

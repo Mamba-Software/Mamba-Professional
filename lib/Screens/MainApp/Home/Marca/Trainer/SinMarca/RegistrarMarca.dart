@@ -6,6 +6,7 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -1178,9 +1179,12 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                           NotificationService().userCreatesBrand(currentUser.id!, result);
                           // Notification Trainer has created Brand
 
-                          await FirebaseChatCore.instance.createGroupRoom(imageUrl: brandCover[1], metadata: {
-                            currentUser.id!: currentUser.isTrainer,
+                          final room = await FirebaseChatCore.instance.createGroupRoom(imageUrl: brandCover[1], metadata: {
+                            "trainer" + currentUser.id!: currentUser.isTrainer,
+                            "active" + currentUser.id!: false,
                           }, name: brandCover[0], users: []);
+                          
+                          _accessDatabase.updateBrandRoom(result, room.id);
 
                           setState(() {
                             currentIndex = 1;

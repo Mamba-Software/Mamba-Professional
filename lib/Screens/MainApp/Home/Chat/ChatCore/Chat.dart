@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/databaseAccess.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
@@ -41,54 +43,77 @@ class _ChatPageState extends State<ChatPage> {
   bool _isAttachmentUploading = false;
   bool isLoading = true;
   var userId;
+  var roomActual;
 
 
   @override
   void initState() {
 
     super.initState();
+    
     getOtherUser();
 
   }
 
-  void getOtherUser() async {
+  void checkasSeen(var querySnapshots, String messageStatus, Map<String, dynamic> metadata) async {
+    for (var doc in querySnapshots.docs) {
+      await doc.reference.update({
+        'status': messageStatus,
+        'metadata': metadata,
+      });
+    }
+    //Canviar room a already changed true
+  }
 
-    int i;
-    if(widget.room.type.toString() != "RoomType.group" && widget.room.lastMessages != null && widget.room.lastMessages![0].metadata![currentUser.id] == "delivered") {
-      print("here");
-      widget.room.lastMessages![0].metadata![currentUser.id!] = "seen";
-      for(i = 0; i <= widget.room.users.length; ++i) {
-        if(widget.room.users[i].id != currentUser.id && widget.room.lastMessages![0].metadata![currentUser.id!] != "delivered") break;
+  void getOtherUser() async {
+    String messageStatus = "seen";
+    Map<String, dynamic> metadata = {};
+    widget.room.metadata!["active" + currentUser.id!] = true;
+    widget.room.metadata!["alreadyChanged"] = false;
+    await _accessDatabase.updateRoom(widget.room.id, widget.room.metadata!);
+
+    //actualitzar el missatge i el last message per el currentuser el posi amb estat "seen" si ja no hi esta
+    print(widget.room.lastMessages![0].status.toString());
+    //if last message != seen
+    if(widget.room.lastMessages![0].status.toString() != "Status.seen") {
+      //Comprovo si algun usuari del last message té el estat a delivered
+      for (int i = 0; i < widget.room.users.length; ++i) {
+        if (widget.room.lastMessages![0].metadata![widget.room.users[i].id] ==
+            "delivered") {
+          messageStatus = "delivered";
+          break;
+          /*
+          metadata = {
+            widget.room.users[i].id: "delivered",
+          };*/
+        }
+        else {
+          /*
+          metadata = {
+            widget.room.users[i].id: "seen",
+          };*/
+        }
       }
 
-     /*
-      types.Message messageFinal =  types.Message(
-        author: widget.room.lastMessages![0].author,
-        createdAt: widget.room.lastMessages![0].createdAt,
-        id: widget.room.lastMessages![0].id,
-        metadata: widget.room.lastMessages![0].metadata,
-        remoteId: widget.room.lastMessages![0].remoteId,
-        roomId: widget.room.lastMessages![0].roomId,
-        status: widget.room.lastMessages![0].status,
-        type: widget.room.lastMessages![0].type,
-        updatedAt: widget.room.lastMessages![0].updatedAt,
-      );*/
-      types.Message messageFinal = widget.room.lastMessages![0].copyWith(metadata: widget.room.lastMessages![0].metadata,
-        remoteId: widget.room.lastMessages![0].remoteId,
-        status: widget.room.lastMessages![0].status,
-        updatedAt: widget.room.lastMessages![0].updatedAt);
-      //if(i == widget.room.users.length - 1) widget.room.lastMessages![0].status = "seen";
-      FirebaseChatCore.instance.updateMessage( widget.room.lastMessages![0], widget.room.id);
 
+      if (messageStatus == "seen") {
+        /*
+        await _accessDatabase.updateRoomLastMessage(widget.room.id, widget.room.lastMessages);
+        var querySnapshots = FirebaseFirestore.instance.collection("7777 Rooms")
+            .doc(widget.room.id).collection("messages")
+            .get(); //Seleccionar nomes els de la room
+        //Que tinguin status delivered i seleccionats en ordre
+        checkasSeen(querySnapshots, messageStatus, metadata);
+         */
+      }
 
-    }
+  }
 
     if(widget.room.type.toString() != "RoomType.group") {
       userId = widget.room.users.firstWhere(
             (u) => u.id != currentUser.id,
       );
 
-      print(userId);
       //userName = widget.room.metadata![userId.id];
     }
 
@@ -165,6 +190,8 @@ class _ChatPageState extends State<ChatPage> {
         );
 
         FirebaseChatCore.instance.sendMessage(message, widget.room.id);
+
+
         _setAttachmentUploading(false);
       } finally {
         _setAttachmentUploading(false);
@@ -255,28 +282,111 @@ class _ChatPageState extends State<ChatPage> {
     return (DateFormat('dd/MM/yyyy, HH:mm').format(dt)).toString();
 }
 
+Widget _customMessageBuilder(types.CustomMessage customMessage,{required int messageWidth}) {
+  return Column(
+    children: [
+      Container(
+        padding: (customMessage.author.id == currentUser.id ?
+        EdgeInsets.only(
+            left:
+            MediaQuery.of(context)
+                .size
+                .width *
+                0.2,
+            right:
+            MediaQuery.of(context)
+                .size
+                .width *
+                0.01,
+            top:
+            MediaQuery.of(context)
+                .size
+                .height *
+                0.01,
+            bottom:
+            MediaQuery.of(context)
+                .size
+                .height *
+                0.01)
+            :EdgeInsets.only(
+            left:
+            MediaQuery.of(context)
+                .size
+                .width *
+                0.01,
+            right:
+            MediaQuery.of(context)
+                .size
+                .width *
+                0.2,
+            top:
+            MediaQuery.of(context)
+                .size
+                .height *
+                0.01,
+            bottom:
+            MediaQuery.of(context)
+                .size
+                .height *
+                0.01)),
+        child: Align(
+          alignment: (customMessage.author.id == currentUser.id
+              ? Alignment.topRight
+              : Alignment.topLeft),
+          child: Container(
+            //width: MediaQuery.of(context).size.width*0.50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: (customMessage.author.id == currentUser.id
+                  ? Styles.mainColorTrans
+                  : Colors.grey.shade200),
+            ),
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.03,
+                vertical: MediaQuery.of(context).size.height * 0.02),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        customMessage.id,
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.02,
+                    ),
+                    Column(children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.01,
+                      ),
+                      Text(
+                        customMessage.id,
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ]),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+  }
+
   void _handleSendPressed(types.PartialText message) {
 
-    if(widget.room.type.toString() != "RoomType.group") {
-      types.PartialText messageFinal =  types.PartialText(
-        text: message.text,
-        metadata: {
-          userId.id!: "delivered",
-        },
-      );
-
-      FirebaseChatCore.instance.sendMessage(
-        messageFinal,
-        widget.room.id,
-      );
-    }
-
-    else {
       FirebaseChatCore.instance.sendMessage(
         message,
         widget.room.id,
       );
-    }
+
   }
 
   void _setAttachmentUploading(bool uploading) {
@@ -287,7 +397,8 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
+    return
+    isLoading
         ? Scaffold(
       body: LoadingViewPurple(),
     )
@@ -362,6 +473,7 @@ class _ChatPageState extends State<ChatPage> {
         initialData: widget.room,
         stream: FirebaseChatCore.instance.room(widget.room.id),
         builder: (context, snapshot) {
+          if(snapshot.data != null) roomActual = snapshot.data;
           return StreamBuilder<List<types.Message>>(
             initialData: const [],
             stream: FirebaseChatCore.instance.messages(snapshot.data!),
@@ -415,6 +527,7 @@ class _ChatPageState extends State<ChatPage> {
 
                   ),
                   customDateHeaderText: _customDateHeaderText,
+                  customMessageBuilder: _customMessageBuilder,
                   //timeFormat: DateFormat('dd/MM/yyyy HH:mm'),
                   isAttachmentUploading: _isAttachmentUploading,
                   messages: snapshot.data ?? [],

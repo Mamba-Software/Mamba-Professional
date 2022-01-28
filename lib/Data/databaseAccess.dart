@@ -63,6 +63,7 @@ class DatabaseAccess {
   Future<void> updateNumberMembers(String brandID) => _firebase.updateNumberMembers(brandID);
   Future<String> updateCurrentBrandPhoto(String brandID, File image) => _firebase.updateCurrentBrandPhoto(brandID, image);
   Future<void> updateBrandInfo(String brandID, String name,String description, int maxMembers, List<double> workShift) => _firebase.updateBrandInfo(brandID, name, description, maxMembers, workShift);
+  Future<void> updateBrandRoom(String brandID, String roomId) => _firebase.updateBrandRoom(brandID, roomId);
   Future<void> updateBrandBaseLocation(String brandID, String locationID) => _firebase.updateBrandBaseLocation(brandID, locationID);
 
   Future<List<Brand>> getAllBrands() => _firebase.getAllBrands();
@@ -151,6 +152,11 @@ class DatabaseAccess {
   Future<String> addMessage(String? message, String? userSent, String? year, String? month, String? day, String? hour, String? minute,String? second, String? conversationId) => _firebase.addMessage(message, userSent, year, month, day, hour, minute, second, conversationId);
   Future<List<Message>> getConversationMessagesInit(String? conversationId) => _firebase.getConversationMessagesInit(conversationId);
   Future<String?> getLastUserMessageSent(String? conversationId) => _firebase.getLastUserMessageSent(conversationId);
+
+  //Room
+  Future<void> updateRoom(String? roomId, Map<String, dynamic> metadata) => _firebase.updateRoom(roomId, metadata);
+  Future<void> updateRoomLastMessage(String? roomId, var lastMessages) => _firebase.updateRoomLastMessage(roomId, lastMessages);
+  Future<void> deleteRoom(String roomId) => _firebase.deleteRoom(roomId);
 
   Future<List<Conversation>> getConversationByUsers(Map<String, dynamic> currentUser, Map<String, dynamic> user) => _firebase.getConversationByUsers(currentUser, user);
 
