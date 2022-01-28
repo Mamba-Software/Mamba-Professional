@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -37,9 +38,9 @@ class ProfileViewUser extends StatefulWidget {
 class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProviderStateMixin {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
   var _userDataService = new UserDataService();
   var _brandDataService = new BrandDataService();
+  var _eventDataService = new EventDataService();
   var _roomDataService = new RoomDataService();
   // Boolean Loading
   bool isLoading = false;
@@ -68,63 +69,14 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     thisMonthEvents  = 0;
     listEvents = [];
     user = await _userDataService.getUserDetails(widget.userID);
-    if (user!.isTrainer!) {
-      getTrainerEventsDone();
-    } else {
-      getClientEventsDone();
-    }
+    getEventsDone();
   }
 
   // Gets the events passed by the trainer.
-  void getTrainerEventsDone() async {
+  void getEventsDone() async {
     DateTime today = DateTime.now();
     var tempMonth = 0;
-    List<Event> list = await _accessDatabase.getAllEventsFromTrainer(widget.userID);
-    for (var i=0; i<list.length; i++) {
-      Event event = list[i];
-      var startDate =  DateTime(
-        int.parse(event.year!),
-        int.parse(event.month!),
-        int.parse(event.day!),
-        int.parse(event.hour!),
-        int.parse(event.minute!),
-      );
-      if (startDate.isBefore(today)) {
-        listEvents.add(event);
-        if (startDate.year == today.year && startDate.month == today.month) {
-          tempMonth += 1;
-        }
-      }
-    }
-    listEvents.sort((a,b) {
-      var aDate =  DateTime(
-        int.parse(a.year!),
-        int.parse(a.month!),
-        int.parse(a.day!),
-        int.parse(a.hour!),
-        int.parse(a.minute!),
-      );
-      var bDate =  DateTime(
-        int.parse(b.year!),
-        int.parse(b.month!),
-        int.parse(b.day!),
-        int.parse(b.hour!),
-        int.parse(b.minute!),
-      );
-      return aDate.compareTo(bDate);
-    });
-    listEvents = List.from(listEvents.reversed);
-    setState(() {
-      thisMonthEvents = tempMonth;
-      totalEvents = listEvents.length;
-      isLoading = false;
-    });
-  }
-  // Gets the events passed by the trainer.
-  void getClientEventsDone() async {
-    DateTime today = DateTime.now();
-    var tempMonth = 0;
-    List<Event> list = await _accessDatabase.getAllEventsFromClient(widget.userID);
+    List<Event> list = await _eventDataService.getUserEvents(widget.userID);
     for (var i=0; i<list.length; i++) {
       Event event = list[i];
       var startDate =  DateTime(
@@ -588,7 +540,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                       ),
                                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                       Text(
-                                        event.selectedTrainers.length.toString(),
+                                        event.numTrainers.toString(),
                                         style: TextStyle(color: Colors.black, fontSize: 12),
                                       ),
                                       Container(
@@ -603,14 +555,14 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                       ),
                                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                       Text(
-                                        event.joinedMembers.length.toString(),
+                                        event.numClients.toString(),
                                         style: TextStyle(color: Colors.black, fontSize: 12),
                                       ),
                                     ],
                                   ),
                                 ],
                               ),
-                              trailing: !canDeleteFromEvent(event.selectedTrainers.length) ? Icon(
+                              trailing: !canDeleteFromEvent(event.numTrainers!) ? Icon(
                                 Icons.arrow_forward_ios,
                                 color: Theme.of(context).primaryColor,
                                 size: 20,
@@ -629,23 +581,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                     setState(() {
                                       isLoading = true;
                                     });
-                                    if (user!.isTrainer!) {
-                                      List<String> selectedTrainers = [];
-                                      for (var trainer in event.selectedTrainers!) {
-                                        selectedTrainers.add(trainer);
-                                      }
-                                      int index = selectedTrainers.indexOf(user!.id!);
-                                      selectedTrainers.removeAt(index);
-                                      _accessDatabase.updateEventTrainers(event.id!, selectedTrainers);
-                                    } else {
-                                      List<String> joinedMembers = [];
-                                      for (var client in event.joinedMembers!) {
-                                        joinedMembers.add(client);
-                                      }
-                                      int index = joinedMembers.indexOf(user!.id!);
-                                      joinedMembers.removeAt(index);
-                                      _accessDatabase.updateEventClients(event.id!, joinedMembers);
-                                    }
+                                    _eventDataService.deleteUserFromEvent(event.id!, user!.id!);
                                     getUser();
                                   }
                                 },
@@ -711,7 +647,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     }
   }
 
-  bool canDeleteFromEvent(int selectedTrainers) {
+  bool canDeleteFromEvent(int numTrainers) {
     if (widget.viewOnly) {
       return false;
     } else {
@@ -720,7 +656,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
         return true;
       }
       // Si es entrenador i mira a un entrenador, ha de ser admin ID.
-      if (currentUser.isTrainer! && user!.isTrainer! && currentUser.id! == currentBrand.adminID && selectedTrainers > 1) {
+      if (currentUser.isTrainer! && user!.isTrainer! && currentUser.id! == currentBrand.adminID && numTrainers > 1) {
         return true;
       }
       return false;
