@@ -50,14 +50,14 @@ class _BrandLocationsState extends State<BrandLocations> {
   List<Location> documentsToLocations(List<DocumentSnapshot> documents) {
     List<Location> locations = [];
     for(int i = 0; i < documents.length; i++) {
-      Location location = Location.fromObject(documents[i], documents[i].id);
+      Location location = Location.fromObjectAllData(documents[i].id, documents[i]);
       if (location.isBaseLocation!) {
         locations.add(location);
         break;
       }
     }
     for(int i = 0; i < documents.length; i++) {
-      Location location = Location.fromObject(documents[i], documents[i].id);
+      Location location = Location.fromObjectAllData(documents[i].id, documents[i]);
       if (!location.isBaseLocation!) {
         locations.add(location);
       }

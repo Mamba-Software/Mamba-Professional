@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/services.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
 import 'package:mamba_castelldefels/Data/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
@@ -42,8 +43,8 @@ class ViewEventClient extends StatefulWidget {
 
 class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProviderStateMixin {
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
   var _userDataService = new UserDataService();
+  var _brandDataService = new BrandDataService();
   var _eventDataService = new EventDataService();
   // Acceso a Base de Datos
   NotificationService _notificationService = NotificationService();
@@ -75,11 +76,9 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   // Members Page
   bool isFull = false;
   bool isJoined = false;
-  List<Usuario> allTrainers = [];
-  List<Usuario> brandTrainersSelected = [];
-  List<bool> brandTrainersSelectedBool = [];
-  bool errorNoTrainerSelected = false;
-  List<Usuario> brandClientsJoining = [];
+  List<Usuario> allUsers = [];
+  List<Usuario> eventTrainers = [];
+  List<Usuario> eventClients = [];
   // Form To Validate User
   final formKeyInfo = GlobalKey<FormState>();
   final formKeyTime = GlobalKey<FormState>();
@@ -118,7 +117,6 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   Image returnRandomImage() {
     Random random = new Random();
     int randomNumber = random.nextInt(15);
-
     switch(randomNumber) {
       case 0: {
         return Image.asset(Constants.eventBackground);
@@ -176,9 +174,9 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
 
   void getEventInfo() async {
     // Get Event
-    event = await _accessDatabase.getSingleEvent(widget.eventId);
+    event = await _eventDataService.getSingleEvent(widget.eventId);
     // Get Brand
-    brand = await _accessDatabase.getBrandDetails(event!.brandID!);
+    brand = await _brandDataService.getBrandDetails(event!.brandID!);
     titleController.text = "${event!.title}";
     titleString = "${event!.title}";
     descriptionController.text = "${event!.description}";
@@ -198,10 +196,9 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     var min = event!.duration!.toStringAsFixed(2).split(".")[1];
     durationController.text = "${hour}h ${min}min";
     members = event!.maxMembers!;
-    membersController.text = "${event!.joinedMembers.length.toString()} / ${event!.maxMembers.toString()}";
-    isFull = (event!.joinedMembers!.length/event!.maxMembers == 1);
-    getAllTrainersFromBrand();
-    getAllClientsFromBrand();
+    membersController.text = "${event!.numClients.toString()} / ${event!.maxMembers.toString()}";
+    isFull = (event!.numClients!/event!.maxMembers! == 1);
+    await getEventUsers();
     await getLocation(event!.locationId!);
     if (widget.onlyView != null) {
       if (widget.onlyView!) await getUserPendingRequests();
@@ -217,57 +214,31 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     }
   }
 
-  Future<void> getAllTrainersFromBrand() async {
-    allTrainers = await _accessDatabase.getAllTrainersFromBrand(brand!.id!);
-    List<Usuario> temp = [];
-    for (var i=0; i < allTrainers.length; i++) {
-      var trainer = allTrainers[i];
-      if (event!.selectedTrainers.contains(trainer.id)) {
-        temp.add(trainer);
-        brandTrainersSelectedBool.add(true);
+  Future<void> getEventUsers() async {
+    allUsers = await _eventDataService.getEventUsers(event!.id!);
+    List<Usuario> trainers = [];
+    List<Usuario> clients = [];
+    for (var i=0; i < allUsers.length; i++) {
+      var user = allUsers[i];
+      if (user.isTrainer!) {
+        trainers.add(user);
       } else {
-        brandTrainersSelectedBool.add(false);
-      }
-    }
-    for (var i=0; i < event!.selectedTrainers.length; i++) {
-      String user = event!.selectedTrainers[i];
-      if (user == "notfound") {
-        temp.add(Usuario(name: AppLocalizations.of(context)!.notFoundUser, imageUrl: deletedObject));
-      }
-    }
-    if (mounted) {
-      setState(() {
-        brandTrainersSelected = temp;
-      });
-    }
-  }
-
-  Future<void> getAllClientsFromBrand() async {
-    List<Usuario> allClients = await _accessDatabase.getAllClientsFromBrand(brand!.id!);
-    List<Usuario> temp = [];
-    for (var i=0; i < allClients.length; i++) {
-      var client = allClients[i];
-      if (event!.joinedMembers.contains(client.id)) {
-        if (client.id == currentUser.id!) {
-          temp.insert(0, client);
+        if (currentUser.id! == user.id!) {
+          // User has joined the event
           setState(() {
             isJoined = true;
           });
-        } else {
-          temp.add(client);
         }
+        clients.add(user);
       }
     }
-    for (var i=0; i < event!.joinedMembers.length; i++) {
-      String user = event!.joinedMembers[i];
-      if (user == "notfound") {
-        temp.add(Usuario(name: AppLocalizations.of(context)!.notFoundUser, imageUrl: deletedObject, isPrivate: false));
-      }
+    clients = orderClientsPrivateLast(clients);
+    if (mounted) {
+      setState(() {
+        eventTrainers = trainers;
+        eventClients = clients;
+      });
     }
-    temp = orderClientsPrivateLast(temp);
-    setState(() {
-      brandClientsJoining = temp;
-    });
   }
 
   List<Usuario> orderClientsPrivateLast(List<Usuario> clients) {
@@ -290,214 +261,11 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   }
 
   Future<void> getLocation(String locationId) async {
-    location = await _accessDatabase.getSingleLocation(locationId);
+    location = await _eventDataService.getEventLocation(event!.id!);
     var temp = location;
     setState(() {
       location = temp;
     });
-  }
-
-  Future<void> selectSlot(ctx, type) {
-    // Initial Vars
-    var startDate = DateTime.now();
-    var title;
-    var initialDuration = 1;
-    var initialMembers = 1;
-    var totalMembers = (membersMax) - event!.joinedMembers.length;
-    var widgetPicker;
-    // Init for differnt types
-    if (type == 0) {
-      startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
-    } else if (type == 1) {
-      initialDuration = durations.indexWhere((element) => element == duration);
-    } else if (type == 2) {
-      initialMembers = 0;
-    }
-    // Different types of pickers
-    Widget dateTimePicker = CupertinoDatePicker(
-        mode: CupertinoDatePickerMode.dateAndTime,
-        initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-        minimumDate: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-        maximumDate: startDate.add(Duration(days: 365)),
-        use24hFormat: true,
-        minuteInterval: 30,
-        onDateTimeChanged: (val) {
-          setState(() {
-            startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(val);
-            startDateController.text = toCapitalized(startDateController.text);
-          });
-        }
-    );
-    Widget durationPicker = CupertinoPicker(
-        scrollController: new FixedExtentScrollController(
-            initialItem: initialDuration
-        ),
-        itemExtent: 40.0,
-        backgroundColor: Colors.transparent,
-        onSelectedItemChanged: (int index) {
-          setState(() {
-            duration = durations[index];
-            var hour = durations[index].split(".")[0];
-            var min = durations[index].split(".")[1];
-            durationController.text = "${hour}h ${min}min";
-          });
-        },
-        children: new List<Widget>.generate(
-            durations.length, (int index) {
-          var item = durations[index];
-          var hour = item.split(".")[0];
-          var min = item.split(".")[1];
-          return new Center(
-            child: new Text(
-                "${hour}h ${min}min"
-            ),
-          );
-        }
-        )
-    );
-    Widget membersPicker = CupertinoPicker(
-        scrollController: new FixedExtentScrollController(
-            initialItem: initialMembers
-        ),
-        itemExtent: 40.0,
-        backgroundColor: Colors.transparent,
-        onSelectedItemChanged: (int index) {
-          setState(() {
-            members = event!.joinedMembers.length+index+1;
-            membersController.text = "${event!.joinedMembers.length.toString()} / ${members.toString()}";
-          });
-        },
-        children: new List<Widget>.generate(totalMembers.toInt(), (int index) {
-          var member = event!.joinedMembers.length+index+1;
-          return new Center(
-            child: new Text(
-                "${member.toString()}"
-            ),
-          );
-        }
-        )
-    );
-    if (type == 0) {
-      title = AppLocalizations.of(context)!.selectDayTime;
-      widgetPicker = dateTimePicker;
-    } else if (type == 1) {
-      title = AppLocalizations.of(context)!.selectDuration;
-      widgetPicker = durationPicker;
-    } else if (type == 2) {
-      title = AppLocalizations.of(context)!.selectMembers;
-      widgetPicker = membersPicker;
-    }
-    showCupertinoModalPopup(
-        context: ctx,
-        builder: (_) => Material(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
-          ),
-          child: Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height*0.40,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Text(title, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
-                    ),
-                  ],
-                ),
-                Expanded(
-                    child: widgetPicker
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 0),
-                      child: TextButton(
-                          child: Text(AppLocalizations.of(context)!.entendido, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
-                          onPressed: () {
-                            Navigator.of(ctx).pop();
-                          }
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        )
-    );
-    return Future.value("");
-  }
-
-  bool validateDateAndTime(DateTime startTime, double duration) {
-    // Calculating the Time to check
-    var hour = duration.toString().split(".")[0];
-    var min = duration.toStringAsFixed(2).split(".")[1];
-    var endTime =  startTime.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
-    // Computing the workshift
-    var workshift1 = brand!.workShift[0];
-    var workshift2 = brand!.workShift[1];
-    var startWorkHour = workshift1.toStringAsFixed(2).split(".")[0];
-    var startWorkMin = workshift1.toStringAsFixed(2).split(".")[1];
-    var endWorkHour = workshift2.toStringAsFixed(2).split(".")[0];
-    var endWorkMin = workshift2.toStringAsFixed(2).split(".")[1];
-    var startWorkDay =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(startWorkHour),int.parse(startWorkMin));
-    var endWorkDay =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(endWorkHour),int.parse(endWorkMin));
-    if ( // Can´t create event in the past
-    startTime.isBefore(DateTime.now())|| startTime.isAtSameMomentAs(DateTime.now()) || endTime.isBefore(DateTime.now()) || endTime.isAtSameMomentAs(DateTime.now())
-        // Can´t create event outside of working hours
-        || startTime.isBefore(startWorkDay) || endTime.isBefore(startWorkDay)
-        || startTime.isAfter(endWorkDay) || endTime.isAfter(endWorkDay)
-    ) {
-      return false;
-    } else {
-      // Can´t create event in break period of working hours
-      for (var i=2; i<brand!.workShift.length; i+=2) {
-        // Breaks
-        var break1 = brand!.workShift[i];
-        var break2 = brand!.workShift[i];
-        // Take the minute and the hour
-        var startBreakHour = break1.toStringAsFixed(2).split(".")[0];
-        var startBreakMin = break1.toStringAsFixed(2).split(".")[1];
-        var endBreakHour = break2.toStringAsFixed(2).split(".")[0];
-        var endBreakMin = break2.toStringAsFixed(2).split(".")[1];
-        // Date Time formatted
-        var startBreak =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(startBreakHour), int.parse(startBreakMin));
-        var endBreak =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(endBreakHour), int.parse(endBreakMin));
-        // Condition check
-        if ( ((startTime.isAfter(startBreak) || startTime.isAtSameMomentAs(startBreak)) && (startTime.isBefore(endBreak))) ||
-            ((endTime.isAfter(startBreak)) && (endTime.isBefore(endBreak) || endTime.isAtSameMomentAs(endBreak)))) {
-          return false;
-        }
-      }
-      return true;
-    }
-  }
-
-  String splitCommonName(String name) {
-    List<String> aux = name.split(" ");
-    return aux[0];
-  }
-
-  Color getColor(Set<MaterialState> states) {
-    const Set<MaterialState> interactiveStates = <MaterialState>{
-      MaterialState.pressed,
-      MaterialState.hovered,
-      MaterialState.focused,
-    };
-    if (states.any(interactiveStates.contains)) {
-      return Colors.blue;
-    }
-    return Theme.of(context).accentColor;
   }
 
   // Get user pending requests
@@ -881,16 +649,16 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                         shrinkWrap: true,
                                         physics: BouncingScrollPhysics(),
                                         scrollDirection: Axis.horizontal,
-                                        itemCount: brandTrainersSelected.length,
+                                        itemCount: eventTrainers.length,
                                         itemBuilder: (context, int index) {
-                                          var trainer = brandTrainersSelected[index];
+                                          var trainer = eventTrainers[index];
                                           return GestureDetector(
                                             onTap: () {
                                               Navigator.push(context, CupertinoPageRoute<Null>(
                                                 builder: (context) => ProfileViewUser(userID: trainer.id!, viewOnly: false,)));
                                             },
                                             child: Padding(
-                                              padding: !(index == 0 || index == brandTrainersSelected.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandTrainersSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                              padding: !(index == 0 || index == eventTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
@@ -908,7 +676,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                       children: [
                                                         Expanded(
                                                           child: Text(
-                                                            trainer.name! != AppLocalizations.of(context)!.notFoundUser ? splitCommonName(trainer.name!) : trainer.name!,
+                                                            trainer.name! != AppLocalizations.of(context)!.notFoundUser ? trainer.firstName! : trainer.name!,
                                                             style: Styles.purpleTextStyle.copyWith(fontSize: 15),
                                                             textAlign: TextAlign.center,
                                                           ),
@@ -946,7 +714,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                   Row(
                                     children: [
                                       Text(
-                                        "( "+event!.joinedMembers.length.toString(),
+                                        "( "+event!.numClients.toString(),
                                         style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16),
                                       ),
                                       Text(
@@ -965,7 +733,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                             Padding(
                               padding: EdgeInsets.only(top: 0),
                               child:
-                              brandClientsJoining.isEmpty ?
+                              eventClients.isEmpty ?
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -994,16 +762,16 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                         shrinkWrap: true,
                                         physics: BouncingScrollPhysics(),
                                         scrollDirection: Axis.horizontal,
-                                        itemCount: brandClientsJoining.length,
+                                        itemCount: eventClients.length,
                                         itemBuilder: (context, int index) {
-                                          var client = brandClientsJoining[index];
+                                          var client = eventClients[index];
                                           if (client.isPrivate! && client.id != currentUser.id) {
                                             return GestureDetector(
                                               onTap: () {
 
                                               },
                                               child: Padding(
-                                                padding: !(index == 0 || index == brandClientsJoining.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandClientsJoining.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                                padding: !(index == 0 || index == eventClients.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventClients.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
@@ -1021,7 +789,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                         children: [
                                                           Expanded(
                                                             child: Text(
-                                                              client.name! != AppLocalizations.of(context)!.notFoundUser ? splitCommonName(client.name!) : client.name!,
+                                                              client.name! != AppLocalizations.of(context)!.notFoundUser ? client.firstName! : client.name!,
                                                               style: Styles.purpleTextStyle.copyWith(fontSize: 15, color: Theme.of(context).primaryColor.withOpacity(0.3)),
                                                               textAlign: TextAlign.center,
                                                             ),
@@ -1040,7 +808,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                   builder: (context) => ProfileViewUser(userID: client.id!, viewOnly: false)));
                                               },
                                               child: Padding(
-                                                padding: !(index == 0 || index == brandClientsJoining.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandClientsJoining.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                                padding: !(index == 0 || index == eventClients.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventClients.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
@@ -1058,7 +826,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                         children: [
                                                           Expanded(
                                                             child: Text(
-                                                              client.name! != AppLocalizations.of(context)!.notFoundUser ? splitCommonName(client.name!) : client.name!,
+                                                              client.name! != AppLocalizations.of(context)!.notFoundUser ? client.firstName! : client.name!,
                                                               style: Styles.purpleTextStyle.copyWith(fontSize: 15),
                                                               textAlign: TextAlign.center,
                                                             ),
@@ -1127,16 +895,13 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                             setState(() {
                               isLoadingBody = true;
                             });
-                            bool hasJoined = await _accessDatabase.joinEvent(event!.id!, currentUser.id!);
                             await _eventDataService.addUserToEvent(event!.id!, currentUser.id!);
                             _notificationService.userJoinEvent(currentUser.id!, event!.brandID!, event!.id!);
-                            if (hasJoined) {
-                              getEventInfo();
-                              setState(() {
-                                isJoined = true;
-                                isLoadingBody = false;
-                              });
-                            }
+                            getEventInfo();
+                            setState(() {
+                              isJoined = true;
+                              isLoadingBody = false;
+                            });
                           }
                         },
                         backgroundColor: Colors.green,
@@ -1178,16 +943,13 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                             setState(() {
                               isLoadingBody = true;
                             });
-                            bool hasJoined = await _accessDatabase.leaveEvent(event!.id!, currentUser.id!, false);
                             await _eventDataService.deleteUserFromEvent(event!.id!, currentUser.id!);
                             _notificationService.userLeaveEvent(currentUser.id!, event!.brandID!, event!.id!);
-                            if (hasJoined) {
-                              getEventInfo();
-                              setState(() {
-                                isJoined = false;
-                                isLoadingBody = false;
-                              });
-                            }
+                            getEventInfo();
+                            setState(() {
+                              isJoined = false;
+                              isLoadingBody = false;
+                            });
                           }
                         },
                         backgroundColor: Colors.red,

@@ -58,7 +58,7 @@ class _MyLocationsState extends State<MyLocations> {
   List<Location> documentsToLocations(List<DocumentSnapshot> documents) {
     List<Location> locations = [];
     for(int i = 0; i < documents.length; i++) {
-      Location location = Location.fromObject(documents[i], documents[i].id);
+      Location location = Location.fromObjectAllData(documents[i].id, documents[i]);
       if (location.isBaseLocation!) {
         locations.add(location);
         baseLocationId = location.id!;
@@ -66,7 +66,7 @@ class _MyLocationsState extends State<MyLocations> {
       }
     }
     for(int i = 0; i < documents.length; i++) {
-      Location location = Location.fromObject(documents[i], documents[i].id);
+      Location location = Location.fromObjectAllData(documents[i].id, documents[i]);
       if (!location.isBaseLocation!) {
         locations.add(location);
       }

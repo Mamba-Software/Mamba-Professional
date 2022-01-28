@@ -728,6 +728,32 @@ class FirebaseDatabaseService {
       return events;
     }
 
+    Future<List<Usuario>> getEventUsers(String eventId) async {
+      List<Usuario> users = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(events)
+          .doc(eventId)
+          .collection("Users")
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        users.add(Usuario.fromObjectOnlyCoverData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+      return users;
+    }
+
+    Future<Location> getEventLocation(String eventId) async {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(events)
+          .doc(eventId)
+          .collection("Locations")
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        return Location.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+      }
+      return Location();
+    }
+
     Future<List<Event>> getUserEventsToday(String userId) async {
       DateTime today = DateTime.now();
       List<Event> events = [];
@@ -1628,7 +1654,7 @@ class FirebaseDatabaseService {
     Future<Location> getSingleLocation(String locationId) async {
       DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
       await _firestore.collection(locations).doc(locationId).get();
-      return Location.fromMap(_documentSnapshot.data()!, _documentSnapshot.id);
+      return Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
     }
 
     // Requests
