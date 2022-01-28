@@ -1,6 +1,10 @@
 import 'dart:math';
 import 'package:flutter/services.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DatabaseAccess.dart';
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/LocationDataService.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,7 +37,9 @@ class ViewEventTrainer extends StatefulWidget {
 
 class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerProviderStateMixin {
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _brandDataService = new BrandDataService();
+  var _eventDataService = new EventDataService();
+  var _locationDataService = new LocationDataService();
   // Boolean Loading
   bool isLoading = false;
   bool isLoadingBody = false;
@@ -61,11 +67,13 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
   int membersMax = currentBrand.maxMembers!;
   // Members Page
   bool isFull = false;
+  List<Usuario> allUsers = [];
   List<Usuario> allTrainers = [];
-  List<Usuario> brandTrainersSelected = [];
-  List<bool> brandTrainersSelectedBool = [];
+  List<Usuario> eventTrainers = [];
+  List<Usuario> eventClients = [];
+  List<bool> eventTrainersBool = [];
   bool errorNoTrainerSelected = false;
-  List<Usuario> brandClientsJoining = [];
+  
   // Form To Validate User
   final formKeyInfo = GlobalKey<FormState>();
   final formKeyTime = GlobalKey<FormState>();
@@ -86,7 +94,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
   initState() {
     super.initState();
     isLoading = true;
-    theImage = returnRandomImage();
+    theImage = buildRandomImage();
     getEventInfo();
   }
 
@@ -97,7 +105,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
     precacheImage(theImage!.image, context);
   }
 
-  Image returnRandomImage() {
+  Image buildRandomImage() {
     Random random = new Random();
     int randomNumber = random.nextInt(15);
 
@@ -157,7 +165,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
   }
 
   void getEventInfo() async {
-    event = await _accessDatabase.getSingleEvent(widget.eventId);
+    event = await _eventDataService.getSingleEvent(widget.eventId);
     titleController.text = "${event!.title}";
     titleString = "${event!.title}";
     descriptionController.text = "${event!.description}";
@@ -177,11 +185,10 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
     var min = event!.duration!.toStringAsFixed(2).split(".")[1];
     durationController.text = "${hour}h ${min}min";
     members = event!.maxMembers!;
-    membersController.text = "${event!.joinedMembers.length.toString()} / ${event!.maxMembers.toString()}";
-    isFull = (event!.joinedMembers!.length/event!.maxMembers == 1);
-    getAllTrainersFromBrand();
-    getAllClientsFromBrand();
-    await getLocation(event!.locationId!);
+    membersController.text = "${event!.numClients.toString()} / ${event!.maxMembers.toString()}";
+    isFull = (event!.numClients!/event!.maxMembers! == 1);
+    await getEventUsers();
+    await getEventLocation(event!.id!);
     if (mounted) {
       Future.delayed(const Duration(milliseconds: 500), () {
         setState(() {
@@ -193,54 +200,54 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
     }
   }
 
-  Future<void> getAllTrainersFromBrand() async {
-    allTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
-    brandTrainersSelectedBool = [];
-    List<Usuario> temp = [];
-    for (var i=0; i < allTrainers.length; i++) {
-      var trainer = allTrainers[i];
-      if (event!.selectedTrainers.contains(trainer.id)) {
-        temp.add(trainer);
-        brandTrainersSelectedBool.add(true);
-      } else {
-        brandTrainersSelectedBool.add(false);
+  Future<void> getEventUsers() async {
+    allUsers = await _eventDataService.getEventUsers(event!.id!);
+    allTrainers = await _brandDataService.getBrandTrainers(currentBrand.id!);
+    List<Usuario> trainers = [];
+    List<String> trainersIds = [];
+    List<Usuario> clients = [];
+    for (var i=0; i < allUsers.length; i++) {
+      var user = allUsers[i];
+      if (user.isTrainer!) {
+        if (currentUser.id! == user.id!) {
+          // User has joined the event
+          trainers.insert(0, user);
+          trainersIds.insert(0, user.id!);
+        } else {
+          trainers.add(user);
+          trainersIds.add(user.id!);
+        }
+      } else {        
+        clients.add(user);
       }
     }
-    for (var i=0; i < event!.selectedTrainers.length; i++) {
-      String user = event!.selectedTrainers[i];
-      if (user == "notfound") {
-        temp.add(Usuario(name: AppLocalizations.of(context)!.notFoundUser, imageUrl: deletedObject));
+    eventTrainersBool = [];
+    for (var i=0; i < allTrainers.length; i++) {
+      var trainer = allTrainers[i];
+      if (trainersIds.contains(trainer.id!)) {
+        eventTrainersBool.add(true);
+      } else {
+        eventTrainersBool.add(false);
       }
     }
     if (mounted) {
       setState(() {
-        brandTrainersSelected = temp;
+        eventTrainers = trainers;
+        eventClients = clients;
       });
     }
   }
-
-  Future<void> getAllClientsFromBrand() async {
-    List<Usuario> allClients = await _accessDatabase.getAllClientsFromBrand(currentBrand.id!);
-    List<Usuario> temp = [];
-    for (var i=0; i < allClients.length; i++) {
-      var client = allClients[i];
-      if (event!.joinedMembers.contains(client.id)) {
-        temp.add(client);
-      }
-    }
-    for (var i=0; i < event!.joinedMembers.length; i++) {
-      String user = event!.joinedMembers[i];
-      if (user == "notfound") {
-        temp.add(Usuario(name: AppLocalizations.of(context)!.notFoundUser, imageUrl: deletedObject));
-      }
-    }
+  
+  Future<void> getEventLocation(String eventId) async {
+    location = await _eventDataService.getEventLocation(eventId);
+    var temp = location;
     setState(() {
-      brandClientsJoining = temp;
+      location = temp;
     });
   }
 
-  Future<void> getLocation(String locationId) async {
-    location = await _accessDatabase.getSingleLocation(locationId);
+  Future<void> getLocationFromId(String locationId) async {
+    location = await _locationDataService.getSingleLocation(locationId);
     var temp = location;
     setState(() {
       location = temp;
@@ -255,7 +262,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
     var title;
     var initialDuration = 1;
     var initialMembers = 1;
-    var totalMembers = (membersMax) - event!.joinedMembers.length;
+    var totalMembers = (membersMax) - event!.numClients!;
     var widgetPicker;
     // Init for differnt types
     if (type == 0) {
@@ -325,12 +332,12 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
         backgroundColor: Colors.transparent,
         onSelectedItemChanged: (int index) {
           setState(() {
-            members = event!.joinedMembers.length+index;
-            membersController.text = "${event!.joinedMembers.length.toString()} / ${members.toString()}";
+            members = event!.numClients!+index;
+            membersController.text = "${event!.numClients.toString()} / ${members.toString()}";
           });
         },
         children: new List<Widget>.generate(totalMembers.toInt(), (int index) {
-          var member = event!.joinedMembers.length+index;
+          var member = event!.numClients!+index;
           return new Center(
             child: new Text(
                 "${member.toString()}"
@@ -903,7 +910,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                                   print("result");
                                                   print(result);
                                                   if (result != null) {
-                                                    await getLocation(result);
+                                                    await getLocationFromId(result);
                                                     setState(() {
                                                       isLoading = false;
                                                     });
@@ -993,7 +1000,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                           return GestureDetector(
                                             onTap: () {
                                               setState(() {
-                                                brandTrainersSelectedBool[index] = !brandTrainersSelectedBool[index];
+                                                eventTrainersBool[index] = !eventTrainersBool[index];
                                               });
                                             },
                                             child: Padding(
@@ -1026,13 +1033,13 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                                             checkColor: Colors.white,
                                                             fillColor: MaterialStateProperty.resolveWith(getColor),
                                                             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                            value: brandTrainersSelectedBool[index],
+                                                            value: eventTrainersBool[index],
                                                             shape: CircleBorder(
                                                                 side: BorderSide.none
                                                             ),
                                                             onChanged: (bool? value) {
                                                               setState(() {
-                                                                brandTrainersSelectedBool[index] = !brandTrainersSelectedBool[index];
+                                                                eventTrainersBool[index] = !eventTrainersBool[index];
                                                               });
                                                             },
                                                           ),
@@ -1054,16 +1061,16 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                         shrinkWrap: true,
                                         physics: BouncingScrollPhysics(),
                                         scrollDirection: Axis.horizontal,
-                                        itemCount: brandTrainersSelected.length,
+                                        itemCount: eventTrainers.length,
                                         itemBuilder: (context, int index) {
-                                          var trainer = brandTrainersSelected[index];
+                                          var trainer = eventTrainers[index];
                                           return GestureDetector(
                                             onTap: () {
                                               Navigator.push(context, CupertinoPageRoute<Null>(
                                                 builder: (context) => ProfileViewUser(userID: trainer.id!, viewOnly: false)));
                                             },
                                             child: Padding(
-                                              padding: !(index == 0 || index == brandTrainersSelected.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandTrainersSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                              padding: !(index == 0 || index == eventTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
@@ -1129,7 +1136,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                   !isEditing ? Row(
                                     children: [
                                       Text(
-                                        "( "+event!.joinedMembers.length.toString(),
+                                        "( "+event!.numClients.toString(),
                                         style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16),
                                       ),
                                       Text(
@@ -1193,7 +1200,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                             ) : Padding(
                               padding: EdgeInsets.only(top: 0),
                               child:
-                              brandClientsJoining.isEmpty ?
+                              eventClients.isEmpty ?
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -1222,16 +1229,16 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                         shrinkWrap: true,
                                         physics: BouncingScrollPhysics(),
                                         scrollDirection: Axis.horizontal,
-                                        itemCount: brandClientsJoining.length,
+                                        itemCount: eventClients.length,
                                         itemBuilder: (context, int index) {
-                                          var client = brandClientsJoining[index];
+                                          var client = eventClients[index];
                                           return GestureDetector(
                                             onTap: () {
                                               Navigator.push(context, CupertinoPageRoute<Null>(
                                                 builder: (context) => ProfileViewUser(userID: client.id!, viewOnly: false)));
                                             },
                                             child: Padding(
-                                              padding: !(index == 0 || index == brandClientsJoining.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandClientsJoining.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                              padding: !(index == 0 || index == eventClients.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventClients.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
@@ -1320,7 +1327,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                               errorDate = true;
                             });
                           }
-                          if (!brandTrainersSelectedBool.contains(true)) {
+                          if (!eventTrainersBool.contains(true)) {
                             hasError = true;
                             setState(() {
                               errorNoTrainerSelected = true;
@@ -1332,11 +1339,11 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                             });
                             var selectedTrainerId = [];
                             for (var i=0; i< allTrainers.length; i++) {
-                              if (brandTrainersSelectedBool[i]) {
+                              if (eventTrainersBool[i]) {
                                 selectedTrainerId.add(allTrainers[i].id);
                               }
                             }
-                            await _accessDatabase.updateEvent(widget.eventId, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+                            await _eventDataService.updateEvent(widget.eventId, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
                             getEventInfo();
                           }
                         },
@@ -1379,7 +1386,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                         setState(() {
                           isLoadingBody = true;
                         });
-                        await _accessDatabase.deleteEvent(widget.eventId);
+                        await _eventDataService.deleteEvent(widget.eventId);
                         Navigator.pop(context);
                       }
                     },

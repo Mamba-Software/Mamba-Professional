@@ -496,7 +496,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                                 ),
                                                 SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                                 Text(
-                                                  event.selectedTrainers.length.toString(),
+                                                  event.numTrainers.toString(),
                                                   style: TextStyle(color: Colors.white, fontSize: 12),
                                                 ),
                                                 Container(
@@ -511,7 +511,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                                 ),
                                                 SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                                 Text(
-                                                  event.joinedMembers.length.toString(),
+                                                  event.numClients.toString(),
                                                   style: TextStyle(color: Colors.white, fontSize: 12),
                                                 ),
                                               ],

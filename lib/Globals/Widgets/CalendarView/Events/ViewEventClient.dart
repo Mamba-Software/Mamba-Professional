@@ -103,7 +103,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
   @override
   initState() {
     isLoading = true;
-    theImage = returnRandomImage();
+    theImage = buildRandomImage();
     getEventInfo();
   }
 
@@ -114,7 +114,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     precacheImage(theImage!.image, context);
   }
 
-  Image returnRandomImage() {
+  Image buildRandomImage() {
     Random random = new Random();
     int randomNumber = random.nextInt(15);
     switch(randomNumber) {
@@ -225,11 +225,13 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
       } else {
         if (currentUser.id! == user.id!) {
           // User has joined the event
+          clients.insert(0, user);
           setState(() {
             isJoined = true;
           });
+        } else {
+          clients.add(user);
         }
-        clients.add(user);
       }
     }
     clients = orderClientsPrivateLast(clients);
