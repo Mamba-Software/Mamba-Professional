@@ -124,7 +124,7 @@ exports.userUpdatesCoverData = functions
       return null;
     });
 
-// User Updates Cover Data
+// Brand Updates Cover Data
 exports.brandUpdatesCoverData = functions
     .region("europe-west1")
     .firestore
@@ -190,6 +190,184 @@ exports.brandUpdatesCoverData = functions
           .update({
             "name": after.name,
             "logoUrl": after.logoUrl,
+          });
+        }
+      }
+      return null;
+    });
+
+// Event Updates Data
+exports.eventUpdatesCoverData = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+events+"/{eventId}")
+    .onUpdate( async (change, context) => {
+      // Get the value of the context triggers.
+      const eventId = context.params.eventId;
+      // Get Value of the Change
+      const before = change.before.data();
+      const after = change.after.data();
+      functions.logger.log(
+        "BEFORE:",
+        before,
+      );
+      functions.logger.log(
+          "AFTER:",
+          after,
+      );
+      // Event Users Snapshot
+      const eventUsersSnapshot = await db.collection(events).doc(eventId).collection("Users").get();
+      // Check if Location has changed:
+      let locationChange = false;
+      if (before.locationId != after.locationId) {
+        locationChange = true;
+      }
+      functions.logger.log(
+          "LOCATION CHANGED?",
+          locationChange,
+        );
+      if (locationChange) {
+        // Count the Number of Clients and Trainers
+        let numClients = 0;
+        let numTrainers = 0;
+        for (var i in eventUsersSnapshot.docs) {
+          const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+          if (eventUsersDoc.isTrainer) {
+            numTrainers += 1;
+          } else {
+            numClients += 1;
+          }
+        }
+        functions.logger.log(
+          "numClients",
+          numClients,
+          "numTrainers",
+          numTrainers,
+        );
+        functions.logger.log(
+          "Delete Event from Location",
+          before.locationId,
+        );
+        // Delete Event From Old Location
+        await db
+        .collection(locations)
+        .doc(before.locationId)
+        .collection("Events")
+        .doc(eventId)
+        .delete();
+        // Add Event To New Location
+        functions.logger.log(
+          "Add Event To Location",
+          after.locationId,
+        );
+        await db
+        .collection(locations)
+        .doc(after.locationId)
+        .collection("Events")
+        .doc(eventId).set({
+          "title": after.title,
+          "year": after.year,
+          "month": after.month,
+          "day": after.day,
+          "hour": after.hour,
+          "minute": after.minute,
+          "duration": after.duration,
+          "numTrainers": numTrainers,
+          "numClients": numClients,
+          "maxMembers": after.maxMembers,
+        });
+        functions.logger.log(
+          "DONE",
+        );
+      }
+      // Check if Cover Data has changed:
+      // COVER DATA: title, year, month, day, hour, minute, duration
+      let coverDataChange = false;
+      if (before.title != after.title) {
+        coverDataChange = true;
+      } else if (before.year != after.year) {
+        coverDataChange = true;
+      } else if (before.month != after.month) {
+        coverDataChange = true;
+      } else if (before.day != after.day) {
+        coverDataChange = true;
+      } else if (before.hour != after.hour) {
+        coverDataChange = true;
+      } else if (before.minute != after.minute) {
+        coverDataChange = true;
+      } else if (before.duration != after.duration) {
+        coverDataChange = true;
+      }
+      functions.logger.log(
+        "COVER DATA CHANGED?",
+        coverDataChange,
+      );
+      if (coverDataChange) {
+        functions.logger.log(
+            "Event Users Num =",
+            eventUsersSnapshot.size,
+          );
+        for (var i in eventUsersSnapshot.docs) {
+          const id = eventUsersSnapshot.docs[i].id;
+          await db
+          .collection(users)
+          .doc(id)
+          .collection("Events")
+          .doc(eventId)
+          .update({
+            "title": after.title,
+            "year": after.year,
+            "month": after.month,
+            "day": after.day,
+            "hour": after.hour,
+            "minute": after.minute,
+            "duration": after.duration,
+          });
+        }
+        // Update the Event Subcollection in Brands
+        const eventBrandsSnapshot = await db.collection(events).doc(eventId).collection("Brands").get();
+        functions.logger.log(
+            "Event Brands Num =",
+            eventBrandsSnapshot.size,
+          );
+        for (var i in eventBrandsSnapshot.docs) {
+          const id = eventBrandsSnapshot.docs[i].id;
+          await db
+          .collection(brands)
+          .doc(id)
+          .collection("Events")
+          .doc(eventId)
+          .update({
+            "title": after.title,
+            "year": after.year,
+            "month": after.month,
+            "day": after.day,
+            "hour": after.hour,
+            "minute": after.minute,
+            "duration": after.duration,
+          });
+        }
+        // Update the Event Subcollection in Locations
+        const eventLocationsSnapshot = await db.collection(events).doc(eventId).collection("Locations").get();
+        functions.logger.log(
+            "Event Locations Num =",
+            eventLocationsSnapshot.size,
+          );
+        for (var i in eventLocationsSnapshot.docs) {
+          const id = eventLocationsSnapshot.docs[i].id;
+          await db
+          .collection(locations)
+          .doc(id)
+          .collection("Events")
+          .doc(eventId)
+          .update({
+            "title": after.title,
+            "year": after.year,
+            "month": after.month,
+            "day": after.day,
+            "hour": after.hour,
+            "minute": after.minute,
+            "duration": after.duration,
           });
         }
       }

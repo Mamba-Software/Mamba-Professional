@@ -172,7 +172,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     }
   }
 
-  void getEventInfo() async {
+  Future getEventInfo() async {
     // Get Event
     event = await _eventDataService.getSingleEvent(widget.eventId);
     // Get Brand
@@ -199,7 +199,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     membersController.text = "${event!.numClients.toString()} / ${event!.maxMembers.toString()}";
     isFull = (event!.numClients!/event!.maxMembers! == 1);
     await getEventUsers();
-    await getLocation(event!.locationId!);
+    await getEventLocation(event!.id!);
     if (widget.onlyView != null) {
       if (widget.onlyView!) await getUserPendingRequests();
     }
@@ -262,8 +262,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     return orderedUsers;
   }
 
-  Future<void> getLocation(String locationId) async {
-    location = await _eventDataService.getEventLocation(event!.id!);
+  Future<void> getEventLocation(String eventId) async {
+    location = await _eventDataService.getEventLocation(eventId);
     var temp = location;
     setState(() {
       location = temp;
@@ -899,7 +899,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                             });
                             await _eventDataService.addUserToEvent(event!.id!, currentUser.id!);
                             _notificationService.userJoinEvent(currentUser.id!, event!.brandID!, event!.id!);
-                            getEventInfo();
+                            await Future.delayed(const Duration(milliseconds: 2500));
+                            await getEventInfo();
                             setState(() {
                               isJoined = true;
                               isLoadingBody = false;
@@ -947,9 +948,10 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                             });
                             await _eventDataService.deleteUserFromEvent(event!.id!, currentUser.id!);
                             _notificationService.userLeaveEvent(currentUser.id!, event!.brandID!, event!.id!);
-                            getEventInfo();
+                            await Future.delayed(const Duration(milliseconds: 2500));
+                            await getEventInfo();
                             setState(() {
-                              isJoined = false;
+                              isJoined = true;
                               isLoadingBody = false;
                             });
                           }

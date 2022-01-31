@@ -1394,6 +1394,7 @@ class FirebaseDatabaseService {
             .collection("Users")
             .doc(uid)
             .set({
+          "name": user.name,
           "firstName": user.firstName,
           "lastName": user.lastName,
           "nick": user.nick,
@@ -1525,11 +1526,27 @@ class FirebaseDatabaseService {
       }
     }
     // Update Event Location
-    Future<void> updateEventLocation(String eventId, String locationId) async {
+    Future<void> updateEventLocation(String eventId, String locationId, String previousLocation) async {
       try {
-        await _firestore.collection(events).doc(eventId).update({
-          "locationId": locationId,
-        });
+        // Delete Previous Location
+        await _firestore
+            .collection(events)
+            .doc(eventId)
+            .collection("Locations")
+            .doc(previousLocation)
+            .delete();
+        // Add New Location
+        Location location = await this.getSingleLocation(locationId);
+        await _firestore
+            .collection(events)
+            .doc(eventId)
+            .collection("Locations")
+            .doc(locationId)
+            .set({
+              "description": location.description,
+              "longitude": location.longitude,
+              "latitude": location.latitude,
+            });
       } catch (e) {
         print(e.toString());
       }
@@ -1620,7 +1637,8 @@ class FirebaseDatabaseService {
               locationId);
           for (int i = 0; i < events.length; i++) {
             Event event = events[i];
-            await this.updateEventLocation(event.id!, baseLocation);
+            // TODO: NEW DATABASE
+            //await this.updateEventLocation(event.id!, baseLocation);
           }
         }
         await _firestore..collection(locations).doc(locationId).delete();

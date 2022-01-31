@@ -1343,6 +1343,9 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                 selectedTrainerId.add(allTrainers[i].id);
                               }
                             }
+                            if (location.id! != event!.locationId!) {
+                              await _eventDataService.updateEventLocation(event!.id!, location.id!, event!.locationId!);
+                            }
                             await _eventDataService.updateEvent(widget.eventId, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
                             getEventInfo();
                           }
