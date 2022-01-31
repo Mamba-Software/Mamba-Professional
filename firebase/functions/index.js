@@ -1138,6 +1138,11 @@ exports.changeMessageStatus = functions
     }
     else if (roomDoc.lastMessages[0].remoteId == message.remoteId)
     {
+
+    functions.logger.log(
+               "message ASQUI",
+               message.metadata,
+             );
          return db.doc(rooms + "/" + roomId).update({
                         lastMessages: [message],
                         })
