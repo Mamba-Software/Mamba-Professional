@@ -374,6 +374,75 @@ exports.eventUpdatesCoverData = functions
       return null;
     });
 
+// Event Updates Data
+exports.locationUpdatesCoverData = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+locations+"/{locationId}")
+    .onUpdate( async (change, context) => {
+      // Get the value of the context triggers.
+      const locationId = context.params.locationId;
+      // Get Value of the Change
+      const before = change.before.data();
+      const after = change.after.data();
+      functions.logger.log(
+        "BEFORE:",
+        before,
+      );
+      functions.logger.log(
+          "AFTER:",
+          after,
+      );
+      // Check if Cover Data has changed:
+      // COVER DATA: title, year, month, day, hour, minute, duration
+      let coverDataChange = false;
+      if (before.description != after.description) {
+        coverDataChange = true;
+      } else if (before.latitude != after.latitude) {
+        coverDataChange = true;
+      } else if (before.longitude != after.longitude) {
+        coverDataChange = true;
+      }
+      functions.logger.log(
+        "COVER DATA CHANGED?",
+        coverDataChange,
+      );
+      if (coverDataChange) {
+        // Update the Object Location in Brands
+        await db
+        .collection(brands)
+        .doc(after.brandID)
+        .collection("Locations")
+        .doc(locationId)
+        .update({
+          "description": after.description,
+          "latitude": after.latitude,
+          "longitude": after.longitude,
+        });
+        // Update All Events in this Location
+        const eventLocationsSnapshot = await db.collection(locations).doc(locationId).collection("Events").get();
+        functions.logger.log(
+            "Location Events Num =",
+            eventLocationsSnapshot.size,
+          );
+        for (var i in eventLocationsSnapshot.docs) {
+          const id = eventLocationsSnapshot.docs[i].id;
+          await db
+          .collection(events)
+          .doc(id)
+          .collection("Locations")
+          .doc(locationId)
+          .update({
+            "description": after.description,
+            "latitude": after.latitude,
+            "longitude": after.longitude,
+          });
+        }
+      }
+      return null;
+    });
+
+
 // User Joins Brand
 exports.userJoinsBrand = functions
     .region("europe-west1")

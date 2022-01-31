@@ -1609,10 +1609,9 @@ class FirebaseDatabaseService {
         String zipCode,
         double latitude,
         double longitude) async {
-      var uid = Uuid().v1();
       try {
         await _firestore
-          ..collection(locations).doc(locationID).update({
+          .collection(locations).doc(locationID).update({
             "brandID": brandId,
             "placeId": placeId,
             "isBaseLocation": isBaseLocation,

@@ -118,9 +118,9 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                       location.placeId = result.placeId;
                       final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(location.placeId!);
                       // Get the information on Strings
-                      if(placeDetails.street!=null) location.street = placeDetails.street!;
+                      if(placeDetails.street!=null) location.street = placeDetails.street!; else location.street="N/A";
                       if(placeDetails.streetNumber!=null) location.streetNumber = placeDetails.streetNumber!; else location.streetNumber="N/A";
-                      if(placeDetails.city!=null) location.city = placeDetails.city!;
+                      if(placeDetails.city!=null) location.city = placeDetails.city!; else location.city="N/A";
                       if(placeDetails.zipCode!=null) location.zipCode = placeDetails.zipCode!; else location.zipCode="N/A";
                       //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
                       // Build Correct Description

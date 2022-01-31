@@ -191,9 +191,9 @@ class _MyLocationsState extends State<MyLocations> {
                                         loc.placeId = result.placeId;
                                         final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(loc.placeId!);
                                         // Get the information on Strings
-                                        if(placeDetails.street!=null) loc.street = placeDetails.street!;
+                                        if(placeDetails.street!=null) loc.street = placeDetails.street!; else loc.street="N/A";
                                         if(placeDetails.streetNumber!=null) loc.streetNumber = placeDetails.streetNumber!; else loc.streetNumber="N/A";
-                                        if(placeDetails.city!=null) loc.city = placeDetails.city!;
+                                        if(placeDetails.city!=null) loc.city = placeDetails.city!; else loc.city="N/A";
                                         if(placeDetails.zipCode!=null) loc.zipCode = placeDetails.zipCode!; else loc.zipCode="N/A";
                                         //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
                                         // Build Correct Description
