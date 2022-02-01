@@ -42,10 +42,15 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
 
   var _roomDataService = new RoomDataService();
+
+  //var _userDataService = new UserDataService();
   bool _isAttachmentUploading = false;
   bool isLoading = true;
   var userId;
+  String imageUrlRoom = '';
+  String nameRoom = '';
   bool hasSentMessage = false;
+  bool noMessages = false;
   var roomActual;
   String rooms = isProduction ? 'Rooms' : '7777 Rooms';
 
@@ -54,9 +59,25 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
 
     super.initState();
-    print(widget.room.imageUrl);
-    if(widget.room.lastMessages != null) hasSentMessage = true;
-    getOtherUser();
+    if(widget.room.type.toString() != "RoomType.group") {
+      userId = widget.room.users.firstWhere(
+            (u) => u.id != currentUser.id,
+      );
+    }
+    if(widget.room.lastMessages != null) {
+      hasSentMessage = true;
+
+    }
+    else {
+      if(widget.room.type.toString() != "RoomType.group") {
+       // _userDataService.getUserDetails(userId);
+        noMessages = true;
+        imageUrlRoom = userId.imageUrl;
+        nameRoom = userId.firstName + '' + userId.lastName;
+
+      }
+    }
+      getOtherUser();
   }
 
   void getOtherUser() async {
@@ -102,13 +123,6 @@ class _ChatPageState extends State<ChatPage> {
       }
     }
 
-    if(widget.room.type.toString() != "RoomType.group") {
-      userId = widget.room.users.firstWhere(
-            (u) => u.id != currentUser.id,
-      );
-
-      //userName = widget.room.metadata![userId.id];
-    }
 
     setState(() {
       isLoading = false;
@@ -417,7 +431,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
             GestureDetector(
               child: CircularImage(
                 size: MediaQuery.of(context).size.width * 0.1,
-                image: widget.room.imageUrl,
+                image: noMessages ? imageUrlRoom : widget.room.imageUrl,
                 color: Theme.of(context).accentColor,
                 borderWidth: 0.1,
               ),
@@ -448,7 +462,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                       enabled: false,
                       decoration: InputDecoration(
                         hintStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Theme.of(context).primaryColor),
-                        hintText: widget.room.name,
+                        hintText: noMessages ? nameRoom : widget.room.name,
                         contentPadding: EdgeInsets.all(0),
                         isDense: true,
                         enabledBorder: InputBorder.none,
@@ -530,12 +544,14 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                   ),
                   customDateHeaderText: _customDateHeaderText,
                   customMessageBuilder: _customMessageBuilder,
+                  dateHeaderThreshold:  60000,
+                  groupMessagesThreshold: 300000,
                   //timeFormat: DateFormat('dd/MM/yyyy HH:mm'),
                   isAttachmentUploading: _isAttachmentUploading,
                   messages: snapshot.data ?? [],
                   //onAttachmentPressed: _handleAtachmentPressed, // PER POSAR ENVIAR FOTOS I DOCUMENTS
                 //  onMessageTap: _handleMessageTap,
-                  onPreviewDataFetched: _handlePreviewDataFetched,
+                  //onPreviewDataFetched: _handlePreviewDataFetched,
                   onSendPressed: _handleSendPressed,
                   showUserNames: widget.room.type.toString() == "RoomType.group" ? true : false,
                  // showUserAvatars: widget.room.type.toString() == "RoomType.group" ? true : false,

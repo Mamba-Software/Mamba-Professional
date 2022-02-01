@@ -203,7 +203,7 @@ class _ChatCoreState extends State<ChatCore> {
         stream: FirebaseChatCore.instance.rooms(orderByUpdatedAt: true),
         initialData: const [],
         builder: (context, snapshot) {
-          if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting) {
+          if (!snapshot.hasData  || snapshot.connectionState == ConnectionState.waiting) {
             return LoadingViewPurple();
           }
           else if (snapshot.data!.isEmpty) {
@@ -253,15 +253,15 @@ class _ChatCoreState extends State<ChatCore> {
                         room.updatedAt);
 
                     return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
+                      onTap: ()  {
+                         Navigator.push(
                             context,
-                            CupertinoPageRoute<Null>(
+                            CupertinoPageRoute<bool>(
                               builder: (context) => ChatPage(
                                 room: room,
                               ),
                             )
-                        ).whenComplete(() {
+                        ).whenComplete(() async{
                           room.metadata!["active" + currentUser.id!] = false;
                           _roomDataService.updateRoom(room.id, room.metadata!);
                         });
