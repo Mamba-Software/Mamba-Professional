@@ -827,6 +827,50 @@ exports.userDeletesLocation = functions
         .collection("Locations")
         .doc(locationId)
         .delete();
+        /*
+        // Check Location Has Future Events
+        let futureEvents = [];
+        let now = new Date();
+        const locationEventsSnapshot = await db.collection(locations).doc(locationId).collection("Events").get();
+        for (var i in locationEventsSnapshot.docs) {
+          const id = locationEventsSnapshot.docs[i].id;
+          const data = locationEventsSnapshot.docs[i].data();
+          let date = new Date(date.year, date.month-1, date.day, date.hour, date.minute);
+          if (now < date) {
+            futureEvents.push(id);
+          }
+        }
+        functions.logger.log(
+            "Events to be modified",
+            futureEvents,
+          );
+        if (futureEvents.length != 0) {
+
+           // Update Future Events To Base Location
+           for (var i in futureEvents.length) {
+             const eventId = futureEvents[i];
+
+           }
+           // Delete Previous Location
+           await _firestore
+               .collection(events)
+               .doc(eventId)
+               .collection("Locations")
+               .doc(previousLocation)
+               .delete();
+           // Add New Location
+           Location location = await this.getSingleLocation(locationId);
+           await _firestore
+               .collection(events)
+               .doc(eventId)
+               .collection("Locations")
+               .doc(locationId)
+               .set({
+                 "description": location.description,
+                 "longitude": location.longitude,
+                 "latitude": location.latitude,
+               });
+        } */
         return null;
     });
 

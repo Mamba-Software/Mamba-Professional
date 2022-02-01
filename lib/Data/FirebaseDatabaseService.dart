@@ -1631,16 +1631,37 @@ class FirebaseDatabaseService {
     // Delete Location
     Future<bool> deleteLocation(String locationId, String? baseLocation) async {
       try {
-        if (baseLocation != null) {
-          List<Event> events = await this.getAllEventsWithLocationId(
-              locationId);
-          for (int i = 0; i < events.length; i++) {
-            Event event = events[i];
-            // TODO: NEW DATABASE
-            //await this.updateEventLocation(event.id!, baseLocation);
+        DateTime now = DateTime.now();
+        List<Event> futureEventsList = [];
+        // Filter out only the ones that are upcoming
+        QuerySnapshot querySnapshot =  await _firestore.collection(locations).doc(locationId).collection("Events").get();
+        for (int i = 0; i < querySnapshot.docs.length; i++) {
+          Event event = Event.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+          var startDate = DateTime(
+            int.parse(event.year!),
+            int.parse(event.month!),
+            int.parse(event.day!),
+            int.parse(event.hour!),
+            int.parse(event.minute!),
+          );
+          if (startDate.isAfter(now)) {
+            futureEventsList.add(event);
           }
         }
-        await _firestore..collection(locations).doc(locationId).delete();
+        // Update Event Location With Base Location
+        for (int i = 0; i < futureEventsList.length; i++) {
+          Event event = futureEventsList[i];
+          // Update Location Field in the main Doc
+          await _firestore
+              .collection(events)
+              .doc(event.id)
+              .update({
+                "locationId": baseLocation,
+              });
+          await this.updateEventLocation(event.id!, baseLocation!, locationId);
+        }
+        // Delete Location
+        await _firestore.collection(locations).doc(locationId).delete();
         return true;
       } catch (e) {
         print(e.toString());
