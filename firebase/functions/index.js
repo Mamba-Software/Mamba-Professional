@@ -694,6 +694,19 @@ exports.userLeavesBrand = functions
           "Brand Cover Data:",
           brandDoc,
         );
+        //Get Data of the Room
+               const roomSnapshot = await db.collection(rooms).doc(brandDoc.roomId).get();
+               const roomDoc = roomSnapshot.data();
+
+               //roomDoc.userIds.pop(userId);
+
+               var filtered = roomDoc.userIds.filter(function(element) {
+                    return element != userId;
+               });
+
+              await db.doc(rooms + "/" + brandDoc.roomId).update({
+                    userIds: filtered,
+              });
       // Delete Brand in User´s Brand Subcollection
       await db.collection(users).doc(userId).collection("Brands").doc(brandId).delete();
       // Send Notification to Brand Owners
@@ -1366,7 +1379,7 @@ exports.changeMessageStatus = functions
                               roomDoc.userIds[i],
 
                             );
-           if(roomDoc.metadata["active" + roomDoc.userIds[i]] == false) {
+           if(message.authorId != roomDoc.userIds[i] && roomDoc.metadata["active" + roomDoc.userIds[i]] == false) {
            functions.logger.log(
                                          "Es activo",
                                          roomDoc.userIds[i],
@@ -1429,6 +1442,11 @@ exports.changeMessageStatus = functions
     }
     else if (roomDoc.lastMessages[0].remoteId == message.remoteId)
     {
+
+    functions.logger.log(
+               "message ASQUI",
+               message.metadata,
+             );
          return db.doc(rooms + "/" + roomId).update({
                         lastMessages: [message],
                         })

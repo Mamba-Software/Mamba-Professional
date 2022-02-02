@@ -2054,8 +2054,9 @@ class FirebaseDatabaseService {
     }
 
     Future<void> updateRoomLastMessage(String? roomId, var lastMessages) async {
+    print(lastMessages.toString());
       await _firestore.collection(rooms).doc(roomId).update({
-        "lastMessages": lastMessages,
+        "lastMessages": [lastMessages],
       });
     }
 

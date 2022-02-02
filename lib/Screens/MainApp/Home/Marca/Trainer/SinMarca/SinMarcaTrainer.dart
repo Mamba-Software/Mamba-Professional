@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
@@ -55,6 +56,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
   // Request To Brand
   String brandIdRequest = "";
   RequestToBrand? request;
+  String rooms = isProduction ? 'Rooms' : '7777 Rooms';
 
   // init Widget state. Loading user info.
   @override
@@ -494,10 +496,16 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                             "active" + currentUser.id!: true,
                                           });
 
-                                          Navigator.push(context, CupertinoPageRoute<Null>(
-                                              builder: (context) => ChatPage(room: room)),).whenComplete(() {
-                                          if(room.lastMessages!.length == 0) _roomDataService.deleteRoom(room.id);
-                                        });
+                                          bool? deleteRoom = await Navigator.push(
+                                              context,
+                                              CupertinoPageRoute<bool>(
+                                                builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                                                  room.metadata!["active" + currentUser.id!] = false;
+                                                  _roomDataService.updateRoom(room.id, room.metadata!);
+                                                });
+                                          if (!deleteRoom!) {
+                                            _roomDataService.deleteRoom(room.id);
+                                          }
                                         }
                                       },
                                     ),

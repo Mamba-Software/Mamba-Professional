@@ -285,10 +285,16 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                       "active" + currentUser.id!: true,
                                     });
 
-                                    Navigator.push(context, CupertinoPageRoute<Null>(
-                                        builder: (context) => ChatPage(room: room)),).whenComplete(() {
-                                      if(room.lastMessages!.length == 0) _roomDataService.deleteRoom(room.id);
+                                    bool? deleteRoom = await Navigator.push(
+                                      context,
+                                      CupertinoPageRoute<bool>(
+                                          builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                                      room.metadata!["active" + currentUser.id!] = false;
+                                      _roomDataService.updateRoom(room.id, room.metadata!);
                                     });
+                                    if (!deleteRoom!) {
+                                      _roomDataService.deleteRoom(room.id);
+                                    }
                                   },
                                 ),
                                 onTap: () {
@@ -413,10 +419,30 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                         icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
                                         alignment: Alignment.centerRight,
                                         padding: EdgeInsets.all(0),
-                                        onPressed: () {
-                                          /* TODO: Navegar al User Chat que toca.
-                                          Navigator.push(context, CupertinoPageRoute<Null>(
-                                            builder: (context) => Chat(user)),);*/
+                                        onPressed: () async {
+                                          types.User otherUser = types.User(
+                                            firstName: user.firstName,
+                                            lastName: user.lastName,
+                                            id: user.id!, // UID from Firebase Authentication
+                                            imageUrl: user.imageUrl,
+                                          );
+                                          final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                                            "trainer" + user.id!: user.isTrainer,
+                                            "trainer" + currentUser.id!: currentUser.isTrainer,
+                                            "active" + user.id!: false,
+                                            "active" + currentUser.id!: true,
+                                          });
+
+                                          bool? deleteRoom = await Navigator.push(
+                                            context,
+                                            CupertinoPageRoute<bool>(
+                                                builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                                            room.metadata!["active" + currentUser.id!] = false;
+                                            _roomDataService.updateRoom(room.id, room.metadata!);
+                                          });
+                                          if (!deleteRoom!) {
+                                            _roomDataService.deleteRoom(room.id);
+                                          }
                                         },
                                       ),
                                       onTap: () {

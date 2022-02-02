@@ -42,82 +42,87 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
 
   var _roomDataService = new RoomDataService();
+
+  //var _userDataService = new UserDataService();
   bool _isAttachmentUploading = false;
   bool isLoading = true;
   var userId;
+  String imageUrlRoom = '';
+  String nameRoom = '';
+  bool hasSentMessage = false;
+  bool noMessages = false;
   var roomActual;
+  String rooms = isProduction ? 'Rooms' : '7777 Rooms';
 
 
   @override
   void initState() {
 
     super.initState();
-    
-    getOtherUser();
-
-  }
-
-  void checkasSeen(var querySnapshots, String messageStatus, Map<String, dynamic> metadata) async {
-    for (var doc in querySnapshots.docs) {
-      await doc.reference.update({
-        'status': messageStatus,
-        'metadata': metadata,
-      });
+    if(widget.room.type.toString() != "RoomType.group") {
+      userId = widget.room.users.firstWhere(
+            (u) => u.id != currentUser.id,
+      );
     }
-    //Canviar room a already changed true
+    if(widget.room.lastMessages != null) {
+      hasSentMessage = true;
+
+    }
+    else {
+      if(widget.room.type.toString() != "RoomType.group") {
+       // _userDataService.getUserDetails(userId);
+        noMessages = true;
+        imageUrlRoom = userId.imageUrl;
+        nameRoom = userId.firstName + '' + userId.lastName;
+
+      }
+    }
+      getOtherUser();
   }
 
   void getOtherUser() async {
+
     String messageStatus = "seen";
     Map<String, dynamic> metadata = {};
+    Map<String, dynamic> metadataMessage = {};
     widget.room.metadata!["active" + currentUser.id!] = true;
-    widget.room.metadata!["alreadyChanged"] = false;
+    //widget.room.metadata!["alreadyChanged"] = false;
     await _roomDataService.updateRoom(widget.room.id, widget.room.metadata!);
 
-    //actualitzar el missatge i el last message per el currentuser el posi amb estat "seen" si ja no hi esta
+    if(widget.room.lastMessages != null && widget.room.lastMessages![0].status.toString() != "Status.seen") {
 
-    //if last message != seen
-    if(widget.room.lastMessages != null &&  widget.room.lastMessages![0].status.toString() != "Status.seen") {
+    widget.room.lastMessages![0].metadata![currentUser.id!] = "seen";
+    var querySnapshots = FirebaseFirestore.instance.collection(rooms)
+        .doc(widget.room.id).collection("messages").doc(widget.room.lastMessages![0].remoteId)
+        .update({
+      'metadata':  widget.room.lastMessages![0].metadata,
+    });
+
       //Comprovo si algun usuari del last message té el estat a delivered
       for (int i = 0; i < widget.room.users.length; ++i) {
         if (widget.room.lastMessages![0].metadata![widget.room.users[i].id] ==
             "delivered") {
           messageStatus = "delivered";
           break;
-          /*
-          metadata = {
-            widget.room.users[i].id: "delivered",
-          };*/
-        }
-        else {
-          /*
-          metadata = {
-            widget.room.users[i].id: "seen",
-          };*/
         }
       }
 
 
       if (messageStatus == "seen") {
-        /*
-        await _accessDatabase.updateRoomLastMessage(widget.room.id, widget.room.lastMessages);
-        var querySnapshots = FirebaseFirestore.instance.collection("7777 Rooms")
-            .doc(widget.room.id).collection("messages")
-            .get(); //Seleccionar nomes els de la room
+        //await _accessDatabase.updateRoomLastMessage(widget.room.id, widget.room.lastMessages);
+        var querySnapshot = await FirebaseFirestore.instance.collection(rooms)
+            .doc(widget.room.id).collection("messages").get();
+        for (var doc in querySnapshot.docs) {
+          await doc.reference.update({
+            'status': messageStatus,
+            'metadata': widget.room.lastMessages![0].metadata!,
+          });
+        }
         //Que tinguin status delivered i seleccionats en ordre
-        checkasSeen(querySnapshots, messageStatus, metadata);
-         */
+
       }
-
-  }
-
-    if(widget.room.type.toString() != "RoomType.group") {
-      userId = widget.room.users.firstWhere(
-            (u) => u.id != currentUser.id,
-      );
-
-      //userName = widget.room.metadata![userId.id];
     }
+
 
     setState(() {
       isLoading = false;
@@ -384,6 +389,9 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
 
   void _handleSendPressed(types.PartialText message) {
 
+    print("HAS SENT MESSAGEEW");
+    print(hasSentMessage);
+    hasSentMessage = true;
       FirebaseChatCore.instance.sendMessage(
         message,
         widget.room.id,
@@ -407,7 +415,14 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
     : Scaffold(
       appBar: AppBar(
         elevation: 4,
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, size: 25,),
+          onPressed: () {
+            print(hasSentMessage);
+            Navigator.pop(context, hasSentMessage);
+          },
+        ),
         backgroundColor: Theme.of(context).accentColor,
         leadingWidth: MediaQuery.of(context).size.width * 0.07,
         toolbarHeight: MediaQuery.of(context).size.height * 0.08,
@@ -416,7 +431,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
             GestureDetector(
               child: CircularImage(
                 size: MediaQuery.of(context).size.width * 0.1,
-                image: widget.room.imageUrl,
+                image: noMessages ? imageUrlRoom : widget.room.imageUrl,
                 color: Theme.of(context).accentColor,
                 borderWidth: 0.1,
               ),
@@ -438,9 +453,8 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.03,
             ),
-
             Container(
-              width: MediaQuery.of(context).size.width * 0.70,
+              width: MediaQuery.of(context).size.width * 0.60,
               child: Row(
                 children: [
                   Flexible(
@@ -448,7 +462,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                       enabled: false,
                       decoration: InputDecoration(
                         hintStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Theme.of(context).primaryColor),
-                        hintText: widget.room.name,
+                        hintText: noMessages ? nameRoom : widget.room.name,
                         contentPadding: EdgeInsets.all(0),
                         isDense: true,
                         enabledBorder: InputBorder.none,
@@ -530,15 +544,17 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                   ),
                   customDateHeaderText: _customDateHeaderText,
                   customMessageBuilder: _customMessageBuilder,
+                  dateHeaderThreshold:  60000,
+                  groupMessagesThreshold: 300000,
                   //timeFormat: DateFormat('dd/MM/yyyy HH:mm'),
                   isAttachmentUploading: _isAttachmentUploading,
                   messages: snapshot.data ?? [],
-                  onAttachmentPressed: _handleAtachmentPressed,
-                  onMessageTap: _handleMessageTap,
-                  onPreviewDataFetched: _handlePreviewDataFetched,
+                  //onAttachmentPressed: _handleAtachmentPressed, // PER POSAR ENVIAR FOTOS I DOCUMENTS
+                //  onMessageTap: _handleMessageTap,
+                  //onPreviewDataFetched: _handlePreviewDataFetched,
                   onSendPressed: _handleSendPressed,
                   showUserNames: widget.room.type.toString() == "RoomType.group" ? true : false,
-                  showUserAvatars: widget.room.type.toString() == "RoomType.group" ? true : false,
+                 // showUserAvatars: widget.room.type.toString() == "RoomType.group" ? true : false,
                   user: types.User(
                     id: FirebaseChatCore.instance.firebaseUser?.uid ?? '',
                   ),

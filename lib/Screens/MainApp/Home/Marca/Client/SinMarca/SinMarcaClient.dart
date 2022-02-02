@@ -476,16 +476,16 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                           "active" + adminUser.id!: false,
                                           "active" + currentUser.id!: true,
                                         });
-                                        Navigator.push(
+                                        bool? deleteRoom = await Navigator.push(
                                           context,
-                                          CupertinoPageRoute<Null>(
-                                            builder: (context) => ChatPage(
-                                                room: room)
-                                          )
-                                        ).whenComplete(() {
-                                          if (room.lastMessages!.length == 0) _roomDataService.deleteRoom(room.id);
-                                          getUserPendingRequests();
+                                          CupertinoPageRoute<bool>(
+                                              builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                                          room.metadata!["active" + currentUser.id!] = false;
+                                          _roomDataService.updateRoom(room.id, room.metadata!);
                                         });
+                                        if (!deleteRoom!) {
+                                          _roomDataService.deleteRoom(room.id);
+                                        }
                                       }
                                     },
                                   ),

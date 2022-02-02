@@ -202,10 +202,16 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                         "active" + currentUser.id!: true,
                       });
 
-                      Navigator.push(context, CupertinoPageRoute<Null>(
-                          builder: (context) => ChatPage(room: room)),).whenComplete(() {
-                        if(room.lastMessages!.length == 0) _roomDataService.deleteRoom(room.id);
+                      bool? deleteRoom = await Navigator.push(
+                        context,
+                        CupertinoPageRoute<bool>(
+                            builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                        room.metadata!["active" + currentUser.id!] = false;
+                        _roomDataService.updateRoom(room.id, room.metadata!);
                       });
+                      if (!deleteRoom!) {
+                        _roomDataService.deleteRoom(room.id);
+                      }
                     } ,
                     icon: Icon(Icons.chat_outlined)
                 ),
