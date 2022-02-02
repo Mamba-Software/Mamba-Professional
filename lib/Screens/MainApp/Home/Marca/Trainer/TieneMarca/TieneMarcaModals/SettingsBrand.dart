@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/RoomDataService.dart';
 
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
@@ -32,6 +33,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
 
   // Acceso a Base de Datos
   var _brandDataService = new BrandDataService();
+  var _roomDataService=  new RoomDataService();
   // Boolean Loading
   bool isLoading = false;
   bool firstBuild = true;
@@ -236,6 +238,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         });
                         // New DataBase
                         await _brandDataService.deleteBrand(currentBrand.id!);
+                        await _roomDataService.deleteRoom(currentBrand.roomId!);
                         currentUser.setBrandList = [];
                         await Future.delayed(const Duration(seconds: 4));
                         Navigator.pushReplacement(

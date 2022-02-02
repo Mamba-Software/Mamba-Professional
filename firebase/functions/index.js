@@ -696,7 +696,9 @@ exports.userLeavesBrand = functions
           "Brand Cover Data:",
           brandDoc,
         );
-      //Get Data of the Room
+      // Delete Brand in User´s Brand Subcollection
+      await db.collection(users).doc(userId).collection("Brands").doc(brandId).delete();
+      // Get Data of the Room
       const roomSnapshot = await db.collection(rooms).doc(brandDoc.roomId).get();
       const roomDoc = roomSnapshot.data();
       var filtered = roomDoc.userIds.filter(function(element) {
@@ -705,8 +707,6 @@ exports.userLeavesBrand = functions
       await db.doc(rooms + "/" + brandDoc.roomId).update({
             userIds: filtered,
       });
-      // Delete Brand in User´s Brand Subcollection
-      await db.collection(users).doc(userId).collection("Brands").doc(brandId).delete();
       // Send Notification to Brand Owners
       const brandOwnersSnapshot = await db.collection(brands)
           .doc(brandId)

@@ -13,7 +13,7 @@ class Brand {
   String? name;
   String? description;
   String? dateJoined;
-  String? groupRoomId;
+  String? roomId;
   String? baseLocation;
   int? numClients;
   int? numTrainers;
@@ -31,7 +31,7 @@ class Brand {
     this.name,
     this.description,
     this.dateJoined,
-    this.groupRoomId,
+    this.roomId,
     this.baseLocation,
     this.numClients,
     this.numTrainers,
@@ -58,8 +58,8 @@ class Brand {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateJoined')) {
       this.dateJoined = documentSnapshot.get("dateJoined").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('groupRoomId')) {
-      this.groupRoomId = documentSnapshot.get("groupRoomId").toString();
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('roomId')) {
+      this.roomId = documentSnapshot.get("roomId").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('baseLocation')) {
       this.baseLocation = documentSnapshot.get("baseLocation").toString();
@@ -97,7 +97,7 @@ class Brand {
     this.adminID = brand.adminID;
     this.description = brand.description;
     this.dateJoined = brand.dateJoined;
-    this.groupRoomId = brand.groupRoomId;
+    this.roomId = brand.roomId;
     this.baseLocation = brand.baseLocation;
     this.numClients = brand.numClients;
     this.numTrainers = brand.numTrainers;

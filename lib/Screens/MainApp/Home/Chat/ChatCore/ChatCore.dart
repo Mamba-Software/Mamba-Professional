@@ -56,12 +56,16 @@ class _ChatCoreState extends State<ChatCore> {
           _user = user;
         });
       });
-      setState(() {
-        _initialized = true;
+      Future.delayed(const Duration(milliseconds: 500), () {
+        setState(() {
+          _initialized = true;
+        });
       });
     } catch (e) {
-      setState(() {
-        _error = true;
+      Future.delayed(const Duration(milliseconds: 500), () {
+        setState(() {
+          _error = true;
+        });
       });
     }
   }
@@ -177,7 +181,7 @@ class _ChatCoreState extends State<ChatCore> {
         builder: (context, snapshot) {
           if (snapshot.data == null) {
             return LoadingViewPurple();
-          } else if (snapshot.data!.isEmpty) {
+          } else if (snapshot.data!.isEmpty && snapshot.connectionState == ConnectionState.active ) {
             return Container(
               height: MediaQuery.of(context).size.height *0.65,
               child: Column(
