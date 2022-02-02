@@ -48,26 +48,6 @@ class _ChatCoreState extends State<ChatCore> {
     super.initState();
   }
 
-  void filterSearchResults(String query) {
-    List<types.Room> roomsFiltered = [];
-    if (query.isNotEmpty || query != "") {
-      for (var item in allRooms) {
-        if (item.name!.toLowerCase().startsWith(query)) {;
-          roomsFiltered.add(item);
-        }
-      }
-      setState(() {
-        isFiltered = true;
-        rooms = roomsFiltered;
-      });
-    } else {
-      setState(() {
-        isFiltered = false;
-        rooms = allRooms;
-      });
-    }
-  }
-
   void initializeFlutterFire() async {
     try {
       await Firebase.initializeApp();
@@ -86,30 +66,24 @@ class _ChatCoreState extends State<ChatCore> {
     }
   }
 
-  void logout() async {
-    await FirebaseAuth.instance.signOut();
-  }
-
-  Widget _buildAvatar(types.Room room) {
-    var color = Colors.transparent;
-
-    final hasImage = room.imageUrl != null;
-    final name = room.name ?? '';
-
-    return Container(
-      margin: const EdgeInsets.only(right: 16),
-      child: CircleAvatar(
-        backgroundColor: hasImage ? Colors.transparent : color,
-        backgroundImage: hasImage ? NetworkImage(room.imageUrl!) : null,
-        radius: 20,
-        child: !hasImage
-            ? Text(
-          name.isEmpty ? '' : name[0].toUpperCase(),
-          style: const TextStyle(color: Colors.white),
-        )
-            : null,
-      ),
-    );
+  void filterSearchResults(String query) {
+    List<types.Room> roomsFiltered = [];
+    if (query.isNotEmpty || query != "") {
+      for (var item in allRooms) {
+        if (item.name!.toLowerCase().startsWith(query)) {;
+        roomsFiltered.add(item);
+        }
+      }
+      setState(() {
+        isFiltered = true;
+        rooms = roomsFiltered;
+      });
+    } else {
+      setState(() {
+        isFiltered = false;
+        rooms = allRooms;
+      });
+    }
   }
 
   @override
