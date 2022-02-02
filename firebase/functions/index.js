@@ -453,11 +453,11 @@ exports.userJoinsBrand = functions
       const brandId = context.params.brandId;
       const userId = context.params.userId;
       functions.logger.log(
-              "User with ID:",
-              userId,
-              "has joined Brand with ID:",
-              brandId
-            );
+          "User with ID:",
+          userId,
+          "has joined Brand with ID:",
+          brandId
+        );
       // Get Data of the User
       const userSnapshot = await db.collection(users).doc(userId).get();
       const userDoc = userSnapshot.data();
@@ -476,26 +476,27 @@ exports.userJoinsBrand = functions
           "Brand Cover Data:",
           brandDoc,
         );
-       //Get Data of the Room
-       const roomSnapshot = await db.collection(rooms).doc(brandDoc.roomId).get();
-       const roomDoc = roomSnapshot.data();
 
-       var metadataMessage = {};
-       var metadataRoom = {};
+      // Get Data of the Room
+      const roomSnapshot = await db.collection(rooms).doc(brandDoc.roomId).get();
+      const roomDoc = roomSnapshot.data();
 
-        functions.logger.log(
-                     "UserIds",
-                     roomDoc.userIds,
-                   );
-       roomDoc.userIds.push(userId);
+      var metadataMessage = {};
+      var metadataRoom = {};
 
-      if(roomDoc.lastMessages.length != 0) {
-      metadataMessage = roomDoc.lastMessages[0].metadata;
-      metadataMessage[userId] = "delivered";
-      await db.doc(rooms + "/" + brandDoc.roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
-        metadata: metadataMessage,
-        status: "delivered",
-      })
+      functions.logger.log(
+         "UserIds",
+         roomDoc.userIds,
+       );
+      roomDoc.userIds.push(userId);
+
+      if (roomDoc.lastMessages != undefined) {
+        metadataMessage = roomDoc.lastMessages[0].metadata;
+        metadataMessage[userId] = "delivered";
+        await db.doc(rooms + "/" + brandDoc.roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
+          metadata: metadataMessage,
+          status: "delivered",
+        })
       }
 
       metadataRoom = roomDoc.metadata;
@@ -505,6 +506,7 @@ exports.userJoinsBrand = functions
             metadata: metadataRoom,
             userIds: roomDoc.userIds,
       })
+
       // Add the User Cover Data to Users in Brands Collection
       let date = new Date();
       let day = date.getDate();
@@ -694,19 +696,15 @@ exports.userLeavesBrand = functions
           "Brand Cover Data:",
           brandDoc,
         );
-        //Get Data of the Room
-               const roomSnapshot = await db.collection(rooms).doc(brandDoc.roomId).get();
-               const roomDoc = roomSnapshot.data();
-
-               //roomDoc.userIds.pop(userId);
-
-               var filtered = roomDoc.userIds.filter(function(element) {
-                    return element != userId;
-               });
-
-              await db.doc(rooms + "/" + brandDoc.roomId).update({
-                    userIds: filtered,
-              });
+      //Get Data of the Room
+      const roomSnapshot = await db.collection(rooms).doc(brandDoc.roomId).get();
+      const roomDoc = roomSnapshot.data();
+      var filtered = roomDoc.userIds.filter(function(element) {
+            return element != userId;
+      });
+      await db.doc(rooms + "/" + brandDoc.roomId).update({
+            userIds: filtered,
+      });
       // Delete Brand in User´s Brand Subcollection
       await db.collection(users).doc(userId).collection("Brands").doc(brandId).delete();
       // Send Notification to Brand Owners

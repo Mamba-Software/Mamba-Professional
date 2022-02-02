@@ -589,7 +589,6 @@ class FirebaseDatabaseService {
       "name": name,
       "description": description,
       "dateJoined": formatted,
-      "groupRoomId": null,
       "baseLocation": null,
       "numClients": 0,
       "numTrainers": 1,

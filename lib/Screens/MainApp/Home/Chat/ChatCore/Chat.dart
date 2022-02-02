@@ -42,8 +42,6 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
 
   var _roomDataService = new RoomDataService();
-
-  //var _userDataService = new UserDataService();
   bool _isAttachmentUploading = false;
   bool isLoading = true;
   var userId;
@@ -54,10 +52,8 @@ class _ChatPageState extends State<ChatPage> {
   var roomActual;
   String rooms = isProduction ? 'Rooms' : '7777 Rooms';
 
-
   @override
   void initState() {
-
     super.initState();
     if(widget.room.type.toString() != "RoomType.group") {
       userId = widget.room.users.firstWhere(
@@ -66,18 +62,15 @@ class _ChatPageState extends State<ChatPage> {
     }
     if(widget.room.lastMessages != null) {
       hasSentMessage = true;
-
-    }
-    else {
+    } else {
       if(widget.room.type.toString() != "RoomType.group") {
        // _userDataService.getUserDetails(userId);
         noMessages = true;
         imageUrlRoom = userId.imageUrl;
         nameRoom = userId.firstName + '' + userId.lastName;
-
       }
     }
-      getOtherUser();
+    getOtherUser();
   }
 
   void getOtherUser() async {
@@ -122,11 +115,12 @@ class _ChatPageState extends State<ChatPage> {
 
       }
     }
-
-
-    setState(() {
-      isLoading = false;
+    Future.delayed(const Duration(milliseconds: 500), () {
+      setState(() {
+        isLoading = false;
+      });
     });
+
   }
   void _handleAtachmentPressed() {
     showModalBottomSheet<void>(
@@ -408,11 +402,9 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
   @override
   Widget build(BuildContext context) {
     return
-    isLoading
-        ? Scaffold(
+    isLoading ? Scaffold(
       body: LoadingViewPurple(),
-    )
-    : Scaffold(
+    ) : Scaffold(
       appBar: AppBar(
         elevation: 4,
         automaticallyImplyLeading: false,
@@ -478,88 +470,81 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
           ],
         ),
       ),
-      /*
-      appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-        title: const Text('Chat'),
-      ),
-
-       */
       body: StreamBuilder<types.Room>(
         initialData: widget.room,
         stream: FirebaseChatCore.instance.room(widget.room.id),
         builder: (context, snapshot) {
-          if(snapshot.data != null) roomActual = snapshot.data;
+          if (snapshot.data != null) {
+            roomActual = snapshot.data;
+          }
           return StreamBuilder<List<types.Message>>(
             initialData: const [],
             stream: FirebaseChatCore.instance.messages(snapshot.data!),
             builder: (context, snapshot) {
-              return SafeArea(
-                bottom: false,
-                child: Chat(
-                  theme: const DefaultChatTheme(
-                    inputBackgroundColor: Colors.white,
-                    //backgroundColor: Colors.black,
-                    inputTextColor: Colors.black,
-                    inputTextCursorColor: Styles.mainColor,
-                    primaryColor: Styles.mainColorTrans,
-                    sentMessageBodyTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                    sentEmojiMessageTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                    sentMessageCaptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                    sentMessageDocumentIconColor:Colors.black,
-                    sentMessageLinkDescriptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                    sentMessageLinkTitleTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                    receivedMessageBodyTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                    receivedEmojiMessageTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                    receivedMessageCaptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                    receivedMessageDocumentIconColor:Colors.black,
-                    receivedMessageLinkDescriptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                    receivedMessageLinkTitleTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                    userNameTextStyle: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
+              if (snapshot.data == null) {
+                return LoadingViewPurple();
+              } else {
+                return SafeArea(
+                  bottom: false,
+                  child: Chat(
+                    theme: const DefaultChatTheme(
+                      inputBackgroundColor: Colors.white,
+                      //backgroundColor: Colors.black,
+                      inputTextColor: Colors.black,
+                      inputTextCursorColor: Styles.mainColor,
+                      primaryColor: Styles.mainColorTrans,
+                      sentMessageBodyTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
+                      sentEmojiMessageTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
+                      sentMessageCaptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
+                      sentMessageDocumentIconColor:Colors.black,
+                      sentMessageLinkDescriptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
+                      sentMessageLinkTitleTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
+                      receivedMessageBodyTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
+                      receivedEmojiMessageTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
+                      receivedMessageCaptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
+                      receivedMessageDocumentIconColor:Colors.black,
+                      receivedMessageLinkDescriptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
+                      receivedMessageLinkTitleTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
+                      userNameTextStyle: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      userAvatarNameColors: [
+                        Color(0xffff6767),
+                        Color(0xff66e0da),
+                        Color(0xfff5a2d9),
+                        Color(0xfff0c722),
+                        Color(0xff6a85e5),
+                        Color(0xfffd9a6f),
+                        Color(0xff92db6e),
+                        Color(0xff73b8e5),
+                        Color(0xfffd7590),
+                        Color(0xffc78ae5),
+                      ],
+                      deliveredIcon: Icon(
+                        Icons.done,
+                        color: Colors.black,
+                      ),
+                      seenIcon: Icon(
+                        Icons.done_all,
+                        color: Colors.black,
+                      ),
+                      dateDividerTextStyle: TextStyle(fontSize: 15),
                     ),
-                    userAvatarNameColors: [
-                      Color(0xffff6767),
-                      Color(0xff66e0da),
-                      Color(0xfff5a2d9),
-                      Color(0xfff0c722),
-                      Color(0xff6a85e5),
-                      Color(0xfffd9a6f),
-                      Color(0xff92db6e),
-                      Color(0xff73b8e5),
-                      Color(0xfffd7590),
-                      Color(0xffc78ae5),
-                    ],
-                    deliveredIcon: Icon(
-                      Icons.done,
-                      color: Colors.black,
+                    customDateHeaderText: _customDateHeaderText,
+                    customMessageBuilder: _customMessageBuilder,
+                    dateHeaderThreshold:  60000,
+                    groupMessagesThreshold: 300000,
+                    isAttachmentUploading: _isAttachmentUploading,
+                    messages: snapshot.data ?? [],
+                    onSendPressed: _handleSendPressed,
+                    showUserNames: widget.room.type.toString() == "RoomType.group" ? true : false,
+                    user: types.User(
+                      id: FirebaseChatCore.instance.firebaseUser?.uid ?? '',
                     ),
-                    seenIcon: Icon(
-                      Icons.done_all,
-                      color: Colors.black,
-                    ),
-                    dateDividerTextStyle: TextStyle(fontSize: 15),
-
                   ),
-                  customDateHeaderText: _customDateHeaderText,
-                  customMessageBuilder: _customMessageBuilder,
-                  dateHeaderThreshold:  60000,
-                  groupMessagesThreshold: 300000,
-                  //timeFormat: DateFormat('dd/MM/yyyy HH:mm'),
-                  isAttachmentUploading: _isAttachmentUploading,
-                  messages: snapshot.data ?? [],
-                  //onAttachmentPressed: _handleAtachmentPressed, // PER POSAR ENVIAR FOTOS I DOCUMENTS
-                //  onMessageTap: _handleMessageTap,
-                  //onPreviewDataFetched: _handlePreviewDataFetched,
-                  onSendPressed: _handleSendPressed,
-                  showUserNames: widget.room.type.toString() == "RoomType.group" ? true : false,
-                 // showUserAvatars: widget.room.type.toString() == "RoomType.group" ? true : false,
-                  user: types.User(
-                    id: FirebaseChatCore.instance.firebaseUser?.uid ?? '',
-                  ),
-                ),
-              );
+                );
+              }
             },
           );
         },

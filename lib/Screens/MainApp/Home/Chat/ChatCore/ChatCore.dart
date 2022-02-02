@@ -175,7 +175,9 @@ class _ChatCoreState extends State<ChatCore> {
         stream: FirebaseChatCore.instance.rooms(orderByUpdatedAt: true),
         initialData: const [],
         builder: (context, snapshot) {
-          if (snapshot.data!.isEmpty) {
+          if (snapshot.data == null) {
+            return LoadingViewPurple();
+          } else if (snapshot.data!.isEmpty) {
             return Container(
               height: MediaQuery.of(context).size.height *0.65,
               child: Column(
