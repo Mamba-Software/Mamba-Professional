@@ -415,18 +415,19 @@ class FirebaseDatabaseService {
         .collection("Users")
         .doc(userId)
         .set({
-      "firstName": user.firstName,
-      "lastName": user.lastName,
-      "nick": user.nick,
-      "imageUrl": user.imageUrl,
-      "noImageUrl": user.noImageUrl,
-      "isTrainer": user.isTrainer,
-      "isPrivate": user.isPrivate,
-      "notificationToken": user.notificationToken,
-      "role": role,
-    }).catchError((err) {
-      print(err);
-    });
+          "name": user.name,
+          "firstName": user.firstName,
+          "lastName": user.lastName,
+          "nick": user.nick,
+          "imageUrl": user.imageUrl,
+          "noImageUrl": user.noImageUrl,
+          "isTrainer": user.isTrainer,
+          "isPrivate": user.isPrivate,
+          "notificationToken": user.notificationToken,
+          "role": role,
+        }).catchError((err) {
+          print(err);
+        });
   }
 
   Future<void> deleteUserFromBrand(String userId, String brandId) async {
@@ -456,11 +457,15 @@ class FirebaseDatabaseService {
         .collection(brands)
         .doc(brandId)
         .collection("Events")
-        .get().then((snapshot) async {
-      for (DocumentSnapshot doc in snapshot.docs) {
-        await doc.reference.delete();
-      }
-    });
+        .get()
+        .then((snapshot) async {
+          for (DocumentSnapshot doc in snapshot.docs) {
+            await _firestore
+            .collection(events)
+            .doc(doc.id)
+            .delete();
+          }
+        });
   }
 
   Future<void> leaveBrandUser(String userId) async {
@@ -671,15 +676,14 @@ class FirebaseDatabaseService {
     });
   }
 
-  Future<void> updateBrandBaseLocation(String brandID,
-      String locationID) async {
-    Future<void> updateBrandBaseLocation(String brandID,
-        String locationID) async {
-      await _firestore
-          .collection(brands)
-          .doc(brandID)
-          .update({"baseLocation": locationID});
-    }}
+  Future<void> updateBrandBaseLocation(String brandID, String locationID) async {
+    await _firestore
+    .collection(brands)
+    .doc(brandID)
+    .update({
+      "baseLocation": locationID
+    });
+  }
 
     Future<List<Brand>> getAllBrands() async {
       List<Brand> brandList = [];
@@ -865,12 +869,12 @@ class FirebaseDatabaseService {
             .collection("Users")
             .get()
             .then((snapshot) {
-          for (DocumentSnapshot doc in snapshot.docs) {
-            if (doc.get("isTrainer") == true) {
-              users.add(Usuario.fromObjectOnlyCoverData(doc.id, doc));
-            }
-          }
-        });
+              for (DocumentSnapshot doc in snapshot.docs) {
+                if (doc.get("isTrainer") == true) {
+                  users.add(Usuario.fromObjectOnlyCoverData(doc.id, doc));
+                }
+              }
+            });
         return users;
       } catch (e) {
         print(e.toString());
@@ -1737,23 +1741,6 @@ class FirebaseDatabaseService {
       this.addUserToBrand(request.userId!, request.brandId!, role);
       // Delete the Request
       this.deleteRequestToBrand(request);
-      // OLD CHAT
-      QuerySnapshot querySnapshot = await _firestore
-          .collection(conversations)
-          .where("brandId", isEqualTo: request.brandId)
-          .get();
-      Conversation conversation = Conversation.fromObject(
-          querySnapshot.docs[0], querySnapshot.docs[0].id);
-      DocumentSnapshot<Map<String, dynamic>> _docu =
-      await _firestore.collection(users).doc(request.userId).get();
-      Usuario user = Usuario.fromObjectAllData(_docu.id, _docu);
-      conversation.users.add({
-        'uid': user.id,
-      });
-      await _firestore.collection(conversations).doc(
-          conversation.conversationId).update({
-        "users": conversation.users,
-      });
     }
 
     // Has Pending Request To Brand

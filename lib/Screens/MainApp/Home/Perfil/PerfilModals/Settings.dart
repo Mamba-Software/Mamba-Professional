@@ -456,7 +456,6 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             isLoading = true;
                           });
                           // Delete Function
-                          String? userId = currentUser.id;
                           var result = await _userDataService.deleteUser(deleteTemp);
                           await _userDataService.deleteUserNickname(currentUser.nick!);
                           if (!result) {

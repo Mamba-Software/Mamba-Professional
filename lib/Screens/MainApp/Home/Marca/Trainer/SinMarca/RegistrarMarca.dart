@@ -1283,7 +1283,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     await _brandDataService.addUserToBrand(currentUser.id!,result, 1);
     // Add Location
     String baseLocation = await _locationDataService.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
-    await _brandDataService.updateBrandBaseLocation(result,baseLocation);
+    await _brandDataService.updateBrandBaseLocation(result, baseLocation);
     // Update Current User Brand
     NotificationService().userCreatesBrand(currentUser.id!, result);
     // Create Group Chat

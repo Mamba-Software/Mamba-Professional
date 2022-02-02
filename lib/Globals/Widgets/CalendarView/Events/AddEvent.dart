@@ -282,6 +282,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
 
   Future<void> getAllTrainersFromBrand() async {
     brandTrainers = await _brandDataService.getBrandTrainers(currentBrand.id!);
+    print(brandTrainers.length);
     for (var i=0; i < brandTrainers.length; i++) {
       Usuario trainer = brandTrainers[i];
       if (trainer.id == currentUser.id) {
@@ -898,7 +899,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                                 children: [
                                                                   Text(
-                                                                    splitCommonName(trainer.name!),
+                                                                    trainer.firstName!,
                                                                     style: Styles.purpleTextStyle.copyWith(fontSize: 15),
                                                                     textAlign: TextAlign.center,
                                                                   ),
