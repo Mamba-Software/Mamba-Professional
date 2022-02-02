@@ -239,7 +239,6 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-
   void _handleMessageTap(types.Message message) async {
     if (message is types.FileMessage) {
       var localPath = message.uri;

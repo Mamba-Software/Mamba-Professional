@@ -471,7 +471,6 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                   await _brandDataService.deleteBrand(result.id!);
                                 } else {
                                   NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
-                                  // New DataBase Restructure
                                   await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
                                 }
                               } else {
@@ -479,8 +478,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                 await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
                               }
                             }
-
-                            //TODO SI ES ADMIN BORRAR TAMBE EL CHAT DE LA MARCA DELETE ROOMS OF THIS USER AND IN USERS GROUP DELETE HIM FROM METADATA ROOM, METADATA MESSAGE AND USERIDS
+                            currentUser.setBrandList = [];
                             Navigator.pushAndRemoveUntil(
                               context,
                               CupertinoPageRoute<Null>(

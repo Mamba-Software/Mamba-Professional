@@ -445,6 +445,19 @@ class FirebaseDatabaseService {
         .collection("Users")
         .get().then((snapshot) async {
       for (DocumentSnapshot doc in snapshot.docs) {
+        NotificationService().userLeavesBrand(doc.id, brandId);
+        await doc.reference.delete();
+      }
+    });
+  }
+
+  Future<void> deleteBrandEvents(String brandId) async {
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Events")
+        .get().then((snapshot) async {
+      for (DocumentSnapshot doc in snapshot.docs) {
         await doc.reference.delete();
       }
     });
@@ -612,14 +625,8 @@ class FirebaseDatabaseService {
     await this.deleteBrandEvents(brandId);
     // Delete All Locations from Brand
     await this.deleteBrandLocations(brandId);
-    // Get All Brand Users
-    List<Usuario> brandUsers = await this.getAllClientsFromBrand(brandId);
-    brandUsers.addAll(await this.getAllTrainersFromBrand(brandId));
-    // All Users Leave Brand
-    for (var i = 0; i < brandUsers.length; i++) {
-      NotificationService().userLeavesBrand(brandUsers[i].id!, brandId);
-      await this.leaveBrandUser(brandUsers[i].id!);
-    }
+    // Delete All Users from Brand
+    await this.deleteBrandUsers(brandId);
     // Delete Brand Photo
     await this.deleteBrandPhoto(brandId);
     // Delete Brand
@@ -1297,21 +1304,6 @@ class FirebaseDatabaseService {
       }
     }
 
-    // Delete All Brand Events
-    Future<void> deleteBrandEvents(String brandId) async {
-      try {
-        QuerySnapshot querySnapshot = await _firestore
-            .collection(events)
-            .where("brandID", isEqualTo: brandId)
-            .get();
-        for (int i = 0; i < querySnapshot.docs.length; i++) {
-          await this.deleteEvent(querySnapshot.docs[i].id);
-        }
-      } catch (e) {
-        print(e.toString());
-      }
-    }
-
     // Delete User from All Existing Events
     Future<void> deleteUserFromAllBrandEvents(String uid, String brandId,
         bool isTrainer) async {
@@ -1673,8 +1665,9 @@ class FirebaseDatabaseService {
       try {
         try {
           QuerySnapshot querySnapshot = await _firestore
-              .collection(locations)
-              .where("brandID", isEqualTo: brandId)
+              .collection(brands)
+              .doc(brands)
+              .collection("Locations")
               .get();
           for (int i = 0; i < querySnapshot.docs.length; i++) {
             await this.deleteLocation(querySnapshot.docs[i].id, null);

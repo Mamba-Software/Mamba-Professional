@@ -199,8 +199,6 @@ class _SettingsBrandState extends State<SettingsBrand> {
                       );
                       if (result) {
                         NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
-                        // TODO: NEW CHAT HERE
-                        // New DataBase Restructure
                         await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
                         Navigator.pushReplacement(
                             context,
@@ -237,7 +235,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                           isLoading = true;
                         });
                         // New DataBase
-                        await _brandDataService.deleteBrandUsers(currentBrand.id!);
+                        await _brandDataService.deleteBrand(currentBrand.id!);
                         currentUser.setBrandList = [];
                         await Future.delayed(const Duration(seconds: 4));
                         Navigator.pushReplacement(
