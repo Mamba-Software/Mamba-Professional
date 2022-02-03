@@ -477,7 +477,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
             roomActual = snapshot.data;
           }
           return StreamBuilder<List<types.Message>>(
-            initialData: const [],
+            //initialData: const [],
             stream: FirebaseChatCore.instance.messages(snapshot.data!),
             builder: (context, snapshot) {
               if (snapshot.data == null) {
@@ -536,6 +536,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                     groupMessagesThreshold: 300000,
                     isAttachmentUploading: _isAttachmentUploading,
                     messages: snapshot.data ?? [],
+                    scrollPhysics: BouncingScrollPhysics(),
                     onSendPressed: _handleSendPressed,
                     showUserNames: widget.room.type.toString() == "RoomType.group" ? true : false,
                     user: types.User(

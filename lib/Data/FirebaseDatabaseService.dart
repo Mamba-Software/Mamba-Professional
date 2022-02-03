@@ -2043,6 +2043,17 @@ class FirebaseDatabaseService {
     }
 
     Future<void> deleteRoom(String roomId) async {
+      // Delete Messages
+      await _firestore
+          .collection(rooms)
+          .doc(roomId)
+          .collection("messages")
+          .get().then((snapshot) {
+            for (DocumentSnapshot ds in snapshot.docs) {
+              batch.delete(ds.reference);
+            }
+          });
+      // Delete Room
       await _firestore.collection(rooms).doc(roomId).delete();
     }
 

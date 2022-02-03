@@ -90,6 +90,16 @@ class _ChatCoreState extends State<ChatCore> {
     }
   }
 
+  String returnChatHintMessage(var room) {
+    if (room.lastMessages != null) {
+      return room.type.toString() == "RoomType.group"
+          ? room.lastMessages[0].author.id != currentUser.id ? room.lastMessages[0].author.firstName + ' ' + room.lastMessages[0].author.lastName + ': ' + room.lastMessages[0]
+          .text : room.lastMessages[0].text : room.lastMessages[0].text;
+    } else {
+      return "";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_error) {
@@ -177,7 +187,7 @@ class _ChatCoreState extends State<ChatCore> {
       ),
       body: StreamBuilder<List<types.Room>>(
         stream: FirebaseChatCore.instance.rooms(orderByUpdatedAt: true),
-        initialData: const [],
+        //initialData: const [],
         builder: (context, snapshot) {
           if (snapshot.data == null) {
             return LoadingViewPurple();
@@ -291,9 +301,7 @@ class _ChatCoreState extends State<ChatCore> {
                                           enabled: false,
                                           decoration: InputDecoration(
                                             hintStyle: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: Read?FontWeight.normal:FontWeight.bold),
-                                            hintText: room.lastMessages !=
-                                                null ? room.type.toString() == "RoomType.group"? room.lastMessages[0].author.id != currentUser.id ? room.lastMessages[0].author.firstName + ' ' + room.lastMessages[0].author.lastName + ': ' + room.lastMessages[0]
-                                                .text : room.lastMessages[0].text : room.lastMessages[0].text : '',
+                                            hintText: returnChatHintMessage(room),
                                             contentPadding: EdgeInsets.all(0),
                                             isDense: true,
                                             enabledBorder: InputBorder.none,

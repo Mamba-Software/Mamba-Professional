@@ -1347,110 +1347,114 @@ exports.changeMessageStatus = functions
   .firestore
   .document("/"+rooms+"/{roomId}/messages/{messageId}")
   .onWrite(async (change, context) => {
-    const message = change.after.data();
-    const previousValue = change.before.data();
+    // Get context params
     const roomId = context.params.roomId;
     const messageId = context.params.messageId;
+    // Message after Data
+    const message = change.after.data();
+    const previousValue = change.before.data();
+    functions.logger.log(
+     "BEFORE",
+     previousValue
+    );
+    functions.logger.log(
+     "AFTER",
+     message
+    );
     var payload = 0;
+    // Get Room Data
     const roomSnapshot =  await db.collection(rooms).doc(roomId).get();
-         const roomDoc = roomSnapshot.data();
-         functions.logger.log(
-                             "PreviousValue",
-
-
-                           );
+    const roomDoc = roomSnapshot.data();
+    functions.logger.log(
+     "RoomDoc",
+     roomDoc
+    );
     if (message && previousValue === undefined) {
-    //Get Data of the Room
-
-     var messageStatus = "seen";
-     var metadata = {};
-     var userSnapshot;
-     var userDoc;
-     functions.logger.log(
-                         "MessageTest",
-                         roomDoc.metadata,
-
-                       );
-     for(let i = 0; i < roomDoc.userIds.length; ++i) {
-     functions.logger.log(
-                              "Incremental",
-                              roomDoc.userIds[i],
-
-                            );
-           if(message.authorId != roomDoc.userIds[i] && roomDoc.metadata["active" + roomDoc.userIds[i]] == false) {
-           functions.logger.log(
-                                         "Es activo",
-                                         roomDoc.userIds[i],
-
-                                       );
+        //Get Data of the Room
+        var messageStatus = "seen";
+        var metadata = {};
+        var userSnapshot;
+        var userDoc;
+        functions.logger.log(
+             "MessageTest",
+             roomDoc.metadata,
+        );
+        for (let i = 0; i < roomDoc.userIds.length; ++i) {
+          functions.logger.log(
+            "Incremental",
+            roomDoc.userIds[i],
+          );
+          if (message.authorId != roomDoc.userIds[i] && roomDoc.metadata["active" + roomDoc.userIds[i]] == false) {
+             const authorUserSnapshot = await db.collection(users).doc(message.authorId).get();
+             const authorUserDoc = authorUserSnapshot.data();
+             functions.logger.log(
+               "Es activo",
+               roomDoc.userIds[i],
+             );
              messageStatus = "delivered";
              metadata[roomDoc.userIds[i]] = "delivered";
-               userSnapshot = await db.collection(users).doc(roomDoc.userIds[i]).get();
-                        userDoc = userSnapshot.data();
-             // Send Notification To Users who received the message and not active
-             if(roomDoc.type == "group") {
-             payload = {
-                                   notification: {
-                                   title: roomDoc.name,
-                                                       body: userDoc.firstName + '' + userDoc.lastName + ': ' + message.text,
-                                                     },
-                                                     data: {
-                                                       route: "SplashScreen3",
-                                                     },
-                                                   };
-             }
-             else {
-             payload = {
-                                   notification: {
-                                   title: userDoc.firstName + '' + userDoc.lastName + ':',
-                                                       body: message.text,
-                                                     },
-                                                     data: {
-                                                       route: "SplashScreen3",
-                                                     },
-                                                   };
-             }
-
-                                  var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-                                  functions.logger.log(
-                                            "Response",
-                                            response
-                                          );
-           }
-           else {
-           metadata[roomDoc.userIds[i]] = "seen";
-           }
-         }
-      if (['delivered', 'seen', 'sent'].includes(message.status)) {
-        return null
-      } else {
-        change.after.ref.update({
-          status: messageStatus,
-          metadata: metadata,
-          remoteId: messageId,
-        });
-        message.status = messageStatus;
-        message.metadata = metadata;
-        message.remoteId = messageId;
-              return db.doc(rooms + "/" + roomId).update({
-                lastMessages: [message],
-                updatedAt: message.updatedAt,
-                })
-      }
-    }
-    else if (roomDoc.lastMessages[0].remoteId == message.remoteId)
-    {
-
-    functions.logger.log(
-               "message ASQUI",
-               message.metadata,
+             userSnapshot = await db.collection(users).doc(roomDoc.userIds[i]).get();
+             userDoc = userSnapshot.data();
+             functions.logger.log(
+                  "User to Send Data",
+                  userDoc,
              );
-         return db.doc(rooms + "/" + roomId).update({
-                        lastMessages: [message],
-                        })
-    }
-
-    else {
+             // Send Notification To Users who received the message and not active
+             if (roomDoc.type == "group") {
+                payload = {
+                  notification: {
+                      title: roomDoc.name,
+                      body: authorUserDoc.firstName + ' ' + authorUserDoc.lastName + ': ' + message.text,
+                  },
+                  data: {
+                    route: "SplashScreen3",
+                  },
+                };
+             } else {
+                payload = {
+                   notification: {
+                     title: authorUserDoc.firstName + ' ' + authorUserDoc.lastName + ':',
+                     body: message.text,
+                   },
+                   data: {
+                     route: "SplashScreen3",
+                   },
+                };
+             }
+             var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+             functions.logger.log(
+               "Response",
+               response
+             );
+          } else {
+           metadata[roomDoc.userIds[i]] = "seen";
+          }
+        }
+        if (['delivered', 'seen', 'sent'].includes(message.status)) {
+            return null
+        } else {
+          change.after.ref.update({
+            status: messageStatus,
+            metadata: metadata,
+            remoteId: messageId,
+          });
+          message.status = messageStatus;
+          message.metadata = metadata;
+          message.remoteId = messageId;
+          return db.doc(rooms + "/" + roomId).update({
+            lastMessages: [message],
+            updatedAt: message.updatedAt,
+            })
+        }
+    } else if (roomDoc.lastMessages[0].remoteId == message.remoteId) {
+      functions.logger.log(
+       "message ASQUI",
+       message.metadata,
+      );
+      return db.doc(rooms + "/" + roomId).update({
+        lastMessages: [message],
+        })
+    } else {
       return null
     }
   })

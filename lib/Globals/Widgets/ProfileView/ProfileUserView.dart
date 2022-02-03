@@ -179,10 +179,10 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                         });
                         NotificationService().userLeavesBrand(widget.userID, currentBrand.id!);
                         // New Database
+                        await Future.delayed(const Duration(milliseconds: 3000));
                         await _brandDataService.deleteUserFromBrand(widget.userID, currentBrand.id!);
                         // TODO: Revisar Pq True, yo crec que es per recagar els users a todos los miemrbos
-                        //  Navigator.pop(context, true);
-                        Navigator.pop(context);
+                        Navigator.pop(context, true);
                       }
                     } ,
                     icon: Icon(Icons.delete_outlined, color: Colors.red)
