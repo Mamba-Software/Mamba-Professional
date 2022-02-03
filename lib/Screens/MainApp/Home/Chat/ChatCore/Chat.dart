@@ -67,7 +67,7 @@ class _ChatPageState extends State<ChatPage> {
        // _userDataService.getUserDetails(userId);
         noMessages = true;
         imageUrlRoom = userId.imageUrl;
-        nameRoom = userId.firstName + '' + userId.lastName;
+        nameRoom = userId.firstName + ' ' + userId.lastName;
       }
     }
     getOtherUser();
@@ -487,6 +487,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                   bottom: false,
                   child: Chat(
                     theme: const DefaultChatTheme(
+
                       inputBackgroundColor: Colors.white,
                       //backgroundColor: Colors.black,
                       inputTextColor: Colors.black,
@@ -521,12 +522,12 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                         Color(0xffc78ae5),
                       ],
                       deliveredIcon: Icon(
-                        Icons.done,
+                        Icons.done_all,
                         color: Colors.black,
                       ),
                       seenIcon: Icon(
                         Icons.done_all,
-                        color: Colors.black,
+                        color: Styles.mainColor,
                       ),
                       dateDividerTextStyle: TextStyle(fontSize: 15),
                     ),
@@ -537,6 +538,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                     isAttachmentUploading: _isAttachmentUploading,
                     messages: snapshot.data ?? [],
                     scrollPhysics: BouncingScrollPhysics(),
+                    emptyState: Container(),
                     onSendPressed: _handleSendPressed,
                     showUserNames: widget.room.type.toString() == "RoomType.group" ? true : false,
                     user: types.User(
