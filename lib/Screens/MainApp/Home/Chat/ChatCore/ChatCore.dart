@@ -92,9 +92,19 @@ class _ChatCoreState extends State<ChatCore> {
 
   String returnChatHintMessage(var room) {
     if (room.lastMessages != null) {
-      return room.type.toString() == "RoomType.group"
-          ? room.lastMessages[0].author.id != currentUser.id ? room.lastMessages[0].author.firstName + ' ' + room.lastMessages[0].author.lastName + ': ' + room.lastMessages[0]
-          .text : room.lastMessages[0].text : room.lastMessages[0].text;
+      if (room.type.toString() == "RoomType.group") {
+        if (room.lastMessages[0].author.id != currentUser.id) {
+          if (room.lastMessages[0].author.firstName != null) {
+            return room.lastMessages[0].author.firstName + ': ' + room.lastMessages[0].text;
+          } else {
+            return AppLocalizations.of(context)!.user + ': ' + room.lastMessages[0].text;
+          }
+        } else {
+          return room.lastMessages[0].text;
+        }
+      } else {
+        return room.lastMessages[0].text;
+      }
     } else {
       return "";
     }

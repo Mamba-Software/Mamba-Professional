@@ -86,7 +86,6 @@ class NotificationService {
 
   Future<void> userSendRequestToBrand(String userId, String brandId) async {
     // Notification to the User Joining
-    // TODO: Adapt to New Database
     List<RequestToBrand> requests = await _userDataService.getUserRequests(userId);
     RequestToBrand req = requests[0];
     var parameters = ["null", brandId, "null",];
@@ -128,12 +127,12 @@ class NotificationService {
     _userDataService.sendNotificationToUser(userId, "UserJoinEvent_User", parameters);
     // Notification to All Event Trainers
     parameters = [userId, "null", eventId];
-    Event event = await _eventDataService.getSingleEvent(eventId);
-    for (var i=0; i < event.selectedTrainers.length; i++) {
-      String trainerId = event.selectedTrainers[i];
-      if (trainerId != userId) {
+    List<Usuario> listUsers = await _eventDataService.getEventUsers(eventId);
+    for (var i=0; i<listUsers.length; i++) {
+      Usuario trainer = listUsers[i];
+      if (trainer.isTrainer! && trainer.id! != userId) {
         // New Notification
-        _userDataService.sendNotificationToUser(trainerId, "UserJoinEvent_Trainer", parameters);
+        _userDataService.sendNotificationToUser(trainer.id!, "UserJoinEvent_Trainer", parameters);
       }
     }
   }
@@ -145,12 +144,12 @@ class NotificationService {
     _userDataService.sendNotificationToUser(userId, "UserLeaveEvent_User", parameters);
     // Notification to All Event Trainers
     parameters = [userId, "null", eventId];
-    Event event = await _eventDataService.getSingleEvent(eventId);
-    for (var i=0; i < event.selectedTrainers.length; i++) {
-      String trainerId = event.selectedTrainers[i];
-      if (trainerId != userId) {
+    List<Usuario> listUsers = await _eventDataService.getEventUsers(eventId);
+    for (var i=0; i<listUsers.length; i++) {
+      Usuario trainer = listUsers[i];
+      if (trainer.isTrainer! && trainer.id! != userId) {
         // New Notification
-        _userDataService.sendNotificationToUser(trainerId, "UserLeaveEvent_Trainer", parameters);
+        _userDataService.sendNotificationToUser(trainer.id!, "UserLeaveEvent_Trainer", parameters);
       }
     }
   }

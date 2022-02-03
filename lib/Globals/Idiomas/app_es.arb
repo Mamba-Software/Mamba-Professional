@@ -31,6 +31,10 @@
   "@logOut":{
     "description": "logOut Text"
   },
+  "user": "Usuario",
+  "@user":{
+    "description": "Usuario Text"
+  },
   "client": "Cliente",
   "@client":{
     "description": "Cliente Text"

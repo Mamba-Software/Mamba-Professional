@@ -844,7 +844,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                               ),
                                               SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                               Text(
-                                                event.selectedTrainers.length.toString(),
+                                                event.numTrainers.toString(),
                                                 style: TextStyle(color: Colors.white, fontSize: 14),
                                               ),
                                               Container(
@@ -859,7 +859,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                               ),
                                               SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                               Text(
-                                                event.joinedMembers.length.toString(),
+                                                event.numClients.toString(),
                                                 style: TextStyle(color: Colors.white, fontSize: 14),
                                               ),
                                             ],
