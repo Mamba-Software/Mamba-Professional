@@ -180,6 +180,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                         NotificationService().userLeavesBrand(widget.userID, currentBrand.id!);
                         // New Database
                         await Future.delayed(const Duration(milliseconds: 3000));
+                        await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
                         await _brandDataService.deleteUserFromBrand(widget.userID, currentBrand.id!);
                         // TODO: Revisar Pq True, yo crec que es per recagar els users a todos los miemrbos
                         Navigator.pop(context, true);

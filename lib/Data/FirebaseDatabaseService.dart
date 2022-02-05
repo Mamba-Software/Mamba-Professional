@@ -738,6 +738,33 @@ class FirebaseDatabaseService {
       return events;
     }
 
+    // Get All Events Finished Brand
+    Future<List<Event>> getUserEventsUpcoming(String userId) async {
+      DateTime today = DateTime.now();
+      List<Event> eventsList = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Events")
+          .get();
+
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        Event event = Event.fromObjectAllData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        var startDate = DateTime(
+          int.parse(event.year!),
+          int.parse(event.month!),
+          int.parse(event.day!),
+          int.parse(event.hour!),
+          int.parse(event.minute!),
+        );
+        if (today.isBefore(startDate)) {
+          eventsList.add(event);
+        }
+      }
+      return eventsList;
+    }
+
     Future<List<Usuario>> getEventUsers(String eventId) async {
       List<Usuario> users = [];
       QuerySnapshot querySnapshot = await _firestore
@@ -1199,8 +1226,9 @@ class FirebaseDatabaseService {
       DateTime today = DateTime.now();
       List<Event> eventsList = [];
       QuerySnapshot querySnapshot = await _firestore
-          .collection(events)
-          .where("brandID", isEqualTo: brandId)
+          .collection(brands)
+          .doc(brandId)
+          .collection("Events")
           .get();
 
       for (int i = 0; i < querySnapshot.docs.length; i++) {
@@ -1225,8 +1253,9 @@ class FirebaseDatabaseService {
       DateTime today = DateTime.now();
       List<Event> eventsList = [];
       QuerySnapshot querySnapshot = await _firestore
-          .collection(events)
-          .where("brandID", isEqualTo: brandId)
+          .collection(brands)
+          .doc(brandId)
+          .collection("Events")
           .get();
 
       for (int i = 0; i < querySnapshot.docs.length; i++) {
@@ -1420,6 +1449,48 @@ class FirebaseDatabaseService {
             .catchError((err) {
           print(err);
         });
+        return true;
+      } catch (e) {
+        print(e.toString());
+        return false;
+      }
+    }
+
+    // User Joins Event
+    Future<bool> deleteUserFromUpcomingEvents(String uid, bool isTrainer) async {
+      try {
+        List<Event> upcomingEvents = await this.getUserEventsUpcoming(uid);
+        if (isTrainer) {
+          for (int i = 0; i < upcomingEvents.length; i++) {
+            Event evt = upcomingEvents[i];
+            if (evt.numTrainers! > 1) {
+              await _firestore
+                  .collection(events)
+                  .doc(evt.id)
+                  .collection("Users")
+                  .doc(uid)
+                  .delete()
+                  .catchError((err) {
+                print(err);
+              });
+            } else {
+              this.deleteEvent(evt.id!);
+            }
+          }
+        } else {
+          for (int i = 0; i < upcomingEvents.length; i++) {
+            Event evt = upcomingEvents[i];
+            await _firestore
+                .collection(events)
+                .doc(evt.id)
+                .collection("Users")
+                .doc(uid)
+                .delete()
+                .catchError((err) {
+              print(err);
+            });
+          }
+        }
         return true;
       } catch (e) {
         print(e.toString());

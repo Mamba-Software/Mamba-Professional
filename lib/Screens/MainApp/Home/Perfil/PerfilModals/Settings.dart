@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
 
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -326,6 +327,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
   // Acceso a Base de Datos
   var _userDataService = new UserDataService();
   var _brandDataService = new BrandDataService();
+  var _eventDataService = new EventDataService();
   // Delete Alert
   bool isLoading = false;
   bool firstBuild = true;
@@ -470,10 +472,12 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                   await _brandDataService.deleteBrand(result.id!);
                                 } else {
                                   NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
+                                  await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
                                   await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
                                 }
                               } else {
                                 NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
+                                await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
                                 await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
                               }
                             }

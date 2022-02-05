@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/RoomDataService.dart';
 
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -33,6 +34,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
 
   // Acceso a Base de Datos
   var _brandDataService = new BrandDataService();
+  var _eventDataService = new EventDataService();
   var _roomDataService=  new RoomDataService();
   // Boolean Loading
   bool isLoading = false;
@@ -201,6 +203,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                       );
                       if (result) {
                         NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
+                        await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
                         await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
                         Navigator.pushReplacement(
                             context,

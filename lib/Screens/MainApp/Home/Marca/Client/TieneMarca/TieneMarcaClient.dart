@@ -141,6 +141,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                               });
                               NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
                               // New DataBase Restructure
+                              await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
                               await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
                               Navigator.pushReplacement(
                                   context,

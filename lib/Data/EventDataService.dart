@@ -23,6 +23,7 @@ class EventDataService {
   // Get Data
   Future<Event> getSingleEvent(String eventId) => _firebase.getSingleEvent(eventId);
   Future<List<Event>> getUserEvents(String userId) => _firebase.getUserEvents(userId);
+  Future<List<Event>> getUserEventsUpcoming(String userId) => _firebase.getUserEventsUpcoming(userId);
   Future<List<Event>> getUserEventsToday(String userId) => _firebase.getUserEventsToday(userId);
   Future<List<Event>> getAllEventsTodayBrand(String brandId) => _firebase.getAllEventsTodayBrand(brandId);
   Future<List<int>> getUserEventsFinished(String userId) => _firebase.getUserEventsFinished(userId);
@@ -42,6 +43,7 @@ class EventDataService {
   // Delete Data
   Future<void> deleteEvent(String id) => _firebase.deleteEvent(id);
   Future<void> deleteUserFromEvent(String eid, String uid,) => _firebase.deleteUserFromEvent(eid, uid);
+  Future<void> deleteUserFromUpcomingEvents(String uid, bool isTrainer) => _firebase.deleteUserFromUpcomingEvents(uid, isTrainer);
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams
