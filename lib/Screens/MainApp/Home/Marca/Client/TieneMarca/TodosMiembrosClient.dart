@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -11,7 +12,10 @@ import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
+
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class TodosMiembrosClient extends StatefulWidget {
   String brandID;
@@ -25,10 +29,11 @@ class TodosMiembrosClient extends StatefulWidget {
 
 class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
 
-  // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  // Data Service
+  var _brandDataService = BrandDataService();
+  var _roomDataService = new RoomDataService();
   // Boolean Loading
-  bool isLoading = false;
+  bool isLoading = true;
   // Boolean isUpdated
   bool isUpdated = false;
   // Search Controller
@@ -42,29 +47,25 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
   List<Usuario> filteredTrainers = [];
 
   Future<void> getAllUsers() async {
-    await getAllTrainersFromBrand();
-    await getAllClientsFromBrand();
+    List<Usuario> brandUsers = await _brandDataService.getBrandUsers(widget.brandID);
+    for (var i=0; i< brandUsers.length; i++) {
+      Usuario user = brandUsers[i];
+      if (user.isTrainer! == false) {
+        if (user.id == currentUser.id) {
+          filteredClients.insert(0, user);
+        } else {
+          filteredClients.add(user);
+        }
+        allClients.add(user);
+      } else {
+        filteredTrainers.add(user);
+        allTrainers.add(user);
+      }
+    }
+    await Future.delayed(const Duration(milliseconds: 500));
     setState(() {
       isLoading = false;
     });
-  }
-
-  Future<void> getAllTrainersFromBrand() async {
-    allTrainers = await _accessDatabase.getAllTrainersFromBrand(widget.brandID);
-    filteredTrainers = allTrainers;
-  }
-
-  Future<void> getAllClientsFromBrand() async {
-    allClients = await _accessDatabase.getAllClientsFromBrand(widget.brandID);
-    for (var i=0; i< allClients.length; i++) {
-      Usuario client = allClients[i];
-      if (client.id == currentUser.id) {
-        filteredClients.insert(0, client);
-      } else {
-        filteredClients.add(client);
-      }
-    }
-    filteredClients = orderClientsPrivateLast(filteredClients);
   }
 
   void filterSearchResults(String query, bool isTrainer) {
@@ -121,6 +122,10 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
     return orderedUsers;
   }
 
+  String getUsersFullName(Usuario user) {
+    return "${user.firstName} ${user.lastName}";
+  }
+
   String splitCommonName(String name) {
     List<String> aux = name.split(" ");
     return aux[0];
@@ -128,7 +133,6 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
 
   @override
   initState() {
-    isLoading = true;
     getAllUsers();
   }
 
@@ -239,7 +243,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                   borderWidth: 1.0,
                                 ),
                                 title: Text(
-                                  user.name!,
+                                  getUsersFullName(user),
                                   style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.left,
                                 ),
@@ -267,9 +271,30 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                   icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
                                   alignment: Alignment.centerRight,
                                   padding: EdgeInsets.all(0),
-                                  onPressed: () {
-                                    Navigator.push(context, CupertinoPageRoute<Null>(
-                                      builder: (context) => ChatDetailPage(user)),);
+                                  onPressed: () async {
+                                    types.User otherUser = types.User(
+                                      firstName: user.firstName,
+                                      lastName: user.lastName,
+                                      id: user.id!, // UID from Firebase Authentication
+                                      imageUrl: user.imageUrl,
+                                    );
+                                    final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                                      "trainer" + user.id!: user.isTrainer,
+                                      "trainer" + currentUser.id!: currentUser.isTrainer,
+                                      "active" + user.id!: false,
+                                      "active" + currentUser.id!: true,
+                                    });
+
+                                    bool? deleteRoom = await Navigator.push(
+                                      context,
+                                      CupertinoPageRoute<bool>(
+                                          builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                                      room.metadata!["active" + currentUser.id!] = false;
+                                      _roomDataService.updateRoom(room.id, room.metadata!);
+                                    });
+                                    if (!deleteRoom!) {
+                                      _roomDataService.deleteRoom(room.id);
+                                    }
                                   },
                                 ),
                                 onTap: () {
@@ -350,7 +375,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                         borderWidth: 1.0,
                                       ),
                                       title: Text(
-                                        splitCommonName(user.name!),
+                                        user.firstName!,
                                         style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor.withOpacity(0.3)),
                                         textAlign: TextAlign.left,
                                       ),
@@ -371,7 +396,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                         borderWidth: 1.0,
                                       ),
                                       title: Text(
-                                        user.name!,
+                                        getUsersFullName(user),
                                         style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
                                         textAlign: TextAlign.left,
                                       ),
@@ -394,9 +419,30 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                         icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
                                         alignment: Alignment.centerRight,
                                         padding: EdgeInsets.all(0),
-                                        onPressed: () {
-                                          Navigator.push(context, CupertinoPageRoute<Null>(
-                                            builder: (context) => ChatDetailPage(user)),);
+                                        onPressed: () async {
+                                          types.User otherUser = types.User(
+                                            firstName: user.firstName,
+                                            lastName: user.lastName,
+                                            id: user.id!, // UID from Firebase Authentication
+                                            imageUrl: user.imageUrl,
+                                          );
+                                          final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                                            "trainer" + user.id!: user.isTrainer,
+                                            "trainer" + currentUser.id!: currentUser.isTrainer,
+                                            "active" + user.id!: false,
+                                            "active" + currentUser.id!: true,
+                                          });
+
+                                          bool? deleteRoom = await Navigator.push(
+                                            context,
+                                            CupertinoPageRoute<bool>(
+                                                builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                                            room.metadata!["active" + currentUser.id!] = false;
+                                            _roomDataService.updateRoom(room.id, room.metadata!);
+                                          });
+                                          if (!deleteRoom!) {
+                                            _roomDataService.deleteRoom(room.id);
+                                          }
                                         },
                                       ),
                                       onTap: () {

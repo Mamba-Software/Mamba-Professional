@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Data/RoomDataService.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
@@ -19,9 +21,10 @@ import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/TodosMiembrosClient.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class SinMarcaClient extends StatefulWidget {
   const SinMarcaClient({Key? key}) : super(key: key);
@@ -32,7 +35,9 @@ class SinMarcaClient extends StatefulWidget {
 
 class _SinMarcaClientState extends State<SinMarcaClient> {
 // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
+  var _brandDataService = new BrandDataService();
+  var _roomDataService = new RoomDataService();
   // Boolean isLoading
   bool isLoading = false;
   // Brand List
@@ -46,6 +51,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
   // Request To Brand
   String brandIdRequest = "";
   RequestToBrand? request;
+  RequestToBrand? newRequest;
 
   // init Widget state. Loading user info.
   @override
@@ -56,11 +62,13 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
     super.initState();
   }
 
+  // Get user pending requests
   Future<void> getUserPendingRequests() async {
-    RequestToBrand? req = await _accessDatabase.hasPendingRequest(currentUser.id!);
-    if (req != null) {
+    List<RequestToBrand> req = await _userDataService.getUserRequests(currentUser.id!);
+    if (req.isNotEmpty) {
+      // At this moment, only 1 requests possible
       setState(() {
-        request = req;
+        request = req[0];
         brandIdRequest = request!.brandId!;
       });
     } else {
@@ -72,7 +80,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
   }
 
   Future<void> getAllBrands() async {
-    brandList = await _accessDatabase.getAllBrands();
+    brandList = await _brandDataService.getAllBrands();
     setState(() {
       isLoading = false;
     });
@@ -121,7 +129,8 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                         brandIdRequest = "";
                       });
                       NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
-                      _accessDatabase.deleteRequest(request!.id!);
+                      // New DataBase
+                      await _userDataService.deleteRequestToBrand(request!);
                       getUserPendingRequests();
                     }
                   }
@@ -206,7 +215,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                     setState(() {
                                       isLoadingCodigo = true;
                                     });
-                                    var result = await _accessDatabase.checkIfBrandExists(_codigo);
+                                    var result = await _brandDataService.checkIfBrandExists(_codigo);
                                     if (!result) {
                                       Future.delayed(const Duration(milliseconds: 500), () {
                                         setState(() {
@@ -215,12 +224,18 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                         });
                                       });
                                     } else {
-                                      await _accessDatabase.updateCurrentUserBrand(_codigo);
-                                      await _accessDatabase.updateConversationNewUser(_codigo, currentUser.id);
                                       NotificationService().userJoinsBrand(currentUser.id!, _codigo);
+                                      // New DataBase
+                                      int role = 0;
+                                      if (currentUser.isTrainer!) {
+                                        role = 5;
+                                      }
+                                      await _brandDataService.addUserToBrand(currentUser.id!, _codigo.id!, role);
+                                      // Push To Splash Screen
                                       setState(() {
                                         currentIndex = 1;
                                       });
+                                      await Future.delayed(const Duration(seconds: 3));
                                       Navigator.pushReplacement(
                                           context,
                                           CupertinoPageRoute<Null>(
@@ -296,6 +311,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
           return Future.delayed(
             Duration(seconds: 1), () {
             getAllBrands();
+            getUserPendingRequests();
           },
           );
         },
@@ -445,14 +461,31 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                     icon: Icon(Icons.question_answer_outlined, size: 35, color: Theme.of(context).primaryColor),
                                     padding: EdgeInsets.all(0),
                                     onPressed: () async {
-                                      Usuario adminUser = await _accessDatabase.getUserDetails(brand.adminID!);
+                                      Usuario adminUser = await _userDataService.getUserDetails(brand.adminID!);
                                       if(adminUser == null) LoadingView();
                                       else {
-                                        Navigator.push(context, CupertinoPageRoute<Null>(
-                                            builder: (context) => ChatDetailPage(adminUser)
-                                        ),).whenComplete(() {
-                                          getUserPendingRequests();
+                                        types.User otherUser = types.User(
+                                          firstName: adminUser.firstName,
+                                          lastName: adminUser.lastName,
+                                          id: adminUser.id!, // UID from Firebase Authentication
+                                          imageUrl: adminUser.imageUrl,
+                                        );
+                                        final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                                          "trainer" + adminUser.id!: adminUser.isTrainer,
+                                          "trainer" + currentUser.id!: currentUser.isTrainer,
+                                          "active" + adminUser.id!: false,
+                                          "active" + currentUser.id!: true,
                                         });
+                                        bool? deleteRoom = await Navigator.push(
+                                          context,
+                                          CupertinoPageRoute<bool>(
+                                              builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                                          room.metadata!["active" + currentUser.id!] = false;
+                                          _roomDataService.updateRoom(room.id, room.metadata!);
+                                        });
+                                        if (!deleteRoom!) {
+                                          _roomDataService.deleteRoom(room.id);
+                                        }
                                       }
                                     },
                                   ),
@@ -485,7 +518,8 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                             brandIdRequest = "";
                                           });
                                           NotificationService().userCancelRequestToBrand(currentUser.id!, request!.brandId!);
-                                          _accessDatabase.deleteRequest(request!.id!);
+                                          // New DataBase
+                                          await _userDataService.deleteRequestToBrand(request!);
                                           getUserPendingRequests();
                                         }
                                       } else {
@@ -502,7 +536,8 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                           setState(() {
                                             brandIdRequest = brand.id!;
                                           });
-                                          await _accessDatabase.sendRequest(brand.id!, currentUser.name! ,currentUser.isTrainer!);
+                                          // New DataBase
+                                          await _userDataService.sendRequestToBrand(brand.id!, currentUser.name! ,currentUser.isTrainer!);
                                           NotificationService().userSendRequestToBrand(currentUser.id!, brand.id!);
                                           getUserPendingRequests();
                                         }

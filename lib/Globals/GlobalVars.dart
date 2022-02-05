@@ -5,7 +5,7 @@ import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 
 // IS PRODUCTION?
-bool isProduction = true;
+bool isProduction = false;
 
 // App Version
 var version = "MAMBA v0.0.2";
@@ -23,6 +23,7 @@ var placesAPIIOS = "AIzaSyAYFglgzIMLYXB9XQPaZ977MKUMseCJCvY";
 // User & Brand Global Variables
 var currentUser = Usuario();
 var currentBrand = Brand();
+bool hasBrand = false;
 
 // Unread Notifications and Chats
 var unreadNotifications = 0;
@@ -33,5 +34,6 @@ Position? currentPosition;
 String? currentAddress;
 
 // Page Controller
-final PageController pageController = PageController(initialPage: currentIndex);
 int currentIndex = 0;
+PageController pageController = PageController(initialPage: currentIndex);
+

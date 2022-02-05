@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -15,7 +16,7 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   // Access to DataBaseService
-  var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
   // Password Visible
   bool isLoading = false;
   // Scaffold Messenger Key
@@ -80,7 +81,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             onChanged: (val) {
                               setState(() => email = val);
                             },
-                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w500),
                             decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.email,
                                 prefixIcon:  Padding(
                                   padding: EdgeInsets.all(0.0),
@@ -119,7 +120,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                     if (!currentFocus.hasPrimaryFocus) {
                                       currentFocus.unfocus();
                                     }
-                                    result = await _accessDatabase.resetPassword(email);
+                                    result = await _userDataService.resetPassword(email);
                                     if (result == 1) {
                                       setState(() {
                                         isLoading = false;

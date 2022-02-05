@@ -1,14 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Data/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/UserFeedBack.dart';
-import 'package:page_transition/page_transition.dart';
-
 import 'ReportBug.dart';
 
 // Feedback Widget.
@@ -21,10 +19,11 @@ class FeedBack extends StatefulWidget {
 }
 
 class _FeedBackState extends State<FeedBack> {
+  // Feedback Data Service
+  var _feedbackDataService = new FeedbackDataService();
   // Boolean New Feedback
   bool newFeedback = false;
   GroupOfQuestions? groupOfQuestions = new GroupOfQuestions();
-  var _accessDatabase = new DatabaseAccess();
   bool alreadyAnswered = false;
   bool isLoading = true;
 
@@ -35,9 +34,9 @@ class _FeedBackState extends State<FeedBack> {
   }
 
   Future<void> checkIfAnswered() async {
-    this.groupOfQuestions = await this._accessDatabase.getActiveGroupOfQuestions();
+    this.groupOfQuestions = await _feedbackDataService.getActiveGroupOfQuestions();
     if (groupOfQuestions != null) {
-      alreadyAnswered = await this ._accessDatabase.checkIfAnswersExist(this.groupOfQuestions!.id);
+      alreadyAnswered = await _feedbackDataService.checkIfAnswersExist(this.groupOfQuestions!.id);
     } else {
       alreadyAnswered = true;
     }

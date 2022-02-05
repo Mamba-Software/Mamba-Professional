@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import '../../Styles.dart';
@@ -18,7 +19,7 @@ class RequestConfirmationDialog extends StatefulWidget {
 
 class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
   // Boolean Loading
   bool isLoading = false;
   // User Requesting
@@ -33,7 +34,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
 
   // Gets the user info from firebase.
   void getUser() async {
-    user = await _accessDatabase.getUserDetails(widget.userId);
+    user = await _userDataService.getUserDetails(widget.userId);
     setState(() {
       isLoading = false;
     });
@@ -118,7 +119,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                         OutlinedButton.icon(
                           style: OutlinedButton.styleFrom(
                             elevation: 4.0,
-                            backgroundColor: Colors.black,
+                            backgroundColor: Colors.red,
                             fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                             shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(
@@ -127,7 +128,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                             ),
                           ),
                           label: Text(
-                            AppLocalizations.of(context)!.cancel,
+                            AppLocalizations.of(context)!.delete,
                             style: TextStyle(color: Colors.white),
                           ),
                           icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
@@ -151,7 +152,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                         color: Theme.of(context).accentColor,
                         borderWidth: 2,
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
                       Container(
                         width: MediaQuery.of(context).size.width*0.9,
                         child: Padding(

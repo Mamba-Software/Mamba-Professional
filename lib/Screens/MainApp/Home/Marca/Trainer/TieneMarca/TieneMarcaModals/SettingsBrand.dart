@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/RoomDataService.dart';
+
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -30,7 +33,9 @@ class SettingsBrand extends StatefulWidget {
 class _SettingsBrandState extends State<SettingsBrand> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _brandDataService = new BrandDataService();
+  var _eventDataService = new EventDataService();
+  var _roomDataService=  new RoomDataService();
   // Boolean Loading
   bool isLoading = false;
   bool firstBuild = true;
@@ -189,7 +194,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                   ) : Container(),
                   currentUser.id != currentBrand.adminID ? TextButton(
                     onPressed: () async {
-                      // DeleteDialog
+                      // Leaves Brand
                       var result = await showDialog(
                           context: context,
                           builder: (_) {
@@ -197,17 +202,9 @@ class _SettingsBrandState extends State<SettingsBrand> {
                           }
                       );
                       if (result) {
-                        NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
-                        //12/12/2021
-                        Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID);
-                        for(int i = 0; i < conv.users.length; ++i) {
-                          if(conv.users[i]['uid'] == currentUser.id) {
-                            conv.users.removeAt(i);
-                          }
-                        }
-                        await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
-                        await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
-                        await _accessDatabase.leaveBrand(currentUser.id!);
+                        NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
+                        await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
+                        await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
                         Navigator.pushReplacement(
                             context,
                             CupertinoPageRoute<Null>(
@@ -242,9 +239,11 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         setState(() {
                           isLoading = true;
                         });
-                        String? brandId = currentBrand.id;
-                        await _accessDatabase.deleteBrand(currentBrand.id!);
-                        await _accessDatabase.deleteBrandConversations(brandId);
+                        // New DataBase
+                        await _brandDataService.deleteBrand(currentBrand.id!);
+                        await _roomDataService.deleteRoom(currentBrand.roomId!);
+                        currentUser.setBrandList = [];
+                        await Future.delayed(const Duration(seconds: 4));
                         Navigator.pushReplacement(
                             context,
                             CupertinoPageRoute<Null>(
@@ -285,8 +284,6 @@ class DeleteBrandDialog extends StatefulWidget {
 
 class _DeleteDialogState extends State<DeleteBrandDialog> {
 
-  // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
   // Delete Alert
   bool firstBuild = true;
   bool canDelete = false;

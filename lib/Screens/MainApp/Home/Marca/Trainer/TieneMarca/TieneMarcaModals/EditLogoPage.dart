@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
@@ -16,7 +17,7 @@ class EditLogoPage extends StatefulWidget {
 class _EditLogoPageState extends State<EditLogoPage> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _brandDataService = new BrandDataService();
   // Boolean Loading
   bool isLoading = false;
   // _Image File
@@ -50,7 +51,7 @@ class _EditLogoPageState extends State<EditLogoPage> {
     setState(() {
       isLoading = true;
     });
-    String temp = await _accessDatabase.updateCurrentBrandPhoto(currentBrand.id!, _image!);
+    String temp = await _brandDataService.updateCurrentBrandPhoto(currentBrand.id!, _image!);
     setState(() {
       _imageUrl = temp;
       isLoading = false;
@@ -60,7 +61,8 @@ class _EditLogoPageState extends State<EditLogoPage> {
 
   // Gets the user info from firebase.
   Future<void> getBrand() async {
-    currentBrand = await _accessDatabase.getBrandDetails(currentBrand.id!);
+    currentBrand.setBasicData = await _brandDataService.getBrandDetails(currentBrand.id!);
+    currentBrand.setUserList = await _brandDataService.getBrandUsers(currentBrand.id!);
     _imageUrl = currentBrand.logoUrl;
     setState(() {
       isLoading = false;

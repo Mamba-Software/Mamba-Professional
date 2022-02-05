@@ -9,16 +9,16 @@
       "client_info": {
         "mobilesdk_app_id": "1:331547241606:android:b352fbacbdd2666a7d3507",
         "android_client_info": {
-          "package_name": "com.mambastyle.mambastyle"
+          "package_name": "com.mamba.castelldefels.mamba_castelldefels"
         }
       },
       "oauth_client": [
         {
-          "client_id": "331547241606-hi9v6golhte2j8m8s5p7q9vij3cuaefm.apps.googleusercontent.com",
+          "client_id": "331547241606-5f7i5mof6lbat2t1q6unmlmclppgtm04.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.mambastyle.mambastyle",
-            "certificate_hash": "67f83f4ad4da7194a490fff6d21d6f6ead660648"
+            "package_name": "com.mamba.castelldefels.mamba_castelldefels",
+            "certificate_hash": "f77b9eee859fd793718801327336b80f7a57f7ff"
           }
         },
         {
@@ -37,6 +37,49 @@
             {
               "client_id": "331547241606-kan54dkiql9kp2cgk41fata2nubl239s.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "331547241606-60l9ocfepeqtoos57487ougk0aekag6n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mamba.castelldefels.mambaCastelldefels"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331547241606:android:81e08328bd66e3957d3507",
+        "android_client_info": {
+          "package_name": "com.mamba.mambastyleapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331547241606-kan54dkiql9kp2cgk41fata2nubl239s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnOl8HKFgrpvbGkFIgyZl9qB4tCOmJKSk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331547241606-kan54dkiql9kp2cgk41fata2nubl239s.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "331547241606-60l9ocfepeqtoos57487ougk0aekag6n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mamba.castelldefels.mambaCastelldefels"
+              }
             }
           ]
         }

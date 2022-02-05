@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
@@ -25,7 +27,8 @@ class BrandEventsToday extends StatefulWidget {
 class _BrandEventsTodayState extends State<BrandEventsToday> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _brandDataService = new BrandDataService();
+  var _eventDataService = new EventDataService();
   // Boolean Loading
   bool isLoading = false;
   // Brand Object
@@ -52,7 +55,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
   }
 
   void getBrandDetails() async {
-    _brand = await _accessDatabase.getBrandDetails(widget.brandId);
+    _brand = await _brandDataService.getBrandDetails(widget.brandId);
     initListEvents();
   }
 
@@ -95,7 +98,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
         centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream: _accessDatabase.getAllEventsTodayBrandStream(_brand.id!),
+          stream: _eventDataService.getBrandsEventsTodayStream(_brand.id!),
           builder: (context, snapshot) {
             if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
               return LoadingViewPurple();
@@ -109,6 +112,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
                 viewHeaderHeight: 0,
                 dataSource: _getCalendarDataSource(),
                 specialRegions: _getTimeRegions(),
+                todayHighlightColor: Theme.of(context).accentColor,
                 selectionDecoration: BoxDecoration(
                     border: Border.all(width: 0.1, color: Colors.transparent)
                 ),
@@ -168,7 +172,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
                                   ),
                                   SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                   Text(
-                                    event.selectedTrainers.length.toString(),
+                                    event.numTrainers.toString(),
                                     style: TextStyle(color: Colors.white, fontSize: 14),
                                   ),
                                   Container(
@@ -183,7 +187,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
                                   ),
                                   SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                   Text(
-                                    event.joinedMembers.length.toString(),
+                                    event.numClients.toString(),
                                     style: TextStyle(color: Colors.white, fontSize: 14),
                                   ),
                                   Text(
@@ -213,7 +217,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
   List<Event> documentsToEvents(List<DocumentSnapshot> documents) {
     List<Event> events = [];
     for(int i = 0; i < documents.length; i++) {
-      events.add(Event.fromObject(documents[i], documents[i].id));
+      events.add(Event.fromObjectOnlyCoverData(documents[i].id, documents[i]));
     }
     return events;
   }
@@ -283,10 +287,12 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
       var min = event.duration!.toStringAsFixed(2).split(".")[1];
       var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
       // Subject
-      var subject = "${event.joinedMembers.length}/${event.maxMembers}";
+      var subject = "${event.numClients}/${event.maxMembers}";
       // Colors
       var color;
-      double bookedCapacity = event.joinedMembers.length/event.maxMembers;
+      double numClients = double.parse(event.numClients.toString());
+      double maxMembers = double.parse(event.maxMembers.toString());
+      double bookedCapacity = numClients/maxMembers;
       if(bookedCapacity <= 0.20) color = Colors.green;
       else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = Color(0xFFA8C76C);
       else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = Color(0xFFECE014);

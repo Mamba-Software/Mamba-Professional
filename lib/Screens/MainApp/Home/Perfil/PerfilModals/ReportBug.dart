@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Data/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -19,7 +20,7 @@ class ReportBug extends StatefulWidget {
 
 class _ReportBugState extends State<ReportBug> {
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _feedbackDataService = new FeedbackDataService();
 
   // Boolean Loading
   bool isLoading = false;
@@ -244,7 +245,7 @@ class _ReportBugState extends State<ReportBug> {
 
   // Sends error to the Database.
   Future<void> sendError() async {
-    var result = await _accessDatabase.addError(
+    var result = await _feedbackDataService.addError(
         tituloTemp, descriptionTemp, stepsReproduceTemp);
     if (result) {
       setState(() {

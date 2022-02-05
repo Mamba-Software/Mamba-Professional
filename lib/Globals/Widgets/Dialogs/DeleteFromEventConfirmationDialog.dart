@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import '../../Styles.dart';
@@ -18,7 +19,7 @@ class DeleteFromEventConfirmationDialog extends StatefulWidget {
 
 class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfirmationDialog> {
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
   // Boolean Loading
   bool isLoading = false;
   // User Requesting
@@ -33,7 +34,7 @@ class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfi
 
   // Gets the user info from firebase.
   void getUser() async {
-    user = await _accessDatabase.getUserDetails(widget.userId);
+    user = await _userDataService.getUserDetails(widget.userId);
     setState(() {
       isLoading = false;
     });

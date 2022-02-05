@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -20,8 +20,6 @@ class Admin extends StatefulWidget {
 
 class _AdminState extends State<Admin> {
 
-  //DataBase Access
-  var _accessDatabase = new DatabaseAccess();
   // List strings
   List<String> Names = [
     'Usuaris','Errors','FeedBack'

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
@@ -22,39 +22,10 @@ class Marca extends StatefulWidget {
 
 class _MarcaState extends State<Marca> {
 
-  // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
-
   // init Widget state. Loading user info.
   @override
   void initState() {
-    getUserBrand();
     super.initState();
-  }
-
-  // Gets the user info from firebase.
-  void getUserBrand() async {
-    currentUser = await _accessDatabase.getCurrentUserDetails();
-    // Check for new brand
-    if (currentUser.brandID != currentBrand.id && currentUser.brandID != "null" && currentUser.brandID != null) {
-      Navigator.pushReplacement(
-          context,
-          CupertinoPageRoute<Null>(
-            builder: (context) => SplashScreen(),
-            settings: RouteSettings(name: 'SplashScreen'),
-          )
-      );
-    }
-    // Check for no brand
-    if ((currentUser.brandID == "null" || currentUser.brandID == null) && (currentBrand.id != null) ) {
-      Navigator.pushReplacement(
-          context,
-          CupertinoPageRoute<Null>(
-            builder: (context) => SplashScreen(),
-            settings: RouteSettings(name: 'SplashScreen'),
-          )
-      );
-    }
   }
 
   @override

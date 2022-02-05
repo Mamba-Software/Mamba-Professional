@@ -1,4 +1,7 @@
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/LocationDataService.dart';
+
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
@@ -28,7 +31,9 @@ class AddEvent extends StatefulWidget {
 
 class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin{
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _brandDataService = new BrandDataService();
+  var _eventDataService = new EventDataService();
+  var _locationDataService = new LocationDataService();
   // Boolean Loading
   bool isLoading = false;
   // Boolean isUpdated
@@ -88,7 +93,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     var minimumDate = DateTime.now().subtract(Duration(days: 365));
     var maximumDate = DateTime.now().add(Duration(days: 365));
     var title;
-    var initialDuration = 1;
+    var initialDuration = 2;
     var initialMembers = 1;
     var widgetPicker;
     // Init for differnt types
@@ -105,7 +110,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       var temp = DateTime(startDate.year, startDate.month, startDate.day, endHourWS, endMinWS);
       maximumDate = temp.add(Duration(days: 365));
     } else if (type == 1) {
-        initialDuration = durations.indexWhere((element) => element == duration);
+      initialDuration = durations.indexWhere((element) => element == duration);
     } else if (type == 2) {
       initialMembers = members-1;
     }
@@ -267,8 +272,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     }
     titleController.text = "${currentBrand.name!.replaceAll(RegExp(r"\s+"), "")}";
     titleString = titleController.text;
-    var hour = durations[1].split(".")[0];
-    var min = durations[1].split(".")[1];
+    var hour = durations[2].split(".")[0];
+    var min = durations[2].split(".")[1];
     durationController.text = "${hour}h ${min}min";
     membersController.text = "${members.toString()}";
     getAllTrainersFromBrand();
@@ -276,7 +281,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   }
 
   Future<void> getAllTrainersFromBrand() async {
-    brandTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
+    brandTrainers = await _brandDataService.getBrandTrainers(currentBrand.id!);
+    print(brandTrainers.length);
     for (var i=0; i < brandTrainers.length; i++) {
       Usuario trainer = brandTrainers[i];
       if (trainer.id == currentUser.id) {
@@ -284,7 +290,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       } else {
         brandTrainersSelected.add(false);
       }
-
     }
     setState(() {
       isLoading = false;
@@ -292,7 +297,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   }
 
   void getLocation(String locationId) async {
-    location = await _accessDatabase.getSingleLocation(locationId);
+    location = await _locationDataService.getSingleLocation(locationId);
     setState(() {
       isLoading = false;
     });
@@ -371,7 +376,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
             )
           ),
         ),
-
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       resizeToAvoidBottomInset: false,
@@ -895,7 +899,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                                 children: [
                                                                   Text(
-                                                                    splitCommonName(trainer.name!),
+                                                                    trainer.firstName!,
                                                                     style: Styles.purpleTextStyle.copyWith(fontSize: 15),
                                                                     textAlign: TextAlign.center,
                                                                   ),
@@ -1180,71 +1184,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     );
   }
 
-  /*
-  Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              _selectedIndex != 0 ? Padding(
-                padding: const EdgeInsets.only(top: 15, bottom: 15),
-                child: FloatingActionButton.extended(
-                  onPressed: () {
-                    _tabController!.animateTo(_selectedIndex -= 1);
-                    setState(() {
-                      addEventTabValue -= 0.33;
-                    });
-                  },
-                  backgroundColor: Theme.of(context).primaryColor,
-                  icon: Container(),
-                  label: Text(AppLocalizations.of(context)!.back, style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
-                ),
-              ) : Container(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
-                child: FloatingActionButton.extended(
-                  onPressed: () {
-                    if (_selectedIndex == 0) {
-                      if (formKeyInfo.currentState!.validate()){
-                        _tabController!.animateTo(_selectedIndex += 1);
-                        setState(() {
-                          addEventTabValue += 0.33;
-                        });
-                      }
-                    } else if (_selectedIndex == 1) {
-                      setState(() {
-                        errorDate = false;
-                      });
-                      var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
-                      if (validateDateAndTime(startDate, double.parse(duration))) {
-                        _tabController!.animateTo(_selectedIndex += 1);
-                        setState(() {
-                          addEventTabValue += 0.33;
-                        });
-                      } else {
-                        setState(() {
-                          errorDate = true;
-                        });
-                      }
-                    } else if (_selectedIndex == 2) {
-                      if (!brandTrainersSelected.contains(true)) {
-                        setState(() {
-                          errorNoTrainerSelected = true;
-                        });
-                      } else {
-                        _addEvent();
-                      }
-                    }
-                  },
-                  backgroundColor: _selectedIndex == 2 ? Colors.green : Theme.of(context).accentColor,
-                  icon: Container(),
-                  label: Text(
-                    _selectedIndex == 2 ? AppLocalizations.of(context)!.createEvent : AppLocalizations.of(context)!.next,
-                    style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
-                ),
-              ),
-            ],
-          ),
-   */
-
   String splitCommonName(String name) {
     List<String> aux = name.split(" ");
     return aux[0];
@@ -1318,17 +1257,19 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         selectedTrainerId.add(brandTrainers[i].id);
       }
     }
+    // EVENT IS NOT RECURRENT
     if (!isRecurrent) {
-      await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+      await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
     } else {
-      await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+      // EVENT IS RECURRENT
+      await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
       var tempDate = startDate.add(Duration(days: 1));
       var weekDay = tempDate.weekday;
       if (_value == 1) {
         // One Week
         for (var i=0; i<6; i++) {
           if(values[weekDay-1]!) {
-            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+            await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;
@@ -1337,7 +1278,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         // Two Weeks
         for (var i=0; i<13; i++) {
           if(values[weekDay-1]!) {
-            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+            await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;
@@ -1346,13 +1287,14 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         // One Month
         for (var i=0; i<29; i++) {
           if(values[weekDay-1]!) {
-            await _accessDatabase.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+            await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;
         }
       }
     }
+    await Future.delayed(const Duration(milliseconds: 3000));
     Navigator.pop(context);
   }
 }

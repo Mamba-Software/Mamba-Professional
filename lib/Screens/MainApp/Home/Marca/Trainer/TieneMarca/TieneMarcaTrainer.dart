@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -30,7 +32,8 @@ class TieneMarcaTrainer extends StatefulWidget {
 
 class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _brandDataService = new BrandDataService();
+  var _eventDataService = new EventDataService();
   // Boolean isLoading
   bool isLoading = false;
   // Brand Events Today
@@ -47,7 +50,6 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
 
   // Init for Brand Home
   initBrandHome() async {
-    await updateMembers();
     await getBrand();
     await getNumberFinishedEvents();
     await getAllEventsTodayBrand();
@@ -58,24 +60,20 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
     }
   }
 
-  // Update Number of Members.
-  Future<void> updateMembers() async {
-    await _accessDatabase.updateNumberMembers(currentBrand.id!);
-  }
-
   // Gets the user info from firebase.
   Future<void> getBrand() async {
-    currentBrand = await _accessDatabase.getBrandDetails(currentBrand.id!);
+    currentBrand.setBasicData = await _brandDataService.getBrandDetails(currentBrand.id!);
+    currentBrand.setUserList = await _brandDataService.getBrandUsers(currentBrand.id!);
   }
 
   // Gets number of finished events
   Future<void> getNumberFinishedEvents() async {
-    numberEventsFinished = await _accessDatabase.getNumberEventsFinishedBrand(currentBrand.id!);
-    numberEventsToDo = await _accessDatabase.getNumberEventsToDoBrand(currentBrand.id!);
+    numberEventsFinished = await _eventDataService.getBrandsEventsFinished(currentBrand.id!);
+    numberEventsToDo = await _eventDataService.getBrandsEventsUpcoming(currentBrand.id!);
   }
   // Gets all events of today.
   Future<void> getAllEventsTodayBrand() async {
-    todayEvents = await _accessDatabase.getAllEventsTodayBrand(currentBrand.id!);
+    todayEvents = await _eventDataService.getAllEventsTodayBrand(currentBrand.id!);
   }
 
   String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
@@ -109,7 +107,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                     Row(
                       children: [
                         IconButton(
-                          icon: Icon(Icons.qr_code_outlined, color: Colors.green, size: MediaQuery.of(context).size.height*0.03,),
+                          icon: Icon(Icons.qr_code_outlined, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.height*0.03,),
                           alignment: Alignment.centerRight,
                           padding: EdgeInsets.all(0),
                           onPressed: () {
@@ -204,7 +202,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                     Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
                                     SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
                                     Text(
-                                      currentBrand.numberClients.toString(),
+                                      currentBrand.numClients.toString(),
                                       style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
                                     SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
                                     Flexible(child: Text(AppLocalizations.of(context)!.clients.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,))
@@ -224,7 +222,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                     Icon(Icons.record_voice_over, color: Theme.of(context).accentColor,),
                                     SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
                                     Text(
-                                      currentBrand.numberTrainers.toString(),
+                                      currentBrand.numTrainers.toString(),
                                       style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
                                     SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
                                     Flexible(child: Text(AppLocalizations.of(context)!.trainers.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,))
