@@ -51,6 +51,10 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
 
   Future<void> getAllUsers() async {
     List<Usuario> brandUsers = await _brandDataService.getBrandUsers(currentBrand.id!);
+    allClients = [];
+    filteredClients = [];
+    allTrainers = [];
+    filteredTrainers = [];
     for (var i=0; i< brandUsers.length; i++) {
       Usuario user = brandUsers[i];
       if (user.isTrainer!) {
