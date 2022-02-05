@@ -2,12 +2,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
-import 'Chat/Chat.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'Chat/ChatCore/ChatCore.dart';
 import 'Marca/Marca.dart';
 import 'Perfil/Perfil.dart';
 
@@ -23,7 +28,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
+  var _brandDataService = new BrandDataService();
   // Boolean Loading
   bool isLoading = false;
 
@@ -31,15 +37,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     isLoading = true;
-    // Get Token of User and Update in Firebase
-    FirebaseMessaging.instance.getToken().then((token) {
-      print("Token:");
-      print(token);
-      if (token != currentUser.notificationToken) {
-        print("New token updated");
-        _accessDatabase.addUserNotificationToken(currentUser.id!, token!);
-      }
-    });
     // Init LocalNotificationsService
     LocalNotificationService.initialize(context);
     /// Message on which User has tapped from Terminated State
@@ -85,7 +82,17 @@ class _HomePageState extends State<HomePage> {
 
   // Gets the user info from firebase.
   void getUserAndBrand() async {
-    currentUser = await _accessDatabase.getCurrentUserDetails();
+    // Get User Main Data
+    currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
+    // Get User Brand
+    List<Brand> brands = await _brandDataService.getAllBrandsFromUser(currentUser.id!);
+    currentUser.setBrandList = brands;
+    if (currentUser.brandsList.isNotEmpty) {
+      // Setting the Brand to the User
+      Brand brand = currentUser.brandsList[0];
+      currentBrand.setBasicData = await _brandDataService.getBrandDetails(brand.id!);
+      currentBrand.setUserList = await _brandDataService.getBrandUsers(brand.id!);
+    }
     setState(() {
       isLoading = false;
     });
@@ -149,11 +156,38 @@ class _HomePageState extends State<HomePage> {
           Perfil(),
           Marca(),
           Notifications(),
-          UserChat(),
+          ChatCore(),
         ],
         onPageChanged: (page) async {
-          unreadNotifications = await _accessDatabase.numberUnreadNotifications(currentUser.id!);
-          unreadChats = await _accessDatabase.numberUnreadConversations(currentUser.id!);
+          unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
+          unreadChats = await _userDataService.getUnreadConversations(currentUser.id!);
+          // Check User´s Brand List
+          List<Brand> brands = await _brandDataService.getAllBrandsFromUser(currentUser.id!);
+          currentUser.setBrandList = brands;
+          // Check If User has New Brand
+          if (hasBrand == false && currentUser.brandsList.isNotEmpty) {
+            setState(() {
+              currentIndex = 1;
+            });
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<Null>(
+                  builder: (context) => SplashScreen(),
+                  settings: RouteSettings(name: 'SplashScreen'),
+                )
+            );
+          } else if (hasBrand == true && currentUser.brandsList.isEmpty)  {
+            setState(() {
+              currentIndex = 1;
+            });
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<Null>(
+                  builder: (context) => SplashScreen(),
+                  settings: RouteSettings(name: 'SplashScreen'),
+                )
+            );
+          }
           setState(() {
             currentIndex = page;
           });

@@ -4,12 +4,16 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
 
+// Required NPM Packages
+const uuidv4 = require("uuid")
+
 // Firebase DataBase
 const db = admin.firestore();
 
 // Firebase collections
 const isProduction = false;
 const users = isProduction ? "Users" : "7777 Users";
+const nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
 const brands = isProduction ? "Brands" : "7777 Brands";
 const events = isProduction ? "Events" : "7777 Events";
 const locations = isProduction ? "Locations" : "7777 Locations";
@@ -21,157 +25,919 @@ const conversations = isProduction ? "Conversations" : "7777 Conversations";
 const messages = isProduction ? "Messages" : "7777 Messages";
 const errors = isProduction ? "Errors" : "7777 Errors";
 const requests = isProduction ? "Requests" : "7777 Requests";
-const notifications = isProduction ? "Notifications" : "7777 Notifications";
+
+// User Updates Cover Data
+exports.userUpdatesCoverData = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+users+"/{userId}")
+    .onUpdate( async (change, context) => {
+      // Get the value of the context triggers.
+      const userId = context.params.userId;
+      // Get Value of the Change
+      const before = change.before.data();
+      const after = change.after.data();
+      functions.logger.log(
+        "BEFORE:",
+        before,
+      );
+      functions.logger.log(
+          "AFTER:",
+          after,
+      );
+      // Check if Cover Data has changed:
+      // COVER DATA: firstName, lastName, nick, imageUrl, noImageUrl, isTrainer, isPrivate, notificationToken
+      let coverDataChange = false;
+      if (before.firstName != after.firstName) {
+        coverDataChange = true;
+      } else if (before.lastName != after.lastName) {
+        coverDataChange = true;
+      } else if (before.nick != after.nick) {
+        coverDataChange = true;
+      } else if (before.imageUrl != after.imageUrl) {
+        coverDataChange = true;
+      } else if (before.noImageUrl != after.noImageUrl) {
+        coverDataChange = true;
+      } else if (before.isTrainer != after.isTrainer) {
+        coverDataChange = true;
+      } else if (before.isPrivate != after.isPrivate) {
+        coverDataChange = true;
+      } else if (before.notificationToken != after.notificationToken) {
+        coverDataChange = true;
+      }
+      functions.logger.log(
+        "COVER DATA CHANGED?",
+        coverDataChange,
+      );
+      if (coverDataChange) {
+        // Update the Users Subcollection in Brands
+        const userBrandsSnapshot = await db.collection(users).doc(userId).collection("Brands").get();
+        functions.logger.log(
+            "User Brands Num =",
+            userBrandsSnapshot.size,
+          );
+        for (var i in userBrandsSnapshot.docs) {
+          const id = userBrandsSnapshot.docs[i].id;
+          await db
+          .collection(brands)
+          .doc(id)
+          .collection("Users")
+          .doc(userId)
+          .update({
+            "name": after.firstName+" "+after.lastName,
+            "firstName": after.firstName,
+            "lastName": after.lastName,
+            "nick": after.nick,
+            "imageUrl": after.imageUrl,
+            "noImageUrl": after.noImageUrl,
+            "isTrainer": after.isTrainer,
+            "isPrivate": after.isPrivate,
+            "notificationToken": after.notificationToken,
+          });
+        }
+        // Update the Users Subcollection in Brands
+        const userEventsSnapshot = await db.collection(users).doc(userId).collection("Events").get();
+        functions.logger.log(
+            "User Events Num =",
+            userEventsSnapshot.size,
+          );
+        for (var i in userEventsSnapshot.docs) {
+          const id = userEventsSnapshot.docs[i].id;
+          await db
+          .collection(events)
+          .doc(id)
+          .collection("Users")
+          .doc(userId)
+          .update({
+            "name": after.firstName+" "+after.lastName,
+            "firstName": after.firstName,
+            "lastName": after.lastName,
+            "nick": after.nick,
+            "imageUrl": after.imageUrl,
+            "noImageUrl": after.noImageUrl,
+            "isTrainer": after.isTrainer,
+            "isPrivate": after.isPrivate,
+            "notificationToken": after.notificationToken,
+          });
+        }
+      }
+      return null;
+    });
+
+// Brand Updates Cover Data
+exports.brandUpdatesCoverData = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+brands+"/{brandId}")
+    .onUpdate( async (change, context) => {
+      // Get the value of the context triggers.
+      const brandId = context.params.brandId;
+      // Get Value of the Change
+      const before = change.before.data();
+      const after = change.after.data();
+      functions.logger.log(
+        "BEFORE:",
+        before,
+      );
+      functions.logger.log(
+          "AFTER:",
+          after,
+      );
+      // Check if Cover Data has changed:
+      // COVER DATA: name, logoUrl
+      let coverDataChange = false;
+      if (before.name != after.name) {
+        coverDataChange = true;
+      } else if (before.logoUrl != after.logoUrl) {
+        coverDataChange = true;
+      }
+      functions.logger.log(
+        "COVER DATA CHANGED?",
+        coverDataChange,
+      );
+      if (coverDataChange) {
+        // Update the Brands Subcollection in Users
+        const brandsUsersSnapshot = await db.collection(brands).doc(brandId).collection("Users").get();
+        functions.logger.log(
+            "Brands Users Num =",
+            brandsUsersSnapshot.size,
+          );
+        for (var i in brandsUsersSnapshot.docs) {
+          const id = brandsUsersSnapshot.docs[i].id;
+          await db
+          .collection(users)
+          .doc(id)
+          .collection("Brands")
+          .doc(brandId)
+          .update({
+            "name": after.name,
+            "logoUrl": after.logoUrl,
+          });
+        }
+        // Update the Brands Subcollection in Events
+        const brandEventsSnapshot = await db.collection(brands).doc(brandId).collection("Events").get();
+        functions.logger.log(
+            "Brand Events Num =",
+            brandEventsSnapshot.size,
+          );
+        for (var i in brandEventsSnapshot.docs) {
+          const id = brandEventsSnapshot.docs[i].id;
+          await db
+          .collection(events)
+          .doc(id)
+          .collection("Brands")
+          .doc(brandId)
+          .update({
+            "name": after.name,
+            "logoUrl": after.logoUrl,
+          });
+        }
+      }
+      return null;
+    });
+
+// Event Updates Data
+exports.eventUpdatesCoverData = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+events+"/{eventId}")
+    .onUpdate( async (change, context) => {
+      // Get the value of the context triggers.
+      const eventId = context.params.eventId;
+      // Get Value of the Change
+      const before = change.before.data();
+      const after = change.after.data();
+      functions.logger.log(
+        "BEFORE:",
+        before,
+      );
+      functions.logger.log(
+          "AFTER:",
+          after,
+      );
+      // Event Users Snapshot
+      const eventUsersSnapshot = await db.collection(events).doc(eventId).collection("Users").get();
+      // Check if Location has changed:
+      let locationChange = false;
+      if (before.locationId != after.locationId) {
+        locationChange = true;
+      }
+      functions.logger.log(
+          "LOCATION CHANGED?",
+          locationChange,
+        );
+      if (locationChange) {
+        // Count the Number of Clients and Trainers
+        let numClients = 0;
+        let numTrainers = 0;
+        for (var i in eventUsersSnapshot.docs) {
+          const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+          if (eventUsersDoc.isTrainer) {
+            numTrainers += 1;
+          } else {
+            numClients += 1;
+          }
+        }
+        functions.logger.log(
+          "numClients",
+          numClients,
+          "numTrainers",
+          numTrainers,
+        );
+        functions.logger.log(
+          "Delete Event from Location",
+          before.locationId,
+        );
+        // Delete Event From Old Location
+        await db
+        .collection(locations)
+        .doc(before.locationId)
+        .collection("Events")
+        .doc(eventId)
+        .delete();
+        // Add Event To New Location
+        functions.logger.log(
+          "Add Event To Location",
+          after.locationId,
+        );
+        await db
+        .collection(locations)
+        .doc(after.locationId)
+        .collection("Events")
+        .doc(eventId).set({
+          "title": after.title,
+          "year": after.year,
+          "month": after.month,
+          "day": after.day,
+          "hour": after.hour,
+          "minute": after.minute,
+          "duration": after.duration,
+          "numTrainers": numTrainers,
+          "numClients": numClients,
+          "maxMembers": after.maxMembers,
+        });
+        functions.logger.log(
+          "DONE",
+        );
+      }
+      // Check if Cover Data has changed:
+      // COVER DATA: title, year, month, day, hour, minute, duration
+      let coverDataChange = false;
+      if (before.title != after.title) {
+        coverDataChange = true;
+      } else if (before.year != after.year) {
+        coverDataChange = true;
+      } else if (before.month != after.month) {
+        coverDataChange = true;
+      } else if (before.day != after.day) {
+        coverDataChange = true;
+      } else if (before.hour != after.hour) {
+        coverDataChange = true;
+      } else if (before.minute != after.minute) {
+        coverDataChange = true;
+      } else if (before.duration != after.duration) {
+        coverDataChange = true;
+      }
+      functions.logger.log(
+        "COVER DATA CHANGED?",
+        coverDataChange,
+      );
+      if (coverDataChange) {
+        functions.logger.log(
+            "Event Users Num =",
+            eventUsersSnapshot.size,
+          );
+        for (var i in eventUsersSnapshot.docs) {
+          const id = eventUsersSnapshot.docs[i].id;
+          await db
+          .collection(users)
+          .doc(id)
+          .collection("Events")
+          .doc(eventId)
+          .update({
+            "title": after.title,
+            "year": after.year,
+            "month": after.month,
+            "day": after.day,
+            "hour": after.hour,
+            "minute": after.minute,
+            "duration": after.duration,
+          });
+        }
+        // Update the Event Subcollection in Brands
+        const eventBrandsSnapshot = await db.collection(events).doc(eventId).collection("Brands").get();
+        functions.logger.log(
+            "Event Brands Num =",
+            eventBrandsSnapshot.size,
+          );
+        for (var i in eventBrandsSnapshot.docs) {
+          const id = eventBrandsSnapshot.docs[i].id;
+          await db
+          .collection(brands)
+          .doc(id)
+          .collection("Events")
+          .doc(eventId)
+          .update({
+            "title": after.title,
+            "year": after.year,
+            "month": after.month,
+            "day": after.day,
+            "hour": after.hour,
+            "minute": after.minute,
+            "duration": after.duration,
+          });
+        }
+        // Update the Event Subcollection in Locations
+        const eventLocationsSnapshot = await db.collection(events).doc(eventId).collection("Locations").get();
+        functions.logger.log(
+            "Event Locations Num =",
+            eventLocationsSnapshot.size,
+          );
+        for (var i in eventLocationsSnapshot.docs) {
+          const id = eventLocationsSnapshot.docs[i].id;
+          await db
+          .collection(locations)
+          .doc(id)
+          .collection("Events")
+          .doc(eventId)
+          .update({
+            "title": after.title,
+            "year": after.year,
+            "month": after.month,
+            "day": after.day,
+            "hour": after.hour,
+            "minute": after.minute,
+            "duration": after.duration,
+          });
+        }
+      }
+      return null;
+    });
+
+// Event Updates Data
+exports.locationUpdatesCoverData = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+locations+"/{locationId}")
+    .onUpdate( async (change, context) => {
+      // Get the value of the context triggers.
+      const locationId = context.params.locationId;
+      // Get Value of the Change
+      const before = change.before.data();
+      const after = change.after.data();
+      functions.logger.log(
+        "BEFORE:",
+        before,
+      );
+      functions.logger.log(
+          "AFTER:",
+          after,
+      );
+      // Check if Cover Data has changed:
+      // COVER DATA: title, year, month, day, hour, minute, duration
+      let coverDataChange = false;
+      if (before.description != after.description) {
+        coverDataChange = true;
+      } else if (before.latitude != after.latitude) {
+        coverDataChange = true;
+      } else if (before.longitude != after.longitude) {
+        coverDataChange = true;
+      }
+      functions.logger.log(
+        "COVER DATA CHANGED?",
+        coverDataChange,
+      );
+      if (coverDataChange) {
+        // Update the Object Location in Brands
+        await db
+        .collection(brands)
+        .doc(after.brandID)
+        .collection("Locations")
+        .doc(locationId)
+        .update({
+          "description": after.description,
+          "latitude": after.latitude,
+          "longitude": after.longitude,
+        });
+        // Update All Events in this Location
+        const eventLocationsSnapshot = await db.collection(locations).doc(locationId).collection("Events").get();
+        functions.logger.log(
+            "Location Events Num =",
+            eventLocationsSnapshot.size,
+          );
+        for (var i in eventLocationsSnapshot.docs) {
+          const id = eventLocationsSnapshot.docs[i].id;
+          await db
+          .collection(events)
+          .doc(id)
+          .collection("Locations")
+          .doc(locationId)
+          .update({
+            "description": after.description,
+            "latitude": after.latitude,
+            "longitude": after.longitude,
+          });
+        }
+      }
+      return null;
+    });
+
 
 // User Joins Brand
 exports.userJoinsBrand = functions
     .region("europe-west1")
     .firestore
-    .document("/"+users+"/{userId}/Brands/{brandId}")
+    .document("/"+brands+"/{brandId}/Users/{userId}")
     .onCreate( async (snap, context) => {
       // Get the value of the context triggers.
-      const userId = context.params.userId;
       const brandId = context.params.brandId;
+      const userId = context.params.userId;
       functions.logger.log(
-              "User with ID:",
-              userId,
-              "has joined Brand with ID:",
-              userId
-            );
+          "User with ID:",
+          userId,
+          "has joined Brand with ID:",
+          brandId
+        );
       // Get Data of the User
       const userSnapshot = await db.collection(users).doc(userId).get();
       const userDoc = userSnapshot.data();
       functions.logger.log(
-              "User Cover Data:",
-              userDoc.name,
-              userDoc.nick,
-              userDoc.imageUrl,
-              userDoc.isTrainer,
-              userDoc.notificationToken,
-            );
-      // Add the User Cover Data to Users in Brands Collection
-      await db.doc("/"+brands+"/"+brandId+"/Users/"+userId+"").set({
-          "name": userDoc.name,
-          "nick": userDoc.nick,
-          "imageUrl": userDoc.imageUrl,
-          "isTrainer": userDoc.isTrainer,
-          "notificationToken": userDoc.notificationToken,
-        });
+          "User Cover Data:",
+          userDoc.name,
+          userDoc.nick,
+          userDoc.imageUrl,
+          userDoc.isTrainer,
+          userDoc.notificationToken,
+        );
       // Get Data of the Brand
       const brandSnapshot = await db.collection(brands).doc(brandId).get();
       const brandDoc = brandSnapshot.data();
       functions.logger.log(
-              "Brand Cover Data:",
-              brandDoc.name,
-              brandDoc.logoUrl,
-            );
-      // Send Notification To User Joining Brand
-      var payload = 0;
-      if (userDoc.idioma == "es") {
+          "Brand Cover Data:",
+          brandDoc,
+        );
+
+      // Get Data of the Room
+      const roomSnapshot = await db.collection(rooms).doc(brandDoc.roomId).get();
+      const roomDoc = roomSnapshot.data();
+
+      var metadataMessage = {};
+      var metadataRoom = {};
+
+      functions.logger.log(
+         "UserIds",
+         roomDoc.userIds,
+       );
+      roomDoc.userIds.push(userId);
+
+      if (roomDoc.lastMessages != undefined) {
+        metadataMessage = roomDoc.lastMessages[0].metadata;
+        metadataMessage[userId] = "delivered";
+        await db.doc(rooms + "/" + brandDoc.roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
+          metadata: metadataMessage,
+          status: "delivered",
+        })
+      }
+
+      metadataRoom = roomDoc.metadata;
+      metadataRoom["trainer" + userId] = userDoc.isTrainer;
+      metadataRoom["active" + userId] = false;
+      await db.doc(rooms + "/" + brandDoc.roomId).update({
+            metadata: metadataRoom,
+            userIds: roomDoc.userIds,
+      })
+
+      // Add the User Cover Data to Users in Brands Collection
+      let date = new Date();
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      if (month < 10) {
+        month = "0"+month;
+      }
+      let year = date.getFullYear().toString();
+      let result = year.slice(2, 4);
+      var formatted = day+"-"+month+"-"+result;
+      await db.doc("/"+users+"/"+userId+"/Brands/"+brandId+"").set({
+        "name": brandDoc.name,
+        "logoUrl": brandDoc.logoUrl,
+        "dateJoined": formatted,
+        "myMonthlySessions": 0,
+        "myTotalSessions": 0,
+      });
+      functions.logger.log(
+                "userId",
+                userId,
+              );
+      // Brand Was Just Created By Admin
+      if (brandDoc.adminID == userId) {
+        if (userDoc.idioma == "es") {
         payload = {
-            notification: {
-              title: "Te has unido a "+brandDoc.name,
-              body: "Consulta el calendario para participar en tu primera sesión",
-            },
-            data: {
-              route: "SplashScreen1",
-            },
-          };
+                notification: {
+                  title: "Has creado tu marca "+brandDoc.name,
+                  body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece MAMBA",
+                },
+                data: {
+                  route: "SplashScreen1",
+                },
+              };
+        } else {
+          payload = {
+                notification: {
+                  title: "Has creat la teva marca "+brandDoc.name,
+                  body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece MAMBA",
+                },
+                data: {
+                  route: "SplashScreen1",
+                },
+          }
+        }
+        functions.logger.log(
+                    "Payload",
+                    payload
+                  );
+        response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+        functions.logger.log(
+                    "Response",
+                    response
+                  );
       } else {
-        payload = {
-            notification: {
-              title: "T'has unit a "+brandDoc.name,
-              body: "Consulta el calendari per participar en la teva primera sessió",
-            },
-            data: {
-              route: "SplashScreen1",
-            },
-          };
+      // Someone just joined the Brand
+      // Send Notification To User Joining Brand
+        var payload = 0;
+        if (userDoc.idioma == "es") {
+          payload = {
+              notification: {
+                title: "Te has unido a "+brandDoc.name,
+                body: "Consulta el calendario para participar en tu primera sesión",
+              },
+              data: {
+                route: "SplashScreen1",
+              },
+            };
+        } else {
+          payload = {
+              notification: {
+                title: "T'has unit a "+brandDoc.name,
+                body: "Consulta el calendari per participar en la teva primera sessió",
+              },
+              data: {
+                route: "SplashScreen1",
+              },
+            };
+        }
+        functions.logger.log(
+                  "Payload",
+                  payload
+                );
+        var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+        functions.logger.log(
+                  "Response",
+                  response
+                );
+        // Send Notification To Brand Owner
+        const adminSnapshot = await db.collection(users).doc(brandDoc.adminID).get();
+        const adminDoc = adminSnapshot.data();
+        functions.logger.log(
+              "Owner Cover Data:",
+              adminDoc.name,
+              adminDoc.nick,
+              adminDoc.imageUrl,
+              adminDoc.isTrainer,
+              adminDoc.notificationToken,
+            );
+        // Count the number of Members
+        const brandUsersSnapshot = await db.collection(brands).doc(brandId).collection("Users").get();
+        let numberMembers = brandUsersSnapshot.size;
+        functions.logger.log(
+          "Number Members",
+          numberMembers,
+        );
+        if (adminDoc.idioma == "es") {
+          payload = {
+                notification: {
+                  title: userDoc.name+" se ha unido a "+brandDoc.name,
+                  body: "Ya sois un total de "+numberMembers.toString()+" miembros",
+                },
+                data: {
+                  route: "SplashScreen2",
+                },
+              };
+        } else {
+          payload = {
+                notification: {
+                  title: userDoc.name+" s'ha unit a "+brandDoc.name,
+                  body: "Ja sou un total de "+numberMembers.toString()+" membres",
+                },
+                data: {
+                  route: "SplashScreen2",
+                },
+          }
+        }
+        functions.logger.log(
+                    "Payload",
+                    payload
+                  );
+        response = await admin.messaging().sendToDevice(adminDoc.notificationToken, payload);
+        functions.logger.log(
+                    "Response",
+                    response
+                  );
+      }
+      // Count Brand Members
+      brandUsersSnapshot = await db.collection(brands).doc(brandId).collection("Users").get();
+      let numClients = 0;
+      let numTrainers = 0;
+      for (var i in brandUsersSnapshot.docs) {
+        const brandUsersDoc = brandUsersSnapshot.docs[i].data();
+        if (brandUsersDoc.isTrainer) {
+          numTrainers += 1;
+        } else {
+          numClients += 1;
+        }
       }
       functions.logger.log(
-                "Payload",
-                payload
-              );
-      var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+        "numClients",
+        numClients,
+        "numTrainers",
+        numTrainers,
+      );
+      // Update Brand Members
+      await db
+      .collection(brands)
+      .doc(brandId)
+      .update({
+        "numClients": numClients,
+        "numTrainers": numTrainers,
+      });
+      return null;
+    });
+
+// User Leaves Brand
+exports.userLeavesBrand = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+brands+"/{brandId}/Users/{userId}")
+    .onDelete( async (snap, context) => {
+      // Get the value of the context triggers.
+      const brandId = context.params.brandId;
+      const userId = context.params.userId;
       functions.logger.log(
-                "Response",
-                response
-              );
-      // Send Notification To Brand Owner
-      const adminSnapshot = await db.collection(users).doc(brandDoc.adminID).get();
-      const adminDoc = adminSnapshot.data();
+              "User with ID:",
+              userId,
+              "has left Brand with ID:",
+              brandId
+            );
+      // Get Data of Deleted User
+      const userDoc = snap.data();
+      // Get Data of the Brand
+      const brandSnapshot = await db.collection(brands).doc(brandId).get();
+      const brandDoc = brandSnapshot.data();
       functions.logger.log(
-            "Owner Cover Data:",
-            adminDoc.name,
-            adminDoc.nick,
-            adminDoc.imageUrl,
-            adminDoc.isTrainer,
-            adminDoc.notificationToken,
+          "Brand Cover Data:",
+          brandDoc,
+        );
+      // Delete Brand in User´s Brand Subcollection
+      await db.collection(users).doc(userId).collection("Brands").doc(brandId).delete();
+      // Get Data of the Room
+      const roomSnapshot = await db.collection(rooms).doc(brandDoc.roomId).get();
+      const roomDoc = roomSnapshot.data();
+      var filtered = roomDoc.userIds.filter(function(element) {
+            return element != userId;
+      });
+      await db.doc(rooms + "/" + brandDoc.roomId).update({
+            userIds: filtered,
+      });
+      // Send Notification to Brand Owners
+      const brandOwnersSnapshot = await db.collection(brands)
+          .doc(brandId)
+          .collection("Users")
+          .where("role", "=", 1)
+          .get();
+      // Count the number of Members
+      const brandUsersSnapshot = await db.collection(brands).doc(brandId).collection("Users").get();
+      let numberMembers = brandUsersSnapshot.size;
+      functions.logger.log(
+        "Number Members",
+        numberMembers,
+      );
+      for (var i in brandOwnersSnapshot.docs) {
+        const brandOwnersDoc = brandOwnersSnapshot.docs[i].data();
+        functions.logger.log(
+            "Brand Owners Data:",
+            brandOwnersDoc
           );
-      // TO DO: Aixo hauria de ser el length dels usuaris, aixi ya estaria contabilitzat l'ultim.
-      let numberMembers = brandDoc.numberClients + brandDoc.numberClients;
-      if (adminDoc.idioma == "es") {
-        payload = {
+        if (brandOwnersDoc.idioma == "es") {
+            payload = {
               notification: {
-                title: userDoc.name+" se ha unido a "+brandDoc.name,
-                body: "Ya sois un total de "+numberMembers.toString()+" miembros",
+                title: userDoc.firstName+" "+userDoc.lastName+" ha abandonado a "+brandDoc.name,
+                body: "Ahora sois un total de "+numberMembers.toString()+" miembros",
               },
               data: {
                 route: "SplashScreen2",
               },
             };
-      } else {
-        payload = {
+          } else {
+            payload = {
               notification: {
-                title: userDoc.name+" s'ha unit a "+brandDoc.name,
-                body: "Ja sou un total de "+numberMembers.toString()+" membres",
+                title: userDoc.firstName+" "+userDoc.lastName+" ha abandonat a "+brandDoc.name,
+                body: "Ara sou un total de "+numberMembers.toString()+" membres",
               },
               data: {
                 route: "SplashScreen2",
               },
+            }
+          }
+          functions.logger.log(
+              "Payload",
+              payload
+            );
+          const notificationToken = brandOwnersDoc.notificationToken;
+          functions.logger.log(
+              "Notification Token",
+              notificationToken
+            );
+          const response = await admin.messaging().sendToDevice(notificationToken, payload);
+          functions.logger.log(
+            "Response",
+            response
+          );
+      }
+      // Count Brand Members
+      let numClients = 0;
+      let numTrainers = 0;
+      for (var i in brandUsersSnapshot.docs) {
+        const brandUsersDoc = brandUsersSnapshot.docs[i].data();
+        if (brandUsersDoc.isTrainer) {
+          numTrainers += 1;
+        } else {
+          numClients += 1;
         }
       }
       functions.logger.log(
-                  "Payload",
-                  payload
-                );
-      response = await admin.messaging().sendToDevice(adminDoc.notificationToken, payload);
-      functions.logger.log(
-                  "Response",
-                  response
-                );
+        "numClients",
+        numClients,
+        "numTrainers",
+        numTrainers,
+      );
+      // Update Brand Members
+      await db
+      .collection(brands)
+      .doc(brandId)
+      .update({
+        "numClients": numClients,
+        "numTrainers": numTrainers,
+      });
       return null;
+    });
+
+// User Adds Location
+exports.userAddsLocation = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+locations+"/{locationId}")
+    .onCreate( async (snap, context) => {
+      // Get the value of the context triggers.
+      const locationId = context.params.locationId;
+      // Get Data of the Location
+      const locationSnapshot = await db.collection(locations).doc(locationId).get();
+      const locationDoc = locationSnapshot.data();
+      functions.logger.log(
+            "Location Data:",
+            locationDoc
+          );
+      // Add Location to Brands Collection
+      await db.doc("/"+brands+"/"+locationDoc.brandID+"/Locations/"+locationId+"").set({
+         "isBaseLocation": locationDoc.isBaseLocation,
+         "description": locationDoc.description,
+         "latitude": locationDoc.latitude,
+         "longitude": locationDoc.longitude,
+      });
+      return null;
+    });
+
+// User Deletes Location
+exports.userDeletesLocation = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+locations+"/{locationId}")
+    .onDelete( async (snap, context) => {
+        // Get the value of the context triggers.
+        const locationId = context.params.locationId;
+        // Get Data of Deleted Location
+        const locationDoc = snap.data();
+        functions.logger.log(
+                "Deleting Location with ID:",
+                locationId,
+                "to Brand with ID",
+                locationDoc.brandID
+          );
+        // Delete Location to Brands Collection
+        await db
+        .collection(brands)
+        .doc(locationDoc.brandID)
+        .collection("Locations")
+        .doc(locationId)
+        .delete();
+        /*
+        // Check Location Has Future Events
+        let futureEvents = [];
+        let now = new Date();
+        const locationEventsSnapshot = await db.collection(locations).doc(locationId).collection("Events").get();
+        for (var i in locationEventsSnapshot.docs) {
+          const id = locationEventsSnapshot.docs[i].id;
+          const data = locationEventsSnapshot.docs[i].data();
+          let date = new Date(date.year, date.month-1, date.day, date.hour, date.minute);
+          if (now < date) {
+            futureEvents.push(id);
+          }
+        }
+        functions.logger.log(
+            "Events to be modified",
+            futureEvents,
+          );
+        if (futureEvents.length != 0) {
+
+           // Update Future Events To Base Location
+           for (var i in futureEvents.length) {
+             const eventId = futureEvents[i];
+
+           }
+           // Delete Previous Location
+           await _firestore
+               .collection(events)
+               .doc(eventId)
+               .collection("Locations")
+               .doc(previousLocation)
+               .delete();
+           // Add New Location
+           Location location = await this.getSingleLocation(locationId);
+           await _firestore
+               .collection(events)
+               .doc(eventId)
+               .collection("Locations")
+               .doc(locationId)
+               .set({
+                 "description": location.description,
+                 "longitude": location.longitude,
+                 "latitude": location.latitude,
+               });
+        } */
+        return null;
     });
 
 // User Sends Request
 exports.userSendsRequest = functions
     .region("europe-west1")
     .firestore
-    .document("/"+requests+"/{requestId}")
+    .document("/"+users+"/{userId}/Requests/{requestId}")
     .onCreate( async (snap, context) => {
       // Get the value of the context triggers.
       const requestId = context.params.requestId;
+      const userId = context.params.userId;
       // Get Data of the Request
-      const requestSnapshot = await db.collection(requests).doc(requestId).get();
+      const requestSnapshot = await db.collection(users).doc(userId).collection("Requests").doc(requestId).get();
       const requestDoc = requestSnapshot.data();
       functions.logger.log(
             "Request Cover Data:",
             requestDoc.brandId,
             requestDoc.name,
           );
-      // Get Notification Token for All Brand Trainers
-      // TO DO: Modificar aquesta funcion quan tinguem la base de dades acutualitzada.
-      const brandTrainersSnapshot = await db.collection(users)
-        .where("brandID", "=", requestDoc.brandId)
-        .where("isTrainer", "=", true)
-        .get();
-      for (var i in brandTrainersSnapshot.docs) {
-          const brandTrainersDoc = brandTrainersSnapshot.docs[i].data();
+      // Get Data of the Brand
+      const brandId = requestDoc.brandId;
+      const brandSnapshot = await db.collection(brands).doc(brandId).get();
+      const brandDoc = brandSnapshot.data();
+      functions.logger.log(
+          "Brand Data:",
+          brandDoc,
+      );
+      // Add Request to Brands Request collection
+      await db
+        .collection(brands)
+        .doc(brandId)
+        .collection("Requests")
+        .doc(requestId).set({
+            "brandId": requestDoc.brandId,
+            "userId": requestDoc.userId,
+            "name": requestDoc.name,
+            "isTrainer": requestDoc.isTrainer,
+            "dateSent": requestDoc.dateSent,
+            "year": requestDoc.year,
+            "month": requestDoc.month,
+            "day": requestDoc.day,
+        });
+      // Send Notification to Brand Owners
+      const brandOwnersSnapshot = await db.collection(brands)
+          .doc(brandId)
+          .collection("Users")
+          .where("role", "=", 1)
+          .get();
+      for (var i in brandOwnersSnapshot.docs) {
+          const brandOwnersDoc = brandOwnersSnapshot.docs[i].data();
           functions.logger.log(
-              "Brand Trainer Data:",
-              brandTrainersDoc
+              "Brand Owners Data:",
+              brandOwnersDoc
             );
-          if (brandTrainersDoc.idioma == "es") {
+          if (brandOwnersDoc.idioma == "es") {
               payload = {
                 notification: {
                   title: requestDoc.name+" ha enviado una solicitud de afiliación",
@@ -181,7 +947,7 @@ exports.userSendsRequest = functions
                   route: "SplashScreen2",
                 },
               };
-            } else {
+          } else {
               payload = {
                 notification: {
                   title: requestDoc.name+" ha enviat una sol·licitud d'afiliació",
@@ -191,21 +957,386 @@ exports.userSendsRequest = functions
                   route: "SplashScreen2",
                 },
               }
-            }
-            functions.logger.log(
+          }
+          functions.logger.log(
                 "Payload",
                 payload
-              );
-            const notificationToken = brandTrainersDoc.notificationToken;
-            functions.logger.log(
+          );
+          const notificationToken = brandOwnersDoc.notificationToken;
+          functions.logger.log(
                 "Notification Token",
                 notificationToken
-              );
-            const response = await admin.messaging().sendToDevice(notificationToken, payload);
-            functions.logger.log(
+          );
+          const response = await admin.messaging().sendToDevice(notificationToken, payload);
+          functions.logger.log(
               "Response",
               response
-            );
+          );
+      }
+      return null;
+    });
+
+// User Deletes Request
+exports.userDeletesRequest = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+users+"/{userId}/Requests/{requestId}")
+    .onDelete( async (snap, context) => {
+      // Get the value of the context triggers.
+      const requestId = context.params.requestId;
+      const userId = context.params.userId;
+      // Get Data of Deleted Request
+      const requestDoc = snap.data();
+      functions.logger.log(
+              "Deleting Request with ID:",
+              requestId,
+              "to Brand with ID",
+              requestDoc.brandId
+        );
+      // Delete the Request on Users Request collection
+      await db
+        .collection(brands)
+        .doc(requestDoc.brandId)
+        .collection("Requests")
+        .doc(requestId)
+        .delete();
+      return null;
+    });
+
+// User Adds Event
+exports.userAddsEvent = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+events+"/{eventId}")
+    .onCreate( async (snap, context) => {
+      // Get the value of the context triggers.
+      const eventId = context.params.eventId;
+      // Get Data of the Event
+      const eventSnapshot = await db.collection(events).doc(eventId).get();
+      const eventDoc = eventSnapshot.data();
+      // Get Data of the Event Brand
+      const eventBrandSnapshot = await db.collection(events).doc(eventId).collection("Brands").get();
+      // Get Data of the Event Users
+      const eventUsersSnapshot = await db.collection(events).doc(eventId).collection("Users").get();
+      // Get Data of the Event Location
+      const eventLocationsSnapshot = await db.collection(events).doc(eventId).collection("Locations").get();
+      functions.logger.log(
+          "Event Cover Data with ID:",
+          eventId,
+          "with Name:",
+          eventDoc.title,
+        );
+      // Count the Number of Clients and Trainers
+      let numClients = 0;
+      let numTrainers = 0;
+      for (var i in eventUsersSnapshot.docs) {
+        const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+        if (eventUsersDoc.isTrainer) {
+          numTrainers += 1;
+        } else {
+          numClients += 1;
+        }
+      }
+      functions.logger.log(
+        "numClients",
+        numClients,
+        "numTrainers",
+        numTrainers,
+      );
+      // Add Event to Brands Event Subcollection
+      for (var i in eventBrandSnapshot.docs) {
+        const id = eventBrandSnapshot.docs[i].id;
+        await db
+        .collection(brands)
+        .doc(id)
+        .collection("Events")
+        .doc(eventId).set({
+          "title": eventDoc.title,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": numTrainers,
+          "numClients": numClients,
+          "maxMembers": eventDoc.maxMembers,
+        });
+      }
+      // Add Event to Locations Event Subcollection
+      for (var i in eventLocationsSnapshot.docs) {
+        const id = eventLocationsSnapshot.docs[i].id;
+        await db
+        .collection(locations)
+        .doc(id)
+        .collection("Events")
+        .doc(eventId).set({
+          "title": eventDoc.title,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": numTrainers,
+          "numClients": numClients,
+          "maxMembers": eventDoc.maxMembers,
+        });
+      }
+      return null;
+    });
+
+// User Deletes Event
+exports.userDeletesEvent = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+events+"/{eventId}")
+    .onDelete( async (snap, context) => {
+      // Get the value of the context triggers.
+      const eventId = context.params.eventId;
+      // Get Data of Deleted Event
+      const eventDoc = snap.data();
+      functions.logger.log(
+        "Event Deleted with ID:",
+        eventId,
+        "and Name:",
+        eventDoc.title,
+      );
+      // Get Data of the Event Locations
+      const eventUsersSnapshot = await db.collection(events).doc(eventId).collection("Users").get();
+      functions.logger.log(
+        "eventUsersSnapshot size",
+        eventUsersSnapshot.size,
+      );
+      // Get Data of the Event Brand
+      const eventBrandSnapshot = await db.collection(events).doc(eventId).collection("Brands").get();
+      functions.logger.log(
+        "eventBrandSnapshot size",
+        eventBrandSnapshot.size,
+      );
+      // Get Data of the Event Locations
+      const eventLocationsSnapshot = await db.collection(events).doc(eventId).collection("Locations").get();
+      functions.logger.log(
+          "eventLocationsSnapshot size",
+          eventLocationsSnapshot.size,
+      );
+      // Delete Users Subcollection in Event
+      for (var i in eventUsersSnapshot.docs) {
+          await db
+          .collection(events)
+          .doc(eventId)
+          .collection("Users")
+          .doc(eventUsersSnapshot.docs[i].id)
+          .delete();
+      }
+      // Delete Event in Brands Subcollection
+      for (var i in eventBrandSnapshot.docs) {
+        await db
+        .collection(brands)
+        .doc(eventBrandSnapshot.docs[i].id)
+        .collection("Events")
+        .doc(eventId)
+        .delete();
+        // Delete Brands in Event
+        await db
+        .collection(events)
+        .doc(eventId)
+        .collection("Brands")
+        .doc(eventBrandSnapshot.docs[i].id)
+        .delete();
+      }
+      // Delete Event in Locations Subcollection
+      for (var i in eventLocationsSnapshot.docs) {
+        await db
+        .collection(locations)
+        .doc(eventLocationsSnapshot.docs[i].id)
+        .collection("Events")
+        .doc(eventId)
+        .delete();
+        // Delete Locations in Event
+        await db
+        .collection(events)
+        .doc(eventId)
+        .collection("Locations")
+        .doc(eventLocationsSnapshot.docs[i].id)
+        .delete();
+      }
+      return null;
+    });
+
+// User Joins Event
+exports.userJoinsEvent = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+events+"/{eventId}/Users/{userId}")
+    .onCreate( async (change, context) => {
+      // Get the value of the context triggers.
+      const eventId = context.params.eventId;
+      const userId = context.params.userId;
+      // Get Event Data
+      const eventSnapshot = await db.collection(events).doc(eventId).get();
+      const eventDoc = eventSnapshot.data();
+      // Get Event Brands Data
+      const eventBrandsSnapshot = await db.collection(events).doc(eventId).collection("Brands").get();
+      // Get Data of the Event Locations
+      const eventLocationsSnapshot = await db.collection(events).doc(eventId).collection("Locations").get();
+      // Count the Number of Clients and Trainers
+      const eventUsersSnapshot = await db.collection(events).doc(eventId).collection("Users").get();
+      let numClients = 0;
+      let numTrainers = 0;
+      for (var i in eventUsersSnapshot.docs) {
+        const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+        if (eventUsersDoc.isTrainer) {
+          numTrainers += 1;
+        } else {
+          numClients += 1;
+        }
+      }
+      // Update Event Assisting Members
+      await db
+      .collection(events)
+      .doc(eventId)
+      .update({
+        "numClients": numClients,
+        "numTrainers": numTrainers,
+      });
+      // Add Event To Users Event Subcollection
+      await db
+        .collection(users)
+        .doc(userId)
+        .collection("Events")
+        .doc(eventId).set({
+          "title": eventDoc.title,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": numTrainers,
+          "numClients": numClients,
+          "maxMembers": eventDoc.maxMembers,
+      });
+      // Update Number of Client and Trainers on Each of Event Subcollection
+      // User´s Event First
+      for (var i in eventUsersSnapshot.docs) {
+        const id = eventUsersSnapshot.docs[i].id;
+        await db
+        .collection(users)
+        .doc(id)
+        .collection("Events")
+        .doc(eventId)
+        .update({
+          "numClients": numClients,
+          "numTrainers": numTrainers,
+        });
+      }
+      // Brand´s Event Second
+      for (var i in eventBrandsSnapshot.docs) {
+        const id = eventBrandsSnapshot.docs[i].id;
+        await db
+        .collection(brands)
+        .doc(id)
+        .collection("Events")
+        .doc(eventId)
+        .update({
+          "numClients": numClients,
+          "numTrainers": numTrainers,
+        });
+      }
+      // Location´s Event Third
+      for (var i in eventLocationsSnapshot.docs) {
+          const id = eventLocationsSnapshot.docs[i].id;
+          await db
+          .collection(locations)
+          .doc(id)
+          .collection("Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+      }
+      return null;
+    });
+
+// User Leaves Event
+exports.userLeavesEvent = functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+events+"/{eventId}/Users/{userId}")
+    .onDelete( async (change, context) => {
+      // Get the value of the context triggers.
+      const eventId = context.params.eventId;
+      const userId = context.params.userId;
+      // Get Event Brands Data
+      const eventBrandsSnapshot = await db.collection(events).doc(eventId).collection("Brands").get();
+      // Count the Number of Clients and Trainers
+      const eventUsersSnapshot = await db.collection(events).doc(eventId).collection("Users").get();
+      let numClients = 0;
+      let numTrainers = 0;
+      for (var i in eventUsersSnapshot.docs) {
+          const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+          if (eventUsersDoc.isTrainer) {
+            numTrainers += 1;
+          } else {
+            numClients += 1;
+          }
+      }
+      // Delete Event To Users Event Subcollection
+      await db
+      .collection(users)
+      .doc(userId)
+      .collection("Events")
+      .doc(eventId)
+      .delete();
+      // Update Event Assisting Members
+      await db
+      .collection(events)
+      .doc(eventId)
+      .update({
+        "numClients": numClients,
+        "numTrainers": numTrainers,
+      });
+      // Update Number of Client and Trainers on Each of Event Subcollection
+      // User´s Event First
+      for (var i in eventUsersSnapshot.docs) {
+          const id = eventUsersSnapshot.docs[i].id;
+          await db
+          .collection(users)
+          .doc(id)
+          .collection("Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+      }
+      // Brand´s Event Second
+      for (var i in eventBrandsSnapshot.docs) {
+          const id = eventBrandsSnapshot.docs[i].id;
+          await db
+          .collection(brands)
+          .doc(id)
+          .collection("Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+      }
+      // Location´s Event Third
+      for (var i in eventLocationsSnapshot.docs) {
+        const id = eventLocationsSnapshot.docs[i].id;
+        await db
+        .collection(locations)
+        .doc(id)
+        .collection("Events")
+        .doc(eventId)
+        .update({
+          "numClients": numClients,
+          "numTrainers": numTrainers,
+        });
       }
       return null;
     });
@@ -215,30 +1346,135 @@ exports.changeMessageStatus = functions
   .region("europe-west1")
   .firestore
   .document("/"+rooms+"/{roomId}/messages/{messageId}")
-  .onWrite((change) => {
-    const message = change.after.data()
-    if (message) {
-      if (['delivered', 'seen', 'sent'].includes(message.status)) {
-        return null
-      } else {
-        return change.after.ref.update({
-          status: 'delivered',
+  .onWrite(async (change, context) => {
+    // Get context params
+    const roomId = context.params.roomId;
+    const messageId = context.params.messageId;
+    // Message after Data
+    const message = change.after.data();
+    const previousValue = change.before.data();
+    functions.logger.log(
+     "BEFORE",
+     previousValue
+    );
+    functions.logger.log(
+     "AFTER",
+     message
+    );
+    var payload = 0;
+    // Get Room Data
+    const roomSnapshot =  await db.collection(rooms).doc(roomId).get();
+    const roomDoc = roomSnapshot.data();
+    functions.logger.log(
+     "RoomDoc",
+     roomDoc
+    );
+    if (message && previousValue === undefined) {
+        //Get Data of the Room
+        var messageStatus = "seen";
+        var metadata = {};
+        var userSnapshot;
+        var userDoc;
+        functions.logger.log(
+             "MessageTest",
+             roomDoc.metadata,
+        );
+        for (let i = 0; i < roomDoc.userIds.length; ++i) {
+          functions.logger.log(
+            "Incremental",
+            roomDoc.userIds[i],
+          );
+          if (message.authorId != roomDoc.userIds[i] && roomDoc.metadata["active" + roomDoc.userIds[i]] == false) {
+             const authorUserSnapshot = await db.collection(users).doc(message.authorId).get();
+             const authorUserDoc = authorUserSnapshot.data();
+             functions.logger.log(
+               "Es activo",
+               roomDoc.userIds[i],
+             );
+             messageStatus = "delivered";
+             metadata[roomDoc.userIds[i]] = "delivered";
+             userSnapshot = await db.collection(users).doc(roomDoc.userIds[i]).get();
+             userDoc = userSnapshot.data();
+             functions.logger.log(
+                  "User to Send Data",
+                  userDoc,
+             );
+             // Send Notification To Users who received the message and not active
+             if (roomDoc.type == "group") {
+                payload = {
+                  notification: {
+                      title: roomDoc.name,
+                      body: authorUserDoc.firstName + ' ' + authorUserDoc.lastName + ': ' + message.text,
+                  },
+                  data: {
+                    route: "SplashScreen3",
+                  },
+                };
+             } else {
+                payload = {
+                   notification: {
+                     title: authorUserDoc.firstName + ' ' + authorUserDoc.lastName + ':',
+                     body: message.text,
+                   },
+                   data: {
+                     route: "SplashScreen3",
+                   },
+                };
+             }
+             var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+             functions.logger.log(
+               "Response",
+               response
+             );
+          } else {
+           metadata[roomDoc.userIds[i]] = "seen";
+          }
+        }
+        if (['delivered', 'seen', 'sent'].includes(message.status)) {
+            return null
+        } else {
+          change.after.ref.update({
+            status: messageStatus,
+            metadata: metadata,
+            remoteId: messageId,
+          });
+          message.status = messageStatus;
+          message.metadata = metadata;
+          message.remoteId = messageId;
+          return db.doc(rooms + "/" + roomId).update({
+            lastMessages: [message],
+            updatedAt: message.updatedAt,
+            })
+        }
+    } else if (roomDoc.lastMessages[0].remoteId == message.remoteId) {
+      functions.logger.log(
+       "message ASQUI",
+       message.metadata,
+      );
+      return db.doc(rooms + "/" + roomId).update({
+        lastMessages: [message],
         })
-      }
     } else {
       return null
     }
   })
 
+/*
 // Change Last Message
 exports.changeLastMessage = functions
   .region("europe-west1")
   .firestore
   .document("/"+rooms+"/{roomId}/messages/{messageId}")
-  .onUpdate((change, context) => {
+  .onUpdate(async (change, context) => {
+    var metadata = {};
+    const roomId = context.params.roomId;
+    const roomSnapshot =  await db.collection(rooms).doc(roomId).get();
+         const roomDoc = roomSnapshot.data();
     const message = change.after.data()
     if (message) {
       const updatedAt = message.updatedAt;
+      metadata = roomDoc.metadata;
+      metadata["alreadyChanged"] = true;
       functions.logger.log(
                     "Message",
                     message.updatedAt,
@@ -246,8 +1482,84 @@ exports.changeLastMessage = functions
       return db.doc(rooms + "/" + context.params.roomId).update({
         lastMessages: [message],
         updatedAt: updatedAt,
+        metadata: metadata,
       })
     } else {
       return null
     }
   })
+*/
+
+/*
+  // Updated Room message Status changes
+  exports.updateMessageStatus= functions
+    .region("europe-west1")
+    .firestore
+    .document("/"+rooms+"/{roomId}")
+    .onUpdate(async (change, context) => {
+
+  const newValue = change.after.data();
+  const newFieldValue = newValue.lastMessages[0];
+
+  // ...or the previous value before this update
+  const previousValue = change.before.data();
+  const previousFieldValue = previousValue.lastMessages[0];
+functions.logger.log(
+                      "Activo o no activo",
+                      previousFieldValue,
+                    );
+                    functions.logger.log(
+                                          "Activo o no activo",
+                                          newFieldValue,
+                                        );
+
+  if (previousFieldValue.remoteId == newFieldValue.remoteId && newValue.metadata["alreadyChanged"] == false && newFieldValue.status != "seen") {
+  functions.logger.log(
+                      "Activo o no activo DENTRO",
+                      previousFieldValue,
+                    );
+    const roomId = context.params.roomId;
+    const roomSnapshot =  await db.collection(rooms).doc(roomId).get();
+             const roomDoc = roomSnapshot.data();
+
+    const messageSnapshot =  await db.collection(rooms + "/" + roomId + "/messages/").doc(roomDoc.lastMessages[0].remoteId).get();
+    const message = messageSnapshot.data();
+         var messageStatus = "seen";
+         var metadata = {};
+
+         functions.logger.log(
+                             "MessageTest",
+                             message.metadata,
+
+                           );
+         for(let i = 0; i < roomDoc.userIds.length; ++i) {
+               if(roomDoc.metadata["active" + roomDoc.userIds[i]] == false) {
+                 messageStatus = "delivered";
+                 metadata[roomDoc.userIds[i]] = "delivered";
+               }
+               else {
+               metadata[roomDoc.userIds[i]] = "seen";
+               }
+             }
+             if(messageStatus == "seen") {
+             const messageSnapshotFinal =  await db.collection(rooms + "/" + roomId + "/messages").get();
+                          const messageDoc = messageSnapshotFinal.data();
+                          for(let j = 0; j < messageDoc.length; ++j) {
+                                      await db.doc(rooms + "/" + roomId + "/messages/" + messageDoc[j].remoteId).update({
+                                                        metadata: metadata,
+                                                        status: messageStatus,
+                                                      })
+                          }
+
+             }
+
+
+          return await db.doc(rooms + "/" + roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
+                  metadata: metadata,
+                  status: messageStatus,
+                })
+        }
+
+        else return null;
+
+      });*/

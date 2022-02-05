@@ -4,7 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+
+import 'package:mamba_castelldefels/Data/LocationDataService.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
@@ -25,7 +26,7 @@ class MyLocationsSelect extends StatefulWidget {
 class _MyLocationsSelectState extends State<MyLocationsSelect> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _locationDataService = new LocationDataService();
   // Google APIS
   googlePlace.GooglePlace? gPlace;
   googlePlace.DetailsResult? detailsResult;
@@ -53,14 +54,14 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
   List<Location> documentsToLocations(List<DocumentSnapshot> documents) {
     List<Location> locations = [];
     for(int i = 0; i < documents.length; i++) {
-      Location location = Location.fromObject(documents[i], documents[i].id);
+      Location location = Location.fromObjectAllData(documents[i].id, documents[i]);
       if (location.isBaseLocation!) {
         locations.add(location);
         break;
       }
     }
     for(int i = 0; i < documents.length; i++) {
-      Location location = Location.fromObject(documents[i], documents[i].id);
+      Location location = Location.fromObjectAllData(documents[i].id, documents[i]);
       if (!location.isBaseLocation!) {
         locations.add(location);
       }
@@ -117,9 +118,9 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                       location.placeId = result.placeId;
                       final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(location.placeId!);
                       // Get the information on Strings
-                      if(placeDetails.street!=null) location.street = placeDetails.street!;
+                      if(placeDetails.street!=null) location.street = placeDetails.street!; else location.street="N/A";
                       if(placeDetails.streetNumber!=null) location.streetNumber = placeDetails.streetNumber!; else location.streetNumber="N/A";
-                      if(placeDetails.city!=null) location.city = placeDetails.city!;
+                      if(placeDetails.city!=null) location.city = placeDetails.city!; else location.city="N/A";
                       if(placeDetails.zipCode!=null) location.zipCode = placeDetails.zipCode!; else location.zipCode="N/A";
                       //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
                       // Build Correct Description
@@ -132,7 +133,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                         location.longitude = detailsResult!.geometry!.location!.lng!;
                       }
                       // Save location to DataBase
-                      await _accessDatabase.addLocation(widget.brandId, false, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
+                      await _locationDataService.addLocation(widget.brandId, false, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
                     }
                   },
                   leading: Icon(
@@ -151,7 +152,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.01),
             StreamBuilder<QuerySnapshot>(
-                stream: _accessDatabase.getAllLocationsBrand(currentBrand.id!),
+                stream: _locationDataService.getAllLocationsBrand(currentBrand.id!),
                 builder: (context, snapshot) {
                   if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
                     return Container(

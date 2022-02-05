@@ -30,22 +30,7 @@ class NotificationEvent {
     this.parameters,
   });
 
-  NotificationEvent.fromMap(Map<String, dynamic> mapData, String documentId) {
-    this.id = documentId;
-    this.userId = mapData['userId'].toString();
-    this.type = mapData['type'].toString();
-    this.isRead = mapData['isRead'];
-    this.dateSent = mapData['dateSent'].toString();
-    this.year = mapData['year'].toString();
-    this.month = mapData['month'].toString();
-    this.day = mapData['day'].toString();
-    this.hour = mapData['hour'].toString();
-    this.minutes = mapData['minutes'].toString();
-    this.seconds = mapData['seconds'].toString();
-    this.parameters = mapData['parameters'];
-  }
-
-  NotificationEvent.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
+  NotificationEvent.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
     this.userId = documentSnapshot.get("userId").toString();
     this.type = documentSnapshot.get("type").toString();

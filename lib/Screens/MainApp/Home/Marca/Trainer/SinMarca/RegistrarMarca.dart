@@ -2,10 +2,14 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/LocationDataService.dart';
+import 'package:mamba_castelldefels/Data/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Models/Brand.dart';
 import 'package:mamba_castelldefels/Models/Location.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -13,7 +17,7 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:image_picker/image_picker.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -23,6 +27,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/Address
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+
 
 class RegistrarMarca extends StatefulWidget {
   Locale? locale;
@@ -34,7 +40,9 @@ class RegistrarMarca extends StatefulWidget {
 
 class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProviderStateMixin {
   // DataBase Access
-  var _accessDatabase = new DatabaseAccess();
+  var _brandDataService = new BrandDataService();
+  var _locationDataService = new LocationDataService();
+  var _roomDataService = new RoomDataService();
   // Boolean isLoading
   bool isLoading = false;
   bool isFirstTime = false;
@@ -1150,68 +1158,10 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                         }
                       } else if (_selectedIndex == 3) {
                         if (validateTime()) {
-                          DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(startTimeController.text);
-                          DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(endTimeController.text);
-                          double toDouble(DateTime myTime) => myTime.hour + myTime.minute/60.0;
-                          double toDouble2(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
-                          _workShift.add(toDouble(start));
-                          _workShift.add(toDouble(end));
-                          for (var i=0; i < _breakList.length; i+=2) {
-                            if(!removedIndex.contains(i)) {
-                              _workShift.add(toDouble2(_breakList[i]));
-                              _workShift.add(toDouble2(_breakList[i+1]));
-                            }
-                          }
                           setState(() {
                             isLoading = true;
                           });
-                          DateTime today = DateTime.now();
-                          List<Map> chatUsers = [];
-                          chatUsers.add(toMap(currentUser.id));
-                          var result = await _accessDatabase.addBrand(nameBrandController.text.trim(), _image, descriptionController.text.trim(), _workShift, membersMax);
-                          String baseLocation = await _accessDatabase.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
-                          await _accessDatabase.updateBrandBaseLocation(result, baseLocation);
-                          await _accessDatabase.updateCurrentUserBrand(result);
-                          NotificationService().userCreatesBrand(currentUser.id!, result);
-                          // Notification Trainer has created Brand
-
-                          List<Map> userMessagesRead = [];
-                          List<Usuario> users = await _accessDatabase.getAllTrainersFromBrand(result);
-
-                          for(int i = 0; i < users.length; ++i) {
-                            userMessagesRead.add(toMapisMessageRead(
-                                users[i].id, true));
-                          }
-
-                          users = await _accessDatabase.getAllClientsFromBrand(result);
-
-                          for(int i = 0; i < users.length; ++i) {
-                            userMessagesRead.add(toMapisMessageRead(
-                                users[i].id, true));
-                          }
-
-                          await _accessDatabase.addConversation(
-                              chatUsers,
-                              userMessagesRead,
-                              result,
-                              today.year.toString(),
-                              today.month.toString(),
-                              today.day.toString(),
-                              today.hour.toString(),
-                              today.minute.toString(),
-                              today.second.toString(),
-                              '');
-                          setState(() {
-                            currentIndex = 1;
-                          });
-                          Navigator.pop(context);
-                          Navigator.pushReplacement(
-                              context,
-                              CupertinoPageRoute<Null>(
-                                builder: (context) => SplashScreen(),
-                                settings: RouteSettings(name: 'SplashScreen'),
-                              )
-                          );
+                          await registerBrand();
                         }
                       }
                     },
@@ -1310,5 +1260,51 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
       return false;
     }
     return true;
+  }
+
+  Future<void> registerBrand() async {
+    // Get Data About The Times Of The Brand
+    DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(startTimeController.text);
+    DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(endTimeController.text);
+    double toDouble(DateTime myTime) => myTime.hour + myTime.minute/60.0;
+    double toDouble2(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
+    _workShift.add(toDouble(start));
+    _workShift.add(toDouble(end));
+    for (var i=0; i < _breakList.length; i+=2) {
+      if(!removedIndex.contains(i)) {
+        _workShift.add(toDouble2(_breakList[i]));
+        _workShift.add(toDouble2(_breakList[i+1]));
+      }
+    }
+    // Create Brand
+    var result = await _brandDataService.addBrand(nameBrandController.text.trim(), _image, descriptionController.text.trim(), _workShift, membersMax);
+    // Add User To Brand
+    // New Database
+    await _brandDataService.addUserToBrand(currentUser.id!,result, 1);
+    // Add Location
+    String baseLocation = await _locationDataService.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
+    await _brandDataService.updateBrandBaseLocation(result, baseLocation);
+    // Update Current User Brand
+    NotificationService().userCreatesBrand(currentUser.id!, result);
+    // Create Group Chat
+    String logoUrl = await _brandDataService.getBrandLogoUrl(result);
+    final room = await FirebaseChatCore.instance.createGroupRoom(imageUrl: logoUrl, metadata: {
+      "trainer" + currentUser.id!: currentUser.isTrainer,
+      "active" + currentUser.id!: false,
+    }, name: nameBrandController.text.trim(), users: []);
+    await _brandDataService.updateBrandRoom(result, room.id);
+    // Pushing to Splash Screen
+    setState(() {
+      currentIndex = 1;
+    });
+    await Future.delayed(const Duration(seconds: 2)); // Ensure listener fires
+    Navigator.pushAndRemoveUntil(
+      context,
+      CupertinoPageRoute<Null>(
+        builder: (context) => SplashScreen(),
+        settings: RouteSettings(name: 'SplashScreen'),
+      ),
+      (_) => false,
+    );
   }
 }

@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/RoomDataService.dart';
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
@@ -12,9 +16,12 @@ import 'package:mamba_castelldefels/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
+
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteFromBrandConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteFromEventConfirmationDialog.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 import '../../Constants.dart';
 import '../../Styles.dart';
@@ -31,7 +38,10 @@ class ProfileViewUser extends StatefulWidget {
 class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProviderStateMixin {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
+  var _brandDataService = new BrandDataService();
+  var _eventDataService = new EventDataService();
+  var _roomDataService = new RoomDataService();
   // Boolean Loading
   bool isLoading = false;
   // Usuario
@@ -58,64 +68,15 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     totalEvents  = 0;
     thisMonthEvents  = 0;
     listEvents = [];
-    user = await _accessDatabase.getUserDetails(widget.userID);
-    if (user!.isTrainer!) {
-      getTrainerEventsDone();
-    } else {
-      getClientEventsDone();
-    }
+    user = await _userDataService.getUserDetails(widget.userID);
+    getEventsDone();
   }
 
   // Gets the events passed by the trainer.
-  void getTrainerEventsDone() async {
+  void getEventsDone() async {
     DateTime today = DateTime.now();
     var tempMonth = 0;
-    List<Event> list = await _accessDatabase.getAllEventsFromTrainer(widget.userID);
-    for (var i=0; i<list.length; i++) {
-      Event event = list[i];
-      var startDate =  DateTime(
-        int.parse(event.year!),
-        int.parse(event.month!),
-        int.parse(event.day!),
-        int.parse(event.hour!),
-        int.parse(event.minute!),
-      );
-      if (startDate.isBefore(today)) {
-        listEvents.add(event);
-        if (startDate.year == today.year && startDate.month == today.month) {
-          tempMonth += 1;
-        }
-      }
-    }
-    listEvents.sort((a,b) {
-      var aDate =  DateTime(
-        int.parse(a.year!),
-        int.parse(a.month!),
-        int.parse(a.day!),
-        int.parse(a.hour!),
-        int.parse(a.minute!),
-      );
-      var bDate =  DateTime(
-        int.parse(b.year!),
-        int.parse(b.month!),
-        int.parse(b.day!),
-        int.parse(b.hour!),
-        int.parse(b.minute!),
-      );
-      return aDate.compareTo(bDate);
-    });
-    listEvents = List.from(listEvents.reversed);
-    setState(() {
-      thisMonthEvents = tempMonth;
-      totalEvents = listEvents.length;
-      isLoading = false;
-    });
-  }
-  // Gets the events passed by the trainer.
-  void getClientEventsDone() async {
-    DateTime today = DateTime.now();
-    var tempMonth = 0;
-    List<Event> list = await _accessDatabase.getAllEventsFromClient(widget.userID);
+    List<Event> list = await _eventDataService.getUserEvents(widget.userID);
     for (var i=0; i<list.length; i++) {
       Event event = list[i];
       var startDate =  DateTime(
@@ -216,28 +177,42 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                         setState(() {
                           isLoading = true;
                         });
-                        NotificationService().userLeavesBrand(widget.userID, currentUser.brandID!);
-                        //12/12/2021
-                        Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID);
-                        for(int i = 0; i < conv.users.length; ++i) {
-                          if(conv.users[i]['uid'] == user!.id!) {
-                            conv.users.removeAt(i);
-                          }
-                        }
-                        await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
-                        await _accessDatabase.deleteUserFromAllBrandEvents(user!.id!, currentUser.brandID!, user!.isTrainer!);
-                        await _accessDatabase.leaveBrandUser(user!.id!);
+                        NotificationService().userLeavesBrand(widget.userID, currentBrand.id!);
+                        // New Database
+                        await Future.delayed(const Duration(milliseconds: 3000));
+                        await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
+                        await _brandDataService.deleteUserFromBrand(widget.userID, currentBrand.id!);
+                        // TODO: Revisar Pq True, yo crec que es per recagar els users a todos los miemrbos
                         Navigator.pop(context, true);
                       }
                     } ,
                     icon: Icon(Icons.delete_outlined, color: Colors.red)
                 ) : Container(),
                 widget.viewOnly || user!.id! == currentUser.id ? Container() : IconButton(
-                    onPressed: () {
-                      Navigator.push(context, CupertinoPageRoute<Null>(
-                          builder: (context) => ChatDetailPage(user!)
-                      ),
+                    onPressed: () async {
+                      types.User otherUser = types.User(
+                        firstName: user!.firstName,
+                        lastName: user!.lastName,
+                        id: user!.id!, // UID from Firebase Authentication
+                        imageUrl: user!.imageUrl,
                       );
+                      final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                        "trainer" + user!.id!: user!.isTrainer,
+                        "trainer" + currentUser.id!: currentUser.isTrainer,
+                        "active" + user!.id!: false,
+                        "active" + currentUser.id!: true,
+                      });
+
+                      bool? deleteRoom = await Navigator.push(
+                        context,
+                        CupertinoPageRoute<bool>(
+                            builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                        room.metadata!["active" + currentUser.id!] = false;
+                        _roomDataService.updateRoom(room.id, room.metadata!);
+                      });
+                      if (!deleteRoom!) {
+                        _roomDataService.deleteRoom(room.id);
+                      }
                     } ,
                     icon: Icon(Icons.chat_outlined)
                 ),
@@ -572,7 +547,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                       ),
                                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                       Text(
-                                        event.selectedTrainers.length.toString(),
+                                        event.numTrainers.toString(),
                                         style: TextStyle(color: Colors.black, fontSize: 12),
                                       ),
                                       Container(
@@ -587,14 +562,14 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                       ),
                                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                       Text(
-                                        event.joinedMembers.length.toString(),
+                                        event.numClients.toString(),
                                         style: TextStyle(color: Colors.black, fontSize: 12),
                                       ),
                                     ],
                                   ),
                                 ],
                               ),
-                              trailing: !canDeleteFromEvent(event.selectedTrainers.length) ? Icon(
+                              trailing: !canDeleteFromEvent(event.numTrainers!) ? Icon(
                                 Icons.arrow_forward_ios,
                                 color: Theme.of(context).primaryColor,
                                 size: 20,
@@ -613,23 +588,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                     setState(() {
                                       isLoading = true;
                                     });
-                                    if (user!.isTrainer!) {
-                                      List<String> selectedTrainers = [];
-                                      for (var trainer in event.selectedTrainers!) {
-                                        selectedTrainers.add(trainer);
-                                      }
-                                      int index = selectedTrainers.indexOf(user!.id!);
-                                      selectedTrainers.removeAt(index);
-                                      _accessDatabase.updateEventTrainers(event.id!, selectedTrainers);
-                                    } else {
-                                      List<String> joinedMembers = [];
-                                      for (var client in event.joinedMembers!) {
-                                        joinedMembers.add(client);
-                                      }
-                                      int index = joinedMembers.indexOf(user!.id!);
-                                      joinedMembers.removeAt(index);
-                                      _accessDatabase.updateEventClients(event.id!, joinedMembers);
-                                    }
+                                    _eventDataService.deleteUserFromEvent(event.id!, user!.id!);
                                     getUser();
                                   }
                                 },
@@ -695,7 +654,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     }
   }
 
-  bool canDeleteFromEvent(int selectedTrainers) {
+  bool canDeleteFromEvent(int numTrainers) {
     if (widget.viewOnly) {
       return false;
     } else {
@@ -704,7 +663,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
         return true;
       }
       // Si es entrenador i mira a un entrenador, ha de ser admin ID.
-      if (currentUser.isTrainer! && user!.isTrainer! && currentUser.id! == currentBrand.adminID && selectedTrainers > 1) {
+      if (currentUser.isTrainer! && user!.isTrainer! && currentUser.id! == currentBrand.adminID && numTrainers > 1) {
         return true;
       }
       return false;

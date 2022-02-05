@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/EventDataService.dart';
+
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -29,7 +32,8 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
+  var _brandDataService = new BrandDataService();
   // Boolean Loading
   bool isLoading = false;
   bool firstBuild = true;
@@ -82,12 +86,11 @@ class _SettingsState extends State<Settings> {
                   };
                   if (idiomaChanged) {
                     currentUser.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
-                    currentUser.previousIdioma = "";
                   };
                   _idiomaChanged.currentState!.resetIdiomaChanged();
                   idiomaChanged = false;
                 });
-                await _accessDatabase.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!,currentUser.previousIdioma!);
+                await _userDataService.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!);
               }
               Navigator.pop(context);
               },
@@ -245,7 +248,7 @@ class _SettingsState extends State<Settings> {
                           isLoading = true;
                         });
                         Future.delayed(Duration(seconds: 1), () async {
-                          _accessDatabase.signOut().then((value) =>
+                          _userDataService.signOut().then((value) =>
                               Navigator.pushAndRemoveUntil(
                                 context,
                                 CupertinoPageRoute<Null>(
@@ -322,7 +325,9 @@ class DeleteDialog extends StatefulWidget {
 class _DeleteDialogState extends State<DeleteDialog> {
 
   // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  var _userDataService = new UserDataService();
+  var _brandDataService = new BrandDataService();
+  var _eventDataService = new EventDataService();
   // Delete Alert
   bool isLoading = false;
   bool firstBuild = true;
@@ -453,38 +458,30 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             isLoading = true;
                           });
                           // Delete Function
-                          String? userId = currentUser.id;
-                          var result = await _accessDatabase.deleteUser(deleteTemp);
+                          var result = await _userDataService.deleteUser(deleteTemp);
+                          await _userDataService.deleteUserNickname(currentUser.nick!);
                           if (!result) {
                             setState(() {
                               wrongPassword = true;
                             });
                           } else {
-                            await _accessDatabase.deleteUserMemberConversations(toMap(userId));
-                            if (currentUser.brandID != "null" && currentUser.brandID != null) {
-                              // 12/12/2021
-                              Conversation conv = await _accessDatabase.getConversationByBrand(currentUser.brandID); //12/12/2021
-                              for(int i = 0; i < conv.users.length; ++i) {
-                                if(conv.users[i]['uid'] == currentUser.id) {
-                                  conv.users.removeAt(i);
-                                }
-                              }
-                              await _accessDatabase.updateConversationUsers(conv.conversationId, conv.users);
+                            if (hasBrand) {
                               if (currentUser.isTrainer!) {
-                                Brand? result = await _accessDatabase.checkUserIsBrandCreator(currentUser.id!);
+                                Brand? result = await _brandDataService.checkUserIsBrandCreator(currentUser.id!);
                                 if (result != null) {
-                                  await _accessDatabase.deleteBrand(result.id!);
+                                  await _brandDataService.deleteBrand(result.id!);
                                 } else {
-                                  NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
-                                  await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
-                                  await _accessDatabase.leaveBrandUser(currentUser.id!);
+                                  NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
+                                  await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
+                                  await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
                                 }
                               } else {
-                                NotificationService().userLeavesBrand(currentUser.id!, currentUser.brandID!);
-                                await _accessDatabase.deleteUserFromAllBrandEvents(currentUser.id!, currentUser.brandID!, currentUser.isTrainer!);
-                                await _accessDatabase.leaveBrandUser(currentUser.id!);
+                                NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
+                                await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
+                                await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
                               }
                             }
+                            currentUser.setBrandList = [];
                             Navigator.pushAndRemoveUntil(
                               context,
                               CupertinoPageRoute<Null>(

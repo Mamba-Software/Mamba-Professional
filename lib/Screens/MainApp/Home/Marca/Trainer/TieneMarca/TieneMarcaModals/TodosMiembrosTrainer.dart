@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+
+import 'package:mamba_castelldefels/Data/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -11,8 +13,11 @@ import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/chatDetailPage.dart';
+
 import 'package:page_transition/page_transition.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 import 'MembershipRequests.dart';
 
@@ -25,8 +30,9 @@ class TodosMiembrosTrainer extends StatefulWidget {
 
 class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
 
-  // Acceso a Base de Datos
-  var _accessDatabase = new DatabaseAccess();
+  // Brand Data Service
+  var _brandDataService = BrandDataService();
+  var _roomDataService = new RoomDataService();
   // Boolean Loading
   bool isLoading = false;
   // Boolean isUpdated
@@ -44,29 +50,29 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
   var chatUsers = [];
 
   Future<void> getAllUsers() async {
-    await getAllTrainersFromBrand();
-    await getAllClientsFromBrand();
+    List<Usuario> brandUsers = await _brandDataService.getBrandUsers(currentBrand.id!);
+    allClients = [];
+    filteredClients = [];
+    allTrainers = [];
+    filteredTrainers = [];
+    for (var i=0; i< brandUsers.length; i++) {
+      Usuario user = brandUsers[i];
+      if (user.isTrainer!) {
+        if (user.id == currentUser.id) {
+          filteredTrainers.insert(0, user);
+        } else {
+          filteredTrainers.add(user);
+        }
+        allTrainers.add(user);
+      } else {
+        filteredClients.add(user);
+        allClients.add(user);
+      }
+    }
+    await Future.delayed(const Duration(milliseconds: 500));
     setState(() {
       isLoading = false;
     });
-  }
-
-  Future<void> getAllTrainersFromBrand() async {
-    allTrainers = await _accessDatabase.getAllTrainersFromBrand(currentBrand.id!);
-    filteredTrainers = [];
-    for (var i=0; i< allTrainers.length; i++) {
-      Usuario trainer = allTrainers[i];
-      if (trainer.id == currentUser.id) {
-        filteredTrainers.insert(0, trainer);
-      } else {
-        filteredTrainers.add(trainer);
-      }
-    }
-  }
-
-  Future<void> getAllClientsFromBrand() async {
-    allClients = await _accessDatabase.getAllClientsFromBrand(currentBrand.id!);
-    filteredClients = allClients;
   }
 
   void filterSearchResults(String query, bool isTrainer) {
@@ -102,6 +108,10 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
         });
       }
     }
+  }
+
+  String getUsersFullName(Usuario user) {
+    return "${user.firstName} ${user.lastName}";
   }
 
   @override
@@ -246,7 +256,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                       borderWidth: 1.0,
                                     ),
                                     title: Text(
-                                      user.name!,
+                                      getUsersFullName(user),
                                       style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.left,
                                     ),
@@ -269,9 +279,30 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                       icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
                                       alignment: Alignment.centerRight,
                                       padding: EdgeInsets.all(0),
-                                      onPressed: () {
-                                        Navigator.push(context, CupertinoPageRoute<Null>(
-                                          builder: (context) => ChatDetailPage(user)),);
+                                      onPressed: () async {
+                                        types.User otherUser = types.User(
+                                          firstName: user.firstName,
+                                          lastName: user.lastName,
+                                          id: user.id!, // UID from Firebase Authentication
+                                          imageUrl: user.imageUrl,
+                                        );
+                                        final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                                          "trainer" + user.id!: user.isTrainer,
+                                          "trainer" + currentUser.id!: currentUser.isTrainer,
+                                          "active" + user.id!: false,
+                                          "active" + currentUser.id!: true,
+                                        });
+
+                                        bool? deleteRoom = await Navigator.push(
+                                          context,
+                                          CupertinoPageRoute<bool>(
+                                              builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                                          room.metadata!["active" + currentUser.id!] = false;
+                                          _roomDataService.updateRoom(room.id, room.metadata!);
+                                        });
+                                        if (!deleteRoom!) {
+                                          _roomDataService.deleteRoom(room.id);
+                                        }
                                       },
                                     ),
                                     onTap: () async {
@@ -369,7 +400,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                   borderWidth: 1.0,
                                 ),
                                 title: Text(
-                                  user.name!,
+                                  getUsersFullName(user),
                                   style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.left,
                                 ),
@@ -397,9 +428,30 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                   icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
                                   alignment: Alignment.centerRight,
                                   padding: EdgeInsets.all(0),
-                                  onPressed: () {
-                                    Navigator.push(context, CupertinoPageRoute<Null>(
-                                      builder: (context) => ChatDetailPage(user)),);
+                                  onPressed: () async {
+                                    types.User otherUser = types.User(
+                                      firstName: user.firstName,
+                                      lastName: user.lastName,
+                                      id: user.id!, // UID from Firebase Authentication
+                                      imageUrl: user.imageUrl,
+                                    );
+                                    final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                                      "trainer" + user.id!: user.isTrainer,
+                                      "trainer" + currentUser.id!: currentUser.isTrainer,
+                                      "active" + user.id!: false,
+                                      "active" + currentUser.id!: true,
+                                    });
+
+                                    bool? deleteRoom = await Navigator.push(
+                                      context,
+                                      CupertinoPageRoute<bool>(
+                                          builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                                      room.metadata!["active" + currentUser.id!] = false;
+                                      _roomDataService.updateRoom(room.id, room.metadata!);
+                                    });
+                                    if (!deleteRoom!) {
+                                      _roomDataService.deleteRoom(room.id);
+                                    }
                                   },
                                 ),
                                 onTap: () async {

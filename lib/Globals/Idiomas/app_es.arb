@@ -31,6 +31,10 @@
   "@logOut":{
     "description": "logOut Text"
   },
+  "user": "Usuario",
+  "@user":{
+    "description": "Usuario Text"
+  },
   "client": "Cliente",
   "@client":{
     "description": "Cliente Text"
@@ -151,8 +155,16 @@
   "@transgender":{
     "description": "Otros Text "
   },
-  "name": "Nombre",
-  "@name":{
+  "firstName": "Nombre",
+  "@firstName":{
+    "description": "Nombre"
+  },
+  "lastName": "Apellidos",
+  "@lastName":{
+    "description": "Nombre"
+  },
+  "lastNameError": "Escribe tus apellidos",
+  "@lastNameError":{
     "description": "Nombre"
   },
   "nickname": "Nombre de usuario",

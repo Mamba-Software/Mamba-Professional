@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+
+import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -19,8 +20,8 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
-  // Access to DataBaseService
-  var _accessDatabase = new DatabaseAccess();
+  // Access to DatabaseService
+  var _userDataService = new UserDataService();
   // Loading Screen Boolean
   bool isLoading = false;
   // Password Visible
@@ -66,7 +67,7 @@ class _LoginState extends State<Login> {
                               email = val;
                             });
                           },
-                          style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.w600),
+                          style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.w500),
                           decoration: Styles.textFromInputDecoration.copyWith(
                               labelText: AppLocalizations.of(context)!.email,
                               prefixIcon:  Padding(
@@ -86,7 +87,7 @@ class _LoginState extends State<Login> {
                                 password = val;
                               });
                             },
-                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.w600),
+                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.w500),
                             obscureText: !_passwordVisible,
                             decoration: Styles.textFromInputDecoration.copyWith(
                                 labelText: AppLocalizations.of(context)!.password,
@@ -229,7 +230,7 @@ class _LoginState extends State<Login> {
   }
 
   void signIn() async {
-      int result = await _accessDatabase.signIn(email.trim(), password);
+      int result = await _userDataService.signIn(email.trim(), password);
       if (result == 0) {
         Navigator.pushReplacement(
             context,

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/databaseAccess.dart';
+
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles.dart';
@@ -19,8 +19,6 @@ class AdminTool extends StatefulWidget {
 }
 
 class _AdminToolState extends State<AdminTool> {
-  //DataBase Access
-  var _accessDatabase = new DatabaseAccess();
   List<Usuario> usersListTrainer = [];
   List<Usuario> usersListClient = [];
   List<Usuario> usersList = [];
@@ -36,14 +34,14 @@ class _AdminToolState extends State<AdminTool> {
   void initState() {
     super.initState();
     isLoading = true;
-    getUsersList();
   }
 
+  /*
   Future<void> getUsersList() async {
     Stream<QuerySnapshot> snapshot = await _accessDatabase.getAllUsers();
     await snapshot.forEach((field) async {
       field.docs.asMap().forEach((index, value) {
-        var user = Usuario.fromObject(field.docs[index], field.docs[index].id);
+        var user = Usuario.fromObjectAllData(field.docs[index], field.docs[index].id);
         if (user.isTrainer!) {
           usersListTrainer.add(user);
         } else {
@@ -52,8 +50,8 @@ class _AdminToolState extends State<AdminTool> {
         fullusersListTrainer = usersListTrainer;
         fullusersListClient = usersListClient;
         //usersList.add(field.docs[index]["name"]);
-        //fullusersList.add(Usuario.fromObject(field.docs[index], field.docs[index].id));
-        //usersList.add(Usuario.fromObject(field.docs[index], field.docs[index].id));
+        //fullusersList.add(Usuario.fromObjectAllData(field.docs[index], field.docs[index].id));
+        //usersList.add(Usuario.fromObjectAllData(field.docs[index], field.docs[index].id));
       });
       setState(() {
         isLoading = false;
@@ -62,6 +60,7 @@ class _AdminToolState extends State<AdminTool> {
       print(usersListTrainer);
     });
   }
+   */
 
   @override
   Widget build(BuildContext context) {
@@ -309,7 +308,7 @@ class _AdminToolState extends State<AdminTool> {
   List<Usuario> documentsToUsers(List<DocumentSnapshot> documents) {
     List<Usuario> users = [];
     for (int i = 0; i < documents.length; i++) {
-      users.add(Usuario.fromObject(documents[i], documents[i].id));
+      //users.add(Usuario.fromObjectAllData(documents[i].id, documents[i]));
     }
     return users;
   }

@@ -24,20 +24,7 @@ class RequestToBrand {
     this.day,
   });
 
-  RequestToBrand.fromMap(Map<String, dynamic> mapData, String documentId) {
-    this.id = documentId;
-    this.brandId = mapData['brandId'].toString();
-    this.userId = mapData['userId'].toString();
-    this.name = mapData['name'].toString();
-    this.isTrainer = mapData['isTrainer'];
-    this.dateSent = mapData['dateSent'].toString();
-    this.year = mapData['year'].toString();
-    this.month = mapData['month'].toString();
-    this.day = mapData['day'].toString();
-  }
-
-
-  RequestToBrand.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
+  RequestToBrand.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
     this.brandId = documentSnapshot.get("brandId").toString();
     this.userId = documentSnapshot.get("userId").toString();
