@@ -188,6 +188,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
               ),
             ],
           ),
+          backgroundColor: Theme.of(context).backgroundColor,
           body: StreamBuilder<QuerySnapshot>(
               stream: _eventDataService.getUserEventsStream(currentUser.id!),
               builder: (context, snapshot) {
@@ -195,344 +196,100 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                   return LoadingViewPurple();
                 } else {
                   eventsList = documentsToEvents(snapshot.data!.docs);
-                  return SfCalendar(
-                      cellEndPadding: 0,
-                      view: CalendarView.schedule,
-                      controller: _controller,
-                      showDatePickerButton: true,
-                      dataSource: _getCalendarDataSource(),
-                      specialRegions: _getTimeRegions(),
-                      timeRegionBuilder: timeRegionBuilder,
-                      firstDayOfWeek: 1,
-                      todayHighlightColor: Theme.of(context).accentColor,
-                      showCurrentTimeIndicator: true,
-                      selectionDecoration: BoxDecoration(
-                          border: Border.all(width: 0.1, color: Colors.transparent)
-                      ),
-                    headerHeight: MediaQuery.of(context).size.height*0.05,
-                    headerStyle: CalendarHeaderStyle(
-                        textAlign: TextAlign.justify,
-                        backgroundColor: Color(0xFFF5F5F5),
-                        textStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
-                          letterSpacing: 4,
-                          color: Theme.of(context).accentColor,
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
+                    child: SfCalendar(
+                        cellEndPadding: 0,
+                        view: CalendarView.schedule,
+                        controller: _controller,
+                        showDatePickerButton: true,
+                        dataSource: _getCalendarDataSource(),
+                        specialRegions: _getTimeRegions(),
+                        timeRegionBuilder: timeRegionBuilder,
+                        firstDayOfWeek: 1,
+                        todayHighlightColor: Theme.of(context).accentColor,
+                        showCurrentTimeIndicator: true,
+                        selectionDecoration: BoxDecoration(
+                            border: Border.all(width: 0.1, color: Colors.transparent)
                         ),
-                      ),
-                      viewHeaderHeight: 50,
-                      viewHeaderStyle: ViewHeaderStyle(
-                        backgroundColor: Theme.of(context).backgroundColor,
-                        dateTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 14, fontWeight: FontWeight.bold),
-                        dayTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 10, fontWeight: FontWeight.bold),
-                      ),
-                      timeSlotViewSettings: TimeSlotViewSettings(
-                        timelineAppointmentHeight: 50,
-                        timeIntervalHeight: 60,
-                        timeIntervalWidth: 55,
-                        startHour: _startHour!-1,
-                        endHour:  _endHour!+1,
-                        timeFormat: 'HH',
-                        dayFormat: 'E',
-                        dateFormat: 'd',
-                        timeRulerSize: 25,
-                        nonWorkingDays: nonWorkDays,
-                        minimumAppointmentDuration: Duration(minutes: 30),
-                        timeTextStyle: TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 12,
-                          color: Theme.of(context).primaryColor,
-                        )
-                      ),
-                      scheduleViewSettings: ScheduleViewSettings(
-                          hideEmptyScheduleWeek: true,
-                          appointmentItemHeight: -1,
-                          monthHeaderSettings: MonthHeaderSettings(
-                            height: MediaQuery.of(context).size.height*0.05,
+                      headerHeight: MediaQuery.of(context).size.height*0.05,
+                      headerStyle: CalendarHeaderStyle(
+                          textAlign: TextAlign.justify,
+                          backgroundColor: Color(0xFFF5F5F5),
+                          textStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                            letterSpacing: 4,
+                            color: Theme.of(context).accentColor,
                           ),
-                          weekHeaderSettings: WeekHeaderSettings(
-                              startDateFormat: 'dd/MM',
-                              endDateFormat: 'dd/MM/yy',
-                              height: MediaQuery.of(context).size.height*0.03,
-                              textAlign: TextAlign.start,
-                              weekTextStyle: Styles.purpleTextStyle.copyWith(color: Colors.grey)
-                          ),
-                      ),
-                      scheduleViewMonthHeaderBuilder: (BuildContext buildContext, ScheduleViewMonthHeaderDetails details) {
-                        return Container(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Text(
-                                  toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(details.date)),
-                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.start,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                      appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
-                        final Appointment appointment = details.appointments.first;
-                        final DateTime today = DateTime.now();
-                        bool isCompleted = appointment.endTime.isBefore(today);
-                        final Event event = getEvent(appointment.id.toString());
-                        if (_controller.view == CalendarView.schedule) {
-                          if (isCompleted) {
-                            return GestureDetector(
-                              onTap: () {
-                                _viewEvent(appointment.id.toString(), appointment.startTime);
-                              },
-                              child: Material(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.all(
-                                    const Radius.circular(5.0),
+                        ),
+                        viewHeaderHeight: 50,
+                        viewHeaderStyle: ViewHeaderStyle(
+                          backgroundColor: Theme.of(context).backgroundColor,
+                          dateTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 14, fontWeight: FontWeight.bold),
+                          dayTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 10, fontWeight: FontWeight.bold),
+                        ),
+                        timeSlotViewSettings: TimeSlotViewSettings(
+                          timelineAppointmentHeight: -1,
+                          timeIntervalHeight: -1,
+                          timeIntervalWidth: 55,
+                          startHour: _startHour!-1,
+                          endHour:  _endHour!+1,
+                          timeFormat: 'HH',
+                          dayFormat: 'E',
+                          dateFormat: 'd',
+                          timeRulerSize: 25,
+                          nonWorkingDays: nonWorkDays,
+                          minimumAppointmentDuration: Duration(minutes: 30),
+                          timeTextStyle: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 12,
+                            color: Theme.of(context).primaryColor,
+                          )
+                        ),
+                        scheduleViewSettings: ScheduleViewSettings(
+                            hideEmptyScheduleWeek: true,
+                            appointmentItemHeight: -1,
+                            monthHeaderSettings: MonthHeaderSettings(
+                              height: MediaQuery.of(context).size.height*0.05,
+                            ),
+                            weekHeaderSettings: WeekHeaderSettings(
+                                startDateFormat: 'dd/MM',
+                                endDateFormat: 'dd/MM/yy',
+                                height: MediaQuery.of(context).size.height*0.03,
+                                textAlign: TextAlign.start,
+                                weekTextStyle: Styles.purpleTextStyle.copyWith(color: Colors.grey)
+                            ),
+                        ),
+                        scheduleViewMonthHeaderBuilder: (BuildContext buildContext, ScheduleViewMonthHeaderDetails details) {
+                          return Container(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Text(
+                                    toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(details.date)),
+                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.start,
                                   ),
                                 ),
-                                elevation: 2,
-                                child: Container(
-                                  width: details.bounds.width,
-                                  height: details.bounds.height,
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).scaffoldBackgroundColor,
-                                    border: Border.all(width: 1, color: Colors.black),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(height: MediaQuery.of(context).size.height*0.006,),
-                                        Row(
-                                          children: [
-                                            Flexible(
-                                                child: Text(event.title!,
-                                                  textAlign: TextAlign.start,
-                                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 14),)
-                                            ),
-                                            /*
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                            returnBadge(event),
-                                             */
-                                          ],
-                                        ),
-                                        SizedBox(height: MediaQuery.of(context).size.height*0.006,),
-                                        Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                Icon(
-                                                  Icons.schedule,
-                                                  color: Colors.black,
-                                                  size: 15,
-                                                ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Text(
-                                                  event.hour.toString(),
-                                                  style: TextStyle(color: Colors.black, fontSize: 12),
-                                                ),
-                                                Text(
-                                                  ":",
-                                                  style: TextStyle(color: Colors.black, fontSize: 12),
-                                                ),
-                                                Text(
-                                                  event.minute=="0" ? "00" : event.minute.toString(),
-                                                  style: TextStyle(color: Colors.black, fontSize: 12),
-                                                ),
-                                                Container(
-                                                    height: 8,
-                                                    width: 32,
-                                                    child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
-                                                ),
-                                                Icon(
-                                                  Icons.timer,
-                                                  color: Colors.black,
-                                                  size: 15,
-                                                ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Text(
-                                                  durationToString(event.duration!),
-                                                  style: TextStyle(color: Colors.black, fontSize: 12),
-                                                ),
-                                                Container(
-                                                    height: 8,
-                                                    width: 32,
-                                                    child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
-                                                ),
-                                                Icon(
-                                                  Icons.record_voice_over,
-                                                  color: Colors.black,
-                                                  size: 15,
-                                                ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Text(
-                                                  event.numTrainers.toString(),
-                                                  style: TextStyle(color: Colors.black, fontSize: 12),
-                                                ),
-                                                Container(
-                                                    height: 8,
-                                                    width: 32,
-                                                    child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
-                                                ),
-                                                Icon(
-                                                  Icons.directions_run,
-                                                  color: Colors.black,
-                                                  size: 15,
-                                                ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Text(
-                                                  event.numClients.toString(),
-                                                  style: TextStyle(color: Colors.black, fontSize: 12),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: MediaQuery.of(context).size.height*0.003,),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          } else {
-                            return GestureDetector(
-                              onTap: () {
-                                _viewEvent(appointment.id.toString(), appointment.startTime);
-                              },
-                              child: Material(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.all(
-                                    const Radius.circular(5.0),
-                                  ),
-                                ),
-                                elevation: 2,
-                                child: Container(
-                                  width: details.bounds.width,
-                                  height: details.bounds.height,
-                                  decoration: BoxDecoration(
-                                    color: appointment.color,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(height: MediaQuery.of(context).size.height*0.006,),
-                                        Row(
-                                          children: [
-                                            Flexible(
-                                                child: Text(event.title!,
-                                                  textAlign: TextAlign.start,
-                                                  style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 14),)
-                                            ),
-                                            /*
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                            returnBadge(event),
-                                             */
-                                          ],
-                                        ),
-                                        SizedBox(height: MediaQuery.of(context).size.height*0.006,),
-                                        Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                Icon(
-                                                  Icons.schedule,
-                                                  color: Colors.white,
-                                                  size: 15,
-                                                ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Text(
-                                                  event.hour.toString(),
-                                                  style: TextStyle(color: Colors.white, fontSize: 12),
-                                                ),
-                                                Text(
-                                                  ":",
-                                                  style: TextStyle(color: Colors.white, fontSize: 12),
-                                                ),
-                                                Text(
-                                                  event.minute=="0" ? "00" : event.minute.toString(),
-                                                  style: TextStyle(color: Colors.white, fontSize: 12),
-                                                ),
-                                                Container(
-                                                    height: 8,
-                                                    width: 32,
-                                                    child: VerticalDivider(color: Colors.white, width: 10, thickness: 1,)
-                                                ),
-                                                Icon(
-                                                  Icons.timer,
-                                                  color: Colors.white,
-                                                  size: 15,
-                                                ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Text(
-                                                  durationToString(event.duration!),
-                                                  style: TextStyle(color: Colors.white, fontSize: 12),
-                                                ),
-                                                Container(
-                                                    height: 8,
-                                                    width: 32,
-                                                    child: VerticalDivider(color: Colors.white, width: 10, thickness: 1,)
-                                                ),
-                                                Icon(
-                                                  Icons.record_voice_over,
-                                                  color: Colors.white,
-                                                  size: 15,
-                                                ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Text(
-                                                  event.numTrainers.toString(),
-                                                  style: TextStyle(color: Colors.white, fontSize: 12),
-                                                ),
-                                                Container(
-                                                    height: 8,
-                                                    width: 32,
-                                                    child: VerticalDivider(color: Colors.white, width: 10, thickness: 1,)
-                                                ),
-                                                Icon(
-                                                  Icons.directions_run,
-                                                  color: Colors.white,
-                                                  size: 15,
-                                                ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Text(
-                                                  event.numClients.toString(),
-                                                  style: TextStyle(color: Colors.white, fontSize: 12),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: MediaQuery.of(context).size.height*0.003,),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                        } else {
-                          if (isCompleted) {
-                            return GestureDetector(
-                              onTap: () {
-                                _viewEvent(appointment.id.toString(), appointment.startTime);
-                              },
-                              child: Center(
+                              ],
+                            ),
+                          );
+                        },
+                        appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
+                          final Appointment appointment = details.appointments.first;
+                          final DateTime today = DateTime.now();
+                          bool isCompleted = appointment.endTime.isBefore(today);
+                          final Event event = getEvent(appointment.id.toString());
+                          if (_controller.view == CalendarView.schedule) {
+                            if (isCompleted) {
+                              return GestureDetector(
+                                onTap: () {
+                                  _viewEvent(appointment.id.toString(), appointment.startTime);
+                                },
                                 child: Material(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: new BorderRadius.all(
@@ -543,36 +300,118 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                   child: Container(
                                     width: details.bounds.width,
                                     height: details.bounds.height,
-                                    padding: EdgeInsets.all(details.bounds.width*0.1),
                                     decoration: BoxDecoration(
-                                      color: Styles.lightGrey,
+                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                      border: Border.all(width: 1, color: Colors.black),
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(5),
                                       ),
                                     ),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        AutoSizeText(
-                                          event.title!,
-                                          style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w800),
-                                          textAlign: TextAlign.center,
-                                          wrapWords: false,
-                                          minFontSize: 1,
-                                          maxFontSize: 16,
-                                        ),
-                                      ],
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: MediaQuery.of(context).size.height*0.006,),
+                                          Row(
+                                            children: [
+                                              Flexible(
+                                                  child: Text(event.title!,
+                                                    textAlign: TextAlign.start,
+                                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 14),)
+                                              ),
+                                              /*
+                                              SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                              returnBadge(event),
+                                               */
+                                            ],
+                                          ),
+                                          SizedBox(height: MediaQuery.of(context).size.height*0.006,),
+                                          Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  Icon(
+                                                    Icons.schedule,
+                                                    color: Colors.black,
+                                                    size: 15,
+                                                  ),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  Text(
+                                                    event.hour.toString(),
+                                                    style: TextStyle(color: Colors.black, fontSize: 12),
+                                                  ),
+                                                  Text(
+                                                    ":",
+                                                    style: TextStyle(color: Colors.black, fontSize: 12),
+                                                  ),
+                                                  Text(
+                                                    event.minute=="0" ? "00" : event.minute.toString(),
+                                                    style: TextStyle(color: Colors.black, fontSize: 12),
+                                                  ),
+                                                  Container(
+                                                      height: 8,
+                                                      width: 32,
+                                                      child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
+                                                  ),
+                                                  Icon(
+                                                    Icons.timer,
+                                                    color: Colors.black,
+                                                    size: 15,
+                                                  ),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  Text(
+                                                    durationToString(event.duration!),
+                                                    style: TextStyle(color: Colors.black, fontSize: 12),
+                                                  ),
+                                                  Container(
+                                                      height: 8,
+                                                      width: 32,
+                                                      child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
+                                                  ),
+                                                  Icon(
+                                                    Icons.record_voice_over,
+                                                    color: Colors.black,
+                                                    size: 15,
+                                                  ),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  Text(
+                                                    event.numTrainers.toString(),
+                                                    style: TextStyle(color: Colors.black, fontSize: 12),
+                                                  ),
+                                                  Container(
+                                                      height: 8,
+                                                      width: 32,
+                                                      child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
+                                                  ),
+                                                  Icon(
+                                                    Icons.directions_run,
+                                                    color: Colors.black,
+                                                    size: 15,
+                                                  ),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  Text(
+                                                    event.numClients.toString(),
+                                                    style: TextStyle(color: Colors.black, fontSize: 12),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: MediaQuery.of(context).size.height*0.003,),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          } else {
-                            return GestureDetector(
-                              onTap: () {
-                                _viewEvent(appointment.id.toString(), appointment.startTime);
-                              },
-                              child: Center(
+                              );
+                            } else {
+                              return GestureDetector(
+                                onTap: () {
+                                  _viewEvent(appointment.id.toString(), appointment.startTime);
+                                },
                                 child: Material(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: new BorderRadius.all(
@@ -583,45 +422,210 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                   child: Container(
                                     width: details.bounds.width,
                                     height: details.bounds.height,
-                                    padding: EdgeInsets.all(details.bounds.width*0.1),
                                     decoration: BoxDecoration(
                                       color: appointment.color,
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(5),
                                       ),
                                     ),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        AutoSizeText(
-                                          event.title!,
-                                          style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w800),
-                                          textAlign: TextAlign.center,
-                                          wrapWords: false,
-                                          minFontSize: 1,
-                                          maxFontSize: 16,
-                                        ),
-                                        SizedBox(
-                                          width: details.bounds.width*0.4,
-                                          child: AutoSizeText(
-                                            appointment.subject,
-                                            style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w500),
-                                            textAlign: TextAlign.center,
-                                            wrapWords: false,
-                                            minFontSize: 1,
-                                            maxFontSize: 14,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: MediaQuery.of(context).size.height*0.006,),
+                                          Row(
+                                            children: [
+                                              Flexible(
+                                                  child: Text(event.title!,
+                                                    textAlign: TextAlign.start,
+                                                    style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 14),)
+                                              ),
+                                              /*
+                                              SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                              returnBadge(event),
+                                               */
+                                            ],
                                           ),
-                                        ),
-                                      ],
+                                          SizedBox(height: MediaQuery.of(context).size.height*0.006,),
+                                          Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  Icon(
+                                                    Icons.schedule,
+                                                    color: Colors.white,
+                                                    size: 15,
+                                                  ),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  Text(
+                                                    event.hour.toString(),
+                                                    style: TextStyle(color: Colors.white, fontSize: 12),
+                                                  ),
+                                                  Text(
+                                                    ":",
+                                                    style: TextStyle(color: Colors.white, fontSize: 12),
+                                                  ),
+                                                  Text(
+                                                    event.minute=="0" ? "00" : event.minute.toString(),
+                                                    style: TextStyle(color: Colors.white, fontSize: 12),
+                                                  ),
+                                                  Container(
+                                                      height: 8,
+                                                      width: 32,
+                                                      child: VerticalDivider(color: Colors.white, width: 10, thickness: 1,)
+                                                  ),
+                                                  Icon(
+                                                    Icons.timer,
+                                                    color: Colors.white,
+                                                    size: 15,
+                                                  ),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  Text(
+                                                    durationToString(event.duration!),
+                                                    style: TextStyle(color: Colors.white, fontSize: 12),
+                                                  ),
+                                                  Container(
+                                                      height: 8,
+                                                      width: 32,
+                                                      child: VerticalDivider(color: Colors.white, width: 10, thickness: 1,)
+                                                  ),
+                                                  Icon(
+                                                    Icons.record_voice_over,
+                                                    color: Colors.white,
+                                                    size: 15,
+                                                  ),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  Text(
+                                                    event.numTrainers.toString(),
+                                                    style: TextStyle(color: Colors.white, fontSize: 12),
+                                                  ),
+                                                  Container(
+                                                      height: 8,
+                                                      width: 32,
+                                                      child: VerticalDivider(color: Colors.white, width: 10, thickness: 1,)
+                                                  ),
+                                                  Icon(
+                                                    Icons.directions_run,
+                                                    color: Colors.white,
+                                                    size: 15,
+                                                  ),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  Text(
+                                                    event.numClients.toString(),
+                                                    style: TextStyle(color: Colors.white, fontSize: 12),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: MediaQuery.of(context).size.height*0.003,),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
+                              );
+                            }
+                          } else {
+                            if (isCompleted) {
+                              return GestureDetector(
+                                onTap: () {
+                                  _viewEvent(appointment.id.toString(), appointment.startTime);
+                                },
+                                child: Center(
+                                  child: Material(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: new BorderRadius.all(
+                                        const Radius.circular(5.0),
+                                      ),
+                                    ),
+                                    elevation: 2,
+                                    child: Container(
+                                      width: details.bounds.width,
+                                      height: details.bounds.height,
+                                      padding: EdgeInsets.all(details.bounds.width*0.1),
+                                      decoration: BoxDecoration(
+                                        color: Styles.lightGrey,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(5),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          AutoSizeText(
+                                            event.title!,
+                                            style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w800),
+                                            textAlign: TextAlign.center,
+                                            wrapWords: false,
+                                            minFontSize: 1,
+                                            maxFontSize: 16,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return GestureDetector(
+                                onTap: () {
+                                  _viewEvent(appointment.id.toString(), appointment.startTime);
+                                },
+                                child: Center(
+                                  child: Material(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: new BorderRadius.all(
+                                        const Radius.circular(5.0),
+                                      ),
+                                    ),
+                                    elevation: 2,
+                                    child: Container(
+                                      width: details.bounds.width,
+                                      height: details.bounds.height,
+                                      padding: EdgeInsets.all(details.bounds.width*0.1),
+                                      decoration: BoxDecoration(
+                                        color: appointment.color,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(5),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          AutoSizeText(
+                                            event.title!,
+                                            style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w800),
+                                            textAlign: TextAlign.center,
+                                            wrapWords: false,
+                                            minFontSize: 1,
+                                            maxFontSize: 16,
+                                          ),
+                                          SizedBox(
+                                            width: details.bounds.width*0.4,
+                                            child: AutoSizeText(
+                                              appointment.subject,
+                                              style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w500),
+                                              textAlign: TextAlign.center,
+                                              wrapWords: false,
+                                              minFontSize: 1,
+                                              maxFontSize: 10,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
                           }
-                        }
-                      },
-                    );
+                        },
+                      ),
+                  );
                 }
               }
           ), // This trailing comma makes auto-formatting nicer for build methods.
