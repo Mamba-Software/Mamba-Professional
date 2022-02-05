@@ -11,7 +11,7 @@ const uuidv4 = require("uuid")
 const db = admin.firestore();
 
 // Firebase collections
-const isProduction = false;
+const isProduction = true;
 const users = isProduction ? "Users" : "7777 Users";
 const nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
 const brands = isProduction ? "Brands" : "7777 Brands";
