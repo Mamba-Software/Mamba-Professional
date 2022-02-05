@@ -71,6 +71,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
   List<Usuario> allTrainers = [];
   List<Usuario> eventTrainers = [];
   List<Usuario> eventClients = [];
+  List<String> eventTrainersIds = [];
   List<bool> eventTrainersBool = [];
   bool errorNoTrainerSelected = false;
   
@@ -235,6 +236,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
     if (mounted) {
       setState(() {
         eventTrainers = trainers;
+        eventTrainersIds = trainersIds;
         eventClients = clients;
       });
     }
@@ -1344,6 +1346,18 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                               if (eventTrainersBool[i]) {
                                 selectedTrainerId.add(allTrainers[i].id);
                               }
+                            }
+                            for (var i=0; i< selectedTrainerId.length; i++) {
+                              String id = selectedTrainerId[i];
+                              if (!eventTrainersIds.contains(id)) {
+                                await _eventDataService.addUserToEvent(event!.id!, id);
+                              } else {
+                                eventTrainersIds.remove(id);
+                              }
+                            }
+                            for (var i=0; i< eventTrainersIds.length; i++) {
+                              String id = eventTrainersIds[i];
+                              await _eventDataService.deleteUserFromEvent(event!.id!, id);
                             }
                             if (location.id! != event!.locationId!) {
                               await _eventDataService.updateEventLocation(event!.id!, location.id!, event!.locationId!);
