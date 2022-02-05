@@ -197,7 +197,9 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     durationController.text = "${hour}h ${min}min";
     members = event!.maxMembers!;
     membersController.text = "${event!.numClients.toString()} / ${event!.maxMembers.toString()}";
-    isFull = (event!.numClients!/event!.maxMembers! == 1);
+    setState(() {
+      isFull = (event!.numClients!/event!.maxMembers! == 1);
+    });
     await getEventUsers();
     await getEventLocation(event!.id!);
     if (widget.onlyView != null) {
@@ -218,6 +220,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
     allUsers = await _eventDataService.getEventUsers(event!.id!);
     List<Usuario> trainers = [];
     List<Usuario> clients = [];
+    bool _isJoined = false;
     for (var i=0; i < allUsers.length; i++) {
       var user = allUsers[i];
       if (user.isTrainer!) {
@@ -226,9 +229,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
         if (currentUser.id! == user.id!) {
           // User has joined the event
           clients.insert(0, user);
-          setState(() {
-            isJoined = true;
-          });
+          _isJoined = true;
         } else {
           clients.add(user);
         }
@@ -239,6 +240,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
       setState(() {
         eventTrainers = trainers;
         eventClients = clients;
+        isJoined = _isJoined;
       });
     }
   }
@@ -899,7 +901,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                             });
                             await _eventDataService.addUserToEvent(event!.id!, currentUser.id!);
                             _notificationService.userJoinEvent(currentUser.id!, event!.brandID!, event!.id!);
-                            await Future.delayed(const Duration(milliseconds: 2500));
+                            await Future.delayed(const Duration(milliseconds: 3000));
                             await getEventInfo();
                             setState(() {
                               isJoined = true;
@@ -920,6 +922,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
             ),
           );
         } else if (isJoined) {
+
           return Padding(
             padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
             child: Container(
@@ -948,10 +951,10 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                             });
                             await _eventDataService.deleteUserFromEvent(event!.id!, currentUser.id!);
                             _notificationService.userLeaveEvent(currentUser.id!, event!.brandID!, event!.id!);
-                            await Future.delayed(const Duration(milliseconds: 2500));
+                            await Future.delayed(const Duration(milliseconds: 3000));
                             await getEventInfo();
                             setState(() {
-                              isJoined = true;
+                              isJoined = false;
                               isLoadingBody = false;
                             });
                           }

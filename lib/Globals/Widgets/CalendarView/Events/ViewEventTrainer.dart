@@ -186,7 +186,9 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
     durationController.text = "${hour}h ${min}min";
     members = event!.maxMembers!;
     membersController.text = "${event!.numClients.toString()} / ${event!.maxMembers.toString()}";
-    isFull = (event!.numClients!/event!.maxMembers! == 1);
+    setState(() {
+      isFull = (event!.numClients!/event!.maxMembers! == 1);
+    });
     await getEventUsers();
     await getEventLocation(event!.id!);
     if (mounted) {
@@ -1390,6 +1392,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                           isLoadingBody = true;
                         });
                         await _eventDataService.deleteEvent(widget.eventId);
+                        await Future.delayed(const Duration(milliseconds: 3000));
                         Navigator.pop(context);
                       }
                     },

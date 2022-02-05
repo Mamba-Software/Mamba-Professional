@@ -1294,6 +1294,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         }
       }
     }
+    await Future.delayed(const Duration(milliseconds: 3000));
     Navigator.pop(context);
   }
 }
