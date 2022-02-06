@@ -34,9 +34,7 @@ class FirebaseDatabaseService {
   String brands = isProduction ? 'Brands' : '7777 Brands';
   String events = isProduction ? 'Events' : '7777 Events';
   String locations = isProduction ? 'Locations' : '7777 Locations';
-  String groupOfQuestions = isProduction
-      ? 'GroupOfQuestions'
-      : '7777 GroupOfQuestions';
+  String groupOfQuestions = isProduction ? 'GroupOfQuestions' : '7777 GroupOfQuestions';
   String questions = isProduction ? 'Questions' : '7777 Questions';
   String answers = isProduction ? 'Answers' : '7777 Answers';
   String conversations = isProduction ? 'Conversations' : '7777 Conversations';
