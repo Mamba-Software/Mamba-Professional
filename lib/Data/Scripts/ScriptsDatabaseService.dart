@@ -48,15 +48,87 @@ class ScriptsDatabaseService {
       print('\n');
       print('-----------------------------');
       print('DATA MIGRATION 6TH FEBRUARY 2022');
-      print('-----------------------------\n');
+      print('-----------------------------');
       print('\n');
 
       print('Modifying '+users+' collection:\n');
-      print('-----------------------------\n');
+      print('--------------');
       print('\n');
 
-      print('Updating Document Data ...');
-      print('-----------------------------\n');
+      // TEST IN PRODUCTION WIHT OUR TEST BRAND - MAMBA TEAM
+      List<String> userIds = ["FJtLWzS0DfSs64st2ZsspqT3ap63","SElZHIu009SKTMGmce0BY8cgeym2", "zLRzfrvxmtO8aMOdz8Gl1DR1ILy2"];
+      for (int i = 0; i < userIds.length; i++) {
+        String userId = userIds[i];
+        DocumentSnapshot _documentSnapshot = await _firestore.collection(users).doc(userId).get();
+        Usuario user = Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('USER WITH ID: '+user.id!+" AND NAME: "+user.name!);
+        print('\n');
+        print('Updating Document Data ...');
+        print('-----------------------------\n');
+        List<String> aux = user.name!.split(" ");
+        String firstName = aux[0];
+        String lastName = "";
+        for (var i=1; i<aux.length;i++) {
+          lastName += aux[i]+" ";
+        }
+        print('firstName = '+firstName+'; lastName = '+lastName);
+        await _firestore.collection(users).doc(user.id!).update({
+          "firstName": firstName,
+          "lastName":  lastName.trim(),
+        });
+        print('\n');
+        print('Adding nickname document to '+nicknames+' collection ...');
+        print('-----------------------------\n');
+        await _firestore.collection(nicknames).doc(user.nick!).set({
+          "userId": user.id!,
+        });
+        print(user.nick!);
+        print('\n');
+        print('Adding "Notifications" subcollection');
+        print('-----------------------------\n');
+        QuerySnapshot querySnapshotNotif = await _firestore.collection(notifications).where("userId", isEqualTo: user.id!).get();
+        for (var i=1; i<querySnapshotNotif.docs.length;i++) {
+          String notifId = querySnapshotNotif.docs[i].id;
+          print('Notification with ID : '+notifId);
+          DocumentSnapshot _documentSnapshot = querySnapshotNotif.docs[i];
+          await _firestore.collection(users).doc(user.id!).collection("Notifications").doc(notifId).set({
+            "userId": _documentSnapshot.get("userId"),
+            "type": _documentSnapshot.get("type"),
+            "isRead": _documentSnapshot.get("isRead"),
+            "dateSent": _documentSnapshot.get("dateSent"),
+            "year": _documentSnapshot.get("year"),
+            "month": _documentSnapshot.get("month"),
+            "day": _documentSnapshot.get("day"),
+            "hour": _documentSnapshot.get("hour"),
+            "minutes": _documentSnapshot.get("minutes"),
+            "seconds": _documentSnapshot.get("seconds"),
+            "parameters": _documentSnapshot.get("parameters"),
+          });
+        }
+        print('All Notifications Added');
+        print('\n');
+        print('Adding "Errors" subcollection');
+        print('-----------------------------\n');
+        QuerySnapshot querySnapshotErrors = await _firestore.collection(errors).where("userID", isEqualTo: user.id!).get();
+        for (var i=1; i<querySnapshotErrors.docs.length;i++) {
+          String errorId = querySnapshotErrors.docs[i].id;
+          print('Error with ID : '+errorId);
+          DocumentSnapshot _documentSnapshot = querySnapshotErrors.docs[i];
+          await _firestore.collection(users).doc(user.id!).collection("Errors").doc(errorId)
+              .set({
+                "dateSent": _documentSnapshot.get("dateSent"),
+              });
+        }
+        print('All Errors Added');
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+
+      /* REAL MIGRATION FOR REAL DATA OF USERS
       QuerySnapshot querySnapshot = await _firestore.collection(users).get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         Usuario user = Usuario.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
@@ -78,7 +150,8 @@ class ScriptsDatabaseService {
         });
         print(user.nick!);
         print('-----------------------------\n');
-      }
+      }*/
+
       return true;
     } catch (e) {
       return false;
