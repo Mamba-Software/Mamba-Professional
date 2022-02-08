@@ -1642,7 +1642,7 @@ class FirebaseDatabaseService {
       var uid = Uuid().v1();
       try {
         await _firestore
-          ..collection(locations).doc(uid).set({
+          .collection(locations).doc(uid).set({
             "brandID": brandId,
             "placeId": placeId,
             "isBaseLocation": isBaseLocation,
