@@ -121,10 +121,9 @@ class EachList extends StatelessWidget{
         );
         break;
       case 3:
-        var result = await _script.migrateLocationDataFebruary6th();
+        var result = await _script.changeNicknameToLowercaseFebruary6th();
         print("RESULT: "+result.toString());
         break;
-
     }
 
   }

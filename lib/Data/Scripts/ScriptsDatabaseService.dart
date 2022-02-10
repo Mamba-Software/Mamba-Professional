@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
@@ -20,12 +21,15 @@ import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:uuid/uuid.dart';
 
+import '../BrandDataService.dart';
+
 class ScriptsDatabaseService {
   // Firebase Instances
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final batch = FirebaseFirestore.instance.batch();
+  var _brandDataService = BrandDataService();
 
   // Firebase collections
   String users = isProduction ? 'Users' : '7777 Users';
@@ -55,156 +59,308 @@ class ScriptsDatabaseService {
       print('--------------');
       print('\n');
 
-      // TEST IN PRODUCTION WIHT OUR TEST BRAND - MAMBA TEAM
-      List<String> userIds = ["FJtLWzS0DfSs64st2ZsspqT3ap63","SElZHIu009SKTMGmce0BY8cgeym2", "zLRzfrvxmtO8aMOdz8Gl1DR1ILy2"];
+      /* TEST IN PRODUCTION WIHT OUR TEST BRAND - MAMBA TEAM
+      List<String> userIds = ["4dFmaUuMkpW6zkQT1pl2KLVBDMB3","SElZHIu009SKTMGmce0BY8cgeym2"];
       for (int i = 0; i < userIds.length; i++) {
         String userId = userIds[i];
-        DocumentSnapshot _documentSnapshot = await _firestore.collection(users).doc(userId).get();
-        Usuario user = Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
-        print('=================================================================================');
-        print('=================================================================================');
-        print('USER WITH ID: '+user.id!+" AND NAME: "+user.name!);
+        DocumentSnapshot _documentSnapshot = await _firestore.collection(users)
+            .doc(userId)
+            .get();
+        Usuario user = Usuario.fromObjectAllData(
+            _documentSnapshot.id, _documentSnapshot);
+        print(
+            '=================================================================================');
+        print(
+            '=================================================================================');
+        print('USER WITH ID: ' + user.id! + " AND NAME: " + user.name!);
         print('\n');
-        print('Updating Document Data ...');
-        print('-----------------------------\n');
-        List<String> aux = user.name!.split(" ");
-        String firstName = aux[0];
-        String lastName = "";
-        for (var i=1; i<aux.length;i++) {
-          lastName += aux[i]+" ";
-        }
-        print('firstName = '+firstName+'; lastName = '+lastName);
-        await _firestore.collection(users).doc(user.id!).update({
-          "firstName": firstName,
-          "lastName":  lastName.trim(),
-        });
-        print('\n');
-        print('Adding nickname document to '+nicknames+' collection ...');
-        print('-----------------------------\n');
-        await _firestore.collection(nicknames).doc(user.nick!).set({
-          "userId": user.id!,
-        });
-        print(user.nick!);
-        print('\n');
-        print('Adding "Notifications" subcollection');
-        print('-----------------------------\n');
-        QuerySnapshot querySnapshotNotif = await _firestore.collection(notifications).where("userId", isEqualTo: user.id!).get();
-        for (var i=0; i<querySnapshotNotif.docs.length;i++) {
-          String notifId = querySnapshotNotif.docs[i].id;
-          print('Notification with ID : '+notifId);
-          DocumentSnapshot _documentSnapshot = querySnapshotNotif.docs[i];
-          await _firestore.collection(users).doc(user.id!).collection("Notifications").doc(notifId).set({
-            "userId": _documentSnapshot.get("userId"),
-            "type": _documentSnapshot.get("type"),
-            "isRead": _documentSnapshot.get("isRead"),
-            "dateSent": _documentSnapshot.get("dateSent"),
-            "year": _documentSnapshot.get("year"),
-            "month": _documentSnapshot.get("month"),
-            "day": _documentSnapshot.get("day"),
-            "hour": _documentSnapshot.get("hour"),
-            "minutes": _documentSnapshot.get("minutes"),
-            "seconds": _documentSnapshot.get("seconds"),
-            "parameters": _documentSnapshot.get("parameters"),
+        if (user.name == "null" || user.name == null) {
+          print('User has not finished Onboarding');
+        } else {
+          print('Updating Document Data ...');
+          print('-----------------------------\n');
+          List<String> aux = user.name!.split(" ");
+          String firstName = aux[0];
+          String lastName = "";
+          for (var i = 1; i < aux.length; i++) {
+            lastName += aux[i] + " ";
+          }
+          print('firstName = ' + firstName + '; lastName = ' + lastName);
+          await _firestore.collection(users).doc(user.id!).update({
+            "firstName": firstName,
+            "lastName": lastName.trim(),
+            "isPrivate": false,
           });
-        }
-        print('All Notifications Added');
-        print('\n');
-        print('Adding "Errors" subcollection');
-        print('-----------------------------\n');
-        QuerySnapshot querySnapshotErrors = await _firestore.collection(errors).where("userID", isEqualTo: user.id!).get();
-        for (var i=0; i<querySnapshotErrors.docs.length;i++) {
-          String errorId = querySnapshotErrors.docs[i].id;
-          print('Error with ID : '+errorId);
-          final DateTime now = DateTime.now();
-          final DateFormat formatter = DateFormat('dd-MM-yyyy');
-          final String formatted = formatter.format(now);
-          await _firestore.collection(users).doc(user.id!).collection("Errors").doc(errorId)
-              .set({
-                "dateSent": formatted,
-              });
-        }
-        print('All Errors Added');
-        print('\n');
-        print('Adding "Brands" subcollection');
-        print('-----------------------------\n');
-        if (user.brandID != null) {
-          DocumentSnapshot _document = await _firestore.collection(brands).doc(user.brandID).get();
-          Brand brand = Brand.fromObjectAllData(_document.id, _document);
-          print('Brand with ID : '+brand.id!);
-          final DateTime now = DateTime.now();
-          final DateFormat formatter = DateFormat('dd-MM-yyyy');
-          final String formatted = formatter.format(now);
-          await _firestore.collection(users).doc(user.id!).collection("Brands").doc(brand.id)
-            .set({
+          print('\n');
+          print('Adding nickname document to ' + nicknames + ' collection ...');
+          print('-----------------------------\n');
+          await _firestore.collection(nicknames).doc(user.nick!).set({
+            "userId": user.id!,
+          });
+          print(user.nick!);
+          print('\n');
+          print('Adding "Notifications" subcollection');
+          print('-----------------------------\n');
+          QuerySnapshot querySnapshotNotif = await _firestore.collection(
+              notifications).where("userId", isEqualTo: user.id!).get();
+          for (var i = 0; i < querySnapshotNotif.docs.length; i++) {
+            String notifId = querySnapshotNotif.docs[i].id;
+            print('Notification with ID : ' + notifId);
+            DocumentSnapshot _documentSnapshot = querySnapshotNotif.docs[i];
+            await _firestore.collection(users).doc(user.id!).collection(
+                "Notifications").doc(notifId).set({
+              "userId": _documentSnapshot.get("userId"),
+              "type": _documentSnapshot.get("type"),
+              "isRead": _documentSnapshot.get("isRead"),
+              "dateSent": _documentSnapshot.get("dateSent"),
+              "year": _documentSnapshot.get("year"),
+              "month": _documentSnapshot.get("month"),
+              "day": _documentSnapshot.get("day"),
+              "hour": _documentSnapshot.get("hour"),
+              "minutes": _documentSnapshot.get("minutes"),
+              "seconds": _documentSnapshot.get("seconds"),
+              "parameters": _documentSnapshot.get("parameters"),
+            });
+          }
+          print('All Notifications Added');
+          print('\n');
+          print('Adding "Errors" subcollection');
+          print('-----------------------------\n');
+          QuerySnapshot querySnapshotErrors = await _firestore.collection(
+              errors).where("userID", isEqualTo: user.id!).get();
+          for (var i = 0; i < querySnapshotErrors.docs.length; i++) {
+            String errorId = querySnapshotErrors.docs[i].id;
+            print('Error with ID : ' + errorId);
+            final DateTime now = DateTime.now();
+            final DateFormat formatter = DateFormat('dd-MM-yyyy');
+            final String formatted = formatter.format(now);
+            await _firestore.collection(users).doc(user.id!).collection(
+                "Errors").doc(errorId)
+                .set({
+              "dateSent": formatted,
+            });
+          }
+          print('All Errors Added');
+          print('\n');
+          print('Adding "Brands" subcollection');
+          print('-----------------------------\n');
+          if (user.brandID != null) {
+            DocumentSnapshot _document = await _firestore.collection(brands)
+                .doc(user.brandID)
+                .get();
+            Brand brand = Brand.fromObjectAllData(_document.id, _document);
+            print('Brand with ID : ' + brand.id!);
+            final DateTime now = DateTime.now();
+            final DateFormat formatter = DateFormat('dd-MM-yyyy');
+            final String formatted = formatter.format(now);
+            await _firestore.collection(users).doc(user.id!).collection(
+                "Brands").doc(brand.id)
+                .set({
               "name": brand.name,
               "logoUrl": brand.logoUrl,
               "dateJoined": formatted,
               "myMonthlySessions": 0,
               "myTotalSessions": 0,
             });
-        } else {
-          print('Not in Brand');
+          } else {
+            print('Not in Brand');
+          }
+          print('All Brands Added');
+          print('\n');
+          print('Adding "Events" subcollection');
+          print('-----------------------------\n');
+          QuerySnapshot querySnapshotEvents;
+          if (user.isTrainer!) {
+            querySnapshotEvents = await _firestore.collection(events).where(
+                "selectedTrainers", arrayContains: user.id!).get();
+          } else {
+            querySnapshotEvents = await _firestore.collection(events).where(
+                "joinedMembers", arrayContains: user.id!).get();
+          }
+          for (var i = 0; i < querySnapshotEvents.docs.length; i++) {
+            String eventId = querySnapshotEvents.docs[i].id;
+            DocumentSnapshot _documentSnapshot = querySnapshotEvents.docs[i];
+            print('Event with ID : ' + eventId);
+            int numClients = _documentSnapshot
+                .get("joinedMembers")
+                .length;
+            int numTrainers = _documentSnapshot
+                .get("selectedTrainers")
+                .length;
+            await _firestore.collection(users).doc(user.id!).collection(
+                "Events").doc(eventId).set({
+              "title": _documentSnapshot.get("title"),
+              "year": _documentSnapshot.get("year"),
+              "month": _documentSnapshot.get("month"),
+              "day": _documentSnapshot.get("day"),
+              "hour": _documentSnapshot.get("hour"),
+              "minute": _documentSnapshot.get("minute"),
+              "duration": _documentSnapshot.get("duration"),
+              "numTrainers": numTrainers,
+              "numClients": numClients,
+              "maxMembers": _documentSnapshot.get("maxMembers"),
+            });
+          }
+          print('All Events Added');
+          print('\n');
+          print(
+              '=================================================================================');
+          print(
+              '=================================================================================');
+          print('\n');
         }
-        print('All Brands Added');
-        print('\n');
-        print('Adding "Events" subcollection');
-        print('-----------------------------\n');
-        QuerySnapshot querySnapshotEvents;
-        if (user.isTrainer!) {
-          querySnapshotEvents = await _firestore.collection(events).where("selectedTrainers", arrayContains: user.id!).get();
-        } else {
-          querySnapshotEvents = await _firestore.collection(events).where("joinedMembers", arrayContains: user.id!).get();
-        }
-        for (var i=0; i<querySnapshotEvents.docs.length;i++) {
-          String eventId = querySnapshotEvents.docs[i].id;
-          DocumentSnapshot _documentSnapshot = querySnapshotEvents.docs[i];
-          print('Event with ID : '+eventId);
-          int numClients = _documentSnapshot.get("joinedMembers").length;
-          int numTrainers = _documentSnapshot.get("selectedTrainers").length;
-          await _firestore.collection(users).doc(user.id!).collection("Events").doc(eventId).set({
-            "title": _documentSnapshot.get("title"),
-            "year": _documentSnapshot.get("year"),
-            "month": _documentSnapshot.get("month"),
-            "day": _documentSnapshot.get("day"),
-            "hour": _documentSnapshot.get("hour"),
-            "minute": _documentSnapshot.get("minute"),
-            "duration": _documentSnapshot.get("duration"),
-            "numTrainers": numTrainers,
-            "numClients": numClients,
-            "maxMembers": _documentSnapshot.get("maxMembers"),
-          });
-        }
-        print('All Events Added');
-        print('\n');
-        print('=================================================================================');
-        print('=================================================================================');
-        print('\n');
-      }
-
-      /* REAL MIGRATION FOR REAL DATA OF USERS
-      QuerySnapshot querySnapshot = await _firestore.collection(users).get();
-      for (int i = 0; i < querySnapshot.docs.length; i++) {
-        Usuario user = Usuario.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
-        print('USER WITH ID: '+user.id!+" AND NAME: "+user.name!);
-        List<String> aux = user.name!.split(" ");
-        String firstName = aux[0];
-        String lastName = "";
-        for (var i=1; i<aux.length;i++) {
-          lastName += aux[i]+" ";
-        }
-        print('firstName = '+firstName+'; lastName = '+lastName);
-        await _firestore.collection(users).doc(user.id!).update({
-          "firstName": firstName,
-          "lastName":  lastName.trim(),
-        });
-        print('Adding Nickname document to '+nicknames+' collection ...');
-        await _firestore.collection(nicknames).doc(user.nick!).set({
-          "userId": user.id!,
-        });
-        print(user.nick!);
-        print('-----------------------------\n');
       }*/
 
+
+
+      // REAL MIGRATION FOR REAL DATA OF USERS
+      QuerySnapshot querySnapshot = await _firestore.collection(users).get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
+        Usuario user = Usuario.fromObjectAllData(
+            _documentSnapshot.id, _documentSnapshot);
+        print(
+            '=================================================================================');
+        print(
+            '=================================================================================');
+        print('USER WITH ID: ' + user.id! + " AND NAME: " + user.name!);
+        if (user.name == "null" || user.name == null) {
+          print('User has not finished Onboarding');
+        } else {
+          print('\n');
+          print('Updating Document Data ...');
+          print('-----------------------------\n');
+          List<String> aux = user.name!.split(" ");
+          String firstName = aux[0];
+          String lastName = "";
+          for (var i = 1; i < aux.length; i++) {
+            lastName += aux[i] + " ";
+          }
+          print('firstName = ' + firstName + '; lastName = ' + lastName);
+          await _firestore.collection(users).doc(user.id!).update({
+            "firstName": firstName,
+            "lastName": lastName.trim(),
+            "isPrivate": false,
+          });
+          print('\n');
+          print('Adding nickname document to ' + nicknames + ' collection ...');
+          print('-----------------------------\n');
+          await _firestore.collection(nicknames).doc(user.nick!).set({
+            "userId": user.id!,
+          });
+          print(user.nick!);
+          print('\n');
+          print('Adding "Notifications" subcollection');
+          print('-----------------------------\n');
+          QuerySnapshot querySnapshotNotif = await _firestore.collection(
+              notifications).where("userId", isEqualTo: user.id!).get();
+          for (var i = 0; i < querySnapshotNotif.docs.length; i++) {
+            String notifId = querySnapshotNotif.docs[i].id;
+            print('Notification with ID : ' + notifId);
+            DocumentSnapshot _documentSnapshot = querySnapshotNotif.docs[i];
+            await _firestore.collection(users).doc(user.id!).collection(
+                "Notifications").doc(notifId).set({
+              "userId": _documentSnapshot.get("userId"),
+              "type": _documentSnapshot.get("type"),
+              "isRead": _documentSnapshot.get("isRead"),
+              "dateSent": _documentSnapshot.get("dateSent"),
+              "year": _documentSnapshot.get("year"),
+              "month": _documentSnapshot.get("month"),
+              "day": _documentSnapshot.get("day"),
+              "hour": _documentSnapshot.get("hour"),
+              "minutes": _documentSnapshot.get("minutes"),
+              "seconds": _documentSnapshot.get("seconds"),
+              "parameters": _documentSnapshot.get("parameters"),
+            });
+          }
+          print('All Notifications Added');
+          print('\n');
+          print('Adding "Errors" subcollection');
+          print('-----------------------------\n');
+          QuerySnapshot querySnapshotErrors = await _firestore.collection(
+              errors).where("userID", isEqualTo: user.id!).get();
+          for (var i = 0; i < querySnapshotErrors.docs.length; i++) {
+            String errorId = querySnapshotErrors.docs[i].id;
+            print('Error with ID : ' + errorId);
+            final DateTime now = DateTime.now();
+            final DateFormat formatter = DateFormat('dd-MM-yyyy');
+            final String formatted = formatter.format(now);
+            await _firestore.collection(users).doc(user.id!).collection(
+                "Errors").doc(errorId)
+                .set({
+              "dateSent": formatted,
+            });
+          }
+          print('All Errors Added');
+          print('\n');
+          print('Adding "Brands" subcollection');
+          print('-----------------------------\n');
+          if (user.brandID != "null") {
+            DocumentSnapshot _document = await _firestore.collection(brands)
+                .doc(user.brandID)
+                .get();
+            Brand brand = Brand.fromObjectAllData(_document.id, _document);
+            print('Brand with ID : ' + brand.id!);
+            final DateTime now = DateTime.now();
+            final DateFormat formatter = DateFormat('dd-MM-yyyy');
+            final String formatted = formatter.format(now);
+            await _firestore.collection(users).doc(user.id!).collection(
+                "Brands").doc(brand.id)
+                .set({
+              "name": brand.name,
+              "logoUrl": brand.logoUrl,
+              "dateJoined": formatted,
+              "myMonthlySessions": 0,
+              "myTotalSessions": 0,
+            });
+          } else {
+            print('Not in Brand');
+          }
+          print('All Brands Added');
+          print('\n');
+          print('Adding "Events" subcollection');
+          print('-----------------------------\n');
+          QuerySnapshot querySnapshotEvents;
+          if (user.isTrainer!) {
+            querySnapshotEvents = await _firestore.collection(events).where(
+                "selectedTrainers", arrayContains: user.id!).get();
+          } else {
+            querySnapshotEvents = await _firestore.collection(events).where(
+                "joinedMembers", arrayContains: user.id!).get();
+          }
+          for (var i = 0; i < querySnapshotEvents.docs.length; i++) {
+            String eventId = querySnapshotEvents.docs[i].id;
+            DocumentSnapshot _documentSnapshot = querySnapshotEvents.docs[i];
+            print('Event with ID : ' + eventId);
+            int numClients = _documentSnapshot
+                .get("joinedMembers")
+                .length;
+            int numTrainers = _documentSnapshot
+                .get("selectedTrainers")
+                .length;
+            await _firestore.collection(users).doc(user.id!).collection(
+                "Events").doc(eventId).set({
+              "title": _documentSnapshot.get("title"),
+              "year": _documentSnapshot.get("year"),
+              "month": _documentSnapshot.get("month"),
+              "day": _documentSnapshot.get("day"),
+              "hour": _documentSnapshot.get("hour"),
+              "minute": _documentSnapshot.get("minute"),
+              "duration": _documentSnapshot.get("duration"),
+              "numTrainers": numTrainers,
+              "numClients": numClients,
+              "maxMembers": _documentSnapshot.get("maxMembers"),
+            });
+          }
+          print('All Events Added');
+          print('\n');
+          print(
+              '=================================================================================');
+          print(
+              '=================================================================================');
+          print('\n');
+        }
+      }
       return true;
     } catch (e) {
       return false;
@@ -223,7 +379,7 @@ class ScriptsDatabaseService {
       print('--------------');
       print('\n');
 
-      // TEST IN PRODUCTION WIHT OUR TEST BRAND - MAMBA TEAM
+      /* TEST IN PRODUCTION WIHT OUR TEST BRAND - MAMBA TEAM
       String brandId = "9d978520-be41-4d90-94df-f49db3be5eac";
       DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandId).get();
       Brand brand = Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
@@ -237,6 +393,29 @@ class ScriptsDatabaseService {
       await _firestore.collection(brands).doc(brandId).update({
         "numClients":  _documentSnapshot.get("numberClients"),
         "numTrainers":  _documentSnapshot.get("numberTrainers"),
+      });
+      print('Create Room for Brand ...');
+      print('-----------------------------');
+      final room = await FirebaseChatCore.instance.createGroupRoom(imageUrl: brand.logoUrl, metadata: {
+        "trainer" + currentUser.id!: currentUser.isTrainer,
+        "active" + currentUser.id!: false,
+      }, name: brand.name!, users: []);
+      print('Assign the new group room id to field "roomId" of Brand Document');
+      await _firestore.collection(brands).doc(brandId).update({
+        "roomId":  room.id,
+      });
+      print('Add all members of Brand to this Group Room');
+      var metadataRoom = {};
+      List<String> userIds = [];
+      List<Usuario> brandUsers = await _brandDataService.getBrandUsers(brand.id!);
+      for (var i=0; i< brandUsers.length; i++) {
+        userIds.add(brandUsers[i].id!);
+        metadataRoom["trainer" + brandUsers[i].id!] = brandUsers[i].isTrainer;
+        metadataRoom["active" + brandUsers[i].id!] = false;
+      }
+      await _firestore.collection(rooms).doc(room.id).update({
+        "metadata": metadataRoom,
+        "userIds": userIds,
       });
       print('\n');
       print('Adding "Users" subcollection');
@@ -324,32 +503,135 @@ class ScriptsDatabaseService {
       print('=================================================================================');
       print('=================================================================================');
       print('\n');
-      /*
-      // TODO: Adapt the actual brands with new Group Id
-      print('Create Group Room For Brand');
-      print('Assign the new group room id to field "roomId" of Brand Document');
-      print('Add all members of Brand to this Group Room');
-      print('-----------------------------\n');
-       */
+      */
 
-
-      /* PRODUCTION FOR ALL REAL BRANDS
+      // PRODUCTION FOR ALL REAL BRANDS
       QuerySnapshot querySnapshot = await _firestore.collection(brands).get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
-        Brand brand = Brand.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        String brandId = querySnapshot.docs[i].id;
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandId).get();
+        Brand brand = Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        print('=================================================================================');
+        print('=================================================================================');
         print('BRAND WITH ID: '+brand.id!+" AND NAME: "+brand.name!);
+        print('\n');
+        print('Updating Document Data ...');
+        print('-----------------------------');
         print('Updating numTrainers and numClients document of Brand');
-        await _firestore.collection(brands).doc(querySnapshot.docs[i].id).update({
-          "numClients":  querySnapshot.docs[i].get("numberClients"),
-          "numTrainers":  querySnapshot.docs[i].get("numberTrainers"),
+        await _firestore.collection(brands).doc(brandId).update({
+          "numClients":  _documentSnapshot.get("numberClients"),
+          "numTrainers":  _documentSnapshot.get("numberTrainers"),
         });
-        // TODO: Adapt the actual brands with new Group Id
-        print('Create Group Room For Brand');
+        print('Create Room for Brand ...');
+        print('-----------------------------');
+        final room = await FirebaseChatCore.instance.createGroupRoom(imageUrl: brand.logoUrl, metadata: {
+          "trainer" + currentUser.id!: currentUser.isTrainer,
+          "active" + currentUser.id!: false,
+        }, name: brand.name!, users: []);
         print('Assign the new group room id to field "roomId" of Brand Document');
+        await _firestore.collection(brands).doc(brandId).update({
+          "roomId":  room.id,
+        });
         print('Add all members of Brand to this Group Room');
+        var metadataRoom = {};
+        List<String> userIds = [];
+        List<Usuario> brandUsers = await _brandDataService.getBrandUsers(brand.id!);
+        for (var i=0; i< brandUsers.length; i++) {
+          userIds.add(brandUsers[i].id!);
+          metadataRoom["trainer" + brandUsers[i].id!] = brandUsers[i].isTrainer;
+          metadataRoom["active" + brandUsers[i].id!] = false;
+        }
+        await _firestore.collection(rooms).doc(room.id).update({
+          "metadata": metadataRoom,
+          "userIds": userIds,
+        });
+        print('\n');
+        print('Adding "Users" subcollection');
         print('-----------------------------\n');
+        QuerySnapshot querySnapshotUsers = await _firestore.collection(users).where("brandID", isEqualTo: brandId).get();
+        for (var i=0; i<querySnapshotUsers.docs.length;i++) {
+          String userId = querySnapshotUsers.docs[i].id;
+          DocumentSnapshot _documentSnapshot = querySnapshotUsers.docs[i];
+          Usuario user = Usuario.fromObjectAllData(userId, _documentSnapshot);
+          print('User with ID : '+userId);
+          int role = 0;
+          if (_documentSnapshot.get("isTrainer")) {
+            if (userId == brand.adminID) {
+              role = 1;
+            } else {
+              role = 5;
+            }
+          }
+          await _firestore
+              .collection(brands)
+              .doc(brandId)
+              .collection("Users")
+              .doc(userId)
+              .set({
+            "name": user.name,
+            "firstName": user.firstName,
+            "lastName": user.lastName,
+            "nick": user.nick,
+            "imageUrl": user.imageUrl,
+            "noImageUrl": user.noImageUrl,
+            "isTrainer": user.isTrainer,
+            "isPrivate": user.isPrivate,
+            "notificationToken": user.notificationToken,
+            "role": role,
+          });
+        }
+        print('All Users Added');
+        print('\n');
+        print('Adding "Locations" subcollection');
+        print('-----------------------------\n');
+        QuerySnapshot querySnapshotLocations = await _firestore.collection(locations).where("brandID", isEqualTo: brandId).get();
+        for (var i=0; i<querySnapshotLocations.docs.length;i++) {
+          String locationId = querySnapshotLocations.docs[i].id;
+          DocumentSnapshot _documentSnapshot = querySnapshotLocations.docs[i];
+          Location location = Location.fromObjectAllData(locationId, _documentSnapshot);
+          print('Location with ID : '+locationId);
+          await _firestore
+              .collection(brands)
+              .doc(brandId)
+              .collection("Locations")
+              .doc(locationId)
+              .set({
+            "isBaseLocation": location.isBaseLocation,
+            "description": location.description,
+            "latitude": location.latitude,
+            "longitude": location.longitude,
+          });
+        }
+        print('All Locations Added');
+        print('\n');
+        print('Adding "Events" subcollection');
+        print('-----------------------------\n');
+        QuerySnapshot querySnapshotEvents = await _firestore.collection(events).where("brandID", isEqualTo: brandId).get();
+        for (var i=0; i<querySnapshotEvents.docs.length;i++) {
+          String eventId = querySnapshotEvents.docs[i].id;
+          DocumentSnapshot _documentSnapshot = querySnapshotEvents.docs[i];
+          print('Event with ID : '+eventId);
+          int numClients = _documentSnapshot.get("joinedMembers").length;
+          int numTrainers = _documentSnapshot.get("selectedTrainers").length;
+          await _firestore.collection(brands).doc(brandId).collection("Events").doc(eventId).set({
+            "title": _documentSnapshot.get("title"),
+            "year": _documentSnapshot.get("year"),
+            "month": _documentSnapshot.get("month"),
+            "day": _documentSnapshot.get("day"),
+            "hour": _documentSnapshot.get("hour"),
+            "minute": _documentSnapshot.get("minute"),
+            "duration": _documentSnapshot.get("duration"),
+            "numTrainers": numTrainers,
+            "numClients": numClients,
+            "maxMembers": _documentSnapshot.get("maxMembers"),
+          });
+        }
+        print('All Events Added');
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
       }
-       */
       return true;
     } catch (e) {
       return false;
@@ -368,15 +650,17 @@ class ScriptsDatabaseService {
       print('-----------------------------\n');
       print('\n');
 
-      print('Updating Document Data ...');
-      print('-----------------------------\n');
-
-      // TEST IN PRODUCTION WIHT OUR TEST BRAND - MAMBA TEAM
+      /* TEST IN PRODUCTION WIHT OUR TEST BRAND - MAMBA TEAM
       String brandId = "9d978520-be41-4d90-94df-f49db3be5eac";
       QuerySnapshot querySnapshot = await _firestore.collection(events).where("brandID", isEqualTo: brandId).get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        print('=================================================================================');
+        print('=================================================================================');
         print('EVENT WITH ID: '+event.id!+" OF BRAND WITH ID: "+brandId);
+        print('\n');
+        print('Updating Document Data ...');
+        print('-----------------------------');
         var selectedTrainers =  querySnapshot.docs[i].get("selectedTrainers");
         var joinedMembers =  querySnapshot.docs[i].get("joinedMembers");
         print('Updating numTrainers and numClients document of Event');
@@ -385,24 +669,147 @@ class ScriptsDatabaseService {
           "numTrainers":  selectedTrainers != null ? selectedTrainers.length : 0,
         });
         print('\n');
-      }
-      /* PRODUCTION FOR ALL REAL BRANDS
-      QuerySnapshot querySnapshot = await _firestore.collection(brands).get();
-      for (int i = 0; i < querySnapshot.docs.length; i++) {
-        Brand brand = Brand.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
-        print('BRAND WITH ID: '+brand.id!+" AND NAME: "+brand.name!);
-        print('Updating numTrainers and numClients document of Brand');
-        await _firestore.collection(brands).doc(querySnapshot.docs[i].id).update({
-          "numClients":  querySnapshot.docs[i].get("numberClients"),
-          "numTrainers":  querySnapshot.docs[i].get("numberTrainers"),
-        });
-        // TODO: Adapt the actual brands with new Group Id
-        print('Create Group Room For Brand');
-        print('Assign the new group room id to field "roomId" of Brand Document');
-        print('Add all members of Brand to this Group Room');
+        print('Adding "Users" subcollection');
         print('-----------------------------\n');
+        var usersIds = selectedTrainers + joinedMembers;
+        for (var i=0; i<usersIds.length;i++) {
+          String userId = usersIds[i];
+          print('User with ID : ' + userId);
+          DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(users).doc(userId).get();
+          Usuario user = Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+          await _firestore
+            .collection(events)
+            .doc(event.id!)
+            .collection("Users")
+            .doc(user.id!)
+            .set({
+              "name": user.name,
+              "firstName": user.firstName,
+              "lastName": user.lastName,
+              "nick": user.nick,
+              "imageUrl": user.imageUrl,
+              "noImageUrl": user.noImageUrl,
+              "isTrainer": user.isTrainer,
+              "isPrivate": user.isPrivate,
+              "notificationToken": user.notificationToken,
+            });
+        }
+        print('All Users Added');
+        print('\n');
+        print('Adding "Brands" subcollection');
+        print('-----------------------------\n');
+        DocumentSnapshot _documentBrand = await _firestore.collection(brands).doc(event.brandID).get();
+        Brand brand = Brand.fromObjectAllData(_documentBrand.id, _documentBrand);
+        print('Brand with ID : '+brand.id!);
+        await _firestore.collection(events).doc(event.id!).collection("Brands").doc(brand.id)
+            .set({
+              "name": brand.name,
+              "logoUrl": brand.logoUrl,
+            });
+        print('All Brands Added');
+        print('\n');
+        print('Adding "Locations" subcollection');
+        print('-----------------------------\n');
+        DocumentSnapshot _documentSnapshot = await _firestore.collection(locations).doc(event.locationId).get();
+        Location location = Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        print('Location with ID : '+location.id!);
+        await _firestore
+            .collection(events)
+            .doc(event.id!)
+            .collection("Locations")
+            .doc(location.id!)
+            .set({
+              "description": location.description,
+              "latitude": location.latitude,
+              "longitude": location.longitude,
+            });
+        print('All Locations Added');
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }*/
+
+
+      // PRODUCTION FOR ALL REAL EVENTS
+      QuerySnapshot querySnapshot = await _firestore.collection(events).get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('EVENT WITH ID: '+event.id!+" OF BRAND WITH ID: "+event.brandID!);
+        print('\n');
+        print('Updating Document Data ...');
+        print('-----------------------------');
+        var selectedTrainers =  querySnapshot.docs[i].get("selectedTrainers");
+        var joinedMembers =  querySnapshot.docs[i].get("joinedMembers");
+        print('Updating numTrainers and numClients document of Event');
+        await _firestore.collection(events).doc(event.id!).update({
+          "numClients":  joinedMembers != null ? joinedMembers.length : 0,
+          "numTrainers":  selectedTrainers != null ? selectedTrainers.length : 0,
+        });
+        print('\n');
+        print('Adding "Users" subcollection');
+        print('-----------------------------\n');
+        var usersIds = selectedTrainers + joinedMembers;
+        for (var i=0; i<usersIds.length;i++) {
+          String userId = usersIds[i];
+          print('User with ID : ' + userId);
+          DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(users).doc(userId).get();
+          Usuario user = Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+          await _firestore
+              .collection(events)
+              .doc(event.id!)
+              .collection("Users")
+              .doc(user.id!)
+              .set({
+            "name": user.name,
+            "firstName": user.firstName,
+            "lastName": user.lastName,
+            "nick": user.nick,
+            "imageUrl": user.imageUrl,
+            "noImageUrl": user.noImageUrl,
+            "isTrainer": user.isTrainer,
+            "isPrivate": user.isPrivate,
+            "notificationToken": user.notificationToken,
+          });
+        }
+        print('All Users Added');
+        print('\n');
+        print('Adding "Brands" subcollection');
+        print('-----------------------------\n');
+        DocumentSnapshot _documentBrand = await _firestore.collection(brands).doc(event.brandID).get();
+        Brand brand = Brand.fromObjectAllData(_documentBrand.id, _documentBrand);
+        print('Brand with ID : '+brand.id!);
+        await _firestore.collection(events).doc(event.id!).collection("Brands").doc(brand.id)
+            .set({
+          "name": brand.name,
+          "logoUrl": brand.logoUrl,
+        });
+        print('All Brands Added');
+        print('\n');
+        print('Adding "Locations" subcollection');
+        print('-----------------------------\n');
+        DocumentSnapshot _documentSnapshot = await _firestore.collection(locations).doc(event.locationId).get();
+        Location location = Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        print('Location with ID : '+location.id!);
+        await _firestore
+            .collection(events)
+            .doc(event.id!)
+            .collection("Locations")
+            .doc(location.id!)
+            .set({
+          "description": location.description,
+          "latitude": location.latitude,
+          "longitude": location.longitude,
+        });
+        print('All Locations Added');
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
       }
-       */
+
       return true;
     } catch (e) {
       return false;
@@ -421,7 +828,7 @@ class ScriptsDatabaseService {
       print('--------------');
       print('\n');
 
-      // TEST IN PRODUCTION WITH OUR TEST BRAND - MAMBA TEAM
+      /* TEST IN PRODUCTION WITH OUR TEST BRAND - MAMBA TEAM
       List<String> locationIds = ["8c7d6ed0-8912-11ec-a318-490746e85be9","e192ef20-6ff0-11ec-9e9d-af27aa8de287"];
       for (int i = 0; i < locationIds.length; i++) {
         String locationId = locationIds[i];
@@ -459,33 +866,110 @@ class ScriptsDatabaseService {
         print('=================================================================================');
         print('=================================================================================');
         print('\n');
-      }
-      /*
-      // TODO: Adapt the actual brands with new Group Id
-      print('Create Group Room For Brand');
-      print('Assign the new group room id to field "roomId" of Brand Document');
-      print('Add all members of Brand to this Group Room');
-      print('-----------------------------\n');
-       */
+      } */
 
 
-      /* PRODUCTION FOR ALL REAL BRANDS
-      QuerySnapshot querySnapshot = await _firestore.collection(brands).get();
+      // PRODUCTION FOR ALL REAL BRANDS
+      QuerySnapshot querySnapshot = await _firestore.collection(locations).get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
-        Brand brand = Brand.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
-        print('BRAND WITH ID: '+brand.id!+" AND NAME: "+brand.name!);
-        print('Updating numTrainers and numClients document of Brand');
-        await _firestore.collection(brands).doc(querySnapshot.docs[i].id).update({
-          "numClients":  querySnapshot.docs[i].get("numberClients"),
-          "numTrainers":  querySnapshot.docs[i].get("numberTrainers"),
-        });
-        // TODO: Adapt the actual brands with new Group Id
-        print('Create Group Room For Brand');
-        print('Assign the new group room id to field "roomId" of Brand Document');
-        print('Add all members of Brand to this Group Room');
+        String locationId = querySnapshot.docs[i].id;
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(locations).doc(locationId).get();
+        Location location = Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('LOCATION WITH ID: ' + location.id! + " AND DESCRIPTION: " + location.description!);
+        print('\n');
+
+        print('Adding "Events" subcollection');
         print('-----------------------------\n');
+        QuerySnapshot querySnapshotEvents = await _firestore.collection(events).where("brandID", isEqualTo: location.brandID).where("locationId", isEqualTo: location.id).get();
+        for (var i=0; i<querySnapshotEvents.docs.length;i++) {
+          String eventId = querySnapshotEvents.docs[i].id;
+          DocumentSnapshot _documentSnapshot = querySnapshotEvents.docs[i];
+          print('Event with ID : '+eventId);
+          int numClients = _documentSnapshot.get("joinedMembers").length;
+          int numTrainers = _documentSnapshot.get("selectedTrainers").length;
+          await _firestore.collection(locations).doc(location.id).collection("Events").doc(eventId).set({
+            "title": _documentSnapshot.get("title"),
+            "year": _documentSnapshot.get("year"),
+            "month": _documentSnapshot.get("month"),
+            "day": _documentSnapshot.get("day"),
+            "hour": _documentSnapshot.get("hour"),
+            "minute": _documentSnapshot.get("minute"),
+            "duration": _documentSnapshot.get("duration"),
+            "numTrainers": numTrainers,
+            "numClients": numClients,
+            "maxMembers": _documentSnapshot.get("maxMembers"),
+          });
+        }
+        print('All Events Added');
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
       }
-       */
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> changeNicknameToLowercaseFebruary6th() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('NICKNAME TO LOWERCASE 6TH FEBRUARY 2022');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying '+nicknames+' collection:\n');
+      print('--------------');
+      print('\n');
+
+      // CHANGES ON REAL DATA OF USERS
+      QuerySnapshot querySnapshot = await _firestore.collection(users).get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
+        Usuario user = Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('USER WITH ID: ' + user.id! + " AND NAME: " + user.name!);
+        if (user.name == "null" || user.name == null) {
+          print('User has not finished Onboarding');
+        } else {
+          print('\n');
+          print('Updating Nickname Data ...');
+          print('-----------------------------\n');
+          String? replaceWhitespacesUsingRegex(String s, String replace) {
+            // This pattern means "at least one space, or more"
+            // \\s : space
+            // +   : one or more
+            final pattern = RegExp('\\s+');
+            return s.replaceAll(pattern, replace);
+          }
+          print('Previous Nickname ...');
+          print(user.nick!);
+          await _firestore.collection(nicknames).doc(user.nick!).delete();
+          String lowerCaseNick = user.nick!.toLowerCase();
+          var nickname = replaceWhitespacesUsingRegex(lowerCaseNick, '');
+          print('After Nickname ...');
+          print(nickname);
+          await _firestore.collection(users).doc(user.id!).update({
+            "nick": nickname,
+          });
+          print('\n');
+          print('Adding nickname document to ' + nicknames + ' collection ...');
+          print('-----------------------------\n');
+          await _firestore.collection(nicknames).doc(nickname).set({
+            "userId": user.id!,
+          });
+          print('\n');
+          print('=================================================================================');
+          print('=================================================================================');
+          print('\n');
+        }
+      }
+
       return true;
     } catch (e) {
       return false;
