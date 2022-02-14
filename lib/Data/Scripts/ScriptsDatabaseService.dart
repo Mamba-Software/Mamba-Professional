@@ -732,7 +732,7 @@ class ScriptsDatabaseService {
 
 
       // PRODUCTION FOR ALL REAL EVENTS
-      QuerySnapshot querySnapshot = await _firestore.collection(events).get();
+      QuerySnapshot querySnapshot = await _firestore.collection(events).where("brandID", isEqualTo: "ef80f103-824c-4f4b-9764-8fe4863c8c4f").where("month", isEqualTo: "2").get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
         print('=================================================================================');
