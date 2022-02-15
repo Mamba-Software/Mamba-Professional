@@ -1507,7 +1507,7 @@ exports.zzzzUserUpdatesCoverData = functions
         for (var i in userBrandsSnapshot.docs) {
           const id = userBrandsSnapshot.docs[i].id;
           await db
-          .collection("Brands")
+          .collection("7777 Brands")
           .doc(id)
           .collection("Users")
           .doc(userId)
@@ -1532,7 +1532,7 @@ exports.zzzzUserUpdatesCoverData = functions
         for (var i in userEventsSnapshot.docs) {
           const id = userEventsSnapshot.docs[i].id;
           await db
-          .collection("Events")
+          .collection("7777 Events")
           .doc(id)
           .collection("Users")
           .doc(userId)
@@ -1611,7 +1611,7 @@ exports.zzzzBrandUpdatesCoverData = functions
         for (var i in brandEventsSnapshot.docs) {
           const id = brandEventsSnapshot.docs[i].id;
           await db
-          .collection("Events")
+          .collection("7777 Events")
           .doc(id)
           .collection("Brands")
           .doc(brandId)
@@ -1678,7 +1678,7 @@ exports.zzzzEventUpdatesCoverData = functions
         );
         // Delete Event From Old Location
         await db
-        .collection("Locations")
+        .collection("7777 Locations")
         .doc(before.locationId)
         .collection("Events")
         .doc(eventId)
@@ -1689,7 +1689,7 @@ exports.zzzzEventUpdatesCoverData = functions
           after.locationId,
         );
         await db
-        .collection("Locations")
+        .collection("7777 Locations")
         .doc(after.locationId)
         .collection("Events")
         .doc(eventId).set({
@@ -1761,7 +1761,7 @@ exports.zzzzEventUpdatesCoverData = functions
         for (var i in eventBrandsSnapshot.docs) {
           const id = eventBrandsSnapshot.docs[i].id;
           await db
-          .collection("Brands")
+          .collection("7777 Brands")
           .doc(id)
           .collection("Events")
           .doc(eventId)
@@ -1784,7 +1784,7 @@ exports.zzzzEventUpdatesCoverData = functions
         for (var i in eventLocationsSnapshot.docs) {
           const id = eventLocationsSnapshot.docs[i].id;
           await db
-          .collection("Locations")
+          .collection("7777 Locations")
           .doc(id)
           .collection("Events")
           .doc(eventId)
@@ -1838,7 +1838,7 @@ exports.zzzzLocationUpdatesCoverData = functions
       if (coverDataChange) {
         // Update the Object Location in Brands
         await db
-        .collection("Brands")
+        .collection("7777 Brands")
         .doc(after.brandID)
         .collection("Locations")
         .doc(locationId)
@@ -1856,7 +1856,7 @@ exports.zzzzLocationUpdatesCoverData = functions
         for (var i in eventLocationsSnapshot.docs) {
           const id = eventLocationsSnapshot.docs[i].id;
           await db
-          .collection("Events")
+          .collection("7777 Events")
           .doc(id)
           .collection("Locations")
           .doc(locationId)
@@ -2090,7 +2090,7 @@ exports.zzzzUserJoinsBrand = functions
       );
       // Update Brand Members
       await db
-      .collection("Brands")
+      .collection("7777 Brands")
       .doc(brandId)
       .update({
         "numClients": numClients,
@@ -2208,7 +2208,7 @@ exports.zzzzUserLeavesBrand = functions
       );
       // Update Brand Members
       await db
-      .collection("Brands")
+      .collection("7777 Brands")
       .doc(brandId)
       .update({
         "numClients": numClients,
@@ -2260,7 +2260,7 @@ exports.zzzzUserDeletesLocation = functions
           );
         // Delete Location to Brands Collection
         await db
-        .collection("Brands")
+        .collection("7777 Brands")
         .doc(locationDoc.brandID)
         .collection("Locations")
         .doc(locationId)
@@ -2291,7 +2291,7 @@ exports.zzzzUserDeletesLocation = functions
            }
            // Delete Previous Location
            await _firestore
-               .collection("Events")
+               .collection("7777 Events")
                .doc(eventId)
                .collection("Locations")
                .doc(previousLocation)
@@ -2299,7 +2299,7 @@ exports.zzzzUserDeletesLocation = functions
            // Add New Location
            Location location = await this.getSingleLocation(locationId);
            await _firestore
-               .collection("Events")
+               .collection("7777 Events")
                .doc(eventId)
                .collection("Locations")
                .doc(locationId)
@@ -2339,7 +2339,7 @@ exports.zzzzUserSendsRequest = functions
       );
       // Add Request to Brands Request collection
       await db
-        .collection("Brands")
+        .collection("7777 Brands")
         .doc(brandId)
         .collection("Requests")
         .doc(requestId).set({
@@ -2422,7 +2422,7 @@ exports.zzzzUserDeletesRequest = functions
         );
       // Delete the Request on Users Request collection
       await db
-        .collection("Brands")
+        .collection("7777 Brands")
         .doc(requestDoc.brandId)
         .collection("Requests")
         .doc(requestId)
@@ -2474,7 +2474,7 @@ exports.zzzzUserAddsEvent = functions
       for (var i in eventBrandSnapshot.docs) {
         const id = eventBrandSnapshot.docs[i].id;
         await db
-        .collection("Brands")
+        .collection("7777 Brands")
         .doc(id)
         .collection("Events")
         .doc(eventId).set({
@@ -2494,7 +2494,7 @@ exports.zzzzUserAddsEvent = functions
       for (var i in eventLocationsSnapshot.docs) {
         const id = eventLocationsSnapshot.docs[i].id;
         await db
-        .collection("Locations")
+        .collection("7777 Locations")
         .doc(id)
         .collection("Events")
         .doc(eventId).set({
@@ -2550,7 +2550,7 @@ exports.zzzzUserDeletesEvent = functions
       // Delete Users Subcollection in Event
       for (var i in eventUsersSnapshot.docs) {
           await db
-          .collection("Events")
+          .collection("7777 Events")
           .doc(eventId)
           .collection("Users")
           .doc(eventUsersSnapshot.docs[i].id)
@@ -2559,14 +2559,14 @@ exports.zzzzUserDeletesEvent = functions
       // Delete Event in Brands Subcollection
       for (var i in eventBrandSnapshot.docs) {
         await db
-        .collection("Brands")
+        .collection("7777 Brands")
         .doc(eventBrandSnapshot.docs[i].id)
         .collection("Events")
         .doc(eventId)
         .delete();
         // Delete Brands in Event
         await db
-        .collection("Events")
+        .collection("7777 Events")
         .doc(eventId)
         .collection("Brands")
         .doc(eventBrandSnapshot.docs[i].id)
@@ -2575,14 +2575,14 @@ exports.zzzzUserDeletesEvent = functions
       // Delete Event in Locations Subcollection
       for (var i in eventLocationsSnapshot.docs) {
         await db
-        .collection("Locations")
+        .collection("7777 Locations")
         .doc(eventLocationsSnapshot.docs[i].id)
         .collection("Events")
         .doc(eventId)
         .delete();
         // Delete Locations in Event
         await db
-        .collection("Events")
+        .collection("7777 Events")
         .doc(eventId)
         .collection("Locations")
         .doc(eventLocationsSnapshot.docs[i].id)
@@ -2621,7 +2621,7 @@ exports.zzzzUserJoinsEvent = functions
       }
       // Update Event Assisting Members
       await db
-      .collection("Events")
+      .collection("7777 Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
@@ -2629,7 +2629,7 @@ exports.zzzzUserJoinsEvent = functions
       });
       // Add Event To Users Event Subcollection
       await db
-        .collection("Users")
+        .collection("7777 Users")
         .doc(userId)
         .collection("Events")
         .doc(eventId).set({
@@ -2649,7 +2649,7 @@ exports.zzzzUserJoinsEvent = functions
       for (var i in eventUsersSnapshot.docs) {
         const id = eventUsersSnapshot.docs[i].id;
         await db
-        .collection("Users")
+        .collection("7777 Users")
         .doc(id)
         .collection("Events")
         .doc(eventId)
@@ -2662,7 +2662,7 @@ exports.zzzzUserJoinsEvent = functions
       for (var i in eventBrandsSnapshot.docs) {
         const id = eventBrandsSnapshot.docs[i].id;
         await db
-        .collection("Brands")
+        .collection("7777 Brands")
         .doc(id)
         .collection("Events")
         .doc(eventId)
@@ -2675,7 +2675,7 @@ exports.zzzzUserJoinsEvent = functions
       for (var i in eventLocationsSnapshot.docs) {
           const id = eventLocationsSnapshot.docs[i].id;
           await db
-          .collection("Locations")
+          .collection("7777 Locations")
           .doc(id)
           .collection("Events")
           .doc(eventId)
@@ -2718,14 +2718,14 @@ exports.zzzzUserLeavesEvent = functions
       }
       // Delete Event To Users Event Subcollection
       await db
-      .collection("Users")
+      .collection("7777 Users")
       .doc(userId)
       .collection("Events")
       .doc(eventId)
       .delete();
       // Update Event Assisting Members
       await db
-      .collection("Events")
+      .collection("7777 Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
@@ -2736,7 +2736,7 @@ exports.zzzzUserLeavesEvent = functions
       for (var i in eventUsersSnapshot.docs) {
           const id = eventUsersSnapshot.docs[i].id;
           await db
-          .collection("Users")
+          .collection("7777 Users")
           .doc(id)
           .collection("Events")
           .doc(eventId)
@@ -2749,7 +2749,7 @@ exports.zzzzUserLeavesEvent = functions
       for (var i in eventBrandsSnapshot.docs) {
           const id = eventBrandsSnapshot.docs[i].id;
           await db
-          .collection("Brands")
+          .collection("7777 Brands")
           .doc(id)
           .collection("Events")
           .doc(eventId)
@@ -2762,7 +2762,7 @@ exports.zzzzUserLeavesEvent = functions
       for (var i in eventLocationsSnapshot.docs) {
         const id = eventLocationsSnapshot.docs[i].id;
         await db
-        .collection("Locations")
+        .collection("7777 Locations")
         .doc(id)
         .collection("Events")
         .doc(eventId)
