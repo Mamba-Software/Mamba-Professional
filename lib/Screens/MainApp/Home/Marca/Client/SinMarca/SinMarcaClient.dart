@@ -14,7 +14,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CancelRequestConfirm
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/SendRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/RectangularImage.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';

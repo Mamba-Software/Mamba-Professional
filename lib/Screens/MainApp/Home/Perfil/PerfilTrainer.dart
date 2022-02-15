@@ -16,7 +16,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/MyCal
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CancelRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';

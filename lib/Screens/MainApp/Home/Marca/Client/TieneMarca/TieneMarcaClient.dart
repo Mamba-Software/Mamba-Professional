@@ -9,7 +9,7 @@ import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

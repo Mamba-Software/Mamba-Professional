@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Data/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/RequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/RequestToBrand.dart';

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/UserFeedBack.dart';

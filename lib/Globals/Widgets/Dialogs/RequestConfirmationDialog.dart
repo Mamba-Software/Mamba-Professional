@@ -5,7 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
-import '../../Styles.dart';
+import '../../Styles/Styles.dart';
 import '../Images/CircularImage.dart';
 
 class RequestConfirmationDialog extends StatefulWidget {

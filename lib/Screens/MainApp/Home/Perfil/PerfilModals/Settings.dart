@@ -6,7 +6,7 @@ import 'package:mamba_castelldefels/Data/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Models/Brand.dart';

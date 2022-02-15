@@ -24,7 +24,7 @@ import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 import '../../Constants.dart';
-import '../../Styles.dart';
+import '../../Styles/Styles.dart';
 import '../LoadingViewPurple.dart';
 
 class ProfileViewUser extends StatefulWidget {

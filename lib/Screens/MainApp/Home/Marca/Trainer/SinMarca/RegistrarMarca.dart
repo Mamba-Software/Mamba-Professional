@@ -19,7 +19,7 @@ import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:image_picker/image_picker.dart';
 
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/InformationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';

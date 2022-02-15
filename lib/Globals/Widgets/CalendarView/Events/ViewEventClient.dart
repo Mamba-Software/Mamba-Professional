@@ -26,7 +26,7 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../../../Constants.dart';
 import '../../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../../Styles.dart';
+import '../../../Styles/Styles.dart';
 import '../../Images/CircularImage.dart';
 
 

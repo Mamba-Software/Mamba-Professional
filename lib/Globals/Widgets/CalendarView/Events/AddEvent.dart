@@ -15,7 +15,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import '../../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../../Styles.dart';
+import '../../../Styles/Styles.dart';
 import '../../Images/CircularImage.dart';
 
 

@@ -12,7 +12,7 @@ import 'package:mamba_castelldefels/Models/Event.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../../GlobalVars.dart';
-import '../../../Styles.dart';
+import '../../../Styles/Styles.dart';
 import '../../Images/CircularImage.dart';
 import '../Events/AddEvent.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

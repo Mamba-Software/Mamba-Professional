@@ -6,7 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
