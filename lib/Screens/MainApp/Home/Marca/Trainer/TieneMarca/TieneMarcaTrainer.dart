@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
-
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -40,6 +40,27 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
   List<Event> todayEvents = [];
   int numberEventsFinished = 0;
   int numberEventsToDo = 0;
+
+  FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
+
+  final DynamicLinkParameters parameters = DynamicLinkParameters(
+    // The Dynamic Link URI domain. You can view created URIs on your Firebase console
+    uriPrefix: 'https://my-awesome-app.page.link',
+    // The deep Link passed to your application which you can use to affect change
+    link: Uri.parse('https://www.example.com/view-to-open'),
+    // Android application details needed for opening correct app on device/Play Store
+    androidParameters: const AndroidParameters(
+      packageName: "com.mamba.mambastyleapp",
+      minimumVersion: 1,
+    ),
+    // iOS application details needed for opening correct app on device/App Store
+    iosParameters: const IOSParameters(
+      bundleId: "com.mamba.mambastyleapp",
+      minimumVersion: '2',
+    ),
+  );
+
+
 
   @override
   void initState() {
@@ -107,10 +128,13 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                     Row(
                       children: [
                         IconButton(
-                          icon: Icon(Icons.qr_code_outlined, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.height*0.03,),
+                          icon: Icon(Icons.share, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.height*0.03,),
                           alignment: Alignment.centerRight,
                           padding: EdgeInsets.all(0),
-                          onPressed: () {
+                          onPressed: () async {
+                            final Uri uri = await dynamicLinks.buildLink(parameters);
+
+                            /*
                             Clipboard.setData(new ClipboardData(text: currentBrand.id)).then((_){
                               showTopSnackBar(
                                 context,
@@ -123,6 +147,8 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                 ),
                               );
                             });
+
+                             */
                           },
                         ),
                         IconButton(
