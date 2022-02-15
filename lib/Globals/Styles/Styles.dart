@@ -9,11 +9,8 @@ class Styles {
   static const Color mainColorTrans = Color(0x33F4AD1F);
 
   static const Color accent = Color(0xFF200758);
-  static const Color accentLight = Color(0x8F200758);
-  static const Color accentLightTrans = Color(0xFFEAE4F7);
 
   static const Color red = Colors.red;
-  static const Color weakerRed = Color(0xffd81b60);
 
   // New Theme
   // Light Theme
