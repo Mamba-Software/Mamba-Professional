@@ -7,8 +7,8 @@ import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Models/Brand.dart';
-import 'package:mamba_castelldefels/Models/Event.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../../GlobalVars.dart';
