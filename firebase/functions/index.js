@@ -11,7 +11,7 @@ const uuidv4 = require("uuid")
 const db = admin.firestore();
 
 // Firebase collections
-const isProduction = false;
+const isProduction = true;
 const users = isProduction ? "Users" : "7777 Users";
 const nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
 const brands = isProduction ? "Brands" : "7777 Brands";
@@ -1273,6 +1273,12 @@ exports.userLeavesEvent = functions
       const eventBrandsSnapshot = await db.collection(events).doc(eventId).collection("Brands").get();
       // Count the Number of Clients and Trainers
       const eventUsersSnapshot = await db.collection(events).doc(eventId).collection("Users").get();
+      // Get Data of the Event Locations
+      const eventLocationsSnapshot = await db.collection(events).doc(eventId).collection("Locations").get();
+      functions.logger.log(
+          "eventLocationsSnapshot size",
+          eventLocationsSnapshot.size,
+      );
       let numClients = 0;
       let numTrainers = 0;
       for (var i in eventUsersSnapshot.docs) {
