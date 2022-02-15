@@ -21,7 +21,7 @@ import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Models/Usuario.dart';
 import 'package:uuid/uuid.dart';
 
-import '../BrandDataService.dart';
+import '../DataService/BrandDataService.dart';
 
 class ScriptsDatabaseService {
   // Firebase Instances
