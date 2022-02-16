@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mamba_castelldefels/Globals/Styles/WidgetStyles/Text/TextStyles.dart';
 
 // Styles contains all the Colors, Themes and TextStyles used in the App.
 class AppThemes {
@@ -26,6 +27,51 @@ class AppThemes {
   static const Color darkerGrey = Color(0xFFDEDEDE);
   static const Color grey = Color(0xFF808080);
 
+  ThemeData returnResponsiveLightTheme(double screenHeight) {
+    TextStyles _textStyles = TextStyles(screenHeight);
+    return ThemeData(
+      // Primary Colors
+      primaryColor: Colors.black,
+      primaryColorLight: lightBlue,
+      accentColor:  amber,
+      // BackGround Colors
+      backgroundColor: lightGrey,
+      scaffoldBackgroundColor: white,
+      // Brightness
+      brightness: Brightness.light,
+      // Texts
+      textTheme: TextTheme(
+        headline1: _textStyles.blackHeadline1TextStyle(),
+        headline2: _textStyles.whiteHeadline1TextStyle(),
+        bodyText1: _textStyles.blackBodyTextStyle(),
+        bodyText2: _textStyles.greyBodyTextStyle(),
+        caption: _textStyles.whiteBodyTextStyle()
+      ),
+      fontFamily: "Helvetica",
+      appBarTheme: AppBarTheme(
+        elevation: 4.0,
+        backgroundColor: white,
+        iconTheme: IconThemeData(
+            color: Colors.black
+        ),
+        titleTextStyle: TextStyle(
+          fontFamily: "Helvetica",
+          color: Colors.black,
+          fontSize: 22.0,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        elevation: 40,
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: white,
+        showUnselectedLabels: false,
+        showSelectedLabels: true,
+      ),
+    );
+  }
+
+
   // Theme Data
   static ThemeData lightTheme = ThemeData(
     // Primary Colors
@@ -47,7 +93,7 @@ class AppThemes {
       elevation: 4.0,
       backgroundColor: white,
       iconTheme: IconThemeData(
-        color: Colors.black
+          color: Colors.black
       ),
       titleTextStyle: TextStyle(
         fontFamily: "Helvetica",

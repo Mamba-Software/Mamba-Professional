@@ -44,7 +44,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               ),
               backgroundColor: Theme.of(context).accentColor,
               leading: IconButton(
-                icon: Icon(Icons.arrow_back, size: 25,),
+                icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width * 0.06,),
                 onPressed: () {
                   if (email.isNotEmpty) {
                     Navigator.pop(context, email.trim());
