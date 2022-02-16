@@ -11,6 +11,7 @@ import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:resize/resize.dart';
 
 
 // Starting app function. After initialitzation, we define the global providers:
@@ -53,21 +54,26 @@ class Mamba extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<LanguageProvider>(
         builder: (context, LanguageProvider language, _) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: Constants.appName,
-            theme: Styles.lightTheme,
-            locale: language.idioma,
-            supportedLocales: Idiomas.all,
-            localizationsDelegates: [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            home: SplashScreen(),
-            routes: {
-              "SplashScreen": (_) => SplashScreen(),
+          return Resize(
+            allowtextScaling: true,
+            builder: () {
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: Constants.appName,
+                theme: Styles.lightTheme,
+                locale: language.idioma,
+                supportedLocales: Idiomas.all,
+                localizationsDelegates: [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                home: SplashScreen(),
+                routes: {
+                  "SplashScreen": (_) => SplashScreen(),
+                },
+              );
             },
           );
         }
