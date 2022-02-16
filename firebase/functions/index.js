@@ -477,7 +477,7 @@ exports.userJoinsBrand = functions
       if (roomDoc.lastMessages != undefined) {
         metadataMessage = roomDoc.lastMessages[0].metadata;
         metadataMessage[userId] = "delivered";
-        await db.doc(rooms + "/" + brandDoc.roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
+        await db.doc("Rooms" + "/" + brandDoc.roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
           metadata: metadataMessage,
           status: "delivered",
         })
@@ -486,7 +486,7 @@ exports.userJoinsBrand = functions
       metadataRoom = roomDoc.metadata;
       metadataRoom["trainer" + userId] = userDoc.isTrainer;
       metadataRoom["active" + userId] = false;
-      await db.doc(rooms + "/" + brandDoc.roomId).update({
+      await db.doc("Rooms" + "/" + brandDoc.roomId).update({
             metadata: metadataRoom,
             userIds: roomDoc.userIds,
       })
@@ -688,7 +688,7 @@ exports.userLeavesBrand = functions
       var filtered = roomDoc.userIds.filter(function(element) {
             return element != userId;
       });
-      await db.doc(rooms + "/" + brandDoc.roomId).update({
+      await db.doc("Rooms" + "/" + brandDoc.roomId).update({
             userIds: filtered,
       });
       // Send Notification to Brand Owners
@@ -1431,7 +1431,7 @@ exports.changeMessageStatus = functions
           message.status = messageStatus;
           message.metadata = metadata;
           message.remoteId = messageId;
-          return db.doc(rooms + "/" + roomId).update({
+          return db.doc("Rooms" + "/" + roomId).update({
             lastMessages: [message],
             updatedAt: message.updatedAt,
             })
@@ -1441,7 +1441,7 @@ exports.changeMessageStatus = functions
        "message ASQUI",
        message.metadata,
       );
-      return db.doc(rooms + "/" + roomId).update({
+      return db.doc("Rooms" + "/" + roomId).update({
         lastMessages: [message],
         })
     } else {
@@ -1920,7 +1920,7 @@ exports.zzzzUserJoinsBrand = functions
       if (roomDoc.lastMessages != undefined) {
         metadataMessage = roomDoc.lastMessages[0].metadata;
         metadataMessage[userId] = "delivered";
-        await db.doc(rooms + "/" + brandDoc.roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
+        await db.doc("7777 Rooms" + "/" + brandDoc.roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
           metadata: metadataMessage,
           status: "delivered",
         })
@@ -1929,7 +1929,7 @@ exports.zzzzUserJoinsBrand = functions
       metadataRoom = roomDoc.metadata;
       metadataRoom["trainer" + userId] = userDoc.isTrainer;
       metadataRoom["active" + userId] = false;
-      await db.doc(rooms + "/" + brandDoc.roomId).update({
+      await db.doc("7777 Rooms" + "/" + brandDoc.roomId).update({
             metadata: metadataRoom,
             userIds: roomDoc.userIds,
       })
@@ -2131,7 +2131,7 @@ exports.zzzzUserLeavesBrand = functions
       var filtered = roomDoc.userIds.filter(function(element) {
             return element != userId;
       });
-      await db.doc(rooms + "/" + brandDoc.roomId).update({
+      await db.doc("7777 Rooms" + "/" + brandDoc.roomId).update({
             userIds: filtered,
       });
       // Send Notification to Brand Owners
@@ -2874,7 +2874,7 @@ exports.zzzzChangeMessageStatus = functions
           message.status = messageStatus;
           message.metadata = metadata;
           message.remoteId = messageId;
-          return db.doc(rooms + "/" + roomId).update({
+          return db.doc("7777 Rooms" + "/" + roomId).update({
             lastMessages: [message],
             updatedAt: message.updatedAt,
             })
@@ -2884,7 +2884,7 @@ exports.zzzzChangeMessageStatus = functions
        "message ASQUI",
        message.metadata,
       );
-      return db.doc(rooms + "/" + roomId).update({
+      return db.doc("7777 Rooms" + "/" + roomId).update({
         lastMessages: [message],
         })
     } else {
