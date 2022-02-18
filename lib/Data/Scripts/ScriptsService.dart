@@ -976,5 +976,76 @@ class ScriptsDatabaseService {
     }
   }
 
+  Future<bool> correctingRooms() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 18TH FEBRUARY 2022');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying '+rooms+' collection:\n');
+      print('--------------');
+      print('\n');
+
+      // PRODUCTION FOR ALL REAL BRANDS
+      QuerySnapshot querySnapshot = await _firestore.collection(brands).get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        String brandId = querySnapshot.docs[i].id;
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandId).get();
+        Brand brand = Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('BRAND WITH ID: '+brand.id!+" AND NAME: "+brand.name!);
+        print('\n');
+        print('Edit Room for Brand ...');
+        print('-----------------------------');
+        print('Add all members of Brand to this Group Room');
+        String roomId = brand.roomId!;
+        var metadataRoom = {};
+        List<String> userIds = [];
+        // New Version Users
+        List<Usuario> brandUsers = await _brandDataService.getBrandUsers(brand.id!);
+        // Old Version Users
+        List<Usuario> oldBrandUsers = [];
+        QuerySnapshot query = await _firestore.collection(users).where("brandID", isEqualTo: brandId).get();
+        for (DocumentSnapshot doc in query.docs) {
+          oldBrandUsers.add(Usuario.fromObjectOnlyCoverData(doc.id, doc));
+        }
+        print('New Version Users');
+        print('\n');
+        for (var i=0; i< brandUsers.length; i++) {
+          Usuario user = brandUsers[i];
+          print('USER WITH ID: ' + user.id! + " AND NAME: " + user.name!);
+          userIds.add(brandUsers[i].id!);
+          metadataRoom["trainer" + brandUsers[i].id!] = brandUsers[i].isTrainer;
+          metadataRoom["active" + brandUsers[i].id!] = false;
+        }
+        print('Old Version Users');
+        for (var i=0; i< oldBrandUsers.length; i++) {
+          Usuario user = oldBrandUsers[i];
+          if (userIds.contains(user.id) == false) {
+            print('USER WITH ID: ' + user.id! + " AND NAME: " + user.name!);
+            userIds.add(user.id!);
+            metadataRoom["trainer" + user.id!] = user.isTrainer;
+            metadataRoom["active" + user.id!] = false;
+          }
+        }
+        await _firestore.collection(rooms).doc(roomId).update({
+          "metadata": metadataRoom,
+          "userIds": userIds,
+        });
+        print('\n');
+        print('All Users Added');
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 
 }
