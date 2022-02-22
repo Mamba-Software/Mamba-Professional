@@ -672,7 +672,7 @@ class _NotificationsState extends State<Notifications> {
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Text(
-                  AppLocalizations.of(context)!.userJoinEventBrandSubtitle(event.joinedMembers.length.toString(), event.maxMembers.toString() ),
+                  AppLocalizations.of(context)!.userJoinEventBrandSubtitle(event.numClients.toString(), event.maxMembers.toString() ),
                   style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
