@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -40,7 +41,7 @@ class _RegisterState extends State<Register> {
           child: Scaffold(
             appBar: AppBar(
               title: Text(AppLocalizations.of(context)!.createAccount, style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(color: Colors.white),),
-              centerTitle: true,
+              centerTitle: false,
               elevation: 0,
               iconTheme: IconThemeData(
                 color: Colors.white, //change your color here
@@ -71,7 +72,7 @@ class _RegisterState extends State<Register> {
                           children: [
                             Text(
                               AppLocalizations.of(context)!.emailError,
-                              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                               textAlign: TextAlign.left,
                             ),
                           ],
@@ -83,8 +84,10 @@ class _RegisterState extends State<Register> {
                             onChanged: (val) {
                               setState(() => email = val);
                             },
-                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w500),
-                            decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.email,
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                            decoration: Styles.textFromInputDecoration.copyWith(
+                                labelText: AppLocalizations.of(context)!.email,
+                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                                 prefixIcon:  Padding(
                                   padding: EdgeInsets.all(0.0),
                                   child: Icon(
@@ -101,7 +104,7 @@ class _RegisterState extends State<Register> {
                             Expanded(
                               child: Text(
                                 AppLocalizations.of(context)!.passwordError,
-                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -114,9 +117,10 @@ class _RegisterState extends State<Register> {
                               setState(() => password1 = val);
                             },
                             obscureText: !_passwordVisible,
-                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w500),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                             decoration: Styles.textFromInputDecoration.copyWith(
                                 labelText: AppLocalizations.of(context)!.password,
+                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                                 suffixIcon: Padding(
                                     padding: EdgeInsets.all(0.0),
                                     child: IconButton(
@@ -148,8 +152,10 @@ class _RegisterState extends State<Register> {
                               setState(() => password2 = val);
                             },
                             obscureText: !_passwordVisible,
-                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w500),
-                            decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.passworRepeat,
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                            decoration: Styles.textFromInputDecoration.copyWith(
+                                labelText: AppLocalizations.of(context)!.passworRepeat,
+                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                                 suffixIcon: Padding(
                                     padding: EdgeInsets.all(0.0),
                                     child: IconButton(
@@ -197,7 +203,7 @@ class _RegisterState extends State<Register> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.register,
-                                style: Styles.purpleTextStyle.copyWith(fontSize: 23),
+                                style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.black),
                               ),
                             ) : Center(
                               child: SizedBox(

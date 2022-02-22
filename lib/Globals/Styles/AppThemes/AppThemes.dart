@@ -19,8 +19,10 @@ class AppThemes {
       brightness: Brightness.light,
       // Texts
       textTheme: TextTheme(
+        // Headlines for Titles
         headline1: _textStyles.blackHeadline1TextStyle(),
         headline2: _textStyles.whiteHeadline1TextStyle(),
+        // Body Texts for Descriptions
         bodyText1: _textStyles.blackBodyTextStyle(),
         bodyText2: _textStyles.greyBodyTextStyle(),
         caption: _textStyles.whiteBodyTextStyle()
@@ -32,12 +34,7 @@ class AppThemes {
         iconTheme: IconThemeData(
             color: Colors.black
         ),
-        titleTextStyle: TextStyle(
-          fontFamily: "Helvetica",
-          color: Colors.black,
-          fontSize: 22.0,
-          fontWeight: FontWeight.w800,
-        ),
+        titleTextStyle: _textStyles.blackHeadline1TextStyle(),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 40,

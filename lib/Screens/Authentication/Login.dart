@@ -66,10 +66,10 @@ class _LoginState extends State<Login> {
                               email = val;
                             });
                           },
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                           decoration: Styles.textFromInputDecoration.copyWith(
                               labelText: AppLocalizations.of(context)!.email,
-                              labelStyle: Theme.of(context).textTheme.bodyText1,
+                              labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                               prefixIcon:  Padding(
                                 padding: EdgeInsets.all(0.0),
                                 child: Icon(
@@ -88,11 +88,11 @@ class _LoginState extends State<Login> {
                                 password = val;
                               });
                             },
-                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.w500),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                             obscureText: !_passwordVisible,
                             decoration: Styles.textFromInputDecoration.copyWith(
                                 labelText: AppLocalizations.of(context)!.password,
-                                labelStyle: Theme.of(context).textTheme.bodyText1,
+                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                                 suffixIcon: Padding(
                                     padding: EdgeInsets.all(0.0),
                                     child: IconButton(
@@ -141,7 +141,7 @@ class _LoginState extends State<Login> {
                           },
                           child: Text(
                             AppLocalizations.of(context)!.forgotPassword,
-                            style: Theme.of(context).textTheme.caption,
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                           ),
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -167,7 +167,7 @@ class _LoginState extends State<Login> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.login,
-                                style: Theme.of(context).textTheme.headline2
+                                style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white)
                               ),
                             ) : Center(
                               child: SizedBox(
@@ -217,7 +217,7 @@ class _LoginState extends State<Login> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.register,
-                                  style: Theme.of(context).textTheme.headline1
+                                  style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.black)
                               ),
                             ),
                           ),

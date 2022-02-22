@@ -182,8 +182,10 @@ class _SplashScreenState extends State<SplashScreen> {
     Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
     // Set App Theme To User Preferred Theme Settings
     if (currentUser.isDark != null) {
+      print("This user has a Dark Mode: "+currentUser.isDark!.toString());
       Provider.of<ThemeProvider>(context, listen: false).toggleTheme(currentUser.isDark!);
     }
+    print("This user has the System Theme On");
     // Get Current User Unread Notifications and Chats
     unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
     unreadChats = await _userDataService.getUnreadConversations(currentUser.id!);
