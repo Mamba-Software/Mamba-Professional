@@ -59,8 +59,6 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
       _startValue = 3;
       _value = 3;
     }
-    print(_startValue);
-    print(_value);
     super.initState();
   }
 
