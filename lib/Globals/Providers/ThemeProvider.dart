@@ -34,7 +34,7 @@ class ThemeProvider extends ChangeNotifier {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
         systemNavigationBarColor: AppColors.black,
-        systemNavigationBarDividerColor: Colors.grey.shade900,
+        systemNavigationBarDividerColor: AppColors.black,
         systemNavigationBarIconBrightness: Brightness.light,
       ),
     );
@@ -47,7 +47,7 @@ class ThemeProvider extends ChangeNotifier {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
         systemNavigationBarColor: AppColors.black,
-        systemNavigationBarDividerColor: Colors.grey.shade900,
+        systemNavigationBarDividerColor: AppColors.black,
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
     );

@@ -24,7 +24,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 import '../../Constants.dart';
 import '../../Styles/Styles.dart';
-import '../LoadingViewPurple.dart';
+import '../LoadingViews/LoadingViewPurple.dart';
 
 class ProfileViewUser extends StatefulWidget {
   @override
