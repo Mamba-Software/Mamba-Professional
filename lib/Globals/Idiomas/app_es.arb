@@ -392,6 +392,34 @@
   "@typeProfilePublicDescription":{
     "description": "Entrenador Text"
   },
+  "typeTheme": "Personalizar",
+  "@typeTheme":{
+    "description": "typeProfile Text"
+  },
+  "typeThemeDark": "Modo Noche",
+  "@typeThemeDark":{
+    "description": "typeProfile Text"
+  },
+  "typeThemeDarkDescription": "Siempre usarás el Modo Noche.",
+  "@typeThemeDarkDescription":{
+    "description": "Entrenador Text"
+  },
+  "typeThemeLight": "Modo Día",
+  "@typeThemeLight":{
+    "description": "typeProfile Text"
+  },
+  "typeThemeLightDescription": "Siempre usarás el Modo Día.",
+  "@typeThemeLightDescription":{
+    "description": "Entrenador Text"
+  },
+  "typeThemeSystem": "Sistema",
+  "@typeThemeSystem":{
+    "description": "typeProfile Text"
+  },
+  "typeThemeSystemDescription": "MAMBA cambiará el Modo acorde con las preferencias de tu dispositivo.",
+  "@typeThemeSystemDescription":{
+    "description": "Entrenador Text"
+  },
   "title": "Título",
   "@title":{
     "description": "Título Text"
@@ -1124,6 +1152,10 @@
   },
   "editYourPrivacy": "Cambia el tipo de perfil",
   "@editYourPrivacy": {
+    "description": "Wellcome message"
+  },
+  "editYourTheme": "Cambia el modo",
+  "@editYourTheme": {
     "description": "Wellcome message"
   },
   "editYourInfo": "Edita tu información personal",

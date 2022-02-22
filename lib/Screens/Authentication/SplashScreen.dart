@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
+import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Screens/Admin/Admin.dart';
@@ -179,6 +180,10 @@ class _SplashScreenState extends State<SplashScreen> {
     currentUser = await _userDataService.getUserDetails(userId);
     // Set App Locale To User Preferred Language
     Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
+    // Set App Theme To User Preferred Theme Settings
+    if (currentUser.isDark != null) {
+      Provider.of<ThemeProvider>(context, listen: false).toggleTheme(currentUser.isDark!);
+    }
     // Get Current User Unread Notifications and Chats
     unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
     unreadChats = await _userDataService.getUnreadConversations(currentUser.id!);

@@ -23,6 +23,7 @@ import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'SettingsPrivacy.dart';
+import 'SettingsTheme.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -105,9 +106,11 @@ class _SettingsState extends State<Settings> {
               onPressed: () async {
                 final provider = Provider.of<ThemeProvider>(context, listen: false);
                 if (themeProvider.isDarkMode) {
+                  _userDataService.updateUserThemePreferences(currentUser.id!, false);
                   provider.toggleTheme(false);
                 } else {
-                 provider.toggleTheme(true);
+                  _userDataService.updateUserThemePreferences(currentUser.id!, true);
+                  provider.toggleTheme(true);
                 }
               },
             ),
@@ -211,6 +214,39 @@ class _SettingsState extends State<Settings> {
                       SizedBox(height: MediaQuery.of(context).size.height*0.02),
                     ],
                   ) : Container(),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.typeTheme,
+                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute<String>(
+                                builder: (context) => SettingsTheme(),
+                              )
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.dark_mode_outlined, color: Theme.of(context).primaryColor),
+                            SizedBox(width: 10),
+                            Text(
+                              AppLocalizations.of(context)!.editYourTheme,
+                              style: Styles.purpleTextStyle,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                    ],
+                  ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
