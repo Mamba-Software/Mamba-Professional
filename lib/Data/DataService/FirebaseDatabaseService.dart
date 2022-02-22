@@ -55,11 +55,12 @@ class FirebaseDatabaseService {
   // Authentication Services
   Future<int> signIn(String email, String password) async {
     bool error = false;
-    UserCredential authResult = await _auth
-        .signInWithEmailAndPassword(email: email, password: password)
-        .catchError((value) {
+    UserCredential? authResult;
+    try {
+      authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
+    } catch (e) {
       error = true;
-    });
+    }
     if (error) return -1;
     if (authResult == null)
       return -1;
