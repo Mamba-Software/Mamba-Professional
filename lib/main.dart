@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -30,14 +31,6 @@ void main() async {
   await Firebase.initializeApp();
   // Firebase Messaging Back Ground Message Handler
   FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
-  // System and Top Bar Style
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.dark,
-    systemNavigationBarColor: Colors.black,
-    systemNavigationBarIconBrightness: Brightness.light,
-  ));
   runApp(
     MultiProvider(
       providers: [
@@ -59,6 +52,14 @@ class Mamba extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2 <LanguageProvider, ThemeProvider> (
         builder: (context, LanguageProvider language, ThemeProvider theme, _) {
+          final brightness = SchedulerBinding.instance?.window.platformBrightness;
+          if (brightness == Brightness.dark) {
+            print("Dark Mode");
+            theme.darkModeStatusAndNavigationBar();
+          } else {
+            print("Light Mode");
+            theme.lightModeStatusAndNavigationBar();
+          }
           return Resize(
             allowtextScaling: true,
             builder: () {

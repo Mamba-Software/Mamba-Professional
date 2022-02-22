@@ -8,9 +8,12 @@ class AppColors {
   static const Color mainColorTrans = Color(0x33E9B044);
 
   static const Color black = Color(0xFF000000);
-  static const Color darkGrey = Color(0xFF464646);
+  static Color darkerGrey = Colors.grey.shade900;
+  static Color darkGrey = Colors.grey.shade800;
   static const Color grey = Color(0xFF969696);
   static const Color lightGrey = Color(0xFFF2F2F2);
   static const Color white = Color(0xFFFFFFFF);
+
+  static const Color red = Color(0xFFFF0000);
 
 }

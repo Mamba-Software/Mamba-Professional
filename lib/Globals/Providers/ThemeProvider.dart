@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
 class ThemeProvider extends ChangeNotifier {
   ThemeMode themeMode = ThemeMode.system;
@@ -17,6 +19,37 @@ class ThemeProvider extends ChangeNotifier {
   // toogleTheme
   void toggleTheme(bool isDark) {
     themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
+    if (themeMode == ThemeMode.dark) {
+      lightModeStatusAndNavigationBar();
+    } else {
+      darkModeStatusAndNavigationBar();
+    }
     notifyListeners();
+  }
+
+  void darkModeStatusAndNavigationBar() {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.light,
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: AppColors.black,
+        systemNavigationBarDividerColor: Colors.grey.shade900,
+        systemNavigationBarIconBrightness: Brightness.light,
+      ),
+    );
+  }
+
+  void lightModeStatusAndNavigationBar() {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.dark,
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: AppColors.black,
+        systemNavigationBarDividerColor: Colors.grey.shade900,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+    );
   }
 }

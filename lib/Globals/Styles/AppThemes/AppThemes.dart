@@ -22,6 +22,8 @@ class AppThemes {
         // Headlines for Titles
         headline1: _textStyles.blackHeadline1TextStyle(),
         headline2: _textStyles.whiteHeadline1TextStyle(),
+        // Headline 2 For Subtitles
+        headline3: _textStyles.blackHeadline2TextStyle(),
         // Body Texts for Descriptions
         bodyText1: _textStyles.blackBodyTextStyle(),
         bodyText2: _textStyles.greyBodyTextStyle(),
@@ -34,6 +36,7 @@ class AppThemes {
         iconTheme: IconThemeData(
             color: Colors.black
         ),
+        brightness: Brightness.dark,
         titleTextStyle: _textStyles.blackHeadline1TextStyle(),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -50,34 +53,34 @@ class AppThemes {
     TextStyles _textStyles = TextStyles(screenHeight);
     return ThemeData(
       // Primary Colors
-      primaryColor: AppColors.black,
+      primaryColor: AppColors.white,
       accentColor:  AppColors.mainColor,
       // BackGround Colors
-      backgroundColor: AppColors.lightGrey,
-      scaffoldBackgroundColor: AppColors.white,
+      backgroundColor: AppColors.darkGrey,
+      scaffoldBackgroundColor: AppColors.darkerGrey,
       // Brightness
-      brightness: Brightness.light,
+      brightness: Brightness.dark,
       // Texts
       textTheme: TextTheme(
-          headline1: _textStyles.blackHeadline1TextStyle(),
-          headline2: _textStyles.whiteHeadline1TextStyle(),
-          bodyText1: _textStyles.blackBodyTextStyle(),
-          bodyText2: _textStyles.greyBodyTextStyle(),
-          caption: _textStyles.whiteBodyTextStyle()
+        // Headlines for Titles
+        headline1: _textStyles.whiteHeadline1TextStyle(),
+        headline2: _textStyles.blackHeadline1TextStyle(),
+        // Headline 2 For Subtitles
+        headline3: _textStyles.whiteHeadline2TextStyle(),
+        // Body Texts for Descriptions
+        bodyText1: _textStyles.whiteBodyTextStyle(),
+        bodyText2: _textStyles.greyBodyTextStyle(),
+        caption: _textStyles.blackBodyTextStyle()
       ),
       fontFamily: "Helvetica",
       appBarTheme: AppBarTheme(
         elevation: 4.0,
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.darkerGrey,
         iconTheme: IconThemeData(
-            color: Colors.black
+            color: AppColors.white,
         ),
-        titleTextStyle: TextStyle(
-          fontFamily: "Helvetica",
-          color: Colors.black,
-          fontSize: 22.0,
-          fontWeight: FontWeight.w800,
-        ),
+        titleTextStyle: _textStyles.whiteHeadline1TextStyle(),
+        brightness: Brightness.light,
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 40,
