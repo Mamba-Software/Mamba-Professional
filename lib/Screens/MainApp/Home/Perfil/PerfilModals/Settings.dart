@@ -6,6 +6,7 @@ import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
@@ -47,6 +48,8 @@ class _SettingsState extends State<Settings> {
   bool isUpdated = false;
   // Boolean isSaved
   bool isSaved = false;
+  // Theme Provider
+  var themeProvider;
 
 
   @override
@@ -58,6 +61,7 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     // Checking if there has been a change that has not been saved.
     if (!isLoading) {
+      themeProvider = Provider.of<ThemeProvider>(context);
       if (_isPrivate != currentUser.isPrivate! && _isPrivate != null) {
         isUpdated = true;
       } else if (idiomaChanged) {
@@ -95,6 +99,20 @@ class _SettingsState extends State<Settings> {
               Navigator.pop(context);
               },
           ),
+          actions: [
+            IconButton(
+              icon: Icon(themeProvider.isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined, size: 25,),
+              onPressed: () async {
+                final provider = Provider.of<ThemeProvider>(context, listen: false);
+                if (themeProvider.isDarkMode) {
+                  provider.toggleTheme(false);
+                } else {
+                 provider.toggleTheme(true);
+                }
+              },
+            ),
+
+          ],
         ),
         body: SingleChildScrollView(
             physics: BouncingScrollPhysics(),

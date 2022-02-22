@@ -65,9 +65,9 @@ class Mamba extends StatelessWidget {
               return MaterialApp(
                 debugShowCheckedModeBanner: false,
                 title: Constants.appName,
-                //themeMode: theme.themeMode,
+                themeMode: theme.themeMode,
                 theme: _appThemes.returnResponsiveLightTheme(100.vh),
-                //darkTheme: _appThemes.returnResponsiveDarkTheme(100.vh),
+                darkTheme: _appThemes.returnResponsiveDarkTheme(100.vh),
                 locale: language.idioma,
                 supportedLocales: Idiomas.all,
                 localizationsDelegates: [
