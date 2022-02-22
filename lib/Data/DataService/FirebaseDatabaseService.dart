@@ -282,12 +282,20 @@ class FirebaseDatabaseService {
   }
 
   // Add User
-  Future<void> updateUserThemePreferences(String uid, bool isDark) async {
-    await _firestore.collection(users).doc(uid).update({
-      "isDark": isDark,
-    }).catchError((err) {
-      print(err);
-    });
+  Future<void> updateUserThemePreferences(String uid, bool? isDark) async {
+    if (isDark == null) {
+      await _firestore.collection(users).doc(uid).update({
+        "isDark": null,
+      }).catchError((err) {
+        print(err);
+      });
+    } else {
+      await _firestore.collection(users).doc(uid).update({
+        "isDark": isDark,
+      }).catchError((err) {
+        print(err);
+      });
+    }
   }
 
   // Add User Notification Token

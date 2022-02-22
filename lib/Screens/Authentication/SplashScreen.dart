@@ -188,7 +188,7 @@ class _SplashScreenState extends State<SplashScreen> {
     unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
     unreadChats = await _userDataService.getUnreadConversations(currentUser.id!);
     // Get Current User Brand, if any.
-    // WAIT TO AVOID PROBLEMS DUE TO CLOUD FUNCTIONS NOT BEING INSTANTANOUS.
+    // WAIT TO AVOID PROBLEMS DUE TO CLOUD FUNCTIONS NOT BEING INSTANTANEOUS.
     await Future.delayed(const Duration(seconds: 3));
     List<Brand> brands = await _brandDataService.getAllBrandsFromUser(userId);
     // Set the Brand List

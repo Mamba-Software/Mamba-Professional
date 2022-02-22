@@ -416,7 +416,7 @@
   "@typeThemeSystem":{
     "description": "typeProfile Text"
   },
-  "typeThemeSystemDescription": "MAMBA cambiará el Modo acorde con las preferencias de tu dispositivo.",
+  "typeThemeSystemDescription": "MAMBA cambiará el Modo acorde con tu dispositivo.",
   "@typeThemeSystemDescription":{
     "description": "Entrenador Text"
   },

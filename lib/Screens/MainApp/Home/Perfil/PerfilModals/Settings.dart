@@ -100,22 +100,6 @@ class _SettingsState extends State<Settings> {
               Navigator.pop(context);
               },
           ),
-          actions: [
-            IconButton(
-              icon: Icon(themeProvider.isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined, size: 25,),
-              onPressed: () async {
-                final provider = Provider.of<ThemeProvider>(context, listen: false);
-                if (themeProvider.isDarkMode) {
-                  _userDataService.updateUserThemePreferences(currentUser.id!, false);
-                  provider.toggleTheme(false);
-                } else {
-                  _userDataService.updateUserThemePreferences(currentUser.id!, true);
-                  provider.toggleTheme(true);
-                }
-              },
-            ),
-
-          ],
         ),
         body: SingleChildScrollView(
             physics: BouncingScrollPhysics(),

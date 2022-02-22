@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:provider/provider.dart';
 
 class SettingsTheme extends StatefulWidget {
   const SettingsTheme({Key? key}) : super(key: key);
@@ -23,8 +27,10 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
   // Boolean isUpdated
   bool isUpdated = false;
   // Type of Users
-  int _startValue = currentUser.isPrivate! ? 2 : 1;
-  int _value = currentUser.isPrivate! ? 2 : 1;
+  int _startValue = 0;
+  int _value = 0;
+  // Theme Provider
+  var themeProvider;
 
   Color getColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
@@ -36,6 +42,26 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
       return Colors.blue;
     }
     return Theme.of(context).accentColor;
+  }
+
+  @override
+  void initState() {
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    if (currentUser.isDark != null) {
+      if (currentUser.isDark!) {
+        _startValue = 2;
+        _value = 2;
+      } else {
+        _startValue = 1;
+        _value = 1;
+      }
+    } else {
+      _startValue = 3;
+      _value = 3;
+    }
+    print(_startValue);
+    print(_value);
+    super.initState();
   }
 
   @override
@@ -55,7 +81,28 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 25,),
           onPressed: () {
-            Navigator.pop(context);
+            if (isUpdated) {
+              setState(() {
+                isLoading = true;
+              });
+              if (_startValue == 1) {
+                themeProvider.toggleTheme(false);
+              } else if (_startValue == 2) {
+                themeProvider.toggleTheme(true);
+              } else if (_startValue == 3) {
+                final brightness = SchedulerBinding.instance?.window.platformBrightness;
+                if (brightness == Brightness.dark) {
+                  themeProvider.toggleTheme(true);
+                } else {
+                  themeProvider.toggleTheme(false);
+                }
+              }
+              Future.delayed(const Duration(milliseconds: 500), () {
+                Navigator.pop(context);
+              });
+            } else {
+              Navigator.pop(context);
+            }
           },
         ),
       ),
@@ -95,6 +142,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                       setState(() {
                         _value = int.parse(value.toString());
                       });
+                      themeProvider.toggleTheme(false);
                     },
                   ),
                   trailing: Icon(
@@ -142,6 +190,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                       setState(() {
                         _value = int.parse(value.toString());
                       });
+                      themeProvider.toggleTheme(true);
                     },
                   ),
                   trailing: Icon(
@@ -189,6 +238,12 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                       setState(() {
                         _value = int.parse(value.toString());
                       });
+                      final brightness = SchedulerBinding.instance?.window.platformBrightness;
+                      if (brightness == Brightness.dark) {
+                        themeProvider.toggleTheme(true);
+                      } else {
+                        themeProvider.toggleTheme(false);
+                      }
                     },
                   ),
                   trailing: Icon(
@@ -219,14 +274,16 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
             setState(() {
               isLoading = true;
             });
-            bool isPrivate = false;
+            bool? isDark;
             if (_value == 1) {
-              isPrivate = false;
-            } else {
-              isPrivate = true;
+              isDark = false;
+            } else if (_value == 2) {
+              isDark = true;
+            } else if (_value == 3) {
+              isDark = null;
             }
-            currentUser.isPrivate = isPrivate;
-            await _userDataService.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!);
+            currentUser.isDark = isDark;
+            await _userDataService.updateUserThemePreferences(currentUser.id!, currentUser.isDark);
             Future.delayed(const Duration(milliseconds: 500), () {
               Navigator.pop(context);
             });
