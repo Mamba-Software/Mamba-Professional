@@ -158,7 +158,7 @@ class _TusDatosState extends State<TusDatos> {
         title: Text(AppLocalizations.of(context)!.yourInfo, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 25,),
+          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
           onPressed: () async {
             Navigator.pop(context);
           },

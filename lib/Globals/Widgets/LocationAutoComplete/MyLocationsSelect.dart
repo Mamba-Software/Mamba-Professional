@@ -79,7 +79,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
           title: Text(AppLocalizations.of(context)!.locations, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, size: 25,),
+            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
             onPressed: () async {
               Navigator.of(context).pop(null);
             },
@@ -93,7 +93,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
           title: Text(AppLocalizations.of(context)!.locations, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, size: 25,),
+            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
             onPressed: () async {
               Navigator.of(context).pop(null);
             },

@@ -153,7 +153,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
             title: Text(AppLocalizations.of(context)!.mySessions, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back, size: 25,),
+              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -167,7 +167,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
             title: Text(AppLocalizations.of(context)!.mySessions, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back, size: 25,),
+              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
               onPressed: () {
                 Navigator.pop(context);
               },

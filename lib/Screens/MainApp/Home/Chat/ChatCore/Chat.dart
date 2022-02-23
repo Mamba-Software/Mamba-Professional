@@ -407,7 +407,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
         elevation: 4,
         automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 25,),
+          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
           onPressed: () {
             print(hasSentMessage);
             Navigator.pop(context, hasSentMessage);

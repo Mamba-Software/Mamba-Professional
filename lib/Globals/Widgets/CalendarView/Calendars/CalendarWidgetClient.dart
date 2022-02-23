@@ -79,7 +79,7 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
             title: Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back, size: 25,),
+              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -93,7 +93,7 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
             title: Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back, size: 25,),
+              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
               onPressed: () {
                 Navigator.pop(context);
               },

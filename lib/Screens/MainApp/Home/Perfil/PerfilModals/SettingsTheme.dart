@@ -77,7 +77,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
         title: Text(AppLocalizations.of(context)!.typeTheme, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 25,),
+          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
           onPressed: () {
             if (isUpdated) {
               setState(() {

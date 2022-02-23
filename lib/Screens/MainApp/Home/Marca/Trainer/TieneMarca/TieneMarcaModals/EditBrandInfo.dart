@@ -285,7 +285,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
         title: Text(AppLocalizations.of(context)!.yourBrand, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 25,),
+          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
           onPressed: () {
             Navigator.pop(context);
           },

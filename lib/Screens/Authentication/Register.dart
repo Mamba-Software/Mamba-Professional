@@ -47,7 +47,7 @@ class _RegisterState extends State<Register> {
                 color: Colors.white, //change your color here
               ),
               leading: IconButton(
-                icon: Icon(Icons.arrow_back, size: 25,),
+                icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
                 onPressed: () {
                   if (email.isNotEmpty) {
                     Navigator.pop(context, email.trim());
