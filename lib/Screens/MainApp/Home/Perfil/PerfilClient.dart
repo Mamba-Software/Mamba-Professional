@@ -1387,7 +1387,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                 },
                                 decoration: InputDecoration(
                                   hintText: AppLocalizations.of(context)!.codigo,
-                                  hintStyle: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
+                                  hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: codigoError ? Colors.red: Colors.green),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
                                     borderRadius: BorderRadius.circular(13.0),
@@ -1397,7 +1397,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                     borderRadius: BorderRadius.circular(13.0),
                                   ),
                                 ),
-                                style: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: codigoError ? Colors.red: Colors.green),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -1411,7 +1411,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                   heroTag: "35",
                                   child: Icon(Icons.login),
                                   backgroundColor: Colors.green,
-                                  foregroundColor: Styles.white,
+                                  foregroundColor: Colors.white,
                                   onPressed: () async {
                                     if(_codigo == null || _codigo=="") {
                                       setState(() {
@@ -1459,7 +1459,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                   heroTag: "36",
                                   child: Icon(Icons.close),
                                   backgroundColor: Colors.red,
-                                  foregroundColor: Styles.white,
+                                  foregroundColor: Colors.white,
                                   onPressed: () async {
                                     setState(() {
                                       codigoClicked = !codigoClicked;
@@ -1490,7 +1490,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                       ),
                                     ),
                                     backgroundColor: Colors.orangeAccent,
-                                    foregroundColor: Styles.white,
+                                    foregroundColor: Colors.white,
                                     onPressed: false ? () {} : null
                                 ),
                               ],
@@ -1543,10 +1543,10 @@ class _PerfilClientState extends State<PerfilClient> {
                     title: Container(
                       child: RichText(
                         text: TextSpan(
-                          style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                          style: Theme.of(context).textTheme.bodyText2,
                           children: [
                             TextSpan(text: AppLocalizations.of(context)!.waitingRequestConfirmation),
-                            TextSpan(text: brandRequested!.name!, style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
+                            TextSpan(text: brandRequested!.name!, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold),),
                           ],
                         ),
                       ),
@@ -1557,7 +1557,7 @@ class _PerfilClientState extends State<PerfilClient> {
                         SizedBox(height: MediaQuery.of(context).size.height*0.01),
                         Text(
                           AppLocalizations.of(context)!.requestSent(request.dateSent!),
-                          style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                          style: Theme.of(context).textTheme.caption,
                         ),
                       ],
                     ),
