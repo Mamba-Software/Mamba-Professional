@@ -118,7 +118,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                     child: Text(
                       AppLocalizations.of(context)!.typeThemeLight,
-                      style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   subtitle: Row(
@@ -166,7 +166,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                     child: Text(
                       AppLocalizations.of(context)!.typeThemeDark,
-                      style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   subtitle: Row(
@@ -214,7 +214,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                     child: Text(
                       AppLocalizations.of(context)!.typeThemeSystem,
-                      style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   subtitle: Row(

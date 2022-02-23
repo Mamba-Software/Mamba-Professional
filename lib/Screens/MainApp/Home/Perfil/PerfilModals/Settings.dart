@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
@@ -81,7 +82,7 @@ class _SettingsState extends State<Settings> {
           title: Text(AppLocalizations.of(context)!.settings, style: Theme.of(context).appBarTheme.titleTextStyle,),
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, size: 25,),
+            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
             onPressed: () async {
               if (isUpdated) {
                 setState(() {
@@ -116,7 +117,7 @@ class _SettingsState extends State<Settings> {
                     children: <Widget>[
                       Text(
                         AppLocalizations.of(context)!.yourInfo,
-                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       TextButton(
@@ -131,16 +132,15 @@ class _SettingsState extends State<Settings> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Icon(Icons.edit_outlined, color: Theme.of(context).primaryColor),
+                            Icon(Icons.edit_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
                             SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.editYourInfo,
-                              style: Styles.purpleTextStyle,
+                              style: Theme.of(context).textTheme.bodyText1,
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       TextButton(
                         onPressed: () {
                           Navigator.push(
@@ -153,28 +153,16 @@ class _SettingsState extends State<Settings> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Icon(Icons.face_retouching_natural, color: Theme.of(context).primaryColor),
+                            Icon(Icons.face_retouching_natural, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
                             SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.editYourPhoto,
-                              style: Styles.purpleTextStyle,
+                              style: Theme.of(context).textTheme.bodyText1,
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                    ],
-                  ),
-                  !(currentUser.isTrainer!) ? Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.typeProfile,
-                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                      TextButton(
+                      !(currentUser.isTrainer!) ? TextButton(
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -190,21 +178,21 @@ class _SettingsState extends State<Settings> {
                             SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.editYourPrivacy,
-                              style: Styles.purpleTextStyle,
+                              style: Theme.of(context).textTheme.bodyText1,
                             ),
                           ],
                         ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                      ) : Container(),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     ],
-                  ) : Container(),
+                  ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         AppLocalizations.of(context)!.typeTheme,
-                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       TextButton(
@@ -223,7 +211,7 @@ class _SettingsState extends State<Settings> {
                             SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.editYourTheme,
-                              style: Styles.purpleTextStyle,
+                              style: Theme.of(context).textTheme.bodyText1,
                             ),
                           ],
                         ),
@@ -237,7 +225,7 @@ class _SettingsState extends State<Settings> {
                     children: <Widget>[
                       Text(
                         AppLocalizations.of(context)!.language,
-                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       LanguagePickerWidget(
@@ -249,7 +237,6 @@ class _SettingsState extends State<Settings> {
                       SizedBox(height: MediaQuery.of(context).size.height*0.02),
                     ],
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   TextButton(
                     onPressed: () async {
                       if (Localizations.localeOf(context).languageCode == 'es') {
@@ -263,16 +250,15 @@ class _SettingsState extends State<Settings> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Icon(Icons.policy_outlined, color: Theme.of(context).primaryColor),
+                        Icon(Icons.policy_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
                         SizedBox(width: 10),
                         Text(
                           AppLocalizations.of(context)!.termsAndConditions,
-                          style: Styles.purpleTextStyle,
+                          style: Theme.of(context).textTheme.bodyText1,
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   TextButton(
                     onPressed: () async {
                       var result = await showDialog(
@@ -303,16 +289,15 @@ class _SettingsState extends State<Settings> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Icon(Icons.logout_outlined, color: Theme.of(context).primaryColor),
+                        Icon(Icons.logout_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
                         SizedBox(width: 10),
                         Text(
                           AppLocalizations.of(context)!.closeSession,
-                          style: Styles.purpleTextStyle,
+                          style: Theme.of(context).textTheme.bodyText1,
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   TextButton(
                     onPressed: () async {
                       showDialog(
@@ -325,22 +310,21 @@ class _SettingsState extends State<Settings> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Icon(Icons.delete_outline, color: Colors.red),
+                        Icon(Icons.delete_outline, color: Colors.red, size: MediaQuery.of(context).size.width*0.05,),
                         SizedBox(width: 10),
                         Text(
                           AppLocalizations.of(context)!.deleteAccount,
-                          style: Styles.purpleTextStyle.copyWith(color: Colors.red),
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.red),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
                         version,
-                        style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).primaryColor),
+                        style: Theme.of(context).textTheme.caption,
                         textAlign: TextAlign.left,
                       ),
                     ],
@@ -389,7 +373,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: Colors.white
+            color: Theme.of(context).scaffoldBackgroundColor,
         ),
         child: Stack(
           clipBehavior: Clip.none,
@@ -401,10 +385,10 @@ class _DeleteDialogState extends State<DeleteDialog> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 15, bottom: 10.0),
-                  child: Text(AppLocalizations.of(context)!.wantDeleteUser, style: Styles.redTextStyle.copyWith(color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context)!.wantDeleteUser, style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.red, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
                 ),
                 Flexible(
-                  child: Text("${AppLocalizations.of(context)!.writeDeleteUser} ", style: Styles.purpleTextStyle.copyWith(fontSize: 16, height: 1.5), textAlign: TextAlign.center,),
+                  child: Text("${AppLocalizations.of(context)!.writeDeleteUser} ", style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5), textAlign: TextAlign.center,),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, left: 15, right: 15),
@@ -429,10 +413,10 @@ class _DeleteDialogState extends State<DeleteDialog> {
                               });
                             }
                           },
-                          style: Styles.redTextStyle.copyWith(fontSize: 14),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.red),
                           decoration: InputDecoration(
                             hintText: AppLocalizations.of(context)!.passworRepeat,
-                            hintStyle: Styles.redTextStyle.copyWith(fontSize: 14, color: Colors.red),
+                            hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.red),
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.red, width: 1),
                               borderRadius: BorderRadius.circular(10.0),
@@ -447,7 +431,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                     icon: Icon(
                                       // Based on passwordVisible state choose the icon
                                         _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                        color: Styles.red
+                                        color: AppColors.red
                                     ),
                                     onPressed: () {
                                       setState(() {
@@ -465,7 +449,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                 wrongPassword ? Flexible(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 20.0, left: 10, right: 10),
-                    child: Text("${AppLocalizations.of(context)!.passwordNotSameError} ", style: Styles.redTextStyle.copyWith(fontSize: 16), textAlign: TextAlign.center,),
+                    child: Text("${AppLocalizations.of(context)!.passwordNotSameError} ", style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.red), textAlign: TextAlign.center,),
                   ),
                 ) : Container(),
                 Padding(
@@ -475,7 +459,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                     children: [
                       FloatingActionButton.extended(
                         heroTag: "39",
-                        label: !isLoading ? Text(AppLocalizations.of(context)!.delete) : Container(
+                        label: !isLoading ? Text(AppLocalizations.of(context)!.delete, style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),) : Container(
                           width: MediaQuery.of(context).size.width*0.20,
                           child: Center(
                             child: SizedBox(
@@ -488,10 +472,10 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             ),
                           ),
                         ),
-                        icon: !isLoading ? Icon(Icons.delete_outline) : Container(),
-                        backgroundColor: canDelete ? Colors.red : Colors.red[100],
-                        foregroundColor: Styles.white,
-                        onPressed: () async {
+                        icon: !isLoading ? Icon(Icons.delete_outline, size: MediaQuery.of(context).size.width*0.06) : Container(),
+                        backgroundColor: canDelete ? Colors.red : Colors.red[200],
+                        foregroundColor: AppColors.white,
+                        onPressed: canDelete ? () async {
                           setState(() {
                             isLoading = true;
                           });
@@ -500,6 +484,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                           await _userDataService.deleteUserNickname(currentUser.nick!);
                           if (!result) {
                             setState(() {
+                              isLoading = false;
                               wrongPassword = true;
                             });
                           } else {
@@ -529,14 +514,14 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                   (_) => false,
                             );
                           }
-                        },
+                        } : null,
                       ),
                       FloatingActionButton.extended(
                         heroTag: "40",
-                        icon: Icon(Icons.cancel_outlined, size: 30,),
-                        label: Text(AppLocalizations.of(context)!.cancel),
+                        icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06,),
+                        label: Text(AppLocalizations.of(context)!.cancel, style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),),
                         backgroundColor: Theme.of(context).primaryColor,
-                        foregroundColor: Styles.white,
+                        foregroundColor: Theme.of(context).primaryColorDark,
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
@@ -680,7 +665,7 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
   }
   Widget _iconLocale(Locale locale, BuildContext context ) {
     return SizedBox.fromSize(
-          size: Size(85, 85), // button width and height
+          size: Size(MediaQuery.of(context).size.width*0.17, MediaQuery.of(context).size.width*0.17), // button width and height
           child: ClipOval(
             child: Material(
               color: _locale == locale ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, // button color
@@ -692,7 +677,7 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Text(
                           locale.languageCode.toUpperCase(),
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: Theme.of(context).primaryColor)
+                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold)
                       ),
                     ),
                   ],

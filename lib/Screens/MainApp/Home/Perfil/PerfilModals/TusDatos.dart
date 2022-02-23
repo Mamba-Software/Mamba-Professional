@@ -1,12 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
@@ -46,29 +43,31 @@ class _TusDatosState extends State<TusDatos> {
 
   Future<void> selectSlot(ctx, type) {
     // Initial Vars
-    var maxDate = DateTime.now();
     var startDate = DateTime.now();
     var title;
     var widgetPicker;
-    if (type == 0) {
-      startDate = DateFormat('dd-MM-yyyy', Localizations.localeOf(context).languageCode).parse(startDateController.text);
-    }
     // Different types of pickers
-    Widget dateTimePicker = CupertinoDatePicker(
-        mode: CupertinoDatePickerMode.date,
-        initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
-        minimumDate: startDate.subtract(Duration(days: 365*80)),
-        maximumDate: DateTime(maxDate.year, maxDate.month, 31, 0, 0),
-        minimumYear: 1941,
-        maximumYear: 2021,
-        use24hFormat: true,
-        onDateTimeChanged: (val) {
-          setState(() {
-            startDateController.text = DateFormat('dd-MM-yyyy', Localizations.localeOf(context).languageCode).format(val);
-          });
-        }
+    Widget dateTimePicker = CupertinoTheme(
+      data: CupertinoThemeData(
+          textTheme: CupertinoTextThemeData(
+            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
+          )
+      ),
+      child: CupertinoDatePicker(
+          mode: CupertinoDatePickerMode.date,
+          initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
+          minimumDate: startDate.subtract(Duration(days: 365*80)),
+          maximumDate: DateTime(startDate.year, startDate.month, 31, 0, 0),
+          minimumYear: 1941,
+          maximumYear: startDate.year,
+          use24hFormat: true,
+          onDateTimeChanged: (val) {
+            setState(() {
+              startDateController.text = DateFormat('dd-MM-yyyy', Localizations.localeOf(context).languageCode).format(val);
+            });
+          }
+      ),
     );
-
     if (type == 0) {
       title = AppLocalizations.of(context)!.selectDateOfBirth;
       widgetPicker = dateTimePicker;
@@ -94,12 +93,17 @@ class _TusDatosState extends State<TusDatos> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
-                        child: Text(title, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20), textAlign: TextAlign.center,)
+                        child: Text(title,
+                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,)
                     ),
                   ],
                 ),
                 Expanded(
-                    child: widgetPicker
+                  child: Padding(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
+                    child: widgetPicker,
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -108,7 +112,8 @@ class _TusDatosState extends State<TusDatos> {
                     Padding(
                       padding: const EdgeInsets.only(top: 0),
                       child: TextButton(
-                          child: Text(AppLocalizations.of(context)!.entendido, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                          child: Text(AppLocalizations.of(context)!.entendido,
+                              style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
                           onPressed: () {
                             Navigator.of(ctx).pop();
                           }
@@ -185,7 +190,7 @@ class _TusDatosState extends State<TusDatos> {
                         children: <Widget>[
                           Text(
                             AppLocalizations.of(context)!.firstName,
-                            style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           Flexible(
@@ -197,6 +202,7 @@ class _TusDatosState extends State<TusDatos> {
                                   firstNameControllerTemp = value;
                                 });
                               },
+                              style: Theme.of(context).textTheme.bodyText2,
                               validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
                               decoration: InputDecoration(
                                 hintText: AppLocalizations.of(context)!.nameCompletoError,
@@ -216,7 +222,7 @@ class _TusDatosState extends State<TusDatos> {
                         children: <Widget>[
                           Text(
                             AppLocalizations.of(context)!.lastName,
-                            style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           Flexible(
@@ -228,6 +234,7 @@ class _TusDatosState extends State<TusDatos> {
                                   lastNameControllerTemp = value;
                                 });
                               },
+                              style: Theme.of(context).textTheme.bodyText2,
                               validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.lastNameError : null,
                               decoration: InputDecoration(
                                 hintText: AppLocalizations.of(context)!.lastNameError,
@@ -249,19 +256,20 @@ class _TusDatosState extends State<TusDatos> {
                             children: [
                               Text(
                                 AppLocalizations.of(context)!.nickname,
-                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.left,
                               ),
                               SizedBox(width: MediaQuery.of(context).size.height*0.01),
                               Padding(
                                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.005),
-                                child: Icon(Icons.lock_outline, color: Theme.of(context).primaryColor, size: 20,),
+                                child: Icon(Icons.lock_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
                               )
                             ],
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           Flexible(
                             child: new TextFormField(
+                              style: Theme.of(context).textTheme.bodyText2,
                               decoration: InputDecoration(
                                 hintText: AppLocalizations.of(context)!.nickname,
                               ),
@@ -281,18 +289,19 @@ class _TusDatosState extends State<TusDatos> {
                             children: [
                               Text(
                                 AppLocalizations.of(context)!.email,
-                                style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               SizedBox(width: MediaQuery.of(context).size.height*0.01),
                               Padding(
                                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.005),
-                                child: Icon(Icons.lock_outline, color: Theme.of(context).primaryColor, size: 20,),
+                                child: Icon(Icons.lock_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
                               )
                             ],
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           Flexible(
                             child: new TextFormField(
+                              style: Theme.of(context).textTheme.bodyText2,
                               decoration: InputDecoration(
                                 hintText: AppLocalizations.of(context)!.email,
                               ),
@@ -310,7 +319,7 @@ class _TusDatosState extends State<TusDatos> {
                         children: <Widget>[
                           Text(
                             AppLocalizations.of(context)!.gender,
-                            style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           GenderWidget(
@@ -332,7 +341,7 @@ class _TusDatosState extends State<TusDatos> {
                         children: <Widget>[
                           Text(
                             AppLocalizations.of(context)!.dateOfBirth,
-                            style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           GestureDetector(
@@ -446,7 +455,7 @@ class _GenderWidgetState extends State<GenderWidget> {
   }
   Widget _icon(int index, {required String text, required IconData icon}) {
     return SizedBox.fromSize(
-        size: Size(90, 90), // button width and height
+        size: Size(MediaQuery.of(context).size.width*0.2, MediaQuery.of(context).size.width*0.2), // button width and height
         child: ClipOval(
           child: Material(
             color: gender == index ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor,
@@ -461,7 +470,7 @@ class _GenderWidgetState extends State<GenderWidget> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Theme.of(context).primaryColor)),
+                      child: Text(text, style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold)),
                     ),
                   ],
                 ),

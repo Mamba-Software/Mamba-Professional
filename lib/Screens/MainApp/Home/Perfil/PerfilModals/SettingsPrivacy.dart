@@ -73,7 +73,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                     child: Text(
                       AppLocalizations.of(context)!.typeProfilePublic,
-                      style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   subtitle: Row(
@@ -81,7 +81,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.typeProfilePublicDescription,
-                          style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: Colors.grey), textAlign: TextAlign.left,
+                          style: Theme.of(context).textTheme.caption,
                         ),
                       ),
                     ],
@@ -120,7 +120,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                     child: Text(
                       AppLocalizations.of(context)!.typeProfilePrivate,
-                      style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   subtitle: Row(
@@ -128,7 +128,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.typeProfilePrivateDescription,
-                          style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: Colors.grey), textAlign: TextAlign.left,
+                          style: Theme.of(context).textTheme.caption,
                         ),
                       ),
                     ],

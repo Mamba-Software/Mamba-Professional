@@ -105,18 +105,30 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
                 height: MediaQuery.of(context).size.height * 0.4,
                 child: Center(
                   child: _image == null ?
-                  RawMaterialButton(
+                  OutlinedButton(
                     onPressed: getImage,
-                    child: new Icon(
-                      Icons.photo_library,
-                      color: Theme.of(context).accentColor,
-                      size: 35.0,
+                    child: Column(
+                      //mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        new Icon(
+                          Icons.face,
+                          color: Theme.of(context).primaryColor,
+                          size: MediaQuery.of(context).size.width * 0.1,
+                        ),
+                      ],
                     ),
-                    shape: new CircleBorder(),
-                    elevation: 4.0,
-                    fillColor: Colors.white,
-                    padding: const EdgeInsets.all(100.0),
-                  ):
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 1.5
+                      ),
+                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                      elevation: 10,
+                      shape: CircleBorder(),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.13, right: MediaQuery.of(context).size.height * 0.13, top: MediaQuery.of(context).size.height * 0.13),
+                    ),
+                  )
+                      :
                   GestureDetector(
                     onTap: getImage,
                     child: Stack(
