@@ -11,6 +11,7 @@ class AppThemes {
     return ThemeData(
       // Primary Colors
       primaryColor: AppColors.black,
+      primaryColorDark: AppColors.white,
       accentColor:  AppColors.mainColor,
       // BackGround Colors
       backgroundColor: AppColors.lightGrey,
@@ -54,6 +55,7 @@ class AppThemes {
     return ThemeData(
       // Primary Colors
       primaryColor: AppColors.white,
+      primaryColorDark: AppColors.black,
       accentColor:  AppColors.mainColor,
       // BackGround Colors
       backgroundColor: AppColors.darkGrey,

@@ -625,11 +625,11 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                                   controller: firstNameController,
                                                   keyboardType: TextInputType.name,
                                                   validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nameCompletoError : null,
-                                                  style: Theme.of(context).textTheme.bodyText1,
+                                                  style: Theme.of(context).textTheme.bodyText2,
                                                   textCapitalization: TextCapitalization.words,
                                                   decoration: InputDecoration(
                                                     hintText: AppLocalizations.of(context)!.nameCompletoError,
-                                                    hintStyle: Theme.of(context).textTheme.bodyText2,
+                                                    hintStyle: Theme.of(context).textTheme.caption,
                                                     errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                                     border: UnderlineInputBorder(
                                                         borderSide: BorderSide(
@@ -691,10 +691,10 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                                   controller: lastNameController,
                                                   keyboardType: TextInputType.name,
                                                   validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.lastNameError : null,
-                                                  style: Theme.of(context).textTheme.bodyText1,
+                                                  style: Theme.of(context).textTheme.bodyText2,
                                                   textCapitalization: TextCapitalization.words,
                                                   decoration: InputDecoration(
-                                                    hintStyle: Theme.of(context).textTheme.bodyText2,
+                                                    hintStyle: Theme.of(context).textTheme.caption,
                                                     hintText: AppLocalizations.of(context)!.lastNameError,
                                                     errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                                     border: UnderlineInputBorder(
@@ -769,9 +769,9 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                                 nickController.selection = TextSelection.fromPosition(TextPosition(offset: nickController.text.length));
                                                 checkIfNickExists(nick);
                                               },
-                                              style: Theme.of(context).textTheme.bodyText1,
+                                              style: Theme.of(context).textTheme.bodyText2,
                                               decoration: InputDecoration(
-                                                hintStyle: Theme.of(context).textTheme.bodyText2,
+                                                hintStyle: Theme.of(context).textTheme.caption,
                                                 hintText: "${AppLocalizations.of(context)!.nicknameError}",
                                                 errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                                 border: UnderlineInputBorder(
@@ -826,7 +826,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                     children: [
                                       Text(
                                         AppLocalizations.of(context)!.nicknameAvailable,
-                                        style: Theme.of(context).textTheme.bodyText2,
+                                        style: Theme.of(context).textTheme.caption,
                                         textAlign: TextAlign.left,
                                       ),
                                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
@@ -843,7 +843,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                     children: [
                                       Text(
                                         AppLocalizations.of(context)!.nicknameOcuppied,
-                                        style: Theme.of(context).textTheme.bodyText2,
+                                        style: Theme.of(context).textTheme.caption,
                                         textAlign: TextAlign.left,
                                       ),
                                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
@@ -1016,7 +1016,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                 Expanded(
                                   child: Text(
                                     AppLocalizations.of(context)!.profilePhotoOptional,
-                                    style: Theme.of(context).textTheme.bodyText2,
+                                    style: Theme.of(context).textTheme.caption,
                                     textAlign: TextAlign.left,
                                   ),
                                 ),
@@ -1095,7 +1095,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                   Expanded(
                                     child: Text(
                                       AppLocalizations.of(context)!.trainerDescription,
-                                      style: Theme.of(context).textTheme.bodyText2,
+                                      style: Theme.of(context).textTheme.caption,
                                       textAlign: TextAlign.left,
                                     ),
                                   ),
@@ -1143,7 +1143,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                   Expanded(
                                     child: Text(
                                       AppLocalizations.of(context)!.clientDescription,
-                                      style: Theme.of(context).textTheme.bodyText2,
+                                      style: Theme.of(context).textTheme.caption,
                                     ),
                                   ),
                                 ],
@@ -1270,9 +1270,9 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                                 code = val;
                                                 checkIfBrandExists(code);
                                               },
-                                              style: Theme.of(context).textTheme.bodyText1,
+                                              style: Theme.of(context).textTheme.bodyText2,
                                               decoration: InputDecoration(
-                                                hintStyle: Theme.of(context).textTheme.bodyText2,
+                                                hintStyle: Theme.of(context).textTheme.caption,
                                                 hintText: AppLocalizations.of(context)!.inviteCodeError,
                                                 enabledBorder: UnderlineInputBorder(
                                                     borderSide: BorderSide(color: Colors.grey)
@@ -1302,7 +1302,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                   ],
                                 ),
                                 Container(
-                                  height: MediaQuery.of(context).size.height*0.17,
+                                  height: MediaQuery.of(context).size.height*0.19,
                                   child: Column(
                                     children: [
                                       brandOkay && !brandNotFound && codeController.text.isNotEmpty ? Column(
@@ -1313,7 +1313,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                             children: [
                                               Text(
                                                 AppLocalizations.of(context)!.brandFound,
-                                                style: Theme.of(context).textTheme.bodyText1,
+                                                style: Theme.of(context).textTheme.bodyText2,
                                                 textAlign: TextAlign.left,
                                               ),
                                               SizedBox(width: MediaQuery.of(context).size.width*0.01),
@@ -1354,7 +1354,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                                 Expanded(
                                                   child: Text(
                                                     AppLocalizations.of(context)!.brandNotFound,
-                                                    style: Theme.of(context).textTheme.bodyText1,
+                                                    style: Theme.of(context).textTheme.bodyText2,
                                                     textAlign: TextAlign.left,
                                                   ),
                                                 ),
@@ -1377,7 +1377,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                                 Expanded(
                                   child: Text(
                                     AppLocalizations.of(context)!.inviteCodeOptional,
-                                    style: Theme.of(context).textTheme.bodyText1,
+                                    style: Theme.of(context).textTheme.bodyText2,
                                     textAlign: TextAlign.left,
                                   ),
                                 ),
@@ -1439,7 +1439,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                     icon: Container(),
                     label: Text(
                       AppLocalizations.of(context)!.back,
-                      style: Theme.of(context).textTheme.caption),
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark)),
                   ),
                 ),
               ) :  Padding(
