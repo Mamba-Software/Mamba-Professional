@@ -60,14 +60,14 @@ class _SplashScreenViewState extends State<SplashScreenView> {
           children: [
             Center(
               child: Container(
-                padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.5),
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.45),
                 width: MediaQuery.of(context).size.width*0.6,
                 child: AnimatedAlign(
                   alignment: _alignment,
                   duration: Duration(seconds: 3),
                   child: Image.asset(
                     Constants.runningFemale,
-                    width: MediaQuery.of(context).size.width*0.20,
+                    width: MediaQuery.of(context).size.width*0.18,
                     fit: BoxFit.contain,
                   ),
                 ),

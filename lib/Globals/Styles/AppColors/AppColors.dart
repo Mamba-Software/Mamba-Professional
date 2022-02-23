@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class AppColors {
 
   // Main Colors
-  static const Color mainColor = Color(0xFFE9B044);
+  static const Color mainColor = Color(0xFFF4AD1F);
   static const Color mainColorTrans = Color(0x33E9B044);
 
   static const Color black = Color(0xFF000000);
