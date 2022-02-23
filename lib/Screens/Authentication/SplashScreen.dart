@@ -168,7 +168,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushAndRemoveUntil(
         context,
         CupertinoPageRoute<Null>(
-          builder: (context) => SplashScreenView(),
+          builder: (context) => Login(),
           settings: RouteSettings(name: 'Login'),
         ),
             (_) => false,
