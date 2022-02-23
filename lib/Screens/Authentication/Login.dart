@@ -52,7 +52,7 @@ class _LoginState extends State<Login> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
-                          padding: EdgeInsets.only(top: 16.0),
+                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.05),
                           width: MediaQuery.of(context).size.width*0.50,
                           child: Image.asset(Constants.logoExtended)
                         ),
