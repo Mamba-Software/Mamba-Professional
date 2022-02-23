@@ -657,9 +657,9 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                         Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start),
                         todayEvents.length > 1 ? Row(
                           children: [
-                            Text(todayEvents.length.toString(), style: Theme.of(context).textTheme.bodyText2, textAlign: TextAlign.start),
+                            Text(todayEvents.length.toString(), style: Theme.of(context).textTheme.caption, textAlign: TextAlign.start),
                             SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                            Text(AppLocalizations.of(context)!.events, style: Theme.of(context).textTheme.bodyText2, textAlign: TextAlign.start),
+                            Text(AppLocalizations.of(context)!.events, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.start),
                             SizedBox(width: MediaQuery.of(context).size.width*0.01),
                             Icon(
                               Icons.swipe,
