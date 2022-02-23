@@ -207,7 +207,7 @@ class _RegisterState extends State<Register> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.register,
-                                style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.black),
+                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black),
                               ),
                             ) : Center(
                               child: SizedBox(

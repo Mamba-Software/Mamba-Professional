@@ -169,7 +169,7 @@ class _LoginState extends State<Login> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.login,
-                                style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white)
+                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white)
                               ),
                             ) : Center(
                               child: SizedBox(
@@ -219,7 +219,7 @@ class _LoginState extends State<Login> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.register,
-                                  style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.black)
+                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black)
                               ),
                             ),
                           ),

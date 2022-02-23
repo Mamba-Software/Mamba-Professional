@@ -5,10 +5,10 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 class TextStyles {
 
   // Scale Factors vs Screen Height
-  double factorHeadline1 = 0.024;
-  double factorHeadline2 = 0.021;
+  double factorHeadline1 = 0.027;
+  double factorHeadline2 = 0.023;
   double factorBodyText1 = 0.019;
-  double factorBodyText2 = 0.017;
+  double factorBodyText2 = 0.016;
 
   // Headlines or Titles
   double headline1 = 0;
@@ -58,12 +58,20 @@ class TextStyles {
     return TextStyle(color: AppColors.white, fontSize: headline2, fontWeight: FontWeight.w500);
   }
 
-  TextStyle blackBodyTextStyle() {
+  TextStyle blackBodyText1Style() {
     return TextStyle(color: AppColors.black, fontSize: bodyText1, fontWeight: FontWeight.w400);
   }
 
-  TextStyle whiteBodyTextStyle() {
+  TextStyle whiteBodyText1Style() {
     return TextStyle(color: AppColors.white, fontSize: bodyText1, fontWeight: FontWeight.w400);
+  }
+
+  TextStyle blackBodyText2Style() {
+    return TextStyle(color: AppColors.black, fontSize: bodyText2, fontWeight: FontWeight.w400);
+  }
+
+  TextStyle whiteBodyText2Style() {
+    return TextStyle(color: AppColors.white, fontSize: bodyText2, fontWeight: FontWeight.w400);
   }
 
   TextStyle greyBodyTextStyle() {

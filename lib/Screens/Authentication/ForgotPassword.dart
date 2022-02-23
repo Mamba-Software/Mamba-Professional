@@ -145,7 +145,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.recover,
-                                style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.black),
+                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black),
                               ),
                             ) : Center(
                               child: SizedBox(

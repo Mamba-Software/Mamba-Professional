@@ -25,9 +25,9 @@ class AppThemes {
         // Headline 2 For Subtitles
         headline3: _textStyles.blackHeadline2TextStyle(),
         // Body Texts for Descriptions
-        bodyText1: _textStyles.blackBodyTextStyle(),
-        bodyText2: _textStyles.greyBodyTextStyle(),
-        caption: _textStyles.whiteBodyTextStyle()
+        bodyText1: _textStyles.blackBodyText1Style(),
+        bodyText2: _textStyles.blackBodyText2Style(),
+        caption: _textStyles.greyBodyTextStyle()
       ),
       fontFamily: "Helvetica",
       appBarTheme: AppBarTheme(
@@ -37,7 +37,7 @@ class AppThemes {
             color: Colors.black
         ),
         brightness: Brightness.dark,
-        titleTextStyle: _textStyles.blackHeadline1TextStyle(),
+        titleTextStyle: _textStyles.blackHeadline2TextStyle(),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 40,
@@ -68,9 +68,9 @@ class AppThemes {
         // Headline 2 For Subtitles
         headline3: _textStyles.whiteHeadline2TextStyle(),
         // Body Texts for Descriptions
-        bodyText1: _textStyles.whiteBodyTextStyle(),
-        bodyText2: _textStyles.greyBodyTextStyle(),
-        caption: _textStyles.blackBodyTextStyle()
+        bodyText1: _textStyles.whiteBodyText1Style(),
+        bodyText2: _textStyles.whiteBodyText2Style(),
+        caption: _textStyles.greyBodyTextStyle()
       ),
       fontFamily: "Helvetica",
       appBarTheme: AppBarTheme(
@@ -79,7 +79,7 @@ class AppThemes {
         iconTheme: IconThemeData(
             color: AppColors.white,
         ),
-        titleTextStyle: _textStyles.whiteHeadline1TextStyle(),
+        titleTextStyle: _textStyles.whiteHeadline2TextStyle(),
         brightness: Brightness.light,
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
