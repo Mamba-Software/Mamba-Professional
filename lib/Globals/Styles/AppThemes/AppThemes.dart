@@ -87,7 +87,7 @@ class AppThemes {
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 40,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: AppColors.black,
+        backgroundColor: AppColors.darkerGrey,
         showUnselectedLabels: false,
         showSelectedLabels: true,
       ),

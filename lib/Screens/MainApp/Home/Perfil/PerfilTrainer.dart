@@ -438,7 +438,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                   children: <Widget>[
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.2,
+                      bottom: MediaQuery.of(context).size.height*0.22,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.70,
                       child: alreadyAnswered ?
@@ -484,7 +484,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                     ),
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.2,
+                      bottom: MediaQuery.of(context).size.height*0.22,
                       left: MediaQuery.of(context).size.width*0.70,
                       right: 0,
                       child: IconButton(
@@ -513,27 +513,27 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                       child: GestureDetector(
                         onTap: () {
                           Navigator.push(
-                            context,
-                            CupertinoPageRoute<Null>(
-                                builder: (context) => FullScreenPage(
-                                  child:  Image.network(
-                                    currentUser.imageUrl!,
-                                    loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Center(
-                                        child: CircularProgressIndicator(
-                                          color: Theme.of(context).accentColor,
-                                          value: loadingProgress.expectedTotalBytes != null
-                                              ? loadingProgress.cumulativeBytesLoaded /
-                                              loadingProgress.expectedTotalBytes!
-                                              : null,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  dark: false,
-                                )
-                            )
+                              context,
+                              CupertinoPageRoute<Null>(
+                                  builder: (context) => FullScreenPage(
+                                    child:  Image.network(
+                                      currentUser.imageUrl!,
+                                      loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                        if (loadingProgress == null) return child;
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            color: Theme.of(context).accentColor,
+                                            value: loadingProgress.expectedTotalBytes != null
+                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                loadingProgress.expectedTotalBytes!
+                                                : null,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    dark: false,
+                                  )
+                              )
                           );
                         },
                         child: Container(
@@ -546,7 +546,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                     ),
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.09,
+                      bottom: MediaQuery.of(context).size.height*0.1,
                       left: 0,
                       right: 0,
                       child: Container(
@@ -1138,7 +1138,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                   children: <Widget>[
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.2,
+                      bottom: MediaQuery.of(context).size.height*0.22,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.70,
                       child: alreadyAnswered ?
@@ -1184,7 +1184,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                     ),
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.2,
+                      bottom: MediaQuery.of(context).size.height*0.22,
                       left: MediaQuery.of(context).size.width*0.70,
                       right: 0,
                       child: IconButton(
@@ -1246,7 +1246,7 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                     ),
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.09,
+                      bottom: MediaQuery.of(context).size.height*0.1,
                       left: 0,
                       right: 0,
                       child: Container(
