@@ -124,7 +124,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                       child: Text("${currentBrand.name!}",
                           style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 25, fontFamily: "Helvetica"), textAlign: TextAlign.left
                       ),
-                    ),
+                    ),//
                     Row(
                       children: [
                         IconButton(
