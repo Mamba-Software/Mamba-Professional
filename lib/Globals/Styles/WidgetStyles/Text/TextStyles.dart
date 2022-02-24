@@ -6,7 +6,7 @@ class TextStyles {
 
   // Scale Factors vs Screen Height
   double factorHeadline1 = 0.027;
-  double factorHeadline2 = 0.023;
+  double factorHeadline2 = 0.021;
   double factorBodyText1 = 0.019;
   double factorBodyText2 = 0.017;
 
