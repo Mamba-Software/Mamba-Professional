@@ -216,8 +216,8 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                         viewHeaderHeight: 50,
                         viewHeaderStyle: ViewHeaderStyle(
                           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                          dateTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.w600),
-                          dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.w600),
+                          dateTextStyle: Theme.of(context).textTheme.bodyText2,
+                          dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 8),
                         ),
                         timeSlotViewSettings: TimeSlotViewSettings(
                           timelineAppointmentHeight: -1,

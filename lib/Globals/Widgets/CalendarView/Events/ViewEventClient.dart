@@ -305,7 +305,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).scaffoldBackgroundColor,
             ),
           ),
           Stack(
@@ -323,13 +323,13 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
               Container(
                 height: MediaQuery.of(context).size.height*0.26,
                 decoration: new BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).scaffoldBackgroundColor,
                   gradient: LinearGradient(
                       begin: FractionalOffset.bottomCenter,
                       end: FractionalOffset.topCenter,
                       colors: [
-                        Colors.white.withOpacity(0.1),
-                        Colors.white.withOpacity(0.9),
+                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.1),
+                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
                       ],
                       stops: [
                         0.8,
@@ -351,7 +351,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                 maxHeight: MediaQuery.of(context).size.height*0.10,
               ),
               decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).scaffoldBackgroundColor,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
               ),
               child: Column(
@@ -362,7 +362,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
                     ),
                     elevation: 4,
-                    color: Colors.white,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
                       child: Row(
@@ -371,13 +371,13 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
                             child: IconButton(
-                              icon: Icon(Icons.arrow_back, color: !isEditing ? Theme.of(context).primaryColor : Colors.white),
+                              icon: Icon(Icons.arrow_back, color: !isEditing ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06),
                               onPressed: !isEditing ? () {
                                 Navigator.pop(context);
                               } : null,
                             ),
                           ),
-                          isEditing ? Text(AppLocalizations.of(context)!.editEvent, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)) : Text(datetitle, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16)),
+                          isEditing ? Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold)) : Text(datetitle, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold)),
                           !widget.canJoin ? Padding(
                             padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.06, left: MediaQuery.of(context).size.width*0.06),
                             child: Container(),
@@ -386,8 +386,8 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                             padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
                             child: Column(
                               children: [
-                                !isEditing ? Icon(isFull ? Icons.lock_outline : Icons.lock_open, color: isFull ? Colors.red : Color(0xFFA8C76C)) : Icon(Icons.lock_open, color: Colors.white),
-                                !isEditing ? Text(isFull ? AppLocalizations.of(context)!.full : AppLocalizations.of(context)!.available, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12, color: isFull ? Colors.red : Color(0xFFA8C76C))) : Text(AppLocalizations.of(context)!.full, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.white)),
+                                !isEditing ? Icon(isFull ? Icons.lock_outline : Icons.lock_open, color: isFull ? Colors.red : Color(0xFFA8C76C)) : Icon(Icons.lock_open, color: Theme.of(context).scaffoldBackgroundColor),
+                                !isEditing ? Text(isFull ? AppLocalizations.of(context)!.full : AppLocalizations.of(context)!.available, style:  Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold, color: isFull ? Colors.red : Color(0xFFA8C76C))) : Text(AppLocalizations.of(context)!.full, style:  Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).scaffoldBackgroundColor)),
                               ],
                             ),
                           ),
@@ -427,9 +427,9 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                         child: new TextField(
                                           controller: titleController,
                                           readOnly: true,
-                                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 22),
+                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                           decoration: InputDecoration(
-                                            labelStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                            labelStyle: Theme.of(context).textTheme.bodyText2,
                                             hintText:AppLocalizations.of(context)!.noDescription,
                                             border: InputBorder.none,
                                             focusedBorder: InputBorder.none,
@@ -442,7 +442,6 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                   Padding(
                                       padding: EdgeInsets.symmetric(horizontal: 0),
                                       child: new Row(
@@ -454,9 +453,9 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                               readOnly: true,
                                               minLines: 1,
                                               maxLines: 4,
-                                              style: Styles.purpleTextStyle.copyWith(fontSize: 15),
+                                              style: Theme.of(context).textTheme.bodyText2,
                                               decoration: InputDecoration(
-                                                labelStyle: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                                hintStyle: Theme.of(context).textTheme.caption,
                                                 hintText:AppLocalizations.of(context)!.noDescription,
                                                 border: InputBorder.none,
                                                 focusedBorder: InputBorder.none,
@@ -474,7 +473,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                 ],
                               ),
                             ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.035),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.015),
                             Container(
                               height: MediaQuery.of(context).size.height * 0.30,
                               width: MediaQuery.of(context).size.width * 0.90,
@@ -491,7 +490,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                       mainAxisSize: MainAxisSize.max,
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: <Widget>[
-                                        Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
+                                        Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.05,),
                                         Container(
                                             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                                             width: MediaQuery.of(context).size.width*0.72,
@@ -503,9 +502,9 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                     controller: startDateController,
                                                     readOnly: true,
                                                     enabled: false,
-                                                    style: Styles.purpleTextStyle,
+                                                    style: Theme.of(context).textTheme.bodyText2,
                                                     decoration: InputDecoration(
-                                                      labelStyle: Styles.purpleTextStyle,
+                                                      hintStyle: Theme.of(context).textTheme.caption,
                                                       border: InputBorder.none,
                                                       focusedBorder: InputBorder.none,
                                                       enabledBorder: InputBorder.none,
@@ -524,7 +523,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                       mainAxisSize: MainAxisSize.max,
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: <Widget>[
-                                        Icon(Icons.timer, color: Theme.of(context).accentColor,),
+                                        Icon(Icons.timer, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.05,),
                                         Container(
                                             padding: EdgeInsets.only(left: 20),
                                             width: MediaQuery.of(context).size.width*0.70,
@@ -537,9 +536,9 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                     controller: durationController,
                                                     readOnly: true,
                                                     enabled: false,
-                                                    style: Styles.purpleTextStyle,
+                                                    style: Theme.of(context).textTheme.bodyText2,
                                                     decoration: InputDecoration(
-                                                      labelStyle: Styles.purpleTextStyle,
+                                                      labelStyle: Theme.of(context).textTheme.bodyText2,
                                                       border: InputBorder.none,
                                                       focusedBorder: InputBorder.none,
                                                       enabledBorder: InputBorder.none,

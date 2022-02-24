@@ -118,8 +118,8 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                       viewHeaderHeight: 50,
                       viewHeaderStyle: ViewHeaderStyle(
                         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                        dateTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.w600),
-                        dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.w600),
+                        dateTextStyle: Theme.of(context).textTheme.bodyText2,
+                        dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 8),
                       ),
                       selectionDecoration: BoxDecoration(
                           border: Border.all(width: 0.1, color: Colors.transparent)
