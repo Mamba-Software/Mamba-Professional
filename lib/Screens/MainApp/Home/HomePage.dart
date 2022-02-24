@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -104,7 +105,7 @@ class _HomePageState extends State<HomePage> {
       appBar: null,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
-        iconSize: MediaQuery.of(context).size.height*0.04,
+        iconSize: MediaQuery.of(context).size.height*0.035,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -137,12 +138,12 @@ class _HomePageState extends State<HomePage> {
           _onTappedBar(index);
         },
         selectedItemColor: Theme.of(context).accentColor,
-        selectedLabelStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color:Theme.of(context).accentColor, fontSize: 13),
+        selectedLabelStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color:Theme.of(context).accentColor),
         selectedIconTheme: IconThemeData(
           color: Theme.of(context).accentColor
         ),
         unselectedItemColor: Colors.grey,
-        unselectedLabelStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.grey, fontSize: 13),
+        unselectedLabelStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.grey),
         unselectedIconTheme: IconThemeData(
             color: Colors.grey
         ),

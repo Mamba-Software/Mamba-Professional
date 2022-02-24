@@ -307,7 +307,7 @@
   "@feedbackNotSent":{
     "description": "Feedback Not Sent Text"
   },
-  "feedbackAnswered": "Ya has respondido al Feedback de esta semana!",
+  "feedbackAnswered": "Actualmente no hay ningún Feedback que puedas responder",
   "@feedbackAnswered":{
     "description": "Feedback Answered Text"
   },

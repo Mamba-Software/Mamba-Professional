@@ -8,7 +8,7 @@ class TextStyles {
   double factorHeadline1 = 0.027;
   double factorHeadline2 = 0.023;
   double factorBodyText1 = 0.019;
-  double factorBodyText2 = 0.016;
+  double factorBodyText2 = 0.017;
 
   // Headlines or Titles
   double headline1 = 0;
