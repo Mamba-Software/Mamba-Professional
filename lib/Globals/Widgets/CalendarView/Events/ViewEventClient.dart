@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
-
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
@@ -13,20 +12,17 @@ import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurp
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocationsSelect.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../../../Constants.dart';
 import '../../../GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../../Styles/Styles.dart';
 import '../../Images/CircularImage.dart';
 
 
@@ -559,7 +555,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                           mainAxisSize: MainAxisSize.max,
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: <Widget>[
-                                            Icon(Icons.location_on_outlined, color: Theme.of(context).accentColor, size: 30,),
+                                            Icon(Icons.location_on_outlined, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.05,),
                                             Container(
                                               padding: EdgeInsets.only(left: 15),
                                               width: MediaQuery.of(context).size.width*0.70,
@@ -567,7 +563,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                 contentPadding: EdgeInsets.all(0),
                                                 title: Text(
                                                     location.description!,
-                                                    style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor)
+                                                    style: Theme.of(context).textTheme.bodyText2,
                                                 ),
                                                 trailing: IconButton(
                                                   onPressed: () async {
@@ -579,12 +575,12 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                           iconRotationAngle: 0,
                                                           backgroundColor: Theme.of(context).accentColor,
                                                           message: AppLocalizations.of(context)!.copyCorrectLocation,
-                                                          textStyle: Styles.whiteTextStyle,
+                                                          textStyle: Theme.of(context).textTheme.bodyText1!,
                                                         ),
                                                       );
                                                     });
                                                   },
-                                                  icon: Icon(Icons.copy, color: Theme.of(context).accentColor, size: 25,),
+                                                  icon: Icon(Icons.copy, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.05,),
                                                 ),
                                               ),
                                             ),
@@ -603,39 +599,15 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.0),
                         child: Column(
                           children: [
-                            SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                            Padding(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
-                                child: new Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    new Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        new Text(
-                                          AppLocalizations.of(context)!.numberClientJoining,
-                                          style: Styles.purpleTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )
-                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.025),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
-                                  Icon(
-                                    Icons.record_voice_over,
-                                    color: Theme.of(context).accentColor,
-                                    size: 25,
-                                  ),
-                                  SizedBox(width: 8),
                                   Text(
                                     AppLocalizations.of(context)!.trainers,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
+                                    style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -666,7 +638,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   CircularImage(
-                                                    size: MediaQuery.of(context).size.width*0.2,
+                                                    size: MediaQuery.of(context).size.width*0.18,
                                                     image: trainer.imageUrl,
                                                     color: Theme.of(context).primaryColor,
                                                     borderWidth: 1,
@@ -680,7 +652,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                         Expanded(
                                                           child: Text(
                                                             trainer.name! != AppLocalizations.of(context)!.notFoundUser ? trainer.firstName! : trainer.name!,
-                                                            style: Styles.purpleTextStyle.copyWith(fontSize: 15),
+                                                            style: Theme.of(context).textTheme.bodyText2,
                                                             textAlign: TextAlign.center,
                                                           ),
                                                         ),
@@ -697,39 +669,32 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                 ],
                               ),
                             ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
                               child: new Row(
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
-                                  Icon(
-                                    Icons.directions_run,
-                                    color: Theme.of(context).accentColor,
-                                    size: 25,
-                                  ),
-                                  SizedBox(width: 4),
                                   Text(
                                     AppLocalizations.of(context)!.clients,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
+                                    style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(width: 16),
-                                  Row(
+                                  !isEditing ? Row(
                                     children: [
                                       Text(
                                         "( "+event!.numClients.toString(),
-                                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16),
+                                        style: Theme.of(context).textTheme.bodyText2,
                                       ),
                                       Text(
                                         " / ",
-                                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16),
+                                        style: Theme.of(context).textTheme.bodyText2,
                                       ),
                                       Text(
                                         event!.maxMembers.toString()+" )",
-                                        style: TextStyle(color: Theme.of(context).accentColor, fontSize: 16),
+                                        style: Theme.of(context).textTheme.bodyText2,
                                       ),
                                     ],
-                                  )
+                                  ) : Container(),
                                 ],
                               ),
                             ),
@@ -748,7 +713,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                       ),
                                       Text(
                                         AppLocalizations.of(context)!.noClientJoining,
-                                        style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080), fontSize: 14),
+                                        style: Theme.of(context).textTheme.caption,
                                         textAlign: TextAlign.center,
                                       ),
                                     ],
@@ -779,7 +744,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
                                                     CircularImage(
-                                                      size: MediaQuery.of(context).size.width*0.2,
+                                                      size: MediaQuery.of(context).size.width*0.18,
                                                       image: client.noImageUrl,
                                                       color: Colors.grey,
                                                       borderWidth: 1,
@@ -793,7 +758,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                           Expanded(
                                                             child: Text(
                                                               client.name! != AppLocalizations.of(context)!.notFoundUser ? client.firstName! : client.name!,
-                                                              style: Styles.purpleTextStyle.copyWith(fontSize: 15, color: Theme.of(context).primaryColor.withOpacity(0.3)),
+                                                              style: Theme.of(context).textTheme.caption,
                                                               textAlign: TextAlign.center,
                                                             ),
                                                           ),
@@ -816,7 +781,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
                                                     CircularImage(
-                                                      size: MediaQuery.of(context).size.width*0.2,
+                                                      size: MediaQuery.of(context).size.width*0.18,
                                                       image: client.imageUrl,
                                                       color: Theme.of(context).primaryColor,
                                                     borderWidth: 1,
@@ -830,7 +795,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                                           Expanded(
                                                             child: Text(
                                                               client.name! != AppLocalizations.of(context)!.notFoundUser ? client.firstName! : client.name!,
-                                                              style: Styles.purpleTextStyle.copyWith(fontSize: 15),
+                                                              style: Theme.of(context).textTheme.bodyText2,
                                                               textAlign: TextAlign.center,
                                                             ),
                                                           ),
@@ -849,7 +814,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                 ],
                               ),
                             ),
-                            widget.canJoin || (widget.onlyView != null) ? SizedBox(height: MediaQuery.of(context).size.height*0.17) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                            widget.canJoin || (widget.onlyView != null) ? SizedBox(height: MediaQuery.of(context).size.height*0.14) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           ],
                         ),
                       ),
@@ -912,7 +877,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                         icon: Icon(Icons.event_available_outlined, color: Colors.white,),
                         label: Text(
                           AppLocalizations.of(context)!.book,
-                          style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
                       ),
                     ),
                   ),
@@ -921,7 +886,6 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
             ),
           );
         } else if (isJoined) {
-
           return Padding(
             padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
             child: Container(
@@ -962,7 +926,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                         icon: Icon(Icons.event_busy_outlined, color: Colors.white,),
                         label: Text(
                           AppLocalizations.of(context)!.leave,
-                          style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
                       ),
                     ),
                   ),
