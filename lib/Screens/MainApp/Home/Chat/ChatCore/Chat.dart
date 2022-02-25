@@ -4,7 +4,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
@@ -12,14 +11,12 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/DataService/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/TodosMiembrosClient.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembrosTrainer.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/TodosMiembrosClient.dart';
 import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -121,6 +118,7 @@ class _ChatPageState extends State<ChatPage> {
     });
 
   }
+
   void _handleAtachmentPressed() {
     showModalBottomSheet<void>(
       context: context,
@@ -402,14 +400,15 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
     return
     isLoading ? Scaffold(
       body: LoadingViewPurple(),
-    ) : Scaffold(
+    ) :
+    Scaffold(
       appBar: AppBar(
         elevation: 4,
+        brightness: Brightness.light,
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
           onPressed: () {
-            print(hasSentMessage);
             Navigator.pop(context, hasSentMessage);
           },
         ),
@@ -451,7 +450,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                     child: TextField(
                       enabled: false,
                       decoration: InputDecoration(
-                        hintStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Theme.of(context).primaryColor),
+                        hintStyle: Theme.of(context).appBarTheme.titleTextStyle,
                         hintText: noMessages ? nameRoom : widget.room.name,
                         contentPadding: EdgeInsets.all(0),
                         isDense: true,
@@ -485,29 +484,25 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                 return SafeArea(
                   bottom: false,
                   child: Chat(
-                    theme: const DefaultChatTheme(
-
-                      inputBackgroundColor: Colors.white,
-                      //backgroundColor: Colors.black,
-                      inputTextColor: Colors.black,
-                      inputTextCursorColor: Styles.mainColor,
+                    theme: DefaultChatTheme(
+                      inputBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                      inputTextColor: Theme.of(context).primaryColor,
+                      inputTextCursorColor: Theme.of(context).accentColor,
                       primaryColor: Styles.mainColorTrans,
-                      sentMessageBodyTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                      sentEmojiMessageTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                      sentMessageCaptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
+                      sentMessageBodyTextStyle: Theme.of(context).textTheme.bodyText2!,
+                      sentEmojiMessageTextStyle: Theme.of(context).textTheme.bodyText2!,
+                      sentMessageCaptionTextStyle: Theme.of(context).textTheme.bodyText2!,
                       sentMessageDocumentIconColor:Colors.black,
-                      sentMessageLinkDescriptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                      sentMessageLinkTitleTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                      receivedMessageBodyTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                      receivedEmojiMessageTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                      receivedMessageCaptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
+                      sentMessageLinkDescriptionTextStyle: Theme.of(context).textTheme.bodyText2!,
+                      sentMessageLinkTitleTextStyle:Theme.of(context).textTheme.bodyText2!,
+                      receivedMessageBodyTextStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.black),
+                      receivedEmojiMessageTextStyle: Theme.of(context).textTheme.bodyText2!,
+                      receivedMessageCaptionTextStyle: Theme.of(context).textTheme.bodyText2!,
                       receivedMessageDocumentIconColor:Colors.black,
-                      receivedMessageLinkDescriptionTextStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                      receivedMessageLinkTitleTextStyle:TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black),
-                      userNameTextStyle: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      receivedMessageLinkDescriptionTextStyle: Theme.of(context).textTheme.bodyText2!,
+                      receivedMessageLinkTitleTextStyle:Theme.of(context).textTheme.bodyText2!,
+                      userNameTextStyle: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
                       userAvatarNameColors: [
                         Color(0xffff6767),
                         Color(0xff66e0da),
@@ -522,7 +517,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                       ],
                       deliveredIcon: Icon(
                         Icons.done_all,
-                        color: Colors.black,
+                        color: Theme.of(context).primaryColor,
                       ),
                       seenIcon: Icon(
                         Icons.done_all,

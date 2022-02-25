@@ -20,7 +20,6 @@ import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import '../../Constants.dart';
-import '../../Styles/Styles.dart';
 import '../LoadingViews/LoadingViewPurple.dart';
 
 class ProfileViewUser extends StatefulWidget {
@@ -569,7 +568,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.20),
-                          child: Text(AppLocalizations.of(context)!.noTrainingsDone, style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080), fontSize: 16), textAlign: TextAlign.center,),
+                          child: Text(AppLocalizations.of(context)!.noTrainingsDone, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
                         ),
                       ],
                     ),
