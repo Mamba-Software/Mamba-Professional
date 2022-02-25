@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import '../../Styles/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import '../Images/CircularImage.dart';
 
 class CancelRequestConfirmationDialog extends StatelessWidget {
@@ -19,7 +19,7 @@ class CancelRequestConfirmationDialog extends StatelessWidget {
         padding: EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: Colors.white
+            color: Theme.of(context).scaffoldBackgroundColor,
         ),
         child: Stack(
           clipBehavior: Clip.none,
@@ -35,7 +35,10 @@ class CancelRequestConfirmationDialog extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Flexible(
-                        child: Text(text, style: Styles.purpleTextStyle.copyWith(fontSize: 16, height: 1.5), textAlign: TextAlign.center,),
+                        child: Text(
+                          text,
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),
+                          textAlign: TextAlign.center,),
                       ),
                     ],
                   ),
@@ -58,9 +61,9 @@ class CancelRequestConfirmationDialog extends StatelessWidget {
                         ),
                         label: Text(
                           AppLocalizations.of(context)!.anular,
-                          style: TextStyle(color: Colors.white),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                         ),
-                        icon: Icon(Icons.remove_circle_outline, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
+                        icon: Icon(Icons.remove_circle_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                         onPressed: () {
                           Navigator.pop(context, true);
                         },
@@ -79,9 +82,9 @@ class CancelRequestConfirmationDialog extends StatelessWidget {
                         ),
                         label: Text(
                           AppLocalizations.of(context)!.cancel,
-                          style: TextStyle(color: Colors.white),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                         ),
-                        icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
+                        icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                         onPressed: () {
                           Navigator.pop(context, false);
                         },
@@ -106,7 +109,7 @@ class CancelRequestConfirmationDialog extends StatelessWidget {
                     Expanded(
                       child: Text(
                         brand.name!,
-                        style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 23),
+                        style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
                         textAlign: TextAlign.left,
                       ),
                     ),
