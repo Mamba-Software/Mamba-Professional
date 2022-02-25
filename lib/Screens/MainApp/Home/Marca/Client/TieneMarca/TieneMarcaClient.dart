@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
@@ -331,11 +332,11 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                             children: [
                               Container(
                                   width: MediaQuery.of(context).size.width * 0.09,
-                                  child: Icon(Icons.calendar_today_outlined, color: Colors.white, size: 30,)
+                                  child: Icon(Icons.calendar_today_outlined, color: AppColors.white, size: MediaQuery.of(context).size.height * 0.03,)
                               ),
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.69,
-                                child: Center(child: Text(AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400)),),
+                                child: Center(child: Text(AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white,fontWeight: FontWeight.w400)),),
                               ),
                             ],
                           ),
@@ -419,9 +420,9 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                              Text(AppLocalizations.of(context)!.calendarBrandTextClient(currentBrand.name!), style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                              Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              Text(AppLocalizations.of(context)!.calendarBrandTextClient(currentBrand.name!), style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white)),
                             ],
                           ),
                         ),
@@ -505,9 +506,9 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(AppLocalizations.of(context)!.members, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                              Text(AppLocalizations.of(context)!.membersBrandText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey[200])),
+                              Text(AppLocalizations.of(context)!.members, style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              Text(AppLocalizations.of(context)!.membersBrandText, style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white)),
                             ],
                           ),
                         ),
@@ -576,9 +577,9 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(AppLocalizations.of(context)!.ranking, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                              Text(AppLocalizations.of(context)!.rankingBrandText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 14, color: Colors.white.withOpacity(0.5))),
+                              Text(AppLocalizations.of(context)!.ranking, style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              Text(AppLocalizations.of(context)!.rankingBrandText, style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white.withOpacity(0.5))),
                             ],
                           ),
                         ),
@@ -587,7 +588,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.lock_outline, color: Colors.white.withOpacity(0.5), size: 50,)
+                              Icon(Icons.lock_outline, color: Colors.white.withOpacity(0.5), size: MediaQuery.of(context).size.height * 0.05,)
                             ],
                           ),
                         ),

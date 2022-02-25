@@ -4,13 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:uuid/uuid.dart';
-
 import '../../GlobalVars.dart';
 import 'AddressSearch.dart';
 import 'LocationPlacesSearch.dart';
@@ -76,11 +74,11 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
       body:  isLoading ?
       Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.locations, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+          title: Text(AppLocalizations.of(context)!.locations, style: Theme.of(context).appBarTheme.titleTextStyle,),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
-            onPressed: () async {
+            onPressed: () {
               Navigator.of(context).pop(null);
             },
           ),
@@ -90,11 +88,11 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
           :
       Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.locations, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+          title: Text(AppLocalizations.of(context)!.locations, style: Theme.of(context).appBarTheme.titleTextStyle,),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
-            onPressed: () async {
+            onPressed: () {
               Navigator.of(context).pop(null);
             },
           ),
@@ -139,16 +137,17 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                   leading: Icon(
                     Icons.add_location,
                     color: Theme.of(context).primaryColor,
+                    size: MediaQuery.of(context).size.width*0.06,
                   ),
                   title: Text(
                     AppLocalizations.of(context)!.addLocation,
-                    style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                    style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ),
             ),
             Container(
               height: 1,
-              color: Theme.of(context).primaryColor,
+              color: AppColors.grey,
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.01),
             StreamBuilder<QuerySnapshot>(
@@ -171,10 +170,10 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                         itemBuilder: (context, index) {
                           Location location = locationList[index];
                           return ListTile(
-                              leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: location.isBaseLocation! ?  Theme.of(context).accentColor : Theme.of(context).primaryColor, size: 25,),
+                              leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: location.isBaseLocation! ?  Theme.of(context).accentColor : Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
                               title: Text(
                                   location.description!,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: location.isBaseLocation! ?  Theme.of(context).accentColor : Theme.of(context).primaryColor,)
+                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: location.isBaseLocation! ?  Theme.of(context).accentColor : Theme.of(context).primaryColor,)
                               ),
                               onTap: () {
                                 Navigator.of(context).pop(location.id);
