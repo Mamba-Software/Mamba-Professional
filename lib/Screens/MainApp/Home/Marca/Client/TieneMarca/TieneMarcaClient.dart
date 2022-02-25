@@ -104,13 +104,14 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                   children: [
                     Flexible(
                       child: Text("${currentBrand.name!}",
-                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 25, fontFamily: "Helvetica"), textAlign: TextAlign.left
+                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left
                       ),
                     ),
                     Row(
                       children: [
                         IconButton(
-                          icon: Icon(Icons.location_on, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
+                          icon: Icon(Icons.location_on, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
                           alignment: Alignment.centerRight,
                           padding: EdgeInsets.all(0),
                           onPressed: () {
@@ -125,7 +126,7 @@ class _TieneMarcaClientState extends State<TieneMarcaClient> {
                           },
                         ),
                         IconButton(
-                          icon: Icon(Icons.exit_to_app, color: Colors.red, size: MediaQuery.of(context).size.height*0.04,),
+                          icon: Icon(Icons.exit_to_app, color: Colors.red, size: MediaQuery.of(context).size.width*0.06,),
                           alignment: Alignment.centerRight,
                           padding: EdgeInsets.all(0),
                           onPressed: () async {
