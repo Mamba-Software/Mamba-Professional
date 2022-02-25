@@ -120,7 +120,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                   iconRotationAngle: 0,
                                   backgroundColor: Theme.of(context).accentColor,
                                   message: AppLocalizations.of(context)!.copyCorrectCode,
-                                  textStyle: Styles.whiteTextStyle,
+                                  textStyle: Theme.of(context).textTheme.bodyText1!,
                                 ),
                               );
                             });
@@ -200,13 +200,16 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
+                                    Icon(Icons.directions_run, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width * 0.04,),
                                     SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
                                     Text(
                                       currentBrand.numClients.toString(),
-                                      style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
+                                    ),
                                     SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
-                                    Flexible(child: Text(AppLocalizations.of(context)!.clients.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,))
+                                    Flexible(child: Text(AppLocalizations.of(context)!.clients.toLowerCase(),
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).accentColor),
+                                      textAlign: TextAlign.center,))
                                   ],
                                 ),
                               ),
@@ -220,13 +223,15 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Icon(Icons.record_voice_over, color: Theme.of(context).accentColor,),
+                                    Icon(Icons.record_voice_over, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width * 0.04,),
                                     SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
                                     Text(
                                       currentBrand.numTrainers.toString(),
-                                      style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor, fontSize: 16),),
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
                                     SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
-                                    Flexible(child: Text(AppLocalizations.of(context)!.trainers.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).accentColor), textAlign: TextAlign.center,))
+                                    Flexible(child: Text(AppLocalizations.of(context)!.trainers.toLowerCase(),
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).accentColor),
+                                      textAlign: TextAlign.center,))
                                   ],
                                 ),
                               ),
@@ -240,13 +245,16 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Icon(Icons.event_available_outlined, color: Theme.of(context).primaryColor,),
+                                    Icon(Icons.event_available_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width * 0.04,),
                                     SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
                                     Text(
                                       numberEventsFinished.toString(),
-                                      style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: 16),),
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                    ),
                                     SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
-                                    Flexible(child: Text(AppLocalizations.of(context)!.sessionsDone.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).primaryColor), textAlign: TextAlign.center,))
+                                    Flexible(child: Text(AppLocalizations.of(context)!.sessionsDone.toLowerCase(),
+                                      style: Theme.of(context).textTheme.bodyText2,
+                                      textAlign: TextAlign.center,))
                                   ],
                                 ),
                               ),
@@ -260,13 +268,16 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Icon(Icons.event, color: Theme.of(context).primaryColor,),
+                                    Icon(Icons.event, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width * 0.04,),
                                     SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
                                     Text(
                                       numberEventsToDo.toString(),
-                                      style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: 16),),
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                    ),
                                     SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
-                                    Flexible(child: Text(AppLocalizations.of(context)!.sessionsToDo.toLowerCase(), style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Theme.of(context).primaryColor), textAlign: TextAlign.center,))
+                                    Flexible(child: Text(AppLocalizations.of(context)!.sessionsToDo.toLowerCase(),
+                                      style: Theme.of(context).textTheme.bodyText2,
+                                      textAlign: TextAlign.center,))
                                   ],
                                 ),
                               ),

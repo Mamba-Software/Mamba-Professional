@@ -977,10 +977,10 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                               }
                             },
                             backgroundColor: Colors.red,
-                            icon: Icon(Icons.schedule_send, color: Colors.white,),
+                            icon: Icon(Icons.schedule_send, color: Colors.white, size: MediaQuery.of(context).size.width*0.05,),
                             label: Text(
                               AppLocalizations.of(context)!.sent,
-                              style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                              style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
                           ),
                         ),
                       ),
@@ -1024,10 +1024,10 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                               }
                             },
                             backgroundColor: Colors.green,
-                            icon: Icon(Icons.send_outlined, color: Colors.white,),
+                            icon: Icon(Icons.send_outlined, color: Colors.white, size: MediaQuery.of(context).size.width*0.05,),
                             label: Text(
                               AppLocalizations.of(context)!.join,
-                              style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                              style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
                           ),
                         ),
                       ),

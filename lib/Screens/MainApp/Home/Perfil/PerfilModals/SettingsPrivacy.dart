@@ -185,9 +185,9 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
             });
           },
           backgroundColor: Colors.green,
-          icon: Icon(Icons.save_rounded, color: Colors.white,),
+          icon: Icon(Icons.save_rounded, color: Colors.white, size: MediaQuery.of(context).size.width*0.05,),
           label: Text(AppLocalizations.of(context)!.save,
-            style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
         ),
       ) : Container(),
     );

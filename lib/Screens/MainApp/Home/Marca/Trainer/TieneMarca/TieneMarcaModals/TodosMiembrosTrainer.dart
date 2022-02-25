@@ -1,24 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
-
 import 'package:mamba_castelldefels/Data/DataService/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-
-import 'package:page_transition/page_transition.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-
 import 'MembershipRequests.dart';
 
 class TodosMiembrosTrainer extends StatefulWidget {
@@ -133,8 +127,14 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
         child: Scaffold(
           appBar: AppBar(
             //elevation: 0,
-            title: Text(AppLocalizations.of(context)!.members, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+            title: Text(AppLocalizations.of(context)!.members, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
@@ -156,7 +156,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                     },
                     icon: Icon(
                       Icons.group_add,
-                      size: 30,
+                      size: MediaQuery.of(context).size.width*0.06,
                     )
                 ),
               )
@@ -172,9 +172,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
-                        SizedBox(width: 10,),
-                        Text(AppLocalizations.of(context)!.clients, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
+                        Text(AppLocalizations.of(context)!.clients, style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
                       ],
                     ),
                   ),
@@ -185,9 +183,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.record_voice_over, color: Theme.of(context).accentColor,),
-                        SizedBox(width: 10,),
-                        Text(AppLocalizations.of(context)!.trainers, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
+                        Text(AppLocalizations.of(context)!.trainers, style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
                       ],
                     ),
                   ),
@@ -202,15 +198,17 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                   children: [
                     allClients.length > 1 ?
                     Padding(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.04),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.01),
                       child: TextField(
                         controller: searchClientsController,
                         onChanged: (value) {
                           // Filter trainers
                           filterSearchResults(value.toLowerCase(), false);
                         },
+                        style: Theme.of(context).textTheme.bodyText2,
                         textAlign: TextAlign.left,
                         decoration: InputDecoration(
+                          hintStyle: Theme.of(context).textTheme.caption,
                           hintText: AppLocalizations.of(context)!.search,
                           focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey),
@@ -234,7 +232,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                           contentPadding: EdgeInsets.all(0),
                         ),
                       )
-                    ) : Container(),
+                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     filteredClients.length != 0 ?
                       Expanded(
                         child: Container(
@@ -247,7 +245,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                               itemBuilder: (context, index) {
                                 Usuario user = filteredClients[index];
                                 return Padding(
-                                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                                  padding: EdgeInsets.symmetric(vertical: 0),
                                   child: ListTile(
                                     leading: CircularImage(
                                       size: MediaQuery.of(context).size.width*0.15,
@@ -257,7 +255,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                     ),
                                     title: Text(
                                       getUsersFullName(user),
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.left,
                                     ),
                                     subtitle: Column(
@@ -265,7 +263,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                       children: [
                                         Text(
                                           "@${user.nick!}",
-                                          style: TextStyle(color: Colors.grey, fontSize: 14),
+                                          style: Theme.of(context).textTheme.caption,
                                         ),
                                       ],
                                     ),
@@ -338,7 +336,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                 child: Image.asset(Constants.emptyCalendar)
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                            Text(AppLocalizations.of(context)!.noMembersFound, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey), textAlign: TextAlign.center,),
+                            Text(AppLocalizations.of(context)!.noMembersFound, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
                             SizedBox(height: MediaQuery.of(context).size.height*0.12),
                           ],
                         ),
@@ -349,7 +347,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                   children: [
                     allTrainers.length > 1 ?
                     Padding(
-                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.04),
+                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.04, bottom: MediaQuery.of(context).size.height*0.01),
                         child: TextField(
                           controller: searchTrainersController,
                           onChanged: (value) {
@@ -357,7 +355,9 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                             filterSearchResults(value.toLowerCase(), true);
                           },
                           textAlign: TextAlign.left,
+                          style: Theme.of(context).textTheme.bodyText2,
                           decoration: InputDecoration(
+                            hintStyle: Theme.of(context).textTheme.caption,
                             hintText: AppLocalizations.of(context)!.search,
                             focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.grey),
@@ -381,7 +381,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                             contentPadding: EdgeInsets.all(0),
                           ),
                         )
-                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.015),
                     Expanded(
                       child: Container(
                         child: ListView.builder(
@@ -391,7 +391,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                           itemBuilder: (context, index) {
                             Usuario user = filteredTrainers[index];
                             return Padding(
-                              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                              padding: EdgeInsets.symmetric(vertical: 0),
                               child: ListTile(
                                 leading: CircularImage(
                                   size: MediaQuery.of(context).size.width*0.15,
@@ -401,7 +401,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                 ),
                                 title: Text(
                                   getUsersFullName(user),
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.left,
                                 ),
                                 subtitle: Column(
@@ -409,12 +409,12 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                   children: [
                                     Text(
                                       "@${user.nick!}",
-                                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                                      style: Theme.of(context).textTheme.caption,
                                     ),
                                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                     user.id == currentBrand.adminID ? Text(
                                       "(${AppLocalizations.of(context)!.owner})",
-                                      style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12, fontStyle: FontStyle.italic),
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(fontStyle: FontStyle.italic, fontSize: 10),
                                     ) : Container(),
                                   ],
                                 ),
