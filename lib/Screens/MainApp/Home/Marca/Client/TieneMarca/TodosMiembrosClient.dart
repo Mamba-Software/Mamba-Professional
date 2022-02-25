@@ -60,6 +60,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
         allTrainers.add(user);
       }
     }
+    filteredClients = orderClientsPrivateLast(filteredClients);
     await Future.delayed(const Duration(milliseconds: 500));
     setState(() {
       isLoading = false;
