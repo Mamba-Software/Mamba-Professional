@@ -252,7 +252,7 @@ class _PerfilClientState extends State<PerfilClient> {
                 children: [
                   Flexible(
                     child: Text(AppLocalizations.of(context)!.toDo,
-                        style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 8), textAlign: TextAlign.left),
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01,),
                   Icon(
@@ -290,7 +290,7 @@ class _PerfilClientState extends State<PerfilClient> {
                 children: [
                   Flexible(
                     child: Text(AppLocalizations.of(context)!.doing,
-                        style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 8), textAlign: TextAlign.left),
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01,),
                   Icon(
@@ -327,7 +327,7 @@ class _PerfilClientState extends State<PerfilClient> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(AppLocalizations.of(context)!.finished,
-                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 8), textAlign: TextAlign.left),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01,),
                   Icon(
                     Icons.done_outline_outlined,

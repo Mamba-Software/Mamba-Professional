@@ -257,13 +257,13 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                 children: [
                   Flexible(
                     child: Text(AppLocalizations.of(context)!.toDo,
-                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white,), textAlign: TextAlign.left),
+                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 10), textAlign: TextAlign.left),
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01,),
                   Icon(
                     Icons.update_outlined,
                     color: Colors.white,
-                    size: MediaQuery.of(context).size.width*0.04,
+                    size: 15,
                   ),
                 ],
               ),
@@ -295,13 +295,13 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                 children: [
                   Flexible(
                     child: Text(AppLocalizations.of(context)!.doing,
-                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white), textAlign: TextAlign.left),
+                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 10), textAlign: TextAlign.left),
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01,),
                   Icon(
                     Icons.hourglass_top_outlined,
                     color: Colors.white,
-                    size: MediaQuery.of(context).size.width*0.04,
+                    size: 15,
                   ),
                 ],
               ),
@@ -332,12 +332,12 @@ class _PerfilTrainerState extends State<PerfilTrainer> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(AppLocalizations.of(context)!.finished,
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white), textAlign: TextAlign.left),
+                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 10), textAlign: TextAlign.left),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01,),
                   Icon(
                     Icons.done_outline_outlined,
                     color: Colors.white,
-                    size: MediaQuery.of(context).size.width*0.04,
+                    size: 15,
                   ),
                 ],
               ),

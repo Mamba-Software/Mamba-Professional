@@ -3,24 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/RoomDataService.dart';
-
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocations.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
-
 import 'EditBrandInfo.dart';
 import 'EditLogoPage.dart';
 
@@ -89,7 +83,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     children: <Widget>[
                       Text(
                         AppLocalizations.of(context)!.info,
-                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       TextButton(
@@ -106,16 +100,15 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Icon(Icons.edit_outlined, color: Theme.of(context).primaryColor),
+                            Icon(Icons.edit_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05),
                             SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.editBrandInfo,
-                              style: Styles.purpleTextStyle,
+                              style: Theme.of(context).textTheme.bodyText2,
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       TextButton(
                         onPressed: () {
                           Navigator.push(
@@ -128,16 +121,15 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Icon(Icons.photo_camera_back, color: Theme.of(context).primaryColor),
+                            Icon(Icons.photo_camera_back, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05),
                             SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.editBrandLogo,
-                              style: Styles.purpleTextStyle,
+                             style: Theme.of(context).textTheme.bodyText2,
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       TextButton(
                         onPressed: () {
                           Navigator.push(
@@ -152,11 +144,11 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor),
+                            Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05),
                             SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.locations,
-                              style: Styles.purpleTextStyle,
+                             style: Theme.of(context).textTheme.bodyText2,
                             ),
                           ],
                         ),
@@ -170,7 +162,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     children: <Widget>[
                       Text(
                         AppLocalizations.of(context)!.personlize,
-                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       TextButton(
@@ -184,7 +176,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                             SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.addBrandPhotos,
-                              style: Styles.purpleTextStyle,
+                             style: Theme.of(context).textTheme.bodyText2,
                             ),
                           ],
                         ),
@@ -219,11 +211,11 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Icon(Icons.logout, color: Colors.red),
+                        Icon(Icons.logout, color: Colors.red, size: MediaQuery.of(context).size.width*0.05),
                         SizedBox(width: 10),
                         Text(
                           AppLocalizations.of(context)!.exitBrand,
-                          style: Styles.purpleTextStyle.copyWith(color: Colors.red),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.red),
                         ),
                       ],
                     ),
@@ -258,11 +250,11 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Icon(Icons.delete_outline, color: Colors.red),
+                        Icon(Icons.delete_outline, color: Colors.red, size: MediaQuery.of(context).size.width*0.05),
                         SizedBox(width: 10),
                         Text(
                           AppLocalizations.of(context)!.deleteBrand,
-                          style: Styles.purpleTextStyle.copyWith(color: Colors.red),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.red),
                         ),
                       ],
                     ),
@@ -325,7 +317,7 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.02,),
                 Flexible(
-                  child: Text(currentBrand.name!, style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                  child: Text(currentBrand.name!, style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, left: 15, right: 15),

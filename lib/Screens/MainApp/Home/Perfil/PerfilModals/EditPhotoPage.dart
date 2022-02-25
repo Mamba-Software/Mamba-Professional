@@ -125,7 +125,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
                       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                       elevation: 10,
                       shape: CircleBorder(),
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.13, right: MediaQuery.of(context).size.height * 0.13, top: MediaQuery.of(context).size.height * 0.13),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.13, right: MediaQuery.of(context).size.height * 0.13, top: MediaQuery.of(context).size.height * 0.14),
                     ),
                   )
                       :

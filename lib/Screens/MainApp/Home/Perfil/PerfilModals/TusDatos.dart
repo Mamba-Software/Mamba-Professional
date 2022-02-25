@@ -206,6 +206,7 @@ class _TusDatosState extends State<TusDatos> {
                               validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
                               decoration: InputDecoration(
                                 hintText: AppLocalizations.of(context)!.nameCompletoError,
+                                hintStyle: Theme.of(context).textTheme.caption,
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.grey)
                                 ),
@@ -237,6 +238,7 @@ class _TusDatosState extends State<TusDatos> {
                               style: Theme.of(context).textTheme.bodyText2,
                               validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.lastNameError : null,
                               decoration: InputDecoration(
+                                hintStyle: Theme.of(context).textTheme.caption,
                                 hintText: AppLocalizations.of(context)!.lastNameError,
                                 focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.grey)

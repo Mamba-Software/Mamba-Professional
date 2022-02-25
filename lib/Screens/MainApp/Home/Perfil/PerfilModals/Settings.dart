@@ -216,7 +216,7 @@ class _SettingsState extends State<Settings> {
                           ],
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     ],
                   ),
                   Column(
