@@ -104,7 +104,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
           },
         ),
       ),
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: !isLoading ? SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),

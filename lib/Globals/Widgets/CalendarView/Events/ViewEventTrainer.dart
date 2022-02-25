@@ -511,7 +511,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
         :
     Scaffold(
       appBar: null,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Stack(
         alignment: Alignment.topCenter,
         children: [

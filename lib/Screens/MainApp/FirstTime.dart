@@ -532,7 +532,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
         ),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Column(
         children: [
           Expanded(
@@ -541,7 +541,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
               physics: NeverScrollableScrollPhysics(),
               children: [
                 Scaffold(
-                  resizeToAvoidBottomInset: false,
+                  resizeToAvoidBottomInset: true,
                   body: SingleChildScrollView(
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
@@ -951,7 +951,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                         ),
                       )
                   ),
-                  resizeToAvoidBottomInset: false,
+                  resizeToAvoidBottomInset: true,
                 ),
                 Scaffold(
                   body: SingleChildScrollView(
@@ -1027,7 +1027,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                         ),
                       )
                   ),
-                  resizeToAvoidBottomInset: false,
+                  resizeToAvoidBottomInset: true,
                 ),
                 Scaffold(
                   body: SingleChildScrollView(
@@ -1071,7 +1071,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                         ),
                       )
                   ),
-                  resizeToAvoidBottomInset: false,
+                  resizeToAvoidBottomInset: true,
                 ),
                 Scaffold(
                   body: SingleChildScrollView(
@@ -1194,7 +1194,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                         ),
                       )
                   ),
-                  resizeToAvoidBottomInset: false,
+                  resizeToAvoidBottomInset: true,
                 ),
                 Scaffold(
                   body: SingleChildScrollView(
@@ -1388,7 +1388,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                         ),
                       )
                   ),
-                  resizeToAvoidBottomInset: false,
+                  resizeToAvoidBottomInset: true,
                 ),
               ],
             )

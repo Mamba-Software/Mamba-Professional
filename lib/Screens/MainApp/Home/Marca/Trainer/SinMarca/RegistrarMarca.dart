@@ -467,7 +467,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
 
         ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: Column(
           children: [
             Expanded(

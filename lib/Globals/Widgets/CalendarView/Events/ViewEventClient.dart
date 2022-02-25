@@ -295,7 +295,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
         :
     Scaffold(
       appBar: null,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Stack(
         alignment: Alignment.topCenter,
         children: [
