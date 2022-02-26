@@ -276,7 +276,7 @@ class _ChatPageState extends State<ChatPage> {
 
   String _customDateHeaderText(DateTime dt) {
     if(dt.year == DateTime.now().year && dt.month == DateTime.now().month && dt.day == DateTime.now().day) return (DateFormat('HH:mm').format(dt)).toString();
-    return (DateFormat('dd/MM/yyyy, HH:mm').format(dt)).toString();
+    return (DateFormat('dd/MM/yy, HH:mm').format(dt)).toString();
 }
 
 Widget _customMessageBuilder(types.CustomMessage customMessage,{required int messageWidth}) {
@@ -305,7 +305,8 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                 .size
                 .height *
                 0.01)
-            :EdgeInsets.only(
+            :
+        EdgeInsets.only(
             left:
             MediaQuery.of(context)
                 .size
@@ -336,7 +337,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
               borderRadius: BorderRadius.circular(20),
               color: (customMessage.author.id == currentUser.id
                   ? Styles.mainColorTrans
-                  : Colors.grey.shade200),
+                  : Theme.of(context).backgroundColor),
             ),
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.03,
@@ -351,7 +352,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                     Flexible(
                       child: Text(
                         customMessage.id,
-                        style: TextStyle(fontSize: 15),
+                        style: Theme.of(context).textTheme.bodyText2,
                       ),
                     ),
                     SizedBox(
@@ -363,7 +364,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                       ),
                       Text(
                         customMessage.id,
-                        style: TextStyle(fontSize: 12),
+                        style: Theme.of(context).textTheme.bodyText2,
                       ),
                     ]),
                   ],
@@ -412,7 +413,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
             Navigator.pop(context, hasSentMessage);
           },
         ),
-        backgroundColor: Theme.of(context).accentColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         leadingWidth: MediaQuery.of(context).size.width * 0.07,
         toolbarHeight: MediaQuery.of(context).size.height * 0.08,
         title: Row(
@@ -487,19 +488,22 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                     theme: DefaultChatTheme(
                       inputBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
                       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                      inputTextStyle: Theme.of(context).textTheme.bodyText2!,
                       inputTextColor: Theme.of(context).primaryColor,
                       inputTextCursorColor: Theme.of(context).accentColor,
                       primaryColor: Styles.mainColorTrans,
+                      secondaryColor: Theme.of(context).backgroundColor,
+                      emptyChatPlaceholderTextStyle: Theme.of(context).textTheme.caption!,
                       sentMessageBodyTextStyle: Theme.of(context).textTheme.bodyText2!,
                       sentEmojiMessageTextStyle: Theme.of(context).textTheme.bodyText2!,
                       sentMessageCaptionTextStyle: Theme.of(context).textTheme.bodyText2!,
-                      sentMessageDocumentIconColor:Colors.black,
+                      sentMessageDocumentIconColor: Theme.of(context).primaryColor,
                       sentMessageLinkDescriptionTextStyle: Theme.of(context).textTheme.bodyText2!,
                       sentMessageLinkTitleTextStyle:Theme.of(context).textTheme.bodyText2!,
-                      receivedMessageBodyTextStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.black),
+                      receivedMessageBodyTextStyle: Theme.of(context).textTheme.bodyText2!,
                       receivedEmojiMessageTextStyle: Theme.of(context).textTheme.bodyText2!,
                       receivedMessageCaptionTextStyle: Theme.of(context).textTheme.bodyText2!,
-                      receivedMessageDocumentIconColor:Colors.black,
+                      receivedMessageDocumentIconColor: Theme.of(context).primaryColor,
                       receivedMessageLinkDescriptionTextStyle: Theme.of(context).textTheme.bodyText2!,
                       receivedMessageLinkTitleTextStyle:Theme.of(context).textTheme.bodyText2!,
                       userNameTextStyle: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
@@ -523,10 +527,10 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                         Icons.done_all,
                         color: Styles.mainColor,
                       ),
-                      dateDividerTextStyle: TextStyle(fontSize: 15),
+                      dateDividerTextStyle: Theme.of(context).textTheme.caption!.copyWith(fontSize: 10),
                     ),
                     customDateHeaderText: _customDateHeaderText,
-                    customMessageBuilder: _customMessageBuilder,
+                    //customMessageBuilder: _customMessageBuilder,
                     dateHeaderThreshold:  60000,
                     groupMessagesThreshold: 300000,
                     isAttachmentUploading: _isAttachmentUploading,
