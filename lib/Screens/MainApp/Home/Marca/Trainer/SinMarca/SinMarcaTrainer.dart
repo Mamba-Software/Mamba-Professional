@@ -145,7 +145,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
             Row(
               children: [
                 IconButton(
-                  icon: Icon(Icons.qr_code_outlined, size: 35, color: !codigoClicked ? Theme.of(context).primaryColor : Colors.white,),
+                  icon: Icon(Icons.qr_code_outlined, size: MediaQuery.of(context).size.width*0.07, color: !codigoClicked ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor,),
                   onPressed: !codigoClicked ? () {
                     setState(() {
                       codigoClicked = true;
@@ -154,7 +154,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                 ),
                 SizedBox(width: MediaQuery.of(context).size.width*0.03,),
                 IconButton(
-                  icon: Icon(Icons.add_circle, size: 35, color: Theme.of(context).accentColor,),
+                  icon: Icon(Icons.add_circle, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).accentColor,),
                   onPressed: () async {
                     Navigator.push(
                         context,
@@ -198,9 +198,11 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                     _codigo = val;
                                   });
                                 },
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: codigoError ? Colors.red: Colors.green),
+                                textAlign: TextAlign.center,
                                 decoration: InputDecoration(
                                   hintText: AppLocalizations.of(context)!.codigo,
-                                  hintStyle: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
+                                  hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: codigoError ? Colors.red: Colors.green),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
                                     borderRadius: BorderRadius.circular(13.0),
@@ -210,8 +212,6 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                     borderRadius: BorderRadius.circular(13.0),
                                   ),
                                 ),
-                                style: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
-                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),
@@ -362,7 +362,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                             Expanded(
                               child: Text(
                                 brand.name!,
-                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -440,7 +440,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                     ),
                                     Text(
                                       AppLocalizations.of(context)!.calendar,
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                      style: Theme.of(context).textTheme.bodyText2,
                                       textAlign: TextAlign.left,
                                     ),
                                   ],
@@ -468,7 +468,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                     ),
                                     Text(
                                       AppLocalizations.of(context)!.members,
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                      style: Theme.of(context).textTheme.bodyText2,
                                       textAlign: TextAlign.left,
                                     ),
                                   ],
@@ -511,7 +511,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                     ),
                                     Text(
                                       AppLocalizations.of(context)!.contact,
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                      style: Theme.of(context).textTheme.bodyText2,
                                       textAlign: TextAlign.left,
                                     ),
                                   ],
