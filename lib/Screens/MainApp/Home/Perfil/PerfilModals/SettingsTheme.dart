@@ -126,7 +126,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.typeThemeLightDescription,
-                          style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: Colors.grey), textAlign: TextAlign.left,
+                          style: Theme.of(context).textTheme.caption,
                         ),
                       ),
                     ],
@@ -174,7 +174,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.typeThemeDarkDescription,
-                          style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: Colors.grey), textAlign: TextAlign.left,
+                          style: Theme.of(context).textTheme.caption,
                         ),
                       ),
                     ],
@@ -222,7 +222,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.typeThemeSystemDescription,
-                          style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: Colors.grey), textAlign: TextAlign.left,
+                          style: Theme.of(context).textTheme.caption,
                         ),
                       ),
                     ],

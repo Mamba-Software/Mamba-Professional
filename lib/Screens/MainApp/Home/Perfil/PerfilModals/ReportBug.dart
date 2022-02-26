@@ -257,7 +257,7 @@ class _ReportBugState extends State<ReportBug> {
           iconRotationAngle: 0,
           backgroundColor: Colors.green,
           message: AppLocalizations.of(context)!.errorSent,
-          textStyle: Styles.whiteTextStyle,
+          textStyle: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),
         ),
       );
       clearControllers();
