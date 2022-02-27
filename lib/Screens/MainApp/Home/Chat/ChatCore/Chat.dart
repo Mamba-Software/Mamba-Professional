@@ -11,7 +11,6 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/DataService/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
@@ -530,8 +529,8 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                       ),
                       dateDividerTextStyle: Theme.of(context).textTheme.caption!.copyWith(fontSize: 10),
                     ),
+                    sendButtonVisibilityMode: SendButtonVisibilityMode.always,
                     customDateHeaderText: _customDateHeaderText,
-                    //customMessageBuilder: _customMessageBuilder,
                     dateHeaderThreshold:  60000,
                     groupMessagesThreshold: 300000,
                     isAttachmentUploading: _isAttachmentUploading,
