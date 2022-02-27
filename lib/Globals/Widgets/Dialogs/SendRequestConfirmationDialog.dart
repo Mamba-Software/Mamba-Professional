@@ -19,7 +19,7 @@ class SendRequestConfirmationDialog extends StatelessWidget {
         padding: EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: Colors.white
+            color: Theme.of(context).scaffoldBackgroundColor,
         ),
         child: Stack(
           clipBehavior: Clip.none,

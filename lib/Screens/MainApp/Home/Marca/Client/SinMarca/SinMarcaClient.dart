@@ -8,13 +8,13 @@ import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CancelRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/SendRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/RectangularImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -112,7 +112,9 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
           Row(
             children: [
               IconButton(
-                  icon: Icon(Icons.schedule_send, size: 35, color: Theme.of(context).accentColor),
+                  icon: Icon(Icons.schedule_send,
+                      size: MediaQuery.of(context).size.width*0.07,
+                      color: Theme.of(context).accentColor),
                   onPressed: () async {
                     Brand brand = brandList.singleWhere((element) => element.id == request!.brandId!);
                     var result = await showDialog(
@@ -141,7 +143,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
           Row(
             children: [
               IconButton(
-                icon: Icon(Icons.qr_code_outlined, size: 35, color: !codigoClicked ? Theme.of(context).primaryColor : Colors.white,),
+                icon: Icon(Icons.qr_code_outlined, size: MediaQuery.of(context).size.width*0.07, color: !codigoClicked ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor,),
                 onPressed: !codigoClicked ? () {
                   setState(() {
                     codigoClicked = true;
@@ -179,9 +181,11 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                   _codigo = val;
                                 });
                               },
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: codigoError ? Colors.red: Colors.green),
+                              textAlign: TextAlign.center,
                               decoration: InputDecoration(
                                 hintText: AppLocalizations.of(context)!.codigo,
-                                hintStyle: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
+                                hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: codigoError ? Colors.red: Colors.green),
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
                                   borderRadius: BorderRadius.circular(13.0),
@@ -191,8 +195,6 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                   borderRadius: BorderRadius.circular(13.0),
                                 ),
                               ),
-                              style: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
-                              textAlign: TextAlign.center,
                             ),
                           ),
                         ),
@@ -205,7 +207,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                 heroTag: "23",
                                 child: Icon(Icons.login),
                                 backgroundColor: Colors.green,
-                                foregroundColor: Styles.white,
+                                foregroundColor: AppColors.white,
                                 onPressed: () async {
                                   if(_codigo == null || _codigo=="") {
                                     setState(() {
@@ -256,7 +258,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                 heroTag: "24",
                                 child: Icon(Icons.close),
                                 backgroundColor: Colors.red,
-                                foregroundColor: Styles.white,
+                                foregroundColor: AppColors.white,
                                 onPressed: () async {
                                   setState(() {
                                     codigoClicked = !codigoClicked;
@@ -287,7 +289,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                     ),
                                   ),
                                   backgroundColor: Colors.orangeAccent,
-                                  foregroundColor: Styles.white,
+                                  foregroundColor: AppColors.white,
                                   onPressed: false ? () {} : null
                               ),
                             ],
@@ -343,7 +345,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                           Expanded(
                             child: Text(
                               brand.name!,
-                              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left,
                             ),
                           ),
@@ -351,7 +353,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.015),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -387,7 +389,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.005),
                   Row(
                     children: [
                       Container(
@@ -403,7 +405,9 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   IconButton(
-                                    icon: Icon(Icons.calendar_today_outlined, size: 30, color: Theme.of(context).primaryColor),
+                                    icon: Icon(Icons.calendar_today_outlined,
+                                        size: MediaQuery.of(context).size.width*0.07,
+                                        color: Theme.of(context).primaryColor),
                                     padding: EdgeInsets.all(0),
                                     onPressed: () {
                                       Navigator.push(
@@ -421,7 +425,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.calendar,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                    style: Theme.of(context).textTheme.bodyText2,
                                     textAlign: TextAlign.left,
                                   ),
                                 ],
@@ -430,7 +434,9 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   IconButton(
-                                    icon: Icon(Icons.groups_outlined, size: 35, color: Theme.of(context).primaryColor),
+                                    icon: Icon(Icons.groups_outlined,
+                                        size: MediaQuery.of(context).size.width*0.07,
+                                        color: Theme.of(context).primaryColor),
                                     padding: EdgeInsets.all(0),
                                     onPressed: () {
                                       Navigator.push(
@@ -449,7 +455,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.members,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                    style: Theme.of(context).textTheme.bodyText2,
                                     textAlign: TextAlign.left,
                                   ),
                                 ],
@@ -458,7 +464,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   IconButton(
-                                    icon: Icon(Icons.question_answer_outlined, size: 35, color: Theme.of(context).primaryColor),
+                                    icon: Icon(Icons.question_answer_outlined, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).primaryColor),
                                     padding: EdgeInsets.all(0),
                                     onPressed: () async {
                                       Usuario adminUser = await _userDataService.getUserDetails(brand.adminID!);
@@ -491,7 +497,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.contact,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                    style: Theme.of(context).textTheme.bodyText2,
                                     textAlign: TextAlign.left,
                                   ),
                                 ],
@@ -500,7 +506,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   IconButton(
-                                    icon: Icon(brandIdRequest == brand.id! ? Icons.schedule_send : Icons.send_outlined, size: 35, color: brandIdRequest == brand.id! ? Theme.of(context).accentColor : request == null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.3)),
+                                    icon: Icon(brandIdRequest == brand.id! ? Icons.schedule_send : Icons.send_outlined, size: MediaQuery.of(context).size.width*0.07, color: brandIdRequest == brand.id! ? Theme.of(context).accentColor : request == null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.3)),
                                     padding: EdgeInsets.all(0),
                                     onPressed: request == null || brandIdRequest == brand.id! ? () async {
                                       if (brandIdRequest == brand.id!) {
@@ -546,7 +552,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                   ),
                                   Text(
                                     brandIdRequest == brand.id! ? AppLocalizations.of(context)!.sent : AppLocalizations.of(context)!.join,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: brandIdRequest == brand.id! ? Theme.of(context).accentColor : request == null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.3)),
+                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: brandIdRequest == brand.id! ? Theme.of(context).accentColor : request == null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.3)),
                                     textAlign: TextAlign.left,
                                   ),
                                 ],
@@ -566,9 +572,9 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                           child: RichText(
                             textAlign: TextAlign.start,
                             text: TextSpan(
-                              style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                              style: Theme.of(context).textTheme.bodyText2,
                               children: [
-                                TextSpan(text: '${brand.name!} ', style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
+                                TextSpan(text: '${brand.name!} ', style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold),),
                                 TextSpan(text: brand.description!),
                               ],
                             ),
@@ -587,7 +593,7 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                         Expanded(
                           child: Text(
                             AppLocalizations.of(context)!.memberSince(brand.dateJoined!),
-                            style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                            style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 10),
                             textAlign: TextAlign.left,
                           ),
                         ),
@@ -613,7 +619,10 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
             Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.2),
-                child: Text(AppLocalizations.of(context)!.noBrandsFound, style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080)), textAlign: TextAlign.center,),
+                child: Text(
+                  AppLocalizations.of(context)!.noBrandsFound,
+                  style: Theme.of(context).textTheme.caption,
+                  textAlign: TextAlign.center,),
               ),
             ),
           ],
