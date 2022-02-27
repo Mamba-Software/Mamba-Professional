@@ -4,12 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:uuid/uuid.dart';
 
@@ -81,10 +79,13 @@ class _MyLocationsState extends State<MyLocations> {
       body:  isLoading ?
       Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.locations, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+          title: Text(AppLocalizations.of(context)!.locations, style: Theme.of(context).appBarTheme.titleTextStyle,),
           centerTitle: true,
-          iconTheme: IconThemeData(
-            color: Styles.accent, //change your color here
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ),
         body: LoadingViewPurple(),
@@ -92,8 +93,14 @@ class _MyLocationsState extends State<MyLocations> {
           :
       Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.locations, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+          title: Text(AppLocalizations.of(context)!.locations, style: Theme.of(context).appBarTheme.titleTextStyle,),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
         ),
         body: Column(
           children: [
@@ -135,10 +142,11 @@ class _MyLocationsState extends State<MyLocations> {
                   leading: Icon(
                     Icons.add_location,
                     color: Theme.of(context).primaryColor,
+                    size: MediaQuery.of(context).size.width*0.06,
                   ),
                   title: Text(
                     AppLocalizations.of(context)!.addLocation,
-                    style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                    style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ),
             ),
@@ -171,10 +179,10 @@ class _MyLocationsState extends State<MyLocations> {
                               children: [
                                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                 ListTile(
-                                  leading: Icon(Icons.home_filled, color: Theme.of(context).accentColor, size: 25,),
+                                  leading: Icon(Icons.home_filled, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,),
                                   title: Text(
                                       location.description!,
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).accentColor)
+                                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).accentColor)
                                   ),
                                   trailing: IconButton(
                                     onPressed: () async {
@@ -209,7 +217,7 @@ class _MyLocationsState extends State<MyLocations> {
                                         await _locationDataService.updateLocation(location.id!,widget.brandId, true, loc.placeId!, loc.description!, loc.street!, loc.streetNumber!, loc.city!, loc.zipCode!, loc.latitude!, loc.longitude!);
                                       }
                                     },
-                                    icon: Icon(Icons.edit, color: Theme.of(context).accentColor, size: 25,),
+                                    icon: Icon(Icons.edit, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,),
                                   ),
                                   onTap: () {
 
@@ -226,7 +234,7 @@ class _MyLocationsState extends State<MyLocations> {
                                           Expanded(
                                             child: Text(
                                               AppLocalizations.of(context)!.myLocationsBaseLocationDesc,
-                                              style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                              style: Theme.of(context).textTheme.caption,
                                               textAlign: TextAlign.left,
                                             ),
                                           ),
@@ -240,10 +248,10 @@ class _MyLocationsState extends State<MyLocations> {
                             );
                           } else {
                             return ListTile(
-                              leading: Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: 25,),
+                              leading: Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
                               title: Text(
                                   location.description!,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16)
+                                  style: Theme.of(context).textTheme.bodyText2,
                               ),
                               trailing: IconButton(
                                 onPressed: () async {
@@ -257,7 +265,7 @@ class _MyLocationsState extends State<MyLocations> {
                                     _locationDataService.deleteLocation(location.id!, baseLocationId);
                                   }
                                 },
-                                icon: Icon(Icons.delete_outline, color: Colors.red, size: 25,),
+                                icon: Icon(Icons.delete_outline, color: Colors.red, size: MediaQuery.of(context).size.width*0.06,),
                               ),
                               onTap: () {
 

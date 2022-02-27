@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
+import 'package:provider/provider.dart';
 
-class SettingsPrivacy extends StatefulWidget {
-  const SettingsPrivacy({Key? key}) : super(key: key);
+class SettingsTheme extends StatefulWidget {
+  const SettingsTheme({Key? key}) : super(key: key);
 
   @override
   _SettingsPrivacyState createState() => _SettingsPrivacyState();
 }
 
-class _SettingsPrivacyState extends State<SettingsPrivacy> {
+class _SettingsPrivacyState extends State<SettingsTheme> {
 
   // Acceso a Base de Datos
   var _userDataService = new UserDataService();
@@ -23,8 +27,10 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
   // Boolean isUpdated
   bool isUpdated = false;
   // Type of Users
-  int _startValue = currentUser.isPrivate! ? 2 : 1;
-  int _value = currentUser.isPrivate! ? 2 : 1;
+  int _startValue = 0;
+  int _value = 0;
+  // Theme Provider
+  var themeProvider;
 
   Color getColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
@@ -39,6 +45,24 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
   }
 
   @override
+  void initState() {
+    themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    if (currentUser.isDark != null) {
+      if (currentUser.isDark!) {
+        _startValue = 2;
+        _value = 2;
+      } else {
+        _startValue = 1;
+        _value = 1;
+      }
+    } else {
+      _startValue = 3;
+      _value = 3;
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Checking if there has been a change that has not been saved.
     if (!isLoading) {
@@ -50,12 +74,33 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.typeProfile, style: Theme.of(context).appBarTheme.titleTextStyle,),
+        title: Text(AppLocalizations.of(context)!.typeTheme, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
           onPressed: () {
-            Navigator.pop(context);
+            if (isUpdated) {
+              setState(() {
+                isLoading = true;
+              });
+              if (_startValue == 1) {
+                themeProvider.toggleTheme(false);
+              } else if (_startValue == 2) {
+                themeProvider.toggleTheme(true);
+              } else if (_startValue == 3) {
+                final brightness = SchedulerBinding.instance?.window.platformBrightness;
+                if (brightness == Brightness.dark) {
+                  themeProvider.toggleTheme(true);
+                } else {
+                  themeProvider.toggleTheme(false);
+                }
+              }
+              Future.delayed(const Duration(milliseconds: 500), () {
+                Navigator.pop(context);
+              });
+            } else {
+              Navigator.pop(context);
+            }
           },
         ),
       ),
@@ -65,14 +110,14 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
             child: Column(
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 ListTile(
                   dense: true,
                   contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
                   title: Padding(
                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                     child: Text(
-                      AppLocalizations.of(context)!.typeProfilePublic,
+                      AppLocalizations.of(context)!.typeThemeLight,
                       style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -80,7 +125,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                     children: [
                       Expanded(
                         child: Text(
-                          AppLocalizations.of(context)!.typeProfilePublicDescription,
+                          AppLocalizations.of(context)!.typeThemeLightDescription,
                           style: Theme.of(context).textTheme.caption,
                         ),
                       ),
@@ -95,10 +140,11 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                       setState(() {
                         _value = int.parse(value.toString());
                       });
+                      themeProvider.toggleTheme(false);
                     },
                   ),
                   trailing: Icon(
-                    Icons.visibility_outlined,
+                    Icons.light_mode_outlined,
                     size: 30,
                     color: _value == 1 ? Theme.of(context).accentColor : Theme.of(context).primaryColor,
                   ),
@@ -107,19 +153,19 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                        height: MediaQuery.of(context).size.height*0.20,
-                        child: Image.asset(Constants.publicProfileImage)
+                        height: MediaQuery.of(context).size.height*0.13,
+                        child: Image.asset(Constants.themeLightImage)
                     ),
                   ],
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 ListTile(
                   dense: true,
                   contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
                   title: Padding(
                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                     child: Text(
-                      AppLocalizations.of(context)!.typeProfilePrivate,
+                      AppLocalizations.of(context)!.typeThemeDark,
                       style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -127,7 +173,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                     children: [
                       Expanded(
                         child: Text(
-                          AppLocalizations.of(context)!.typeProfilePrivateDescription,
+                          AppLocalizations.of(context)!.typeThemeDarkDescription,
                           style: Theme.of(context).textTheme.caption,
                         ),
                       ),
@@ -142,10 +188,11 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                       setState(() {
                         _value = int.parse(value.toString());
                       });
+                      themeProvider.toggleTheme(true);
                     },
                   ),
                   trailing: Icon(
-                    Icons.visibility_off_outlined,
+                    Icons.dark_mode_outlined,
                     size: 30,
                     color: _value == 2 ? Theme.of(context).accentColor : Theme.of(context).primaryColor,
                   ),
@@ -154,12 +201,65 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                        height: MediaQuery.of(context).size.height*0.20,
-                        child: Image.asset(Constants.privateProfileImage)
+                        height: MediaQuery.of(context).size.height*0.13,
+                        child: Image.asset(Constants.themeDarkImage)
                     ),
                   ],
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                ListTile(
+                  dense: true,
+                  contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                  title: Padding(
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
+                    child: Text(
+                      AppLocalizations.of(context)!.typeThemeSystem,
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  subtitle: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          AppLocalizations.of(context)!.typeThemeSystemDescription,
+                          style: Theme.of(context).textTheme.caption,
+                        ),
+                      ),
+                    ],
+                  ),
+                  leading: Radio(
+                    value: 3,
+                    groupValue: _value,
+                    activeColor: Theme.of(context).accentColor,
+                    fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                    onChanged: (value) {
+                      setState(() {
+                        _value = int.parse(value.toString());
+                      });
+                      final brightness = SchedulerBinding.instance?.window.platformBrightness;
+                      if (brightness == Brightness.dark) {
+                        themeProvider.toggleTheme(true);
+                      } else {
+                        themeProvider.toggleTheme(false);
+                      }
+                    },
+                  ),
+                  trailing: Icon(
+                    Icons.app_settings_alt_outlined,
+                    size: 30,
+                    color: _value == 3 ? Theme.of(context).accentColor : Theme.of(context).primaryColor,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                        height: MediaQuery.of(context).size.height*0.13,
+                        child: Image.asset(Constants.themeSystemImage)
+                    ),
+                  ],
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02,)
               ],
             ),
           )
@@ -172,14 +272,16 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
             setState(() {
               isLoading = true;
             });
-            bool isPrivate = false;
+            bool? isDark;
             if (_value == 1) {
-              isPrivate = false;
-            } else {
-              isPrivate = true;
+              isDark = false;
+            } else if (_value == 2) {
+              isDark = true;
+            } else if (_value == 3) {
+              isDark = null;
             }
-            currentUser.isPrivate = isPrivate;
-            await _userDataService.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!);
+            currentUser.isDark = isDark;
+            await _userDataService.updateUserThemePreferences(currentUser.id!, currentUser.isDark);
             Future.delayed(const Duration(milliseconds: 500), () {
               Navigator.pop(context);
             });

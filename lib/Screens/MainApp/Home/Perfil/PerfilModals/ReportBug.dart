@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/FeedbackDataService.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -47,32 +48,28 @@ class _ReportBugState extends State<ReportBug> {
     return isLoading ?
       Scaffold(
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.reporting, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+            title: Text(AppLocalizations.of(context)!.reporting, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
             leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  size: 25,
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                }),
+              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
           ),
           body: LoadingViewPurple()
       )
         :
       Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.reporting, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+          title: Text(AppLocalizations.of(context)!.reporting, style: Theme.of(context).appBarTheme.titleTextStyle,),
           centerTitle: true,
           leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                size: 25,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
+            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -86,7 +83,7 @@ class _ReportBugState extends State<ReportBug> {
                 children: [
                   Text(
                     AppLocalizations.of(context)!.title,
-                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold)
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.01,),
                   TextFormField(
@@ -98,10 +95,12 @@ class _ReportBugState extends State<ReportBug> {
                     onChanged: (val) {
                       setState(() => tituloTemp = val);
                     },
+                    style: Theme.of(context).textTheme.bodyText2,
                     decoration: InputDecoration(
                       hintText:
                       AppLocalizations.of(context)!
                           .titleHint,
+                      hintStyle: Theme.of(context).textTheme.caption,
                     ),
                     enabled: true,
                   ),
@@ -109,11 +108,7 @@ class _ReportBugState extends State<ReportBug> {
                   Text(
                     AppLocalizations.of(context)!
                         .description,
-                    style: Styles.purpleTextStyle
-                        .copyWith(
-                        fontSize: 16,
-                        fontWeight:
-                        FontWeight.bold),
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold)
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.01,),
                   TextFormField(
@@ -128,21 +123,19 @@ class _ReportBugState extends State<ReportBug> {
                       },
                       minLines: 1,
                       maxLines: 6,
+                      style: Theme.of(context).textTheme.bodyText2,
                       decoration: InputDecoration(
                         hintText:
                         AppLocalizations.of(context)!
                             .descriptionError,
+                        hintStyle: Theme.of(context).textTheme.caption,
                       ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.03,),
                   Text(
                     AppLocalizations.of(context)!
                         .reproducteSteps,
-                    style: Styles.purpleTextStyle
-                        .copyWith(
-                        fontSize: 16,
-                        fontWeight:
-                        FontWeight.bold),
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold)
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.01,),
                   TextFormField(
@@ -153,11 +146,13 @@ class _ReportBugState extends State<ReportBug> {
                     },
                     minLines: 1,
                     maxLines: 3,
+                    style: Theme.of(context).textTheme.bodyText2,
                     decoration: InputDecoration(
                       hintMaxLines: 2,
                       hintText:
                       AppLocalizations.of(context)!
                           .reproducteStepsHint,
+                      hintStyle: Theme.of(context).textTheme.caption,
                     ),
                     enabled: true,
                   ),
@@ -181,8 +176,7 @@ class _ReportBugState extends State<ReportBug> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.send_outlined, color: Theme.of(context).scaffoldBackgroundColor),
-                                SizedBox(width: MediaQuery.of(context).size.width*0.01,),
+                                Icon(Icons.send_outlined, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06,),
                                 TextButton(
                                   onPressed: () async {
                                     if (_formKey.currentState!.validate()) {
@@ -194,7 +188,7 @@ class _ReportBugState extends State<ReportBug> {
                                   },
                                   child: Text(
                                     AppLocalizations.of(context)!.send,
-                                    style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor, fontSize: 18),
+                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white)
                                   ),
                                 )
                               ],
@@ -218,15 +212,14 @@ class _ReportBugState extends State<ReportBug> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.clear, color: Theme.of(context).scaffoldBackgroundColor),
-                              SizedBox(width: MediaQuery.of(context).size.width*0.01,),
+                              Icon(Icons.clear, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06,),
                               TextButton(
                                 onPressed: () async {
                                   clearControllers();
                                 },
                                 child: Text(
                                   AppLocalizations.of(context)!.clear,
-                                  style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor, fontSize: 18),
+                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white)
                                 ),
                               ),
                             ],
@@ -264,7 +257,7 @@ class _ReportBugState extends State<ReportBug> {
           iconRotationAngle: 0,
           backgroundColor: Colors.green,
           message: AppLocalizations.of(context)!.errorSent,
-          textStyle: Styles.whiteTextStyle,
+          textStyle: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),
         ),
       );
       clearControllers();

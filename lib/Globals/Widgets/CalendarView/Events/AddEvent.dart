@@ -1,8 +1,9 @@
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:flutter/cupertino.dart';
@@ -104,6 +105,9 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       var startHourWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
       var startMinWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[1]);
       minimumDate = DateTime(startDate.year, startDate.month, startDate.day, startHourWS, startMinWS);
+      if (startDate.isBefore(minimumDate)) {
+        startDate = minimumDate;
+      }
       // Hora Inactiva Nit
       var endHourWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
       var endMinWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
@@ -115,71 +119,94 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       initialMembers = members-1;
     }
     // Different types of pickers
-    Widget dateTimePicker = CupertinoDatePicker(
-      mode: CupertinoDatePickerMode.dateAndTime,
-      initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour, 0),
-      minimumDate: minimumDate,
-      maximumDate: maximumDate,
-      use24hFormat: true,
-      minuteInterval: 15,
-      onDateTimeChanged: (val) {
-        setState(() {
-          startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(val);
-          startDateController.text = toCapitalized(startDateController.text);
-          oneWeek = val.add(Duration(days: 7));
-          twoWeek = val.add(Duration(days: 14));
-          oneMonth= val.add(Duration(days: 30));
-        });
-      }
-    );
-    Widget durationPicker = CupertinoPicker(
-        scrollController: new FixedExtentScrollController(
-          initialItem: initialDuration
+    Widget dateTimePicker = CupertinoTheme(
+        data: CupertinoThemeData(
+            textTheme: CupertinoTextThemeData(
+              dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText2,
+            )
         ),
-        itemExtent: 40.0,
-        backgroundColor: Colors.transparent,
-        onSelectedItemChanged: (int index) {
-          setState(() {
-            duration = durations[index];
-            var hour = durations[index].split(".")[0];
-            var min = durations[index].split(".")[1];
-            durationController.text = "${hour}h ${min}min";
-          });
-        },
-        children: new List<Widget>.generate(
-            durations.length, (int index) {
-            var item = durations[index];
-            var hour = item.split(".")[0];
-            var min = item.split(".")[1];
-            return new Center(
-              child: new Text(
-                  "${hour}h ${min}min"
-              ),
-            );
-          }
+        child: CupertinoDatePicker(
+            mode: CupertinoDatePickerMode.dateAndTime,
+            initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
+            minimumDate: minimumDate,
+            maximumDate: maximumDate,
+            use24hFormat: true,
+            minuteInterval: 15,
+            onDateTimeChanged: (val) {
+              setState(() {
+                startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(val);
+                startDateController.text = toCapitalized(startDateController.text);
+                oneWeek = val.add(Duration(days: 7));
+                twoWeek = val.add(Duration(days: 14));
+                oneMonth= val.add(Duration(days: 30));
+              });
+            }
         )
     );
-    Widget membersPicker = CupertinoPicker(
-        scrollController: new FixedExtentScrollController(
-          initialItem: initialMembers
+    Widget durationPicker = CupertinoTheme(
+        data: CupertinoThemeData(
+            textTheme: CupertinoTextThemeData(
+              dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText2,
+            )
         ),
-        itemExtent: 40.0,
-        backgroundColor: Colors.transparent,
-        onSelectedItemChanged: (int index) {
-          setState(() {
-            members = index+1;
-            membersController.text = "${members.toString()}";
-          });
-        },
-        children: new List<Widget>.generate(
-            membersMax, (int index) {
-            var member = index+1;
-            return new Center(
-              child: new Text(
-                  "${member.toString()}"
-              ),
-            );
-          }
+        child: CupertinoPicker(
+            scrollController: new FixedExtentScrollController(
+                initialItem: initialDuration
+            ),
+            itemExtent: 40.0,
+            backgroundColor: Colors.transparent,
+            onSelectedItemChanged: (int index) {
+              setState(() {
+                duration = durations[index];
+                var hour = durations[index].split(".")[0];
+                var min = durations[index].split(".")[1];
+                durationController.text = "${hour}h ${min}min";
+              });
+            },
+            children: new List<Widget>.generate(
+                durations.length, (int index) {
+              var item = durations[index];
+              var hour = item.split(".")[0];
+              var min = item.split(".")[1];
+              return new Center(
+                child: new Text(
+                  "${hour}h ${min}min",
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+              );
+            }
+            )
+        )
+    );
+    Widget membersPicker = CupertinoTheme(
+        data: CupertinoThemeData(
+            textTheme: CupertinoTextThemeData(
+              dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText2,
+            )
+        ),
+        child: CupertinoPicker(
+            scrollController: new FixedExtentScrollController(
+                initialItem: initialMembers
+            ),
+            itemExtent: 40.0,
+            backgroundColor: Colors.transparent,
+            onSelectedItemChanged: (int index) {
+              setState(() {
+                members = index+1;
+                membersController.text = "${members.toString()}";
+              });
+            },
+            children: new List<Widget>.generate(
+                membersMax, (int index) {
+              var member = index+1;
+              return new Center(
+                child: new Text(
+                  "${member.toString()}",
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+              );
+            }
+            )
         )
     );
     if (type == 0) {
@@ -193,54 +220,59 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       widgetPicker = membersPicker;
     }
     showCupertinoModalPopup(
-      context: ctx,
-      builder: (_) => Material(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
-        ),
-        child: Container(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height*0.40,
+        context: ctx,
+        builder: (_) => Material(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height*0.02),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: Text(title, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: widgetPicker
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 0),
-                    child: TextButton(
-                      child: Text(AppLocalizations.of(context)!.entendido, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
-                      onPressed: () {
-                        Navigator.of(ctx).pop();
-                      }
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height*0.40,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                        child: Text(title,
+                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,)
                     ),
+                  ],
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
+                    child: widgetPicker,
                   ),
-                ],
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.02),
-            ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0),
+                      child: TextButton(
+                          child: Text(AppLocalizations.of(context)!.entendido,
+                              style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          }
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              ],
+            ),
           ),
-        ),
-      )
+        )
     );
     return Future.value("");
   }
@@ -315,9 +347,9 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         title: Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Styles.accent),
-          onPressed: () => {
-            Navigator.pop(context)
+          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+          onPressed: () {
+            Navigator.pop(context);
           },
         ),
         bottom: PreferredSize(
@@ -327,7 +359,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
               children: [
                 TabBar(
                   controller: _tabController,
-                  indicatorColor: Theme.of(context).scaffoldBackgroundColor,
+                  indicatorColor: Colors.transparent,
                   onTap: (index) {
                     _selectedIndex = index;
                   },
@@ -338,7 +370,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.info_outlined, color: tabs[0] ? Theme.of(context).accentColor : Colors.grey)
+                            Icon(Icons.info_outlined, color: tabs[0] ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
                           ],
                         ),
                       ),
@@ -349,7 +381,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.calendar_today_outlined, color: tabs[1] ? Theme.of(context).accentColor : Colors.grey.withOpacity(0.2))
+                            Icon(Icons.calendar_today_outlined, color: tabs[1] ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
                           ],
                         ),
                       ),
@@ -360,7 +392,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.group, color: tabs[2] ? Theme.of(context).accentColor : Colors.grey.withOpacity(0.2))
+                            Icon(Icons.group, color: tabs[2] ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
                           ],
                         ),
                       ),
@@ -378,7 +410,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         ),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Column(
         children: [
           Expanded(
@@ -409,7 +441,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                 children: <Widget>[
                                                   new Text(
                                                     AppLocalizations.of(context)!.title,
-                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
                                                 ],
                                               ),
@@ -417,7 +449,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           )
                                       ),
                                       Padding(
-                                          padding: EdgeInsets.only(top: 2.0),
+                                          padding: EdgeInsets.only(top: 0),
                                           child: new Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
@@ -430,7 +462,9 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                       titleString = val;
                                                     });
                                                   },
+                                                  style: Theme.of(context).textTheme.bodyText2,
                                                   decoration: InputDecoration(
+                                                    hintStyle: Theme.of(context).textTheme.caption,
                                                     hintText: AppLocalizations.of(context)!.titleHint,
                                                     border: InputBorder.none,
                                                     focusedBorder: InputBorder.none,
@@ -455,7 +489,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                 children: <Widget>[
                                                   new Text(
                                                     AppLocalizations.of(context)!.description,
-                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
                                                 ],
                                               ),
@@ -463,7 +497,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           )
                                       ),
                                       Padding(
-                                          padding: EdgeInsets.only(top: 15.0),
+                                          padding: EdgeInsets.only(top: 0.0),
                                           child: new Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
@@ -478,8 +512,9 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                       descriptionString = val;
                                                     });
                                                   },
+                                                  style: Theme.of(context).textTheme.bodyText2,
                                                   decoration: InputDecoration(
-                                                    labelStyle: Styles.purpleTextStyle,
+                                                    hintStyle: Theme.of(context).textTheme.caption,
                                                     hintText:AppLocalizations.of(context)!.descriptionError,
                                                     border: InputBorder.none,
                                                     focusedBorder: InputBorder.none,
@@ -493,7 +528,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           )
                                       ),
                                       Padding(
-                                          padding: EdgeInsets.only(top: 15),
+                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
                                           child: new Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
@@ -503,7 +538,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                 children: <Widget>[
                                                   new Text(
                                                     AppLocalizations.of(context)!.location,
-                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
                                                 ],
                                               ),
@@ -513,12 +548,12 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                       Padding(
                                         padding: EdgeInsets.only(top: 15.0),
                                         child: ListTile(
-                                          leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: 25,),
+                                          leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
                                           title: Text(
                                               location.description!,
-                                              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor)
+                                            style: Theme.of(context).textTheme.bodyText2,
                                           ),
-                                          trailing: Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: 25,),
+                                          trailing: Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
                                           onTap: () async {
                                             setState(() {
                                               isLoading = true;
@@ -548,7 +583,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                         ],
                       )
                   ),
-                  resizeToAvoidBottomInset: false,
+                  resizeToAvoidBottomInset: true,
                 ),
                 Scaffold(
                   body: SingleChildScrollView(
@@ -577,7 +612,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                 mainAxisSize: MainAxisSize.max,
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: <Widget>[
-                                                  Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,),
+                                                  Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,size: MediaQuery.of(context).size.width*0.05,),
                                                   Container(
                                                     padding: EdgeInsets.symmetric(horizontal: 20),
                                                     width: MediaQuery.of(context).size.width*0.70,
@@ -593,9 +628,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                                 controller: startDateController,
                                                                 readOnly: true,
                                                                 enabled: false,
-                                                                style: Styles.purpleTextStyle,
+                                                                style: Theme.of(context).textTheme.bodyText2,
                                                                 decoration: InputDecoration(
-                                                                  labelStyle: Styles.purpleTextStyle,
                                                                   border: InputBorder.none,
                                                                   focusedBorder: InputBorder.none,
                                                                   enabledBorder: InputBorder.none,
@@ -615,7 +649,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                 mainAxisSize: MainAxisSize.max,
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: <Widget>[
-                                                  Icon(Icons.timer, color: Theme.of(context).accentColor,),
+                                                  Icon(Icons.timer, color: Theme.of(context).accentColor,size: MediaQuery.of(context).size.width*0.05,),
                                                   Container(
                                                     padding: EdgeInsets.only(left: 20),
                                                     width: MediaQuery.of(context).size.width*0.30,
@@ -632,9 +666,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                                 controller: durationController,
                                                                 readOnly: true,
                                                                 enabled: false,
-                                                                style: Styles.purpleTextStyle,
+                                                                style: Theme.of(context).textTheme.bodyText2,
                                                                 decoration: InputDecoration(
-                                                                  labelStyle: Styles.purpleTextStyle,
                                                                   border: InputBorder.none,
                                                                   focusedBorder: InputBorder.none,
                                                                   enabledBorder: InputBorder.none,
@@ -659,7 +692,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                         child: Center(
                                           child: Text(
                                             AppLocalizations.of(context)!.errorDate,
-                                            style: Styles.redTextStyle.copyWith(fontSize: 16),
+                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                             textAlign: TextAlign.center,
                                           ),
                                         ),
@@ -671,7 +704,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                             children: [
                                               Text(
                                                 AppLocalizations.of(context)!.recurrentEvent,
-                                                style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                               ),
                                               SizedBox(width: 10,),
                                               Checkbox(
@@ -699,14 +732,14 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: Text(
                                                       AppLocalizations.of(context)!.days,
-                                                      style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                                      style: Theme.of(context).textTheme.bodyText2,
                                                     ),
                                                   ),
                                                   WeekdaySelector(
                                                     fillColor: Colors.white,
                                                     selectedFillColor: Theme.of(context).accentColor,
-                                                    textStyle: Styles.purpleTextStyle.copyWith(fontSize: 15),
-                                                    selectedTextStyle: Styles.whiteTextStyle.copyWith(fontSize: 15),
+                                                    textStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.black),
+                                                    selectedTextStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white),
                                                     firstDayOfWeek: 0,
                                                     shortWeekdays: [
                                                       AppLocalizations.of(context)!.mondayLetter,
@@ -742,7 +775,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: Text(
                                                       AppLocalizations.of(context)!.during,
-                                                      style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                                      style: Theme.of(context).textTheme.bodyText2,
                                                     ),
                                                   ),
                                                   Column(
@@ -753,11 +786,12 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                         contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
                                                         title: Text(
                                                           AppLocalizations.of(context)!.thisWeek,
-                                                          style: Styles.purpleTextStyle,
+                                                          style: Theme.of(context).textTheme.bodyText2,
                                                         ),
                                                         subtitle: Text(
                                                           AppLocalizations.of(context)!.until(toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneWeek))),
-                                                          style: Styles.purpleTextStyle.copyWith(fontSize: 14), textAlign: TextAlign.left,
+                                                          style: Theme.of(context).textTheme.caption,
+                                                          textAlign: TextAlign.left,
                                                         ),
                                                         leading: Radio(
                                                           value: 1,
@@ -776,11 +810,12 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                         contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
                                                         title: Text(
                                                           AppLocalizations.of(context)!.nextTwoWeek,
-                                                          style: Styles.purpleTextStyle,
+                                                          style: Theme.of(context).textTheme.bodyText2,
                                                         ),
                                                         subtitle: Text(
                                                           AppLocalizations.of(context)!.until(toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(twoWeek))),
-                                                          style: Styles.purpleTextStyle.copyWith(fontSize: 14), textAlign: TextAlign.left,
+                                                          style: Theme.of(context).textTheme.caption,
+                                                          textAlign: TextAlign.left,
                                                         ),
                                                         leading: Radio(
                                                           value: 2,
@@ -799,11 +834,12 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                         contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
                                                         title: Text(
                                                           AppLocalizations.of(context)!.wholeMonth,
-                                                          style: Styles.purpleTextStyle,
+                                                          style: Theme.of(context).textTheme.bodyText2,
                                                         ),
                                                         subtitle: Text(
                                                           AppLocalizations.of(context)!.until(toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneMonth))),
-                                                          style: Styles.purpleTextStyle.copyWith(fontSize: 14), textAlign: TextAlign.left,
+                                                          style: Theme.of(context).textTheme.caption,
+                                                          textAlign: TextAlign.left,
                                                         ),
                                                         leading: Radio(
                                                           value: 3,
@@ -831,7 +867,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                         ],
                       )
                   ),
-                  resizeToAvoidBottomInset: false,
+                  resizeToAvoidBottomInset: true,
                 ),
                 Scaffold(
                   body: SingleChildScrollView(
@@ -854,7 +890,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                 children: <Widget>[
                                                   new Text(
                                                     AppLocalizations.of(context)!.designatedTrainers,
-                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
                                                 ],
                                               ),
@@ -862,7 +898,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           )
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
@@ -888,10 +924,10 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                           mainAxisAlignment: MainAxisAlignment.center,
                                                           children: [
                                                             CircularImage(
-                                                              size: MediaQuery.of(context).size.width*0.2,
+                                                              size: MediaQuery.of(context).size.width*0.17,
                                                               image: trainer.imageUrl,
                                                               color: Theme.of(context).primaryColor,
-                                                    borderWidth: 1,
+                                                              borderWidth: 1,
                                                             ),
                                                             Container(
                                                               width: MediaQuery.of(context).size.width*0.2,
@@ -900,7 +936,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                                 children: [
                                                                   Text(
                                                                     trainer.firstName!,
-                                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 15),
+                                                                    style: Theme.of(context).textTheme.bodyText2,
                                                                     textAlign: TextAlign.center,
                                                                   ),
                                                                   SizedBox(
@@ -1009,13 +1045,13 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                         child: Center(
                                           child: Text(
                                             AppLocalizations.of(context)!.noTrainerSelectedError,
-                                            style: Styles.redTextStyle.copyWith(fontSize: 16),
+                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                             textAlign: TextAlign.center,
                                           ),
                                         ),
                                       ) : Container(),
                                       Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
                                           child: new Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
@@ -1025,7 +1061,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                 children: <Widget>[
                                                   new Text(
                                                     AppLocalizations.of(context)!.maxNumberClients,
-                                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
                                                 ],
                                               ),
@@ -1042,7 +1078,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             children: <Widget>[
-                                              Icon(Icons.person, color: Theme.of(context).accentColor,),
+                                              Icon(Icons.person, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.05,),
                                               Container(
                                                 padding: EdgeInsets.only(left: 20),
                                                 width: MediaQuery.of(context).size.width*0.11,
@@ -1055,9 +1091,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                         controller: membersController,
                                                         readOnly: true,
                                                         enabled: false,
-                                                        style: Styles.purpleTextStyle,
+                                                        style: Theme.of(context).textTheme.bodyText2,
                                                         decoration: InputDecoration(
-                                                          labelStyle: Styles.purpleTextStyle,
                                                           border: InputBorder.none,
                                                           focusedBorder: InputBorder.none,
                                                           enabledBorder: InputBorder.none,
@@ -1072,7 +1107,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                               ),
                                               Text(
                                                 AppLocalizations.of(context)!.members.toLowerCase(),
-                                                style: Styles.purpleTextStyle,
+                                                style: Theme.of(context).textTheme.bodyText2,
                                               ),
                                             ],
                                           ),
@@ -1084,7 +1119,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                         ],
                       )
                   ),
-                  resizeToAvoidBottomInset: false,
+                  resizeToAvoidBottomInset: true,
                 ),
               ],
             )
@@ -1120,7 +1155,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                     },
                     backgroundColor: Theme.of(context).primaryColor,
                     icon: Container(),
-                    label: Text(AppLocalizations.of(context)!.back, style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                    label: Text(AppLocalizations.of(context)!.back, style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColorDark),),
                   ),
                 ),
               ) :  Padding(
@@ -1174,7 +1209,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                     icon: Container(),
                     label: Text(
                       _selectedIndex == 2 ? AppLocalizations.of(context)!.createEvent : AppLocalizations.of(context)!.next,
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),),
                   ),
                 ),
               ),

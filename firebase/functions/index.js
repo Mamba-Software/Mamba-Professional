@@ -1905,7 +1905,7 @@ exports.zzzzUserJoinsBrand = functions
         );
 
       // Get Data of the Room
-      const roomSnapshot = await db.collection("Rooms").doc(brandDoc.roomId).get();
+      const roomSnapshot = await db.collection("7777 Rooms").doc(brandDoc.roomId).get();
       const roomDoc = roomSnapshot.data();
 
       var metadataMessage = {};
@@ -2126,7 +2126,7 @@ exports.zzzzUserLeavesBrand = functions
       // Delete Brand in User´s Brand Subcollection
       await db.collection("7777 Users").doc(userId).collection("Brands").doc(brandId).delete();
       // Get Data of the Room
-      const roomSnapshot = await db.collection("Rooms").doc(brandDoc.roomId).get();
+      const roomSnapshot = await db.collection("7777 Rooms").doc(brandDoc.roomId).get();
       const roomDoc = roomSnapshot.data();
       var filtered = roomDoc.userIds.filter(function(element) {
             return element != userId;
@@ -2796,7 +2796,7 @@ exports.zzzzChangeMessageStatus = functions
     );
     var payload = 0;
     // Get Room Data
-    const roomSnapshot =  await db.collection("Rooms").doc(roomId).get();
+    const roomSnapshot =  await db.collection("7777 Rooms").doc(roomId).get();
     const roomDoc = roomSnapshot.data();
     functions.logger.log(
      "RoomDoc",

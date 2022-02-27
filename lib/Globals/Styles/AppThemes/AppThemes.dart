@@ -1,114 +1,97 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/WidgetStyles/Text/TextStyles.dart';
 
 // Styles contains all the Colors, Themes and TextStyles used in the App.
 class AppThemes {
 
-  // Colors for Theme
-  static const Color mainColor = Color(0xFFF4AD1F);
-  static const Color mainColorTrans = Color(0x33F4AD1F);
-
-  static const Color accent = Color(0xFF200758);
-  static const Color accentLight = Color(0x8F200758);
-  static const Color accentLightTrans = Color(0xFFEAE4F7);
-
-  static const Color red = Colors.red;
-  static const Color weakerRed = Color(0xffd81b60);
-
-  // New Theme
-  // Light Theme
-  static const Color blue = Color(0xFF200758);
-  static const Color lightBlue = Color(0x8F200758);
-  static const Color amber = Color(0xFFF4AD1F);
-  // Background Color
-  static const Color white = Color(0xFFFFFFFF);
-  static const Color lightGrey = Color(0xFFF5F5F5);
-  static const Color darkerGrey = Color(0xFFDEDEDE);
-  static const Color grey = Color(0xFF808080);
-
   ThemeData returnResponsiveLightTheme(double screenHeight) {
     TextStyles _textStyles = TextStyles(screenHeight);
     return ThemeData(
       // Primary Colors
-      primaryColor: Colors.black,
-      primaryColorLight: lightBlue,
-      accentColor:  amber,
+      primaryColor: AppColors.black,
+      primaryColorDark: AppColors.white,
+      accentColor:  AppColors.mainColor,
       // BackGround Colors
-      backgroundColor: lightGrey,
-      scaffoldBackgroundColor: white,
+      backgroundColor: AppColors.lightGrey,
+      scaffoldBackgroundColor: AppColors.white,
       // Brightness
       brightness: Brightness.light,
       // Texts
       textTheme: TextTheme(
+        // Headlines for Titles
         headline1: _textStyles.blackHeadline1TextStyle(),
         headline2: _textStyles.whiteHeadline1TextStyle(),
-        bodyText1: _textStyles.blackBodyTextStyle(),
-        bodyText2: _textStyles.greyBodyTextStyle(),
-        caption: _textStyles.whiteBodyTextStyle()
+        // Headline 2 For Subtitles
+        headline3: _textStyles.blackHeadline2TextStyle(),
+        // Body Texts for Descriptions
+        bodyText1: _textStyles.blackBodyText1Style(),
+        bodyText2: _textStyles.blackBodyText2Style(),
+        caption: _textStyles.greyBodyTextStyle()
       ),
       fontFamily: "Helvetica",
       appBarTheme: AppBarTheme(
         elevation: 4.0,
-        backgroundColor: white,
+        backgroundColor: AppColors.white,
         iconTheme: IconThemeData(
             color: Colors.black
         ),
-        titleTextStyle: TextStyle(
-          fontFamily: "Helvetica",
-          color: Colors.black,
-          fontSize: 22.0,
-          fontWeight: FontWeight.w800,
-        ),
+        brightness: Brightness.dark,
+        titleTextStyle: _textStyles.blackHeadline2TextStyle(),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 40,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: white,
+        backgroundColor:  AppColors.white,
         showUnselectedLabels: false,
         showSelectedLabels: true,
       ),
     );
   }
 
-
-  // Theme Data
-  static ThemeData lightTheme = ThemeData(
-    // Primary Colors
-    primaryColor: Colors.black,
-    primaryColorLight: lightBlue,
-    accentColor:  amber,
-    // BackGround Colors
-    backgroundColor: lightGrey,
-    scaffoldBackgroundColor: white,
-    // Brightness
-    brightness: Brightness.light,
-    // Texts
-    textTheme: TextTheme(
-      headline1: TextStyle(color: Colors.black, fontSize: 22),
-      subtitle1: TextStyle(color: grey, fontSize: 16),
-    ),
-    fontFamily: "Helvetica",
-    appBarTheme: AppBarTheme(
-      elevation: 4.0,
-      backgroundColor: white,
-      iconTheme: IconThemeData(
-          color: Colors.black
+  ThemeData returnResponsiveDarkTheme(double screenHeight) {
+    TextStyles _textStyles = TextStyles(screenHeight);
+    return ThemeData(
+      // Primary Colors
+      primaryColor: AppColors.white,
+      primaryColorDark: AppColors.black,
+      accentColor:  AppColors.mainColor,
+      // BackGround Colors
+      backgroundColor: AppColors.darkGrey,
+      scaffoldBackgroundColor: AppColors.darkerGrey,
+      // Brightness
+      brightness: Brightness.dark,
+      // Texts
+      textTheme: TextTheme(
+        // Headlines for Titles
+        headline1: _textStyles.whiteHeadline1TextStyle(),
+        headline2: _textStyles.blackHeadline1TextStyle(),
+        // Headline 2 For Subtitles
+        headline3: _textStyles.whiteHeadline2TextStyle(),
+        // Body Texts for Descriptions
+        bodyText1: _textStyles.whiteBodyText1Style(),
+        bodyText2: _textStyles.whiteBodyText2Style(),
+        caption: _textStyles.greyBodyTextStyle()
       ),
-      titleTextStyle: TextStyle(
-        fontFamily: "Helvetica",
-        color: Colors.black,
-        fontSize: 22.0,
-        fontWeight: FontWeight.w800,
+      fontFamily: "Helvetica",
+      appBarTheme: AppBarTheme(
+        elevation: 4.0,
+        backgroundColor: AppColors.darkerGrey,
+        iconTheme: IconThemeData(
+            color: AppColors.white,
+        ),
+        titleTextStyle: _textStyles.whiteHeadline2TextStyle(),
+        brightness: Brightness.light,
       ),
-    ),
-    bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      elevation: 40,
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: white,
-      showUnselectedLabels: false,
-      showSelectedLabels: true,
-    ),
-  );
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        elevation: 40,
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: AppColors.darkerGrey,
+        showUnselectedLabels: false,
+        showSelectedLabels: true,
+      ),
+    );
+  }
 
 }

@@ -3,24 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/RoomDataService.dart';
-
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocations.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
-
 import 'EditBrandInfo.dart';
 import 'EditLogoPage.dart';
 
@@ -68,7 +62,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
           title: Text(AppLocalizations.of(context)!.settings, style: Theme.of(context).appBarTheme.titleTextStyle,),
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, size: 25,),
+            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
             onPressed: () async {
               Navigator.pop(context);
             },
@@ -89,7 +83,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     children: <Widget>[
                       Text(
                         AppLocalizations.of(context)!.info,
-                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       TextButton(
@@ -106,16 +100,15 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Icon(Icons.edit_outlined, color: Theme.of(context).primaryColor),
+                            Icon(Icons.edit_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05),
                             SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.editBrandInfo,
-                              style: Styles.purpleTextStyle,
+                              style: Theme.of(context).textTheme.bodyText2,
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       TextButton(
                         onPressed: () {
                           Navigator.push(
@@ -128,16 +121,15 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Icon(Icons.photo_camera_back, color: Theme.of(context).primaryColor),
+                            Icon(Icons.photo_camera_back, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05),
                             SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.editBrandLogo,
-                              style: Styles.purpleTextStyle,
+                             style: Theme.of(context).textTheme.bodyText2,
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       TextButton(
                         onPressed: () {
                           Navigator.push(
@@ -152,11 +144,11 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor),
+                            Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05),
                             SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.locations,
-                              style: Styles.purpleTextStyle,
+                             style: Theme.of(context).textTheme.bodyText2,
                             ),
                           ],
                         ),
@@ -170,7 +162,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     children: <Widget>[
                       Text(
                         AppLocalizations.of(context)!.personlize,
-                        style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       TextButton(
@@ -184,7 +176,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                             SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.addBrandPhotos,
-                              style: Styles.purpleTextStyle,
+                             style: Theme.of(context).textTheme.bodyText2,
                             ),
                           ],
                         ),
@@ -219,11 +211,11 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Icon(Icons.logout, color: Colors.red),
+                        Icon(Icons.logout, color: Colors.red, size: MediaQuery.of(context).size.width*0.05),
                         SizedBox(width: 10),
                         Text(
                           AppLocalizations.of(context)!.exitBrand,
-                          style: Styles.purpleTextStyle.copyWith(color: Colors.red),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.red),
                         ),
                       ],
                     ),
@@ -258,11 +250,11 @@ class _SettingsBrandState extends State<SettingsBrand> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Icon(Icons.delete_outline, color: Colors.red),
+                        Icon(Icons.delete_outline, color: Colors.red, size: MediaQuery.of(context).size.width*0.05),
                         SizedBox(width: 10),
                         Text(
                           AppLocalizations.of(context)!.deleteBrand,
-                          style: Styles.purpleTextStyle.copyWith(color: Colors.red),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.red),
                         ),
                       ],
                     ),
@@ -306,7 +298,7 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: Colors.white
+            color: Theme.of(context).scaffoldBackgroundColor
         ),
         child: Stack(
           clipBehavior: Clip.none,
@@ -318,14 +310,14 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 25, bottom: 10.0),
-                  child: Text(AppLocalizations.of(context)!.deleteBrandConfirmation, style: Styles.redTextStyle.copyWith(color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                  child: Text(AppLocalizations.of(context)!.deleteBrandConfirmation, style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.red, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
                 ),
                 Flexible(
-                  child: Text("${AppLocalizations.of(context)!.writeDeleteBrand} ", style: Styles.purpleTextStyle.copyWith(fontSize: 16), textAlign: TextAlign.center,),
+                  child: Text("${AppLocalizations.of(context)!.writeDeleteBrand} ", style: Theme.of(context).textTheme.bodyText2, textAlign: TextAlign.center,),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.02,),
                 Flexible(
-                  child: Text(currentBrand.name!, style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                  child: Text(currentBrand.name!, style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0, left: 15, right: 15),
@@ -349,10 +341,10 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
                               });
                             }
                           },
-                          style: Styles.redTextStyle.copyWith(fontSize: 14),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.red),
                           decoration: InputDecoration(
                             hintText: currentBrand.name,
-                            hintStyle: Styles.redTextStyle.copyWith(fontSize: 14, color: Colors.red.withOpacity(0.5)),
+                            hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.red.withOpacity(0.5)),
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.red, width: 1),
                               borderRadius: BorderRadius.circular(10.0),
@@ -374,20 +366,20 @@ class _DeleteDialogState extends State<DeleteBrandDialog> {
                     children: [
                       FloatingActionButton.extended(
                         heroTag: "32",
-                        label: Text(AppLocalizations.of(context)!.delete),
-                        icon: Icon(Icons.delete_outline),
-                        backgroundColor: canDelete ? Colors.red : Colors.red[100],
-                        foregroundColor: Styles.white,
+                        label: Text(AppLocalizations.of(context)!.delete, style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),),
+                        icon: Icon(Icons.delete_outline, size: MediaQuery.of(context).size.width*0.06,),
+                        backgroundColor: canDelete ? Colors.red : Colors.red[200],
+                        foregroundColor: AppColors.white,
                         onPressed: canDelete ? () async  {
                           Navigator.pop(context, true);
                         } : null,
                       ),
                       FloatingActionButton.extended(
                         heroTag: "33",
-                        icon: Icon(Icons.cancel_outlined, size: 30,),
-                        label: Text(AppLocalizations.of(context)!.cancel),
+                        icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06,),
+                        label: Text(AppLocalizations.of(context)!.cancel, style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),),
                         backgroundColor: Theme.of(context).primaryColor,
-                        foregroundColor: Styles.white,
+                        foregroundColor: Theme.of(context).primaryColorDark,
                         onPressed: () {
                           Navigator.pop(context, false);
                         },

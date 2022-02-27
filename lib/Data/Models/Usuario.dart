@@ -21,6 +21,7 @@ class Usuario {
   bool? isTrainer;
   bool? isPrivate;
   bool? isAdmin;
+  bool? isDark;
   int? gender;
   String? dateJoined;
   String? dateOfBirth;
@@ -45,6 +46,7 @@ class Usuario {
     this.isTrainer,
     this.isPrivate,
     this.isAdmin,
+    this.isDark,
     this.gender,
     this.dateJoined,
     this.dateOfBirth,
@@ -91,6 +93,9 @@ class Usuario {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isAdmin')) {
       this.isAdmin = documentSnapshot.get("isAdmin");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isDark')) {
+      this.isDark = documentSnapshot.get("isDark");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('gender')) {
       this.gender = documentSnapshot.get("gender");
@@ -155,6 +160,7 @@ class Usuario {
     this.isPrivate = user.isPrivate;
     this.isFirst = user.isFirst;
     this.isAdmin = user.isAdmin;
+    this.isDark = user.isDark;
     this.notificationToken = user.notificationToken;
     this.gender = user.gender;
     this.dateJoined = user.dateJoined;

@@ -1,23 +1,18 @@
-import 'dart:developer';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
-
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import '../../../Constants.dart';
-import '../../../Styles/Styles.dart';
-import '../Events/AddEvent.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MyCalendarWidget extends StatefulWidget {
@@ -153,7 +148,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
             title: Text(AppLocalizations.of(context)!.mySessions, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back, size: 25,),
+              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -167,7 +162,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
             title: Text(AppLocalizations.of(context)!.mySessions, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back, size: 25,),
+              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -188,7 +183,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
               ),
             ],
           ),
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           body: StreamBuilder<QuerySnapshot>(
               stream: _eventDataService.getUserEventsStream(currentUser.id!),
               builder: (context, snapshot) {
@@ -212,22 +207,17 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                         selectionDecoration: BoxDecoration(
                             border: Border.all(width: 0.1, color: Colors.transparent)
                         ),
-                      headerHeight: MediaQuery.of(context).size.height*0.05,
-                      headerStyle: CalendarHeaderStyle(
+                        headerHeight: MediaQuery.of(context).size.height*0.05,
+                        headerStyle: CalendarHeaderStyle(
                           textAlign: TextAlign.justify,
-                          backgroundColor: Color(0xFFF5F5F5),
-                          textStyle: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
-                            letterSpacing: 4,
-                            color: Theme.of(context).accentColor,
-                          ),
+                          backgroundColor:  Theme.of(context).scaffoldBackgroundColor,
+                          textStyle: Theme.of(context).textTheme.bodyText1,
                         ),
                         viewHeaderHeight: 50,
                         viewHeaderStyle: ViewHeaderStyle(
-                          backgroundColor: Theme.of(context).backgroundColor,
-                          dateTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 14, fontWeight: FontWeight.bold),
-                          dayTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 10, fontWeight: FontWeight.bold),
+                          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                          dateTextStyle: Theme.of(context).textTheme.bodyText2,
+                          dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 8),
                         ),
                         timeSlotViewSettings: TimeSlotViewSettings(
                           timelineAppointmentHeight: -1,
@@ -241,11 +231,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                           timeRulerSize: 25,
                           nonWorkingDays: nonWorkDays,
                           minimumAppointmentDuration: Duration(minutes: 30),
-                          timeTextStyle: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 12,
-                            color: Theme.of(context).primaryColor,
-                          )
+                          timeTextStyle: Theme.of(context).textTheme.bodyText2,
                         ),
                         scheduleViewSettings: ScheduleViewSettings(
                             hideEmptyScheduleWeek: true,
@@ -258,7 +244,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                 endDateFormat: 'dd/MM/yy',
                                 height: MediaQuery.of(context).size.height*0.03,
                                 textAlign: TextAlign.start,
-                                weekTextStyle: Styles.purpleTextStyle.copyWith(color: Colors.grey)
+                                weekTextStyle: Theme.of(context).textTheme.caption,
                             ),
                         ),
                         scheduleViewMonthHeaderBuilder: (BuildContext buildContext, ScheduleViewMonthHeaderDetails details) {
@@ -271,7 +257,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                   padding: const EdgeInsets.only(left: 8.0),
                                   child: Text(
                                     toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(details.date)),
-                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                     textAlign: TextAlign.start,
                                   ),
                                 ),
@@ -301,7 +287,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                     width: details.bounds.width,
                                     height: details.bounds.height,
                                     decoration: BoxDecoration(
-                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                      color: AppColors.lightGrey,
                                       border: Border.all(width: 1, color: Colors.black),
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(5),
@@ -319,7 +305,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                               Flexible(
                                                   child: Text(event.title!,
                                                     textAlign: TextAlign.start,
-                                                    style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 14),)
+                                                    style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold),)
                                               ),
                                               /*
                                               SizedBox(width: MediaQuery.of(context).size.width*0.02),
@@ -338,7 +324,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                                     color: Colors.black,
                                                     size: 15,
                                                   ),
-                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                                   Text(
                                                     event.hour.toString(),
                                                     style: TextStyle(color: Colors.black, fontSize: 12),
@@ -354,14 +340,14 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                                   Container(
                                                       height: 8,
                                                       width: 32,
-                                                      child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
+                                                      child: VerticalDivider(color: Colors.black, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
                                                   ),
                                                   Icon(
                                                     Icons.timer,
                                                     color: Colors.black,
                                                     size: 15,
                                                   ),
-                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                                   Text(
                                                     durationToString(event.duration!),
                                                     style: TextStyle(color: Colors.black, fontSize: 12),
@@ -369,14 +355,14 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                                   Container(
                                                       height: 8,
                                                       width: 32,
-                                                      child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
+                                                      child: VerticalDivider(color: Colors.black, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
                                                   ),
                                                   Icon(
                                                     Icons.record_voice_over,
                                                     color: Colors.black,
                                                     size: 15,
                                                   ),
-                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                                   Text(
                                                     event.numTrainers.toString(),
                                                     style: TextStyle(color: Colors.black, fontSize: 12),
@@ -384,14 +370,14 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                                   Container(
                                                       height: 8,
                                                       width: 32,
-                                                      child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
+                                                      child: VerticalDivider(color: Colors.black, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
                                                   ),
                                                   Icon(
                                                     Icons.directions_run,
                                                     color: Colors.black,
                                                     size: 15,
                                                   ),
-                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                                   Text(
                                                     event.numClients.toString(),
                                                     style: TextStyle(color: Colors.black, fontSize: 12),
@@ -440,7 +426,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                               Flexible(
                                                   child: Text(event.title!,
                                                     textAlign: TextAlign.start,
-                                                    style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 14),)
+                                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),)
                                               ),
                                               /*
                                               SizedBox(width: MediaQuery.of(context).size.width*0.02),
@@ -459,7 +445,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                                     color: Colors.white,
                                                     size: 15,
                                                   ),
-                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                                   Text(
                                                     event.hour.toString(),
                                                     style: TextStyle(color: Colors.white, fontSize: 12),
@@ -475,14 +461,14 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                                   Container(
                                                       height: 8,
                                                       width: 32,
-                                                      child: VerticalDivider(color: Colors.white, width: 10, thickness: 1,)
+                                                      child: VerticalDivider(color: Colors.white, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
                                                   ),
                                                   Icon(
                                                     Icons.timer,
                                                     color: Colors.white,
                                                     size: 15,
                                                   ),
-                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                                   Text(
                                                     durationToString(event.duration!),
                                                     style: TextStyle(color: Colors.white, fontSize: 12),
@@ -490,14 +476,14 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                                   Container(
                                                       height: 8,
                                                       width: 32,
-                                                      child: VerticalDivider(color: Colors.white, width: 10, thickness: 1,)
+                                                      child: VerticalDivider(color: Colors.white, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
                                                   ),
                                                   Icon(
                                                     Icons.record_voice_over,
                                                     color: Colors.white,
                                                     size: 15,
                                                   ),
-                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                                   Text(
                                                     event.numTrainers.toString(),
                                                     style: TextStyle(color: Colors.white, fontSize: 12),
@@ -505,14 +491,14 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                                   Container(
                                                       height: 8,
                                                       width: 32,
-                                                      child: VerticalDivider(color: Colors.white, width: 10, thickness: 1,)
+                                                      child: VerticalDivider(color: Colors.white, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
                                                   ),
                                                   Icon(
                                                     Icons.directions_run,
                                                     color: Colors.white,
                                                     size: 15,
                                                   ),
-                                                  SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                                   Text(
                                                     event.numClients.toString(),
                                                     style: TextStyle(color: Colors.white, fontSize: 12),
@@ -548,7 +534,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                       height: details.bounds.height,
                                       padding: EdgeInsets.all(details.bounds.width*0.1),
                                       decoration: BoxDecoration(
-                                        color: Styles.lightGrey,
+                                        color: AppColors.lightGrey,
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(5),
                                         ),
@@ -558,7 +544,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                         children: [
                                           AutoSizeText(
                                             event.title!,
-                                            style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w800),
+                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                                             textAlign: TextAlign.center,
                                             wrapWords: false,
                                             minFontSize: 1,
@@ -598,7 +584,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                         children: [
                                           AutoSizeText(
                                             event.title!,
-                                            style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w800),
+                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                             textAlign: TextAlign.center,
                                             wrapWords: false,
                                             minFontSize: 1,
@@ -608,11 +594,11 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
                                             width: details.bounds.width*0.4,
                                             child: AutoSizeText(
                                               appointment.subject,
-                                              style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w500),
+                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                               textAlign: TextAlign.center,
                                               wrapWords: false,
                                               minFontSize: 1,
-                                              maxFontSize: 10,
+                                              maxFontSize: 8,
                                             ),
                                           ),
                                         ],

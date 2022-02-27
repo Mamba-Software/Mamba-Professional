@@ -5,30 +5,21 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/RoomDataService.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:image_picker/image_picker.dart';
-
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/InformationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-
 
 class RegistrarMarca extends StatefulWidget {
   Locale? locale;
@@ -128,71 +119,61 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     } else if (type == 3) {
       // No changes needed at the moment
     }
-    Widget membersPicker = CupertinoPicker(
-        scrollController: new FixedExtentScrollController(
-            initialItem: initialMembers
-        ),
-        itemExtent: 40.0,
-        backgroundColor: Colors.transparent,
-        onSelectedItemChanged: (int index) {
-          setState(() {
-            members = index+1;
-            membersController.text = "${members.toString()}";
-          });
-        },
-        children: new List<Widget>.generate(
-            membersMax, (int index) {
-          var member = index+1;
-          return new Center(
-            child: new Text(
-                "${member.toString()}"
-            ),
-          );
-        }
-        )
-    );
-    Widget workdayTimePicker = CupertinoDatePicker(
-        mode: CupertinoDatePickerMode.time,
-        initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-        minimumDate: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
-        maximumDate: DateTime(startDate.year, startDate.month, startDate.day, 23, 0),
-        use24hFormat: true,
-        minuteInterval: 30,
-        onDateTimeChanged: (val) {
-          if (isStart!) {
-            setState(() {
-              startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
-            });
-          } else {
-            setState(() {
-              endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
-            });
+
+    Widget workdayTimePicker = CupertinoTheme(
+      data: CupertinoThemeData(
+          textTheme: CupertinoTextThemeData(
+            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
+          )
+      ),
+      child: CupertinoDatePicker(
+          mode: CupertinoDatePickerMode.time,
+          initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
+          minimumDate: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
+          maximumDate: DateTime(startDate.year, startDate.month, startDate.day, 23, 0),
+          use24hFormat: true,
+          minuteInterval: 30,
+          onDateTimeChanged: (val) {
+            if (isStart!) {
+              setState(() {
+                startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
+              });
+            } else {
+              setState(() {
+                endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
+              });
+            }
           }
-        }
+      ),
     );
-    Widget breakTimePicker = CupertinoDatePicker(
-        mode: CupertinoDatePickerMode.time,
-        initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-        minimumDate: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
-        maximumDate: DateTime(startDate.year, startDate.month, startDate.day, 23, 0),
-        use24hFormat: true,
-        minuteInterval: 30,
-        onDateTimeChanged: (val) {
-          if (isStart!) {
-            setState(() {
-              breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
-            });
-          } else {
-            setState(() {
-              breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
-            });
+    Widget breakTimePicker = CupertinoTheme(
+      data: CupertinoThemeData(
+          textTheme: CupertinoTextThemeData(
+            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
+          )
+      ),
+      child: CupertinoDatePicker(
+          mode: CupertinoDatePickerMode.time,
+          initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
+          minimumDate: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
+          maximumDate: DateTime(startDate.year, startDate.month, startDate.day, 23, 0),
+          use24hFormat: true,
+          minuteInterval: 30,
+          onDateTimeChanged: (val) {
+            if (isStart!) {
+              setState(() {
+                breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
+              });
+            } else {
+              setState(() {
+                breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
+              });
+            }
           }
-        }
+      ),
     );
-    if (type == 2) {
-      title = AppLocalizations.of(context)!.selectMembers;
-      widgetPicker = membersPicker;
-    } else if (type == 3) {
+
+    if (type == 3) {
       title = AppLocalizations.of(context)!.selectTime;
       widgetPicker = workdayTimePicker;
     } else if (type == 4) {
@@ -219,14 +200,18 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Text(title, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
+                    Expanded(
+                        child: Text(title,
+                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,)
                     ),
                   ],
                 ),
                 Expanded(
-                    child: widgetPicker
+                  child: Padding(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
+                    child: widgetPicker,
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -235,7 +220,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                     Padding(
                       padding: const EdgeInsets.only(top: 0),
                       child: TextButton(
-                          child: Text(AppLocalizations.of(context)!.entendido, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                          child: Text(AppLocalizations.of(context)!.entendido,
+                              style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
                           onPressed: () {
                             Navigator.of(ctx).pop();
                           }
@@ -251,6 +237,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     );
     return Future.value("");
   }
+
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
     var image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -290,10 +277,10 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     return isLoading ?
       Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.createBrand, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+          title: Text(AppLocalizations.of(context)!.createBrand, style: Theme.of(context).appBarTheme.titleTextStyle,),
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, size: 25,),
+            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -305,15 +292,16 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
       isFirstTime ?
       Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.createBrand, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+          title: Text(AppLocalizations.of(context)!.createBrand, style: Theme.of(context).appBarTheme.titleTextStyle,),
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, size: 25,),
+            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
         ),
+        resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: Padding(
@@ -323,7 +311,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                 children: [
                   Text(
                     AppLocalizations.of(context)!.createBrandTitle,
-                    style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                    style: Theme.of(context).textTheme.bodyText2,
                     textAlign: TextAlign.left,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
@@ -334,7 +322,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                     ),
                     title: Text(
                       AppLocalizations.of(context)!.createBrandPortada,
-                      style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                      style: Theme.of(context).textTheme.bodyText2,
                     ),
                   ),
                   ListTile(
@@ -344,7 +332,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                     ),
                     title: Text(
                       AppLocalizations.of(context)!.createBrandInfo,
-                      style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                      style: Theme.of(context).textTheme.bodyText2,
                     ),
                   ),
                   ListTile(
@@ -354,7 +342,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                     ),
                     title: Text(
                       AppLocalizations.of(context)!.createBrandLocation,
-                      style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                      style: Theme.of(context).textTheme.bodyText2,
                     ),
                   ),
                   ListTile(
@@ -364,7 +352,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                     ),
                     title: Text(
                       AppLocalizations.of(context)!.createBrandTime,
-                      style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                      style: Theme.of(context).textTheme.bodyText2,
                     ),
                   ),
                 ],
@@ -384,7 +372,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
             icon: Container(),
             label: Text(
               AppLocalizations.of(context)!.next,
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+              style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Colors.white),),
           ),
         ),
       )
@@ -395,9 +383,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
           title: getTitle(),
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => {
-              Navigator.pop(context)
+            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+            onPressed: () {
+              Navigator.pop(context);
             },
           ),
           bottom: PreferredSize(
@@ -407,7 +395,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                   children: [
                     TabBar(
                       controller: _tabController,
-                      indicatorColor: Theme.of(context).scaffoldBackgroundColor,
+                      indicatorColor: Colors.transparent,
                       tabs: [
                         Tab(
                           child: Align(
@@ -415,7 +403,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.image_outlined, color: tabs[0] ? Theme.of(context).accentColor : Colors.grey)
+                                Icon(Icons.image_outlined, color: tabs[0] ? Theme.of(context).accentColor : Colors.grey, size: MediaQuery.of(context).size.width*0.06,)
                               ],
                             ),
                           ),
@@ -426,7 +414,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.info_outlined, color: tabs[1] ? Theme.of(context).accentColor : Colors.grey.withOpacity(0.2))
+                                Icon(Icons.info_outlined, color: tabs[1] ? Theme.of(context).accentColor : Colors.grey.withOpacity(0.2), size: MediaQuery.of(context).size.width*0.06,)
                               ],
                             ),
                           ),
@@ -437,7 +425,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.location_on_outlined, color: tabs[2] ? Theme.of(context).accentColor : Colors.grey.withOpacity(0.2))
+                                Icon(Icons.location_on_outlined, color: tabs[2] ? Theme.of(context).accentColor : Colors.grey.withOpacity(0.2), size: MediaQuery.of(context).size.width*0.06,)
                               ],
                             ),
                           ),
@@ -448,7 +436,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.calendar_today_outlined, color: tabs[3] ? Theme.of(context).accentColor : Colors.grey.withOpacity(0.2))
+                                Icon(Icons.calendar_today_outlined, color: tabs[3] ? Theme.of(context).accentColor : Colors.grey.withOpacity(0.2), size: MediaQuery.of(context).size.width*0.06,)
                               ],
                             ),
                           ),
@@ -464,10 +452,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                 )
             ),
           ),
-
         ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: Column(
           children: [
             Expanded(
@@ -494,7 +481,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                       Expanded(
                                         child: Text(
                                           AppLocalizations.of(context)!.createBrandCoverDescription,
-                                          style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                          style: Theme.of(context).textTheme.caption,
                                           textAlign: TextAlign.left,
                                         ),
                                       ),
@@ -503,7 +490,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                   SizedBox(height: MediaQuery.of(context).size.height*0.04),
                                   Text(
                                     AppLocalizations.of(context)!.logo,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                   Container(
@@ -513,25 +500,27 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                       OutlinedButton(
                                         onPressed: getImage,
                                         child: Column(
+                                          //mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             new Icon(
-                                              Icons.image,
+                                              Icons.photo_library_outlined,
                                               color: Theme.of(context).primaryColor,
-                                              size: 30.0,
+                                              size: MediaQuery.of(context).size.width * 0.08,
                                             ),
                                           ],
                                         ),
                                         style: OutlinedButton.styleFrom(
                                           side: BorderSide(
-                                              color: errorImage ? Colors.red : Theme.of(context).primaryColor,
+                                              color: Theme.of(context).primaryColor,
                                               width: 1.5
                                           ),
-                                          backgroundColor: Colors.white,
+                                          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                                           elevation: 10,
                                           shape: CircleBorder(),
-                                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.10, right: MediaQuery.of(context).size.height * 0.10, top: MediaQuery.of(context).size.height * 0.13),
+                                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.11, right: MediaQuery.of(context).size.height * 0.11, top: MediaQuery.of(context).size.height * 0.13),
                                         ),
-                                      ) :
+                                      )
+                                          :
                                       GestureDetector(
                                         onTap: getImage,
                                         child: CircularImage(
@@ -546,18 +535,18 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                   Text(
                                     AppLocalizations.of(context)!.nameBrand,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                   Flexible(
                                     child: new TextFormField(
                                       controller: nameBrandController,
                                       validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameBrandError : null,
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 26, fontWeight: FontWeight.bold),
+                                      style: Theme.of(context).textTheme.headline1,
                                       textAlign: TextAlign.center,
                                       textCapitalization: TextCapitalization.words,
                                       decoration: InputDecoration(
-                                        hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 18, color: Colors.grey, fontWeight: FontWeight.normal),
+                                        hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.grey),
                                         hintText: AppLocalizations.of(context)!.nameBrandError,
                                         enabledBorder: InputBorder.none,
                                         errorBorder: InputBorder.none,
@@ -566,6 +555,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                       ),
                                     ),
                                   ),
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.1),
                                 ],
                               ),
                             )
@@ -591,7 +581,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                       Expanded(
                                         child: Text(
                                           AppLocalizations.of(context)!.createBrandDescDescription,
-                                          style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                          style: Theme.of(context).textTheme.caption,
                                           textAlign: TextAlign.left,
                                         ),
                                       ),
@@ -600,7 +590,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                   SizedBox(height: MediaQuery.of(context).size.height*0.04),
                                   Text(
                                     AppLocalizations.of(context)!.description,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                   Flexible(
@@ -612,8 +602,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                         minLines: 1,
                                         maxLines: 5,
                                         maxLength: 250,
+                                        style: Theme.of(context).textTheme.bodyText2,
                                         decoration: InputDecoration(
-                                          hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                          hintStyle: Theme.of(context).textTheme.caption,
                                           hintText: AppLocalizations.of(context)!.descriptionError,
                                           enabledBorder: InputBorder.none,
                                           errorBorder: InputBorder.none,
@@ -646,16 +637,16 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                     Expanded(
                                       child: Text(
                                         AppLocalizations.of(context)!.createBrandLocationDescription,
-                                        style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                        style: Theme.of(context).textTheme.caption,
                                         textAlign: TextAlign.left,
                                       ),
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.03),
                                 Text(
                                   AppLocalizations.of(context)!.createBrandBaseLocation,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                 ListTile(
@@ -698,10 +689,10 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                   },
                                   title: hasLocation ? Text(
                                     location.description!,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                    style: Theme.of(context).textTheme.bodyText2,
                                   ) : Text(
                                     AppLocalizations.of(context)!.enterAddressError,
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                    style: Theme.of(context).textTheme.bodyText2,
                                   ),
 
                                   leading: Icon(
@@ -709,11 +700,14 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                     color: Theme.of(context).primaryColor,
                                   ),
                                 ),
-                                errorLocation ? Text(
-                                  AppLocalizations.of(context)!.enterAddressError,
-                                  style: Styles.redTextStyle.copyWith(fontSize: 12),
+                                errorLocation ? Padding(
+                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                                  child: Text(
+                                    AppLocalizations.of(context)!.enterAddressError,
+                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                  ),
                                 ) : new Container(),
-                                SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                 hasLocation ? Column(
                                   mainAxisSize: MainAxisSize.max,
                                   children: <Widget>[
@@ -722,9 +716,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                       children: [
                                         Text(
                                           AppLocalizations.of(context)!.streetName,
-                                          style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                          style: Theme.of(context).textTheme.caption,
                                         ),
-                                        Text(location.street!, style: Styles.purpleTextStyle.copyWith(fontSize: 16),)
+                                        Text(location.street!, style: Theme.of(context).textTheme.bodyText2,)
                                       ],
                                     ),
                                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -733,9 +727,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                       children: [
                                         Text(
                                           AppLocalizations.of(context)!.streetNumber,
-                                          style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                          style: Theme.of(context).textTheme.caption,
                                         ),
-                                        Text(location.streetNumber!, style: Styles.purpleTextStyle.copyWith(fontSize: 16),)
+                                        Text(location.streetNumber!, style: Theme.of(context).textTheme.bodyText2,)
                                       ],
                                     ),
                                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -744,9 +738,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                       children: [
                                         Text(
                                           AppLocalizations.of(context)!.city,
-                                          style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                          style: Theme.of(context).textTheme.caption,
                                         ),
-                                        Text(location.city!, style: Styles.purpleTextStyle.copyWith(fontSize: 16),)
+                                        Text(location.city!, style: Theme.of(context).textTheme.bodyText2,)
                                       ],
                                     ),
                                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -755,9 +749,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                       children: [
                                         Text(
                                           AppLocalizations.of(context)!.zipCode,
-                                          style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                          style: Theme.of(context).textTheme.caption,
                                         ),
-                                        Text(location.zipCode!, style: Styles.purpleTextStyle.copyWith(fontSize: 16),)
+                                        Text(location.zipCode!, style: Theme.of(context).textTheme.bodyText2,)
                                       ],
                                     ),
                                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -766,9 +760,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                       children: [
                                         Text(
                                           "${AppLocalizations.of(context)!.latitude}: ",
-                                          style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                          style: Theme.of(context).textTheme.caption,
                                         ),
-                                        Text(location.latitude!.toString(), style: Styles.purpleTextStyle.copyWith(fontSize: 16),)
+                                        Text(location.latitude!.toString(), style: Theme.of(context).textTheme.bodyText2,)
                                       ],
                                     ),
                                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -777,9 +771,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                       children: [
                                         Text(
                                           "${AppLocalizations.of(context)!.longitud}: ",
-                                          style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                          style: Theme.of(context).textTheme.caption,
                                         ),
-                                        Text(location.longitude!.toString(), style: Styles.purpleTextStyle.copyWith(fontSize: 16),)
+                                        Text(location.longitude!.toString(), style: Theme.of(context).textTheme.bodyText2,)
                                       ],
                                     ),
                                   ],
@@ -806,16 +800,16 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                     Expanded(
                                       child: Text(
                                         AppLocalizations.of(context)!.createBrandWorkshiftDescription,
-                                        style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                        style: Theme.of(context).textTheme.caption,
                                         textAlign: TextAlign.left,
                                       ),
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                 Text(
                                   AppLocalizations.of(context)!.workingHours,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                 Row(
@@ -829,16 +823,17 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                         padding: EdgeInsets.all(8),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.all(Radius.circular(5)),
-                                          border: Border.all(color: Styles.accent, width: 1.0),
+                                          border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
                                           color: Colors.transparent,
                                         ),
                                         child: Text(
                                           startTimeController.text,
-                                          style: Styles.purpleTextStyle.copyWith(fontSize: 25),
+                                          style: Theme.of(context).textTheme.headline3,
                                         ),
                                       ),
                                     ),
-                                    Text("-", style: Styles.purpleTextStyle.copyWith(fontSize: 30),),
+                                    Text("-",
+                                        style: Theme.of(context).textTheme.headline3),
                                     TextButton(
                                       onPressed: () async {
                                         selectSlot(context, 3, false);
@@ -847,12 +842,12 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                         padding: EdgeInsets.all(8),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.all(Radius.circular(5)),
-                                          border: Border.all(color: Styles.accent, width: 1.0),
+                                          border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
                                           color: Colors.transparent,
                                         ),
                                         child: Text(
-                                          endTimeController.text,
-                                          style: Styles.purpleTextStyle.copyWith(fontSize: 25),
+                                            endTimeController.text,
+                                            style: Theme.of(context).textTheme.headline3
                                         ),
                                       ),
                                     ),
@@ -862,7 +857,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                   padding: EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
                                   child: Text(
                                     errorTime == 1 ? AppLocalizations.of(context)!.workingHoursError : AppLocalizations.of(context)!.workingHoursError1,
-                                    style: Styles.redTextStyle.copyWith(fontSize: 12),
+                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                     textAlign: TextAlign.center,
                                   ),
                                 ) : new Container(),
@@ -873,91 +868,100 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                     Expanded(
                                       child: Text(
                                         AppLocalizations.of(context)!.createBrandBreakDescription,
-                                        style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                        style: Theme.of(context).textTheme.caption,
                                         textAlign: TextAlign.left,
                                       ),
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                 Text(
                                   AppLocalizations.of(context)!.lunchBreak,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                 Row(
                                   mainAxisSize: MainAxisSize.max,
                                   children: <Widget>[
                                     Container(
-                                      width: MediaQuery.of(context).size.width * 0.53,
+                                      width: MediaQuery.of(context).size.width * 0.43,
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
                                           TextButton(
-                                            onPressed: () async {
+                                            onPressed: _breakList.length < breakLimit ? () {
                                               selectSlot(context, 4, true);
-                                            },
+                                            } : null,
                                             child: Container(
                                               padding: EdgeInsets.all(8),
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.all(Radius.circular(5)),
-                                                border: Border.all(color: Styles.accent, width: 1.0),
+                                                border: Border.all(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey, width: 1.0),
                                                 color: Colors.transparent,
                                               ),
                                               child: Text(
                                                 breakStartTimeController.text,
-                                                style: Styles.purpleTextStyle.copyWith(fontSize: 25),
+                                                style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
                                               ),
                                             ),
                                           ),
-                                          Text("-", style: Styles.purpleTextStyle.copyWith(fontSize: 30),),
+                                          Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),),
                                           TextButton(
-                                            onPressed: () async {
+                                            onPressed: _breakList.length < breakLimit ? () {
                                               selectSlot(context, 4, false);
-                                            },
+                                            } : null,
                                             child: Container(
                                               padding: EdgeInsets.all(8),
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.all(Radius.circular(5)),
-                                                border: Border.all(color: Styles.accent, width: 1.0),
+                                                border: Border.all(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey, width: 1.0),
                                                 color: Colors.transparent,
                                               ),
                                               child: Text(
                                                 breakEndTimeController.text,
-                                                style: Styles.purpleTextStyle.copyWith(fontSize: 25),
+                                                style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
                                               ),
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
-                                    SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                                    _breakList.length < breakLimit ? FloatingActionButton.extended(
-                                      heroTag: "74",
-                                      onPressed: () {
-                                        double toDouble(DateTime myTime) => myTime.hour + myTime.minute/60.0;
-                                        if (toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text)) > toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text))){
-                                          setState(() {
-                                            errorBreakTime = true;
-                                          });
-                                        } else {
-                                          DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text);
-                                          DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text);
-                                          _breakStartTime = TimeOfDay(hour: start.hour, minute: start.minute);
-                                          _breakEndTime = TimeOfDay(hour: end.hour, minute: end.minute);
-                                          setState(() {
-                                            errorBreakTime = false ;
-                                            _breakList.add(_breakStartTime);
-                                            _breakList.add(_breakEndTime);
-                                          });
-                                        }
-                                      },
-                                      backgroundColor: Colors.green,
-                                      icon: Container(),
-                                      label: Text(
-                                        AppLocalizations.of(context)!.add,
-                                        style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                                    _breakList.length < breakLimit ? Padding(
+                                      padding: const EdgeInsets.only(left: 0.0),
+                                      child: OutlinedButton(
+                                        onPressed: () {
+                                          double toDouble(DateTime myTime) => myTime.hour + myTime.minute/60.0;
+                                          if (toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text)) > toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text))){
+                                            setState(() {
+                                              errorBreakTime = true;
+                                            });
+                                          } else {
+                                            DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text);
+                                            DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text);
+                                            _breakStartTime = TimeOfDay(hour: start.hour, minute: start.minute);
+                                            _breakEndTime = TimeOfDay(hour: end.hour, minute: end.minute);
+                                            setState(() {
+                                              errorBreakTime = false ;
+                                              _breakList.add(_breakStartTime);
+                                              _breakList.add(_breakEndTime);
+                                            });
+                                          }
+                                        },
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon( Icons.add, color: Colors.white, size: 30,),
+                                          ],
+                                        ),
+                                        style: OutlinedButton.styleFrom(
+                                          backgroundColor: Colors.green,
+                                          elevation: 3,
+                                          shape: CircleBorder(),
+                                          padding: EdgeInsets.all(5),
+                                        ),
+                                      ),
                                     ) : Container(),
                                   ],
                                 ),
@@ -965,7 +969,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                   padding: EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
                                   child: Text(
                                     AppLocalizations.of(context)!.workingHoursError1,
-                                    style: Styles.redTextStyle.copyWith(fontSize: 12),
+                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                     textAlign: TextAlign.center,
                                   ),
                                 ) : new Container(),
@@ -979,7 +983,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                         mainAxisSize: MainAxisSize.max,
                                         children: <Widget>[
                                           Container(
-                                            width: MediaQuery.of(context).size.width * 0.53,
+                                            width: MediaQuery.of(context).size.width * 0.43,
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               mainAxisSize: MainAxisSize.max,
@@ -997,11 +1001,11 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                                     ),
                                                     child: Text(
                                                       '${_breakList[index].format(context)}',
-                                                      style: Styles.purpleTextStyle.copyWith(fontSize: 25, color: Colors.green),
+                                                      style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),
                                                     ),
                                                   ),
                                                 ),
-                                                Text("-", style: Styles.purpleTextStyle.copyWith(fontSize: 30, color: Colors.green),),
+                                                Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),),
                                                 TextButton(
                                                   onPressed: false ? () {
 
@@ -1015,7 +1019,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                                     ),
                                                     child: Text(
                                                       '${_breakList[index+1].format(context)}',
-                                                      style: Styles.purpleTextStyle.copyWith(fontSize: 25, color: Colors.green),
+                                                      style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),
                                                     ),
                                                   ),
                                                 ),
@@ -1048,7 +1052,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                             ),
                                           ),
                                           Flexible(
-                                            child: Text(AppLocalizations.of(context)!.lunchBreakAdded, style: Styles.purpleTextStyle.copyWith(fontSize: 13,fontStyle: FontStyle.italic, color: Colors.green), textAlign: TextAlign.center,),
+                                            child: Text(AppLocalizations.of(context)!.lunchBreakAdded, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
                                           ),
                                         ],
                                       );
@@ -1058,14 +1062,14 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                   },
                                   shrinkWrap: true,
                                 ),
-                                //SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                 _breakList.length < breakLimit ? Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Expanded(
                                       child: Text(
                                         AppLocalizations.of(context)!.createBrandAddDescription,
-                                        style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor, fontSize: 16),
+                                        style: Theme.of(context).textTheme.bodyText2,
                                         textAlign: TextAlign.left,
                                       ),
                                     ),
@@ -1114,7 +1118,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                     },
                     backgroundColor: Theme.of(context).primaryColor,
                     icon: Container(),
-                    label: Text(AppLocalizations.of(context)!.back, style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                    label: Text(
+                      AppLocalizations.of(context)!.back,
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColorDark),),
                   ),
                 ),
               ) :  Padding(
@@ -1169,7 +1175,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                     icon: Container(),
                     label: Text(
                       _selectedIndex == 3 ? AppLocalizations.of(context)!.createBrand : AppLocalizations.of(context)!.next,
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Colors.white),),
                   ),
                 ),
               ),
