@@ -129,6 +129,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
           }
       ),
     );
+
     if (type == 3) {
       title = AppLocalizations.of(context)!.selectTime;
       widgetPicker = workdayTimePicker;
@@ -506,8 +507,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                       textAlign: TextAlign.center,
                     ),
                   ) : new Container(),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.05),
-
+                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -708,7 +708,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                     },
                     shrinkWrap: true,
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   _breakList.length < breakLimit ? Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
