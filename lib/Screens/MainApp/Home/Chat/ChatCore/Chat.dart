@@ -486,11 +486,12 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                   bottom: false,
                   child: Chat(
                     theme: DefaultChatTheme(
-                      inputBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
                       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                      inputBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
                       inputTextStyle: Theme.of(context).textTheme.bodyText2!,
                       inputTextColor: Theme.of(context).primaryColor,
                       inputTextCursorColor: Theme.of(context).accentColor,
+                      inputBorderRadius: BorderRadius.circular(0),
                       primaryColor: Styles.mainColorTrans,
                       secondaryColor: Theme.of(context).backgroundColor,
                       emptyChatPlaceholderTextStyle: Theme.of(context).textTheme.caption!,
