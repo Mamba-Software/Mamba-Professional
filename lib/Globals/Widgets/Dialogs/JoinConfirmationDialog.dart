@@ -77,7 +77,7 @@ class JoinConfirmationDialog extends StatelessWidget {
                         ),
                         label: Text(
                           AppLocalizations.of(context)!.cancel,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark,),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                         ),
                         icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColorDark,),
                         onPressed: () {
