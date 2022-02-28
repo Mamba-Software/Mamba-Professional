@@ -1143,7 +1143,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                               SizedBox(width: 10),
                                               Text(
                                                 AppLocalizations.of(context)!.addDesignatedClients,
-                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: brandClientsSelected.length != members ? Theme.of(context).accentColor : Theme.of(context).primaryColor.withOpacity(0.2)),
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: brandClientsSelected.length != members ? Theme.of(context).accentColor : Theme.of(context).primaryColor.withOpacity(0.2), fontWeight: FontWeight.bold),
                                               ),
                                             ],
                                           ),
