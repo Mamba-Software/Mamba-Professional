@@ -1556,17 +1556,29 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     }
     // EVENT IS NOT RECURRENT
     if (!isRecurrent) {
-      await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+      String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+      for (var i=0; i<brandClientsSelected.length; i++) {
+        var client = brandClientsSelected[i];
+        await _eventDataService.addUserToEvent(eid, client.id!, true);
+      }
     } else {
       // EVENT IS RECURRENT
-      await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+      String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+      for (var i=0; i<brandClientsSelected.length; i++) {
+        var client = brandClientsSelected[i];
+        await _eventDataService.addUserToEvent(eid, client.id!, true);
+      }
       var tempDate = startDate.add(Duration(days: 1));
       var weekDay = tempDate.weekday;
       if (_value == 1) {
         // One Week
         for (var i=0; i<6; i++) {
           if(values[weekDay-1]!) {
-            await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+            String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+            for (var i=0; i<brandClientsSelected.length; i++) {
+              var client = brandClientsSelected[i];
+              await _eventDataService.addUserToEvent(eid, client.id!, true);
+            }
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;
@@ -1575,7 +1587,11 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         // Two Weeks
         for (var i=0; i<13; i++) {
           if(values[weekDay-1]!) {
-            await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+            String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+            for (var i=0; i<brandClientsSelected.length; i++) {
+              var client = brandClientsSelected[i];
+              await _eventDataService.addUserToEvent(eid, client.id!, true);
+            }
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;
@@ -1584,7 +1600,11 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         // One Month
         for (var i=0; i<29; i++) {
           if(values[weekDay-1]!) {
-            await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+            String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+            for (var i=0; i<brandClientsSelected.length; i++) {
+              var client = brandClientsSelected[i];
+              await _eventDataService.addUserToEvent(eid, client.id!, true);
+            }
           }
           tempDate = tempDate.add(Duration(days: 1));
           weekDay = tempDate.weekday;

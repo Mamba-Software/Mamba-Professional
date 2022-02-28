@@ -423,7 +423,7 @@ class _ViewEventClientState extends State<ViewEventClient> with SingleTickerProv
                                         child: new TextField(
                                           controller: titleController,
                                           readOnly: true,
-                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                          style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
                                           decoration: InputDecoration(
                                             labelStyle: Theme.of(context).textTheme.bodyText2,
                                             hintText:AppLocalizations.of(context)!.noDescription,

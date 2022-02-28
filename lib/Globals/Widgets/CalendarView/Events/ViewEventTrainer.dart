@@ -639,7 +639,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                         child: new TextFormField(
                                           controller: titleController,
                                           validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
-                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                          style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
                                           decoration: InputDecoration(
                                               hintStyle: Theme.of(context).textTheme.caption,
                                               hintText:AppLocalizations.of(context)!.titleError,
@@ -670,7 +670,7 @@ class _ViewEventTrainerState extends State<ViewEventTrainer> with SingleTickerPr
                                         child: new TextField(
                                           controller: titleController,
                                           readOnly: true,
-                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                          style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
                                           decoration: InputDecoration(
                                             hintStyle: Theme.of(context).textTheme.caption,
                                             hintText:AppLocalizations.of(context)!.titleError,
