@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocationsSelect.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/SelectClientsEvent.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import '../../../GlobalVars.dart';
@@ -77,6 +78,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   List<Usuario> brandTrainers = [];
   List<bool> brandTrainersSelected = [];
   bool errorNoTrainerSelected = false;
+  bool errorClientsSelected = false;
+  List<Usuario> brandClientsSelected = [];
   // Form To Validate User
   final formKeyInfo = GlobalKey<FormState>();
   final formKeyTime = GlobalKey<FormState>();
@@ -898,7 +901,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           )
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
@@ -1113,6 +1116,261 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           ),
                                         ),
                                       ),
+                                      Padding(
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02, left: MediaQuery.of(context).size.width*0.03, right: MediaQuery.of(context).size.width*0.05),
+                                        child: TextButton(
+                                          onPressed: brandClientsSelected.length < members ? () async {
+                                            List<Usuario>? selectedClients = await Navigator.push(
+                                                context,
+                                                CupertinoPageRoute<List<Usuario>>(
+                                                  builder: (context) => SelectClientsEvent(
+                                                    selectedUsers: brandClientsSelected,
+                                                    maxClients: members,
+                                                  ),
+                                                )
+                                            );
+                                            if (selectedClients != null) {
+                                              setState(() {
+                                                brandClientsSelected = selectedClients;
+                                                errorClientsSelected = false;
+                                              });
+                                            }
+                                          } : null,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              Icon(Icons.person_add_alt_1, color: brandClientsSelected.length < members ? Theme.of(context).accentColor : Theme.of(context).primaryColor.withOpacity(0.2), size: MediaQuery.of(context).size.width*0.05),
+                                              SizedBox(width: 10),
+                                              Text(
+                                                AppLocalizations.of(context)!.addDesignatedClients,
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: brandClientsSelected.length != members ? Theme.of(context).accentColor : Theme.of(context).primaryColor.withOpacity(0.2)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      brandClientsSelected.length > 0 ? Column(
+                                        children: [
+                                          Padding(
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                                              child: new Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  new Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      new Text(
+                                                        AppLocalizations.of(context)!.clients,
+                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    width: MediaQuery.of(context).size.width*0.03,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        "( "+brandClientsSelected.length.toString(),
+                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                      ),
+                                                      Text(
+                                                        " / ",
+                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                      ),
+                                                      Text(
+                                                        members.toString()+" )",
+                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                      ),
+                                                    ],
+                                                  )
+                                                ],
+                                              )
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  height: MediaQuery.of(context).size.height*0.15,
+                                                  width: MediaQuery.of(context).size.width,
+                                                  child: ListView.builder(
+                                                      shrinkWrap: true,
+                                                      physics: BouncingScrollPhysics(),
+                                                      scrollDirection: Axis.horizontal,
+                                                      itemCount: brandClientsSelected.length,
+                                                      itemBuilder: (context, int index) {
+                                                        var trainer = brandClientsSelected[index];
+                                                        return GestureDetector(
+                                                          onTap: () {
+                                                            var temp = brandClientsSelected;
+                                                            temp.remove(trainer);
+                                                            setState(() {
+                                                              brandClientsSelected = temp;
+                                                            });
+                                                          },
+                                                          child: Padding(
+                                                            padding: !(index == 0 || index == brandTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                                            child: Column(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: [
+                                                                Stack(
+                                                                  alignment: Alignment.topRight,
+                                                                  children: [
+                                                                    CircularImage(
+                                                                      size: MediaQuery.of(context).size.width*0.17,
+                                                                      image: trainer.imageUrl,
+                                                                      color: Theme.of(context).primaryColor,
+                                                                      borderWidth: 1,
+                                                                    ),
+                                                                    Positioned(
+                                                                      top: 0,
+                                                                      left: MediaQuery.of(context).size.width*0.12,
+                                                                      child: CircleAvatar(
+                                                                        backgroundColor: AppColors.red,
+                                                                        radius: MediaQuery.of(context).size.width*0.025,
+                                                                        child: Icon(Icons.clear, color: AppColors.white, size: MediaQuery.of(context).size.width*0.035,),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                SizedBox(
+                                                                  height: MediaQuery.of(context).size.width*0.02,
+                                                                ),
+                                                                Container(
+                                                                  width: MediaQuery.of(context).size.width*0.2,
+                                                                  child: Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [
+                                                                      Text(
+                                                                        trainer.firstName!,
+                                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                                        textAlign: TextAlign.center,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                /*
+                                                                Container(
+                                                                  width: MediaQuery.of(context).size.width*0.2,
+                                                                  child: Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [
+                                                                      Text(
+                                                                        trainer.firstName!,
+                                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                                        textAlign: TextAlign.center,
+                                                                      ),
+                                                                      SizedBox(
+                                                                        width: MediaQuery.of(context).size.width*0.01,
+                                                                      ),
+                                                                      SizedBox(
+                                                                        width: MediaQuery.of(context).size.width*0.05,
+                                                                        child: IconButton(
+                                                                          icon: Icon(Icons.remove_circle, color: Theme.of(context).accentColor,),
+                                                                          onPressed: () {
+
+                                                                          },
+                                                                        ),
+
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+
+                                                                 */
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            /*
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              height: MediaQuery.of(context).size.height*0.18,
+                                              width: MediaQuery.of(context).size.width*0.87,
+                                              child: ListView.builder(
+                                                  shrinkWrap: true,
+                                                  physics: AlwaysScrollableScrollPhysics(),
+                                                  scrollDirection: Axis.horizontal,
+                                                  itemCount: brandTrainers!.length,
+                                                  itemBuilder: (context, int index) {
+                                                    var trainer = brandTrainers![index];
+                                                    return GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          brandTrainersSelected[index] = !brandTrainersSelected[index];
+                                                        });
+                                                      },
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            CircularImage (
+                                                              size: MediaQuery.of(context).size.width*0.2,
+                                                              image: trainer.imageUrl,
+                                                              color: Theme.of(context).primaryColor,
+                                                    borderWidth: 1,
+                                                            ),
+                                                            Row(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: [
+                                                                Text(
+                                                                  trainer.name!,
+                                                                  style: Styles.purpleTextStyle.copyWith(fontSize: 15),
+                                                                  textAlign: TextAlign.center,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: MediaQuery.of(context).size.width*0.01,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: MediaQuery.of(context).size.width*0.05,
+                                                                  child: Checkbox(
+                                                                    checkColor: Colors.white,
+                                                                    fillColor: MaterialStateProperty.resolveWith(getColor),
+                                                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                                    value: brandTrainersSelected[index],
+                                                                    shape: CircleBorder(
+                                                                        side: BorderSide.none
+                                                                    ),
+                                                                    onChanged: (bool? value) {
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                         */
+                                          ),
+                                          errorClientsSelected ? Padding(
+                                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                                            child: Center(
+                                              child: Text(
+                                                AppLocalizations.of(context)!.clientsSelectedError,
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          ) : Container(),
+                                        ],
+                                      ) : Container(),
                                     ]
                                 )
                             ),
@@ -1199,6 +1457,10 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                         if (!brandTrainersSelected.contains(true)) {
                           setState(() {
                             errorNoTrainerSelected = true;
+                          });
+                        } else if (brandClientsSelected.length > members) {
+                          setState(() {
+                            errorClientsSelected = true;
                           });
                         } else {
                           _addEvent();

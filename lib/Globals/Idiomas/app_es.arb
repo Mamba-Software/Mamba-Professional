@@ -997,8 +997,16 @@
   "@designatedTrainers":{
     "description": "addEvent text"
   },
+  "addDesignatedClients": "Añadir clientes manualmente",
+  "@addDesignatedClients":{
+    "description": "addEvent text"
+  },
   "noTrainerSelectedError": "No hay ningún entrenador asignado",
   "@noTrainerSelectedError":{
+    "description": "noTrainerSelectedError text"
+  },
+  "clientsSelectedError": "Hay más clientes que plazas disponibles",
+  "@clientsSelectedError":{
     "description": "noTrainerSelectedError text"
   },
   "totalNumberEvents": "Sesiones realizadas: {number}",

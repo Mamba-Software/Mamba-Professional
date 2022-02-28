@@ -219,7 +219,7 @@ class _HomePageState extends State<HomePage> {
             child: Text(
               text,
               style: TextStyle(
-                fontSize: 12 - deltaFontSize,
+                fontSize: 10 - deltaFontSize,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
