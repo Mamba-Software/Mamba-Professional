@@ -22,6 +22,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
+import 'TieneMarcaModals/MembershipRequests.dart';
 import 'TieneMarcaModals/SettingsBrand.dart';
 
 class TieneMarcaTrainer extends StatefulWidget {
@@ -110,23 +111,26 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                     Row(
                       children: [
                         IconButton(
-                          icon: Icon(Icons.qr_code_outlined, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,),
-                          alignment: Alignment.centerRight,
-                          padding: EdgeInsets.all(0),
-                          onPressed: () {
-                            Clipboard.setData(new ClipboardData(text: currentBrand.id)).then((_){
-                              showTopSnackBar(
-                                context,
-                                CustomSnackBar.info(
-                                  icon: Container(),
-                                  iconRotationAngle: 0,
-                                  backgroundColor: Theme.of(context).accentColor,
-                                  message: AppLocalizations.of(context)!.copyCorrectCode,
-                                  textStyle: Theme.of(context).textTheme.bodyText1!,
-                                ),
-                              );
-                            });
-                          },
+                            onPressed: () async {
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.bottomToTop,
+                                    child:  MembershipRequests(
+                                      brandId: currentBrand.id!,
+                                    ),
+                                  )
+                              ).whenComplete(() {
+                                setState(() {
+                                  isLoading = true;
+                                  initBrandHome();
+                                });
+                              });
+                            },
+                            icon: Icon(
+                              Icons.group_add,
+                              size: MediaQuery.of(context).size.width*0.06,
+                            )
                         ),
                         IconButton(
                           icon: Icon(Icons.edit, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),

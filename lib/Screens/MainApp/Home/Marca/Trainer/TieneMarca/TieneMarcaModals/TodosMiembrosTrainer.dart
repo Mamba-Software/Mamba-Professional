@@ -32,75 +32,66 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
   // Boolean isUpdated
   bool isUpdated = false;
   // Search Controller
-  var searchClientsController = TextEditingController();
-  var searchTrainersController = TextEditingController();
+  bool searchClicked = false;
+  var searchController = TextEditingController();
 
   // Members Page
+  List<Usuario> allMembers = [];
+  List<Usuario> filteredMembers = [];
   List<Usuario> allClients = [];
-  List<Usuario> filteredClients = [];
   List<Usuario> allTrainers = [];
-  List<Usuario> filteredTrainers = [];
 
   var chatUsers = [];
 
   Future<void> getAllUsers() async {
     List<Usuario> brandUsers = await _brandDataService.getBrandUsers(currentBrand.id!);
     allClients = [];
-    filteredClients = [];
     allTrainers = [];
-    filteredTrainers = [];
     for (var i=0; i< brandUsers.length; i++) {
       Usuario user = brandUsers[i];
       if (user.isTrainer!) {
-        if (user.id == currentUser.id) {
-          filteredTrainers.insert(0, user);
-        } else {
-          filteredTrainers.add(user);
-        }
         allTrainers.add(user);
       } else {
-        filteredClients.add(user);
         allClients.add(user);
       }
     }
+    // Sort Clients
+    allClients.sort((a, b) {
+      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+    });
+    // Sort Trainers
+    allTrainers.sort((a, b) {
+      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+    });
+    // Add All Members
+    allMembers.addAll(allClients);
+    allMembers.addAll(allTrainers);
+    allMembers.sort((a, b) {
+      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+    });
+    filteredMembers = allMembers;
+    // Return Future Delayed
     await Future.delayed(const Duration(milliseconds: 500));
     setState(() {
       isLoading = false;
     });
   }
 
-  void filterSearchResults(String query, bool isTrainer) {
+  void filterSearchResults(String query) {
     List<Usuario> usersFiltered = [];
-    if (isTrainer) {
-      if (query.isNotEmpty || query != "") {
-        for (var item in allTrainers) {
-          if (item.name!.toLowerCase().startsWith(query)) {
-            usersFiltered.add(item);
-          }
+    if (query.isNotEmpty || query != "") {
+      for (var item in allMembers) {
+        if (item.name!.toLowerCase().startsWith(query)) {
+          usersFiltered.add(item);
         }
-        setState(() {
-          filteredTrainers = usersFiltered;
-        });
-      } else {
-        setState(() {
-          filteredTrainers = allTrainers;
-        });
       }
+      setState(() {
+        filteredMembers = usersFiltered;
+      });
     } else {
-      if (query.isNotEmpty || query != "") {
-        for (var item in allClients) {
-          if (item.name!.toLowerCase().startsWith(query)) {
-            usersFiltered.add(item);
-          }
-        }
-        setState(() {
-          filteredClients = usersFiltered;
-        });
-      } else {
-        setState(() {
-          filteredClients = allClients;
-        });
-      }
+      setState(() {
+        filteredMembers = allMembers;
+      });
     }
   }
 
@@ -138,72 +129,36 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
-                child: IconButton(
-                    onPressed: () async {
-                      Navigator.push(
-                          context,
-                        CupertinoPageRoute<Null>(
-                          builder: (context) => MembershipRequests(
-                                brandId: currentBrand.id!,
-                              )
-                          )
-                      ).whenComplete(() {
-                        setState(() {
-                          isLoading = true;
-                        });
-                        getAllUsers();
+                child: !searchClicked ?
+                IconButton(
+                    icon: Icon(Icons.search, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).primaryColor),
+                    onPressed: () {
+                      setState(() {
+                        searchClicked = !searchClicked;
                       });
-                    },
-                    icon: Icon(
-                      Icons.group_add,
-                      size: MediaQuery.of(context).size.width*0.06,
-                    )
+                    }
+                )
+                    :
+                IconButton(
+                    icon: Icon(Icons.clear, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).primaryColor),
+                    onPressed: () {
+                      setState(() {
+                        searchClicked = !searchClicked;
+                      });
+                    }
                 ),
               )
             ],
-            bottom: TabBar(
-              indicator: UnderlineTabIndicator(
-                borderSide: BorderSide(width: 3.0, color:Theme.of(context).accentColor, ),
-              ),
-              tabs: [
-                Tab(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(AppLocalizations.of(context)!.clients, style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
-                      ],
-                    ),
-                  ),
-                ),
-                Tab(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(AppLocalizations.of(context)!.trainers, style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          backgroundColor: Colors.transparent,
-          body: TabBarView(
-              children: [
-                Column(
-                  children: [
-                    allClients.length > 1 ?
-                    Padding(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.01),
+            bottom: searchClicked ? PreferredSize(
+                preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.07,),
+                child: Container(
+                  height: MediaQuery.of(context).size.height*0.07,
+                  child: Padding(
+                      padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.04,left: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.0,),
                       child: TextField(
-                        controller: searchClientsController,
+                        controller: searchController,
                         onChanged: (value) {
-                          // Filter trainers
-                          filterSearchResults(value.toLowerCase(), false);
+                          filterSearchResults(value);
                         },
                         style: Theme.of(context).textTheme.bodyText2,
                         textAlign: TextAlign.left,
@@ -221,19 +176,60 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                           prefixIcon: Icon(
                             Icons.search,
                             color: Colors.grey,
+                            size: MediaQuery.of(context).size.width*0.06,
                           ),
                           suffixIcon: IconButton(
                             onPressed: () {
-                              searchClientsController.clear();
-                              filterSearchResults("", false);
+                              searchController.clear();
+                              filterSearchResults("");
                             },
-                            icon: Icon(Icons.clear, color: Colors.grey,),
+                            icon: Icon(Icons.delete_outline, color: Colors.grey,),
                           ),
                           contentPadding: EdgeInsets.all(0),
                         ),
                       )
-                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    filteredClients.length != 0 ?
+                  ),
+                )
+            ) : PreferredSize(
+                preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.07,),
+                child: TabBar(
+                  indicator: UnderlineTabIndicator(
+                    borderSide: BorderSide(width: 3.0, color:Theme.of(context).accentColor, ),
+                  ),
+                  tabs: [
+                    Tab(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(AppLocalizations.of(context)!.clients, style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Tab(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(AppLocalizations.of(context)!.trainers, style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+            )
+          ),
+          backgroundColor: Colors.transparent,
+          body: !searchClicked ? TabBarView(
+              children: [
+                Column(
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    allClients.length != 0 ?
                       Expanded(
                         child: Container(
                           padding: EdgeInsets.only(top: 0),
@@ -241,9 +237,9 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                               physics: BouncingScrollPhysics(),
                               shrinkWrap: true,
                               scrollDirection: Axis.vertical,
-                              itemCount: filteredClients.length,
+                              itemCount: allClients.length,
                               itemBuilder: (context, index) {
-                                Usuario user = filteredClients[index];
+                                Usuario user = allClients[index];
                                 return Padding(
                                   padding: EdgeInsets.symmetric(vertical: 0),
                                   child: ListTile(
@@ -345,51 +341,15 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                 ),
                 Column(
                   children: [
-                    allTrainers.length > 1 ?
-                    Padding(
-                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.04, bottom: MediaQuery.of(context).size.height*0.01),
-                        child: TextField(
-                          controller: searchTrainersController,
-                          onChanged: (value) {
-                            // Filter trainers
-                            filterSearchResults(value.toLowerCase(), true);
-                          },
-                          textAlign: TextAlign.left,
-                          style: Theme.of(context).textTheme.bodyText2,
-                          decoration: InputDecoration(
-                            hintStyle: Theme.of(context).textTheme.caption,
-                            hintText: AppLocalizations.of(context)!.search,
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                                borderRadius: BorderRadius.all(Radius.circular(10.0))
-                            ),
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                                borderRadius: BorderRadius.all(Radius.circular(10.0))
-                            ),
-                            prefixIcon: Icon(
-                              Icons.search,
-                              color: Colors.grey,
-                            ),
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                searchTrainersController.clear();
-                                filterSearchResults("", true);
-                              },
-                              icon: Icon(Icons.clear, color: Colors.grey,),
-                            ),
-                            contentPadding: EdgeInsets.all(0),
-                          ),
-                        )
-                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.015),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     Expanded(
                       child: Container(
                         child: ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.vertical,
-                          itemCount: filteredTrainers.length,
+                          itemCount: allTrainers.length,
                           itemBuilder: (context, index) {
-                            Usuario user = filteredTrainers[index];
+                            Usuario user = allTrainers[index];
                             return Padding(
                               padding: EdgeInsets.symmetric(vertical: 0),
                               child: ListTile(
@@ -411,11 +371,6 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                       "@${user.nick!}",
                                       style: Theme.of(context).textTheme.caption,
                                     ),
-                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                    user.id == currentBrand.adminID ? Text(
-                                      "(${AppLocalizations.of(context)!.owner})",
-                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(fontStyle: FontStyle.italic, fontSize: 10),
-                                    ) : Container(),
                                   ],
                                 ),
                                 trailing: user.id! == currentUser.id ? IconButton(
@@ -480,7 +435,101 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                   ],
                 ),
               ],
-            ),
+            ) : Column(
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                Expanded(
+                  child: Container(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: filteredMembers.length,
+                        itemBuilder: (context, index) {
+                          Usuario user = filteredMembers[index];
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 0),
+                            child: ListTile(
+                              leading: CircularImage(
+                                size: MediaQuery.of(context).size.width*0.15,
+                                image: user.imageUrl,
+                                color: Theme.of(context).primaryColor,
+                                borderWidth: 1.0,
+                              ),
+                              title: Text(
+                                getUsersFullName(user),
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.left,
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "@${user.nick!}",
+                                    style: Theme.of(context).textTheme.caption,
+                                  ),
+                                ],
+                              ),
+                              trailing: user.id! == currentUser.id ? IconButton(
+                                icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+                                alignment: Alignment.centerRight,
+                                padding: EdgeInsets.all(0),
+                                onPressed: false ? () {
+                                } : null,
+                              ) : IconButton(
+                                icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
+                                alignment: Alignment.centerRight,
+                                padding: EdgeInsets.all(0),
+                                onPressed: () async {
+                                  types.User otherUser = types.User(
+                                    firstName: user.firstName,
+                                    lastName: user.lastName,
+                                    id: user.id!, // UID from Firebase Authentication
+                                    imageUrl: user.imageUrl,
+                                  );
+                                  final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                                    "trainer" + user.id!: user.isTrainer,
+                                    "trainer" + currentUser.id!: currentUser.isTrainer,
+                                    "active" + user.id!: false,
+                                    "active" + currentUser.id!: true,
+                                  });
+
+                                  bool? deleteRoom = await Navigator.push(
+                                    context,
+                                    CupertinoPageRoute<bool>(
+                                        builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                                    room.metadata!["active" + currentUser.id!] = false;
+                                    _roomDataService.updateRoom(room.id, room.metadata!);
+                                  });
+                                  if (!deleteRoom!) {
+                                    _roomDataService.deleteRoom(room.id);
+                                  }
+                                },
+                              ),
+                              onTap: () async {
+                                var result = await Navigator.push(
+                                    context,
+                                    CupertinoPageRoute<bool?>(
+                                        builder: (context) => ProfileViewUser(
+                                          userID: user.id!,
+                                          viewOnly: false,
+                                        )
+                                    )
+                                );
+                                if (result == true) {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  getAllUsers();
+                                }
+                              },
+                            ),
+                          );
+                        }
+                    ),
+                  ),
+                ),
+              ],
+          ),
         ),
       ),
     );
