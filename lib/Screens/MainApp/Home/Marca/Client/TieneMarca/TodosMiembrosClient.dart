@@ -72,6 +72,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
       return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
     });
     filteredMembers = allMembers;
+    filteredMembers = orderClientsPrivateLast(filteredMembers);
     await Future.delayed(const Duration(milliseconds: 500));
     setState(() {
       isLoading = false;
@@ -480,84 +481,101 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                       itemCount: filteredMembers.length,
                       itemBuilder: (context, index) {
                         Usuario user = filteredMembers[index];
-                        return Padding(
-                          padding: EdgeInsets.symmetric(vertical: 0),
-                          child: ListTile(
-                            leading: CircularImage(
-                              size: MediaQuery.of(context).size.width*0.15,
-                              image: user.imageUrl,
-                              color: Theme.of(context).primaryColor,
-                              borderWidth: 1.0,
-                            ),
-                            title: Text(
-                              getUsersFullName(user),
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "@${user.nick!}",
-                                  style: Theme.of(context).textTheme.caption,
-                                ),
-                              ],
-                            ),
-                            trailing: user.id! == currentUser.id ? IconButton(
-                              icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                              alignment: Alignment.centerRight,
-                              padding: EdgeInsets.all(0),
-                              onPressed: false ? () {
-                              } : null,
-                            ) : IconButton(
-                              icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
-                              alignment: Alignment.centerRight,
-                              padding: EdgeInsets.all(0),
-                              onPressed: () async {
-                                types.User otherUser = types.User(
-                                  firstName: user.firstName,
-                                  lastName: user.lastName,
-                                  id: user.id!, // UID from Firebase Authentication
-                                  imageUrl: user.imageUrl,
-                                );
-                                final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
-                                  "trainer" + user.id!: user.isTrainer,
-                                  "trainer" + currentUser.id!: currentUser.isTrainer,
-                                  "active" + user.id!: false,
-                                  "active" + currentUser.id!: true,
-                                });
+                        if (user.isPrivate! && user.id != currentUser.id) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                            child: ListTile(
+                              leading: CircularImage(
+                                size: MediaQuery.of(context).size.width*0.15,
+                                image: user.noImageUrl,
+                                color: Theme.of(context).primaryColor,
+                                borderWidth: 1.0,
+                              ),
+                              title: Text(
+                                user.firstName!,
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor.withOpacity(0.3)),
+                                textAlign: TextAlign.left,
+                              ),
+                              trailing: Icon(Icons.visibility_off_outlined, color: Theme.of(context).primaryColor.withOpacity(0.3), size: MediaQuery.of(context).size.height*0.03,),
+                              onTap: () {
 
-                                bool? deleteRoom = await Navigator.push(
-                                  context,
-                                  CupertinoPageRoute<bool>(
-                                      builder: (context) => ChatPage(room: room)),).whenComplete(() async {
-                                  room.metadata!["active" + currentUser.id!] = false;
-                                  _roomDataService.updateRoom(room.id, room.metadata!);
-                                });
-                                if (!deleteRoom!) {
-                                  _roomDataService.deleteRoom(room.id);
-                                }
                               },
                             ),
-                            onTap: () async {
-                              var result = await Navigator.push(
-                                  context,
-                                  CupertinoPageRoute<bool?>(
-                                      builder: (context) => ProfileViewUser(
-                                        userID: user.id!,
-                                        viewOnly: false,
-                                      )
-                                  )
-                              );
-                              if (result == true) {
-                                setState(() {
-                                  isLoading = true;
-                                });
-                                getAllUsers();
-                              }
-                            },
-                          ),
-                        );
+                          );
+                        } else {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                            child: ListTile(
+                              leading: CircularImage(
+                                size: MediaQuery.of(context).size.width*0.15,
+                                image: user.imageUrl,
+                                color: Theme.of(context).primaryColor,
+                                borderWidth: 1.0,
+                              ),
+                              title: Text(
+                                getUsersFullName(user),
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.left,
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "@${user.nick!}",
+                                    style: Theme.of(context).textTheme.caption,
+                                  ),
+                                ],
+                              ),
+                              trailing: widget.viewOnly || user.id! == currentUser.id ? IconButton(
+                                icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+                                alignment: Alignment.centerRight,
+                                padding: EdgeInsets.all(0),
+                                onPressed: false ? () {
+                                } : null,
+                              ) : IconButton(
+                                icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
+                                alignment: Alignment.centerRight,
+                                padding: EdgeInsets.all(0),
+                                onPressed: () async {
+                                  types.User otherUser = types.User(
+                                    firstName: user.firstName,
+                                    lastName: user.lastName,
+                                    id: user.id!, // UID from Firebase Authentication
+                                    imageUrl: user.imageUrl,
+                                  );
+                                  final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                                    "trainer" + user.id!: user.isTrainer,
+                                    "trainer" + currentUser.id!: currentUser.isTrainer,
+                                    "active" + user.id!: false,
+                                    "active" + currentUser.id!: true,
+                                  });
+
+                                  bool? deleteRoom = await Navigator.push(
+                                    context,
+                                    CupertinoPageRoute<bool>(
+                                        builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                                    room.metadata!["active" + currentUser.id!] = false;
+                                    _roomDataService.updateRoom(room.id, room.metadata!);
+                                  });
+                                  if (!deleteRoom!) {
+                                    _roomDataService.deleteRoom(room.id);
+                                  }
+                                },
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    CupertinoPageRoute<Null>(
+                                        builder: (context) => ProfileViewUser(
+                                          userID: user.id!,
+                                          viewOnly: widget.viewOnly,
+                                        )
+                                    )
+                                );
+                              },
+                            ),
+                          );
+                        }
                       }
                   ),
                 ),
