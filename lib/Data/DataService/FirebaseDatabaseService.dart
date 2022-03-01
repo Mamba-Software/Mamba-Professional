@@ -1425,27 +1425,49 @@ class FirebaseDatabaseService {
     }
 
     // User Joins Event
-    Future<bool> addUserToEvent(String eid, String uid,) async {
+    Future<bool> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) async {
       try {
         Usuario user = await this.getUserDetails(uid);
-        await _firestore
-            .collection(events)
-            .doc(eid)
-            .collection("Users")
-            .doc(uid)
-            .set({
-          "name": user.name,
-          "firstName": user.firstName,
-          "lastName": user.lastName,
-          "nick": user.nick,
-          "imageUrl": user.imageUrl,
-          "noImageUrl": user.noImageUrl,
-          "isTrainer": user.isTrainer,
-          "isPrivate": user.isPrivate,
-          "notificationToken": user.notificationToken,
-        }).catchError((err) {
-          print(err);
-        });
+        if (invitedDirectly) {
+          await _firestore
+          .collection(events)
+          .doc(eid)
+          .collection("Users")
+          .doc(uid)
+          .set({
+            "name": user.name,
+            "firstName": user.firstName,
+            "lastName": user.lastName,
+            "nick": user.nick,
+            "imageUrl": user.imageUrl,
+            "noImageUrl": user.noImageUrl,
+            "isTrainer": user.isTrainer,
+            "isPrivate": user.isPrivate,
+            "invitedDirectly": invitedDirectly,
+            "notificationToken": user.notificationToken,
+          }).catchError((err) {
+            print(err);
+          });
+        } else {
+          await _firestore
+          .collection(events)
+          .doc(eid)
+          .collection("Users")
+          .doc(uid)
+          .set({
+            "name": user.name,
+            "firstName": user.firstName,
+            "lastName": user.lastName,
+            "nick": user.nick,
+            "imageUrl": user.imageUrl,
+            "noImageUrl": user.noImageUrl,
+            "isTrainer": user.isTrainer,
+            "isPrivate": user.isPrivate,
+            "notificationToken": user.notificationToken,
+          }).catchError((err) {
+            print(err);
+          });
+        }
         return true;
       } catch (e) {
         print(e.toString());

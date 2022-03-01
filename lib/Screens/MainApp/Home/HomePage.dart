@@ -215,11 +215,11 @@ class _HomePageState extends State<HomePage> {
           right: -15,
           child: CircleAvatar(
             backgroundColor: Theme.of(context).accentColor,
-            radius: 10,
+            radius: 8,
             child: Text(
               text,
               style: TextStyle(
-                fontSize: 12 - deltaFontSize,
+                fontSize: 10 - deltaFontSize,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
