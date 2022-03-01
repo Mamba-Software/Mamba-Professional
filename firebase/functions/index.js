@@ -1165,6 +1165,12 @@ exports.userJoinsEvent = functions
       // Get Event Data
       const eventSnapshot = await db.collection("Events").doc(eventId).get();
       const eventDoc = eventSnapshot.data();
+      // Get User Data
+      const userSnapshot = await db.collection("Users").doc(userId).get();
+      const userDoc = userSnapshot.data();
+      // Get Event User Data
+      const eventUserSnapshot = await db.collection("Events").doc(eventId).collection("Users").doc(userId).get();
+      const eventUserDoc = eventUserSnapshot.data();
       // Get Event Brands Data
       const eventBrandsSnapshot = await db.collection("Events").doc(eventId).collection("Brands").get();
       // Get Data of the Event Locations
@@ -1246,6 +1252,197 @@ exports.userJoinsEvent = functions
             "numTrainers": numTrainers,
           });
       }
+      // Send Notifications
+      if (userDoc.isTrainer == false) {
+          // Send Notification to Trainers if booked capacity == 100% or > 50%, only when Clients Join
+          if (eventDoc.maxMembers == numClients) {
+              // Event is full
+              functions.logger.log(
+                "NOTIFICATION IS FULL",
+              );
+              for (var i in eventUsersSnapshot.docs) {
+                const id = eventUsersSnapshot.docs[i].id;
+                const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+                if (eventUsersDoc.isTrainer) {
+                  const trainerSnapshot = await db.collection("Users").doc(id).get();
+                  const trainerDoc = trainerSnapshot.data();
+                  functions.logger.log(
+                      "trainerDoc",
+                      trainerDoc,
+                    );
+                  var payload = 0;
+                  let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+                  if (trainerDoc.idioma == "es") {
+                    // Date To String
+                    let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+                    // Hour and Minutes to String
+                    let eventTimeTime = eventDoc.hour+":";
+                    let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+                    eventTimeTime += minutes;
+                    // Send Payload
+                    payload = {
+                      notification: {
+                        title: "El evento "+eventDoc.title+" está totalmente reservado",
+                        body: "Se realizará el "+dateString+" a las "+eventTimeTime,
+                      },
+                      data: {
+                        route: "SplashScreen2",
+                      },
+                    };
+                  } else {
+                    // Date To String
+                    let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+                    // Hour and Minutes to String
+                    let eventTimeTime = eventDoc.hour+":";
+                    let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+                    eventTimeTime += minutes;
+                    // Send Payload
+                    payload = {
+                      notification: {
+                        title: "L'esdeveniment "+eventDoc.title+" està totalment reservat",
+                        body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
+                      },
+                      data: {
+                        route: "SplashScreen2",
+                      },
+                    };
+                  }
+                  functions.logger.log(
+                    "Payload",
+                    payload
+                  );
+                  response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+                  functions.logger.log(
+                    "Response",
+                    response
+                  );
+                }
+              }
+          } else {
+            // First one to go over 50%
+            if (numClients / eventDoc.maxMembers > 0.49 && (numClients - 1) / eventDoc.maxMembers < 0.50) {
+              // Send Over 50% Notification to All Event Trainers
+              functions.logger.log(
+                "NOTIFICATION OVER 50%",
+              );
+              for (var i in eventUsersSnapshot.docs) {
+                const id = eventUsersSnapshot.docs[i].id;
+                const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+                if (eventUsersDoc.isTrainer) {
+                    const trainerSnapshot = await db.collection("Users").doc(id).get();
+                    const trainerDoc = trainerSnapshot.data();
+                    functions.logger.log(
+                        "trainerDoc",
+                        trainerDoc,
+                      );
+                    var payload = 0;
+                    let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+                    if (trainerDoc.idioma == "es") {
+                      // Date To String
+                      let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+                      // Hour and Minutes to String
+                      let eventTimeTime = eventDoc.hour+":";
+                      let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+                      eventTimeTime += minutes;
+                      // Send Payload
+                      payload = {
+                        notification: {
+                          title: "El evento "+eventDoc.title+" ya tiene un 50% de las plazas reservadas",
+                          body: "Se realizará el "+dateString+" a las "+eventTimeTime,
+                        },
+                        data: {
+                          route: "SplashScreen2",
+                        },
+                      };
+                    } else {
+                      // Date To String
+                      let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+                      // Hour and Minutes to String
+                      let eventTimeTime = eventDoc.hour+":";
+                      let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+                      eventTimeTime += minutes;
+                      // Send Payload
+                      payload = {
+                        notification: {
+                          title: "L'esdeveniment "+eventDoc.title+" ja té un 50% de les places reservades",
+                          body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
+                        },
+                        data: {
+                          route: "SplashScreen2",
+                        },
+                      };
+                    }
+                    functions.logger.log(
+                      "Payload",
+                      payload
+                    );
+                    response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+                    functions.logger.log(
+                      "Response",
+                      response
+                    );
+                  }
+              }
+            }
+          }
+          // Send Notification to Client if added directly
+          if (eventUserDoc.invitedDirectly == true) {
+              // Invited to Event
+              functions.logger.log(
+                  "NOTIFICATION CLIENT INVITED DIRECTLY TO EVENT",
+              );
+              functions.logger.log(
+                  "userDoc",
+                  userDoc,
+              );
+              var payload = 0;
+              let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+              if (userDoc.idioma == "es") {
+               // Date To String
+               let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+               // Hour and Minutes to String
+               let eventTimeTime = eventDoc.hour+":";
+               let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+               eventTimeTime += minutes;
+               // Send Payload
+               payload = {
+                 notification: {
+                   title: "Te han añadido al evento "+eventDoc.title,
+                   body: "Se realizará el "+dateString+" a las "+eventTimeTime,
+                 },
+                 data: {
+                   route: "SplashScreen2",
+                 },
+               };
+             } else {
+               // Date To String
+               let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+               // Hour and Minutes to String
+               let eventTimeTime = eventDoc.hour+":";
+               let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+               eventTimeTime += minutes;
+               // Send Payload
+               payload = {
+                 notification: {
+                   title: "T'han afegit a l'esdeveniment "+eventDoc.title,
+                   body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
+                 },
+                 data: {
+                   route: "SplashScreen2",
+                 },
+               };
+              }
+              functions.logger.log(
+                "Payload",
+                payload
+              );
+              response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+              functions.logger.log(
+                "Response",
+                response
+              );
+          }
+        }
       return null;
     });
 

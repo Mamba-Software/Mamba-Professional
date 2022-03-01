@@ -5,10 +5,10 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
 // IS PRODUCTION?
-bool isProduction = false;
+bool isProduction = true;
 
 // App Version
-var version = "MAMBA v0.0.3";
+var version = "MAMBA v0.0.4";
 
 // Website
 var websiteES = "https://mambastyle.net/";
