@@ -281,6 +281,8 @@ exports.eventUpdatesCoverData = functions
         coverDataChange = true;
       } else if (before.duration != after.duration) {
         coverDataChange = true;
+      } else if (before.maxMembers != after.maxMembers) {
+        coverDataChange = true;
       }
       functions.logger.log(
         "COVER DATA CHANGED?",
@@ -306,6 +308,7 @@ exports.eventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
+            "maxMembers": after.maxMembers,
           });
         }
         // Update the Event Subcollection in Brands
@@ -329,6 +332,7 @@ exports.eventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
+            "maxMembers": after.maxMembers,
           });
         }
         // Update the Event Subcollection in Locations
@@ -352,6 +356,7 @@ exports.eventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
+            "maxMembers": after.maxMembers,
           });
         }
       }
@@ -1725,6 +1730,8 @@ exports.zzzzEventUpdatesCoverData = functions
         coverDataChange = true;
       } else if (before.duration != after.duration) {
         coverDataChange = true;
+      } else if (before.maxMembers != after.maxMembers) {
+        coverDataChange = true;
       }
       functions.logger.log(
         "COVER DATA CHANGED?",
@@ -1750,6 +1757,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
+            "maxMembers": after.maxMembers,
           });
         }
         // Update the Event Subcollection in Brands
@@ -1773,6 +1781,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
+            "maxMembers": after.maxMembers,
           });
         }
         // Update the Event Subcollection in Locations
@@ -1796,6 +1805,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
+            "maxMembers": after.maxMembers,
           });
         }
       }
@@ -2619,6 +2629,116 @@ exports.zzzzUserJoinsEvent = functions
           numClients += 1;
         }
       }
+      // Send Notification to Trainers if booked capacity == 100% or > 50%
+      functions.logger.log(
+        "maxMembers vs numClients",
+        eventDoc.maxMembers,
+        " VS ",
+        numClients,
+      );
+      if (eventDoc.maxMembers == numClients) {
+      // Event is full
+      // Send Full Notification to All Event Trainers
+      functions.logger.log(
+          "NOTIFICATION IS FULL",
+        );
+      } else {
+        // First one to go over 50%
+        if (numClients / eventDoc.maxMembers > 0.49) {
+            // Send Full Notification to All Event Trainers
+            functions.logger.log(
+              "NOTIFICATION OVER 50%",
+            );
+            var temp = numClients - 1;
+            if (temp / eventDoc.maxMembers < 0.50) {
+                functions.logger.log(
+                  "FIRST ONE OVER 50%",
+                );
+            }
+        }
+      }
+      /*
+      var payload = 0;
+        if (userDoc.idioma == "es") {
+          payload = {
+              notification: {
+                title: "Te has unido a "+brandDoc.name,
+                body: "Consulta el calendario para participar en tu primera sesión",
+              },
+              data: {
+                route: "SplashScreen1",
+              },
+            };
+        } else {
+          payload = {
+              notification: {
+                title: "T'has unit a "+brandDoc.name,
+                body: "Consulta el calendari per participar en la teva primera sessió",
+              },
+              data: {
+                route: "SplashScreen1",
+              },
+            };
+        }
+        functions.logger.log(
+                  "Payload",
+                  payload
+                );
+        var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+        functions.logger.log(
+                  "Response",
+                  response
+                );
+        // Send Notification To Brand Owner
+        const adminSnapshot = await db.collection("Users").doc(brandDoc.adminID).get();
+        const adminDoc = adminSnapshot.data();
+        functions.logger.log(
+              "Owner Cover Data:",
+              adminDoc.name,
+              adminDoc.nick,
+              adminDoc.imageUrl,
+              adminDoc.isTrainer,
+              adminDoc.notificationToken,
+            );
+        // Count the number of Members
+        const brandUsersSnapshot = await db.collection("Brands").doc(brandId).collection("Users").get();
+        let numberMembers = brandUsersSnapshot.size;
+        functions.logger.log(
+          "Number Members",
+          numberMembers,
+        );
+        if (adminDoc.idioma == "es") {
+          payload = {
+                notification: {
+                  title: userDoc.name+" se ha unido a "+brandDoc.name,
+                  body: "Ya sois un total de "+numberMembers.toString()+" miembros",
+                },
+                data: {
+                  route: "SplashScreen2",
+                },
+              };
+        } else {
+          payload = {
+                notification: {
+                  title: userDoc.name+" s'ha unit a "+brandDoc.name,
+                  body: "Ja sou un total de "+numberMembers.toString()+" membres",
+                },
+                data: {
+                  route: "SplashScreen2",
+                },
+          }
+        }
+        functions.logger.log(
+            "Payload",
+            payload
+          );
+        response = await admin.messaging().sendToDevice(adminDoc.notificationToken, payload);
+        functions.logger.log(
+            "Response",
+            response
+          );*/
+
+
       // Update Event Assisting Members
       await db
       .collection("7777 Events")
