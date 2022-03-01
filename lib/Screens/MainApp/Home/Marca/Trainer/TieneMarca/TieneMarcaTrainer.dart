@@ -45,9 +45,9 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
 
   final DynamicLinkParameters parameters = DynamicLinkParameters(
     // The Dynamic Link URI domain. You can view created URIs on your Firebase console
-    uriPrefix: 'https://my-awesome-app.page.link',
+    uriPrefix: 'https://mambastyleapp.page.link',
     // The deep Link passed to your application which you can use to affect change
-    link: Uri.parse('https://www.example.com/view-to-open'),
+    link: Uri.parse('https://mambastyleapp.page.link/BrandScreen?id=${currentBrand.id!}'),
     // Android application details needed for opening correct app on device/Play Store
     androidParameters: const AndroidParameters(
       packageName: "com.mamba.mambastyleapp",
@@ -133,9 +133,9 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                           padding: EdgeInsets.all(0),
                           onPressed: () async {
                             final Uri uri = await dynamicLinks.buildLink(parameters);
+                            print(uri);
 
-                            /*
-                            Clipboard.setData(new ClipboardData(text: currentBrand.id)).then((_){
+                            Clipboard.setData(new ClipboardData(text: uri.toString())).then((_){
                               showTopSnackBar(
                                 context,
                                 CustomSnackBar.info(
@@ -148,7 +148,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                               );
                             });
 
-                             */
+
                           },
                         ),
                         IconButton(
