@@ -20,6 +20,7 @@ import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarc
 import 'package:page_transition/page_transition.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'TieneMarcaModals/SettingsBrand.dart';
 
@@ -134,7 +135,10 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                           onPressed: () async {
                             final Uri uri = await dynamicLinks.buildLink(parameters);
                             print(uri);
-
+                            //await Share.share('check out my website https://example.com');
+                            await Share.share(uri.toString());
+                           // Share.share(uri.toString());
+/*
                             Clipboard.setData(new ClipboardData(text: uri.toString())).then((_){
                               showTopSnackBar(
                                 context,
@@ -146,7 +150,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                                   textStyle: Styles.whiteTextStyle,
                                 ),
                               );
-                            });
+                            });*/
 
 
                           },
