@@ -15,7 +15,7 @@ class AddressSearch extends SearchDelegate<Suggestion> {
     return [
       IconButton(
         tooltip: AppLocalizations.of(context)!.clear,
-        icon: Icon(Icons.clear),
+        icon: Icon(Icons.clear, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
         onPressed: () {
           query = '';
         },
@@ -26,7 +26,7 @@ class AddressSearch extends SearchDelegate<Suggestion> {
   Widget buildLeading(BuildContext context) {
     return IconButton(
       tooltip: AppLocalizations.of(context)!.back,
-      icon: Icon(Icons.arrow_back),
+      icon: Icon(Icons.arrow_back, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
       onPressed: () {
         close(context, Suggestion('',''));
       },
@@ -44,13 +44,13 @@ class AddressSearch extends SearchDelegate<Suggestion> {
       builder: (context, snapshot) => query == '' ?
         Container(
           padding: EdgeInsets.all(16.0),
-          child: Text(AppLocalizations.of(context)!.enterAddress),
+          child: Text(AppLocalizations.of(context)!.enterAddress, style: Theme.of(context).textTheme.caption),
         )
         : snapshot.hasData ?
         ListView.builder(
           itemCount: snapshot.data!.length,
           itemBuilder: (context, index) => ListTile(
-            title: Text((snapshot.data![index]).description),
+            title: Text((snapshot.data![index]).description, style: Theme.of(context).textTheme.bodyText2,),
             onTap: () {
               close(context, snapshot.data![index]);
             },

@@ -3,27 +3,28 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 
-import 'package:mamba_castelldefels/Data/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/FeedbackDataService.dart';
-import 'package:mamba_castelldefels/Data/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/FeedbackDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/MyCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CancelRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/ImageFullScreen.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Models/Brand.dart';
-import 'package:mamba_castelldefels/Models/Event.dart';
-import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
-import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Data/Models/GroupOfQuestions.dart';
+import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/Settings.dart';
 import 'package:page_transition/page_transition.dart';
@@ -251,7 +252,7 @@ class _PerfilClientState extends State<PerfilClient> {
                 children: [
                   Flexible(
                     child: Text(AppLocalizations.of(context)!.toDo,
-                        style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 8), textAlign: TextAlign.left),
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01,),
                   Icon(
@@ -289,7 +290,7 @@ class _PerfilClientState extends State<PerfilClient> {
                 children: [
                   Flexible(
                     child: Text(AppLocalizations.of(context)!.doing,
-                        style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 8), textAlign: TextAlign.left),
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01,),
                   Icon(
@@ -326,7 +327,7 @@ class _PerfilClientState extends State<PerfilClient> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(AppLocalizations.of(context)!.finished,
-                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 8), textAlign: TextAlign.left),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01,),
                   Icon(
                     Icons.done_outline_outlined,
@@ -426,19 +427,19 @@ class _PerfilClientState extends State<PerfilClient> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              height: MediaQuery.of(context).size.height*0.3,
+              height: MediaQuery.of(context).size.height*0.4,
               child: Stack(
                   alignment: Alignment.topCenter,
                   fit: StackFit.expand,
                   children: <Widget>[
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.13,
+                      bottom: MediaQuery.of(context).size.height*0.22,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.70,
                       child: alreadyAnswered ?
                       IconButton(
-                        icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
+                        icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
                         alignment: Alignment.center,
                         onPressed: () {
                           Navigator.push(
@@ -478,23 +479,12 @@ class _PerfilClientState extends State<PerfilClient> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.12,
-                      bottom: 0,
-                      left: 0,
-                      right: MediaQuery.of(context).size.width*0.70,
-                      child: Text(
-                        AppLocalizations.of(context)!.feedback,
-                        style: Styles.purpleTextStyle.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.13,
+                      bottom: MediaQuery.of(context).size.height*0.22,
                       left: MediaQuery.of(context).size.width*0.70,
                       right: 0,
                       child: IconButton(
-                        icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
+                        icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -512,18 +502,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.12,
-                      bottom: 0,
-                      left: MediaQuery.of(context).size.width*0.70,
-                      right: 0,
-                      child: Text(
-                        AppLocalizations.of(context)!.settings,
-                        style: Styles.purpleTextStyle.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Positioned(
-                      top: MediaQuery.of(context).size.height*0.09,
+                      top: MediaQuery.of(context).size.height*0.2,
                       bottom: 0,
                       left: 0,
                       right: 0,
@@ -561,23 +540,28 @@ class _PerfilClientState extends State<PerfilClient> {
                         ),
                       ),
                     ),
+                    Positioned(
+                      top: 0,
+                      bottom: MediaQuery.of(context).size.height*0.1,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                                child: Text(
+                                    "${currentUser.name!}",
+                                    style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center
+                                )
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ]
-              ),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.03),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                      child: Text(
-                          "${currentUser.name!}",
-                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 24, fontFamily: "Helvetica"),
-                          textAlign: TextAlign.center
-                      )
-                  ),
-                ],
               ),
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -595,7 +579,7 @@ class _PerfilClientState extends State<PerfilClient> {
                     width: MediaQuery.of(context).size.width * 0.81,
                     height: MediaQuery.of(context).size.height * 0.10,
                     decoration: new BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       //border: Border.all(color: Theme.of(context).primaryColor, width: 1),
                       borderRadius: new BorderRadius.all(
                         const Radius.circular(10.0),
@@ -613,12 +597,12 @@ class _PerfilClientState extends State<PerfilClient> {
                             children: <Widget>[
                               Text(
                                 totalEvents.toString(),
-                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
                               ),
                               SizedBox(height: 2),
                               Text(
                                 AppLocalizations.of(context)!.allEvents,
-                                style: Styles.purpleTextStyle.copyWith(fontSize: 12),
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -638,12 +622,12 @@ class _PerfilClientState extends State<PerfilClient> {
                             children: <Widget>[
                               Text(
                                 thisMonthEvents.toString(),
-                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
                               ),
                               SizedBox(height: 2),
                               Text(
                                 AppLocalizations.of(context)!.monthEvents,
-                                style: Styles.purpleTextStyle.copyWith(fontSize: 12),
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -666,17 +650,17 @@ class _PerfilClientState extends State<PerfilClient> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 20,), textAlign: TextAlign.start),
+                        Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start),
                         todayEvents.length > 1 ? Row(
                           children: [
-                            Text(todayEvents.length.toString(), style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 16, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
+                            Text(todayEvents.length.toString(), style: Theme.of(context).textTheme.caption, textAlign: TextAlign.start),
                             SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                            Text(AppLocalizations.of(context)!.events, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 16, fontWeight: FontWeight.w400), textAlign: TextAlign.start),
+                            Text(AppLocalizations.of(context)!.events, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.start),
                             SizedBox(width: MediaQuery.of(context).size.width*0.01),
                             Icon(
                               Icons.swipe,
-                              color: Colors.black,
-                              size: 20,
+                              color: AppColors.grey,
+                              size: MediaQuery.of(context).size.width*0.05,
                             ),
                           ],
                         ) : Container(),
@@ -688,6 +672,7 @@ class _PerfilClientState extends State<PerfilClient> {
                     height: MediaQuery.of(context).size.height*0.23,
                     width: MediaQuery.of(context).size.width,
                     child: ListView.builder(
+                        controller: _scrollController,
                         shrinkWrap: true,
                         physics: BouncingScrollPhysics(),
                         scrollDirection: Axis.horizontal,
@@ -709,22 +694,41 @@ class _PerfilClientState extends State<PerfilClient> {
                                 if (startDate.isBefore(DateTime.now())) {
                                   canEdit = false;
                                 }
-                                Navigator.push(
-                                    context,
-                                    PageTransition(
-                                        type: PageTransitionType.bottomToTop,
-                                        child: ViewEventClient(
-                                          eventId: event.id!,
-                                          canJoin: canEdit,
-                                          locale: Localizations.localeOf(context),
-                                        )
-                                    )
-                                ).whenComplete(() {
-                                  setState(() {
-                                    isLoading = true;
-                                    initProfileHome();
+                                if (currentUser.isTrainer!) {
+                                  Navigator.push(
+                                      context,
+                                      PageTransition(
+                                          type: PageTransitionType.bottomToTop,
+                                          child: ViewEventTrainer(
+                                            eventId: event.id!,
+                                            canEdit: canEdit,
+                                            locale: Localizations.localeOf(context),
+                                          )
+                                      )
+                                  ).whenComplete(() {
+                                    setState(() {
+                                      isLoading = true;
+                                      initProfileHome();
+                                    });
                                   });
-                                });
+                                } else {
+                                  Navigator.push(
+                                      context,
+                                      PageTransition(
+                                          type: PageTransitionType.bottomToTop,
+                                          child: ViewEventClient(
+                                            eventId: event.id!,
+                                            canJoin: true,
+                                            locale: Localizations.localeOf(context),
+                                          )
+                                      )
+                                  ).whenComplete(() {
+                                    setState(() {
+                                      isLoading = true;
+                                      initProfileHome();
+                                    });
+                                  });
+                                }
                               },
                               child: Material(
                                 elevation: 4,
@@ -788,7 +792,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                               children: [
                                                 Flexible(
                                                   child: Text(event.title!,
-                                                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 20, fontFamily: "Helvetica"), textAlign: TextAlign.left),
+                                                      style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white, fontWeight: FontWeight.w600), textAlign: TextAlign.left),
                                                 ),
                                                 SizedBox(width: MediaQuery.of(context).size.width*0.05),
                                                 buildBadge(index),
@@ -802,20 +806,20 @@ class _PerfilClientState extends State<PerfilClient> {
                                               Icon(
                                                 Icons.schedule,
                                                 color: Colors.white,
-                                                size: 20,
+                                                size: MediaQuery.of(context).size.width*0.04,
                                               ),
                                               SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                               Text(
                                                 event.hour.toString(),
-                                                style: TextStyle(color: Colors.white, fontSize: 14),
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                                               ),
                                               Text(
                                                 ":",
-                                                style: TextStyle(color: Colors.white, fontSize: 14),
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                                               ),
                                               Text(
                                                 event.minute=="0" ? "00" : event.minute.toString(),
-                                                style: TextStyle(color: Colors.white, fontSize: 14),
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                                               ),
                                               Container(
                                                   height: 16,
@@ -825,12 +829,12 @@ class _PerfilClientState extends State<PerfilClient> {
                                               Icon(
                                                 Icons.timer,
                                                 color: Colors.white,
-                                                size: 20,
+                                                size: MediaQuery.of(context).size.width*0.04,
                                               ),
                                               SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                               Text(
                                                 durationToString(event.duration!),
-                                                style: TextStyle(color: Colors.white, fontSize: 14),
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                                               ),
                                               Container(
                                                   height: 16,
@@ -845,7 +849,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                               SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                               Text(
                                                 event.numTrainers.toString(),
-                                                style: TextStyle(color: Colors.white, fontSize: 14),
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                                               ),
                                               Container(
                                                   height: 16,
@@ -860,7 +864,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                               SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                               Text(
                                                 event.numClients.toString(),
-                                                style: TextStyle(color: Colors.white, fontSize: 14),
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                                               ),
                                             ],
                                           ),
@@ -888,7 +892,7 @@ class _PerfilClientState extends State<PerfilClient> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(AppLocalizations.of(context)!.noEventsToday, style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w400, fontSize: 23,), textAlign: TextAlign.start),
+                        Text(AppLocalizations.of(context)!.noEventsToday, style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start),
                       ],
                     ),
                   ),
@@ -896,7 +900,6 @@ class _PerfilClientState extends State<PerfilClient> {
                 ],
               ),
             ),
-            Platform.isAndroid ? SizedBox(height: MediaQuery.of(context).size.height*0.01) : Container(),
             Column(
               children: [
                 GestureDetector(
@@ -939,11 +942,11 @@ class _PerfilClientState extends State<PerfilClient> {
                         children: [
                           Container(
                               width: MediaQuery.of(context).size.width * 0.09,
-                              child: Icon(Icons.add, color: Colors.white, size: 30,)
+                              child: Icon(Icons.add, color: AppColors.white, size: MediaQuery.of(context).size.height * 0.04,)
                           ),
                           Container(
                             width: MediaQuery.of(context).size.width * 0.69,
-                            child: Center(child: Text(AppLocalizations.of(context)!.planNewEvent, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w400))),
+                            child: Center(child: Text(AppLocalizations.of(context)!.planNewEvent, style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white,fontWeight: FontWeight.w400))),
                           ),
                         ],
                       ),
@@ -1025,9 +1028,9 @@ class _PerfilClientState extends State<PerfilClient> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(AppLocalizations.of(context)!.mySessions, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                          Text(AppLocalizations.of(context)!.mySessions, style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                          Text(AppLocalizations.of(context)!.myScheduleText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 14, color: Colors.grey[200])),
+                          Text(AppLocalizations.of(context)!.myScheduleText, style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.grey[200])),
                         ],
                       ),
                     ),
@@ -1096,9 +1099,9 @@ class _PerfilClientState extends State<PerfilClient> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(AppLocalizations.of(context)!.myProgress, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                          Text(AppLocalizations.of(context)!.myProgress, style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                          Text(AppLocalizations.of(context)!.myProgressText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 14, color: Colors.white.withOpacity(0.5))),
+                          Text(AppLocalizations.of(context)!.myProgressText, style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white.withOpacity(0.5))),
                         ],
                       ),
                     ),
@@ -1107,7 +1110,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.lock_outline, color: Colors.white.withOpacity(0.5), size: 50,)
+                          Icon(Icons.lock_outline, color: Colors.white.withOpacity(0.5), size: MediaQuery.of(context).size.height * 0.05,)
                         ],
                       ),
                     ),
@@ -1118,25 +1121,26 @@ class _PerfilClientState extends State<PerfilClient> {
             SizedBox(height: MediaQuery.of(context).size.height*0.04),
           ],
         ),
-      ) : SingleChildScrollView(
+      ) :
+      SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              height: MediaQuery.of(context).size.height*0.3,
+              height: MediaQuery.of(context).size.height*0.4,
               child: Stack(
                   alignment: Alignment.topCenter,
                   fit: StackFit.expand,
                   children: <Widget>[
                     Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.13,
+                      bottom: MediaQuery.of(context).size.height*0.22,
                       left: 0,
                       right: MediaQuery.of(context).size.width*0.70,
                       child: alreadyAnswered ?
                       IconButton(
-                        icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
+                        icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
                         alignment: Alignment.center,
                         onPressed: () {
                           Navigator.push(
@@ -1176,23 +1180,12 @@ class _PerfilClientState extends State<PerfilClient> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.12,
-                      bottom: 0,
-                      left: 0,
-                      right: MediaQuery.of(context).size.width*0.70,
-                      child: Text(
-                        AppLocalizations.of(context)!.feedback,
-                        style: Styles.purpleTextStyle.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Positioned(
                       top: 0,
-                      bottom: MediaQuery.of(context).size.height*0.13,
+                      bottom: MediaQuery.of(context).size.height*0.22,
                       left: MediaQuery.of(context).size.width*0.70,
                       right: 0,
                       child: IconButton(
-                        icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.05,),
+                        icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -1210,18 +1203,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height*0.12,
-                      bottom: 0,
-                      left: MediaQuery.of(context).size.width*0.70,
-                      right: 0,
-                      child: Text(
-                        AppLocalizations.of(context)!.settings,
-                        style: Styles.purpleTextStyle.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Positioned(
-                      top: MediaQuery.of(context).size.height*0.09,
+                      top: MediaQuery.of(context).size.height*0.2,
                       bottom: 0,
                       left: 0,
                       right: 0,
@@ -1259,23 +1241,28 @@ class _PerfilClientState extends State<PerfilClient> {
                         ),
                       ),
                     ),
+                    Positioned(
+                      top: 0,
+                      bottom: MediaQuery.of(context).size.height*0.1,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                                child: Text(
+                                    "${currentUser.name!}",
+                                    style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center
+                                )
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ]
-              ),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.03),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.05),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                      child: Text(
-                          "${currentUser.name!}",
-                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 24, fontFamily: "Helvetica"),
-                          textAlign: TextAlign.center
-                      )
-                  ),
-                ],
               ),
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -1293,7 +1280,7 @@ class _PerfilClientState extends State<PerfilClient> {
                     width: MediaQuery.of(context).size.width * 0.81,
                     height: MediaQuery.of(context).size.height * 0.10,
                     decoration: new BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       //border: Border.all(color: Theme.of(context).primaryColor, width: 1),
                       borderRadius: new BorderRadius.all(
                         const Radius.circular(10.0),
@@ -1311,12 +1298,12 @@ class _PerfilClientState extends State<PerfilClient> {
                             children: <Widget>[
                               Text(
                                 totalEvents.toString(),
-                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
                               ),
                               SizedBox(height: 2),
                               Text(
                                 AppLocalizations.of(context)!.allEvents,
-                                style: Styles.purpleTextStyle.copyWith(fontSize: 12),
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -1336,12 +1323,12 @@ class _PerfilClientState extends State<PerfilClient> {
                             children: <Widget>[
                               Text(
                                 thisMonthEvents.toString(),
-                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
                               ),
                               SizedBox(height: 2),
                               Text(
                                 AppLocalizations.of(context)!.monthEvents,
-                                style: Styles.purpleTextStyle.copyWith(fontSize: 12),
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -1372,9 +1359,9 @@ class _PerfilClientState extends State<PerfilClient> {
                             });
                           },
                           backgroundColor: Colors.green,
-                          icon: Icon(Icons.qr_code_outlined, size: 35,color: Colors.white,),
+                          icon: Icon(Icons.qr_code_outlined, size: MediaQuery.of(context).size.height*0.04, color: Colors.white,),
                           label: Text(AppLocalizations.of(context)!.addCode,
-                            style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                           ),
                         ),
                       )
@@ -1400,7 +1387,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                 },
                                 decoration: InputDecoration(
                                   hintText: AppLocalizations.of(context)!.codigo,
-                                  hintStyle: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
+                                  hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: codigoError ? Colors.red: Colors.green),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
                                     borderRadius: BorderRadius.circular(13.0),
@@ -1410,7 +1397,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                     borderRadius: BorderRadius.circular(13.0),
                                   ),
                                 ),
-                                style: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: codigoError ? Colors.red: Colors.green),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -1424,7 +1411,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                   heroTag: "35",
                                   child: Icon(Icons.login),
                                   backgroundColor: Colors.green,
-                                  foregroundColor: Styles.white,
+                                  foregroundColor: Colors.white,
                                   onPressed: () async {
                                     if(_codigo == null || _codigo=="") {
                                       setState(() {
@@ -1472,7 +1459,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                   heroTag: "36",
                                   child: Icon(Icons.close),
                                   backgroundColor: Colors.red,
-                                  foregroundColor: Styles.white,
+                                  foregroundColor: Colors.white,
                                   onPressed: () async {
                                     setState(() {
                                       codigoClicked = !codigoClicked;
@@ -1503,7 +1490,7 @@ class _PerfilClientState extends State<PerfilClient> {
                                       ),
                                     ),
                                     backgroundColor: Colors.orangeAccent,
-                                    foregroundColor: Styles.white,
+                                    foregroundColor: Colors.white,
                                     onPressed: false ? () {} : null
                                 ),
                               ],
@@ -1523,7 +1510,7 @@ class _PerfilClientState extends State<PerfilClient> {
                         Expanded(
                           child: Text(
                             AppLocalizations.of(context)!.findBrandClientText,
-                            style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: Theme.of(context).primaryColor), textAlign: TextAlign.left,
+                            style: Theme.of(context).textTheme.bodyText2, textAlign: TextAlign.left,
                           ),
                         ),
                       ],
@@ -1556,10 +1543,10 @@ class _PerfilClientState extends State<PerfilClient> {
                     title: Container(
                       child: RichText(
                         text: TextSpan(
-                          style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                          style: Theme.of(context).textTheme.bodyText2,
                           children: [
                             TextSpan(text: AppLocalizations.of(context)!.waitingRequestConfirmation),
-                            TextSpan(text: brandRequested!.name!, style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
+                            TextSpan(text: brandRequested!.name!, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold),),
                           ],
                         ),
                       ),
@@ -1570,7 +1557,7 @@ class _PerfilClientState extends State<PerfilClient> {
                         SizedBox(height: MediaQuery.of(context).size.height*0.01),
                         Text(
                           AppLocalizations.of(context)!.requestSent(request.dateSent!),
-                          style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                          style: Theme.of(context).textTheme.caption,
                         ),
                       ],
                     ),
@@ -1655,9 +1642,9 @@ class _PerfilClientState extends State<PerfilClient> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(AppLocalizations.of(context)!.mySessions, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                          Text(AppLocalizations.of(context)!.mySessions, style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                          Text(AppLocalizations.of(context)!.myScheduleText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 14, color: Colors.white.withOpacity(0.5))),
+                          Text(AppLocalizations.of(context)!.myScheduleText, style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white.withOpacity(0.5))),
                         ],
                       ),
                     ),
@@ -1666,7 +1653,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.lock_outline, color: Colors.white.withOpacity(0.5), size: 50,)
+                          Icon(Icons.lock_outline, color: Colors.white.withOpacity(0.5), size: MediaQuery.of(context).size.height * 0.05,)
                         ],
                       ),
                     ),
@@ -1701,7 +1688,7 @@ class _PerfilClientState extends State<PerfilClient> {
                         image: new DecorationImage(
                           fit: BoxFit.cover,
                           colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
-                          image: Image.asset(Constants.myProgressImage).image,
+                          image: myProgress!.image,
                         ),
                       ),
                       child: Center(),
@@ -1735,9 +1722,9 @@ class _PerfilClientState extends State<PerfilClient> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(AppLocalizations.of(context)!.myProgress, style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 23, fontFamily: "Helvetica"), textAlign: TextAlign.center),
+                          Text(AppLocalizations.of(context)!.myProgress, style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                          Text(AppLocalizations.of(context)!.myProgressText, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 14, color: Colors.white.withOpacity(0.5))),
+                          Text(AppLocalizations.of(context)!.myProgressText, style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white.withOpacity(0.5))),
                         ],
                       ),
                     ),
@@ -1746,7 +1733,7 @@ class _PerfilClientState extends State<PerfilClient> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.lock_outline, color: Colors.white.withOpacity(0.5), size: 50,)
+                          Icon(Icons.lock_outline, color: Colors.white.withOpacity(0.5), size: MediaQuery.of(context).size.height * 0.05,)
                         ],
                       ),
                     ),

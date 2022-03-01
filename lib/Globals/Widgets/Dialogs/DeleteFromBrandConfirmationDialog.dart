@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'package:mamba_castelldefels/Data/UserDataService.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Models/Usuario.dart';
-import '../../Styles.dart';
+import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import '../../Styles/Styles.dart';
 import '../Images/CircularImage.dart';
 
 class DeleteFromBrandConfirmationDialog extends StatefulWidget {
@@ -50,7 +50,7 @@ class _DeleteFromBrandConfirmationDialogState extends State<DeleteFromBrandConfi
           height: MediaQuery.of(context).size.height*0.3,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              color: Colors.white
+              color: Theme.of(context).scaffoldBackgroundColor,
           ),
           child: Stack(
             alignment: Alignment.center,
@@ -69,7 +69,7 @@ class _DeleteFromBrandConfirmationDialogState extends State<DeleteFromBrandConfi
           height: MediaQuery.of(context).size.height*0.3,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              color: Colors.white
+              color: Theme.of(context).scaffoldBackgroundColor,
           ),
           child: Stack(
             clipBehavior: Clip.none,
@@ -85,7 +85,7 @@ class _DeleteFromBrandConfirmationDialogState extends State<DeleteFromBrandConfi
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Flexible(
-                          child: Text(widget.text, style: Styles.purpleTextStyle.copyWith(fontSize: 16, height: 1.5), textAlign: TextAlign.center,),
+                          child: Text(widget.text, style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),textAlign: TextAlign.center,),
                         ),
                       ],
                     ),
@@ -108,9 +108,9 @@ class _DeleteFromBrandConfirmationDialogState extends State<DeleteFromBrandConfi
                           ),
                           label: Text(
                             AppLocalizations.of(context)!.delete,
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                           ),
-                          icon: Icon(Icons.delete_outline, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
+                          icon: Icon(Icons.delete_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                           onPressed: () {
                             Navigator.pop(context, true);
                           },
@@ -119,7 +119,7 @@ class _DeleteFromBrandConfirmationDialogState extends State<DeleteFromBrandConfi
                         OutlinedButton.icon(
                           style: OutlinedButton.styleFrom(
                             elevation: 4.0,
-                            backgroundColor: Colors.black,
+                            backgroundColor: Theme.of(context).primaryColor,
                             fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                             shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(
@@ -129,9 +129,9 @@ class _DeleteFromBrandConfirmationDialogState extends State<DeleteFromBrandConfi
                           ),
                           label: Text(
                             AppLocalizations.of(context)!.cancel,
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark,),
                           ),
-                          icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
+                          icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColorDark,),
                           onPressed: () {
                             Navigator.pop(context, false);
                           },
@@ -163,7 +163,7 @@ class _DeleteFromBrandConfirmationDialogState extends State<DeleteFromBrandConfi
                               Flexible(
                                 child: Text(
                                   user.name!,
-                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 23),
+                                  style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.left,
                                 ),
                               ),

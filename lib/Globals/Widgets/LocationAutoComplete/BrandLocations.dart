@@ -1,22 +1,15 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'package:mamba_castelldefels/Data/LocationDataService.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Models/Location.dart';
+import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'package:uuid/uuid.dart';
-
 import '../../GlobalVars.dart';
-import 'AddressSearch.dart';
-import 'LocationPlacesSearch.dart';
 
 class BrandLocations extends StatefulWidget {
   String brandId;
@@ -72,10 +65,13 @@ class _BrandLocationsState extends State<BrandLocations> {
       body:  isLoading ?
       Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.locations, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+          title: Text(AppLocalizations.of(context)!.locations, style: Theme.of(context).appBarTheme.titleTextStyle,),
           centerTitle: true,
-          iconTheme: IconThemeData(
-            color: Styles.accent, //change your color here
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ),
         body: LoadingViewPurple(),
@@ -83,8 +79,14 @@ class _BrandLocationsState extends State<BrandLocations> {
           :
       Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.locations, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+          title: Text(AppLocalizations.of(context)!.locations, style: Theme.of(context).appBarTheme.titleTextStyle,),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
         ),
         body: Column(
           children: [
@@ -113,10 +115,10 @@ class _BrandLocationsState extends State<BrandLocations> {
                               children: [
                                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                 ListTile(
-                                  leading: Icon(Icons.home_filled, color: Theme.of(context).accentColor, size: 25,),
+                                  leading: Icon(Icons.home_filled, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,),
                                   title: Text(
                                       location.description!,
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).accentColor)
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).accentColor)
                                   ),
                                   trailing: IconButton(
                                     onPressed: () async {
@@ -128,12 +130,12 @@ class _BrandLocationsState extends State<BrandLocations> {
                                             iconRotationAngle: 0,
                                             backgroundColor: Theme.of(context).accentColor,
                                             message: AppLocalizations.of(context)!.copyCorrectLocation,
-                                            textStyle: Styles.whiteTextStyle,
+                                            textStyle: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),
                                           ),
                                         );
                                       });
                                     },
-                                    icon: Icon(Icons.copy, color: Theme.of(context).accentColor, size: 25,),
+                                    icon: Icon(Icons.copy, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06),
                                   ),
                                   onTap: () {
 
@@ -150,7 +152,7 @@ class _BrandLocationsState extends State<BrandLocations> {
                                           Expanded(
                                             child: Text(
                                               AppLocalizations.of(context)!.myLocationsBaseLocationClientDesc,
-                                              style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                                              style: Theme.of(context).textTheme.caption,
                                               textAlign: TextAlign.left,
                                             ),
                                           ),
@@ -167,7 +169,7 @@ class _BrandLocationsState extends State<BrandLocations> {
                               leading: Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: 25,),
                               title: Text(
                                   location.description!,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 16)
+                                  style: Theme.of(context).textTheme.bodyText2,
                               ),
                               trailing: IconButton(
                                 onPressed: () async {
@@ -179,7 +181,7 @@ class _BrandLocationsState extends State<BrandLocations> {
                                         iconRotationAngle: 0,
                                         backgroundColor: Theme.of(context).accentColor,
                                         message: AppLocalizations.of(context)!.copyCorrectLocation,
-                                        textStyle: Styles.whiteTextStyle,
+                                        textStyle: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),
                                       ),
                                     );
                                   });

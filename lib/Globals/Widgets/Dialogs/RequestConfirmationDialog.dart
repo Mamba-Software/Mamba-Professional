@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'package:mamba_castelldefels/Data/UserDataService.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Models/Usuario.dart';
-import '../../Styles.dart';
+import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import '../Images/CircularImage.dart';
 
 class RequestConfirmationDialog extends StatefulWidget {
@@ -50,7 +49,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
           height: MediaQuery.of(context).size.height*0.3,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              color: Colors.white
+              color: Theme.of(context).scaffoldBackgroundColor,
           ),
           child: Stack(
             alignment: Alignment.center,
@@ -69,7 +68,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
           height: MediaQuery.of(context).size.height*0.3,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              color: Colors.white
+              color: Theme.of(context).scaffoldBackgroundColor,
           ),
           child: Stack(
             clipBehavior: Clip.none,
@@ -85,7 +84,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Flexible(
-                          child: Text(widget.text, style: Styles.purpleTextStyle.copyWith(fontSize: 16, height: 1.5), textAlign: TextAlign.center,),
+                          child: Text(widget.text, style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),textAlign: TextAlign.center,),
                         ),
                       ],
                     ),
@@ -108,9 +107,9 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                           ),
                           label: Text(
                             AppLocalizations.of(context)!.accept,
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                           ),
-                          icon: Icon(Icons.check_circle_outline, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
+                          icon: Icon(Icons.check_circle_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                           onPressed: () {
                             Navigator.pop(context, true);
                           },
@@ -129,9 +128,9 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                           ),
                           label: Text(
                             AppLocalizations.of(context)!.delete,
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                           ),
-                          icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
+                          icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06,color: AppColors.white),
                           onPressed: () {
                             Navigator.pop(context, false);
                           },
@@ -163,7 +162,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                               Flexible(
                                 child: Text(
                                   user.name!,
-                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 23),
+                                  style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.left,
                                 ),
                               ),

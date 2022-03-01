@@ -1,35 +1,30 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-import 'package:mamba_castelldefels/Data/BrandDataService.dart';
-
+import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/RoomDataService.dart';
-import 'package:mamba_castelldefels/Data/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/RoomDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/CancelRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/SendRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/ImageFullScreen.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/RectangularImage.dart';
-import 'package:mamba_castelldefels/Models/Brand.dart';
-import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
-import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
-
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/TodosMiembrosClient.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-
 
 class SinMarcaTrainer extends StatefulWidget {
   const SinMarcaTrainer({Key? key}) : super(key: key);
@@ -145,7 +140,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
             Row(
               children: [
                 IconButton(
-                  icon: Icon(Icons.qr_code_outlined, size: 35, color: !codigoClicked ? Theme.of(context).primaryColor : Colors.white,),
+                  icon: Icon(Icons.qr_code_outlined, size: MediaQuery.of(context).size.width*0.07, color: !codigoClicked ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor,),
                   onPressed: !codigoClicked ? () {
                     setState(() {
                       codigoClicked = true;
@@ -154,7 +149,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                 ),
                 SizedBox(width: MediaQuery.of(context).size.width*0.03,),
                 IconButton(
-                  icon: Icon(Icons.add_circle, size: 35, color: Theme.of(context).accentColor,),
+                  icon: Icon(Icons.add_circle, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).accentColor,),
                   onPressed: () async {
                     Navigator.push(
                         context,
@@ -198,9 +193,11 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                     _codigo = val;
                                   });
                                 },
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: codigoError ? Colors.red: Colors.green),
+                                textAlign: TextAlign.center,
                                 decoration: InputDecoration(
                                   hintText: AppLocalizations.of(context)!.codigo,
-                                  hintStyle: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
+                                  hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: codigoError ? Colors.red: Colors.green),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(color: codigoError ? Colors.red: Colors.green, width: 1.0),
                                     borderRadius: BorderRadius.circular(13.0),
@@ -210,8 +207,6 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                     borderRadius: BorderRadius.circular(13.0),
                                   ),
                                 ),
-                                style: Styles.whiteTextStyle.copyWith(fontSize: 14, color: codigoError ? Colors.red: Colors.green),
-                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),
@@ -224,7 +219,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                   heroTag: "28",
                                   child: Icon(Icons.login),
                                   backgroundColor: Colors.green,
-                                  foregroundColor: Styles.white,
+                                  foregroundColor: AppColors.white,
                                   onPressed: () async {
                                     if(_codigo == null || _codigo=="") {
                                       setState(() {
@@ -275,7 +270,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                   heroTag: "29",
                                   child: Icon(Icons.close),
                                   backgroundColor: Colors.red,
-                                  foregroundColor: Styles.white,
+                                  foregroundColor: AppColors.white,
                                   onPressed: () async {
                                     setState(() {
                                       codigoClicked = !codigoClicked;
@@ -306,7 +301,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                       ),
                                     ),
                                     backgroundColor: Colors.orangeAccent,
-                                    foregroundColor: Styles.white,
+                                    foregroundColor: AppColors.white,
                                     onPressed: false ? () {} : null
                                 ),
                               ],
@@ -362,7 +357,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                             Expanded(
                               child: Text(
                                 brand.name!,
-                                style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -370,7 +365,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                         ),
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.015),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -406,7 +401,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                         ),
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.005),
                     Row(
                       children: [
                         Container(
@@ -422,7 +417,9 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.calendar_today_outlined, size: 30, color: Theme.of(context).primaryColor),
+                                      icon: Icon(Icons.calendar_today_outlined,
+                                          size: MediaQuery.of(context).size.width*0.07,
+                                          color: Theme.of(context).primaryColor),
                                       padding: EdgeInsets.all(0),
                                       onPressed: () {
                                         Navigator.push(
@@ -440,7 +437,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                     ),
                                     Text(
                                       AppLocalizations.of(context)!.calendar,
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                      style: Theme.of(context).textTheme.bodyText2,
                                       textAlign: TextAlign.left,
                                     ),
                                   ],
@@ -449,7 +446,10 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.groups_outlined, size: 35, color: Theme.of(context).primaryColor),
+                                      icon: Icon(Icons.groups_outlined,
+                                          size: MediaQuery.of(context).size.width*0.07,
+                                          color: Theme.of(context).primaryColor
+                                      ),
                                       padding: EdgeInsets.all(0),
                                       onPressed: () {
                                         Navigator.push(
@@ -468,7 +468,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                     ),
                                     Text(
                                       AppLocalizations.of(context)!.members,
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                      style: Theme.of(context).textTheme.bodyText2,
                                       textAlign: TextAlign.left,
                                     ),
                                   ],
@@ -477,7 +477,11 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.question_answer_outlined, size: 35, color: Theme.of(context).primaryColor),
+                                      icon: Icon(
+                                          Icons.question_answer_outlined,
+                                          size: MediaQuery.of(context).size.width*0.07,
+                                          color: Theme.of(context).primaryColor
+                                      ),
                                       padding: EdgeInsets.all(0),
                                       onPressed: () async {
                                         Usuario adminUser = await _userDataService.getUserDetails(brand.adminID!);
@@ -511,7 +515,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                     ),
                                     Text(
                                       AppLocalizations.of(context)!.contact,
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 14),
+                                      style: Theme.of(context).textTheme.bodyText2,
                                       textAlign: TextAlign.left,
                                     ),
                                   ],
@@ -520,7 +524,11 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     IconButton(
-                                      icon: Icon(brandIdRequest == brand.id! ? Icons.schedule_send : Icons.send_outlined, size: 35, color: brandIdRequest == brand.id! ? Theme.of(context).accentColor : request == null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.3)),
+                                      icon: Icon(
+                                        brandIdRequest == brand.id! ? Icons.schedule_send : Icons.send_outlined,
+                                        size: MediaQuery.of(context).size.width*0.07,
+                                        color: brandIdRequest == brand.id! ? Theme.of(context).accentColor : request == null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.3)
+                                      ),
                                       padding: EdgeInsets.all(0),
                                       onPressed: request == null || brandIdRequest == brand.id! ? () async {
                                         if (brandIdRequest == brand.id!) {
@@ -565,7 +573,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                                     ),
                                     Text(
                                       brandIdRequest == brand.id! ? AppLocalizations.of(context)!.sent : AppLocalizations.of(context)!.join,
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: brandIdRequest == brand.id! ? Theme.of(context).accentColor : request == null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.3)),
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: brandIdRequest == brand.id! ? Theme.of(context).accentColor : request == null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.3)),
                                       textAlign: TextAlign.left,
                                     ),
                                   ],
@@ -585,9 +593,9 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                             child: RichText(
                               textAlign: TextAlign.start,
                               text: TextSpan(
-                                style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                style: Theme.of(context).textTheme.bodyText2,
                                 children: [
-                                  TextSpan(text: '${brand.name!} ', style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
+                                  TextSpan(text: '${brand.name!} ', style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold),),
                                   TextSpan(text: brand.description!),
                                 ],
                               ),
@@ -606,7 +614,7 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
                           Expanded(
                             child: Text(
                               AppLocalizations.of(context)!.memberSince(brand.dateJoined!),
-                              style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                              style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 10),
                               textAlign: TextAlign.left,
                             ),
                           ),
@@ -632,7 +640,11 @@ class _SinMarcaTrainerState extends State<SinMarcaTrainer> {
               Center(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.2),
-                  child: Text(AppLocalizations.of(context)!.noBrandsFound, style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080)), textAlign: TextAlign.center,),
+                  child: Text(
+                    AppLocalizations.of(context)!.noBrandsFound,
+                    style: Theme.of(context).textTheme.caption,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ],

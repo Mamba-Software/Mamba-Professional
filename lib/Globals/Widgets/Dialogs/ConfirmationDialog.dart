@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import '../../Styles/Styles.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   final String text;
@@ -17,7 +18,7 @@ class ConfirmationDialog extends StatelessWidget {
         padding: EdgeInsets.only(top: 40, bottom: 10, left: 10, right: 10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: Colors.white
+            color: Theme.of(context).scaffoldBackgroundColor,
         ),
         child: Stack(
           clipBehavior: Clip.none,
@@ -33,7 +34,10 @@ class ConfirmationDialog extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Flexible(
-                        child: Text(text, style: Styles.purpleTextStyle.copyWith(fontSize: 16, height: 1.5), textAlign: TextAlign.center,),
+                        child: Text(
+                          text,
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),
+                          textAlign: TextAlign.center,),
                       ),
                     ],
                   ),
@@ -56,9 +60,9 @@ class ConfirmationDialog extends StatelessWidget {
                         ),
                         label: Text(
                           AppLocalizations.of(context)!.confirm,
-                          style: TextStyle(color: Colors.white),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                         ),
-                        icon: Icon(Icons.check_circle_outline, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
+                        icon: Icon(Icons.check_circle_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                         onPressed: () {
                           Navigator.pop(context, true);
                         },
@@ -67,7 +71,7 @@ class ConfirmationDialog extends StatelessWidget {
                       OutlinedButton.icon(
                         style: OutlinedButton.styleFrom(
                           elevation: 4.0,
-                          backgroundColor: Colors.black,
+                          backgroundColor: Theme.of(context).primaryColor,
                           fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(
@@ -77,9 +81,9 @@ class ConfirmationDialog extends StatelessWidget {
                         ),
                         label: Text(
                           AppLocalizations.of(context)!.cancel,
-                          style: TextStyle(color: Colors.white),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark,),
                         ),
-                        icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
+                        icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColorDark,),
                         onPressed: () {
                           Navigator.pop(context, false);
                         },

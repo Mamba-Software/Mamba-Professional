@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../Styles.dart';
+import '../../Styles/Styles.dart';
 
 class InformationDialog extends StatelessWidget {
   final String text;
@@ -17,7 +17,7 @@ class InformationDialog extends StatelessWidget {
         padding: EdgeInsets.only(top: 40, bottom: 10, left: 20, right: 20),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: Colors.white
+            color: Theme.of(context).scaffoldBackgroundColor,
         ),
         child: Stack(
           clipBehavior: Clip.none,
@@ -28,10 +28,10 @@ class InformationDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Flexible(
-                  child: Text(text, style: Styles.purpleTextStyle.copyWith(fontSize: 16, height: 1.5), textAlign: TextAlign.center,),
+                  child: Text(text, style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),textAlign: TextAlign.center,),
                 ),
                 TextButton(
-                  child: Text(AppLocalizations.of(context)!.close, style: Styles.purpleTextStyle.copyWith(decoration: TextDecoration.underline), ),
+                  child: Text(AppLocalizations.of(context)!.close, style: Theme.of(context).textTheme.bodyText2?.copyWith(decoration: TextDecoration.underline), ),
                   onPressed: () {
                     Navigator.of(context).pop();
                   }

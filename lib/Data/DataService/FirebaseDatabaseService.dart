@@ -7,17 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
-import 'package:mamba_castelldefels/Models/Brand.dart';
-import 'package:mamba_castelldefels/Models/ChatUsers.dart';
-import 'package:mamba_castelldefels/Models/Conversation.dart';
-import 'package:mamba_castelldefels/Models/Event.dart';
-import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
-import 'package:mamba_castelldefels/Models/Location.dart';
-import 'package:mamba_castelldefels/Models/NotificationEvent.dart';
-import 'package:mamba_castelldefels/Models/Message.dart';
-import 'package:mamba_castelldefels/Models/Question.dart';
-import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
-import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/ChatUsers.dart';
+import 'package:mamba_castelldefels/Data/Models/Conversation.dart';
+import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Data/Models/GroupOfQuestions.dart';
+import 'package:mamba_castelldefels/Data/Models/Location.dart';
+import 'package:mamba_castelldefels/Data/Models/NotificationEvent.dart';
+import 'package:mamba_castelldefels/Data/Models/Message.dart';
+import 'package:mamba_castelldefels/Data/Models/Question.dart';
+import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:uuid/uuid.dart';
 
 // Firebase Service Class. All calls to Firebase are in this class.
@@ -34,9 +34,7 @@ class FirebaseDatabaseService {
   String brands = isProduction ? 'Brands' : '7777 Brands';
   String events = isProduction ? 'Events' : '7777 Events';
   String locations = isProduction ? 'Locations' : '7777 Locations';
-  String groupOfQuestions = isProduction
-      ? 'GroupOfQuestions'
-      : '7777 GroupOfQuestions';
+  String groupOfQuestions = isProduction ? 'GroupOfQuestions' : '7777 GroupOfQuestions';
   String questions = isProduction ? 'Questions' : '7777 Questions';
   String answers = isProduction ? 'Answers' : '7777 Answers';
   String conversations = isProduction ? 'Conversations' : '7777 Conversations';
@@ -57,11 +55,12 @@ class FirebaseDatabaseService {
   // Authentication Services
   Future<int> signIn(String email, String password) async {
     bool error = false;
-    UserCredential authResult = await _auth
-        .signInWithEmailAndPassword(email: email, password: password)
-        .catchError((value) {
+    UserCredential? authResult;
+    try {
+      authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
+    } catch (e) {
       error = true;
-    });
+    }
     if (error) return -1;
     if (authResult == null)
       return -1;
@@ -281,6 +280,23 @@ class FirebaseDatabaseService {
     }).catchError((err) {
       print(err);
     });
+  }
+
+  // Add User
+  Future<void> updateUserThemePreferences(String uid, bool? isDark) async {
+    if (isDark == null) {
+      await _firestore.collection(users).doc(uid).update({
+        "isDark": null,
+      }).catchError((err) {
+        print(err);
+      });
+    } else {
+      await _firestore.collection(users).doc(uid).update({
+        "isDark": isDark,
+      }).catchError((err) {
+        print(err);
+      });
+    }
   }
 
   // Add User Notification Token
@@ -1409,27 +1425,49 @@ class FirebaseDatabaseService {
     }
 
     // User Joins Event
-    Future<bool> addUserToEvent(String eid, String uid,) async {
+    Future<bool> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) async {
       try {
         Usuario user = await this.getUserDetails(uid);
-        await _firestore
-            .collection(events)
-            .doc(eid)
-            .collection("Users")
-            .doc(uid)
-            .set({
-          "name": user.name,
-          "firstName": user.firstName,
-          "lastName": user.lastName,
-          "nick": user.nick,
-          "imageUrl": user.imageUrl,
-          "noImageUrl": user.noImageUrl,
-          "isTrainer": user.isTrainer,
-          "isPrivate": user.isPrivate,
-          "notificationToken": user.notificationToken,
-        }).catchError((err) {
-          print(err);
-        });
+        if (invitedDirectly) {
+          await _firestore
+          .collection(events)
+          .doc(eid)
+          .collection("Users")
+          .doc(uid)
+          .set({
+            "name": user.name,
+            "firstName": user.firstName,
+            "lastName": user.lastName,
+            "nick": user.nick,
+            "imageUrl": user.imageUrl,
+            "noImageUrl": user.noImageUrl,
+            "isTrainer": user.isTrainer,
+            "isPrivate": user.isPrivate,
+            "invitedDirectly": invitedDirectly,
+            "notificationToken": user.notificationToken,
+          }).catchError((err) {
+            print(err);
+          });
+        } else {
+          await _firestore
+          .collection(events)
+          .doc(eid)
+          .collection("Users")
+          .doc(uid)
+          .set({
+            "name": user.name,
+            "firstName": user.firstName,
+            "lastName": user.lastName,
+            "nick": user.nick,
+            "imageUrl": user.imageUrl,
+            "noImageUrl": user.noImageUrl,
+            "isTrainer": user.isTrainer,
+            "isPrivate": user.isPrivate,
+            "notificationToken": user.notificationToken,
+          }).catchError((err) {
+            print(err);
+          });
+        }
         return true;
       } catch (e) {
         print(e.toString());
@@ -1644,7 +1682,7 @@ class FirebaseDatabaseService {
       var uid = Uuid().v1();
       try {
         await _firestore
-          ..collection(locations).doc(uid).set({
+          .collection(locations).doc(uid).set({
             "brandID": brandId,
             "placeId": placeId,
             "isBaseLocation": isBaseLocation,

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import '../../Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import '../Images/CircularImage.dart';
 
 class LeaveBrandConfirmationDialog extends StatefulWidget {
@@ -26,7 +26,7 @@ class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDia
         height: MediaQuery.of(context).size.height*0.3,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: Colors.white
+            color: Theme.of(context).scaffoldBackgroundColor,
         ),
         child: Stack(
           clipBehavior: Clip.none,
@@ -46,7 +46,7 @@ class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDia
                         Flexible(
                           child: Text(
                             currentBrand.name!,
-                            style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 23),
+                            style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -61,7 +61,7 @@ class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDia
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Flexible(
-                        child: Text(widget.text, style: Styles.purpleTextStyle.copyWith(fontSize: 16, height: 1.5), textAlign: TextAlign.center,),
+                        child: Text(widget.text, style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),textAlign: TextAlign.center,),
                       ),
                     ],
                   ),
@@ -84,9 +84,9 @@ class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDia
                         ),
                         label: Text(
                           AppLocalizations.of(context)!.leave,
-                          style: TextStyle(color: Colors.white),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                         ),
-                        icon: Icon(Icons.exit_to_app, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
+                        icon: Icon(Icons.exit_to_app, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                         onPressed: () {
                           Navigator.pop(context, true);
                         },
@@ -95,7 +95,7 @@ class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDia
                       OutlinedButton.icon(
                         style: OutlinedButton.styleFrom(
                           elevation: 4.0,
-                          backgroundColor: Colors.black,
+                          backgroundColor: Theme.of(context).primaryColor,
                           fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(
@@ -105,9 +105,9 @@ class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDia
                         ),
                         label: Text(
                           AppLocalizations.of(context)!.cancel,
-                          style: TextStyle(color: Colors.white),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark,),
                         ),
-                        icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.07, color: Colors.white,),
+                        icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColorDark,),
                         onPressed: () {
                           Navigator.pop(context, false);
                         },

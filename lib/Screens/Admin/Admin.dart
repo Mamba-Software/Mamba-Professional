@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:mamba_castelldefels/Data/Scripts/ScriptsService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
-import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Admin/AdminTool.dart';
 import 'package:mamba_castelldefels/Screens/Admin/AdminFeedBack.dart';
 
@@ -22,7 +22,7 @@ class _AdminState extends State<Admin> {
 
   // List strings
   List<String> Names = [
-    'Usuaris','Errors','FeedBack'
+    'Usuaris','Errors','FeedBack', 'Migration'
   ];
 
   @override
@@ -67,6 +67,8 @@ class _AdminState extends State<Admin> {
 }
 
 class EachList extends StatelessWidget{
+  // Script Service
+  final _script = ScriptsDatabaseService();
   final String name;
   final int index;
   EachList(this.name, this.index);
@@ -92,7 +94,7 @@ class EachList extends StatelessWidget{
   }
 
   returnPage(int index, BuildContext context)
-  {
+  async {
     switch(index)
     {
       case 0:
@@ -118,7 +120,10 @@ class EachList extends StatelessWidget{
             )
         );
         break;
-
+      case 3:
+        var result = await _script.correctingRooms();
+        print("RESULT: "+result.toString());
+        break;
     }
 
   }

@@ -4,26 +4,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/BrandDataService.dart';
-
-import 'package:mamba_castelldefels/Data/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
-import 'package:mamba_castelldefels/Models/Brand.dart';
-import 'package:mamba_castelldefels/Models/Event.dart';
-import 'package:mamba_castelldefels/Models/NotificationEvent.dart';
-import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Data/Models/NotificationEvent.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/MembershipRequests.dart';
-import 'package:page_transition/page_transition.dart';
 
 class Notifications extends StatefulWidget {
   const Notifications({Key? key}) : super(key: key);
@@ -150,16 +147,16 @@ class _NotificationsState extends State<Notifications> {
         title: Row(
           children: [
             SizedBox(width: MediaQuery.of(context).size.width*0.01,),
-            Text(AppLocalizations.of(context)!.notificationsBottomNav, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+            Text(AppLocalizations.of(context)!.notificationsBottomNav, style: Theme.of(context).textTheme.headline3, textAlign: TextAlign.center,),
           ],
         ),
         centerTitle: false,
         actions: [
           TextButton.icon(
-            icon: Icon(Icons.mark_email_read_outlined, color: Theme.of(context).primaryColor,),
+            icon: Icon(Icons.mark_email_read_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
             label: Text(
               AppLocalizations.of(context)!.markAsRead,
-              style: TextStyle(color: Colors.black),
+              style: Theme.of(context).textTheme.bodyText2,
             ),
             onPressed: () async {
               for (NotificationEvent notif in notificationsList) {
@@ -227,7 +224,7 @@ class _NotificationsState extends State<Notifications> {
           ),
           title: Text(
             AppLocalizations.of(context)!.wellcomeToMAMBA,
-            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,12 +232,12 @@ class _NotificationsState extends State<Notifications> {
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 AppLocalizations.of(context)!.onlyImportantNotifications,
-                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                style: Theme.of(context).textTheme.caption,                
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 time.toUpperCase(),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
               ),
             ],
           ),
@@ -264,7 +261,7 @@ class _NotificationsState extends State<Notifications> {
           ),
           title: Text(
             AppLocalizations.of(context)!.userCreatesBrandUser(brand.name!),
-            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -272,12 +269,12 @@ class _NotificationsState extends State<Notifications> {
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 AppLocalizations.of(context)!.userCreatesBrandUserSubtitle,
-                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                style: Theme.of(context).textTheme.caption,
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 time.toUpperCase(),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
               ),
             ],
           ),
@@ -300,7 +297,7 @@ class _NotificationsState extends State<Notifications> {
           ),
           title: Text(
             AppLocalizations.of(context)!.userJoinsBrandUser(brand.name!),
-            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,12 +305,12 @@ class _NotificationsState extends State<Notifications> {
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 AppLocalizations.of(context)!.userJoinsBrandSubtitleUser,
-                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                style: Theme.of(context).textTheme.caption,
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 time.toUpperCase(),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
               ),
             ],
           ),
@@ -336,7 +333,7 @@ class _NotificationsState extends State<Notifications> {
           ),
           title: Text(
             AppLocalizations.of(context)!.userJoinsBrandBrand(user.name!, brand.name!),
-            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -344,12 +341,12 @@ class _NotificationsState extends State<Notifications> {
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 AppLocalizations.of(context)!.userJoinsBrandBrandSubtitle(notification.parameters[3]),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                style: Theme.of(context).textTheme.caption,
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 time.toUpperCase(),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
               ),
             ],
           ),
@@ -372,7 +369,7 @@ class _NotificationsState extends State<Notifications> {
           ),
           title: Text(
             AppLocalizations.of(context)!.userLeavesBrandUser(brand.name!),
-            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -380,12 +377,12 @@ class _NotificationsState extends State<Notifications> {
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 AppLocalizations.of(context)!.userLeavesBrandUserSubtitle,
-                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                style: Theme.of(context).textTheme.caption,
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 time.toUpperCase(),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
               ),
             ],
           ),
@@ -408,7 +405,7 @@ class _NotificationsState extends State<Notifications> {
           ),
           title: Text(
             AppLocalizations.of(context)!.userLeavesBrandBrand(user.name!, brand.name!),
-            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -416,12 +413,12 @@ class _NotificationsState extends State<Notifications> {
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 AppLocalizations.of(context)!.userLeavesBrandBrandSubtitle(notification.parameters[3]),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                style: Theme.of(context).textTheme.caption,
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 time.toUpperCase(),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
               ),
             ],
           ),
@@ -444,7 +441,7 @@ class _NotificationsState extends State<Notifications> {
           ),
           title: Text(
             AppLocalizations.of(context)!.userSendRequestToBrandUser(brand.name!),
-            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -452,12 +449,12 @@ class _NotificationsState extends State<Notifications> {
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 AppLocalizations.of(context)!.userSendRequestToBrandUserSubtitle,
-                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                style: Theme.of(context).textTheme.caption,
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 time.toUpperCase(),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
               ),
             ],
           ),
@@ -480,7 +477,7 @@ class _NotificationsState extends State<Notifications> {
           ),
           title: Text(
             AppLocalizations.of(context)!.userSendRequestToBrandBrand(user.name!),
-            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -488,12 +485,12 @@ class _NotificationsState extends State<Notifications> {
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 AppLocalizations.of(context)!.userSendRequestToBrandBrandSubtitle(notification.parameters[3]),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                style: Theme.of(context).textTheme.caption,
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 time.toUpperCase(),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
               ),
             ],
           ),
@@ -516,7 +513,7 @@ class _NotificationsState extends State<Notifications> {
           ),
           title: Text(
             AppLocalizations.of(context)!.userCancelRequestToBrandUser(brand.name!),
-            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -524,12 +521,12 @@ class _NotificationsState extends State<Notifications> {
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 AppLocalizations.of(context)!.userCancelRequestToBrandUserSubtitle,
-                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                style: Theme.of(context).textTheme.caption,
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 time.toUpperCase(),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
               ),
             ],
           ),
@@ -552,7 +549,7 @@ class _NotificationsState extends State<Notifications> {
           ),
           title: Text(
             AppLocalizations.of(context)!.userCancelRequestToBrandBrand(user.name!),
-            style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -560,12 +557,12 @@ class _NotificationsState extends State<Notifications> {
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 AppLocalizations.of(context)!.userCancelRequestToBrandBrandSubtitle,
-                style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                style: Theme.of(context).textTheme.caption,
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 time.toUpperCase(),
-                style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
               ),
             ],
           ),
@@ -598,7 +595,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               AppLocalizations.of(context)!.userJoinEventUser(event.title!),
-              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -606,12 +603,12 @@ class _NotificationsState extends State<Notifications> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Text(
                   AppLocalizations.of(context)!.userJoinEventUserSubtitle(eventTimeDay, eventTimeTime),
-                  style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                  style: Theme.of(context).textTheme.caption,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                 ),
               ],
             ),
@@ -636,7 +633,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
                 AppLocalizations.of(context)!.userJoinEventUser(event.title!),
-              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -644,7 +641,7 @@ class _NotificationsState extends State<Notifications> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                 ),
               ],
             ),
@@ -665,20 +662,20 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               AppLocalizations.of(context)!.userJoinEventBrand(user.name!, event.title!),
-              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Text(
-                  AppLocalizations.of(context)!.userJoinEventBrandSubtitle(event.joinedMembers.length.toString(), event.maxMembers.toString() ),
-                  style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                  AppLocalizations.of(context)!.userJoinEventBrandSubtitle(event.numClients.toString(), event.maxMembers.toString() ),
+                  style: Theme.of(context).textTheme.caption,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                 ),
               ],
             ),
@@ -703,7 +700,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               AppLocalizations.of(context)!.userJoinEventBrand(user.name!, event.title!),
-              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -711,7 +708,7 @@ class _NotificationsState extends State<Notifications> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                 ),
               ],
             ),
@@ -732,7 +729,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               AppLocalizations.of(context)!.userLeavesEventUser(event.title!),
-              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -740,12 +737,12 @@ class _NotificationsState extends State<Notifications> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Text(
                   AppLocalizations.of(context)!.userLeavesEventUserSubtitle,
-                  style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                  style: Theme.of(context).textTheme.caption,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                 ),
               ],
             ),
@@ -770,7 +767,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               AppLocalizations.of(context)!.userLeavesEventUser(event.title!),
-              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -778,7 +775,7 @@ class _NotificationsState extends State<Notifications> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                 ),
               ],
             ),
@@ -799,7 +796,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               AppLocalizations.of(context)!.userLeavesEventBrand(user.name!, event.title!),
-              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -807,12 +804,12 @@ class _NotificationsState extends State<Notifications> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Text(
                   AppLocalizations.of(context)!.userLeavesEventBrandSubtitle(event.joinedMembers.length.toString(), event.maxMembers.toString() ),
-                  style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                  style: Theme.of(context).textTheme.caption,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                 ),
               ],
             ),
@@ -837,7 +834,7 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               AppLocalizations.of(context)!.userLeavesEventBrand(user.name!, event.title!),
-              style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -845,7 +842,7 @@ class _NotificationsState extends State<Notifications> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Text(
                   time.toUpperCase(),
-                  style: Styles.purpleTextStyle.copyWith(fontSize: 10, color: Theme.of(context).primaryColor),
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                 ),
               ],
             ),

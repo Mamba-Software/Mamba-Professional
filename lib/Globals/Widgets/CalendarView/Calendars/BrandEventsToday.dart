@@ -2,18 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/BrandDataService.dart';
-
-import 'package:mamba_castelldefels/Data/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Models/Brand.dart';
-import 'package:mamba_castelldefels/Models/Event.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class BrandEventsToday extends StatefulWidget {
@@ -83,19 +80,36 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
   Widget build(BuildContext context) {
     return isLoading ?
     Scaffold(
-      appBar: AppBar(
-        //elevation: 0,
-        title: Text(AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+      appBar:
+      AppBar(
+        title: Text(
+          AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))),
+          style: Theme.of(context).appBarTheme.titleTextStyle,
+          textAlign: TextAlign.center,),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: LoadingViewPurple(),
     )
         :
     Scaffold(
       appBar: AppBar(
-        //elevation: 0,
-        title: Text(AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+        title: Text(
+          AppLocalizations.of(context)!.today(toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))),
+          style: Theme.of(context).appBarTheme.titleTextStyle,
+          textAlign: TextAlign.center,),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
           stream: _eventDataService.getBrandsEventsTodayStream(_brand.id!),
@@ -158,7 +172,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Flexible(child: Text(event.title!, textAlign: TextAlign.center, style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),)),
+                                  Flexible(child: Text(event.title!, textAlign: TextAlign.center, style:Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)),
                                   SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                   Text(
                                     "-",

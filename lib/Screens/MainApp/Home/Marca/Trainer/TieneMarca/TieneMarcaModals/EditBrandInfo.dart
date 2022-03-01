@@ -4,13 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Models/Location.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 
 // Tus Datos Widget.
@@ -76,71 +77,60 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
     } else if (type == 3) {
       // No changes needed at the moment
     }
-    Widget membersPicker = CupertinoPicker(
-        scrollController: new FixedExtentScrollController(
-            initialItem: initialMembers
-        ),
-        itemExtent: 40.0,
-        backgroundColor: Colors.transparent,
-        onSelectedItemChanged: (int index) {
-          setState(() {
-            members = index+1;
-            membersController.text = "${members.toString()}";
-          });
-        },
-        children: new List<Widget>.generate(
-            membersMax, (int index) {
-          var member = index+1;
-          return new Center(
-            child: new Text(
-                "${member.toString()}"
-            ),
-          );
-        }
-        )
-    );
-    Widget workdayTimePicker = CupertinoDatePicker(
-        mode: CupertinoDatePickerMode.time,
-        initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-        minimumDate: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
-        maximumDate: DateTime(startDate.year, startDate.month, startDate.day, 23, 0),
-        use24hFormat: true,
-        minuteInterval: 30,
-        onDateTimeChanged: (val) {
-          if (isStart!) {
-            setState(() {
-              startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
-            });
-          } else {
-            setState(() {
-              endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
-            });
+    Widget workdayTimePicker = CupertinoTheme(
+      data: CupertinoThemeData(
+          textTheme: CupertinoTextThemeData(
+            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
+          )
+      ),
+      child: CupertinoDatePicker(
+          mode: CupertinoDatePickerMode.time,
+          initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
+          minimumDate: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
+          maximumDate: DateTime(startDate.year, startDate.month, startDate.day, 23, 0),
+          use24hFormat: true,
+          minuteInterval: 30,
+          onDateTimeChanged: (val) {
+            if (isStart!) {
+              setState(() {
+                startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
+              });
+            } else {
+              setState(() {
+                endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
+              });
+            }
           }
-        }
+      ),
     );
-    Widget breakTimePicker = CupertinoDatePicker(
-        mode: CupertinoDatePickerMode.time,
-        initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-        minimumDate: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
-        maximumDate: DateTime(startDate.year, startDate.month, startDate.day, 23, 0),
-        use24hFormat: true,
-        minuteInterval: 30,
-        onDateTimeChanged: (val) {
-          if (isStart!) {
-            setState(() {
-              breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
-            });
-          } else {
-            setState(() {
-              breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
-            });
+    Widget breakTimePicker = CupertinoTheme(
+      data: CupertinoThemeData(
+          textTheme: CupertinoTextThemeData(
+            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
+          )
+      ),
+      child: CupertinoDatePicker(
+          mode: CupertinoDatePickerMode.time,
+          initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
+          minimumDate: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
+          maximumDate: DateTime(startDate.year, startDate.month, startDate.day, 23, 0),
+          use24hFormat: true,
+          minuteInterval: 30,
+          onDateTimeChanged: (val) {
+            if (isStart!) {
+              setState(() {
+                breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
+              });
+            } else {
+              setState(() {
+                breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
+              });
+            }
           }
-        }
+      ),
     );
-    if (type == 2) {
-      title = AppLocalizations.of(context)!.selectMembers;
-      widgetPicker = membersPicker;
-    } else if (type == 3) {
+
+    if (type == 3) {
       title = AppLocalizations.of(context)!.selectTime;
       widgetPicker = workdayTimePicker;
     } else if (type == 4) {
@@ -167,14 +157,18 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Text(title, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
+                    Expanded(
+                        child: Text(title,
+                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,)
                     ),
                   ],
                 ),
                 Expanded(
-                    child: widgetPicker
+                  child: Padding(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
+                    child: widgetPicker,
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -183,7 +177,8 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                     Padding(
                       padding: const EdgeInsets.only(top: 0),
                       child: TextButton(
-                          child: Text(AppLocalizations.of(context)!.entendido, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                          child: Text(AppLocalizations.of(context)!.entendido,
+                              style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
                           onPressed: () {
                             Navigator.of(ctx).pop();
                           }
@@ -282,11 +277,11 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
     return isLoading ?
     Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.yourBrand, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+        title: Text(AppLocalizations.of(context)!.yourBrand, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 25,),
-          onPressed: () {
+          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+          onPressed: () async {
             Navigator.pop(context);
           },
         ),
@@ -296,14 +291,10 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
         :
     Scaffold(
       appBar: AppBar(
-        title: Column(
-          children: [
-            Text(AppLocalizations.of(context)!.yourBrand, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
-          ],
-        ),
+        title: Text(AppLocalizations.of(context)!.yourBrand, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
           onPressed: () async {
             Navigator.pop(context);
           },
@@ -324,9 +315,8 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                 children: [
                   Text(
                     AppLocalizations.of(context)!.nameBrand,
-                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   Flexible(
                     child: new TextFormField(
                       keyboardType: TextInputType.text,
@@ -337,10 +327,10 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                         });
                       },
                       validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameBrandError : null,
-                      style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                      style: Theme.of(context).textTheme.bodyText2,
                       textCapitalization: TextCapitalization.words,
                       decoration: InputDecoration(
-                        hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                        hintStyle: Theme.of(context).textTheme.caption,
                         hintText: AppLocalizations.of(context)!.nameBrandError,
                         enabledBorder: InputBorder.none,
                         errorBorder: InputBorder.none,
@@ -349,7 +339,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -357,7 +347,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.createBrandDescDescription,
-                          style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                          style: Theme.of(context).textTheme.caption,
                           textAlign: TextAlign.left,
                         ),
                       ),
@@ -366,7 +356,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   Text(
                     AppLocalizations.of(context)!.description,
-                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   Flexible(
@@ -382,8 +372,9 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                       minLines: 1,
                       maxLines: 5,
                       maxLength: 250,
+                      style: Theme.of(context).textTheme.bodyText2,
                       decoration: InputDecoration(
-                        hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                        hintStyle: Theme.of(context).textTheme.caption,
                         hintText: AppLocalizations.of(context)!.descriptionError,
                         enabledBorder: InputBorder.none,
                         errorBorder: InputBorder.none,
@@ -392,7 +383,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
                   /*
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -400,7 +391,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.maxNumberClientsError,
-                          style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                          style: Theme.of(context).textTheme.caption,
                           textAlign: TextAlign.left,
                         ),
                       ),
@@ -409,7 +400,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   Text(
                     AppLocalizations.of(context)!.maxNumberClients,
-                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   GestureDetector(
@@ -455,7 +446,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.createBrandWorkshiftDescription,
-                          style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                          style: Theme.of(context).textTheme.caption,
                           textAlign: TextAlign.left,
                         ),
                       ),
@@ -464,7 +455,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   Text(
                     AppLocalizations.of(context)!.workingHours,
-                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   Row(
@@ -483,11 +474,12 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                           ),
                           child: Text(
                             startTimeController.text,
-                            style: Styles.purpleTextStyle.copyWith(fontSize: 25),
+                            style: Theme.of(context).textTheme.headline3,
                           ),
                         ),
                       ),
-                      Text("-", style: Styles.purpleTextStyle.copyWith(fontSize: 30),),
+                      Text("-",
+                          style: Theme.of(context).textTheme.headline3),
                       TextButton(
                         onPressed: () async {
                           selectSlot(context, 3, false);
@@ -501,7 +493,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                           ),
                           child: Text(
                             endTimeController.text,
-                            style: Styles.purpleTextStyle.copyWith(fontSize: 25),
+                            style: Theme.of(context).textTheme.headline3
                           ),
                         ),
                       ),
@@ -511,19 +503,18 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                     padding: EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
                     child: Text(
                       errorTime == 1 ? AppLocalizations.of(context)!.workingHoursError : AppLocalizations.of(context)!.workingHoursError1,
-                      style: Styles.redTextStyle.copyWith(fontSize: 12),
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                       textAlign: TextAlign.center,
                     ),
                   ) : new Container(),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.05),
-
+                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.createBrandBreakDescription,
-                          style: Styles.purpleTextStyle.copyWith(color: Colors.grey, fontSize: 16),
+                          style: Theme.of(context).textTheme.caption,
                           textAlign: TextAlign.left,
                         ),
                       ),
@@ -532,14 +523,14 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   Text(
                     AppLocalizations.of(context)!.lunchBreak,
-                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.53,
+                        width: MediaQuery.of(context).size.width * 0.43,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           mainAxisSize: MainAxisSize.max,
@@ -557,11 +548,11 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                                 ),
                                 child: Text(
                                   breakStartTimeController.text,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 25, color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
+                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
                                 ),
                               ),
                             ),
-                            Text("-", style: Styles.purpleTextStyle.copyWith(fontSize: 30, color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),),
+                            Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),),
                             TextButton(
                               onPressed: _breakList.length < breakLimit ? () {
                                 selectSlot(context, 4, false);
@@ -575,7 +566,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                                 ),
                                 child: Text(
                                   breakEndTimeController.text,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 25, color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
+                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
                                 ),
                               ),
                             ),
@@ -624,7 +615,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                     padding: EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
                     child: Text(
                       AppLocalizations.of(context)!.workingHoursError1,
-                      style: Styles.redTextStyle.copyWith(fontSize: 12),
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                       textAlign: TextAlign.center,
                     ),
                   ) : new Container(),
@@ -638,7 +629,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
                             Container(
-                              width: MediaQuery.of(context).size.width * 0.53,
+                              width: MediaQuery.of(context).size.width * 0.43,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.max,
@@ -656,11 +647,11 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                                       ),
                                       child: Text(
                                         '${_breakList[index].format(context)}',
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 25, color: Colors.green),
+                                        style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),
                                       ),
                                     ),
                                   ),
-                                  Text("-", style: Styles.purpleTextStyle.copyWith(fontSize: 30, color: Colors.green),),
+                                  Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),),
                                   TextButton(
                                     onPressed: false ? () {
 
@@ -674,7 +665,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                                       ),
                                       child: Text(
                                         '${_breakList[index+1].format(context)}',
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 25, color: Colors.green),
+                                        style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),
                                       ),
                                     ),
                                   ),
@@ -707,7 +698,7 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                               ),
                             ),
                             Flexible(
-                              child: Text(AppLocalizations.of(context)!.lunchBreakAdded, style: Styles.purpleTextStyle.copyWith(fontSize: 13,fontStyle: FontStyle.italic, color: Colors.green), textAlign: TextAlign.center,),
+                              child: Text(AppLocalizations.of(context)!.lunchBreakAdded, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
                             ),
                           ],
                         );
@@ -717,14 +708,14 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
                     },
                     shrinkWrap: true,
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   _breakList.length < breakLimit ? Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.createBrandAddDescription,
-                          style: Styles.purpleTextStyle.copyWith(color: Theme.of(context).primaryColor, fontSize: 16),
+                          style: Theme.of(context).textTheme.bodyText2,
                           textAlign: TextAlign.left,
                         ),
                       ),
@@ -766,9 +757,9 @@ class _EditBrandInfoState extends State<EditBrandInfo> with SingleTickerProvider
             }
           },
           backgroundColor: Colors.green,
-          icon: Icon(Icons.save_rounded, color: Colors.white,),
+          icon: Icon(Icons.save_rounded, color: Colors.white, size: MediaQuery.of(context).size.width*0.05,),
           label: Text(AppLocalizations.of(context)!.save,
-            style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
         ),
       ) : Container(),
     );

@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:mamba_castelldefels/Data/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/ForgotPassword.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Register.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
@@ -40,7 +40,7 @@ class _LoginState extends State<Login> {
     return ScaffoldMessenger(
           key: scaffoldMessengerKey,
           child: Scaffold(
-            resizeToAvoidBottomInset: false,
+            resizeToAvoidBottomInset: true,
             backgroundColor: Theme.of(context).accentColor,
             body: Center(
               child: SingleChildScrollView(
@@ -51,9 +51,8 @@ class _LoginState extends State<Login> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        SizedBox(height: MediaQuery.of(context).size.height*0.05),
                         Container(
-                          padding: EdgeInsets.only(top: 16.0),
+                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.05),
                           width: MediaQuery.of(context).size.width*0.50,
                           child: Image.asset(Constants.logoExtended)
                         ),
@@ -67,14 +66,17 @@ class _LoginState extends State<Login> {
                               email = val;
                             });
                           },
-                          style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.w500),
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                           decoration: Styles.textFromInputDecoration.copyWith(
                               labelText: AppLocalizations.of(context)!.email,
+                              labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                              errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                               prefixIcon:  Padding(
                                 padding: EdgeInsets.all(0.0),
                                 child: Icon(
-                                    Icons.email_outlined,
-                                    color: Theme.of(context).primaryColor
+                                  Icons.email_outlined,
+                                  color: AppColors.black,
+                                  size: MediaQuery.of(context).size.width*0.06,
                                 ), // icon is 48px widget.
                               )
                           ),
@@ -87,17 +89,20 @@ class _LoginState extends State<Login> {
                                 password = val;
                               });
                             },
-                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.w500),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                             obscureText: !_passwordVisible,
                             decoration: Styles.textFromInputDecoration.copyWith(
                                 labelText: AppLocalizations.of(context)!.password,
+                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                                errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                 suffixIcon: Padding(
                                     padding: EdgeInsets.all(0.0),
                                     child: IconButton(
                                         icon: Icon(
                                           // Based on passwordVisible state choose the icon
-                                            _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                            color: Theme.of(context).primaryColor
+                                          _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                          color: AppColors.black,
+                                          size: MediaQuery.of(context).size.width*0.06,
                                         ),
                                         onPressed: () {
                                           setState(() {
@@ -110,7 +115,8 @@ class _LoginState extends State<Login> {
                                   padding: EdgeInsets.all(0.0),
                                   child: Icon(
                                     Icons.vpn_key_outlined,
-                                    color: Theme.of(context).primaryColor,
+                                    color: AppColors.black,
+                                    size: MediaQuery.of(context).size.width*0.06,
                                   ), // icon is 48px widget.
                                 )
                             )
@@ -137,7 +143,7 @@ class _LoginState extends State<Login> {
                           },
                           child: Text(
                             AppLocalizations.of(context)!.forgotPassword,
-                            style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor, fontSize: 18),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                           ),
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -152,7 +158,7 @@ class _LoginState extends State<Login> {
                             height: MediaQuery.of(context).size.height*0.06,
                             width: MediaQuery.of(context).size.width*0.50,
                             decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(10)
+                                color: AppColors.black, borderRadius: BorderRadius.circular(10)
                             ),
                             child: !isLoading ? TextButton(
                               onPressed: () async {
@@ -163,14 +169,14 @@ class _LoginState extends State<Login> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.login,
-                                style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor, fontSize: 23),
+                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white)
                               ),
                             ) : Center(
                               child: SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.06,
                                 height: MediaQuery.of(context).size.height * 0.03,
                                 child: CircularProgressIndicator(
-                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  color: AppColors.white,
                                   strokeWidth: 2.5,
                                 ),
                               ),
@@ -213,12 +219,11 @@ class _LoginState extends State<Login> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.register,
-                                style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 23),
+                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black)
                               ),
                             ),
                           ),
                         ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.05),
                       ],
                     ),
                   ),

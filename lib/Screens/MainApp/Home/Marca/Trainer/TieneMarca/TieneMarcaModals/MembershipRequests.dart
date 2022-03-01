@@ -3,15 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/BrandDataService.dart';
-
-import 'package:mamba_castelldefels/Data/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/RequestConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -56,10 +54,13 @@ class _MembershipRequestsState extends State<MembershipRequests> {
       body:  isLoading ?
         Scaffold(
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.myRequests, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+            title: Text(AppLocalizations.of(context)!.myRequests, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
-            iconTheme: IconThemeData(
-              color: Styles.accent, //change your color here
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
           ),
           body: LoadingViewPurple(),
@@ -67,8 +68,14 @@ class _MembershipRequestsState extends State<MembershipRequests> {
             :
         Scaffold(
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.myRequests, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+            title: Text(AppLocalizations.of(context)!.myRequests, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
           ),
           body: Column(
             children: [
@@ -84,7 +91,7 @@ class _MembershipRequestsState extends State<MembershipRequests> {
                             iconRotationAngle: 0,
                             backgroundColor: Theme.of(context).accentColor,
                             message: AppLocalizations.of(context)!.copyCorrectCode,
-                            textStyle: Styles.whiteTextStyle,
+                            textStyle: Theme.of(context).textTheme.bodyText1!,
                           ),
                         );
                       });
@@ -92,12 +99,13 @@ class _MembershipRequestsState extends State<MembershipRequests> {
                     leading: Icon(
                       Icons.qr_code_outlined,
                       color: Theme.of(context).accentColor,
+                      size: MediaQuery.of(context).size.width*0.06,
                     ),
                     title: Text(
                       AppLocalizations.of(context)!.copyCodeMessage,
-                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Theme.of(context).accentColor),
+                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).accentColor),
                     ),
-                    trailing: Icon(Icons.send_outlined, color: Theme.of(context).accentColor, size: 25,),
+                    trailing: Icon(Icons.send_outlined, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,),
                   ),
               ),
               Container(
@@ -137,10 +145,10 @@ class _MembershipRequestsState extends State<MembershipRequests> {
                                   title: Container(
                                     child: RichText(
                                       text: TextSpan(
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 16),
+                                        style: Theme.of(context).textTheme.bodyText2,
                                         children: [
-                                          TextSpan(text: request.name!, style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.bold),),
-                                          TextSpan(text: AppLocalizations.of(context)!.requestFromUser(type)),
+                                          TextSpan(text: request.name!, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold),),
+                                          TextSpan(text: AppLocalizations.of(context)!.requestFromUser(type), style: Theme.of(context).textTheme.bodyText2),
                                         ],
                                       ),
                                     ),
@@ -151,7 +159,7 @@ class _MembershipRequestsState extends State<MembershipRequests> {
                                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                       Text(
                                         AppLocalizations.of(context)!.requestSent(request.dateSent!),
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 12, color: Colors.grey),
+                                        style: Theme.of(context).textTheme.caption
                                       ),
                                     ],
                                   ),
@@ -189,7 +197,7 @@ class _MembershipRequestsState extends State<MembershipRequests> {
                                   child: Image.asset(Constants.emptyCalendar)
                               ),
                               SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                              Text(AppLocalizations.of(context)!.noRequestsFound, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey), textAlign: TextAlign.center,),
+                              Text(AppLocalizations.of(context)!.noRequestsFound, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
                               SizedBox(height: MediaQuery.of(context).size.height*0.12),
                             ],
                           ),

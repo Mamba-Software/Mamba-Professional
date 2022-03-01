@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:mamba_castelldefels/Data/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
-import 'package:mamba_castelldefels/Globals/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -37,15 +37,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           key: scaffoldMessengerKey,
           child: Scaffold(
             appBar: AppBar(
-              title: Text(AppLocalizations.of(context)!.resetPassword, style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(color: Colors.white),),
-              centerTitle: true,
+              title: Text(AppLocalizations.of(context)!.resetPassword, style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(color: Colors.white)),
               elevation: 0,
               iconTheme: IconThemeData(
                 color: Colors.white, //change your color here
               ),
               backgroundColor: Theme.of(context).accentColor,
               leading: IconButton(
-                icon: Icon(Icons.arrow_back, size: 25,),
+                icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width * 0.06,),
                 onPressed: () {
                   if (email.isNotEmpty) {
                     Navigator.pop(context, email.trim());
@@ -55,6 +54,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 },
               ),
             ),
+            resizeToAvoidBottomInset: true,
             backgroundColor: Theme.of(context).accentColor,
             body: SingleChildScrollView(
                 child: Form(
@@ -69,7 +69,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           children: [
                             Text(
                               AppLocalizations.of(context)!.emailError,
-                              style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold),
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                               textAlign: TextAlign.left,
                             ),
                           ],
@@ -81,13 +81,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             onChanged: (val) {
                               setState(() => email = val);
                             },
-                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w500),
-                            decoration: Styles.textFromInputDecoration.copyWith(labelText: AppLocalizations.of(context)!.email,
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                            decoration: Styles.textFromInputDecoration.copyWith(
+                                labelText: AppLocalizations.of(context)!.email,
+                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                                errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                 prefixIcon:  Padding(
                                   padding: EdgeInsets.all(0.0),
                                   child: Icon(
                                     Icons.email_outlined,
-                                    color: Theme.of(context).primaryColor,
+                                    color: AppColors.black,
                                   ), // icon is 48px widget.
                                 )
                             )
@@ -104,7 +107,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             height: MediaQuery.of(context).size.height*0.07,
                             width: MediaQuery.of(context).size.width*0.50,
                             decoration: BoxDecoration(
-                                color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.circular(10)
+                                color: AppColors.white, borderRadius: BorderRadius.circular(10)
                             ),
                             child: !isLoading ? TextButton(
                               onPressed: () async {
@@ -142,7 +145,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.recover,
-                                style: Styles.purpleTextStyle.copyWith(fontSize: 23),
+                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black),
                               ),
                             ) : Center(
                               child: SizedBox(

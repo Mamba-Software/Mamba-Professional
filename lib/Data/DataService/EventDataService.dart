@@ -1,16 +1,16 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mamba_castelldefels/Models/Brand.dart';
-import 'package:mamba_castelldefels/Models/Conversation.dart';
-import 'package:mamba_castelldefels/Models/Event.dart';
-import 'package:mamba_castelldefels/Models/GroupOfQuestions.dart';
-import 'package:mamba_castelldefels/Models/Location.dart';
-import 'package:mamba_castelldefels/Models/Message.dart';
-import 'package:mamba_castelldefels/Models/NotificationEvent.dart';
-import 'package:mamba_castelldefels/Models/Question.dart';
-import 'package:mamba_castelldefels/Models/RequestToBrand.dart';
-import 'package:mamba_castelldefels/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Conversation.dart';
+import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Data/Models/GroupOfQuestions.dart';
+import 'package:mamba_castelldefels/Data/Models/Location.dart';
+import 'package:mamba_castelldefels/Data/Models/Message.dart';
+import 'package:mamba_castelldefels/Data/Models/NotificationEvent.dart';
+import 'package:mamba_castelldefels/Data/Models/Question.dart';
+import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'FirebaseDatabaseService.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
@@ -34,7 +34,7 @@ class EventDataService {
 
   // Add Data
   Future<String> addEvent(String? brandID, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.addEvent(brandID, title, description, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);
-  Future<void> addUserToEvent(String eid, String uid,) => _firebase.addUserToEvent(eid, uid);
+  Future<void> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) => _firebase.addUserToEvent(eid, uid, invitedDirectly);
 
   // Update Data
   Future<void> updateEvent(String id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.updateEvent(id, title, description, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);

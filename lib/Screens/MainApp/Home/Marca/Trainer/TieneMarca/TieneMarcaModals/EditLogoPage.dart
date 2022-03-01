@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:mamba_castelldefels/Data/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 
 class EditLogoPage extends StatefulWidget {
   @override
@@ -106,18 +106,30 @@ class _EditLogoPageState extends State<EditLogoPage> {
                 height: MediaQuery.of(context).size.height * 0.4,
                 child: Center(
                   child: _image == null ?
-                  RawMaterialButton(
+                  OutlinedButton(
                     onPressed: getImage,
-                    child: new Icon(
-                      Icons.photo_library,
-                      color: Theme.of(context).accentColor,
-                      size: 35.0,
+                    child: Column(
+                      //mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        new Icon(
+                          Icons.photo_library_outlined,
+                          color: Theme.of(context).primaryColor,
+                          size: MediaQuery.of(context).size.width * 0.1,
+                        ),
+                      ],
                     ),
-                    shape: new CircleBorder(),
-                    elevation: 4.0,
-                    fillColor: Colors.white,
-                    padding: const EdgeInsets.all(100.0),
-                  ):
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 1.5
+                      ),
+                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                      elevation: 10,
+                      shape: CircleBorder(),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.13, right: MediaQuery.of(context).size.height * 0.13, top: MediaQuery.of(context).size.height * 0.14),
+                    ),
+                  )
+                      :
                   GestureDetector(
                     onTap: getImage,
                     child: Stack(
@@ -132,7 +144,7 @@ class _EditLogoPageState extends State<EditLogoPage> {
             ],
           ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: _image != null ? FloatingActionButton(
         heroTag: "31",
         onPressed: uploadPhoto,
         tooltip: AppLocalizations.of(context)!.save,
@@ -141,7 +153,7 @@ class _EditLogoPageState extends State<EditLogoPage> {
           Icons.check,
           color: Colors.white,
         ),
-      ),
+      ) : Container(),
     );
   }
 }
