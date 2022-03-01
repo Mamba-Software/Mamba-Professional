@@ -2613,6 +2613,9 @@ exports.zzzzUserJoinsEvent = functions
       // Get Event Data
       const eventSnapshot = await db.collection("7777 Events").doc(eventId).get();
       const eventDoc = eventSnapshot.data();
+      // Get User Data
+      const userSnapshot = await db.collection("7777 Users").doc(userId).get();
+      const userDoc = userSnapshot.data();
       // Get Event Brands Data
       const eventBrandsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Brands").get();
       // Get Data of the Event Locations
@@ -2629,116 +2632,6 @@ exports.zzzzUserJoinsEvent = functions
           numClients += 1;
         }
       }
-      // Send Notification to Trainers if booked capacity == 100% or > 50%
-      functions.logger.log(
-        "maxMembers vs numClients",
-        eventDoc.maxMembers,
-        " VS ",
-        numClients,
-      );
-      if (eventDoc.maxMembers == numClients) {
-      // Event is full
-      // Send Full Notification to All Event Trainers
-      functions.logger.log(
-          "NOTIFICATION IS FULL",
-        );
-      } else {
-        // First one to go over 50%
-        if (numClients / eventDoc.maxMembers > 0.49) {
-            // Send Full Notification to All Event Trainers
-            functions.logger.log(
-              "NOTIFICATION OVER 50%",
-            );
-            var temp = numClients - 1;
-            if (temp / eventDoc.maxMembers < 0.50) {
-                functions.logger.log(
-                  "FIRST ONE OVER 50%",
-                );
-            }
-        }
-      }
-      /*
-      var payload = 0;
-        if (userDoc.idioma == "es") {
-          payload = {
-              notification: {
-                title: "Te has unido a "+brandDoc.name,
-                body: "Consulta el calendario para participar en tu primera sesión",
-              },
-              data: {
-                route: "SplashScreen1",
-              },
-            };
-        } else {
-          payload = {
-              notification: {
-                title: "T'has unit a "+brandDoc.name,
-                body: "Consulta el calendari per participar en la teva primera sessió",
-              },
-              data: {
-                route: "SplashScreen1",
-              },
-            };
-        }
-        functions.logger.log(
-                  "Payload",
-                  payload
-                );
-        var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-        functions.logger.log(
-                  "Response",
-                  response
-                );
-        // Send Notification To Brand Owner
-        const adminSnapshot = await db.collection("Users").doc(brandDoc.adminID).get();
-        const adminDoc = adminSnapshot.data();
-        functions.logger.log(
-              "Owner Cover Data:",
-              adminDoc.name,
-              adminDoc.nick,
-              adminDoc.imageUrl,
-              adminDoc.isTrainer,
-              adminDoc.notificationToken,
-            );
-        // Count the number of Members
-        const brandUsersSnapshot = await db.collection("Brands").doc(brandId).collection("Users").get();
-        let numberMembers = brandUsersSnapshot.size;
-        functions.logger.log(
-          "Number Members",
-          numberMembers,
-        );
-        if (adminDoc.idioma == "es") {
-          payload = {
-                notification: {
-                  title: userDoc.name+" se ha unido a "+brandDoc.name,
-                  body: "Ya sois un total de "+numberMembers.toString()+" miembros",
-                },
-                data: {
-                  route: "SplashScreen2",
-                },
-              };
-        } else {
-          payload = {
-                notification: {
-                  title: userDoc.name+" s'ha unit a "+brandDoc.name,
-                  body: "Ja sou un total de "+numberMembers.toString()+" membres",
-                },
-                data: {
-                  route: "SplashScreen2",
-                },
-          }
-        }
-        functions.logger.log(
-            "Payload",
-            payload
-          );
-        response = await admin.messaging().sendToDevice(adminDoc.notificationToken, payload);
-        functions.logger.log(
-            "Response",
-            response
-          );*/
-
-
       // Update Event Assisting Members
       await db
       .collection("7777 Events")
@@ -2803,6 +2696,166 @@ exports.zzzzUserJoinsEvent = functions
             "numClients": numClients,
             "numTrainers": numTrainers,
           });
+      }
+
+      if (userDoc.isTrainer == false) {
+        // Send Notification to Trainers if booked capacity == 100% or > 50%, only when Clients Join
+        functions.logger.log(
+          "maxMembers vs numClients",
+          eventDoc.maxMembers,
+          " VS ",
+          numClients,
+        );
+        if (eventDoc.maxMembers == numClients) {
+        // Event is full
+        functions.logger.log(
+          "NOTIFICATION IS FULL",
+        );
+        for (var i in eventUsersSnapshot.docs) {
+          const id = eventUsersSnapshot.docs[i].id;
+          const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+          if (eventUsersDoc.isTrainer) {
+            const trainerSnapshot = await db.collection("7777 Users").doc(id).get();
+            const trainerDoc = trainerSnapshot.data();
+            functions.logger.log(
+                "trainerDoc",
+                trainerDoc,
+              );
+            var payload = 0;
+            if (trainerDoc.idioma == "es") {
+              payload = {
+                notification: {
+                  title: "El evento "+eventDoc.title+" está totalmente reservado",
+                  body: "Haz clic para ver quién va a asistir",
+                },
+                data: {
+                  route: "SplashScreen2",
+                },
+              };
+            } else {
+              payload = {
+                notification: {
+                  title: "L'esdeveniment "+eventDoc.title+" està totalment reservat",
+                  body: "Fes clic per veure qui assistirà",
+                },
+                data: {
+                  route: "SplashScreen2",
+                },
+              };
+            }
+            functions.logger.log(
+              "Payload",
+              payload
+            );
+            response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+            functions.logger.log(
+              "Response",
+              response
+            );
+          }
+        }
+        } else {
+          // First one to go over 50%
+          if (numClients / eventDoc.maxMembers > 0.49 && (numClients - 1) / eventDoc.maxMembers < 0.50) {
+            // Send Over 50% Notification to All Event Trainers
+            functions.logger.log(
+              "NOTIFICATION OVER 50%",
+            );
+            for (var i in eventUsersSnapshot.docs) {
+              const id = eventUsersSnapshot.docs[i].id;
+              const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+              if (eventUsersDoc.isTrainer) {
+                  const trainerSnapshot = await db.collection("7777 Users").doc(id).get();
+                  const trainerDoc = trainerSnapshot.data();
+                  functions.logger.log(
+                      "trainerDoc",
+                      trainerDoc,
+                    );
+                  var payload = 0;
+                  if (trainerDoc.idioma == "es") {
+                    payload = {
+                      notification: {
+                        title: "El evento "+eventDoc.title+" ya tiene un 50% de las plazas reservadas",
+                        body: "Haz clic para ver quién va a asistir",
+                      },
+                      data: {
+                        route: "SplashScreen2",
+                      },
+                    };
+                  } else {
+                    payload = {
+                      notification: {
+                        title: "L'esdeveniment "+eventDoc.title+" ja té un 50% de les places reservades",
+                        body: "Fes clic per veure qui assistirà",
+                      },
+                      data: {
+                        route: "SplashScreen2",
+                      },
+                    };
+                  }
+                  functions.logger.log(
+                    "Payload",
+                    payload
+                  );
+                  response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+                  functions.logger.log(
+                    "Response",
+                    response
+                  );
+                }
+            }
+          }
+        }
+        // Send Notification to Client if added directly
+        if (eventDoc.maxMembers == numClients) {
+                // Event is full
+                functions.logger.log(
+                  "NOTIFICATION IS FULL",
+                );
+                for (var i in eventUsersSnapshot.docs) {
+                  const id = eventUsersSnapshot.docs[i].id;
+                  const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+                  if (eventUsersDoc.isTrainer) {
+                    const trainerSnapshot = await db.collection("7777 Users").doc(id).get();
+                    const trainerDoc = trainerSnapshot.data();
+                    functions.logger.log(
+                        "trainerDoc",
+                        trainerDoc,
+                      );
+                    var payload = 0;
+                    if (trainerDoc.idioma == "es") {
+                      payload = {
+                        notification: {
+                          title: "El evento "+eventDoc.title+" está totalmente reservado",
+                          body: "Haz clic para ver quién va a asistir",
+                        },
+                        data: {
+                          route: "SplashScreen2",
+                        },
+                      };
+                    } else {
+                      payload = {
+                        notification: {
+                          title: "L'esdeveniment "+eventDoc.title+" està totalment reservat",
+                          body: "Fes clic per veure qui assistirà",
+                        },
+                        data: {
+                          route: "SplashScreen2",
+                        },
+                      };
+                    }
+                    functions.logger.log(
+                      "Payload",
+                      payload
+                    );
+                    response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+                    functions.logger.log(
+                      "Response",
+                      response
+                    );
+                  }
+                }
+                }
       }
       return null;
     });

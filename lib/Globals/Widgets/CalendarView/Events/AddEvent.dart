@@ -1,6 +1,7 @@
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
@@ -1560,6 +1561,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       for (var i=0; i<brandClientsSelected.length; i++) {
         var client = brandClientsSelected[i];
         await _eventDataService.addUserToEvent(eid, client.id!, true);
+        NotificationService().userJoinEvent(client.id!, currentBrand.id!, eid);
       }
     } else {
       // EVENT IS RECURRENT
@@ -1567,6 +1569,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       for (var i=0; i<brandClientsSelected.length; i++) {
         var client = brandClientsSelected[i];
         await _eventDataService.addUserToEvent(eid, client.id!, true);
+        NotificationService().userJoinEvent(client.id!, currentBrand.id!, eid);
       }
       var tempDate = startDate.add(Duration(days: 1));
       var weekDay = tempDate.weekday;
@@ -1578,6 +1581,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
             for (var i=0; i<brandClientsSelected.length; i++) {
               var client = brandClientsSelected[i];
               await _eventDataService.addUserToEvent(eid, client.id!, true);
+              NotificationService().userJoinEvent(client.id!, currentBrand.id!, eid);
             }
           }
           tempDate = tempDate.add(Duration(days: 1));
@@ -1591,6 +1595,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
             for (var i=0; i<brandClientsSelected.length; i++) {
               var client = brandClientsSelected[i];
               await _eventDataService.addUserToEvent(eid, client.id!, true);
+              NotificationService().userJoinEvent(client.id!, currentBrand.id!, eid);
             }
           }
           tempDate = tempDate.add(Duration(days: 1));
@@ -1604,6 +1609,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
             for (var i=0; i<brandClientsSelected.length; i++) {
               var client = brandClientsSelected[i];
               await _eventDataService.addUserToEvent(eid, client.id!, true);
+              NotificationService().userJoinEvent(client.id!, currentBrand.id!, eid);
             }
           }
           tempDate = tempDate.add(Duration(days: 1));
