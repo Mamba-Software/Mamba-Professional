@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -31,10 +33,15 @@ class TieneMarcaTrainer extends StatefulWidget {
   _TieneMarcaTrainerState createState() => _TieneMarcaTrainerState();
 }
 
-class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
+class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> with WidgetsBindingObserver {
   // Acceso a Base de Datos
   var _brandDataService = new BrandDataService();
   var _eventDataService = new EventDataService();
+  var _dynamicLinkUtils = new DynamicLinkUtils();
+
+  String? brandId = '';
+  late Timer  _timerLink;
+
   // Boolean isLoading
   bool isLoading = false;
   // Brand Events Today
@@ -42,32 +49,46 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
   int numberEventsFinished = 0;
   int numberEventsToDo = 0;
 
-  FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
-
-  final DynamicLinkParameters parameters = DynamicLinkParameters(
-    // The Dynamic Link URI domain. You can view created URIs on your Firebase console
-    uriPrefix: 'https://mambastyleapp.page.link',
-    // The deep Link passed to your application which you can use to affect change
-    link: Uri.parse('https://mambastyleapp.page.link/BrandScreen?id=${currentBrand.id!}'),
-    // Android application details needed for opening correct app on device/Play Store
-    androidParameters: const AndroidParameters(
-      packageName: "com.mamba.mambastyleapp",
-      minimumVersion: 1,
-    ),
-    // iOS application details needed for opening correct app on device/App Store
-    iosParameters: const IOSParameters(
-      bundleId: "com.mamba.mambastyleapp",
-      minimumVersion: '2',
-    ),
-  );
-
-
-
   @override
   void initState() {
+    WidgetsBinding.instance!.addObserver(this);
     isLoading = true;
     initBrandHome();
     super.initState();
+     initDynamicLinks();
+  }
+
+  Future<void> initDynamicLinks() async {
+     FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
+      brandId =  dynamicLinkData.link.path;
+      print("test");
+      print(dynamicLinkData.link.path);
+      print("bulbasuuur");
+    }).onError((error) {
+      print('onLink error');
+      print(error.message);
+    });
+  }
+
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      _timerLink = new Timer(
+        const Duration(milliseconds: 1000),
+            () async {
+          print("dl");
+              brandId =  await _dynamicLinkUtils.retrieveDynamicLink(context);
+        },
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    if (_timerLink != null) {
+      _timerLink.cancel();
+    }
+    super.dispose();
   }
 
   // Init for Brand Home
@@ -133,10 +154,12 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                           alignment: Alignment.centerRight,
                           padding: EdgeInsets.all(0),
                           onPressed: () async {
-                            final Uri uri = await dynamicLinks.buildLink(parameters);
-                            print(uri);
+                            print("I clicked");
+                            print(brandId);
+                            final Uri uri = await _dynamicLinkUtils.createDynamicLinkWithId(currentBrand.id!);
                             //await Share.share('check out my website https://example.com');
-                            await Share.share(uri.toString());
+                            print(uri);
+                            await Share.share(uri.toString(), subject: currentBrand.logoUrl!);
                            // Share.share(uri.toString());
 /*
                             Clipboard.setData(new ClipboardData(text: uri.toString())).then((_){
@@ -159,7 +182,9 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                           icon: Icon(Icons.edit, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
                           alignment: Alignment.centerRight,
                           padding: EdgeInsets.all(0),
-                          onPressed: () {
+                          onPressed: () async {
+                            brandId =  await _dynamicLinkUtils.retrieveDynamicLink(context);
+                            print(brandId);
                             Navigator.push(
                                 context,
                                 PageTransition(
