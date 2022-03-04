@@ -6,6 +6,7 @@ import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 
@@ -27,25 +28,12 @@ class _EditLogoPageState extends State<EditLogoPage> {
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    File? temp = await ImageUtils().pickImage();
     setState(() {
-      _image = File(image!.path);
+      _image = temp;
     });
-    retrieveLostData();
   }
-  // Retrieve lost data of Gallery if it crashes because of Android.
-  Future<void> retrieveLostData() async {
-    final LostDataResponse response =
-    await ImagePicker().retrieveLostData();
-    if (response == null) {
-      return;
-    }
-    if (response.file != null) {
-      setState(() {
-        _image = response.file as File?;
-      });
-    }
-  }
+
   // Upload Image
   Future<void> uploadPhoto() async {
     setState(() {

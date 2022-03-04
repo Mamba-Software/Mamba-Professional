@@ -134,15 +134,15 @@ class _HomePageState extends State<HomePage> {
         onTap: (index) {
           _onTappedBar(index);
         },
-        selectedItemColor: Theme.of(context).accentColor,
-        selectedLabelStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 12, color:Theme.of(context).accentColor),
+        selectedItemColor: Theme.of(context).primaryColor,
+        selectedLabelStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 12, color:Theme.of(context).primaryColor),
         selectedIconTheme: IconThemeData(
-          color: Theme.of(context).accentColor
+          color: Theme.of(context).primaryColor
         ),
-        unselectedItemColor: Colors.grey,
-        unselectedLabelStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 12, color: AppColors.grey),
+        unselectedItemColor: AppColors.grey.withOpacity(0.5),
+        unselectedLabelStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 12, color: AppColors.grey.withOpacity(0.5)),
         unselectedIconTheme: IconThemeData(
-            color: Colors.grey
+            color: AppColors.grey.withOpacity(0.5)
         ),
         showUnselectedLabels: true,
       ),

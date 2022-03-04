@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
@@ -240,24 +241,10 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    File? temp = await ImageUtils().pickImage();
     setState(() {
-      _image = File(image!.path);
+      _image = temp;
     });
-    retrieveLostData();
-  }
-  // Retrieve lost data of Gallery if it crashes becasue of Android.
-  Future<void> retrieveLostData() async {
-    final LostDataResponse response =
-    await ImagePicker().retrieveLostData();
-    if (response == null) {
-      return;
-    }
-    if (response.file != null) {
-      setState(() {
-        _image = response.file;
-      });
-    }
   }
 
   @override
