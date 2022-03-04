@@ -28,9 +28,9 @@ class ImageUtils {
     // Pick Images
     ImagePicker imagePicker = ImagePicker();
     List<XFile>? compressedImages = await imagePicker.pickMultiImage(
-      maxWidth: 500,
-      maxHeight: 700,
-      imageQuality: 50,
+      maxWidth: 600,
+      maxHeight: 800,
+      imageQuality: 75,
     );
     // Check if Lost Data in Android
     final LostDataResponse response = await ImagePicker().retrieveLostData();
