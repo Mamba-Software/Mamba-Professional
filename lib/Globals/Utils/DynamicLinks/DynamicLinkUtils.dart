@@ -35,12 +35,6 @@ class DynamicLinkUtils {
     try {
       final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
        Uri? deepLink = data?.link;
-       FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
-        Navigator.pushNamed(context, dynamicLinkData.link.path);
-      }).onError((error) {
-        print('onLink error');
-        print(error.message);
-      });
       print(deepLink);
 
       if (deepLink != null) {

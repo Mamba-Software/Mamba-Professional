@@ -33,7 +33,7 @@ class TieneMarcaTrainer extends StatefulWidget {
   _TieneMarcaTrainerState createState() => _TieneMarcaTrainerState();
 }
 
-class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> with WidgetsBindingObserver {
+class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
   // Acceso a Base de Datos
   var _brandDataService = new BrandDataService();
   var _eventDataService = new EventDataService();
@@ -51,45 +51,11 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> with WidgetsBindi
 
   @override
   void initState() {
-    WidgetsBinding.instance!.addObserver(this);
     isLoading = true;
     initBrandHome();
     super.initState();
-     initDynamicLinks();
   }
 
-  Future<void> initDynamicLinks() async {
-     FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
-      brandId =  dynamicLinkData.link.path;
-      print("test");
-      print(dynamicLinkData.link.path);
-      print("bulbasuuur");
-    }).onError((error) {
-      print('onLink error');
-      print(error.message);
-    });
-  }
-
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.resumed) {
-      _timerLink = new Timer(
-        const Duration(milliseconds: 1000),
-            () async {
-          print("dl");
-              brandId =  await _dynamicLinkUtils.retrieveDynamicLink(context);
-        },
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
-    if (_timerLink != null) {
-      _timerLink.cancel();
-    }
-    super.dispose();
-  }
 
   // Init for Brand Home
   initBrandHome() async {
@@ -143,7 +109,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> with WidgetsBindi
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Flexible(
-                      child: Text("${currentBrand.name!}",
+                      child: Text("${brandPath!}",
                           style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 25, fontFamily: "Helvetica"), textAlign: TextAlign.left
                       ),
                     ),//

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,13 @@ class _SplashScreenState extends State<SplashScreen> {
   initState() {
     super.initState();
     checkAndGetUserDetails();
+    if(brandPath == null) {
+      FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
+        brandPath = dynamicLinkData.link.path;
+      }).onError((error) {
+        // Handle errors
+      });
+    }
   }
 
   void checkAndGetUserDetails() async {
