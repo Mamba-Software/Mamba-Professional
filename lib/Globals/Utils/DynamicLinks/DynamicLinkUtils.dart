@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 //DynamicLinksUtils Class is used to administrate all the dynamic links, creations and gets
 class DynamicLinkUtils {
 
-  Future<Uri>  createDynamicLinkWithId(String id) async {
-    print("aqui");
-    print(id);
+  Future<Uri>  createDynamicLinkWithId(String id, String urlImage, String brandName) async {
+
+    print(Uri.parse('https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/brandPics%2F9d978520-be41-4d90-94df-f49db3be5eac.png?alt=media&token=94d8bcd2-ce89-4c85-a314-6ffd15fa632e'));
     FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
 
     final DynamicLinkParameters parameters = DynamicLinkParameters(
@@ -16,6 +16,7 @@ class DynamicLinkUtils {
       uriPrefix: 'https://mambastyleapp.page.link',
       // The deep Link passed to your application which you can use to affect change
       link: Uri.parse('https://mambastyleapp.page.link/?id=${id}'),
+      //link: Uri.parse('https://mambastyleapp.page.link/Share'),
       // Android application details needed for opening correct app on device/Play Store
       androidParameters: const AndroidParameters(
         packageName: "com.mamba.mambastyleapp",
@@ -26,29 +27,13 @@ class DynamicLinkUtils {
         bundleId: "com.mamba.mambastyleapp",
         minimumVersion: '1',
       ),
+      socialMetaTagParameters: SocialMetaTagParameters(
+          title: brandName,
+          description: 'Únete a mi marca en Mamba',
+          imageUrl: Uri.parse(urlImage)),
     );
 
-    return await dynamicLinks.buildLink(parameters);
-  }
-
-  Future<String?> retrieveDynamicLink(BuildContext context) async {
-    try {
-      final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
-       Uri? deepLink = data?.link;
-      print(deepLink);
-
-      if (deepLink != null) {
-        print("entra");
-        if (deepLink!.queryParameters.containsKey('id')) {
-          String? id = deepLink!.queryParameters['id'];
-          return id;
-        }
-      }
-
-    } catch (e) {
-      print(e.toString());
-    }
-
+    return (await dynamicLinks.buildShortLink(parameters)).shortUrl;
   }
 
 }

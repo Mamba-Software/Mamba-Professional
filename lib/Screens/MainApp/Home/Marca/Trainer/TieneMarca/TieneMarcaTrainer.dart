@@ -109,7 +109,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Flexible(
-                      child: Text("${brandPath!}",
+                      child: Text("${currentBrand.name!}",
                           style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 25, fontFamily: "Helvetica"), textAlign: TextAlign.left
                       ),
                     ),//
@@ -122,7 +122,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                           onPressed: () async {
                             print("I clicked");
                             print(brandId);
-                            final Uri uri = await _dynamicLinkUtils.createDynamicLinkWithId(currentBrand.id!);
+                            final Uri uri = await _dynamicLinkUtils.createDynamicLinkWithId(currentBrand.id!, currentBrand.logoUrl!, currentBrand.name!);
                             //await Share.share('check out my website https://example.com');
                             print(uri);
                             await Share.share(uri.toString(), subject: currentBrand.logoUrl!);
@@ -149,8 +149,6 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                           alignment: Alignment.centerRight,
                           padding: EdgeInsets.all(0),
                           onPressed: () async {
-                            brandId =  await _dynamicLinkUtils.retrieveDynamicLink(context);
-                            print(brandId);
                             Navigator.push(
                                 context,
                                 PageTransition(

@@ -417,13 +417,6 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     startDateController.text = DateFormat('dd-MM-yyyy', widget.locale.languageCode).format(startDate);
     nullDate = startDateController.text;
 
-    if(brandPath == null) {
-      FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
-        brandPath = dynamicLinkData.link.path;
-      }).onError((error) {
-        // Handle errors
-      });
-    }
     if(brandPath != null) {
       if (brandPath.queryParameters.containsKey('id')) {
         codeController.text = brandPath.queryParameters['id'];

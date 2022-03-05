@@ -42,17 +42,20 @@ class _SplashScreenState extends State<SplashScreen> {
   initState() {
     super.initState();
     checkAndGetUserDetails();
-    if(brandPath == null) {
-      FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
-        brandPath = dynamicLinkData.link.path;
-      }).onError((error) {
-        // Handle errors
-      });
-    }
+    //initDynamicLinks();
+  }
+
+  Future<void> initDynamicLinks() async {
+    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
+      brandPath = dynamicLinkData.link;
+    }).onError((error) {
+      print('onLink error');
+      print(error.message);
+    });
   }
 
   void checkAndGetUserDetails() async {
-    //_userDataService.signOut();
+    _userDataService.signOut();
     // 1. We get the Firebase User
     User? firebaseUser = await _userDataService.getCurrentUser();
     // 2. Check if we have a user logged in.

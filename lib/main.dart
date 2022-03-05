@@ -22,6 +22,7 @@ AppThemes _appThemes = AppThemes();
 //Dynamic Link Utils for retrieving the dynamic link
 var _dynamicLinkUtils = new DynamicLinkUtils();
 
+
 // BackGroundNotificationHandler
 Future<void> _backgroundMessageHandler(RemoteMessage message) async {
   currentIndex = 2;
