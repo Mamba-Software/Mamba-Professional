@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -446,12 +447,39 @@ class FirebaseDatabaseService {
         });
   }
 
+  Future<String> updateCurrentBrandPhoto(String brandID, File image) async {
+    var result;
+    var storageRef = await _firebaseStorage.ref().child("brandPics/" + brandID + ".png");
+    var uploadTask = storageRef.putFile(image);
+    await uploadTask.whenComplete(() async {
+      await storageRef.getDownloadURL().then((value) async {
+        result = value;
+        await _firestore.collection(brands).doc(brandID).update({
+          "logoUrl": value,
+        });
+      });
+    });
+    return result;
+  }
+
   Future<void> deleteUserFromBrand(String userId, String brandId) async {
     await _firestore
         .collection(brands)
         .doc(brandId)
         .collection("Users")
         .doc(userId)
+        .delete();
+  }
+
+  Future<void> deleteBrandContentPictures(String brandID, String imageId) async {
+    // Delete Image From Storage
+    _firebaseStorage.ref().child("brandPics/"+ brandID +"/images/" + imageId + ".jpeg").delete();
+    // Delete Image From Firebase Firestore
+    await _firestore
+        .collection(brands)
+        .doc(brandID)
+        .collection("Images")
+        .doc(imageId)
         .delete();
   }
 
@@ -654,20 +682,33 @@ class FirebaseDatabaseService {
     await _firestore.collection(brands).doc(brandId).delete();
   }
 
-  Future<String> updateCurrentBrandPhoto(String brandID, File image) async {
-    var result;
-    var storageRef =
-    await _firebaseStorage.ref().child("brandPics/" + brandID + ".png");
-    var uploadTask = storageRef.putFile(image);
-    await uploadTask.whenComplete(() async {
-      await storageRef.getDownloadURL().then((value) async {
-        result = value;
-        await _firestore.collection(brands).doc(brandID).update({
-          "logoUrl": value,
+  Future<void> addBrandContentPictures(String brandID, List<File> images) async {
+    // Add each brand to the .../BrandId/images directory
+    for (var i=0; i<images.length; i++) {
+      var image = images[i];
+      final uid = Uuid().v4();
+      // Upload the image to Firebase Storage
+      var storageRef = _firebaseStorage.ref().child("brandPics/"+ brandID +"/images/" + uid + ".jpeg");
+      var uploadTask = storageRef.putFile(image);
+      await uploadTask.whenComplete(() async {
+        await storageRef.getDownloadURL().then((value) async {
+          // Add Image to the Brand Images Subcollection
+          await _firestore.collection(brands).doc(brandID)
+            .collection("Images")
+            .doc(uid)
+            .set({
+              "url": value,
+              "timestamp": Timestamp.now(),
+            });
         });
       });
-    });
-    return result;
+    }
+  }
+
+  Future<void> deleteBrandContentPicture(String brandID) async {
+    await _firebaseStorage.ref()
+        .child("brandPics/" + brandID + ".png")
+        .delete();
   }
 
   Future<void> deleteBrandPhoto(String brandID) async {
@@ -724,6 +765,16 @@ class FirebaseDatabaseService {
             querySnapshot.docs[i].id, querySnapshot.docs[i]));
       }
       return brandList;
+    }
+
+    Future<List<ImageObject>> getBrandContentPictures(String brandID) async {
+      // Get the Image documents of the Brand
+      List<ImageObject> contentImages = [];
+      QuerySnapshot querySnapshot = await _firestore.collection(brands).doc(brandID).collection("Images").get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        contentImages.add(ImageObject.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+      return contentImages;
     }
 
     Future<List<RequestToBrand>> getUserRequests(String userId) async {

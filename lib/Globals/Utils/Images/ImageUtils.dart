@@ -11,7 +11,7 @@ class ImageUtils {
       source: ImageSource.gallery,
       maxWidth: 600,
       maxHeight: 800,
-      imageQuality: 75,
+      imageQuality: 50,
     );
     // Check if Lost Data in Android
     final LostDataResponse response = await ImagePicker().retrieveLostData();
@@ -30,7 +30,7 @@ class ImageUtils {
     List<XFile>? compressedImages = await imagePicker.pickMultiImage(
       maxWidth: 600,
       maxHeight: 800,
-      imageQuality: 75,
+      imageQuality: 50,
     );
     // Check if Lost Data in Android
     final LostDataResponse response = await ImagePicker().retrieveLostData();

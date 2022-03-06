@@ -1214,11 +1214,11 @@
   "@addBrandPhotos": {
     "description": "Wellcome message"
   },
-  "addBrandPhotosMax": "Ya has añadido todas las fotos possibles",
+  "addBrandPhotosMax": "Ya has añadido todas las imágenes possibles",
   "@addBrandPhotosMax": {
     "description": "Wellcome message"
   },
-  "addBrandPhotosLeft": "Aún puedes añadir {left} foto/s de un máximo de {max}",
+  "addBrandPhotosLeft": "Aún puedes añadir {left} imagen/es de un máximo de {max}",
   "@addBrandPhotosLeft": {
     "description": "Wellcome message",
     "placeholders": {
@@ -1226,6 +1226,15 @@
         "type": "String"
       },
       "max": {
+        "type": "String"
+      }
+    }
+  },
+  "addBrandPhotosMaxLeft": "Puedes añadir un máximo de {left} imagen/es",
+  "@addBrandPhotosMaxLeft": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "left": {
         "type": "String"
       }
     }
@@ -1498,6 +1507,10 @@
   },
   "myLocationsDeleteDescription": "¿Estás seguro de que quieres borrar esta ubicación?\n\nEn caso de que esta ubicación esté siendo usada en cualquier evento, actualizaremos la ubicación de este a tu ubicación base.",
   "@myLocationsOtherLocationsDesc": {
+    "description": "Wellcome message"
+  },
+  "myImagesDeleteDescription": "¿Estás seguro de que quieres borrar esta imagen?",
+  "@myImagesDeleteDescription": {
     "description": "Wellcome message"
   },
   "userJoinEventUser": "Te has unido al evento {name}",
