@@ -1,8 +1,4 @@
-import 'dart:math';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -1059,7 +1055,7 @@ class ScriptsDatabaseService {
       String noImageUrl = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
 
       // TEST IN DEVELOPMENT
-      QuerySnapshot querySnapshot = await _firestore.collection("Users").get();
+      QuerySnapshot querySnapshot = await _firestore.collection("7777 Users").get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
         Usuario user = Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
@@ -1098,6 +1094,60 @@ class ScriptsDatabaseService {
           }
         }
 
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> migrateResizeCompressBrandImages() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('IMAGE MIGRATION 6Th MARCH 2022');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying '+brands+' storage collection:\n');
+      print('--------------');
+      print('\n');
+
+      // TEST IN DEVELOPMENT
+      QuerySnapshot querySnapshot = await _firestore.collection(brands).get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
+        Brand brand = Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('BRAND WITH ID: ' + brand.id! + " AND NAME: " + brand.name!);
+        print('\n');
+        File fileImage = await ImageUtils().urlToFile(brand.logoUrl!);
+        var size = await ImageUtils().getImageFileSize(fileImage, 2);
+        print("Current Image Size: "+size);
+        print('\n');
+        print("Compressing Image...");
+        print('\n');
+        final filePath = fileImage.absolute.path;
+        final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
+        final splitted = filePath.substring(0, (lastIndex));
+        final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+        var compressedFileImage = await FlutterImageCompress.compressAndGetFile(
+          fileImage.absolute.path,
+          outPath,
+          quality: 75,
+          rotate: 0,
+        );
+        var compressedSize = await ImageUtils().getImageFileSize(compressedFileImage!, 2);
+        print("Compressed Image Size: "+compressedSize);
+        // Upload Photo de Firebase and Update
+        print("Uploading image ...");
+        await _brandDataService.updateBrandPhoto(brand.id!, compressedFileImage);
+        print("Image succesfully uploaded!");
         print('\n');
         print('=================================================================================');
         print('=================================================================================');

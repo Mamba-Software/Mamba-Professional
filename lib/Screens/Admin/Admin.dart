@@ -121,7 +121,7 @@ class EachList extends StatelessWidget{
         );
         break;
       case 3:
-        var result = await _script.migrateResizeCompressUserImages();
+        var result = await _script.migrateResizeCompressBrandImages();
         print("RESULT: "+result.toString());
         break;
     }

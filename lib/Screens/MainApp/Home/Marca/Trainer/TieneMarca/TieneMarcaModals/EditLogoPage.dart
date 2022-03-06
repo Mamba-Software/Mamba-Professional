@@ -39,7 +39,7 @@ class _EditLogoPageState extends State<EditLogoPage> {
     setState(() {
       isLoading = true;
     });
-    String temp = await _brandDataService.updateCurrentBrandPhoto(currentBrand.id!, _image!);
+    String temp = await _brandDataService.updateBrandPhoto(currentBrand.id!, _image!);
     setState(() {
       _imageUrl = temp;
       isLoading = false;

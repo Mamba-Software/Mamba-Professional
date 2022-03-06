@@ -444,9 +444,9 @@ class FirebaseDatabaseService {
         });
   }
 
-  Future<String> updateCurrentBrandPhoto(String brandID, File image) async {
+  Future<String> updateBrandPhoto(String brandID, File image) async {
     var result;
-    var storageRef = await _firebaseStorage.ref().child("brandPics/" + brandID + ".png");
+    var storageRef = _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + brandID + ".jpeg");
     var uploadTask = storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
@@ -659,7 +659,7 @@ class FirebaseDatabaseService {
     });
 
     if (!firestoreError) {
-      await updateCurrentBrandPhoto(uid, image);
+      await updateBrandPhoto(uid, image);
       return uid;
     } else {
       return "Error";
@@ -685,7 +685,7 @@ class FirebaseDatabaseService {
       var image = images[i];
       final uid = Uuid().v4();
       // Upload the image to Firebase Storage
-      var storageRef = _firebaseStorage.ref().child("brandPics/"+ brandID +"/images/" + uid + ".jpeg");
+      var storageRef = _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + uid + ".jpeg");
       var uploadTask = storageRef.putFile(image);
       await uploadTask.whenComplete(() async {
         await storageRef.getDownloadURL().then((value) async {
