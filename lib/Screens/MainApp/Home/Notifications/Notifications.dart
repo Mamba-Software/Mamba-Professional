@@ -1,5 +1,5 @@
 // Flutter Libs
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -37,6 +37,9 @@ class _NotificationsState extends State<Notifications> {
   var _eventDataService = new EventDataService();
   // Acceso a Base de Datos
   bool isLoading = true;
+  // Lazy Loading
+  var scrollController = ScrollController();
+  int lastIndex = 9;
   // Notification List
   List<NotificationEvent> notificationsList = [];
   List<Usuario> usersList = [];
@@ -51,14 +54,25 @@ class _NotificationsState extends State<Notifications> {
   initState() {
     super.initState();
     isLoading = true;
-    getAllNotifications();
+    getFirstNotificationsLimit10();
+    scrollController.addListener(() async {
+      print("pixels");
+      print(scrollController.position.pixels);
+      print("max");
+      print(scrollController.position.maxScrollExtent);
+
+      if ((scrollController.position.pixels/scrollController.position.maxScrollExtent) > 0.85) {
+        print('ListView scroll at 85% ... load 10 more');
+        await getMoreNotificationsLimit10(notificationsList[lastIndex]);
+      }
+    });
   }
 
-  Future<void> getAllNotifications () async {
+  Future<void> getFirstNotificationsLimit10() async {
     List<Usuario> users = [];
     List<Brand> brands = [];
     List<Event> events = [];
-    notificationsList = await _userDataService.getUserNotifications(currentUser.id!);
+    notificationsList = await _userDataService.getUserFirstNotificationsLimit10(currentUser.id!);
     // Order Notification List Descending Time
     notificationsList.sort((a,b) {
       var aDate =  DateTime(
@@ -132,7 +146,92 @@ class _NotificationsState extends State<Notifications> {
     eventList = events;
     if (mounted) {
       setState(() {
+        lastIndex = 9;
         isLoading = false;
+      });
+    }
+  }
+
+  Future<void> getMoreNotificationsLimit10(NotificationEvent notif) async {
+    List<Usuario> users = [];
+    List<Brand> brands = [];
+    List<Event> events = [];
+    var extraNotifications = await _userDataService.getUserMoreNotificationsLimit10(currentUser.id!, notif.id!);
+    // Order Notification List Descending Time
+    extraNotifications.sort((a,b) {
+      var aDate =  DateTime(
+        int.parse(a.year!),
+        int.parse(a.month!),
+        int.parse(a.day!),
+        int.parse(a.hour!),
+        int.parse(a.minutes!),
+        int.parse(a.seconds!),
+      );
+      var bDate =  DateTime(
+        int.parse(b.year!),
+        int.parse(b.month!),
+        int.parse(b.day!),
+        int.parse(b.hour!),
+        int.parse(b.minutes!),
+        int.parse(b.seconds!),
+      );
+      return aDate.compareTo(bDate);
+    });
+    extraNotifications = List.from(extraNotifications.reversed);
+    // Get User, Brand and Events when needed
+    for(int i = 0; i < extraNotifications.length; i++) {
+      NotificationEvent notification = extraNotifications[i];
+      if (notification.parameters.length > 0) {
+        if (notification.parameters[0] != "null") {
+          Usuario user = users.firstWhere((element) => element.id == notification.parameters[0], orElse: () => Usuario());
+          if (user.id == null) {
+            user = await _userDataService.getUserCoverDetails(notification.parameters[0]);
+            if (user.id == null) {
+              user = Usuario(name: AppLocalizations.of(context)!.deletedUser.toLowerCase(), imageUrl: deletedObject);
+            }
+          }
+          users.add(user);
+        } else {
+          users.add(Usuario());
+        }
+        if (notification.parameters[1] != "null") {
+          Brand brand = brands.firstWhere((element) => element.id == notification.parameters[1], orElse: () => Brand());
+          if (brand.id == null) {
+            brand = await _brandDataService.getBrandCoverDetails(notification.parameters[1]);
+            if (brand.id == null) {
+              brand = Brand(name: AppLocalizations.of(context)!.deletedBrand.toLowerCase(), logoUrl: deletedObject);
+            }
+          }
+          brands.add(brand);
+        } else {
+          brands.add(Brand());
+        }
+        if (notification.parameters[2] != "null") {
+          Event event = events.firstWhere((element) => element.id == notification.parameters[2], orElse: () => Event());
+          if (event.id == null) {
+            event = await _eventDataService.getSingleEvent(notification.parameters[2]);
+          }
+          if (event.id == null) {
+            events.add(Event(title: AppLocalizations.of(context)!.deletedEvent.toLowerCase()));
+          } else {
+            events.add(event);
+          }
+        } else {
+          events.add(Event());
+        }
+      } else {
+        users.add(Usuario());
+        brands.add(Brand());
+        events.add(Event());
+      }
+    }
+    usersList.addAll(users);
+    brandsList.addAll(brands);
+    eventList.addAll(events);
+    if (mounted) {
+      setState(() {
+        notificationsList.addAll(extraNotifications);
+        lastIndex += 10;
       });
     }
   }
@@ -170,19 +269,21 @@ class _NotificationsState extends State<Notifications> {
           SizedBox(width: MediaQuery.of(context).size.width*0.03,),
         ],
       ),
-      body: !isLoading ? RefreshIndicator(
-        displacement: MediaQuery.of(context).size.height*0.05,
-        color: Theme.of(context).accentColor,
-        onRefresh: () {
-          return Future.delayed(
-            Duration(seconds: 1), () async {
-              this.getAllNotifications();
-            },
-          );
-        },
-        child: ListView.builder(
+      body: !isLoading ? 
+        RefreshIndicator(
+          displacement: MediaQuery.of(context).size.height*0.05,
+          color: Theme.of(context).accentColor,
+          onRefresh: () {
+            return Future.delayed(
+              Duration(seconds: 1), () async {
+                this.getFirstNotificationsLimit10();
+              },
+            );
+          },
+          child: ListView.builder(
               physics: AlwaysScrollableScrollPhysics(),
               shrinkWrap: true,
+              controller: scrollController,
               scrollDirection: Axis.vertical,
               itemCount: notificationsList.length,
               itemBuilder: (context, index) {
@@ -193,7 +294,7 @@ class _NotificationsState extends State<Notifications> {
                 );
               }
           ),
-      ) : LoadingViewPurple(),
+        ) : LoadingViewPurple(),
     );
   }
 

@@ -27,7 +27,8 @@ class UserDataService {
   Future<Usuario> getUserDetails(String userId) => _firebase.getUserDetails(userId);
   Future<Usuario> getUserCoverDetails(String userId) => _firebase.getUserCoverDetails(userId);
   Future<List<RequestToBrand>> getUserRequests(String userId) => _firebase.getUserRequests(userId);
-  Future<List<NotificationEvent>> getUserNotifications(String userId) => _firebase.getAllNotificationsUser(userId);
+  Future<List<NotificationEvent>> getUserFirstNotificationsLimit10(String userId) => _firebase.getUserFirstNotificationsLimit10(userId);
+  Future<List<NotificationEvent>> getUserMoreNotificationsLimit10(String userId, String notifId) => _firebase.getUserMoreNotificationsLimit10(userId, notifId);
   Future<int> getUnreadNotifications(String userId) => _firebase.getUnreadNotifications(userId);
   Future<int> getUnreadConversations(String userId) => _firebase.getUnreadConversations(userId);
 

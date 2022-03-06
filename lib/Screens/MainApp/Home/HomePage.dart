@@ -147,7 +147,7 @@ class _HomePageState extends State<HomePage> {
         showUnselectedLabels: true,
       ),
       body: PageView(
-        //physics: NeverScrollableScrollPhysics(),
+        physics: NeverScrollableScrollPhysics(),
         controller: pageController,
         //allowImplicitScrolling: true,
         children: <Widget>[

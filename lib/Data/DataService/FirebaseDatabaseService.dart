@@ -1919,18 +1919,53 @@ class FirebaseDatabaseService {
 
     // Notifications
 
-    // Get All Notifications
-    Future<List<NotificationEvent>> getAllNotificationsUser(
-        String userId) async {
+    // Get First Notifications
+    Future <List<NotificationEvent>> getUserFirstNotificationsLimit10(String userId) async {
       List<NotificationEvent> notis = [];
       QuerySnapshot querySnapshot = await _firestore
           .collection(users)
           .doc(userId)
           .collection("Notifications")
+          .orderBy("year", descending: true)
+          .orderBy("month", descending: true)
+          .orderBy("day", descending: true)
+          .orderBy("hour", descending: true)
+          .orderBy("minutes", descending: true)
+          .orderBy("seconds", descending: true)
+          .limit(10)
           .get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
-        notis.add(NotificationEvent.fromObjectAllData(
-            querySnapshot.docs[i].id, querySnapshot.docs[i]));
+        notis.add(NotificationEvent.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+      return notis;
+    }
+
+    // Get More Notifications
+    Future <List<NotificationEvent>> getUserMoreNotificationsLimit10(String userId, String lastNotifId) async {
+      // Get Last Notification document
+      DocumentSnapshot docu = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Notifications")
+          .doc(lastNotifId)
+          .get();
+      // Get More Notifications
+      List<NotificationEvent> notis = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Notifications")
+          .orderBy("year", descending: true)
+          .orderBy("month", descending: true)
+          .orderBy("day", descending: true)
+          .orderBy("hour", descending: true)
+          .orderBy("minutes", descending: true)
+          .orderBy("seconds", descending: true)
+          .startAfterDocument(docu)
+          .limit(10)
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        notis.add(NotificationEvent.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
       }
       return notis;
     }
