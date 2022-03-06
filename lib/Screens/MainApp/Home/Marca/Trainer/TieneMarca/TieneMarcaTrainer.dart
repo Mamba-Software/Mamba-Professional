@@ -133,7 +133,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                             )
                         ),
                         IconButton(
-                          icon: Icon(Icons.edit, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
+                          icon: Icon(Icons.menu_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
                           alignment: Alignment.centerRight,
                           padding: EdgeInsets.all(0),
                           onPressed: () {

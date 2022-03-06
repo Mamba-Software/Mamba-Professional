@@ -1,26 +1,20 @@
-import 'dart:io';
+import 'dart:math';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
+import 'dart:io';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/ChatUsers.dart';
-import 'package:mamba_castelldefels/Data/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Data/Models/NotificationEvent.dart';
-import 'package:mamba_castelldefels/Data/Models/Message.dart';
-import 'package:mamba_castelldefels/Data/Models/Question.dart';
-import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:uuid/uuid.dart';
-
+import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import '../DataService/BrandDataService.dart';
 
 class ScriptsDatabaseService {
@@ -1047,5 +1041,64 @@ class ScriptsDatabaseService {
       return false;
     }
   }
+
+  Future<bool> migrateResizeCompressUserImages() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('IMAGE MIGRATION 6Th MARCH 2022');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying '+users+' storage collection:\n');
+      print('--------------');
+      print('\n');
+
+      String noImageUrl = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
+
+      // TEST IN DEVELOPMENT
+      List<String> userIds = ["IltgKVsnzxfe9S9jBE5M7tZkSKV2"];
+      for (int i = 0; i < userIds.length; i++) {
+        String userId = userIds[i];
+        DocumentSnapshot _documentSnapshot = await _firestore.collection(users).doc(userId).get();
+        Usuario user = Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('USER WITH ID: ' + user.id! + " AND NAME: " + user.name!);
+        print('\n');
+        if (noImageUrl == user.imageUrl) {
+          print("THIS USER HAS CURRENTLY NO IMAGE SET");
+        } else {
+          File fileImage = await ImageUtils().urlToFile(user.imageUrl!);
+          var size = await ImageUtils().getImageFileSize(fileImage, 2);
+          print("Current Image Size: "+size);
+          print('\n');
+          print("Compressing Image...");
+          print('\n');
+          final filePath = fileImage.absolute.path;
+          final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
+          final splitted = filePath.substring(0, (lastIndex));
+          final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+          var result = await FlutterImageCompress.compressAndGetFile(
+            fileImage.absolute.path,
+            outPath,
+            quality: 75,
+            rotate: 0,
+          );
+          var compressedSize = await ImageUtils().getImageFileSize(result!, 2);
+          print("Compressed Image Size: "+compressedSize);
+        }
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+
 
 }
