@@ -470,7 +470,7 @@ class FirebaseDatabaseService {
 
   Future<void> deleteBrandContentPictures(String brandID, String imageId) async {
     // Delete Image From Storage
-    _firebaseStorage.ref().child("brandPics/"+ brandID +"/images/" + imageId + ".jpeg").delete();
+    _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + imageId + ".jpeg").delete();
     // Delete Image From Firebase Firestore
     await _firestore
         .collection(brands)
