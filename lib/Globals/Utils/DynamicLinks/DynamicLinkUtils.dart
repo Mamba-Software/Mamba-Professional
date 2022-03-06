@@ -28,8 +28,8 @@ class DynamicLinkUtils {
         minimumVersion: '1',
       ),
       socialMetaTagParameters: SocialMetaTagParameters(
-          title: brandName,
-          description: 'Únete a mi marca en Mamba',
+          title: 'Únete a ' + brandName,
+          description: '¡Haz clic para descargar Mamba!',
           imageUrl: Uri.parse(urlImage)),
     );
 
