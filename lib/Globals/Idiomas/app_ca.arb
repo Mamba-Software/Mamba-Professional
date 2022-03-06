@@ -200,7 +200,7 @@
   "inviteCode": "Codi d'invitació",
   "inviteCodeError": "Copia el codi d'invitació si us plau",
   "inviteCodeOptional": "Finalitza el procés de benvinguda per veure totes les marques dins de MAMBA.",
-  "copyCodeMessage": "Envia el teu codi d'invitació",
+  "copyCodeMessage": "Comparteix el teu codi d'invitació",
   "copyCorrectCode": "Codi d'invitació copiat correctament",
   "copyCorrectLocation": "Ubicació copiada correctament",
   "members": "Membres",

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
@@ -413,6 +414,14 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     );
     startDateController.text = DateFormat('dd-MM-yyyy', widget.locale.languageCode).format(startDate);
     nullDate = startDateController.text;
+
+    if(brandPath != null) {
+      if (brandPath.queryParameters.containsKey('id')) {
+        codeController.text = brandPath.queryParameters['id'];
+        hasCode = true;
+        checkIfBrandExists(codeController.text);
+      }
+    }
   }
 
   @override
@@ -1410,9 +1419,10 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                           tabs[4] = false;
                         });
                       } else if (_selectedIndex == 5) {
-                        setState(() {
-                          tabs[5] = false;
-                        });
+                          setState(() {
+                            tabs[5] = false;
+                          });
+
                         //validateTypeOfUser();
                       }
                       _tabController!.animateTo(_selectedIndex -= 1);
