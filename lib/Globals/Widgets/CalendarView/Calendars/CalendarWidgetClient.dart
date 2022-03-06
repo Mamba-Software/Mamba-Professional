@@ -5,18 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
-
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import '../../../GlobalVars.dart';
-import '../../../Styles/Styles.dart';
-import '../../Images/CircularImage.dart';
-import '../Events/AddEvent.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalendarWidgetClient extends StatefulWidget {
@@ -79,7 +73,7 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
             title: Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back, size: 25,),
+              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -93,13 +87,13 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
             title: Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back, size: 25,),
+              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
           ),
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
             child: StreamBuilder<QuerySnapshot>(
@@ -114,7 +108,6 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                       view: CalendarView.week,
                       controller: _controller,
                       showDatePickerButton: true,
-                      headerHeight: 45,
                       headerDateFormat: null,
                       dataSource: _getCalendarDataSource(),
                       specialRegions: _getTimeRegions(),
@@ -124,9 +117,9 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                       showCurrentTimeIndicator: true,
                       viewHeaderHeight: 50,
                       viewHeaderStyle: ViewHeaderStyle(
-                        backgroundColor: Theme.of(context).backgroundColor,
-                        dateTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 14, fontWeight: FontWeight.bold),
-                        dayTextStyle: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 10, fontWeight: FontWeight.bold),
+                        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                        dateTextStyle: Theme.of(context).textTheme.bodyText2,
+                        dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 8),
                       ),
                       selectionDecoration: BoxDecoration(
                           border: Border.all(width: 0.1, color: Colors.transparent)
@@ -143,21 +136,13 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                           timeRulerSize: 25,
                           nonWorkingDays: nonWorkDays,
                           minimumAppointmentDuration: Duration(minutes: 30),
-                          timeTextStyle: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 12,
-                            color: Theme.of(context).primaryColor,
-                          )
+                          timeTextStyle: Theme.of(context).textTheme.bodyText2,
                       ),
+                      headerHeight: MediaQuery.of(context).size.height*0.05,
                       headerStyle: CalendarHeaderStyle(
                         textAlign: TextAlign.justify,
-                        backgroundColor: Color(0xFFF5F5F5),
-                        textStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
-                          letterSpacing: 4,
-                          color: Theme.of(context).accentColor,
-                        ),
+                        backgroundColor:  Theme.of(context).scaffoldBackgroundColor,
+                        textStyle: Theme.of(context).textTheme.bodyText1,
                       ),
                       appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
                         final Appointment appointment = details.appointments.first;
@@ -192,21 +177,21 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                                     children: [
                                       AutoSizeText(
                                         event.title!,
-                                        style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w800),
+                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                         textAlign: TextAlign.center,
                                         wrapWords: false,
                                         minFontSize: 1,
-                                        maxFontSize: 16,
+                                        maxFontSize: 14,
                                       ),
                                       SizedBox(
                                         width: details.bounds.width*0.4,
                                         child: AutoSizeText(
                                           appointment.subject,
-                                          style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w500),
+                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                           textAlign: TextAlign.center,
                                           wrapWords: false,
                                           minFontSize: 1,
-                                          maxFontSize: 10,
+                                          maxFontSize: 8,
                                         ),
                                       ),
                                     ],
@@ -234,7 +219,7 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                                     height: details.bounds.height,
                                     padding: EdgeInsets.all(details.bounds.width*0.1),
                                     decoration: BoxDecoration(
-                                      color: Styles.lightGrey,
+                                      color: AppColors.lightGrey,
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(5),
                                       ),
@@ -244,11 +229,11 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                                       children: [
                                         AutoSizeText(
                                           event.title!,
-                                          style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w800),
+                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                                           textAlign: TextAlign.center,
                                           wrapWords: false,
                                           minFontSize: 1,
-                                          maxFontSize: 16,
+                                          maxFontSize: 14,
                                         ),
                                         /*
                                         event.joinedMembers.contains(currentUser.id!) ? Column(
@@ -296,7 +281,7 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                                       children: [
                                         AutoSizeText(
                                           event.title!,
-                                          style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w800),
+                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                           textAlign: TextAlign.center,
                                           wrapWords: false,
                                           minFontSize: 1,
@@ -321,11 +306,11 @@ class _CalendarWidgetClientState extends State<CalendarWidgetClient> {
                                               width: details.bounds.width*0.4,
                                               child: AutoSizeText(
                                                 appointment.subject,
-                                                style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.w500),
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                                 textAlign: TextAlign.center,
                                                 wrapWords: false,
                                                 minFontSize: 1,
-                                                maxFontSize: 10,
+                                                maxFontSize: 8,
                                               ),
                                             ),
                                           ],

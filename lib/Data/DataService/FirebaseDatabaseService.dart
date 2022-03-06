@@ -55,11 +55,12 @@ class FirebaseDatabaseService {
   // Authentication Services
   Future<int> signIn(String email, String password) async {
     bool error = false;
-    UserCredential authResult = await _auth
-        .signInWithEmailAndPassword(email: email, password: password)
-        .catchError((value) {
+    UserCredential? authResult;
+    try {
+      authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
+    } catch (e) {
       error = true;
-    });
+    }
     if (error) return -1;
     if (authResult == null)
       return -1;
@@ -279,6 +280,23 @@ class FirebaseDatabaseService {
     }).catchError((err) {
       print(err);
     });
+  }
+
+  // Add User
+  Future<void> updateUserThemePreferences(String uid, bool? isDark) async {
+    if (isDark == null) {
+      await _firestore.collection(users).doc(uid).update({
+        "isDark": null,
+      }).catchError((err) {
+        print(err);
+      });
+    } else {
+      await _firestore.collection(users).doc(uid).update({
+        "isDark": isDark,
+      }).catchError((err) {
+        print(err);
+      });
+    }
   }
 
   // Add User Notification Token
@@ -1407,27 +1425,49 @@ class FirebaseDatabaseService {
     }
 
     // User Joins Event
-    Future<bool> addUserToEvent(String eid, String uid,) async {
+    Future<bool> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) async {
       try {
         Usuario user = await this.getUserDetails(uid);
-        await _firestore
-            .collection(events)
-            .doc(eid)
-            .collection("Users")
-            .doc(uid)
-            .set({
-          "name": user.name,
-          "firstName": user.firstName,
-          "lastName": user.lastName,
-          "nick": user.nick,
-          "imageUrl": user.imageUrl,
-          "noImageUrl": user.noImageUrl,
-          "isTrainer": user.isTrainer,
-          "isPrivate": user.isPrivate,
-          "notificationToken": user.notificationToken,
-        }).catchError((err) {
-          print(err);
-        });
+        if (invitedDirectly) {
+          await _firestore
+          .collection(events)
+          .doc(eid)
+          .collection("Users")
+          .doc(uid)
+          .set({
+            "name": user.name,
+            "firstName": user.firstName,
+            "lastName": user.lastName,
+            "nick": user.nick,
+            "imageUrl": user.imageUrl,
+            "noImageUrl": user.noImageUrl,
+            "isTrainer": user.isTrainer,
+            "isPrivate": user.isPrivate,
+            "invitedDirectly": invitedDirectly,
+            "notificationToken": user.notificationToken,
+          }).catchError((err) {
+            print(err);
+          });
+        } else {
+          await _firestore
+          .collection(events)
+          .doc(eid)
+          .collection("Users")
+          .doc(uid)
+          .set({
+            "name": user.name,
+            "firstName": user.firstName,
+            "lastName": user.lastName,
+            "nick": user.nick,
+            "imageUrl": user.imageUrl,
+            "noImageUrl": user.noImageUrl,
+            "isTrainer": user.isTrainer,
+            "isPrivate": user.isPrivate,
+            "notificationToken": user.notificationToken,
+          }).catchError((err) {
+            print(err);
+          });
+        }
         return true;
       } catch (e) {
         print(e.toString());

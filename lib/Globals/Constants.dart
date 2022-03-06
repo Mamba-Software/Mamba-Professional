@@ -52,4 +52,11 @@ class Constants {
   static String publicProfileImage = "assets/images/publicProfileImage.png";
   static String currentLocation = "assets/images/currentLocation.png";
   static String arroundLocation = "assets/images/arroundLocation.png";
+  static String themeLightImage = "assets/images/themeLightImage.png";
+  static String themeDarkImage = "assets/images/themeDarkImage.png";
+  static String themeSystemImage = "assets/images/themeSystemImage.png";
+
+  // Animations
+  static String runningFemale = "assets/animations/runningFemale.gif";
+
 }

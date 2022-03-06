@@ -39,6 +39,7 @@ class UserDataService {
 
   // Update Data
   Future<void> updateUser(String uid, String name, String firstName, String lastName, String nick, String dateOfBirth, int gender, File? image, bool isTrainer) => _firebase.updateUser(uid, name, firstName, lastName, nick, dateOfBirth, gender, image, isTrainer);
+  Future<void> updateUserThemePreferences(String uid, bool? isDark) => _firebase.updateUserThemePreferences(uid, isDark);
   Future<void> updateUserNotificationToken(String uid, String token) => _firebase.updateUserNotificationToken(uid, token);
   Future<void> updateCurrentUserFirstTime() => _firebase.updateCurrentUserFirstTime();
   Future<String> updateCurrentUserPhoto(File image) => _firebase.updateCurrentUserPhoto(image);

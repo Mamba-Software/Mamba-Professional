@@ -1,15 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
@@ -37,69 +35,65 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
   // Boolean isUpdated
   bool isUpdated = false;
   // Search Controller
-  var searchClientsController = TextEditingController();
-  var searchTrainersController = TextEditingController();
+  bool searchClicked = false;
+  var searchController = TextEditingController();
 
   // Members Page
+  List<Usuario> allMembers = [];
+  List<Usuario> filteredMembers = [];
   List<Usuario> allClients = [];
-  List<Usuario> filteredClients = [];
   List<Usuario> allTrainers = [];
-  List<Usuario> filteredTrainers = [];
 
   Future<void> getAllUsers() async {
     List<Usuario> brandUsers = await _brandDataService.getBrandUsers(widget.brandID);
+    allClients = [];
+    allTrainers = [];
     for (var i=0; i< brandUsers.length; i++) {
       Usuario user = brandUsers[i];
       if (user.isTrainer! == false) {
-        if (user.id == currentUser.id) {
-          filteredClients.insert(0, user);
-        } else {
-          filteredClients.add(user);
-        }
         allClients.add(user);
       } else {
-        filteredTrainers.add(user);
         allTrainers.add(user);
       }
     }
+    // Sort Clients
+    allClients.sort((a, b) {
+      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+    });
+    allClients = orderClientsPrivateLast(allClients);
+    // Sort Trainers
+    allTrainers.sort((a, b) {
+      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+    });
+    // Add All Members
+    allMembers.addAll(allClients);
+    allMembers.addAll(allTrainers);
+    allMembers.sort((a, b) {
+      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+    });
+    filteredMembers = allMembers;
+    filteredMembers = orderClientsPrivateLast(filteredMembers);
     await Future.delayed(const Duration(milliseconds: 500));
     setState(() {
       isLoading = false;
     });
   }
 
-  void filterSearchResults(String query, bool isTrainer) {
+  void filterSearchResults(String query) {
     List<Usuario> usersFiltered = [];
-    if (isTrainer) {
-      if (query.isNotEmpty || query != "") {
-        for (var item in allTrainers) {
-          if (item.name!.toLowerCase().startsWith(query)) {
-            usersFiltered.add(item);
-          }
+    if (query.isNotEmpty || query != "") {
+      for (var item in allMembers) {
+        if (item.name!.toLowerCase().startsWith(query)) {
+          usersFiltered.add(item);
         }
-        setState(() {
-          filteredTrainers = usersFiltered;
-        });
-      } else {
-        setState(() {
-          filteredTrainers = allTrainers;
-        });
       }
+      setState(() {
+        filteredMembers = usersFiltered;
+      });
     } else {
-      if (query.isNotEmpty || query != "") {
-        for (var item in allClients) {
-          if (item.name!.toLowerCase().startsWith(query)) {
-            usersFiltered.add(item);
-          }
-        }
-        setState(() {
-          filteredClients = orderClientsPrivateLast(usersFiltered);
-        });
-      } else {
-        setState(() {
-          filteredClients =  orderClientsPrivateLast(allClients);
-        });
-      }
+      setState(() {
+        filteredMembers = allMembers;
+      });
     }
   }
 
@@ -108,16 +102,15 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
     List<Usuario> privateUsers = [];
     for (var i=0; i< clients.length; i++) {
       Usuario client = clients[i];
-      if (client.id == currentUser.id) {
-        orderedUsers.insert(0, client);
+      if (client.isPrivate!) {
+        privateUsers.add(client);
       } else {
-        if (client.isPrivate!) {
-          privateUsers.add(client);
-        } else {
-          orderedUsers.add(client);
-        }
+        orderedUsers.add(client);
       }
     }
+    privateUsers.sort((a, b) {
+      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+    });
     orderedUsers.addAll(privateUsers);
     return orderedUsers;
   }
@@ -149,92 +142,127 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
         child: Scaffold(
           appBar: AppBar(
             //elevation: 0,
-            title: Text(AppLocalizations.of(context)!.members, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+            title: Text(AppLocalizations.of(context)!.members, style: Theme.of(context).appBarTheme.titleTextStyle,),
             centerTitle: true,
-            bottom: TabBar(
-              indicator: UnderlineTabIndicator(
-                borderSide: BorderSide(width: 3.0, color:Theme.of(context).accentColor, ),
-              ),
-              tabs: [
-                Tab(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.record_voice_over, color: Theme.of(context).accentColor,),
-                        SizedBox(width: 10,),
-                        Text(AppLocalizations.of(context)!.trainers, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
-                      ],
-                    ),
-                  ),
-                ),
-                Tab(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.directions_run, color: Theme.of(context).accentColor,),
-                        SizedBox(width: 10,),
-                        Text(AppLocalizations.of(context)!.clients, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: !searchClicked ?
+                IconButton(
+                    icon: Icon(Icons.search, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).primaryColor),
+                    onPressed: () {
+                      setState(() {
+                        searchClicked = !searchClicked;
+                      });
+                    }
+                )
+                    :
+                IconButton(
+                    icon: Icon(Icons.clear, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).primaryColor),
+                    onPressed: () {
+                      setState(() {
+                        searchClicked = !searchClicked;
+                      });
+                    }
+                ),
+              )
+            ],
+            bottom: searchClicked ? PreferredSize(
+                preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.07,),
+                child: Container(
+                  height: MediaQuery.of(context).size.height*0.07,
+                  child: Padding(
+                      padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.03,left: MediaQuery.of(context).size.width*0.03, top: MediaQuery.of(context).size.width*0.0,),
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: (value) {
+                          filterSearchResults(value);
+                        },
+                        style: Theme.of(context).textTheme.bodyText2,
+                        textAlign: TextAlign.left,
+                        decoration: InputDecoration(
+                          hintStyle: Theme.of(context).textTheme.caption,
+                          hintText: AppLocalizations.of(context)!.search,
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                              borderRadius: BorderRadius.all(Radius.circular(10.0))
+                          ),
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                              borderRadius: BorderRadius.all(Radius.circular(10.0))
+                          ),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.grey,
+                            size: MediaQuery.of(context).size.width*0.06,
+                          ),
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              searchController.clear();
+                              filterSearchResults("");
+                            },
+                            icon: Icon(Icons.delete_outline, color: Colors.grey,),
+                          ),
+                          contentPadding: EdgeInsets.all(0),
+                        ),
+                      )
+                  ),
+                )
+            ) : PreferredSize(
+              preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.07,),
+              child: TabBar(
+                indicator: UnderlineTabIndicator(
+                  borderSide: BorderSide(width: 3.0, color:Theme.of(context).accentColor, ),
+                ),
+                tabs: [
+                  Tab(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(AppLocalizations.of(context)!.trainers, style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Tab(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(AppLocalizations.of(context)!.clients, style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            )
           ),
           backgroundColor: Colors.transparent,
-          body: TabBarView(
-              children: [
-                Column(
-                  children: [
-                    allTrainers.length > 1 ?
-                    Padding(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.04),
-                      child: TextField(
-                          controller: searchTrainersController,
-                          onChanged: (value) {
-                            // Filter trainers
-                            filterSearchResults(value.toLowerCase(), true);
-                          },
-                          textAlign: TextAlign.left,
-                          decoration: InputDecoration(
-                            hintText: AppLocalizations.of(context)!.search,
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                                borderRadius: BorderRadius.all(Radius.circular(10.0))
-                            ),
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                                borderRadius: BorderRadius.all(Radius.circular(10.0))
-                            ),
-                            prefixIcon: Icon(
-                              Icons.search,
-                              color: Colors.grey,
-                            ),
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                searchTrainersController.clear();
-                                filterSearchResults("", true);
-                              },
-                              icon: Icon(Icons.clear, color: Colors.grey,),
-                            ),
-                            contentPadding: EdgeInsets.all(0),
-                          ),
-                        )
-                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    Expanded(
-                      child: Container(
-                        child: ListView.builder(
+          body: !searchClicked ? TabBarView(
+            children: [
+              Column(
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                  Expanded(
+                    child: Container(
+                      child: ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.vertical,
-                          itemCount: filteredTrainers.length,
+                          itemCount: allTrainers.length,
                           itemBuilder: (context, index) {
-                            Usuario user = filteredTrainers[index];
+                            Usuario user = allTrainers[index];
                             return Padding(
-                              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                              padding: EdgeInsets.symmetric(vertical: 0),
                               child: ListTile(
                                 leading: CircularImage(
                                   size: MediaQuery.of(context).size.width*0.15,
@@ -244,7 +272,7 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                 ),
                                 title: Text(
                                   getUsersFullName(user),
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.left,
                                 ),
                                 subtitle: Column(
@@ -252,13 +280,8 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                   children: [
                                     Text(
                                       "@${user.nick!}",
-                                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                                      style: Theme.of(context).textTheme.caption,
                                     ),
-                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                    user.id == widget.brandAdmin ? Text(
-                                      "(${AppLocalizations.of(context)!.owner})",
-                                      style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12, fontStyle: FontStyle.italic),
-                                    ) : Container(),
                                   ],
                                 ),
                                 trailing: widget.viewOnly || user.id! == currentUser.id ? IconButton(
@@ -300,8 +323,8 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                                 onTap: () {
                                   Navigator.push(
                                       context,
-                                    CupertinoPageRoute<Null>(
-                                      builder: (context) => ProfileViewUser(
+                                      CupertinoPageRoute<Null>(
+                                          builder: (context) => ProfileViewUser(
                                             userID: user.id!,
                                             viewOnly: widget.viewOnly,
                                           )
@@ -311,177 +334,254 @@ class _TodosMiembrosClientState extends State<TodosMiembrosClient> {
                               ),
                             );
                           }
-                        ),
                       ),
                     ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    allClients.length > 1 ?
-                    Padding(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04, right: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.04),
-                      child: TextField(
-                        controller: searchClientsController,
-                        onChanged: (value) {
-                          // Filter trainers
-                          filterSearchResults(value.toLowerCase(), false);
-                        },
-                        textAlign: TextAlign.left,
-                        decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!.search,
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.all(Radius.circular(10.0))
-                          ),
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.all(Radius.circular(10.0))
-                          ),
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Colors.grey,
-                          ),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              searchClientsController.clear();
-                              filterSearchResults("", false);
-                            },
-                            icon: Icon(Icons.clear, color: Colors.grey,),
-                          ),
-                          contentPadding: EdgeInsets.all(0),
-                        ),
-                      )
-                    ) : SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    filteredClients.length != 0 ?
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.only(top: 0),
-                          child: ListView.builder(
-                              physics: BouncingScrollPhysics(),
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              itemCount: filteredClients.length,
-                              itemBuilder: (context, index) {
-                                Usuario user = filteredClients[index];
-                                if (user.isPrivate! && user.id != currentUser.id) {
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
-                                    child: ListTile(
-                                      leading: CircularImage(
-                                        size: MediaQuery.of(context).size.width*0.15,
-                                        image: user.noImageUrl,
-                                        color: Theme.of(context).primaryColor,
-                                        borderWidth: 1.0,
-                                      ),
-                                      title: Text(
-                                        user.firstName!,
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor.withOpacity(0.3)),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                      trailing: Icon(Icons.visibility_off_outlined, color: Theme.of(context).primaryColor.withOpacity(0.3), size: MediaQuery.of(context).size.height*0.03,),
-                                      onTap: () {
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                  allClients.length != 0 ?
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.only(top: 0),
+                      child: ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemCount: allClients.length,
+                          itemBuilder: (context, index) {
+                            Usuario user = allClients[index];
+                            if (user.isPrivate! && user.id != currentUser.id) {
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                                child: ListTile(
+                                  leading: CircularImage(
+                                    size: MediaQuery.of(context).size.width*0.15,
+                                    image: user.noImageUrl,
+                                    color: Theme.of(context).primaryColor,
+                                    borderWidth: 1.0,
+                                  ),
+                                  title: Text(
+                                    user.firstName!,
+                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor.withOpacity(0.3)),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  trailing: Icon(Icons.visibility_off_outlined, color: Theme.of(context).primaryColor.withOpacity(0.3), size: MediaQuery.of(context).size.height*0.03,),
+                                  onTap: () {
 
-                                      },
-                                    ),
-                                  );
-                                } else {
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
-                                    child: ListTile(
-                                      leading: CircularImage(
-                                        size: MediaQuery.of(context).size.width*0.15,
-                                        image: user.imageUrl,
-                                        color: Theme.of(context).primaryColor,
-                                        borderWidth: 1.0,
+                                  },
+                                ),
+                              );
+                            } else {
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                                child: ListTile(
+                                  leading: CircularImage(
+                                    size: MediaQuery.of(context).size.width*0.15,
+                                    image: user.imageUrl,
+                                    color: Theme.of(context).primaryColor,
+                                    borderWidth: 1.0,
+                                  ),
+                                  title: Text(
+                                    getUsersFullName(user),
+                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "@${user.nick!}",
+                                        style: Theme.of(context).textTheme.caption,
                                       ),
-                                      title: Text(
-                                        getUsersFullName(user),
-                                        style: Styles.purpleTextStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                      subtitle: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "@${user.nick!}",
-                                            style: TextStyle(color: Colors.grey, fontSize: 14),
-                                          ),
-                                        ],
-                                      ),
-                                      trailing: widget.viewOnly || user.id! == currentUser.id ? IconButton(
-                                        icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                                        alignment: Alignment.centerRight,
-                                        padding: EdgeInsets.all(0),
-                                        onPressed: false ? () {
-                                        } : null,
-                                      ) : IconButton(
-                                        icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
-                                        alignment: Alignment.centerRight,
-                                        padding: EdgeInsets.all(0),
-                                        onPressed: () async {
-                                          types.User otherUser = types.User(
-                                            firstName: user.firstName,
-                                            lastName: user.lastName,
-                                            id: user.id!, // UID from Firebase Authentication
-                                            imageUrl: user.imageUrl,
-                                          );
-                                          final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
-                                            "trainer" + user.id!: user.isTrainer,
-                                            "trainer" + currentUser.id!: currentUser.isTrainer,
-                                            "active" + user.id!: false,
-                                            "active" + currentUser.id!: true,
-                                          });
+                                    ],
+                                  ),
+                                  trailing: widget.viewOnly || user.id! == currentUser.id ? IconButton(
+                                    icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+                                    alignment: Alignment.centerRight,
+                                    padding: EdgeInsets.all(0),
+                                    onPressed: false ? () {
+                                    } : null,
+                                  ) : IconButton(
+                                    icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
+                                    alignment: Alignment.centerRight,
+                                    padding: EdgeInsets.all(0),
+                                    onPressed: () async {
+                                      types.User otherUser = types.User(
+                                        firstName: user.firstName,
+                                        lastName: user.lastName,
+                                        id: user.id!, // UID from Firebase Authentication
+                                        imageUrl: user.imageUrl,
+                                      );
+                                      final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                                        "trainer" + user.id!: user.isTrainer,
+                                        "trainer" + currentUser.id!: currentUser.isTrainer,
+                                        "active" + user.id!: false,
+                                        "active" + currentUser.id!: true,
+                                      });
 
-                                          bool? deleteRoom = await Navigator.push(
-                                            context,
-                                            CupertinoPageRoute<bool>(
-                                                builder: (context) => ChatPage(room: room)),).whenComplete(() async {
-                                            room.metadata!["active" + currentUser.id!] = false;
-                                            _roomDataService.updateRoom(room.id, room.metadata!);
-                                          });
-                                          if (!deleteRoom!) {
-                                            _roomDataService.deleteRoom(room.id);
-                                          }
-                                        },
-                                      ),
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                          CupertinoPageRoute<Null>(
+                                      bool? deleteRoom = await Navigator.push(
+                                        context,
+                                        CupertinoPageRoute<bool>(
+                                            builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                                        room.metadata!["active" + currentUser.id!] = false;
+                                        _roomDataService.updateRoom(room.id, room.metadata!);
+                                      });
+                                      if (!deleteRoom!) {
+                                        _roomDataService.deleteRoom(room.id);
+                                      }
+                                    },
+                                  ),
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        CupertinoPageRoute<Null>(
                                             builder: (context) => ProfileViewUser(
-                                                  userID: user.id!,
-                                                  viewOnly: widget.viewOnly,
-                                                )
+                                              userID: user.id!,
+                                              viewOnly: widget.viewOnly,
                                             )
-                                        );
-                                      },
-                                    ),
-                                  );
-                                }
-                              }
-                          ),
-                        ),
-                      ) :
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Container(
-                                width: MediaQuery.of(context).size.width*0.30,
-                                child: Image.asset(Constants.emptyCalendar)
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                            Text(AppLocalizations.of(context)!.noMembersFound, style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16, color: Colors.grey), textAlign: TextAlign.center,),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.12),
-                          ],
-                        ),
+                                        )
+                                    );
+                                  },
+                                ),
+                              );
+                            }
+                          }
                       ),
-                  ],
+                    ),
+                  ) :
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Container(
+                            width: MediaQuery.of(context).size.width*0.30,
+                            child: Image.asset(Constants.emptyCalendar)
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                        Text(AppLocalizations.of(context)!.noMembersFound, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.12),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ) : Column(
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+              Expanded(
+                child: Container(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemCount: filteredMembers.length,
+                      itemBuilder: (context, index) {
+                        Usuario user = filteredMembers[index];
+                        if (user.isPrivate! && user.id != currentUser.id) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                            child: ListTile(
+                              leading: CircularImage(
+                                size: MediaQuery.of(context).size.width*0.15,
+                                image: user.noImageUrl,
+                                color: Theme.of(context).primaryColor,
+                                borderWidth: 1.0,
+                              ),
+                              title: Text(
+                                user.firstName!,
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor.withOpacity(0.3)),
+                                textAlign: TextAlign.left,
+                              ),
+                              trailing: Icon(Icons.visibility_off_outlined, color: Theme.of(context).primaryColor.withOpacity(0.3), size: MediaQuery.of(context).size.height*0.03,),
+                              onTap: () {
+
+                              },
+                            ),
+                          );
+                        } else {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                            child: ListTile(
+                              leading: CircularImage(
+                                size: MediaQuery.of(context).size.width*0.15,
+                                image: user.imageUrl,
+                                color: Theme.of(context).primaryColor,
+                                borderWidth: 1.0,
+                              ),
+                              title: Text(
+                                getUsersFullName(user),
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.left,
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "@${user.nick!}",
+                                    style: Theme.of(context).textTheme.caption,
+                                  ),
+                                ],
+                              ),
+                              trailing: widget.viewOnly || user.id! == currentUser.id ? IconButton(
+                                icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+                                alignment: Alignment.centerRight,
+                                padding: EdgeInsets.all(0),
+                                onPressed: false ? () {
+                                } : null,
+                              ) : IconButton(
+                                icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
+                                alignment: Alignment.centerRight,
+                                padding: EdgeInsets.all(0),
+                                onPressed: () async {
+                                  types.User otherUser = types.User(
+                                    firstName: user.firstName,
+                                    lastName: user.lastName,
+                                    id: user.id!, // UID from Firebase Authentication
+                                    imageUrl: user.imageUrl,
+                                  );
+                                  final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                                    "trainer" + user.id!: user.isTrainer,
+                                    "trainer" + currentUser.id!: currentUser.isTrainer,
+                                    "active" + user.id!: false,
+                                    "active" + currentUser.id!: true,
+                                  });
+
+                                  bool? deleteRoom = await Navigator.push(
+                                    context,
+                                    CupertinoPageRoute<bool>(
+                                        builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                                    room.metadata!["active" + currentUser.id!] = false;
+                                    _roomDataService.updateRoom(room.id, room.metadata!);
+                                  });
+                                  if (!deleteRoom!) {
+                                    _roomDataService.deleteRoom(room.id);
+                                  }
+                                },
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    CupertinoPageRoute<Null>(
+                                        builder: (context) => ProfileViewUser(
+                                          userID: user.id!,
+                                          viewOnly: widget.viewOnly,
+                                        )
+                                    )
+                                );
+                              },
+                            ),
+                          );
+                        }
+                      }
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
         ),
       ),
     );

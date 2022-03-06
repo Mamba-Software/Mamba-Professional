@@ -57,7 +57,7 @@ class _LoginState extends State<Login> {
     return ScaffoldMessenger(
           key: scaffoldMessengerKey,
           child: Scaffold(
-            resizeToAvoidBottomInset: false,
+            resizeToAvoidBottomInset: true,
             backgroundColor: Theme.of(context).accentColor,
             body: Center(
               child: SingleChildScrollView(
@@ -69,7 +69,7 @@ class _LoginState extends State<Login> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
-                          padding: EdgeInsets.only(top: 16.0),
+                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.05),
                           width: MediaQuery.of(context).size.width*0.50,
                           child: Image.asset(Constants.logoExtended)
                         ),
@@ -83,15 +83,16 @@ class _LoginState extends State<Login> {
                               email = val;
                             });
                           },
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                           decoration: Styles.textFromInputDecoration.copyWith(
                               labelText: AppLocalizations.of(context)!.email,
-                              labelStyle: Theme.of(context).textTheme.bodyText1,
+                              labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                              errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                               prefixIcon:  Padding(
                                 padding: EdgeInsets.all(0.0),
                                 child: Icon(
                                   Icons.email_outlined,
-                                  color: Theme.of(context).primaryColor,
+                                  color: AppColors.black,
                                   size: MediaQuery.of(context).size.width*0.06,
                                 ), // icon is 48px widget.
                               )
@@ -105,18 +106,19 @@ class _LoginState extends State<Login> {
                                 password = val;
                               });
                             },
-                            style: Theme.of(context).textTheme.headline1!.copyWith(fontSize: 16, fontWeight: FontWeight.w500),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                             obscureText: !_passwordVisible,
                             decoration: Styles.textFromInputDecoration.copyWith(
                                 labelText: AppLocalizations.of(context)!.password,
-                                labelStyle: Theme.of(context).textTheme.bodyText1,
+                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                                errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                 suffixIcon: Padding(
                                     padding: EdgeInsets.all(0.0),
                                     child: IconButton(
                                         icon: Icon(
                                           // Based on passwordVisible state choose the icon
                                           _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                          color: Theme.of(context).primaryColor,
+                                          color: AppColors.black,
                                           size: MediaQuery.of(context).size.width*0.06,
                                         ),
                                         onPressed: () {
@@ -130,7 +132,7 @@ class _LoginState extends State<Login> {
                                   padding: EdgeInsets.all(0.0),
                                   child: Icon(
                                     Icons.vpn_key_outlined,
-                                    color: Theme.of(context).primaryColor,
+                                    color: AppColors.black,
                                     size: MediaQuery.of(context).size.width*0.06,
                                   ), // icon is 48px widget.
                                 )
@@ -158,7 +160,7 @@ class _LoginState extends State<Login> {
                           },
                           child: Text(
                             AppLocalizations.of(context)!.forgotPassword,
-                            style: Theme.of(context).textTheme.caption,
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                           ),
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -173,7 +175,7 @@ class _LoginState extends State<Login> {
                             height: MediaQuery.of(context).size.height*0.06,
                             width: MediaQuery.of(context).size.width*0.50,
                             decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(10)
+                                color: AppColors.black, borderRadius: BorderRadius.circular(10)
                             ),
                             child: !isLoading ? TextButton(
                               onPressed: () async {
@@ -184,7 +186,7 @@ class _LoginState extends State<Login> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.login,
-                                style: Theme.of(context).textTheme.headline2
+                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white)
                               ),
                             ) : Center(
                               child: SizedBox(
@@ -234,7 +236,7 @@ class _LoginState extends State<Login> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.register,
-                                  style: Theme.of(context).textTheme.headline1
+                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black)
                               ),
                             ),
                           ),

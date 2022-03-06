@@ -5,7 +5,7 @@ import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 
 class SettingsPrivacy extends StatefulWidget {
   const SettingsPrivacy({Key? key}) : super(key: key);
@@ -53,13 +53,13 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
         title: Text(AppLocalizations.of(context)!.typeProfile, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 25,),
+          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
       ),
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: !isLoading ? SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
@@ -73,7 +73,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                     child: Text(
                       AppLocalizations.of(context)!.typeProfilePublic,
-                      style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   subtitle: Row(
@@ -81,7 +81,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.typeProfilePublicDescription,
-                          style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: Colors.grey), textAlign: TextAlign.left,
+                          style: Theme.of(context).textTheme.caption,
                         ),
                       ),
                     ],
@@ -120,7 +120,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                     child: Text(
                       AppLocalizations.of(context)!.typeProfilePrivate,
-                      style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                   subtitle: Row(
@@ -128,7 +128,7 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.typeProfilePrivateDescription,
-                          style: Styles.purpleTextStyle.copyWith(fontSize: 14, color: Colors.grey), textAlign: TextAlign.left,
+                          style: Theme.of(context).textTheme.caption,
                         ),
                       ),
                     ],
@@ -185,9 +185,9 @@ class _SettingsPrivacyState extends State<SettingsPrivacy> {
             });
           },
           backgroundColor: Colors.green,
-          icon: Icon(Icons.save_rounded, color: Colors.white,),
+          icon: Icon(Icons.save_rounded, color: Colors.white, size: MediaQuery.of(context).size.width*0.05,),
           label: Text(AppLocalizations.of(context)!.save,
-            style: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.white),),
+            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
         ),
       ) : Container(),
     );

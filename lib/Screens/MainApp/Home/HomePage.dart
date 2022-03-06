@@ -1,17 +1,15 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
-
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'Chat/ChatCore/ChatCore.dart';
 import 'Marca/Marca.dart';
 import 'Perfil/Perfil.dart';
@@ -104,7 +102,7 @@ class _HomePageState extends State<HomePage> {
       appBar: null,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
-        iconSize: MediaQuery.of(context).size.height*0.04,
+        iconSize: MediaQuery.of(context).size.height*0.032,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -137,12 +135,12 @@ class _HomePageState extends State<HomePage> {
           _onTappedBar(index);
         },
         selectedItemColor: Theme.of(context).accentColor,
-        selectedLabelStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color:Theme.of(context).accentColor, fontSize: 13),
+        selectedLabelStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 12, color:Theme.of(context).accentColor),
         selectedIconTheme: IconThemeData(
           color: Theme.of(context).accentColor
         ),
         unselectedItemColor: Colors.grey,
-        unselectedLabelStyle: Theme.of(context).textTheme.subtitle1!.copyWith(color: Colors.grey, fontSize: 13),
+        unselectedLabelStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 12, color: AppColors.grey),
         unselectedIconTheme: IconThemeData(
             color: Colors.grey
         ),
@@ -217,11 +215,11 @@ class _HomePageState extends State<HomePage> {
           right: -15,
           child: CircleAvatar(
             backgroundColor: Theme.of(context).accentColor,
-            radius: 10,
+            radius: 8,
             child: Text(
               text,
               style: TextStyle(
-                fontSize: 12 - deltaFontSize,
+                fontSize: 10 - deltaFontSize,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),

@@ -4,21 +4,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:intl/intl.dart';
-
 import 'package:mamba_castelldefels/Data/DataService/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingView.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'Chat.dart';
-import 'Users.dart';
-import 'Util.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChatCore extends StatefulWidget {
@@ -126,7 +120,7 @@ class _ChatCoreState extends State<ChatCore> {
           title: Row(
             children: [
               SizedBox(width: MediaQuery.of(context).size.width*0.01,),
-              Text(AppLocalizations.of(context)!.chatBottomNav, style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22), textAlign: TextAlign.center,),
+              Text(AppLocalizations.of(context)!.chatBottomNav, style: Theme.of(context).textTheme.headline3, textAlign: TextAlign.center,),
             ],
           ),
           centerTitle: false,
@@ -142,8 +136,10 @@ class _ChatCoreState extends State<ChatCore> {
                         // Filter chats
                         filterSearchResults(value.toLowerCase());
                       },
+                      style: Theme.of(context).textTheme.bodyText2,
                       textAlign: TextAlign.left,
                       decoration: InputDecoration(
+                        hintStyle: Theme.of(context).textTheme.caption,
                         hintText: AppLocalizations.of(context)!.search,
                         focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey),
@@ -156,13 +152,14 @@ class _ChatCoreState extends State<ChatCore> {
                         prefixIcon: Icon(
                           Icons.search,
                           color: Colors.grey,
+                          size: MediaQuery.of(context).size.width*0.06,
                         ),
                         suffixIcon: IconButton(
                           onPressed: () {
                             searchController.clear();
                             filterSearchResults("");
                           },
-                          icon: Icon(Icons.delete_outline, color: Colors.grey,),
+                          icon: Icon(Icons.delete_outline, color: Colors.grey, size: MediaQuery.of(context).size.width*0.06,),
                         ),
                         contentPadding: EdgeInsets.all(0),
                       ),
@@ -176,7 +173,7 @@ class _ChatCoreState extends State<ChatCore> {
           actions: [
             !searchClicked ?
             IconButton(
-                icon: Icon(Icons.search, size: 35, color: Theme.of(context).primaryColor),
+                icon: Icon(Icons.search, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).primaryColor),
                 onPressed: () {
                   setState(() {
                     searchClicked = !searchClicked;
@@ -185,7 +182,7 @@ class _ChatCoreState extends State<ChatCore> {
             )
                 :
             IconButton(
-                icon: Icon(Icons.clear, size: 35, color: Theme.of(context).primaryColor),
+                icon: Icon(Icons.clear, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).primaryColor),
                 onPressed: () {
                   setState(() {
                     searchClicked = !searchClicked;
@@ -209,14 +206,14 @@ class _ChatCoreState extends State<ChatCore> {
                 children: [
                   Center(
                     child: Container(
-                        height: MediaQuery.of(context).size.height *0.25,
+                        height: MediaQuery.of(context).size.width*0.3,
                         child: Image.asset(Constants.chatImage)
                     ),
                   ),
                   Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
-                      child: Text(AppLocalizations.of(context)!.noMessages, style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080)), textAlign: TextAlign.center,),
+                      child: Text(AppLocalizations.of(context)!.noMessages, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
                     ),
                   ),
                 ],
@@ -301,8 +298,8 @@ class _ChatCoreState extends State<ChatCore> {
                                           .start,
                                       children: <Widget>[
                                         Text(room.name ?? '',
-                                          style: TextStyle(fontSize: 16,
-                                              fontWeight: FontWeight.bold),),
+                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                        ),
                                         SizedBox(height: MediaQuery
                                             .of(context)
                                             .size
@@ -310,7 +307,7 @@ class _ChatCoreState extends State<ChatCore> {
                                         TextField(
                                           enabled: false,
                                           decoration: InputDecoration(
-                                            hintStyle: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: Read?FontWeight.normal:FontWeight.bold),
+                                            hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.grey.shade600, fontWeight: Read?FontWeight.normal:FontWeight.bold),
                                             hintText: returnChatHintMessage(room),
                                             contentPadding: EdgeInsets.all(0),
                                             isDense: true,
@@ -349,9 +346,10 @@ class _ChatCoreState extends State<ChatCore> {
                               .of(context)
                               .size
                               .width * 0.04,),
-                          Text((DateFormat('dd/MM/yyyy, HH:mm').format(dt))
-                              .toString(), style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.bold),),
+                          Text(
+                            (DateFormat('dd/MM/yy').format(dt)).toString(),
+                            style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 10),
+                          ),
                         ],
                       ),
                     ),
@@ -370,6 +368,11 @@ class _ChatCoreState extends State<ChatCore> {
                     userAux = room.users.firstWhere(
                           (u) => u.id != _user!.uid,
                     );
+                  }
+
+                  bool Read = true;
+                  if(room.lastMessages != null && room.lastMessages[0].metadata[currentUser.id] == "delivered") {
+                    Read = false;
                   }
 
                   var dt = DateTime.fromMillisecondsSinceEpoch(
@@ -431,8 +434,8 @@ class _ChatCoreState extends State<ChatCore> {
                                           .start,
                                       children: <Widget>[
                                         Text(room.name ?? '',
-                                          style: TextStyle(fontSize: 16,
-                                              fontWeight: FontWeight.bold),),
+                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                        ),
                                         SizedBox(height: MediaQuery
                                             .of(context)
                                             .size
@@ -440,7 +443,7 @@ class _ChatCoreState extends State<ChatCore> {
                                         TextField(
                                           enabled: false,
                                           decoration: InputDecoration(
-                                            // hintStyle: TextStyle(fontSize: 13,color: Colors.grey.shade600, fontWeight: widget.isMessageRead?FontWeight.bold:FontWeight.normal),
+                                            hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.grey.shade600, fontWeight: Read?FontWeight.normal:FontWeight.bold),
                                             hintText: room.lastMessages !=
                                                 null ? room.lastMessages[0]
                                                 .text : 'test',
@@ -481,9 +484,8 @@ class _ChatCoreState extends State<ChatCore> {
                               .of(context)
                               .size
                               .width * 0.04,),
-                          Text((DateFormat('dd/MM/yyyy, HH:mm').format(dt))
-                              .toString(), style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.bold),),
+                          Text((DateFormat('dd/MM/yy').format(dt))
+                              .toString(), style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 10),),
                         ],
                       ),
                     ),

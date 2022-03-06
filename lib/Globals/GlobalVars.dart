@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 bool isProduction = false;
 
 // App Version
-var version = "MAMBA v0.0.3";
+var version = "MAMBA v0.0.4";
 
 // Website
 var websiteES = "https://mambastyle.net/";

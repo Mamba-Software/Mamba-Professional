@@ -11,20 +11,16 @@ import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEven
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/ImageFullScreen.dart';
-import 'package:mamba_castelldefels/Data/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteFromBrandConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/DeleteFromEventConfirmationDialog.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-
 import '../../Constants.dart';
-import '../../Styles/Styles.dart';
-import '../LoadingViewPurple.dart';
+import '../LoadingViews/LoadingViewPurple.dart';
 
 class ProfileViewUser extends StatefulWidget {
   @override
@@ -147,15 +143,12 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.profileBottomNav, style:  Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24)),
+          title: Text(AppLocalizations.of(context)!.profileBottomNav, style: Theme.of(context).appBarTheme.titleTextStyle,),
           centerTitle: true,
-          iconTheme: IconThemeData(
-            color: Theme.of(context).primaryColor, //change your color here
-          ),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Styles.accent),
-            onPressed: () => {
-              Navigator.pop(context)
+            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+            onPressed: () {
+              Navigator.pop(context);
             },
           ),
           actions: [
@@ -185,7 +178,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                         Navigator.pop(context, true);
                       }
                     } ,
-                    icon: Icon(Icons.delete_outlined, color: Colors.red)
+                    icon: Icon(Icons.delete_outlined, color: Colors.red, size: MediaQuery.of(context).size.width*0.06,)
                 ) : Container(),
                 widget.viewOnly || user!.id! == currentUser.id ? Container() : IconButton(
                     onPressed: () async {
@@ -213,12 +206,11 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                         _roomDataService.deleteRoom(room.id);
                       }
                     } ,
-                    icon: Icon(Icons.chat_outlined)
+                    icon: Icon(Icons.chat_outlined, size: MediaQuery.of(context).size.width*0.06,)
                 ),
                 SizedBox(width: MediaQuery.of(context).size.width*0.01)
               ],
             ) : Container(),
-
           ],
         ),
         body: isLoading ?
@@ -229,6 +221,15 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.03),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                child: Text(
+                  user!.name!,
+                  style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+              ),
               SizedBox(height: MediaQuery.of(context).size.height*0.03),
               GestureDetector(
                   onTap: () {
@@ -261,80 +262,21 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     image: user!.imageUrl,
                     borderWidth: 1.5,)),
               SizedBox(height: MediaQuery.of(context).size.height*0.03),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                child: Text(
-                  user!.name!,
-                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
                     user!.isTrainer! ?  Icons.record_voice_over : Icons.directions_run,
                     color: Theme.of(context).accentColor,
-                    size: 25,
+                    size: MediaQuery.of(context).size.width*0.04,
                   ),
                   user!.isTrainer! ? SizedBox(width: 4) : SizedBox(width: 2),
                   Text(
                     user!.isTrainer! ?  AppLocalizations.of(context)!.trainer : AppLocalizations.of(context)!.client,
-                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.w600,color: Theme.of(context).accentColor,),
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).accentColor),
                   ),
                 ],
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.00),
-              /*
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    user!.gender == 2 ? Icons.transgender_outlined : user!.gender == 0 ? Icons.male_outlined : Icons.female_outlined,
-                    color: Theme.of(context).accentColor,
-                    size: 25,
-                  ),
-                  SizedBox(width: 2),
-                  Text(
-                    user!.gender == 2 ? AppLocalizations.of(context)!.transgender : user!.gender == 0 ? AppLocalizations.of(context)!.male : AppLocalizations.of(context)!.female,
-                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).accentColor),
-                  ),
-                  /*
-                  Container(
-                    height: 16,
-                    width: 32,
-                    child: VerticalDivider(color: Theme.of(context).accentColor, width: 10, thickness: 2,)
-                  ),
-                  Icon(
-                    Icons.cake,
-                    color: Theme.of(context).accentColor,
-                    size: 25,
-                  ),
-                  SizedBox(width: 2),
-                  Text(
-                    user!.dateOfBirth!,
-                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).accentColor),
-                  ),
-                   */
-                  Container(
-                      height: 16,
-                      width: 32,
-                      child: VerticalDivider(color: Theme.of(context).accentColor, width: 10, thickness: 2,)
-                  ),
-                  Icon(
-                    user!.isTrainer! ?  Icons.record_voice_over : Icons.directions_run,
-                    color: Theme.of(context).accentColor,
-                    size: 25,
-                  ),
-                  user!.isTrainer! ? SizedBox(width: 4) : SizedBox(width: 2),
-                  Text(
-                    user!.isTrainer! ?  AppLocalizations.of(context)!.trainer : AppLocalizations.of(context)!.client,
-                    style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).accentColor),
-                  ),
-                ],
-              ),
-              */
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -349,7 +291,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                       width: MediaQuery.of(context).size.width * 0.81,
                       height: MediaQuery.of(context).size.height * 0.10,
                       decoration: new BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).scaffoldBackgroundColor,
                         //border: Border.all(color: Theme.of(context).primaryColor, width: 1),
                         borderRadius: new BorderRadius.all(
                           const Radius.circular(10.0),
@@ -367,12 +309,12 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                               children: <Widget>[
                                 Text(
                                   totalEvents.toString(),
-                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
                                 ),
                                 SizedBox(height: 2),
                                 Text(
                                   AppLocalizations.of(context)!.allEvents,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 12),
+                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
                                   textAlign: TextAlign.center,
                                 ),
                               ],
@@ -392,12 +334,12 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                               children: <Widget>[
                                 Text(
                                   thisMonthEvents.toString(),
-                                  style: Styles.purpleTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
                                 ),
                                 SizedBox(height: 2),
                                 Text(
                                   AppLocalizations.of(context)!.monthEvents,
-                                  style: Styles.purpleTextStyle.copyWith(fontSize: 12),
+                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
                                   textAlign: TextAlign.center,
                                 ),
                               ],
@@ -444,7 +386,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                   children: [
                                     Text(
                                       Localizations.localeOf(context).languageCode == 'ca' ? month.substring(3).toUpperCase() : month.toUpperCase(),
-                                      style: Styles.purpleTextStyle.copyWith(fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).accentColor),
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).accentColor),
                                     ),
                                   ],
                                 ),
@@ -485,16 +427,19 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                 children: [
                                   Text(
                                     toCapitalized(day),
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 12.0, fontWeight: FontWeight.w600),
+                                    style: Theme.of(context).textTheme.bodyText2,
                                   ),
                                   Text(
                                     "${event.day}/${event.month}/${event.year!.substring(2, 4)}",
-                                    style: Styles.purpleTextStyle.copyWith(fontSize: 12.0, fontWeight: FontWeight.w600),
+                                    style: Theme.of(context).textTheme.bodyText2,
                                   ),
                                 ],
                               ),
                               minLeadingWidth: MediaQuery.of(context).size.width*0.15,
-                              title: Text(event.title!,style: Styles.purpleTextStyle.copyWith(fontSize: 18.0, fontWeight: FontWeight.w600),),
+                              title: Text(
+                                event.title!,
+                                style: Theme.of(context).textTheme.bodyText2,
+                              ),
                               subtitle: Column(
                                 children: [
                                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -503,66 +448,66 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                     children: [
                                       Icon(
                                         Icons.schedule,
-                                        color: Colors.black,
+                                        color: Theme.of(context).primaryColor,
                                         size: 15,
                                       ),
                                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                       Text(
                                         event.hour.toString(),
-                                        style: TextStyle(color: Colors.black, fontSize: 12),
+                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                                       ),
                                       Text(
                                         ":",
-                                        style: TextStyle(color: Colors.black, fontSize: 12),
+                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                                       ),
                                       Text(
                                         event.minute=="0" ? "00" : event.minute.toString(),
-                                        style: TextStyle(color: Colors.black, fontSize: 12),
+                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                                       ),
                                       Container(
                                           height: 8,
                                           width: 24,
-                                          child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
+                                          child: VerticalDivider(color: Theme.of(context).primaryColor, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
                                       ),
                                       Icon(
                                         Icons.timer,
-                                        color: Colors.black,
+                                        color: Theme.of(context).primaryColor,
                                         size: 15,
                                       ),
                                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                       Text(
                                         durationToString(event.duration!),
-                                        style: TextStyle(color: Colors.black, fontSize: 12),
+                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                                       ),
                                       Container(
                                           height: 8,
                                           width: 24,
-                                          child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
+                                          child: VerticalDivider(color: Theme.of(context).primaryColor, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
                                       ),
                                       Icon(
                                         Icons.record_voice_over,
-                                        color: Colors.black,
+                                        color: Theme.of(context).primaryColor,
                                         size: 15,
                                       ),
                                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                       Text(
                                         event.numTrainers.toString(),
-                                        style: TextStyle(color: Colors.black, fontSize: 12),
+                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                                       ),
                                       Container(
                                           height: 8,
                                           width: 24,
-                                          child: VerticalDivider(color: Colors.black, width: 10, thickness: 1,)
+                                          child: VerticalDivider(color: Theme.of(context).primaryColor, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
                                       ),
                                       Icon(
                                         Icons.directions_run,
-                                        color: Colors.black,
+                                        color: Theme.of(context).primaryColor,
                                         size: 15,
                                       ),
                                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                       Text(
                                         event.numClients.toString(),
-                                        style: TextStyle(color: Colors.black, fontSize: 12),
+                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                                       ),
                                     ],
                                   ),
@@ -571,7 +516,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                               trailing: !canDeleteFromEvent(event.numTrainers!) ? Icon(
                                 Icons.arrow_forward_ios,
                                 color: Theme.of(context).primaryColor,
-                                size: 20,
+                                size: MediaQuery.of(context).size.width*0.04,
                               ) : GestureDetector(
                                 onTap: () async {
                                   var result = await showDialog(
@@ -623,7 +568,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.20),
-                          child: Text(AppLocalizations.of(context)!.noTrainingsDone, style: Styles.purpleTextStyle.copyWith(color: Color(0xFF808080), fontSize: 16), textAlign: TextAlign.center,),
+                          child: Text(AppLocalizations.of(context)!.noTrainingsDone, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
                         ),
                       ],
                     ),
