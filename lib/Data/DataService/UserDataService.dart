@@ -42,7 +42,7 @@ class UserDataService {
   Future<void> updateUserThemePreferences(String uid, bool? isDark) => _firebase.updateUserThemePreferences(uid, isDark);
   Future<void> updateUserNotificationToken(String uid, String token) => _firebase.updateUserNotificationToken(uid, token);
   Future<void> updateCurrentUserFirstTime() => _firebase.updateCurrentUserFirstTime();
-  Future<String> updateCurrentUserPhoto(File image) => _firebase.updateCurrentUserPhoto(image);
+  Future<String> updateUserPhoto(String uid, File image) => _firebase.updateUserPhoto(uid, image);
   Future<void> updateCurrentUserDatosPerifl(String name, String firstName, String lastName, int gender, String dateOfBirth) => _firebase.updateCurrentUserDatosPerifl(name, firstName, lastName, gender, dateOfBirth);
   Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma) => _firebase.updateCurrentUserSettingsPerifl(isPrivate, idioma);
   Future<void> markNotificationAsRead(String userId, String notificationId) => _firebase.markNotificationAsRead(userId,notificationId);

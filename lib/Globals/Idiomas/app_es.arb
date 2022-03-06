@@ -263,6 +263,10 @@
   "@personlize":{
     "description": "Información Text"
   },
+  "content": "Contenido",
+  "@content":{
+    "description": "Información Text"
+  },
   "settings": "Ajustes",
   "@settings":{
     "description": "Ajustes Text"
@@ -772,6 +776,10 @@
       }
     }
   },
+  "discard": "Descartar",
+  "@discard":{
+    "description": "notInBrand text"
+  },
   "delete": "Eliminar",
   "@delete":{
     "description": "notInBrand text"
@@ -1158,6 +1166,10 @@
   "@yourBrand": {
     "description": "Wellcome message"
   },
+  "yourImages": "Tus imágenes",
+  "@yourImages": {
+    "description": "Wellcome message"
+  },
   "editYourPrivacy": "Cambia el tipo de perfil",
   "@editYourPrivacy": {
     "description": "Wellcome message"
@@ -1186,6 +1198,10 @@
   "@uploadPhoto": {
     "description": "Wellcome message"
   },
+  "uploadPhotos": "Subir imágenes",
+  "@uploadPhotos": {
+    "description": "Wellcome message"
+  },
   "editBrandInfo": "Edita la información de la marca",
   "@editBrandInfo": {
     "description": "Wellcome message"
@@ -1194,9 +1210,34 @@
   "@editBrandLogo": {
     "description": "Wellcome message"
   },
-  "addBrandPhotos": "Añade imágenes para la marca",
+  "addBrandPhotos": "Añade imágenes de tu marca",
   "@addBrandPhotos": {
     "description": "Wellcome message"
+  },
+  "addBrandPhotosMax": "Ya has añadido todas las imágenes possibles",
+  "@addBrandPhotosMax": {
+    "description": "Wellcome message"
+  },
+  "addBrandPhotosLeft": "Aún puedes añadir {left} imagen/es de un máximo de {max}",
+  "@addBrandPhotosLeft": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "left": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "addBrandPhotosMaxLeft": "Puedes añadir un máximo de {left} imagen/es",
+  "@addBrandPhotosMaxLeft": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "left": {
+        "type": "String"
+      }
+    }
   },
   "exitBrand": "Abandonar marca",
   "@exitBrand": {
@@ -1466,6 +1507,10 @@
   },
   "myLocationsDeleteDescription": "¿Estás seguro de que quieres borrar esta ubicación?\n\nEn caso de que esta ubicación esté siendo usada en cualquier evento, actualizaremos la ubicación de este a tu ubicación base.",
   "@myLocationsOtherLocationsDesc": {
+    "description": "Wellcome message"
+  },
+  "myImagesDeleteDescription": "¿Estás seguro de que quieres borrar esta imagen?",
+  "@myImagesDeleteDescription": {
     "description": "Wellcome message"
   },
   "userJoinEventUser": "Te has unido al evento {name}",

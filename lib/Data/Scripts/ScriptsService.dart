@@ -1,26 +1,17 @@
-import 'dart:io';
+import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
+import 'dart:io';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/ChatUsers.dart';
-import 'package:mamba_castelldefels/Data/Models/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Data/Models/NotificationEvent.dart';
-import 'package:mamba_castelldefels/Data/Models/Message.dart';
-import 'package:mamba_castelldefels/Data/Models/Question.dart';
-import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:uuid/uuid.dart';
-
+import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import '../DataService/BrandDataService.dart';
 
 class ScriptsDatabaseService {
@@ -30,6 +21,7 @@ class ScriptsDatabaseService {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final batch = FirebaseFirestore.instance.batch();
   var _brandDataService = BrandDataService();
+  var _userDataService = UserDataService();
 
   // Firebase collections
   String users = isProduction ? 'Users' : '7777 Users';
@@ -1047,5 +1039,126 @@ class ScriptsDatabaseService {
       return false;
     }
   }
+
+  Future<bool> migrateResizeCompressUserImages() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('IMAGE MIGRATION 6Th MARCH 2022');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying '+users+' storage collection:\n');
+      print('--------------');
+      print('\n');
+
+      String noImageUrl = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
+
+      // TEST IN DEVELOPMENT
+      QuerySnapshot querySnapshot = await _firestore.collection("7777 Users").get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
+        Usuario user = Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('USER WITH ID: ' + user.id! + " AND NAME: " + user.name!);
+        print('\n');
+        if (user.name == "null" || user.name == null) {
+          print('User has not finished Onboarding');
+        } else {
+          if (noImageUrl == user.imageUrl) {
+            print("THIS USER HAS CURRENTLY NO IMAGE SET");
+          } else {
+            File fileImage = await ImageUtils().urlToFile(user.imageUrl!);
+            var size = await ImageUtils().getImageFileSize(fileImage, 2);
+            print("Current Image Size: "+size);
+            print('\n');
+            print("Compressing Image...");
+            print('\n');
+            final filePath = fileImage.absolute.path;
+            final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
+            final splitted = filePath.substring(0, (lastIndex));
+            final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+            var compressedFileImage = await FlutterImageCompress.compressAndGetFile(
+              fileImage.absolute.path,
+              outPath,
+              quality: 75,
+              rotate: 0,
+            );
+            var compressedSize = await ImageUtils().getImageFileSize(compressedFileImage!, 2);
+            print("Compressed Image Size: "+compressedSize);
+            // Upload Photo de Firebase and Update
+            print("Uploading image ...");
+            await _userDataService.updateUserPhoto(user.id!, compressedFileImage);
+            print("Image succesfully uploaded!");
+          }
+        }
+
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> migrateResizeCompressBrandImages() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('IMAGE MIGRATION 6Th MARCH 2022');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying '+brands+' storage collection:\n');
+      print('--------------');
+      print('\n');
+
+      // TEST IN DEVELOPMENT
+      QuerySnapshot querySnapshot = await _firestore.collection(brands).get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
+        Brand brand = Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('BRAND WITH ID: ' + brand.id! + " AND NAME: " + brand.name!);
+        print('\n');
+        File fileImage = await ImageUtils().urlToFile(brand.logoUrl!);
+        var size = await ImageUtils().getImageFileSize(fileImage, 2);
+        print("Current Image Size: "+size);
+        print('\n');
+        print("Compressing Image...");
+        print('\n');
+        final filePath = fileImage.absolute.path;
+        final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
+        final splitted = filePath.substring(0, (lastIndex));
+        final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+        var compressedFileImage = await FlutterImageCompress.compressAndGetFile(
+          fileImage.absolute.path,
+          outPath,
+          quality: 75,
+          rotate: 0,
+        );
+        var compressedSize = await ImageUtils().getImageFileSize(compressedFileImage!, 2);
+        print("Compressed Image Size: "+compressedSize);
+        // Upload Photo de Firebase and Update
+        print("Uploading image ...");
+        await _brandDataService.updateBrandPhoto(brand.id!, compressedFileImage);
+        print("Image succesfully uploaded!");
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+
 
 }

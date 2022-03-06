@@ -12,6 +12,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/MyLocat
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AddBrandPics.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
@@ -156,23 +157,28 @@ class _SettingsBrandState extends State<SettingsBrand> {
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     ],
                   ),
-                  false ? Column(
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        AppLocalizations.of(context)!.personlize,
+                        AppLocalizations.of(context)!.content,
                         style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       TextButton(
                         onPressed: () {
-
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute<String>(
+                                builder: (context) => AddBrandPics(),
+                              )
+                          );
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Icon(Icons.photo_library, color: Theme.of(context).primaryColor),
+                            Icon(Icons.photo_library_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05),
                             SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.addBrandPhotos,
@@ -181,9 +187,9 @@ class _SettingsBrandState extends State<SettingsBrand> {
                           ],
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     ],
-                  ) : Container(),
+                  ),
                   currentUser.id != currentBrand.adminID ? TextButton(
                     onPressed: () async {
                       // Leaves Brand

@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -265,7 +266,7 @@ class FirebaseDatabaseService {
     String imageUrl =
         "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
     if (image != null) {
-      imageUrl = await updateCurrentUserPhoto(image);
+      imageUrl = await updateUserPhoto(uid, image);
     }
     await _firestore.collection(users).doc(uid).update({
       "name": name,
@@ -380,17 +381,14 @@ class FirebaseDatabaseService {
     }
   }
 
-  Future<String> updateCurrentUserPhoto(File image) async {
-    User? firebaseUser = await getCurrentUser();
+  Future<String> updateUserPhoto(String userId, File image) async {
     String imageURL = "";
-    var storageRef = await _firebaseStorage
-        .ref()
-        .child("userPics/" + firebaseUser!.uid + ".png");
+    var storageRef = _firebaseStorage.ref().child("users/"+ userId +"/images/" + userId + ".jpeg");
     var uploadTask = storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
         imageURL = value;
-        await _firestore.collection(users).doc(firebaseUser.uid).update({
+        await _firestore.collection(users).doc(userId).update({
           "imageUrl": value,
         });
       });
@@ -446,12 +444,39 @@ class FirebaseDatabaseService {
         });
   }
 
+  Future<String> updateBrandPhoto(String brandID, File image) async {
+    var result;
+    var storageRef = _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + brandID + ".jpeg");
+    var uploadTask = storageRef.putFile(image);
+    await uploadTask.whenComplete(() async {
+      await storageRef.getDownloadURL().then((value) async {
+        result = value;
+        await _firestore.collection(brands).doc(brandID).update({
+          "logoUrl": value,
+        });
+      });
+    });
+    return result;
+  }
+
   Future<void> deleteUserFromBrand(String userId, String brandId) async {
     await _firestore
         .collection(brands)
         .doc(brandId)
         .collection("Users")
         .doc(userId)
+        .delete();
+  }
+
+  Future<void> deleteBrandContentPictures(String brandID, String imageId) async {
+    // Delete Image From Storage
+    _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + imageId + ".jpeg").delete();
+    // Delete Image From Firebase Firestore
+    await _firestore
+        .collection(brands)
+        .doc(brandID)
+        .collection("Images")
+        .doc(imageId)
         .delete();
   }
 
@@ -634,7 +659,7 @@ class FirebaseDatabaseService {
     });
 
     if (!firestoreError) {
-      await updateCurrentBrandPhoto(uid, image);
+      await updateBrandPhoto(uid, image);
       return uid;
     } else {
       return "Error";
@@ -654,20 +679,33 @@ class FirebaseDatabaseService {
     await _firestore.collection(brands).doc(brandId).delete();
   }
 
-  Future<String> updateCurrentBrandPhoto(String brandID, File image) async {
-    var result;
-    var storageRef =
-    await _firebaseStorage.ref().child("brandPics/" + brandID + ".png");
-    var uploadTask = storageRef.putFile(image);
-    await uploadTask.whenComplete(() async {
-      await storageRef.getDownloadURL().then((value) async {
-        result = value;
-        await _firestore.collection(brands).doc(brandID).update({
-          "logoUrl": value,
+  Future<void> addBrandContentPictures(String brandID, List<File> images) async {
+    // Add each brand to the .../BrandId/images directory
+    for (var i=0; i<images.length; i++) {
+      var image = images[i];
+      final uid = Uuid().v4();
+      // Upload the image to Firebase Storage
+      var storageRef = _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + uid + ".jpeg");
+      var uploadTask = storageRef.putFile(image);
+      await uploadTask.whenComplete(() async {
+        await storageRef.getDownloadURL().then((value) async {
+          // Add Image to the Brand Images Subcollection
+          await _firestore.collection(brands).doc(brandID)
+            .collection("Images")
+            .doc(uid)
+            .set({
+              "url": value,
+              "timestamp": Timestamp.now(),
+            });
         });
       });
-    });
-    return result;
+    }
+  }
+
+  Future<void> deleteBrandContentPicture(String brandID) async {
+    await _firebaseStorage.ref()
+        .child("brandPics/" + brandID + ".png")
+        .delete();
   }
 
   Future<void> deleteBrandPhoto(String brandID) async {
@@ -724,6 +762,16 @@ class FirebaseDatabaseService {
             querySnapshot.docs[i].id, querySnapshot.docs[i]));
       }
       return brandList;
+    }
+
+    Future<List<ImageObject>> getBrandContentPictures(String brandID) async {
+      // Get the Image documents of the Brand
+      List<ImageObject> contentImages = [];
+      QuerySnapshot querySnapshot = await _firestore.collection(brands).doc(brandID).collection("Images").get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        contentImages.add(ImageObject.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+      return contentImages;
     }
 
     Future<List<RequestToBrand>> getUserRequests(String userId) async {
