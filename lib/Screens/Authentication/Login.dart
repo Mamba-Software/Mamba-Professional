@@ -1,9 +1,11 @@
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/ForgotPassword.dart';
@@ -34,6 +36,21 @@ class _LoginState extends State<Login> {
   String email = '';
   String password = '';
   String emailTemp = '';
+
+  @override
+  initState() {
+    super.initState();
+    //initDynamicLinks();
+  }
+
+  Future<void> initDynamicLinks() async {
+    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
+      brandPath = dynamicLinkData.link;
+    }).onError((error) {
+      print('onLink error');
+      print(error.message);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

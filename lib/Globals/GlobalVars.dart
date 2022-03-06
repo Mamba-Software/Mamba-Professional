@@ -36,3 +36,7 @@ String? currentAddress;
 // Page Controller
 int currentIndex = 0;
 PageController pageController = PageController(initialPage: currentIndex);
+
+//Dynamic links path
+var brandPath = null;
+

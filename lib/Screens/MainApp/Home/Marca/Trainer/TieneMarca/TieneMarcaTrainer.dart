@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
-
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -21,6 +22,7 @@ import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarc
 import 'package:page_transition/page_transition.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'TieneMarcaModals/MembershipRequests.dart';
 import 'TieneMarcaModals/SettingsBrand.dart';
@@ -36,6 +38,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
   // Acceso a Base de Datos
   var _brandDataService = new BrandDataService();
   var _eventDataService = new EventDataService();
+
   // Boolean isLoading
   bool isLoading = false;
   // Brand Events Today
@@ -107,7 +110,7 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
                         style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.left
                       ),
-                    ),
+                    ),//
                     Row(
                       children: [
                         IconButton(

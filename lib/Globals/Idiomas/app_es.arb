@@ -852,7 +852,7 @@
   "@inviteCodeOptional":{
     "description": "inviteCode text"
   },
-  "copyCodeMessage": "Envía tu código de invitación",
+  "copyCodeMessage": "Comparte tu código de invitación",
   "@copyCodeMessage":{
     "description": "inviteCode text"
   },

@@ -1,3 +1,4 @@
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -15,8 +16,14 @@ import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:resize/resize.dart';
 
+import 'Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
+
 // Declaring Instance of AppThemes();
 AppThemes _appThemes = AppThemes();
+
+//Dynamic Link Utils for retrieving the dynamic link
+var _dynamicLinkUtils = new DynamicLinkUtils();
+
 
 // BackGroundNotificationHandler
 Future<void> _backgroundMessageHandler(RemoteMessage message) async {
@@ -31,6 +38,10 @@ void main() async {
   await Firebase.initializeApp();
   // Firebase Messaging Back Ground Message Handler
   FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
+  //Get dynamic links on open app
+  final PendingDynamicLinkData? initialLink = await FirebaseDynamicLinks.instance.getInitialLink();
+  if(initialLink != null) brandPath = initialLink.link;
+  // Run App
   runApp(
     MultiProvider(
       providers: [
