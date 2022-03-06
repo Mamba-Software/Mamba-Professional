@@ -8,7 +8,6 @@ class DynamicLinkUtils {
 
   Future<Uri>  createDynamicLinkWithId(String id, String urlImage, String brandName) async {
 
-    print(Uri.parse('https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/brandPics%2F9d978520-be41-4d90-94df-f49db3be5eac.png?alt=media&token=94d8bcd2-ce89-4c85-a314-6ffd15fa632e'));
     FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
 
     final DynamicLinkParameters parameters = DynamicLinkParameters(

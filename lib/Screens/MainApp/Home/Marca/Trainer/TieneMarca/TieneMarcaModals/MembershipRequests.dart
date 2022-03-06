@@ -6,10 +6,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/RequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -26,6 +29,10 @@ class _MembershipRequestsState extends State<MembershipRequests> {
   // Acceso a Base de Datos
   var _brandDataService = new BrandDataService();
   var _userDataService = new UserDataService();
+
+  var _dynamicLinkUtils = new DynamicLinkUtils();
+  String? brandId = '';
+
   // Boolean Loading
   bool isLoading = false;
   // Request List
@@ -83,21 +90,11 @@ class _MembershipRequestsState extends State<MembershipRequests> {
                   padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02),
                   child: ListTile(
                     onTap: () async {
-                      Clipboard.setData(new ClipboardData(text: widget.brandId)).then((_){
-                        showTopSnackBar(
-                          context,
-                          CustomSnackBar.info(
-                            icon: Container(),
-                            iconRotationAngle: 0,
-                            backgroundColor: Theme.of(context).accentColor,
-                            message: AppLocalizations.of(context)!.copyCorrectCode,
-                            textStyle: Theme.of(context).textTheme.bodyText1!,
-                          ),
-                        );
-                      });
+                      final Uri uri = await _dynamicLinkUtils.createDynamicLinkWithId(currentBrand.id!, currentBrand.logoUrl!, currentBrand.name!);
+                      await Share.share(uri.toString(), subject: currentBrand.logoUrl!);
                     },
                     leading: Icon(
-                      Icons.qr_code_outlined,
+                      Icons.share,
                       color: Theme.of(context).accentColor,
                       size: MediaQuery.of(context).size.width*0.06,
                     ),

@@ -38,10 +38,6 @@ class _TieneMarcaTrainerState extends State<TieneMarcaTrainer> {
   // Acceso a Base de Datos
   var _brandDataService = new BrandDataService();
   var _eventDataService = new EventDataService();
-  var _dynamicLinkUtils = new DynamicLinkUtils();
-
-  String? brandId = '';
-  late Timer  _timerLink;
 
   // Boolean isLoading
   bool isLoading = false;
