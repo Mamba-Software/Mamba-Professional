@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,6 +25,7 @@ class ScriptsDatabaseService {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final batch = FirebaseFirestore.instance.batch();
   var _brandDataService = BrandDataService();
+  var _userDataService = UserDataService();
 
   // Firebase collections
   String users = isProduction ? 'Users' : '7777 Users';
@@ -1057,37 +1059,45 @@ class ScriptsDatabaseService {
       String noImageUrl = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
 
       // TEST IN DEVELOPMENT
-      List<String> userIds = ["IltgKVsnzxfe9S9jBE5M7tZkSKV2"];
-      for (int i = 0; i < userIds.length; i++) {
-        String userId = userIds[i];
-        DocumentSnapshot _documentSnapshot = await _firestore.collection(users).doc(userId).get();
+      QuerySnapshot querySnapshot = await _firestore.collection("Users").get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
         Usuario user = Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
         print('=================================================================================');
         print('=================================================================================');
         print('USER WITH ID: ' + user.id! + " AND NAME: " + user.name!);
         print('\n');
-        if (noImageUrl == user.imageUrl) {
-          print("THIS USER HAS CURRENTLY NO IMAGE SET");
+        if (user.name == "null" || user.name == null) {
+          print('User has not finished Onboarding');
         } else {
-          File fileImage = await ImageUtils().urlToFile(user.imageUrl!);
-          var size = await ImageUtils().getImageFileSize(fileImage, 2);
-          print("Current Image Size: "+size);
-          print('\n');
-          print("Compressing Image...");
-          print('\n');
-          final filePath = fileImage.absolute.path;
-          final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
-          final splitted = filePath.substring(0, (lastIndex));
-          final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
-          var result = await FlutterImageCompress.compressAndGetFile(
-            fileImage.absolute.path,
-            outPath,
-            quality: 75,
-            rotate: 0,
-          );
-          var compressedSize = await ImageUtils().getImageFileSize(result!, 2);
-          print("Compressed Image Size: "+compressedSize);
+          if (noImageUrl == user.imageUrl) {
+            print("THIS USER HAS CURRENTLY NO IMAGE SET");
+          } else {
+            File fileImage = await ImageUtils().urlToFile(user.imageUrl!);
+            var size = await ImageUtils().getImageFileSize(fileImage, 2);
+            print("Current Image Size: "+size);
+            print('\n');
+            print("Compressing Image...");
+            print('\n');
+            final filePath = fileImage.absolute.path;
+            final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
+            final splitted = filePath.substring(0, (lastIndex));
+            final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+            var compressedFileImage = await FlutterImageCompress.compressAndGetFile(
+              fileImage.absolute.path,
+              outPath,
+              quality: 75,
+              rotate: 0,
+            );
+            var compressedSize = await ImageUtils().getImageFileSize(compressedFileImage!, 2);
+            print("Compressed Image Size: "+compressedSize);
+            // Upload Photo de Firebase and Update
+            print("Uploading image ...");
+            await _userDataService.updateUserPhoto(user.id!, compressedFileImage);
+            print("Image succesfully uploaded!");
+          }
         }
+
         print('\n');
         print('=================================================================================');
         print('=================================================================================');

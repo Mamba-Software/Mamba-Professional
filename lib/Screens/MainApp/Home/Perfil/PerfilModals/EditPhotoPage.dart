@@ -38,7 +38,7 @@ class _EditPhotoPageState extends State<EditPhotoPage> {
     setState(() {
       isLoading = true;
     });
-    String temp = await _userDataService.updateCurrentUserPhoto(_image!);
+    String temp = await _userDataService.updateUserPhoto(currentUser.id!, _image!);
     setState(() {
       _imageUrl = temp;
       isLoading = false;

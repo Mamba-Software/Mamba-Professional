@@ -266,7 +266,7 @@ class FirebaseDatabaseService {
     String imageUrl =
         "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
     if (image != null) {
-      imageUrl = await updateCurrentUserPhoto(image);
+      imageUrl = await updateUserPhoto(uid, image);
     }
     await _firestore.collection(users).doc(uid).update({
       "name": name,
@@ -381,17 +381,14 @@ class FirebaseDatabaseService {
     }
   }
 
-  Future<String> updateCurrentUserPhoto(File image) async {
-    User? firebaseUser = await getCurrentUser();
+  Future<String> updateUserPhoto(String userId, File image) async {
     String imageURL = "";
-    var storageRef = await _firebaseStorage
-        .ref()
-        .child("userPics/" + firebaseUser!.uid + ".png");
+    var storageRef = _firebaseStorage.ref().child("users/"+ userId +"/images/" + userId + ".jpeg");
     var uploadTask = storageRef.putFile(image);
     await uploadTask.whenComplete(() async {
       await storageRef.getDownloadURL().then((value) async {
         imageURL = value;
-        await _firestore.collection(users).doc(firebaseUser.uid).update({
+        await _firestore.collection(users).doc(userId).update({
           "imageUrl": value,
         });
       });
