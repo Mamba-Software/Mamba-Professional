@@ -5,19 +5,18 @@ import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import '../../Styles/Styles.dart';
-import '../Images/CircularImage.dart';
+import '../../Images/CircularImage.dart';
 
-class DeleteFromEventConfirmationDialog extends StatefulWidget {
+class RequestConfirmationDialog extends StatefulWidget {
   final String text;
   final String userId;
-  const DeleteFromEventConfirmationDialog({Key? key, required this.text, required this.userId}) : super(key: key);
+  const RequestConfirmationDialog({Key? key, required this.text, required this.userId}) : super(key: key);
 
   @override
-  _DeleteFromEventConfirmationDialogState createState() => _DeleteFromEventConfirmationDialogState();
+  _RequestConfirmationDialogState createState() => _RequestConfirmationDialogState();
 }
 
-class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfirmationDialog> {
+class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
   // Acceso a Base de Datos
   var _userDataService = new UserDataService();
   // Boolean Loading
@@ -47,7 +46,7 @@ class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfi
         backgroundColor: Colors.transparent,
         insetPadding: EdgeInsets.all(20),
         child: Container(
-          height: MediaQuery.of(context).size.height*0.4,
+          height: MediaQuery.of(context).size.height*0.3,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: Theme.of(context).scaffoldBackgroundColor,
@@ -66,7 +65,7 @@ class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfi
         insetPadding: EdgeInsets.all(20),
         child: Container(
           padding: EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
-          height: MediaQuery.of(context).size.height*0.4,
+          height: MediaQuery.of(context).size.height*0.3,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: Theme.of(context).scaffoldBackgroundColor,
@@ -98,6 +97,27 @@ class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfi
                         OutlinedButton.icon(
                           style: OutlinedButton.styleFrom(
                             elevation: 4.0,
+                            backgroundColor: Colors.green,
+                            fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(30),
+                              ),
+                            ),
+                          ),
+                          label: Text(
+                            AppLocalizations.of(context)!.accept,
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                          ),
+                          icon: Icon(Icons.check_circle_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
+                          onPressed: () {
+                            Navigator.pop(context, true);
+                          },
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            elevation: 4.0,
                             backgroundColor: Colors.red,
                             fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                             shape: const RoundedRectangleBorder(
@@ -110,28 +130,7 @@ class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfi
                             AppLocalizations.of(context)!.delete,
                             style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                           ),
-                          icon: Icon(Icons.delete_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
-                          onPressed: () {
-                            Navigator.pop(context, true);
-                          },
-                        ),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                        OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            elevation: 4.0,
-                            backgroundColor: Theme.of(context).primaryColor,
-                            fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(30),
-                              ),
-                            ),
-                          ),
-                          label: Text(
-                            AppLocalizations.of(context)!.cancel,
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark,),
-                          ),
-                          icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColorDark,),
+                          icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06,color: AppColors.white),
                           onPressed: () {
                             Navigator.pop(context, false);
                           },
@@ -152,7 +151,7 @@ class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfi
                         color: Theme.of(context).accentColor,
                         borderWidth: 2,
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
                       Container(
                         width: MediaQuery.of(context).size.width*0.9,
                         child: Padding(

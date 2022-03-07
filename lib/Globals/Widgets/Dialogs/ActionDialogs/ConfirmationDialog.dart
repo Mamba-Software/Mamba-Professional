@@ -1,14 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import '../Images/CircularImage.dart';
+import '../../../Styles/Styles.dart';
 
-class SendRequestConfirmationDialog extends StatelessWidget {
+class ConfirmationDialog extends StatelessWidget {
   final String text;
-  final Brand brand;
-  const SendRequestConfirmationDialog({Key? key, required this.text, required this.brand}) : super(key: key);
+  const ConfirmationDialog({Key? key, required this.text}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +15,7 @@ class SendRequestConfirmationDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.all(20),
       child: Container(
-        padding: EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
+        padding: EdgeInsets.only(top: 40, bottom: 10, left: 10, right: 10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -35,7 +34,10 @@ class SendRequestConfirmationDialog extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Flexible(
-                        child: Text(text, style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),textAlign: TextAlign.center,),
+                        child: Text(
+                          text,
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),
+                          textAlign: TextAlign.center,),
                       ),
                     ],
                   ),
@@ -48,7 +50,7 @@ class SendRequestConfirmationDialog extends StatelessWidget {
                       OutlinedButton.icon(
                         style: OutlinedButton.styleFrom(
                           elevation: 4.0,
-                          backgroundColor: Colors.green,
+                          backgroundColor: Theme.of(context).accentColor,
                           fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(
@@ -57,10 +59,10 @@ class SendRequestConfirmationDialog extends StatelessWidget {
                           ),
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.send,
+                          AppLocalizations.of(context)!.confirm,
                           style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                         ),
-                        icon: Icon(Icons.send, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
+                        icon: Icon(Icons.check_circle_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                         onPressed: () {
                           Navigator.pop(context, true);
                         },
@@ -92,22 +94,21 @@ class SendRequestConfirmationDialog extends StatelessWidget {
               ],
             ),
             Positioned(
-                bottom: 0,
-                top: -150,
-                child: Column(
+                top: -83,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    CircularImage(
-                      size: MediaQuery.of(context).size.width*0.25,
-                      image: brand.logoUrl,
-                      color: Theme.of(context).accentColor,
-                      borderWidth: 2,
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                    Expanded(
-                      child: Text(
-                        brand.name!,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.left,
+                    SizedBox.fromSize(
+                      size: Size(70, 70), // button width and height
+                      child: ClipOval(
+                        child: Material(
+                          color: Theme.of(context).accentColor,
+                          child: InkWell(
+                            onTap: () async {
+                            },
+                            child: Icon(Icons.priority_high, color: Colors.white, size: 45,), // icon
+                          ),
+                        ),
                       ),
                     ),
                   ],

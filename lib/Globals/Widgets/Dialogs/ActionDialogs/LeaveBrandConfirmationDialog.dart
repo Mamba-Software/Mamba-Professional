@@ -1,22 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import '../Images/CircularImage.dart';
+import '../../Images/CircularImage.dart';
 
-class CancelRequestConfirmationDialog extends StatelessWidget {
+class LeaveBrandConfirmationDialog extends StatefulWidget {
   final String text;
-  final Brand brand;
-  const CancelRequestConfirmationDialog({Key? key, required this.text, required this.brand}) : super(key: key);
+  const LeaveBrandConfirmationDialog({Key? key, required this.text}) : super(key: key);
+
+  @override
+  _LeaveBrandConfirmationDialogState createState() => _LeaveBrandConfirmationDialogState();
+}
+
+class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDialog> {
 
   @override
   Widget build(BuildContext context) {
+
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.all(20),
       child: Container(
-        padding: EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
+        padding: EdgeInsets.only(top: 40, bottom: 10, left: 10, right: 10),
+        height: MediaQuery.of(context).size.height*0.3,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -27,18 +34,34 @@ class CancelRequestConfirmationDialog extends StatelessWidget {
           children: [
             Column(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
+                Container(
+                  width: MediaQuery.of(context).size.width*0.9,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            currentBrand.name!,
+                            style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Padding(
-                  padding: const EdgeInsets.only(top: 16.0, bottom: 24.0, right: 10, left: 10),
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 24.0, right: 10, left: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Flexible(
-                        child: Text(
-                          text,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),
-                          textAlign: TextAlign.center,),
+                        child: Text(widget.text, style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),textAlign: TextAlign.center,),
                       ),
                     ],
                   ),
@@ -60,10 +83,10 @@ class CancelRequestConfirmationDialog extends StatelessWidget {
                           ),
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.anular,
+                          AppLocalizations.of(context)!.leave,
                           style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                         ),
-                        icon: Icon(Icons.remove_circle_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
+                        icon: Icon(Icons.exit_to_app, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                         onPressed: () {
                           Navigator.pop(context, true);
                         },
@@ -96,22 +119,14 @@ class CancelRequestConfirmationDialog extends StatelessWidget {
             ),
             Positioned(
                 bottom: 0,
-                top: -150,
+                top: -110,
                 child: Column(
                   children: <Widget>[
                     CircularImage(
                       size: MediaQuery.of(context).size.width*0.25,
-                      image: brand.logoUrl,
+                      image: currentBrand.logoUrl,
                       color: Theme.of(context).accentColor,
                       borderWidth: 2,
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                    Expanded(
-                      child: Text(
-                        brand.name!,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.left,
-                      ),
                     ),
                   ],
                 )

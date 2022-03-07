@@ -1,29 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import '../Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 
-class LeaveBrandConfirmationDialog extends StatefulWidget {
+class SendRequestConfirmationDialog extends StatelessWidget {
   final String text;
-  const LeaveBrandConfirmationDialog({Key? key, required this.text}) : super(key: key);
-
-  @override
-  _LeaveBrandConfirmationDialogState createState() => _LeaveBrandConfirmationDialogState();
-}
-
-class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDialog> {
+  final Brand brand;
+  const SendRequestConfirmationDialog({Key? key, required this.text, required this.brand}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.all(20),
       child: Container(
-        padding: EdgeInsets.only(top: 40, bottom: 10, left: 10, right: 10),
-        height: MediaQuery.of(context).size.height*0.3,
+        padding: EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -34,34 +27,15 @@ class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDia
           children: [
             Column(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Container(
-                  width: MediaQuery.of(context).size.width*0.9,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            currentBrand.name!,
-                            style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0, bottom: 24.0, right: 10, left: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Flexible(
-                        child: Text(widget.text, style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),textAlign: TextAlign.center,),
+                        child: Text(text, style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),textAlign: TextAlign.center,),
                       ),
                     ],
                   ),
@@ -74,7 +48,7 @@ class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDia
                       OutlinedButton.icon(
                         style: OutlinedButton.styleFrom(
                           elevation: 4.0,
-                          backgroundColor: Colors.red,
+                          backgroundColor: Colors.green,
                           fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(
@@ -83,10 +57,10 @@ class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDia
                           ),
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.leave,
+                          AppLocalizations.of(context)!.send,
                           style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                         ),
-                        icon: Icon(Icons.exit_to_app, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
+                        icon: Icon(Icons.send, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                         onPressed: () {
                           Navigator.pop(context, true);
                         },
@@ -119,14 +93,22 @@ class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDia
             ),
             Positioned(
                 bottom: 0,
-                top: -110,
+                top: -150,
                 child: Column(
                   children: <Widget>[
                     CircularImage(
                       size: MediaQuery.of(context).size.width*0.25,
-                      image: currentBrand.logoUrl,
+                      image: brand.logoUrl,
                       color: Theme.of(context).accentColor,
                       borderWidth: 2,
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                    Expanded(
+                      child: Text(
+                        brand.name!,
+                        style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.left,
+                      ),
                     ),
                   ],
                 )

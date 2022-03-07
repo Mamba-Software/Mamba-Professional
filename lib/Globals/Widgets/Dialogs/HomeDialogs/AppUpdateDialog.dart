@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../Styles/Styles.dart';
+import '../../../Styles/Styles.dart';
 
-class InformationDialog extends StatelessWidget {
+class AppUpdateDialog extends StatelessWidget {
   final String text;
-  const InformationDialog({Key? key, required this.text}) : super(key: key);
+  const AppUpdateDialog({Key? key, required this.text}) : super(key: key);
 
 
   @override
