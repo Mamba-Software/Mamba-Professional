@@ -39,8 +39,13 @@ void main() async {
   // Firebase Messaging Back Ground Message Handler
   FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
   //Get dynamic links on open app
-  final PendingDynamicLinkData? initialLink = await FirebaseDynamicLinks.instance.getInitialLink();
-  if(initialLink != null) brandPath = initialLink.link;
+  PendingDynamicLinkData? initialLink;
+  try {
+    initialLink = await FirebaseDynamicLinks.instance.getInitialLink();
+    if(initialLink != null) brandPath = initialLink.link;
+  } catch (e) {
+    initialLink = null;
+  }
   // Run App
   runApp(
     MultiProvider(
