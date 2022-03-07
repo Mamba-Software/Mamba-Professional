@@ -84,10 +84,7 @@ class _HomePageState extends State<HomePage> {
     checkMinimumAppVersion();
     // Getting User Information
     getUserAndBrand();
-
   }
-
-
 
   // Check version and Update App Dialog
   void checkMinimumAppVersion() async {
