@@ -1,5 +1,4 @@
 // Flutter Libs
-import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

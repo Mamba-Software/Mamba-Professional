@@ -323,7 +323,7 @@ class _SettingsState extends State<Settings> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        version,
+                        appVersion,
                         style: Theme.of(context).textTheme.caption,
                         textAlign: TextAlign.left,
                       ),

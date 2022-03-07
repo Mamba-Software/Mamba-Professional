@@ -1,13 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:store_redirect/store_redirect.dart';
 import '../../../Constants.dart';
-import '../../../GlobalVars.dart';
-import '../../../Styles/Styles.dart';
 
 class AppUpdateDialog extends StatelessWidget {
 
@@ -65,11 +61,11 @@ class AppUpdateDialog extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white,),
                     ),
                     onPressed: () async {
-                      if (Platform.isAndroid) {
-                        await launch(androidGooglePlayUrl);
-                      } else {
-                        await launch(iosAppStoreUrl);
-                      }
+                      await StoreRedirect.redirect(
+                        androidAppId: "com.mamba.mambastyleapp",
+                        iOSAppId: "1601684650",
+                      );
+                      Navigator.of(context).pop();
                     },
                   ),
                 ],

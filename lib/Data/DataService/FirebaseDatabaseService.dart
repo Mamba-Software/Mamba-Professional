@@ -155,6 +155,19 @@ class FirebaseDatabaseService {
       return false;
   }
 
+  Future<bool> checkIfMinimumAppVersion(String clientAppVersion) async {
+    // Get Minimum Version from Settings Collection
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Settings").doc("MinimumAppVersion").get();
+    String minimumAppVersion = _documentSnapshot.get("version");
+    print(minimumAppVersion);
+    print(clientAppVersion);
+    if (clientAppVersion == minimumAppVersion) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<User?> getCurrentUser() async {
     User? currentUser;
     currentUser = await _auth.currentUser;

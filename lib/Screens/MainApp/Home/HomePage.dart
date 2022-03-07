@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -30,6 +31,7 @@ class _HomePageState extends State<HomePage> {
   // Acceso a Base de Datos
   var _userDataService = new UserDataService();
   var _brandDataService = new BrandDataService();
+  var _settingsDataService = new SettingsDataService();
   // Boolean Loading
   bool isLoading = false;
   // Boolean hasSeenStartUpDialog
@@ -78,17 +80,30 @@ class _HomePageState extends State<HomePage> {
     });
     // Defining the Page Controller
     pageController = PageController(initialPage: currentIndex);
+    // Check if User minimum version
+    checkMinimumAppVersion();
     // Getting User Information
     getUserAndBrand();
-    // Start up Dialog
-    Future.delayed(Duration.zero, () {
-      return showDialog(
-          context: context,
-          builder: (_) {
-            return AppUpdateDialog();
-          }
-      );
-    });
+
+  }
+
+
+
+  // Check version and Update App Dialog
+  void checkMinimumAppVersion() async {
+    // Check version
+    bool result = await _settingsDataService.checkIfMinimumAppVersion(appVersion);
+    if (result == false) {
+      // Start up Dialog
+      Future.delayed(Duration.zero, () {
+        return showDialog(
+            context: context,
+            builder: (_) {
+              return AppUpdateDialog();
+            }
+        );
+      });
+    }
   }
 
   // Gets the user info from firebase.
