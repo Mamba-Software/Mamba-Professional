@@ -55,6 +55,7 @@ class Constants {
   static String themeLightImage = "assets/images/themeLightImage.png";
   static String themeDarkImage = "assets/images/themeDarkImage.png";
   static String themeSystemImage = "assets/images/themeSystemImage.png";
+  static String appUpdateImage = "assets/images/appUpdateImage.png";
 
   // Animations
   static String runningFemale = "assets/animations/runningFemale.gif";

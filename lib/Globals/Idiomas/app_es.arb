@@ -804,6 +804,10 @@
   "@close":{
     "description": "Cancelar text"
   },
+  "update": "Actualizar",
+  "@update":{
+    "description": "Cancelar text"
+  },
   "entendido": "Entendido",
   "@entendido":{
     "description": "Cancelar text"
@@ -1621,6 +1625,14 @@
   },
   "findBrandTrainerText": "Crea tu marca o únete a una para desbloquear todas nuestras herramientas",
   "@findBrandTrainerText": {
+    "description": "membersOfBrand message"
+  },
+  "updateAppTitle": "!Nueva versión de MAMBA disponible!",
+  "@updateAppTitle": {
+    "description": "membersOfBrand message"
+  },
+  "updateAppText": "Actualiza la app para no perderte ninguna novedad y evitar posibles errores.",
+  "@updateAppText": {
     "description": "membersOfBrand message"
   }
 }

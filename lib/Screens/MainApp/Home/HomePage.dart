@@ -7,6 +7,8 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ActionDialogs/ConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -30,6 +32,8 @@ class _HomePageState extends State<HomePage> {
   var _brandDataService = new BrandDataService();
   // Boolean Loading
   bool isLoading = false;
+  // Boolean hasSeenStartUpDialog
+  bool hasSeenStartUpDialog = false;
 
   @override
   void initState() {
@@ -76,6 +80,15 @@ class _HomePageState extends State<HomePage> {
     pageController = PageController(initialPage: currentIndex);
     // Getting User Information
     getUserAndBrand();
+    // Start up Dialog
+    Future.delayed(Duration.zero, () {
+      return showDialog(
+          context: context,
+          builder: (_) {
+            return AppUpdateDialog();
+          }
+      );
+    });
   }
 
   // Gets the user info from firebase.
