@@ -56,14 +56,14 @@ class _NotificationsState extends State<Notifications> {
     isLoading = true;
     getFirstNotificationsLimit10();
     scrollController.addListener(() async {
-      print("pixels");
-      print(scrollController.position.pixels);
-      print("max");
-      print(scrollController.position.maxScrollExtent);
-
-      if ((scrollController.position.pixels/scrollController.position.maxScrollExtent) > 0.85) {
-        print('ListView scroll at 85% ... load 10 more');
-        await getMoreNotificationsLimit10(notificationsList[lastIndex]);
+      if (scrollController.position.atEdge) {
+        if (scrollController.position.pixels == 0)
+          print('ListView scroll at top');
+        else {
+          print('last index: '+lastIndex.toString());
+          print('last notif: '+notificationsList[lastIndex].id!.toString());
+          await getMoreNotificationsLimit10(notificationsList[lastIndex]);
+        }
       }
     });
   }
