@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../Constants.dart';
+import '../../../GlobalVars.dart';
 import '../../../Styles/Styles.dart';
 
 class AppUpdateDialog extends StatelessWidget {
@@ -45,7 +49,7 @@ class AppUpdateDialog extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.01,),
-                  OutlinedButton.icon(
+                  OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       elevation: 4.0,
                       backgroundColor: Theme.of(context).accentColor,
@@ -56,13 +60,16 @@ class AppUpdateDialog extends StatelessWidget {
                         ),
                       ),
                     ),
-                    label: Text(
+                    child: Text(
                       AppLocalizations.of(context)!.update,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white,),
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white,),
                     ),
-                    icon: Icon(Icons.update, size: MediaQuery.of(context).size.width*0.06, color: AppColors.white,),
-                    onPressed: () {
-                      Navigator.pop(context, false);
+                    onPressed: () async {
+                      if (Platform.isAndroid) {
+                        await launch(androidGooglePlayUrl);
+                      } else {
+                        await launch(iosAppStoreUrl);
+                      }
                     },
                   ),
                 ],
@@ -81,7 +88,7 @@ class AppUpdateDialog extends StatelessWidget {
                           child: InkWell(
                             onTap: () async {
                             },
-                            child: Icon(Icons.update_outlined, color: Colors.white, size: 45,), // icon
+                            child: Icon(Icons.update_outlined, color: Colors.white, size: 40,), // icon
                           ),
                         ),
                       ),
