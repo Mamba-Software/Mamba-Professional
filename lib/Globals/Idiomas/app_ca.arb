@@ -186,6 +186,7 @@
   "search": "Buscar",
   "cancel": "Cancel·lar",
   "close": "Tancar",
+  "update": "Actualizar",
   "entendido": "Entesos",
   "book": "Reservar",
   "leave": "Abandonar",
@@ -354,5 +355,7 @@
   "locationPermision": "Usem la teva ubicació per trobar les marques més pròximes a tu.\n\nPer a això és necessari que ens donis permisos de localització.",
   "termsAndConditions": "Termes i Condicions",
   "findBrandClientText": "Troba una marca o afegeix el teu codi d'invitació per desbloquejar totes les nostres eines",
-  "findBrandTrainerText": "Crea la teva marca o uneix-te a una per desbloquejar totes les nostres eines"
+  "findBrandTrainerText": "Crea la teva marca o uneix-te a una per desbloquejar totes les nostres eines",
+  "updateAppTitle": "Nova versió de MAMBA disponible!",
+  "updateAppText": "Actualitza l'app per a no perdre't cap novetat i evitar possibles errors."
 }

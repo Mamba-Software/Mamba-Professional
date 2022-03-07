@@ -5,18 +5,19 @@ import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import '../Images/CircularImage.dart';
+import '../../../Styles/Styles.dart';
+import '../../Images/CircularImage.dart';
 
-class RequestConfirmationDialog extends StatefulWidget {
+class DeleteFromEventConfirmationDialog extends StatefulWidget {
   final String text;
   final String userId;
-  const RequestConfirmationDialog({Key? key, required this.text, required this.userId}) : super(key: key);
+  const DeleteFromEventConfirmationDialog({Key? key, required this.text, required this.userId}) : super(key: key);
 
   @override
-  _RequestConfirmationDialogState createState() => _RequestConfirmationDialogState();
+  _DeleteFromEventConfirmationDialogState createState() => _DeleteFromEventConfirmationDialogState();
 }
 
-class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
+class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfirmationDialog> {
   // Acceso a Base de Datos
   var _userDataService = new UserDataService();
   // Boolean Loading
@@ -46,7 +47,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
         backgroundColor: Colors.transparent,
         insetPadding: EdgeInsets.all(20),
         child: Container(
-          height: MediaQuery.of(context).size.height*0.3,
+          height: MediaQuery.of(context).size.height*0.4,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: Theme.of(context).scaffoldBackgroundColor,
@@ -65,7 +66,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
         insetPadding: EdgeInsets.all(20),
         child: Container(
           padding: EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
-          height: MediaQuery.of(context).size.height*0.3,
+          height: MediaQuery.of(context).size.height*0.4,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: Theme.of(context).scaffoldBackgroundColor,
@@ -97,27 +98,6 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                         OutlinedButton.icon(
                           style: OutlinedButton.styleFrom(
                             elevation: 4.0,
-                            backgroundColor: Colors.green,
-                            fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(30),
-                              ),
-                            ),
-                          ),
-                          label: Text(
-                            AppLocalizations.of(context)!.accept,
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          ),
-                          icon: Icon(Icons.check_circle_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
-                          onPressed: () {
-                            Navigator.pop(context, true);
-                          },
-                        ),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                        OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            elevation: 4.0,
                             backgroundColor: Colors.red,
                             fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                             shape: const RoundedRectangleBorder(
@@ -130,7 +110,28 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                             AppLocalizations.of(context)!.delete,
                             style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                           ),
-                          icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06,color: AppColors.white),
+                          icon: Icon(Icons.delete_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
+                          onPressed: () {
+                            Navigator.pop(context, true);
+                          },
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            elevation: 4.0,
+                            backgroundColor: Theme.of(context).primaryColor,
+                            fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(30),
+                              ),
+                            ),
+                          ),
+                          label: Text(
+                            AppLocalizations.of(context)!.cancel,
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark,),
+                          ),
+                          icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColorDark,),
                           onPressed: () {
                             Navigator.pop(context, false);
                           },
@@ -151,7 +152,7 @@ class _RequestConfirmationDialogState extends State<RequestConfirmationDialog> {
                         color: Theme.of(context).accentColor,
                         borderWidth: 2,
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
                       Container(
                         width: MediaQuery.of(context).size.width*0.9,
                         child: Padding(

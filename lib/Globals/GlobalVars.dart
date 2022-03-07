@@ -8,7 +8,11 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 bool isProduction = false;
 
 // App Version
-var version = "MAMBA v0.0.4";
+var appVersion = "MAMBA v0.0.3";
+
+// App
+var androidGooglePlayUrl = "https://play.google.com/store/apps/details?id=com.mamba.mambastyleapp";
+var iosAppStoreUrl = "https://apps.apple.com/us/app/mamba-style/id1601684650";
 
 // Website
 var websiteES = "https://mambastyle.net/";
