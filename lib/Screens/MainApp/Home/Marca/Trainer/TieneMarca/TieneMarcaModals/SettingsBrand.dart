@@ -16,6 +16,7 @@ import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarc
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
+import 'Bonos.dart';
 import 'EditBrandInfo.dart';
 import 'EditLogoPage.dart';
 
@@ -190,6 +191,41 @@ class _SettingsBrandState extends State<SettingsBrand> {
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     ],
                   ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Gestió',
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute<String>(
+                                builder: (context) => Bonos(
+                                  brandId: currentBrand.id!,
+                                ),
+                              )
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.shopping_cart, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05),
+                            SizedBox(width: 10),
+                            Text(
+                              'Bonos',
+                              style: Theme.of(context).textTheme.bodyText2,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    ],
+                  ),
                   currentUser.id != currentBrand.adminID ? TextButton(
                     onPressed: () async {
                       // Leaves Brand
@@ -237,6 +273,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                         setState(() {
                           isLoading = true;
                         });
+
                         // New DataBase
                         await _brandDataService.deleteBrand(currentBrand.id!);
                         await _roomDataService.deleteRoom(currentBrand.roomId!);

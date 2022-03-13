@@ -457,6 +457,24 @@ class FirebaseDatabaseService {
         });
   }
 
+  Future<void> addBonoToBrand(String brandId, String title, String description, String price, String classes, bool isactive) async {
+    var uid = Uuid().v4();
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(uid)
+        .set({
+      "title": title,
+      "description": description,
+      "price": double.parse(price),
+      "classes": int.parse(classes),
+      "isActive": isactive,
+    }).catchError((err) {
+      print(err);
+    });
+  }
+
   Future<String> updateBrandPhoto(String brandID, File image) async {
     var result;
     var storageRef = _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + brandID + ".jpeg");
@@ -740,6 +758,12 @@ class FirebaseDatabaseService {
   Future<void> updateBrandRoom(String brandID, String roomId) async {
     await _firestore.collection(brands).doc(brandID).update({
       "roomId": roomId,
+    });
+  }
+
+  Future<void> updateBono(String brandID, String bonoId, bool isActive) async {
+    await _firestore.collection(brands).doc(brandID).collection("Bonos").doc(bonoId).update({
+      "isActive": isActive,
     });
   }
 
@@ -2387,6 +2411,14 @@ class FirebaseDatabaseService {
           .collection("Events")
           .snapshots();
     }
+
+  Stream<QuerySnapshot>  getAllBonosFromBrand(String brandId) {
+    return _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .snapshots();
+  }
 
     Stream<QuerySnapshot> getBrandsEventsTodayStream(String brandId) {
       DateTime today = DateTime.now();
