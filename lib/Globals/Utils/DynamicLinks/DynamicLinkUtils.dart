@@ -24,6 +24,7 @@ class DynamicLinkUtils {
       // iOS application details needed for opening correct app on device/App Store
       iosParameters: const IOSParameters(
         bundleId: "com.mamba.mambastyleapp",
+        appStoreId: "1601684650",
         minimumVersion: '1',
       ),
       socialMetaTagParameters: SocialMetaTagParameters(
