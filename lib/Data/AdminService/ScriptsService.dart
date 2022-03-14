@@ -1089,8 +1089,19 @@ class ScriptsDatabaseService {
             print("Compressed Image Size: "+compressedSize);
             // Upload Photo de Firebase and Update
             print("Uploading image ...");
-            await _userDataService.updateUserPhoto(user.id!, compressedFileImage);
+            var result = await _userDataService.updateUserPhoto(user.id!, compressedFileImage);
             print("Image succesfully uploaded!");
+            print("\n");
+            List<Brand> brandsList = await _brandDataService.getAllBrandsFromUser(user.id!);
+            for (int i = 0; i < brandsList.length; i++) {
+              print("Updating Brand - Users");
+              Brand brand = brandsList[i];
+              print("Brand: "+brand.name!);
+              await _firestore.collection(brands).doc(brand.id!).collection("Users").doc(user.id).update({
+                "imageUrl": result,
+              });
+              print("Image succesfully updated!");
+            }
           }
         }
 
