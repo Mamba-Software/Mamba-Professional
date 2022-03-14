@@ -58,7 +58,6 @@ void main() async {
         child: Mamba(),
       )
     );
-    _testAsyncErrorOnInit();
   }, (error, stackTrace) {
     FirebaseCrashlytics.instance.recordError(error, stackTrace);
   });
