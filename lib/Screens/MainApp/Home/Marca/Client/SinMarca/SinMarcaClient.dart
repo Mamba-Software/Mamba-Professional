@@ -26,6 +26,8 @@ import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
+import '../PickBono.dart';
+
 class SinMarcaClient extends StatefulWidget {
   const SinMarcaClient({Key? key}) : super(key: key);
 
@@ -497,6 +499,30 @@ class _SinMarcaClientState extends State<SinMarcaClient> {
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.contact,
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.payments, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).primaryColor),
+                                    padding: EdgeInsets.all(0),
+                                    onPressed: () async {
+                                      Navigator.push(
+                                          context,
+                                          CupertinoPageRoute<String>(
+                                            builder: (context) => PickBono(
+                                              brandId: brand.id!,
+                                            ),
+                                          )
+                                      );
+                                    },
+                                  ),
+                                  Text(
+                                    'Bonos',
                                     style: Theme.of(context).textTheme.bodyText2,
                                     textAlign: TextAlign.left,
                                   ),

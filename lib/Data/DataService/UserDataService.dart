@@ -31,12 +31,14 @@ class UserDataService {
   Future<List<NotificationEvent>> getUserMoreNotificationsLimit10(String userId, String notifId) => _firebase.getUserMoreNotificationsLimit10(userId, notifId);
   Future<int> getUnreadNotifications(String userId) => _firebase.getUnreadNotifications(userId);
   Future<int> getUnreadConversations(String userId) => _firebase.getUnreadConversations(userId);
+  Future<String> getBonoRequest(String userId, String brandId) => _firebase.getBonoRequest(userId, brandId);
 
   // Add Data
   Future<int> addUser(String email, String password, String idioma) => _firebase.addUser(email, password, idioma);
   Future<void> addUserNickname(String userId, String nickname) => _firebase.addUserNickname(userId, nickname);
   Future<void> sendNotificationToUser(String userId, String type, var parameters) => _firebase.sendNotificationToUser(userId, type, parameters);
   Future<void> sendRequestToBrand(String brandId, String name, bool isTrainer) => _firebase.sendRequestToBrand(brandId, name, isTrainer);
+  Future<void> addBonoRequestToUser(String brandId, String userId, String bonoId) => _firebase.addBonoRequestToUser(brandId, userId, bonoId);
 
   // Update Data
   Future<void> updateUser(String uid, String name, String firstName, String lastName, String nick, String dateOfBirth, int gender, File? image, bool isTrainer) => _firebase.updateUser(uid, name, firstName, lastName, nick, dateOfBirth, gender, image, isTrainer);

@@ -32,6 +32,7 @@ class BrandDataService {
   Future<void> addBrandContentPictures(String brandID, List<File> images) => _firebase.addBrandContentPictures(brandID, images);
   Future<void> acceptRequestFromUser(RequestToBrand request) => _firebase.acceptRequestFromUser(request);
   Future<void> addBonoToBrand(String brandId, String title, String description, var price, var classes, bool isactive) => _firebase.addBonoToBrand(brandId, title, description, price, classes, isactive);
+  Future<void> addBonoRequestToBrand(String brandId, String userId, String bonoId, String title, var price, var classes) => _firebase.addBonoRequestToBrand(brandId, userId, bonoId, title, price, classes);
 
   // Update Data
   Future<void> updateBrandInfo(String brandID, String name,String description, int maxMembers, List<double> workShift) => _firebase.updateBrandInfo(brandID, name, description, maxMembers, workShift);
@@ -39,6 +40,7 @@ class BrandDataService {
   Future<void> updateBrandBaseLocation(String brandID, String locationID) => _firebase.updateBrandBaseLocation(brandID, locationID);
   Future<void> updateBrandRoom(String brandID, String roomId) => _firebase.updateBrandRoom(brandID, roomId);
   Future<void> updateBono(String brandID, String bonoId, bool isActive) => _firebase.updateBono(brandID, bonoId, isActive);
+
   // Delete Data
   Future<void> deleteBrand(String brandId) => _firebase.deleteBrand(brandId);
   Future<void> deleteUserFromBrand(String userId, String brandId) => _firebase.deleteUserFromBrand(userId, brandId);

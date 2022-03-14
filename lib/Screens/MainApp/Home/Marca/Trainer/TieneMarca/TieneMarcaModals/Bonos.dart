@@ -21,6 +21,7 @@ class _BonosState extends State<Bonos> {
   // Boolean Loading
   bool isLoading = false;
 
+
   // Bonos list
   List<Bono> bonosList = [];
 
@@ -177,7 +178,8 @@ class _BonosState extends State<Bonos> {
                   height: 1,
                   color: Theme.of(context).primaryColor,
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+
                 StreamBuilder<QuerySnapshot>(
                     stream: _brandDataService.getAllBonosFromBrand(widget.brandId),
                     builder: (context, snapshot) {
@@ -191,19 +193,23 @@ class _BonosState extends State<Bonos> {
                       } else {
                         bonosList = _bonosUtils.documentsToBonos(snapshot.data!.docs);
                         return ListView.builder(
-                            physics: BouncingScrollPhysics(),
+                            physics: AlwaysScrollableScrollPhysics(),
                             shrinkWrap: true,
+                            //controller: scrollController,
                             scrollDirection: Axis.vertical,
                             itemCount: bonosList.length,
                             itemBuilder: (context, index) {
                               Bono bono = bonosList[index];
-                              return returnBono(bono);
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                                child: returnBono(bono),
+                              );
                             }
                         );
                       }
                     }
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                SizedBox(height: MediaQuery.of(context).size.height*0.5),
                 /*
                 SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
