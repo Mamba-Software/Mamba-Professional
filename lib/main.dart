@@ -8,6 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:mamba_castelldefels/Globals/Providers/FirebaseAnalyticsProvider.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppThemes/AppThemes.dart';
 import 'package:provider/provider.dart';
@@ -54,6 +55,9 @@ void main() async {
           ChangeNotifierProvider<ThemeProvider>(
               create: (_) => ThemeProvider()
           ),
+          ChangeNotifierProvider<FirebaseAnalyticsProvider>(
+              create: (_) => FirebaseAnalyticsProvider()
+          ),
         ],
         child: Mamba(),
       )
@@ -79,8 +83,8 @@ Future<void> _testAsyncErrorOnInit() async {
 class Mamba extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer2 <LanguageProvider, ThemeProvider> (
-        builder: (context, LanguageProvider language, ThemeProvider theme, _) {
+    return Consumer3 <LanguageProvider, ThemeProvider, FirebaseAnalyticsProvider> (
+        builder: (context, LanguageProvider language, ThemeProvider theme,  FirebaseAnalyticsProvider analytics, _) {
           final brightness = SchedulerBinding.instance?.window.platformBrightness;
           if (brightness == Brightness.dark) {
             print("Dark Mode");

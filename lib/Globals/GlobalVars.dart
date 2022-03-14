@@ -5,7 +5,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
 // IS PRODUCTION?
-bool isProduction = true;
+bool isProduction = false;
 
 // App Version
 var appVersion = "MAMBA v0.0.5";
@@ -41,6 +41,7 @@ String? currentAddress;
 int currentIndex = 0;
 PageController pageController = PageController(initialPage: currentIndex);
 
-//Dynamic links path
-var brandPath = null;
+//Dynamic Links Path
+var brandPath;
+
 
