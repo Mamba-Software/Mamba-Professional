@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -16,11 +17,13 @@ class ImageUtils {
       maxHeight: 800,
       imageQuality: 75,
     );
-    // Check if Lost Data in Android
-    final LostDataResponse response = await ImagePicker().retrieveLostData();
-    if (response.file != null) {
-      // Return Recovered Image
-      return response.file as File?;
+    if (Platform.isAndroid) {
+      // Check if Lost Data in Android
+      final LostDataResponse response = await ImagePicker().retrieveLostData();
+      if (response.file != null) {
+        // Return Recovered Image
+        return response.file as File?;
+      }
     }
     // Return Image Picked Compressed
     return File(compressedImage!.path);
@@ -35,14 +38,16 @@ class ImageUtils {
       maxHeight: 800,
       imageQuality: 75,
     );
-    // Check if Lost Data in Android
-    final LostDataResponse response = await ImagePicker().retrieveLostData();
-    if (response.file != null) {
-      // Return Recovered Images
-      for (var i=0; i<response.files!.length; i++) {
-        result.add(File(response.files![i].path));
+    if (Platform.isAndroid) {
+      // Check if Lost Data in Android
+      final LostDataResponse response = await ImagePicker().retrieveLostData();
+      if (response.file != null) {
+        // Return Recovered Images
+        for (var i = 0; i < response.files!.length; i++) {
+          result.add(File(response.files![i].path));
+        }
+        return result;
       }
-      return result;
     }
     // Return Images Picked Compressed
     for (var i=0; i<compressedImages!.length; i++) {

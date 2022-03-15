@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,6 +19,9 @@ import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
+import 'package:provider/provider.dart';
+
+import '../../Globals/Providers/FirebaseAnalyticsProvider.dart';
 
 class FirstTime extends StatefulWidget {
   Locale locale;
@@ -414,7 +418,6 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     );
     startDateController.text = DateFormat('dd-MM-yyyy', widget.locale.languageCode).format(startDate);
     nullDate = startDateController.text;
-
     if(brandPath != null) {
       if (brandPath.queryParameters.containsKey('id')) {
         codeController.text = brandPath.queryParameters['id'];
@@ -1457,6 +1460,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                           addEventTabValue += 0.166;
                           tabs[1] = true;
                         });
+                        Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventOnboardUserData();
                       } else if (_selectedIndex == 1) {
                         if (validateInformation()) {
                           _tabController!.animateTo(_selectedIndex += 1);
@@ -1464,6 +1468,10 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                             addEventTabValue += 0.166;
                             tabs[2] = true;
                           });
+                          Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventOnboardUserPicture();
+                          if (_image != null) {
+                            Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventOnboardUserPictureSelected();
+                          }
                         }
                       } else if (_selectedIndex == 2) {
                         _tabController!.animateTo(_selectedIndex += 1);
@@ -1471,6 +1479,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                           addEventTabValue += 0.166;
                           tabs[3] = true;
                         });
+                        Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventOnboardUserLocation();
                       } else if (_selectedIndex == 3) {
                         _tabController!.animateTo(_selectedIndex += 1);
                         setState(() {
@@ -1478,6 +1487,7 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                           tabs[4] = true;
                         });
                         currentPosition = await _determinePosition();
+                        Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventOnboardUserType();
                       } else if (_selectedIndex == 4) {
                         if (validateTypeOfUser()) {
                           _tabController!.animateTo(_selectedIndex += 1);
@@ -1485,9 +1495,11 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
                             addEventTabValue +=0.166;
                             tabs[5] = true;
                           });
+                          Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventOnboardUserBrand();
                         }
                       } else if (_selectedIndex == 5) {
                         addUser();
+                        Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventOnboardUserFinished();
                       }
                     },
                     backgroundColor: _selectedIndex == 5 ? Colors.green : Theme.of(context).accentColor,

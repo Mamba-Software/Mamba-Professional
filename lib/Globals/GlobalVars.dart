@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 bool isProduction = true;
 
 // App Version
-var appVersion = "MAMBA v0.0.5";
+var appVersion = "MAMBA v0.0.6";
 
 // App
 var androidGooglePlayUrl = "https://play.google.com/store/apps/details?id=com.mamba.mambastyleapp";
@@ -41,6 +41,7 @@ String? currentAddress;
 int currentIndex = 0;
 PageController pageController = PageController(initialPage: currentIndex);
 
-//Dynamic links path
-var brandPath = null;
+// Dynamic Links Path
+var brandPath;
+
 
