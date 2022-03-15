@@ -32,7 +32,7 @@ class DynamicLinkUtils {
           description: '¡Haz clic para descargar Mamba!',
           imageUrl: Uri.parse(urlImage)),
     );
-
+    print((await dynamicLinks.buildShortLink(parameters)).shortUrl);
     return (await dynamicLinks.buildShortLink(parameters)).shortUrl;
   }
 
