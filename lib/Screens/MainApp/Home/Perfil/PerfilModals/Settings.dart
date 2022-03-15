@@ -21,6 +21,7 @@ import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/Tus
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
+import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'SettingsPrivacy.dart';
@@ -319,15 +320,24 @@ class _SettingsState extends State<Settings> {
                       ],
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        appVersion,
-                        style: Theme.of(context).textTheme.caption,
-                        textAlign: TextAlign.left,
-                      ),
-                    ],
+                  TextButton(
+                    onPressed: () async {
+                      await StoreRedirect.redirect(
+                        androidAppId: "com.mamba.mambastyleapp",
+                        iOSAppId: "1601684650",
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.system_security_update_good_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
+                        SizedBox(width: 10),
+                        Text(
+                          appVersion,
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
