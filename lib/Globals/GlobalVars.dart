@@ -29,7 +29,7 @@ var currentUser = Usuario();
 var currentBrand = Brand();
 bool hasBrand = false;
 
-// Unread Notifications and Chats
+// Unread Notifications And Chats
 var unreadNotifications = 0;
 var unreadChats = 0;
 
