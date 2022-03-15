@@ -41,7 +41,7 @@ String? currentAddress;
 int currentIndex = 0;
 PageController pageController = PageController(initialPage: currentIndex);
 
-//Dynamic Links Path
+// Dynamic Links Path
 var brandPath;
 
 
