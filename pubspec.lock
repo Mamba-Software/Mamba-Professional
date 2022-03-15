@@ -908,6 +908,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.2"
+  ticketview:
+    dependency: "direct main"
+    description:
+      name: ticketview
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   timezone:
     dependency: transitive
     description:
