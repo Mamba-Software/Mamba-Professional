@@ -12,15 +12,16 @@ import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
-import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/AddressSearch.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+
+import '../../../../../../Globals/Providers/FirebaseAnalyticsProvider.dart';
 
 class RegistrarMarca extends StatefulWidget {
   Locale? locale;
@@ -257,6 +258,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0,));
     isFirstTime = true;
     super.initState();
+    Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventCreateBrandIntro();
   }
 
   @override
@@ -354,6 +356,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
               setState(() {
                 isFirstTime = false;
               });
+              Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventCreateBrandProfile();
             },
             backgroundColor: _selectedIndex == 3 ? Colors.green : Theme.of(context).accentColor,
             icon: Container(),
@@ -1124,14 +1127,15 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                     heroTag: "27",
                     onPressed: () async {
                       if (_selectedIndex == 0) {
-                          if (validatePortada()) {
-                            _tabController!.animateTo(_selectedIndex += 1);
-                            setState(() {
-                              errorImage = false;
-                              addEventTabValue += 0.25;
-                              tabs[1] = true;
-                            });
-                          }
+                        if (validatePortada()) {
+                          _tabController!.animateTo(_selectedIndex += 1);
+                          setState(() {
+                            errorImage = false;
+                            addEventTabValue += 0.25;
+                            tabs[1] = true;
+                          });
+                          Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventCreateBrandInfo();
+                        }
                       } else if (_selectedIndex == 1) {
                         if (validateInfo()) {
                           _tabController!.animateTo(_selectedIndex += 1);
@@ -1139,6 +1143,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                             addEventTabValue += 0.25;
                             tabs[2] = true;
                           });
+                          Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventCreateBrandLocation();
                         }
                       } else if (_selectedIndex == 2) {
                         if (validateLocation()) {
@@ -1148,6 +1153,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                             addEventTabValue += 0.25;
                             tabs[3] = true;
                           });
+                          Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventCreateBrandCalendar();
                         }
                       } else if (_selectedIndex == 3) {
                         if (validateTime()) {
@@ -1155,6 +1161,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                             isLoading = true;
                           });
                           await registerBrand();
+                          Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventCreateBrandFinished();
                         }
                       }
                     },

@@ -6,6 +6,8 @@ class FirebaseAnalyticsProvider extends ChangeNotifier {
   // Firebase Analytics Global Var to Log Events
   final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
+  // USER ONBOARDING
+
   Future<void> sendAnalyticsEventOnboardUserData() async {
     await analytics.logEvent(
       name: 'onboarding_user_data',
@@ -66,7 +68,6 @@ class FirebaseAnalyticsProvider extends ChangeNotifier {
     print("EVENT onboarding_user_brand SENT!");
   }
 
-
   Future<void> sendAnalyticsEventOnboardUserFinished() async {
     await analytics.logEvent(
       name: 'onboarding_user_finished',
@@ -76,4 +77,67 @@ class FirebaseAnalyticsProvider extends ChangeNotifier {
     );
     print("EVENT onboarding_user_finished SENT!");
   }
+
+  // USER CREATES NEW BRAND
+
+  Future<void> sendAnalyticsEventCreateBrandIntro() async {
+    await analytics.logEvent(
+      name: 'create_brand_intro',
+      parameters: <String, dynamic>{
+        'string': "CreateBrandIntroPage",
+      },
+    );
+    print("EVENT create_brand_intro SENT!");
+  }
+
+  Future<void> sendAnalyticsEventCreateBrandProfile() async {
+    await analytics.logEvent(
+      name: 'create_brand_profile',
+      parameters: <String, dynamic>{
+        'string': "CreateBrandProfilePage",
+      },
+    );
+    print("EVENT create_brand_profile SENT!");
+  }
+
+  Future<void> sendAnalyticsEventCreateBrandInfo() async {
+    await analytics.logEvent(
+      name: 'create_brand_info',
+      parameters: <String, dynamic>{
+        'string': "CreateBrandInfoPage",
+      },
+    );
+    print("EVENT create_brand_info SENT!");
+  }
+
+  Future<void> sendAnalyticsEventCreateBrandLocation() async {
+    await analytics.logEvent(
+      name: 'create_brand_location',
+      parameters: <String, dynamic>{
+        'string': "CreateBrandLocationPage",
+      },
+    );
+    print("EVENT create_brand_location SENT!");
+  }
+
+  Future<void> sendAnalyticsEventCreateBrandCalendar() async {
+    await analytics.logEvent(
+      name: 'create_brand_calendar',
+      parameters: <String, dynamic>{
+        'string': "CreateBrandCalendarPage",
+      },
+    );
+    print("EVENT create_brand_calendar SENT!");
+  }
+
+  Future<void> sendAnalyticsEventCreateBrandFinished() async {
+    await analytics.logEvent(
+      name: 'create_brand_finished',
+      parameters: <String, dynamic>{
+        'string': "CreateBrandFinished",
+      },
+    );
+    print("EVENT create_brand_finished SENT!");
+  }
+
 }
