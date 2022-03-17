@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ActionDialogs/ConfirmationDialog.dart';
@@ -36,12 +37,16 @@ class _BonosState extends State<Bonos> {
 
   @override
   void initState() {
+    getBrandBonos();
     super.initState();
   }
 
   // Gets the bonos from the brand
   Future<void> getBrandBonos() async {
-    setState(() {});
+    await Future.delayed(const Duration(milliseconds: 500));
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Widget returnBono(Bono _bono) {
@@ -198,159 +203,124 @@ class _BonosState extends State<Bonos> {
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-              icon: Icon(Icons.group_add,
-                  size: MediaQuery.of(context).size.width * 0.07,
-                  color: Theme.of(context).primaryColor),
-              onPressed: () {}),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              !seeActives ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      seeActives = !seeActives;
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      SizedBox(
+                          width:
+                          MediaQuery.of(context).size.width * 0.01),
+                      Text(
+                        'ACTIVADOS',
+                        style: seeActives ? TextStyle( color: Styles.mainColor) : Theme.of(context).textTheme.bodyText2,
+                      ),
+                      SizedBox(
+                          width:
+                          MediaQuery.of(context).size.width * 0.01),
+                      Icon(
+                        Icons.task_alt,
+                        color: seeActives ? Styles.mainColor : Theme.of(context).primaryColor,
+                        size: MediaQuery.of(context).size.width * 0.06,
+                      ),
+                    ],
+                  )) : TextButton(
+                  onPressed: () {
+                    setState(() {
+                      seeActives = !seeActives;
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      Text(
+                        'DESACTIVADOS',
+                        style: !seeActives ? TextStyle( color: Styles.mainColor) : Theme.of(context).textTheme.bodyText2,
+                      ),
+                      SizedBox(
+                          width:
+                          MediaQuery.of(context).size.width * 0.01),
+                      Icon(
+                        Icons.highlight_off,
+                        color: !seeActives ? Styles.mainColor : Theme.of(context).primaryColor,
+                        size: MediaQuery.of(context).size.width * 0.06,
+                      ),
+                    ],
+                  )
+              ),
+            ],
+          ),
         ],
       ),
-      body: isLoading
-          ? Center(child: LoadingViewPurple())
-          : Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: MediaQuery.of(context).size.width * 0.02),
-                  child: ListTile(
-                    onTap: () async {
-                      var result = await showDialog(
-                          context: context,
-                          builder: (_) {
-                            return CreateBonoDialog(
-                              brandId: widget.brandId,
-                            );
-                          });
-                    },
-                    leading: Icon(
-                      Icons.add_shopping_cart,
-                      color: Theme.of(context).primaryColor,
-                      size: MediaQuery.of(context).size.width * 0.06,
-                    ),
-                    title: Text(
-                      'Afegeix bono',
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 1,
-                  color: Theme.of(context).primaryColor,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                        width:
-                        MediaQuery.of(context).size.width * 0.18),
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            seeActives = true;
-                          });
-                        },
-                        child: Row(
-                          children: [
-                            SizedBox(
-                                width:
-                                MediaQuery.of(context).size.width * 0.01),
-                            Text(
-                              'ACTIVADOS',
-                              style: seeActives ? TextStyle( color: Styles.mainColor) : Theme.of(context).textTheme.bodyText2,
-                            ),
-                            SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width * 0.01),
-                            Icon(
-                              Icons.task_alt,
-                              color: seeActives ? Styles.mainColor : Theme.of(context).primaryColor,
-                              size: MediaQuery.of(context).size.width * 0.06,
-                            ),
-                          ],
-                        )),
-                    SizedBox(
-                        width:
-                        MediaQuery.of(context).size.width * 0.08),
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            seeActives = false;
-                          });
-                        },
-                        child: Row(
-                          children: [
-                            Text(
-                              'DESACTIVADOS',
-                              style: !seeActives ? TextStyle( color: Styles.mainColor) : Theme.of(context).textTheme.bodyText2,
-                            ),
-                            SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width * 0.01),
-                            Icon(
-                              Icons.highlight_off,
-                              color: !seeActives ? Styles.mainColor : Theme.of(context).primaryColor,
-                              size: MediaQuery.of(context).size.width * 0.06,
-                            ),
-                          ],
-                        )),
-                  ],
-                ),
-                StreamBuilder<QuerySnapshot>(
-                    stream:
-                        _brandDataService.getAllBonosFromBrand(widget.brandId),
-                    builder: (context, snapshot) {
-                      if (snapshot == null ||
-                          snapshot.data == null ||
-                          snapshot.data!.docs == null) {
-                        return Container(
-                            height: MediaQuery.of(context).size.height * 0.65,
-                            child: Center(child: LoadingViewPurple()));
-                      } else {
-                        bonosList = _bonosUtils.documentsToBonos(
-                            snapshot.data!.docs, seeActives);
-                        return ListView.builder(
-                            physics: AlwaysScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            //controller: scrollController,
-                            scrollDirection: Axis.vertical,
-                            itemCount: bonosList.length,
-                            itemExtent:
-                                MediaQuery.of(context).size.height * 0.20,
-                            itemBuilder: (context, index) {
-                              Bono bono = bonosList[index];
-                              return Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical:
-                                        MediaQuery.of(context).size.height *
-                                            0.01),
-                                child: returnBono(bono),
-                              );
-                            });
-                      }
-                    }),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.5),
-                /*
-                SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  child: ListView.builder(
-                      physics: AlwaysScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: bonosList.length,
-                      itemBuilder: (context, index) {
-                        Bono bono = bonosList[index];
-                        return Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical:
-                                  MediaQuery.of(context).size.height * 0.01),
-                          child: returnBono(bono),
-                        );
-                      }),
-                ),
-                */
-              ],
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.02, horizontal: MediaQuery.of(context).size.width * 0.02, ),
+            child: ListTile(
+              onTap: () async {
+                var result = await showDialog(
+                    context: context,
+                    builder: (_) {
+                      return CreateBonoDialog(
+                        brandId: widget.brandId,
+                      );
+                    });
+              },
+              leading: Icon(
+                Icons.add_shopping_cart,
+                color: Theme.of(context).accentColor,
+                size: MediaQuery.of(context).size.width * 0.06,
+              ),
+              title: Text(
+                'Afegeix bono',
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).accentColor),
+              ),
             ),
+          ),
+          Container(
+            height: 1,
+            color: Theme.of(context).accentColor,
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+          StreamBuilder<QuerySnapshot>(
+              stream: _brandDataService.getAllBonosFromBrand(widget.brandId),
+              builder: (context, snapshot) {
+                if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null) {
+                  return Container(
+                      height: MediaQuery.of(context).size.height * 0.65,
+                      child: Center(child: LoadingViewPurple()
+                      )
+                  );
+                } else {
+                  bonosList = _bonosUtils.documentsToBonos(snapshot.data!.docs, seeActives);
+                  return Expanded(
+                    child: ListView.builder(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        //controller: scrollController,
+                        scrollDirection: Axis.vertical,
+                        itemCount: bonosList.length,
+                        itemExtent: MediaQuery.of(context).size.height * 0.20,
+                        itemBuilder: (context, index) {
+                          Bono bono = bonosList[index];
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: MediaQuery.of(context).size.height * 0.01),
+                            child: returnBono(bono),
+                          );
+                        }
+                    ),
+                  );
+                }
+              }
+          ),
+        ],
+      ),
     );
   }
 }
