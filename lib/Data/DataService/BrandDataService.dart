@@ -48,6 +48,7 @@ class BrandDataService {
   Future<void> deleteBrandUsers(String brandId) => _firebase.deleteBrandUsers(brandId);
   Future<void> deleteBrandEvents(String brandId) => _firebase.deleteBrandEvents(brandId);
   Future<void> deleteBrandLocations(String brandId) => _firebase.deleteBrandLocations(brandId);
+  Future<void> deleteBrandBonoRequest(String brandId, String bonoId) => _firebase.deleteBrandBonoRequest(brandId ,bonoId);
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // STREAMS

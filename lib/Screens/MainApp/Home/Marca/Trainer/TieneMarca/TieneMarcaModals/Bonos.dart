@@ -31,6 +31,9 @@ class _BonosState extends State<Bonos> {
   //Utils bonos
   var _bonosUtils = new BonosUtils();
 
+  //boolean to filter by actives
+  bool seeActives = true;
+
   @override
   void initState() {
     super.initState();
@@ -60,7 +63,7 @@ class _BonosState extends State<Bonos> {
                               true ? FontWeight.normal : FontWeight.bold),
                     ),
                     Text(
-                      'Classes',
+                      'Sessions',
                       style: Theme.of(context).textTheme.bodyText1?.copyWith(
                           fontWeight:
                               true ? FontWeight.normal : FontWeight.bold),
@@ -93,158 +96,85 @@ class _BonosState extends State<Bonos> {
                             fontWeight:
                                 true ? FontWeight.normal : FontWeight.bold),
                       ),
-                      subtitle: Text("50% de compra"),
-                        onTap: () async {
-                          var result = await showDialog(
-                              context: context,
-                              builder: (_) {
-                                return ConfirmationDialog(text: _bono.isActive!
-                                    ? 'Quieres desactivar el bono?'
-                                    : 'Quieres activar el bono?');
-                              }
-                          );
-                          if (result) {
-                            _brandDataService.updateBono(widget.brandId, _bono.id!, !_bono.isActive!);
-                          }
-                        }
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(_bono.description.toString()),
+                          Text("50% de compra"),
+                        ],
+                      ),
                     ),
                   ),
-              Expanded(
-                flex: 5,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      _bono.price!.toString(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          ?.copyWith(fontWeight: true ? FontWeight.w500 : FontWeight.bold),
+                  Expanded(
+                    flex: 5,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          _bono.price!.toString(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              ?.copyWith(
+                                  fontWeight:
+                                      true ? FontWeight.w500 : FontWeight.bold),
+                        ),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.01),
+                        Icon(Icons.euro,
+                            color: Theme.of(context).primaryColor,
+                            size: MediaQuery.of(context).size.width * 0.04),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.1),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.02,
+                        ),
+                        TextButton(
+                          child: Text(
+                              _bono.isActive! ? 'DESACTIVAR' : 'ACTIVAR',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  ?.copyWith(
+                                      fontWeight: true
+                                          ? FontWeight.w500
+                                          : FontWeight.bold)),
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side: BorderSide(
+                                          color: _bono.isActive!
+                                              ? Styles.mainColor
+                                              : Colors.grey)))),
+                          onPressed: () async {
+                            var result = await showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return ConfirmationDialog(
+                                      text: _bono.isActive!
+                                          ? 'Quieres desactivar el bono?'
+                                          : 'Quieres activar el bono?');
+                                });
+                            if (result) {
+                              _brandDataService.updateBono(
+                                  widget.brandId, _bono.id!, !_bono.isActive!);
+                            }
+                          },
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.height * 0.01,
+                        ),
+                      ],
                     ),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-                    Icon(Icons.euro,
-                        color: Theme.of(context).primaryColor,
-                        size: MediaQuery.of(context).size.width * 0.04),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.1),
-                  ],
-                ),
-              ),
+                  ),
                 ],
               ),
             ),
           ),
         ],
       ),
-      /*
-      ListTile(
-        contentPadding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.035, horizontal: MediaQuery.of(context).size.width * 0.07),
-          leading: Card(
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.10,
-              width: MediaQuery.of(context).size.width * 0.10,
-              child: Center(
-                child: Text(
-                  _bono.classes!.toString(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1
-                      ?.copyWith(fontWeight: true ? FontWeight.normal : FontWeight.bold),
-                ),
-              ),
-            ),
-            margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01, horizontal: MediaQuery.of(context).size.width * 0.07),
-            shape: CircleBorder(side: BorderSide(width: MediaQuery.of(context).size.width * 0.005, color: _bono.isActive! ? Styles.mainColor : Colors.grey),
-            ),
-          ),
-          title: Text(
-            _bono.title!,
-            style: Theme.of(context)
-                .textTheme
-                .bodyText1
-                ?.copyWith(fontWeight: true ? FontWeight.normal : FontWeight.bold),
-          ),
-          trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                _bono.price!.toString(),
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1
-                    ?.copyWith(fontWeight: true ? FontWeight.normal : FontWeight.bold),
-              ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-              Icon(Icons.euro,
-                  color: Theme.of(context).primaryColor,
-                  size: MediaQuery.of(context).size.width * 0.04),
-            ],
-          ),
-          subtitle: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '20 persones han ',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText2
-                    ?.copyWith(fontSize: 13),
-              ),
-            ],
-          ),
-          /*
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              _bono.description!,
-              style: Theme.of(context).textTheme.caption,
-            ),
-            SizedBox(width: MediaQuery.of(context).size.width * 0.60),
-          ]),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                _bono.classes!.toString() + ' Classes',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText2
-                    ?.copyWith(fontSize: 10),
-              ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-              Text(
-                _bono.price!.toString() + ' Euros',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText2
-                    ?.copyWith(fontSize: 10),
-              ),
-            ],
-          ),
-        ],
-      ),
-
-       */
-          minVerticalPadding: MediaQuery.of(context).size.width * 0.02,
-          onTap: () async {
-            var result = await showDialog(
-                context: context,
-                builder: (_) {
-                  return ConfirmationDialog(text: _bono.isActive!
-                      ? 'Quieres desactivar el bono?'
-                      : 'Quieres activar el bono?');
-                }
-            );
-            if (result) {
-              _brandDataService.updateBono(widget.brandId, _bono.id!, !_bono.isActive!);
-            }
-          }
-      ),
-       */
       elevation: 3,
       shadowColor: _bono.isActive! ? Styles.mainColor : Colors.grey,
       margin: EdgeInsets.symmetric(
@@ -256,117 +186,6 @@ class _BonosState extends State<Bonos> {
               color: _bono.isActive! ? Styles.mainColor : Colors.grey,
               width: MediaQuery.of(context).size.width * 0.003)),
     );
-    return ListTile(
-        leading: Card(
-          child: Container(
-            height: MediaQuery.of(context).size.height * 0.20,
-            width: MediaQuery.of(context).size.width * 0.1,
-            child: Center(
-              child: Text(
-                _bono.classes!.toString(),
-                style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                    fontWeight: true ? FontWeight.normal : FontWeight.bold),
-              ),
-            ),
-          ),
-          elevation: 8,
-          shadowColor: _bono.isActive! ? Colors.green : Colors.red,
-          margin: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.height * 0.01),
-          shape: CircleBorder(
-            side: BorderSide(
-                width: MediaQuery.of(context).size.width * 0.005,
-                color: _bono.isActive! ? Colors.green : Colors.red),
-          ),
-        ),
-        title: Text(
-          _bono.title!,
-          style: Theme.of(context).textTheme.bodyText1?.copyWith(
-              fontWeight: true ? FontWeight.normal : FontWeight.bold),
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              _bono.price!.toString(),
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                  fontWeight: true ? FontWeight.normal : FontWeight.bold),
-            ),
-            SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-            Icon(Icons.euro,
-                color: Theme.of(context).primaryColor,
-                size: MediaQuery.of(context).size.width * 0.04),
-          ],
-        ),
-        subtitle: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              _bono.classes!.toString() + ' Classes',
-              style:
-                  Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-            ),
-            SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-            Text(
-              '20 persones han solicitad aquest bono',
-              style:
-                  Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-            ),
-          ],
-        ),
-        /*
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              _bono.description!,
-              style: Theme.of(context).textTheme.caption,
-            ),
-            SizedBox(width: MediaQuery.of(context).size.width * 0.60),
-          ]),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                _bono.classes!.toString() + ' Classes',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText2
-                    ?.copyWith(fontSize: 10),
-              ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-              Text(
-                _bono.price!.toString() + ' Euros',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText2
-                    ?.copyWith(fontSize: 10),
-              ),
-            ],
-          ),
-        ],
-      ),
-
-       */
-        minVerticalPadding: MediaQuery.of(context).size.width * 0.02,
-        onTap: () async {
-          var result = await showDialog(
-              context: context,
-              builder: (_) {
-                return ConfirmationDialog(
-                    text: _bono.isActive!
-                        ? 'Quieres desactivar el bono?'
-                        : 'Quieres activar el bono?');
-              });
-          if (result) {
-            _brandDataService.updateBono(
-                widget.brandId, _bono.id!, !_bono.isActive!);
-          }
-        });
   }
 
   @override
@@ -419,6 +238,64 @@ class _BonosState extends State<Bonos> {
                   color: Theme.of(context).primaryColor,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                        width:
+                        MediaQuery.of(context).size.width * 0.18),
+                    TextButton(
+                        onPressed: () {
+                          setState(() {
+                            seeActives = true;
+                          });
+                        },
+                        child: Row(
+                          children: [
+                            SizedBox(
+                                width:
+                                MediaQuery.of(context).size.width * 0.01),
+                            Text(
+                              'ACTIVADOS',
+                              style: seeActives ? TextStyle( color: Styles.mainColor) : Theme.of(context).textTheme.bodyText2,
+                            ),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.01),
+                            Icon(
+                              Icons.task_alt,
+                              color: seeActives ? Styles.mainColor : Theme.of(context).primaryColor,
+                              size: MediaQuery.of(context).size.width * 0.06,
+                            ),
+                          ],
+                        )),
+                    SizedBox(
+                        width:
+                        MediaQuery.of(context).size.width * 0.08),
+                    TextButton(
+                        onPressed: () {
+                          setState(() {
+                            seeActives = false;
+                          });
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              'DESACTIVADOS',
+                              style: !seeActives ? TextStyle( color: Styles.mainColor) : Theme.of(context).textTheme.bodyText2,
+                            ),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.01),
+                            Icon(
+                              Icons.highlight_off,
+                              color: !seeActives ? Styles.mainColor : Theme.of(context).primaryColor,
+                              size: MediaQuery.of(context).size.width * 0.06,
+                            ),
+                          ],
+                        )),
+                  ],
+                ),
                 StreamBuilder<QuerySnapshot>(
                     stream:
                         _brandDataService.getAllBonosFromBrand(widget.brandId),
@@ -430,8 +307,8 @@ class _BonosState extends State<Bonos> {
                             height: MediaQuery.of(context).size.height * 0.65,
                             child: Center(child: LoadingViewPurple()));
                       } else {
-                        bonosList =
-                            _bonosUtils.documentsToBonos(snapshot.data!.docs);
+                        bonosList = _bonosUtils.documentsToBonos(
+                            snapshot.data!.docs, seeActives);
                         return ListView.builder(
                             physics: AlwaysScrollableScrollPhysics(),
                             shrinkWrap: true,
