@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 bool isProduction = false;
 
 // App Version
-var appVersion = "MAMBA v0.0.5";
+var appVersion = "MAMBA v0.0.6";
 
 // App
 var androidGooglePlayUrl = "https://play.google.com/store/apps/details?id=com.mamba.mambastyleapp";
@@ -29,7 +29,7 @@ var currentUser = Usuario();
 var currentBrand = Brand();
 bool hasBrand = false;
 
-// Unread Notifications and Chats
+// Unread Notifications And Chats
 var unreadNotifications = 0;
 var unreadChats = 0;
 
@@ -41,7 +41,7 @@ String? currentAddress;
 int currentIndex = 0;
 PageController pageController = PageController(initialPage: currentIndex);
 
-//Dynamic Links Path
+// Dynamic Links Path
 var brandPath;
 
 
