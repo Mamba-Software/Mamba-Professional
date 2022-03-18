@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Idiomas Class, encapsulates all Locales / Languages that we work with in Mamba.
+// Idiomas Class, encapsulates all Locales / Languages that we work with in MambaClient.
 class Idiomas {
   static final all = [
     const Locale('es', ''),

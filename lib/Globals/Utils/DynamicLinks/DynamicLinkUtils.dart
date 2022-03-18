@@ -29,7 +29,7 @@ class DynamicLinkUtils {
       ),
       socialMetaTagParameters: SocialMetaTagParameters(
           title: 'Únete a ' + brandName,
-          description: '¡Haz clic para descargar Mamba!',
+          description: '¡Haz clic para descargar MambaClient!',
           imageUrl: Uri.parse(urlImage)),
     );
     print((await dynamicLinks.buildShortLink(parameters)).shortUrl);

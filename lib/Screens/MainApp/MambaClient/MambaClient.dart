@@ -11,23 +11,22 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../Globals/Widgets/Images/CircularImage.dart';
-import 'Chat/ChatCore/ChatCore.dart';
-import 'Marca/Marca.dart';
-import 'Perfil/Perfil.dart';
+import '../Home/Marca/Marca.dart';
+import '../Home/Perfil/Perfil.dart';
+import 'Profile/Profile.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class MambaClient extends StatefulWidget {
+  const MambaClient({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _MambaClientState createState() => _MambaClientState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _MambaClientState extends State<MambaClient> {
 
   // Acceso a Base de Datos
   var _userDataService = new UserDataService();
@@ -162,7 +161,7 @@ class _HomePageState extends State<HomePage> {
                 size: MediaQuery.of(context).size.height*0.04,
                 image: currentUser.imageUrl!,
                 borderWidth: 1,
-                color: Theme.of(context).primaryColor,
+                color: currentIndex == 3 ? Theme.of(context).primaryColor : AppColors.grey.withOpacity(0.5),
               ),
             ),
             label: AppLocalizations.of(context)!.profileBottomNav,
@@ -192,7 +191,7 @@ class _HomePageState extends State<HomePage> {
           Marca(),
           Marca(),
           Marca(),
-          Perfil(),
+          Profile(),
         ],
         onPageChanged: (page) async {
           unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);

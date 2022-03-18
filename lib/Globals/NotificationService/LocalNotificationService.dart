@@ -46,7 +46,7 @@ class LocalNotificationService {
 
       AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'com.mamba.mambastyleapp',
-        'Mamba Style',
+        'MambaClient Style',
         channelDescription: 'This is the Android Local Notifications channel',
         playSound: true,
         enableVibration: true,

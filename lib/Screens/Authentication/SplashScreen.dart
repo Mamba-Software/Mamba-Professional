@@ -19,6 +19,8 @@ import 'package:mamba_castelldefels/Screens/MainApp/FirstTime.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
 import 'package:provider/provider.dart';
 
+import '../MainApp/MambaClient/MambaClient.dart';
+
 class SplashScreen extends StatefulWidget {
   SplashScreen({Key? key}) : super(key: key);
 
@@ -97,7 +99,7 @@ class _SplashScreenState extends State<SplashScreen> {
               Navigator.pushReplacement(
                   context,
                   CupertinoPageRoute<Null>(
-                    builder: (context) => HomePage(),
+                    builder: (context) => MambaClient(),
                     settings: RouteSettings(name: 'HomePage'),
                   )
               );
@@ -156,7 +158,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Navigator.pushReplacement(
                 context,
                 CupertinoPageRoute<Null>(
-                  builder: (context) => HomePage(),
+                  builder: (context) => MambaClient(),
                   settings: RouteSettings(name: 'HomePage'),
                 )
             );
