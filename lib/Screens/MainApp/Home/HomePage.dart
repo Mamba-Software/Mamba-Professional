@@ -8,12 +8,14 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ActionDialogs/ConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/HomeDialogs/AppUpdateDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../../Globals/Widgets/Images/CircularImage.dart';
+import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
+import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
+
 import 'Chat/ChatCore/ChatCore.dart';
 import 'Marca/Marca.dart';
 import 'Perfil/Perfil.dart';

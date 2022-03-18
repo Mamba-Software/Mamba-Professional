@@ -10,8 +10,8 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'Chat.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
