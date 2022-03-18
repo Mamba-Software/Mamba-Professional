@@ -431,50 +431,49 @@ class _ProfileState extends State<Profile> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                height: MediaQuery.of(context).size.height*0.05,
+                height: MediaQuery.of(context).size.height*0.07,
                 width: double.infinity,
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
-                        alignment: Alignment.center,
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.bottomToTop,
-                                child: FeedBack(),
-                              )
-                          ).whenComplete(() {
-                            setState(() {
-                              isLoading = true;
-                              initProfileHome();
-                            });
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
+                      alignment: Alignment.center,
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.bottomToTop,
+                              child: FeedBack(),
+                            )
+                        ).whenComplete(() {
+                          setState(() {
+                            isLoading = true;
+                            initProfileHome();
                           });
-                        },
-                      ),
-                      SizedBox(width: MediaQuery.of(context).size.width*0.4,),
-                      IconButton(
-                        icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.bottomToTop,
-                                child: Settings(),
-                              )
-                          ).whenComplete(() {
-                            setState(() {
-                              isLoading = true;
-                              initProfileHome();
-                            });
+                        });
+                      },
+                    ),
+                    SizedBox(width: MediaQuery.of(context).size.width*0.4,),
+                    IconButton(
+                      icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.bottomToTop,
+                              child: Settings(),
+                            )
+                        ).whenComplete(() {
+                          setState(() {
+                            isLoading = true;
+                            initProfileHome();
                           });
-                        },
-                      ),
-                    ],
-                  ),
+                        });
+                      },
+                    ),
+                  ],
                 ),
               ),
               Container(
@@ -490,7 +489,7 @@ class _ProfileState extends State<Profile> {
                   )
               ),
               Container(
-                height: MediaQuery.of(context).size.height*0.28,
+                height: MediaQuery.of(context).size.height*0.26,
                 width: double.infinity,
                 child: GestureDetector(
                   onTap: () {
@@ -534,7 +533,7 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 child: Container(
-                  height: MediaQuery.of(context).size.height * 0.15,
+                  height: MediaQuery.of(context).size.height * 0.14,
                   decoration: new BoxDecoration(
                     color: Theme.of(context).scaffoldBackgroundColor,
                     borderRadius: BorderRadius.vertical(
@@ -542,10 +541,10 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Material(
-                        //elevation: 4,
                         shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.all(
                             const Radius.circular(10.0),
@@ -553,7 +552,7 @@ class _ProfileState extends State<Profile> {
                         ),
                         child: Container(
                           width: MediaQuery.of(context).size.width * 0.81,
-                          height: MediaQuery.of(context).size.height * 0.10,
+                          height: MediaQuery.of(context).size.height * 0.11,
                           decoration: new BoxDecoration(
                             color: Theme.of(context).scaffoldBackgroundColor,
                             //border: Border.all(color: Theme.of(context).primaryColor, width: 1),
