@@ -9,8 +9,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadlin
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaClient/Profile/PerfilScreens/Settings/Settings.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaClient/Profile/PerfilScreens/Feedback/FeedBack.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaClient/Profile/ProfileScreens/Settings/Settings.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaClient/Profile/ProfileScreens/Feedback/FeedBack.dart';
 import 'package:page_transition/page_transition.dart';
 
 // Profile Page
