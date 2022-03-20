@@ -90,13 +90,15 @@ class _ProfileState extends State<Profile> {
   // Init for Brand Home
   initProfileHome() async {
     getUser();
-    getTrainerEventsDone();
+    await getTrainerEventsDone();
+    buildProfileCarousel.add(buildShareAppContainer());
+    buildProfileCarousel.add(buildShareAppContainer());
     if (mounted) {
-      buildProfileCarousel = [buildShareAppContainer()];
       setState(() {
         isLoading = false;
       });
     }
+
   }
 
   // Gets the user info from firebase.
