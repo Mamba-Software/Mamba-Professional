@@ -184,7 +184,7 @@ class _ProfileState extends State<Profile> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Container(
-                      height: MediaQuery.of(context).size.height*0.25,
+                      height: MediaQuery.of(context).size.height*0.30,
                       width: MediaQuery.of(context).size.width,
                       child: CarouselSlider(
                         items: buildProfileCarousel,
@@ -228,7 +228,7 @@ class _ProfileState extends State<Profile> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                    height: MediaQuery.of(context).size.height*0.07,
+                    height: MediaQuery.of(context).size.height*0.05,
                     width: double.infinity,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -273,7 +273,7 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height*0.08,
+                    height: MediaQuery.of(context).size.height*0.06,
                     width: double.infinity,
                     child: Row(
                       children: [
@@ -314,7 +314,7 @@ class _ProfileState extends State<Profile> {
                         child: Container(
                           height: MediaQuery.of(context).size.height * 0.25,
                           child: Center(
-                            child: CircularImage(size: MediaQuery.of(context).size.height * 0.25, image: currentUser.imageUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                            child: CircularImage(size: MediaQuery.of(context).size.height * 0.25, image: currentUser.imageUrl, color: Theme.of(context).backgroundColor, borderWidth: 2,),
                           ),
                         ),
                       ),
