@@ -8,14 +8,14 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
 // Tus Datos Widget.
-class TusDatos extends StatefulWidget {
-  const TusDatos({Key? key}) : super(key: key);
+class SettingsYourData extends StatefulWidget {
+  const SettingsYourData({Key? key}) : super(key: key);
 
   @override
-  _TusDatosState createState() => _TusDatosState();
+  _SettingsYourDataState createState() => _SettingsYourDataState();
 }
 
-class _TusDatosState extends State<TusDatos> {
+class _SettingsYourDataState extends State<SettingsYourData> {
 
   // Acceso a Base de Datos
   var _userDataService = new UserDataService();

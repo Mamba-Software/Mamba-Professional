@@ -2,23 +2,16 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadline1.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/GroupOfQuestions.dart';
-import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/Settings.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaClient/Profile/PerfilScreens/Settings/Settings.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaClient/Profile/PerfilScreens/Feedback/FeedBack.dart';
 import 'package:page_transition/page_transition.dart';
-import 'PerfilModals/FeedBack.dart';
 
 // Profile Page
 class Profile extends StatefulWidget {
@@ -31,36 +24,12 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   // Acceso a Base de Datos
   var _userDataService = new UserDataService();
-  var _brandDataService = new BrandDataService();
   var _eventDataService = new EventDataService();
-  var _feedbackDataService = new FeedbackDataService();
   // Boolean Loading
   bool isLoading = true;
   // Event List
   int totalEvents = 0;
   int thisMonthEvents  = 0;
-  List<Event> todayEvents = [];
-  var todayEventsLabels = [];
-  int scrollIndex = 0;
-  ScrollController? _scrollController;
-  // Codigo
-  var _codigo;
-  bool codigoError = false;
-  bool codigoClicked = false;
-  bool isLoadingCodigo = false;
-  var _codigoController = TextEditingController();
-  // Request To Brand
-  RequestToBrand request = RequestToBrand();
-  Brand? brandRequested = Brand();
-  // Images Of Events
-  List<Image?> imagesEvents = [];
-  var imagesEventsNum = [];
-  Image? mySessions = Image.asset(Constants.calendarImage);
-  Image? myProgress = Image.asset(Constants.myProgressImage);
-  // See if Answered
-  GroupOfQuestions? groupOfQuestions = new GroupOfQuestions();
-  bool alreadyAnswered = false;
-
   // Carousel
   int _current = 0;
   final CarouselController _controller = CarouselController();
@@ -96,6 +65,65 @@ class _ProfileState extends State<Profile> {
     List<int> res = await _eventDataService.getUserEventsFinished(currentUser.id!);
     totalEvents = res[0];
     thisMonthEvents = res[1];
+  }
+
+  // Navigate to Feedback Screen
+  void navigateToFeedbackScreen() {
+    Navigator.push(
+        context,
+        PageTransition(
+          type: PageTransitionType.bottomToTop,
+          child: FeedBack(),
+        )
+    ).whenComplete(() {
+      setState(() {
+        isLoading = true;
+        initProfileHome();
+      });
+    });
+  }
+
+  // Navigate to Settings Screen
+  void navigateToSettingsScreen() {
+    Navigator.push(
+        context,
+        PageTransition(
+          type: PageTransitionType.bottomToTop,
+          child: Settings(),
+        )
+    ).whenComplete(() {
+      setState(() {
+        isLoading = true;
+        initProfileHome();
+      });
+    });
+  }
+
+  // Navigate to FullScreenImage Screen
+  void navigateToFullScreenImage() {
+    Navigator.push(
+      context,
+      CupertinoPageRoute<Null>(
+        builder: (context) => FullScreenPage(
+          child:  Image.network(
+            currentUser.imageUrl!,
+            loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).accentColor,
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes!
+                      : null,
+                ),
+              );
+            },
+          ),
+          dark: false,
+        )
+      )
+    );
   }
 
   // Build Share App Container.
@@ -223,38 +251,12 @@ class _ProfileState extends State<Profile> {
                         IconButton(
                           icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
                           alignment: Alignment.center,
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.bottomToTop,
-                                  child: FeedBack(),
-                                )
-                            ).whenComplete(() {
-                              setState(() {
-                                isLoading = true;
-                                initProfileHome();
-                              });
-                            });
-                          },
+                          onPressed: navigateToFeedbackScreen,
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width*0.4,),
                         IconButton(
                           icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.bottomToTop,
-                                  child: Settings(),
-                                )
-                            ).whenComplete(() {
-                              setState(() {
-                                isLoading = true;
-                                initProfileHome();
-                              });
-                            });
-                          },
+                          onPressed: navigateToSettingsScreen,
                         ),
                       ],
                     ),
@@ -273,31 +275,7 @@ class _ProfileState extends State<Profile> {
                     width: double.infinity,
                     child: Center(
                       child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute<Null>(
-                                  builder: (context) => FullScreenPage(
-                                    child:  Image.network(
-                                      currentUser.imageUrl!,
-                                      loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                                        if (loadingProgress == null) return child;
-                                        return Center(
-                                          child: CircularProgressIndicator(
-                                            color: Theme.of(context).accentColor,
-                                            value: loadingProgress.expectedTotalBytes != null
-                                                ? loadingProgress.cumulativeBytesLoaded /
-                                                loadingProgress.expectedTotalBytes!
-                                                : null,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    dark: false,
-                                  )
-                              )
-                          );
-                        },
+                        onTap: navigateToFullScreenImage,
                         child: Container(
                           height: MediaQuery.of(context).size.height * 0.25,
                           child: Center(

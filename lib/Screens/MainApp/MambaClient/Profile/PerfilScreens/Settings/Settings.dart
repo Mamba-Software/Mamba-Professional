@@ -2,30 +2,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
-
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Conversation.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/EditPhotoPage.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/TusDatos.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaClient/Profile/PerfilScreens//Settings/SettingsEditPhotoPage.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaClient/Profile/PerfilScreens/Settings/SettingsPrivacy.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaClient/Profile/PerfilScreens/Settings/SettingsTheme.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaClient/Profile/PerfilScreens/Settings/SettingsYourData.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'SettingsPrivacy.dart';
-import 'SettingsTheme.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -42,8 +37,7 @@ class _SettingsState extends State<Settings> {
   bool isLoading = false;
   bool firstBuild = true;
   // Type of Profile Widget value
-  bool? _isPrivate = null;
-  final _typeProfileKey = GlobalKey<_ProfileTypeWidgetState>();
+  bool? _isPrivate;
   // Idioma Original
   bool idiomaChanged = false;
   final _idiomaChanged = GlobalKey<_LanguagePickerWidgetState>();
@@ -54,6 +48,45 @@ class _SettingsState extends State<Settings> {
   // Theme Provider
   var themeProvider;
 
+  // Navigate to Your Data Screen
+  void navigateToYourDataScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<String>(
+          builder: (context) => SettingsYourData(),
+        )
+    );
+  }
+
+  // Navigate to EditPhotoPage Screen
+  void navigateToEditPhotoPageScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<String>(
+          builder: (context) => SettingsEditPhotoPage(),
+        )
+    );
+  }
+
+  // Navigate to Privacy Screen
+  void navigateToPrivacyScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<String>(
+          builder: (context) => SettingsPrivacy(),
+        )
+    );
+  }
+
+  // Navigate to Theme Screen
+  void navigateToThemeScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<String>(
+          builder: (context) => SettingsTheme(),
+        )
+    );
+  }
 
   @override
   void initState() {
@@ -122,14 +155,7 @@ class _SettingsState extends State<Settings> {
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute<String>(
-                                builder: (context) => TusDatos(),
-                              )
-                          );
-                        },
+                        onPressed: navigateToYourDataScreen,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -143,14 +169,7 @@ class _SettingsState extends State<Settings> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute<String>(
-                                builder: (context) => EditPhotoPage(),
-                              )
-                          );
-                        },
+                        onPressed: navigateToEditPhotoPageScreen,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -164,14 +183,7 @@ class _SettingsState extends State<Settings> {
                         ),
                       ),
                       !(currentUser.isTrainer!) ? TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute<String>(
-                                builder: (context) => SettingsPrivacy(),
-                              )
-                          );
-                        },
+                        onPressed: navigateToPrivacyScreen,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -197,14 +209,7 @@ class _SettingsState extends State<Settings> {
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute<String>(
-                                builder: (context) => SettingsTheme(),
-                              )
-                          );
-                        },
+                        onPressed: navigateToThemeScreen,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -347,6 +352,7 @@ class _SettingsState extends State<Settings> {
   }
 }
 
+// Delete Account Dialog
 class DeleteDialog extends StatefulWidget {
   const DeleteDialog({Key? key}) : super(key: key);
 
@@ -581,69 +587,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
   }
 }
 
-class ProfileTypeWidget extends StatefulWidget {
-  final ValueChanged<bool> selectedProfileTypeChanged;
-  final Usuario? user;
-  ProfileTypeWidget({required Key key, required this.selectedProfileTypeChanged, required this.user}) : super(key: key);
-
-  @override
-  _ProfileTypeWidgetState createState() => _ProfileTypeWidgetState();
-}
-
-class _ProfileTypeWidgetState extends State<ProfileTypeWidget> {
-  bool firstBuild = true;
-  var isPrivate;
-  @override
-  resetProfileType() => isPrivate = widget.user!.isPrivate!;
-  Widget build(BuildContext context) {
-    if (firstBuild) {
-      isPrivate = widget.user!.isPrivate!;
-      firstBuild = false;
-    }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        _icon(true, text: AppLocalizations.of(context)!.typeProfilePrivate, icon: Icons.visibility_off_outlined),
-        SizedBox(width: MediaQuery.of(context).size.width*0.10),
-        _icon(false, text: AppLocalizations.of(context)!.typeProfilePublic, icon: Icons.visibility_outlined),
-      ],
-    );
-  }
-  Widget _icon(bool index, {required String text, required IconData icon}) {
-    return SizedBox.fromSize(
-          size: Size(85, 85), // button width and height
-          child: ClipOval(
-            child: Material(
-              color: isPrivate == index ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor,
-              child: InkWell(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      icon,
-                      size: 30,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Theme.of(context).primaryColor)),
-                    ),
-                  ],
-                ),
-                onTap: () => {
-                  setState(() {
-                    isPrivate = index;
-                    widget.selectedProfileTypeChanged(isPrivate);
-                  }),
-                },
-              ),
-            ),
-          ),
-        );
-  }
-}
-
+// Language Picker Widget
 class LanguagePickerWidget extends StatefulWidget {
   ValueChanged<bool?> idiomaChanged;
   LanguagePickerWidget({Key? key, required this.idiomaChanged}) : super(key: key);

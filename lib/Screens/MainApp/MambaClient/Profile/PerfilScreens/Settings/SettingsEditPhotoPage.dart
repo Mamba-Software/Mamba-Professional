@@ -9,12 +9,12 @@ import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 
-class EditPhotoPage extends StatefulWidget {
+class SettingsEditPhotoPage extends StatefulWidget {
   @override
-  _EditPhotoPageState createState() => _EditPhotoPageState();
+  _SettingsEditPhotoPageState createState() => _SettingsEditPhotoPageState();
 }
 
-class _EditPhotoPageState extends State<EditPhotoPage> {
+class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage> {
 
   // Acceso a Base de Datos
   var _userDataService = new UserDataService();
