@@ -12,6 +12,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TextHeadline1.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TextHeadline3.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/MyCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventClient.dart';
@@ -28,6 +29,7 @@ import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/Settings.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:store_redirect/store_redirect.dart';
 
 import 'PerfilModals/FeedBack.dart';
 
@@ -72,10 +74,11 @@ class _ProfileState extends State<Profile> {
   GroupOfQuestions? groupOfQuestions = new GroupOfQuestions();
   bool alreadyAnswered = false;
 
+  // Carousel
   int _current = 0;
   final CarouselController _controller = CarouselController();
-
   List<Widget> buildProfileCarousel = [];
+
 
   @override
   void initState() {
@@ -84,113 +87,21 @@ class _ProfileState extends State<Profile> {
     initProfileHome();
   }
 
-  // Did Change Dependencies
-  @override
-  didChangeDependencies() {
-    super.didChangeDependencies();
-    precacheImage(mySessions!.image, context);
-    precacheImage(myProgress!.image, context);
-    for (var i=0; i<imagesEvents.length; i++) {
-      precacheImage(imagesEvents[i]!.image, context);
-    }
-  }
-
   // Init for Brand Home
   initProfileHome() async {
     getUser();
-    if (hasBrand == false) {
-      await getUserPendingRequests();
-    } else {
-      await getTrainerEventsDone();
-    }
-    await getUserEventsToday();
-    await checkIfAnswered();
+    getTrainerEventsDone();
     if (mounted) {
+      buildProfileCarousel = [buildShareAppContainer()];
       setState(() {
         isLoading = false;
       });
     }
-    buildProfileCarouselContainer();
   }
 
   // Gets the user info from firebase.
   void getUser() async {
     currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
-  }
-
-  // Gets user events today.
-  Future<void> getUserEventsToday() async {
-    bool indexFound = false;
-    DateTime now = DateTime.now();
-    todayEvents = await _eventDataService.getUserEventsToday(currentUser.id!);
-    todayEventsLabels = [];
-    for (var i=0; i < todayEvents.length; i++) {
-      Event event = todayEvents[i];
-      // Event Time
-      var startDate =  DateTime(
-        int.parse(event.year!),
-        int.parse(event.month!),
-        int.parse(event.day!),
-        int.parse(event.hour!),
-        int.parse(event.minute!),
-      );
-      var hour = event.duration.toString().split(".")[0];
-      var min = event.duration!.toStringAsFixed(2).split(".")[1];
-      var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
-      if (startDate.isBefore(now) && endDate.isBefore(now)) {
-        // Done
-        todayEventsLabels.add(2);
-      }
-      if (startDate.isBefore(now) && endDate.isAfter(now)) {
-        // Doing
-        todayEventsLabels.add(1);
-        scrollIndex = i;
-        indexFound = true;
-      }
-      if (startDate.isAfter(now) && endDate.isAfter(now)) {
-        // To Do
-        todayEventsLabels.add(0);
-      }
-      // Define Scroll Position
-      if (!indexFound && startDate.isAfter(now)) {
-        scrollIndex = i;
-        indexFound = true;
-      }
-      // Load Images
-      Image? image = buildRandomImage(imagesEventsNum);
-      imagesEvents.add(image);
-    }
-    if (!indexFound) {
-      scrollIndex = todayEvents.length-1;
-    }
-    _scrollController = ScrollController(initialScrollOffset: MediaQuery.of(context).size.width * scrollIndex);
-  }
-
-  // Check If Answered
-  Future<void> checkIfAnswered() async {
-    this.groupOfQuestions = await _feedbackDataService.getActiveGroupOfQuestions();
-    if (groupOfQuestions != null) {
-      alreadyAnswered = await _feedbackDataService.checkIfAnswersExist(this.groupOfQuestions!.id);
-    } else {
-      alreadyAnswered = true;
-    }
-  }
-
-  // Get user pending requests
-  Future<void> getUserPendingRequests() async {
-    List<RequestToBrand> req = await _userDataService.getUserRequests(currentUser.id!);
-    if (req.isNotEmpty) {
-      // At this moment, only 1 requests possible
-      var brandReq = await _brandDataService.getBrandCoverDetails(req[0].brandId!);
-      setState(() {
-        request = req[0];
-        brandRequested = brandReq;
-      });
-    } else {
-      setState(() {
-        request = RequestToBrand();
-      });
-    }
   }
 
   // Gets the events passed by the trainer.
@@ -200,247 +111,45 @@ class _ProfileState extends State<Profile> {
     thisMonthEvents = res[1];
   }
 
-  // Gets a double and returns a String Duration to be shown
-  durationToString(double duration) {
-    String temp = "";
-    temp = duration.toStringAsFixed(2);
-    var hour = temp.split(".")[0];
-    var min = temp.split(".")[1];
-    return "${hour}h ${min}m ";
-  }
-
-  // Build Custom Badge
-  Widget buildCustomBadge({required Widget child}) {
-    return Stack(
-      children: [
-        Positioned(
-          top: 0,
-          right: 0,
-          left: 0,
-          bottom: 0,
-          child: child,
-        ),
-        Positioned(
-          top: -MediaQuery.of(context).size.height*0.05,
-          right: -MediaQuery.of(context).size.width*0.17,
-          left: 0,
-          bottom: 0,
-          child: Icon(
-              Icons.feedback,
-              color: Theme.of(context).accentColor,
-              size: MediaQuery.of(context).size.height*0.04),
-        ),
-      ],
-    );
-  }
-
-  // Return bade on events Today
-  Widget buildBadge(int index) {
-    int label = todayEventsLabels[index];
-    switch (label) {
-    // To Do
-      case 0:
-        return Material(
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              const Radius.circular(10.0),
-            ),
-          ),
-          child: Container(
-            height: MediaQuery.of(context).size.height*0.03,
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width*0.30,
-            ),
-            decoration: BoxDecoration(
-                color: Colors.red, borderRadius: BorderRadius.circular(10)
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(
-                    child: Text(AppLocalizations.of(context)!.toDo,
-                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 10), textAlign: TextAlign.left),
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.01,),
-                  Icon(
-                    Icons.update_outlined,
-                    color: Colors.white,
-                    size: 15,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-    // Doing
-      case 1:
-        return Material(
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              const Radius.circular(10.0),
-            ),
-          ),
-          child: Container(
-            height: MediaQuery.of(context).size.height*0.03,
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width*0.30,
-            ),
-            decoration: BoxDecoration(
-                color: Theme.of(context).accentColor, borderRadius: BorderRadius.circular(10)
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Flexible(
-                    child: Text(AppLocalizations.of(context)!.doing,
-                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 10), textAlign: TextAlign.left),
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.01,),
-                  Icon(
-                    Icons.hourglass_top_outlined,
-                    color: Colors.white,
-                    size: 15,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-    // Done
-      case 2:
-        return Material(
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              const Radius.circular(10.0),
-            ),
-          ),
-          child: Container(
-            height: MediaQuery.of(context).size.height*0.03,
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width*0.30,
-            ),
-            decoration: BoxDecoration(
-                color: Colors.green, borderRadius: BorderRadius.circular(10)
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(AppLocalizations.of(context)!.finished,
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 10), textAlign: TextAlign.left),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.01,),
-                  Icon(
-                    Icons.done_outline_outlined,
-                    color: Colors.white,
-                    size: 15,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      default:
-        return Container();
-    }
-  }
-
-  // Gets Random Image for each Event.
-  Image? buildRandomImage(var prohibited) {
-    Random random = new Random();
-    bool isOkay = false;
-    int randomNumber = 0;
-    do {
-      randomNumber = random.nextInt(15);
-      if (!prohibited.contains(randomNumber)) {
-        isOkay = true;
-        imagesEventsNum.add(randomNumber);
-      }
-    } while(!isOkay);
-
-    switch(randomNumber) {
-      case 0: {
-        return Image.asset(Constants.eventBackground, gaplessPlayback: true,);
-      }
-      case 1: {
-        return Image.asset(Constants.eventBackground1, gaplessPlayback: true,);
-      }
-      case 2: {
-        return Image.asset(Constants.eventBackground2, gaplessPlayback: true,);
-      }
-      case 3: {
-        return Image.asset(Constants.eventBackground3, gaplessPlayback: true,);
-      }
-      case 4: {
-        return Image.asset(Constants.eventBackground4, gaplessPlayback: true,);
-      }
-      case 5: {
-        return Image.asset(Constants.eventBackground5, gaplessPlayback: true,);
-      }
-      case 6: {
-        return Image.asset(Constants.eventBackground6, gaplessPlayback: true,);
-      }
-      case 7: {
-        return Image.asset(Constants.eventBackground7, gaplessPlayback: true,);
-      }
-      case 8: {
-        return Image.asset(Constants.eventBackground8, gaplessPlayback: true,);
-      }
-      case 9: {
-        return Image.asset(Constants.eventBackground9, gaplessPlayback: true,);
-      }
-      case 10: {
-        return Image.asset(Constants.eventBackground10, gaplessPlayback: true,);
-      }
-      case 11: {
-        return Image.asset(Constants.eventBackground11, gaplessPlayback: true,);
-      }
-      case 12: {
-        return Image.asset(Constants.eventBackground12, gaplessPlayback: true,);
-      }
-      case 13: {
-        return Image.asset(Constants.eventBackground13, gaplessPlayback: true,);
-      }
-      case 14: {
-        return Image.asset(Constants.eventBackground14, gaplessPlayback: true,);
-      }
-      case 15: {
-        return Image.asset(Constants.eventBackground15, gaplessPlayback: true,);
-      }
-      default: {
-        return Image.asset(Constants.eventBackground, gaplessPlayback: true,);
-      }
-    }
-  }
-
-  // Gets the user info from firebase.
-  void buildProfileCarouselContainer() {
-    buildProfileCarousel.add(
-      Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor, borderRadius: BorderRadius.circular(10)
-        ),
-        child: Center(),
+  // Build Share App Container.
+  Widget buildShareAppContainer() {
+    return Container(
+      height: MediaQuery.of(context).size.height*0.15,
+      width: double.infinity,
+      decoration: BoxDecoration(
+          color: Theme.of(context).backgroundColor
       ),
-    );
-    buildProfileCarousel.add(
-      Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor, borderRadius: BorderRadius.circular(10)
-        ),
-        child: Center(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          TextHeadline3(text: "Hola"),
+          Text(
+              "widget.text",
+              style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor),
+              textAlign: TextAlign.center
+          ),
+          OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              elevation: 4.0,
+              backgroundColor: Theme.of(context).accentColor,
+              fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(30),
+                ),
+              ),
+            ),
+            child: Text(
+              AppLocalizations.of(context)!.update,
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white,),
+            ),
+            onPressed: () async {
+
+            },
+          ),
+
+        ],
+
       ),
     );
   }
@@ -453,36 +162,36 @@ class _ProfileState extends State<Profile> {
         :
     Scaffold (
       appBar: null,
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: SafeArea(
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.height*0.30,
-                width: double.infinity,
-                color: Theme.of(context).backgroundColor,
-                child: Center(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.height*0.20,
-                          child: CarouselSlider(
-                            items: buildProfileCarousel,
-                            carouselController: _controller,
-                            options: CarouselOptions(
-                                autoPlay: false,
-                                onPageChanged: (index, reason) {
-                                  setState(() {
-                                    _current = index;
-                                  });
-                                }
-                            ),
+      body: SafeArea(
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height*0.40,
+              width: double.infinity,
+              color: Theme.of(context).backgroundColor,
+              child: Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height*0.25,
+                        child: CarouselSlider(
+                          items: buildProfileCarousel,
+                          carouselController: _controller,
+                          options: CarouselOptions(
+                              autoPlay: false,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  _current = index;
+                                });
+                              }
                           ),
                         ),
-                        Row(
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.height*0.05,
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: buildProfileCarousel.asMap().entries.map((entry) {
                             return GestureDetector(
@@ -499,212 +208,211 @@ class _ProfileState extends State<Profile> {
                             );
                           }).toList(),
                         ),
-                      ]
-                  ),
+                      ),
+                    ]
                 ),
               ),
-              Padding(
-                padding: MediaQuery.of(context).viewInsets,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height*0.07,
-                      width: double.infinity,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
-                            alignment: Alignment.center,
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  PageTransition(
-                                    type: PageTransitionType.bottomToTop,
-                                    child: FeedBack(),
-                                  )
-                              ).whenComplete(() {
-                                setState(() {
-                                  isLoading = true;
-                                  initProfileHome();
-                                });
-                              });
-                            },
-                          ),
-                          SizedBox(width: MediaQuery.of(context).size.width*0.4,),
-                          IconButton(
-                            icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  PageTransition(
-                                    type: PageTransitionType.bottomToTop,
-                                    child: Settings(),
-                                  )
-                              ).whenComplete(() {
-                                setState(() {
-                                  isLoading = true;
-                                  initProfileHome();
-                                });
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.height*0.08,
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(child: TextHeadline1(text: currentUser.name!,)),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.height*0.30,
-                      width: double.infinity,
-                      child: Center(
-                        child: GestureDetector(
-                          onTap: () {
+            ),
+            Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height*0.07,
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
+                          alignment: Alignment.center,
+                          onPressed: () {
                             Navigator.push(
                                 context,
-                                CupertinoPageRoute<Null>(
-                                    builder: (context) => FullScreenPage(
-                                      child:  Image.network(
-                                        currentUser.imageUrl!,
-                                        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                                          if (loadingProgress == null) return child;
-                                          return Center(
-                                            child: CircularProgressIndicator(
-                                              color: Theme.of(context).accentColor,
-                                              value: loadingProgress.expectedTotalBytes != null
-                                                  ? loadingProgress.cumulativeBytesLoaded /
-                                                  loadingProgress.expectedTotalBytes!
-                                                  : null,
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                      dark: false,
-                                    )
+                                PageTransition(
+                                  type: PageTransitionType.bottomToTop,
+                                  child: FeedBack(),
                                 )
-                            );
+                            ).whenComplete(() {
+                              setState(() {
+                                isLoading = true;
+                                initProfileHome();
+                              });
+                            });
                           },
-                          child: Container(
-                            height: MediaQuery.of(context).size.height * 0.25,
-                            child: Center(
-                              child: CircularImage(size: MediaQuery.of(context).size.height * 0.25, image: currentUser.imageUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
-                            ),
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.4,),
+                        IconButton(
+                          icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                PageTransition(
+                                  type: PageTransitionType.bottomToTop,
+                                  child: Settings(),
+                                )
+                            ).whenComplete(() {
+                              setState(() {
+                                isLoading = true;
+                                initProfileHome();
+                              });
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height*0.08,
+                    width: double.infinity,
+                    child: Row(
+                      children: [
+                        Expanded(child: TextHeadline1(text: currentUser.name!,)),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height*0.30,
+                    width: double.infinity,
+                    child: Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute<Null>(
+                                  builder: (context) => FullScreenPage(
+                                    child:  Image.network(
+                                      currentUser.imageUrl!,
+                                      loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                        if (loadingProgress == null) return child;
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            color: Theme.of(context).accentColor,
+                                            value: loadingProgress.expectedTotalBytes != null
+                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                loadingProgress.expectedTotalBytes!
+                                                : null,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    dark: false,
+                                  )
+                              )
+                          );
+                        },
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.25,
+                          child: Center(
+                            child: CircularImage(size: MediaQuery.of(context).size.height * 0.25, image: currentUser.imageUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
                           ),
                         ),
                       ),
                     ),
-                    Container(
-                      child: Material(
-                        elevation: 10,
-                        shape: RoundedRectangleBorder(
+                  ),
+                  Container(
+                    child: Material(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                            bottom: Radius.elliptical(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * 0.10)
+                        ),
+                      ),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.12,
+                        decoration: new BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
                           borderRadius: BorderRadius.vertical(
                               bottom: Radius.elliptical(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * 0.10)
                           ),
                         ),
-                        child: Container(
-                          height: MediaQuery.of(context).size.height * 0.12,
-                          decoration: new BoxDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.vertical(
-                                bottom: Radius.elliptical(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * 0.10)
-                            ),
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Material(
-                                shape: RoundedRectangleBorder(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Material(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.all(
+                                  const Radius.circular(10.0),
+                                ),
+                              ),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.81,
+                                height: MediaQuery.of(context).size.height * 0.10,
+                                decoration: new BoxDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  //border: Border.all(color: Theme.of(context).primaryColor, width: 1),
                                   borderRadius: new BorderRadius.all(
                                     const Radius.circular(10.0),
                                   ),
                                 ),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width * 0.81,
-                                  height: MediaQuery.of(context).size.height * 0.10,
-                                  decoration: new BoxDecoration(
-                                    color: Theme.of(context).scaffoldBackgroundColor,
-                                    //border: Border.all(color: Theme.of(context).primaryColor, width: 1),
-                                    borderRadius: new BorderRadius.all(
-                                      const Radius.circular(10.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      height: MediaQuery.of(context).size.height * 0.10,
+                                      width: MediaQuery.of(context).size.width * 0.38,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: <Widget>[
+                                          Text(
+                                            totalEvents.toString(),
+                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                                          ),
+                                          SizedBox(height: 2),
+                                          Text(
+                                            AppLocalizations.of(context)!.allEvents,
+                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        height: MediaQuery.of(context).size.height * 0.10,
-                                        width: MediaQuery.of(context).size.width * 0.38,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            Text(
-                                              totalEvents.toString(),
-                                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                                            ),
-                                            SizedBox(height: 2),
-                                            Text(
-                                              AppLocalizations.of(context)!.allEvents,
-                                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ],
-                                        ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width * 0.05,
+                                      height: MediaQuery.of(context).size.height * 0.03,
+                                      child: VerticalDivider(color: Theme.of(context).primaryColor,),
+                                    ),
+                                    Container(
+                                      height: MediaQuery.of(context).size.height * 0.10,
+                                      width: MediaQuery.of(context).size.width * 0.38,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: <Widget>[
+                                          Text(
+                                            thisMonthEvents.toString(),
+                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                                          ),
+                                          SizedBox(height: 2),
+                                          Text(
+                                            AppLocalizations.of(context)!.monthEvents,
+                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
                                       ),
-                                      Container(
-                                        width: MediaQuery.of(context).size.width * 0.05,
-                                        height: MediaQuery.of(context).size.height * 0.03,
-                                        child: VerticalDivider(color: Theme.of(context).primaryColor,),
-                                      ),
-                                      Container(
-                                        height: MediaQuery.of(context).size.height * 0.10,
-                                        width: MediaQuery.of(context).size.width * 0.38,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            Text(
-                                              thisMonthEvents.toString(),
-                                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                                            ),
-                                            SizedBox(height: 2),
-                                            Text(
-                                              AppLocalizations.of(context)!.monthEvents,
-                                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    Container(
-                      height: MediaQuery.of(context).size.height*0.25,
+                  ),
+                  Container(
+                      height: MediaQuery.of(context).size.height*0.29,
                       width: double.infinity,
                       child: Center()
-                    ),
-                    // 57%
-                  ],
-                ),
+                  ),
+                  // 57%
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
