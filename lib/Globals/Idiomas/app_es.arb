@@ -1634,5 +1634,17 @@
   "updateAppText": "Actualiza la app para no perderte ninguna novedad y evitar posibles errores.",
   "@updateAppText": {
     "description": "membersOfBrand message"
+  },
+  "shareAppTitle": "Invitar amigos",
+  "@shareAppTitle": {
+    "description": "membersOfBrand message"
+  },
+  "shareAppText": "Comparte la app con tus amigos y familiares",
+  "@shareAppText": {
+    "description": "membersOfBrand message"
+  },
+  "shareApp": "Compartir app",
+  "@shareApp": {
+    "description": "membersOfBrand message"
   }
 }

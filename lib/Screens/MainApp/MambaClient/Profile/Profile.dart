@@ -11,8 +11,8 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TextHeadline1.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TextHeadline3.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadline1.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadline3.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/MyCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventClient.dart';
@@ -91,14 +91,12 @@ class _ProfileState extends State<Profile> {
   initProfileHome() async {
     getUser();
     await getTrainerEventsDone();
-    buildProfileCarousel.add(buildShareAppContainer());
-    buildProfileCarousel.add(buildShareAppContainer());
+    buildProfileCarousel = [buildShareAppContainer(), buildShareAppContainer()];
     if (mounted) {
       setState(() {
         isLoading = false;
       });
     }
-
   }
 
   // Gets the user info from firebase.
@@ -122,34 +120,41 @@ class _ProfileState extends State<Profile> {
           color: Theme.of(context).backgroundColor
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TextHeadline3(text: "Hola"),
-          Text(
-              "widget.text",
+          TitleHeadline1(
+            text: AppLocalizations.of(context)!.shareAppTitle,
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height*0.015),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+            child: Text(
+              AppLocalizations.of(context)!.shareAppText,
               style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor),
               textAlign: TextAlign.center
+            ),
           ),
+          SizedBox(height: MediaQuery.of(context).size.height*0.015),
           OutlinedButton(
+            onPressed: () {
+
+            },
+            child: Text(
+              AppLocalizations.of(context)!.shareApp,
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
             style: OutlinedButton.styleFrom(
-              elevation: 4.0,
-              backgroundColor: Theme.of(context).accentColor,
+              elevation: 4,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+              side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
                   Radius.circular(30),
                 ),
               ),
             ),
-            child: Text(
-              AppLocalizations.of(context)!.update,
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white,),
-            ),
-            onPressed: () async {
-
-            },
           ),
-
         ],
 
       ),
@@ -163,7 +168,10 @@ class _ProfileState extends State<Profile> {
     )
         :
     Scaffold (
-      appBar: null,
+      appBar: AppBar(
+        toolbarHeight: 0,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: Stack(
           alignment: Alignment.bottomCenter,
@@ -172,47 +180,47 @@ class _ProfileState extends State<Profile> {
               height: MediaQuery.of(context).size.height*0.40,
               width: double.infinity,
               color: Theme.of(context).backgroundColor,
-              child: Center(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height*0.25,
-                        child: CarouselSlider(
-                          items: buildProfileCarousel,
-                          carouselController: _controller,
-                          options: CarouselOptions(
-                              autoPlay: false,
-                              onPageChanged: (index, reason) {
-                                setState(() {
-                                  _current = index;
-                                });
-                              }
-                          ),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).size.height*0.25,
+                      width: MediaQuery.of(context).size.width,
+                      child: CarouselSlider(
+                        items: buildProfileCarousel,
+                        carouselController: _controller,
+                        options: CarouselOptions(
+                            autoPlay: false,
+                            viewportFraction: 1,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                _current = index;
+                              });
+                            }
                         ),
                       ),
-                      Container(
-                        height: MediaQuery.of(context).size.height*0.05,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: buildProfileCarousel.asMap().entries.map((entry) {
-                            return GestureDetector(
-                              onTap: () => _controller.animateToPage(entry.key),
-                              child: Container(
-                                width: 8.0,
-                                height: 8.0,
-                                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(_current == entry.key ? 0.9 : 0.4)
-                                ),
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height*0.04,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: buildProfileCarousel.asMap().entries.map((entry) {
+                          return GestureDetector(
+                            onTap: () => _controller.animateToPage(entry.key),
+                            child: Container(
+                              width: 8.0,
+                              height: 8.0,
+                              margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(_current == entry.key ? 0.9 : 0.4)
                               ),
-                            );
-                          }).toList(),
-                        ),
+                            ),
+                          );
+                        }).toList(),
                       ),
-                    ]
-                ),
+                    ),
+                  ]
               ),
             ),
             Container(
@@ -269,7 +277,7 @@ class _ProfileState extends State<Profile> {
                     width: double.infinity,
                     child: Row(
                       children: [
-                        Expanded(child: TextHeadline1(text: currentUser.name!,)),
+                        Expanded(child: TitleHeadline1(text: currentUser.name!,)),
                       ],
                     ),
                   ),
@@ -314,39 +322,37 @@ class _ProfileState extends State<Profile> {
                   ),
                   Container(
                     child: Material(
-                      elevation: 10,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(
                             bottom: Radius.elliptical(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * 0.10)
                         ),
                       ),
                       child: Container(
-                        height: MediaQuery.of(context).size.height * 0.12,
+                        height: MediaQuery.of(context).size.height * 0.13,
                         decoration: new BoxDecoration(
                           color: Theme.of(context).scaffoldBackgroundColor,
                           borderRadius: BorderRadius.vertical(
                               bottom: Radius.elliptical(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * 0.10)
                           ),
+                          boxShadow: <BoxShadow>[
+                            BoxShadow(
+                              color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.1),
+                              offset: Offset(0, 6.0),
+                              blurRadius: 5.0,
+                              spreadRadius: 10,
+                            ),
+                          ],
                         ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Material(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.all(
-                                  const Radius.circular(10.0),
-                                ),
-                              ),
+                            Material (
                               child: Container(
                                 width: MediaQuery.of(context).size.width * 0.81,
                                 height: MediaQuery.of(context).size.height * 0.10,
                                 decoration: new BoxDecoration(
                                   color: Theme.of(context).scaffoldBackgroundColor,
-                                  //border: Border.all(color: Theme.of(context).primaryColor, width: 1),
-                                  borderRadius: new BorderRadius.all(
-                                    const Radius.circular(10.0),
-                                  ),
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,

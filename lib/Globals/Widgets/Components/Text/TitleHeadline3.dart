@@ -3,16 +3,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 
-class TextHeadline3 extends StatefulWidget {
+class TitleHeadline3 extends StatefulWidget {
   final String text;
 
-  TextHeadline3({Key? key, required this.text}) : super(key: key);
+  TitleHeadline3({Key? key, required this.text}) : super(key: key);
 
   @override
-  _TextHeadline3State createState() => new _TextHeadline3State();
+  _TitleHeadline3State createState() => new _TitleHeadline3State();
 }
 
-class _TextHeadline3State extends State<TextHeadline3> {
+class _TitleHeadline3State extends State<TitleHeadline3> {
 
 
   @override
