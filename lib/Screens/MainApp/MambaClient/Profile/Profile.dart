@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -71,6 +72,11 @@ class _ProfileState extends State<Profile> {
   GroupOfQuestions? groupOfQuestions = new GroupOfQuestions();
   bool alreadyAnswered = false;
 
+  int _current = 0;
+  final CarouselController _controller = CarouselController();
+
+  List<Widget> buildProfileCarousel = [];
+
   @override
   void initState() {
     super.initState();
@@ -104,6 +110,7 @@ class _ProfileState extends State<Profile> {
         isLoading = false;
       });
     }
+    buildProfileCarouselContainer();
   }
 
   // Gets the user info from firebase.
@@ -416,6 +423,28 @@ class _ProfileState extends State<Profile> {
     }
   }
 
+  // Gets the user info from firebase.
+  void buildProfileCarouselContainer() {
+    buildProfileCarousel.add(
+      Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor, borderRadius: BorderRadius.circular(10)
+        ),
+        child: Center(),
+      ),
+    );
+    buildProfileCarousel.add(
+      Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor, borderRadius: BorderRadius.circular(10)
+        ),
+        child: Center(),
+      ),
+    );
+  }
+
   Widget build(BuildContext context) {
     return isLoading ?
     Center(
@@ -427,193 +456,251 @@ class _ProfileState extends State<Profile> {
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+          child: Stack(
+            alignment: Alignment.bottomCenter,
             children: [
               Container(
-                height: MediaQuery.of(context).size.height*0.07,
+                height: MediaQuery.of(context).size.height*0.30,
                 width: double.infinity,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
-                      alignment: Alignment.center,
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.bottomToTop,
-                              child: FeedBack(),
-                            )
-                        ).whenComplete(() {
-                          setState(() {
-                            isLoading = true;
-                            initProfileHome();
-                          });
-                        });
-                      },
-                    ),
-                    SizedBox(width: MediaQuery.of(context).size.width*0.4,),
-                    IconButton(
-                      icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.bottomToTop,
-                              child: Settings(),
-                            )
-                        ).whenComplete(() {
-                          setState(() {
-                            isLoading = true;
-                            initProfileHome();
-                          });
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                  height: MediaQuery.of(context).size.height*0.1,
-                  width: double.infinity,
-                  child: Center(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                color: Theme.of(context).backgroundColor,
+                child: Center(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Expanded(child: TextHeadline1(text: currentUser.name!,)),
-                      ],
-                    ),
-                  )
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height*0.26,
-                width: double.infinity,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute<Null>(
-                            builder: (context) => FullScreenPage(
-                              child:  Image.network(
-                                currentUser.imageUrl!,
-                                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                                  if (loadingProgress == null) return child;
-                                  return Center(
-                                    child: CircularProgressIndicator(
-                                      color: Theme.of(context).accentColor,
-                                      value: loadingProgress.expectedTotalBytes != null
-                                          ? loadingProgress.cumulativeBytesLoaded /
-                                          loadingProgress.expectedTotalBytes!
-                                          : null,
-                                    ),
-                                  );
-                                },
+                        Container(
+                          height: MediaQuery.of(context).size.height*0.20,
+                          child: CarouselSlider(
+                            items: buildProfileCarousel,
+                            carouselController: _controller,
+                            options: CarouselOptions(
+                                autoPlay: false,
+                                onPageChanged: (index, reason) {
+                                  setState(() {
+                                    _current = index;
+                                  });
+                                }
+                            ),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: buildProfileCarousel.asMap().entries.map((entry) {
+                            return GestureDetector(
+                              onTap: () => _controller.animateToPage(entry.key),
+                              child: Container(
+                                width: 8.0,
+                                height: 8.0,
+                                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(_current == entry.key ? 0.9 : 0.4)
+                                ),
                               ),
-                              dark: false,
-                            )
-                        )
-                    );
-                  },
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.25,
-                    child: Center(
-                      child: CircularImage(size: MediaQuery.of(context).size.height * 0.25, image: currentUser.imageUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
-                    ),
+                            );
+                          }).toList(),
+                        ),
+                      ]
                   ),
                 ),
               ),
-              Material(
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                      bottom: Radius.elliptical(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * 0.12)
-                  ),
-                ),
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 0.14,
-                  decoration: new BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.vertical(
-                        bottom: Radius.elliptical(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * 0.12)
+              Padding(
+                padding: MediaQuery.of(context).viewInsets,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).size.height*0.07,
+                      width: double.infinity,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
+                            alignment: Alignment.center,
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.bottomToTop,
+                                    child: FeedBack(),
+                                  )
+                              ).whenComplete(() {
+                                setState(() {
+                                  isLoading = true;
+                                  initProfileHome();
+                                });
+                              });
+                            },
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.4,),
+                          IconButton(
+                            icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.bottomToTop,
+                                    child: Settings(),
+                                  )
+                              ).whenComplete(() {
+                                setState(() {
+                                  isLoading = true;
+                                  initProfileHome();
+                                });
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Material(
+                    Container(
+                      height: MediaQuery.of(context).size.height*0.08,
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          Expanded(child: TextHeadline1(text: currentUser.name!,)),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height*0.30,
+                      width: double.infinity,
+                      child: Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute<Null>(
+                                    builder: (context) => FullScreenPage(
+                                      child:  Image.network(
+                                        currentUser.imageUrl!,
+                                        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                          if (loadingProgress == null) return child;
+                                          return Center(
+                                            child: CircularProgressIndicator(
+                                              color: Theme.of(context).accentColor,
+                                              value: loadingProgress.expectedTotalBytes != null
+                                                  ? loadingProgress.cumulativeBytesLoaded /
+                                                  loadingProgress.expectedTotalBytes!
+                                                  : null,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      dark: false,
+                                    )
+                                )
+                            );
+                          },
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.25,
+                            child: Center(
+                              child: CircularImage(size: MediaQuery.of(context).size.height * 0.25, image: currentUser.imageUrl, color: Theme.of(context).accentColor, borderWidth: 2,),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: Material(
+                        elevation: 10,
                         shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.all(
-                            const Radius.circular(10.0),
+                          borderRadius: BorderRadius.vertical(
+                              bottom: Radius.elliptical(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * 0.10)
                           ),
                         ),
                         child: Container(
-                          width: MediaQuery.of(context).size.width * 0.81,
-                          height: MediaQuery.of(context).size.height * 0.11,
+                          height: MediaQuery.of(context).size.height * 0.12,
                           decoration: new BoxDecoration(
                             color: Theme.of(context).scaffoldBackgroundColor,
-                            //border: Border.all(color: Theme.of(context).primaryColor, width: 1),
-                            borderRadius: new BorderRadius.all(
-                              const Radius.circular(10.0),
+                            borderRadius: BorderRadius.vertical(
+                                bottom: Radius.elliptical(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * 0.10)
                             ),
                           ),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Container(
-                                height: MediaQuery.of(context).size.height * 0.10,
-                                width: MediaQuery.of(context).size.width * 0.38,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Text(
-                                      totalEvents.toString(),
-                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                                    ),
-                                    SizedBox(height: 2),
-                                    Text(
-                                      AppLocalizations.of(context)!.allEvents,
-                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
+                              Material(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.all(
+                                    const Radius.circular(10.0),
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.05,
-                                height: MediaQuery.of(context).size.height * 0.03,
-                                child: VerticalDivider(color: Theme.of(context).primaryColor,),
-                              ),
-                              Container(
-                                height: MediaQuery.of(context).size.height * 0.10,
-                                width: MediaQuery.of(context).size.width * 0.38,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Text(
-                                      thisMonthEvents.toString(),
-                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width * 0.81,
+                                  height: MediaQuery.of(context).size.height * 0.10,
+                                  decoration: new BoxDecoration(
+                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                    //border: Border.all(color: Theme.of(context).primaryColor, width: 1),
+                                    borderRadius: new BorderRadius.all(
+                                      const Radius.circular(10.0),
                                     ),
-                                    SizedBox(height: 2),
-                                    Text(
-                                      AppLocalizations.of(context)!.monthEvents,
-                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: MediaQuery.of(context).size.height * 0.10,
+                                        width: MediaQuery.of(context).size.width * 0.38,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: <Widget>[
+                                            Text(
+                                              totalEvents.toString(),
+                                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                                            ),
+                                            SizedBox(height: 2),
+                                            Text(
+                                              AppLocalizations.of(context)!.allEvents,
+                                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        width: MediaQuery.of(context).size.width * 0.05,
+                                        height: MediaQuery.of(context).size.height * 0.03,
+                                        child: VerticalDivider(color: Theme.of(context).primaryColor,),
+                                      ),
+                                      Container(
+                                        height: MediaQuery.of(context).size.height * 0.10,
+                                        width: MediaQuery.of(context).size.width * 0.38,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: <Widget>[
+                                            Text(
+                                              thisMonthEvents.toString(),
+                                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                                            ),
+                                            SizedBox(height: 2),
+                                            Text(
+                                              AppLocalizations.of(context)!.monthEvents,
+                                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height*0.25,
+                      width: double.infinity,
+                      child: Center()
+                    ),
+                    // 57%
+                  ],
                 ),
               ),
             ],
