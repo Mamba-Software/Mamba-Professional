@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -9,28 +8,16 @@ import 'package:mamba_castelldefels/Data/DataService/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadline1.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadline3.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/CalendarWidgetTrainer.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/MyCalendarWidget.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventClient.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/CancelRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/Settings.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:store_redirect/store_redirect.dart';
-
 import 'PerfilModals/FeedBack.dart';
 
 // Profile Page
@@ -90,7 +77,7 @@ class _ProfileState extends State<Profile> {
   // Init for Brand Home
   initProfileHome() async {
     getUser();
-    await getTrainerEventsDone();
+    await getUserEventsFinished();
     buildProfileCarousel = [buildShareAppContainer(), buildShareAppContainer()];
     if (mounted) {
       setState(() {
@@ -105,7 +92,7 @@ class _ProfileState extends State<Profile> {
   }
 
   // Gets the events passed by the trainer.
-  Future<void> getTrainerEventsDone() async {
+  Future<void> getUserEventsFinished() async {
     List<int> res = await _eventDataService.getUserEventsFinished(currentUser.id!);
     totalEvents = res[0];
     thisMonthEvents = res[1];
@@ -184,7 +171,7 @@ class _ProfileState extends State<Profile> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Container(
-                      height: MediaQuery.of(context).size.height*0.30,
+                      height: MediaQuery.of(context).size.height*0.27,
                       width: MediaQuery.of(context).size.width,
                       child: CarouselSlider(
                         items: buildProfileCarousel,
@@ -228,7 +215,7 @@ class _ProfileState extends State<Profile> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                    height: MediaQuery.of(context).size.height*0.05,
+                    height: MediaQuery.of(context).size.height*0.07,
                     width: double.infinity,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -410,11 +397,6 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ),
-                  ),
-                  Container(
-                      height: MediaQuery.of(context).size.height*0.29,
-                      width: double.infinity,
-                      child: Center()
                   ),
                   // 57%
                 ],
