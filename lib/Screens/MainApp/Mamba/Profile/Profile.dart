@@ -24,8 +24,6 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   // Screen Dimensions
-  var deviceHeight;
-  var deviceWidth;
   var safeAreaHeight;
   var safeAreaWidth;
   // Acceso a Base de Datos
@@ -63,11 +61,9 @@ class _ProfileState extends State<Profile> {
 
   // Init Device Sizes
   initDeviceSizes() {
-    deviceHeight = MediaQuery.of(context).size.height;
-    deviceWidth = MediaQuery.of(context).size.width;
-    safeAreaHeight = deviceHeight - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
-    safeAreaWidth = deviceWidth;
-    print("Device H and W: "+deviceHeight.toString()+" "+deviceWidth.toString());
+    safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
+    safeAreaWidth = MediaQuery.of(context).size.width;
+    print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
     print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
   }
 
