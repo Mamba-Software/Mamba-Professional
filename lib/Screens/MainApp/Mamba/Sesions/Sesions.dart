@@ -231,7 +231,11 @@ class _SesionsState extends State<Sesions> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        TitleHeadline1(text: "Mi Calendario"),
+                        Text(
+                          "Mi Calendario",
+                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center
+                        ),
                       ],
                     ),
                   ),
@@ -273,7 +277,7 @@ class _SesionsState extends State<Sesions> {
                                   headerStyle: CalendarHeaderStyle(
                                     textAlign: TextAlign.center,
                                     backgroundColor: Colors.transparent,
-                                    textStyle: Theme.of(context).textTheme.bodyText1,
+                                    textStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.transparent),
                                   ),
                                   monthViewSettings: MonthViewSettings(navigationDirection: MonthNavigationDirection.horizontal),
                                   onViewChanged: (ViewChangedDetails viewChangedDetails) {
@@ -288,7 +292,7 @@ class _SesionsState extends State<Sesions> {
                                   height: safeAreaHeight*0.06,
                                   width: safeAreaWidth*0.9,
                                   decoration: new BoxDecoration(
-                                    color: Theme.of(context).primaryColor,
+                                    color: AppColors.grey.withOpacity(0.8),
                                     borderRadius: new BorderRadius.vertical(
                                       top: Radius.circular(10.0),
                                     ),
@@ -297,7 +301,7 @@ class _SesionsState extends State<Sesions> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       IconButton(
-                                        icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).primaryColorDark, size: safeAreaHeight*0.03,),
+                                        icon: Icon(Icons.arrow_back_ios, color: AppColors.white, size: safeAreaHeight*0.02,),
                                         alignment: Alignment.center,
                                         onPressed: () {
                                           _calendarController.backward!();
@@ -305,11 +309,11 @@ class _SesionsState extends State<Sesions> {
                                       ),
                                       Text(
                                         toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
-                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorDark),
+                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                         textAlign: TextAlign.start,
                                       ),
                                       IconButton(
-                                        icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColorDark, size: safeAreaHeight*0.03,),
+                                        icon: Icon(Icons.arrow_forward_ios, color: AppColors.white, size: safeAreaHeight*0.02,),
                                         alignment: Alignment.center,
                                         onPressed: () {
                                           _calendarController.forward!();
