@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadline1.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
@@ -255,9 +256,10 @@ class _ProfileState extends State<Profile> {
             ),
             Container(
               child: Stack(
+                alignment: Alignment.topCenter,
                 children: [
                   Container(
-                    height: safeAreaHeight * 0.13,
+                    height: safeAreaHeight * 0.15,
                     decoration: new BoxDecoration(
                       color: Theme.of(context).backgroundColor,
                     ),
@@ -277,10 +279,10 @@ class _ProfileState extends State<Profile> {
                         ),
                         boxShadow: <BoxShadow>[
                           BoxShadow(
-                            color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.1),
-                            offset: Offset(0, 0.0),
-                            blurRadius: 10.0,
-                            spreadRadius: 10,
+                            color: AppColors.black.withOpacity(0.1),
+                            offset: Offset(0, 9),
+                            blurRadius: 5.0,
+                            spreadRadius: 0,
                           ),
                         ],
                       ),
