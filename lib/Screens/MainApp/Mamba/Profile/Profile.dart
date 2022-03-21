@@ -191,6 +191,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     if (isFirstBuild) {
       initDeviceSizes();
+      isFirstBuild = false;
     }
     return isLoading ?
     Center(

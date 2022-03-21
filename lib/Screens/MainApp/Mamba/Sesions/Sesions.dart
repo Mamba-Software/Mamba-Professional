@@ -54,6 +54,10 @@ class _SesionsState extends State<Sesions> {
   final CalendarController _calendarController = CalendarController();
   DateTime middleMonthDate = DateTime.now();
 
+  // Event List
+  String month = "";
+  List<Event> listEvents = [];
+
   @override
   void initState() {
     isLoading = true;
@@ -71,7 +75,49 @@ class _SesionsState extends State<Sesions> {
 
   void getBrandDetails() async {
     _brand = await _brandDataService.getBrandDetails(currentBrand.id!);
+    getEventsDone();
     initCalendar();
+  }
+
+  // Gets the events passed by the trainer.
+  void getEventsDone() async {
+    DateTime today = DateTime.now();
+    var tempMonth = 0;
+    List<Event> list = await _eventDataService.getUserEvents(currentUser.id!);
+    for (var i=0; i<list.length; i++) {
+      Event event = list[i];
+      var startDate =  DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
+      if (startDate.isBefore(today)) {
+        listEvents.add(event);
+        if (startDate.year == today.year && startDate.month == today.month) {
+          tempMonth += 1;
+        }
+      }
+    }
+    listEvents.sort((a,b) {
+      var aDate =  DateTime(
+        int.parse(a.year!),
+        int.parse(a.month!),
+        int.parse(a.day!),
+        int.parse(a.hour!),
+        int.parse(a.minute!),
+      );
+      var bDate =  DateTime(
+        int.parse(b.year!),
+        int.parse(b.month!),
+        int.parse(b.day!),
+        int.parse(b.hour!),
+        int.parse(b.minute!),
+      );
+      return aDate.compareTo(bDate);
+    });
+    listEvents = List.from(listEvents.reversed);
   }
 
   void initCalendar() {
@@ -157,6 +203,7 @@ class _SesionsState extends State<Sesions> {
   Widget build(BuildContext context) {
     if (isFirstBuild) {
       initDeviceSizes();
+      isFirstBuild = false;
     }
     return isLoading ?
     Center(
@@ -171,109 +218,300 @@ class _SesionsState extends State<Sesions> {
       body: SafeArea(
         right: false,
         left: false,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
           child: Column(
             children: [
+              Column(
+                children: [
+                  Container(
+                    height: safeAreaHeight*0.1,
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TitleHeadline1(text: "Mi Calendario"),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: safeAreaHeight*0.4,
+                    width: safeAreaWidth*0.9,
+                    decoration: new BoxDecoration(
+                      border: Border.all(
+                        width: 1,
+                        color: AppColors.grey,
+                        style: BorderStyle.solid,
+                      ),
+                      borderRadius: new BorderRadius.vertical(
+                        top: Radius.circular(15.0),
+                        bottom: Radius.circular(10.0),
+                      ),
+                    ),
+                    child: StreamBuilder<QuerySnapshot>(
+                        stream: _eventDataService.getUserEventsStream(currentUser.id!),
+                        builder: (context, snapshot) {
+                          if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
+                            return LoadingViewPurple();
+                          } else {
+                            eventsList = documentsToEvents(snapshot.data!.docs);
+                            return Stack(
+                              alignment: Alignment.topCenter,
+                              children: [
+                                SfCalendar(
+                                  view: CalendarView.month,
+                                  controller: _calendarController,
+                                  dataSource: _getCalendarDataSource(),
+                                  firstDayOfWeek: 1,
+                                  showDatePickerButton: false,
+                                  showCurrentTimeIndicator: false,
+                                  showNavigationArrow: true,
+                                  todayHighlightColor: Theme.of(context).accentColor,
+                                  headerHeight: safeAreaHeight*0.07,
+                                  headerDateFormat: "MMMM yyyy",
+                                  headerStyle: CalendarHeaderStyle(
+                                    textAlign: TextAlign.center,
+                                    backgroundColor: Colors.transparent,
+                                    textStyle: Theme.of(context).textTheme.bodyText1,
+                                  ),
+                                  monthViewSettings: MonthViewSettings(navigationDirection: MonthNavigationDirection.horizontal),
+                                  onViewChanged: (ViewChangedDetails viewChangedDetails) {
+                                    Future.delayed(Duration.zero, () async {
+                                      setState(() {
+                                        middleMonthDate = viewChangedDetails.visibleDates[14];
+                                      });
+                                    });
+                                  },
+                                ),
+                                Container(
+                                  height: safeAreaHeight*0.06,
+                                  width: safeAreaWidth*0.9,
+                                  decoration: new BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    borderRadius: new BorderRadius.vertical(
+                                      top: Radius.circular(10.0),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).primaryColorDark, size: safeAreaHeight*0.03,),
+                                        alignment: Alignment.center,
+                                        onPressed: () {
+                                          _calendarController.backward!();
+                                        },
+                                      ),
+                                      Text(
+                                        toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
+                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorDark),
+                                        textAlign: TextAlign.start,
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColorDark, size: safeAreaHeight*0.03,),
+                                        alignment: Alignment.center,
+                                        onPressed: () {
+                                          _calendarController.forward!();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                        }
+                    ),
+                  ),
+                ],
+              ),
               Container(
-                height: safeAreaHeight*0.07,
-                width: double.infinity,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
                   children: [
-                    TitleHeadline1(text: "Mi Calendario"),
+                    Container(
+                      height: safeAreaHeight*0.1,
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TitleHeadline1(text: "Sesiones"),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: listEvents.length,
+                        itemBuilder: (context,int index) {
+                          Event event = listEvents[index];
+                          bool addLabel = false;
+                          var startDate =  DateTime(
+                            int.parse(event.year!),
+                            int.parse(event.month!),
+                            int.parse(event.day!),
+                            int.parse(event.hour!),
+                            int.parse(event.minute!),
+                          );
+                          String day = DateFormat('EEEE', Localizations.localeOf(context).languageCode).format(startDate);
+                          String _month = DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode).format(startDate);
+                          if (_month != month) {
+                            month = _month;
+                            addLabel = true;
+                          }
+                          return Column(
+                            children: [
+                              addLabel ? Container(
+                                padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          Localizations.localeOf(context).languageCode == 'ca' ? month.substring(3).toUpperCase() : month.toUpperCase(),
+                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).accentColor),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ) : Container(),
+                              ListTile(
+                                onTap: () {
+                                  if (currentUser.isTrainer!) {
+                                    Navigator.push(
+                                        context,
+                                        CupertinoPageRoute<Null>(
+                                            builder: (context) => ViewEventTrainer(
+                                              eventId: event.id!,
+                                              canEdit: false,
+                                              locale: Localizations.localeOf(context),
+                                            )
+                                        )
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        CupertinoPageRoute<Null>(
+                                            builder: (context) => ViewEventClient(
+                                              eventId: event.id!,
+                                              canJoin: false,
+                                              locale: Localizations.localeOf(context),
+                                            )
+                                        )
+                                    );
+                                  }
+                                },
+                                leading: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      toCapitalized(day),
+                                      style: Theme.of(context).textTheme.bodyText2,
+                                    ),
+                                    Text(
+                                      "${event.day}/${event.month}/${event.year!.substring(2, 4)}",
+                                      style: Theme.of(context).textTheme.bodyText2,
+                                    ),
+                                  ],
+                                ),
+                                minLeadingWidth: MediaQuery.of(context).size.width*0.15,
+                                title: Text(
+                                  event.title!,
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                ),
+                                subtitle: Column(
+                                  children: [
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Icon(
+                                          Icons.schedule,
+                                          color: Theme.of(context).primaryColor,
+                                          size: 15,
+                                        ),
+                                        SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                        Text(
+                                          event.hour.toString(),
+                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+                                        ),
+                                        Text(
+                                          ":",
+                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+                                        ),
+                                        Text(
+                                          event.minute=="0" ? "00" : event.minute.toString(),
+                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+                                        ),
+                                        Container(
+                                            height: 8,
+                                            width: 24,
+                                            child: VerticalDivider(color: Theme.of(context).primaryColor, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
+                                        ),
+                                        Icon(
+                                          Icons.timer,
+                                          color: Theme.of(context).primaryColor,
+                                          size: 15,
+                                        ),
+                                        SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                        Text(
+                                          durationToString(event.duration!),
+                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+                                        ),
+                                        Container(
+                                            height: 8,
+                                            width: 24,
+                                            child: VerticalDivider(color: Theme.of(context).primaryColor, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
+                                        ),
+                                        Icon(
+                                          Icons.record_voice_over,
+                                          color: Theme.of(context).primaryColor,
+                                          size: 15,
+                                        ),
+                                        SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                        Text(
+                                          event.numTrainers.toString(),
+                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+                                        ),
+                                        Container(
+                                            height: 8,
+                                            width: 24,
+                                            child: VerticalDivider(color: Theme.of(context).primaryColor, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
+                                        ),
+                                        Icon(
+                                          Icons.directions_run,
+                                          color: Theme.of(context).primaryColor,
+                                          size: 15,
+                                        ),
+                                        SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                        Text(
+                                          event.numClients.toString(),
+                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                trailing: Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Theme.of(context).primaryColor,
+                                  size: MediaQuery.of(context).size.width*0.04,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
-              Container(
-                height: safeAreaHeight*0.4,
-                width: safeAreaWidth*0.9,
-                decoration: new BoxDecoration(
-                  border: Border.all(
-                    width: 1,
-                    color: AppColors.grey,
-                    style: BorderStyle.solid,
-                  ),
-                  borderRadius: new BorderRadius.vertical(
-                    top: Radius.circular(15.0),
-                    bottom: Radius.circular(10.0),
-                  ),
-                ),
-                child: StreamBuilder<QuerySnapshot>(
-                    stream: _eventDataService.getUserEventsStream(currentUser.id!),
-                    builder: (context, snapshot) {
-                      if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
-                        return LoadingViewPurple();
-                      } else {
-                        eventsList = documentsToEvents(snapshot.data!.docs);
-                        return Stack(
-                          alignment: Alignment.topCenter,
-                          children: [
-                            SfCalendar(
-                              view: CalendarView.month,
-                              controller: _calendarController,
-                              dataSource: _getCalendarDataSource(),
-                              firstDayOfWeek: 1,
-                              showDatePickerButton: false,
-                              showCurrentTimeIndicator: false,
-                              showNavigationArrow: true,
-                              todayHighlightColor: Theme.of(context).accentColor,
-                              headerHeight: safeAreaHeight*0.07,
-                              headerDateFormat: "MMMM yyyy",
-                              headerStyle: CalendarHeaderStyle(
-                                textAlign: TextAlign.center,
-                                backgroundColor: Colors.transparent,
-                                textStyle: Theme.of(context).textTheme.bodyText1,
-                              ),
-                              monthViewSettings: MonthViewSettings(navigationDirection: MonthNavigationDirection.horizontal),
-                              onViewChanged: (ViewChangedDetails viewChangedDetails) {
-                                Future.delayed(Duration.zero, () async {
-                                  setState(() {
-                                    middleMonthDate = viewChangedDetails.visibleDates[14];
-                                  });
-                                });
-                              },
-                            ),
-                            Container(
-                              height: safeAreaHeight*0.06,
-                              width: safeAreaWidth*0.9,
-                              decoration: new BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius: new BorderRadius.vertical(
-                                  top: Radius.circular(10.0),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).primaryColorDark, size: safeAreaHeight*0.03,),
-                                    alignment: Alignment.center,
-                                    onPressed: () {
-                                      _calendarController.backward!();
-                                    },
-                                  ),
-                                  Text(
-                                    toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
-                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorDark,fontWeight: FontWeight.bold),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColorDark, size: safeAreaHeight*0.03,),
-                                    alignment: Alignment.center,
-                                    onPressed: () {
-                                      _calendarController.forward!();
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                    }
-                ),
-              ),
+
             ],
           ),
         ),
