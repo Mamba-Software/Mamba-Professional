@@ -195,7 +195,6 @@ class _ProfileState extends State<Profile> {
     if (isFirstBuild) {
       initDeviceSizes();
     }
-
     return isLoading ?
     Center(
       child: LoadingViewPurple()
