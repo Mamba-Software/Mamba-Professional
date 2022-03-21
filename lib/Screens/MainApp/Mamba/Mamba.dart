@@ -11,6 +11,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/Sesions.dart';
 import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
 import '../Home/Marca/Marca.dart';
 import 'Profile/Profile.dart';
@@ -149,7 +150,7 @@ class _MambaClientState extends State<MambaClient> {
               padding: EdgeInsets.symmetric(vertical: 3.0),
               child: Icon(Icons.calendar_month_outlined),
             ),
-            label: AppLocalizations.of(context)!.brandBottomNav,
+            label: AppLocalizations.of(context)!.calendarBottomNav,
             backgroundColor: Theme.of(context).primaryColor,
           ),
           BottomNavigationBarItem(
@@ -188,7 +189,7 @@ class _MambaClientState extends State<MambaClient> {
         children: <Widget>[
           Marca(),
           Marca(),
-          Marca(),
+          Sesions(),
           Profile(),
         ],
         onPageChanged: (page) async {

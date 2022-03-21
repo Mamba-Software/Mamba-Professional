@@ -31,7 +31,7 @@ class _MyCalendarWidgetState extends State<MyCalendarWidget> {
   bool isLoading = false;
   // Boolean Loading
   Brand _brand = Brand();
-  // Calendar Controller
+  // Sesions Controller
   final CalendarController _controller = CalendarController();
   // Dies de la semana que el entrenador no treballa
   List<int> nonWorkDays = [];

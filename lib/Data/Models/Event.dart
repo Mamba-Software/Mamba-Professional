@@ -1,4 +1,4 @@
-// This class represents the Object <Event> that will be showed in the Calendar Widget.
+// This class represents the Object <Event> that will be showed in the Sesions Widget.
 import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';

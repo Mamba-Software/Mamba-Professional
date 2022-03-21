@@ -1061,7 +1061,7 @@ class FirebaseDatabaseService {
       }
     }
 
-    // Events Calendar
+    // Events Sesions
     // Add Event
     Future<String> addEvent(String? brandID, String? title, String? description,
         String? year, String? month, String? day, String? hour, String? minute,

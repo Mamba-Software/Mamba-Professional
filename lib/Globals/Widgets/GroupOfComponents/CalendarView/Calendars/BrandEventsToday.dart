@@ -30,7 +30,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
   bool isLoading = false;
   // Brand Object
   Brand _brand = Brand();
-  // Calendar Controller
+  // Sesions Controller
   final CalendarController _controller = CalendarController();
   // Dies de la semana que el entrenador no treballa
   List<int> nonWorkDays = [];
