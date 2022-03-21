@@ -227,8 +227,10 @@ class _SesionsState extends State<Sesions> {
                               ),
                               monthViewSettings: MonthViewSettings(navigationDirection: MonthNavigationDirection.horizontal),
                               onViewChanged: (ViewChangedDetails viewChangedDetails) {
-                                setState(() {
-                                  middleMonthDate = viewChangedDetails.visibleDates[14];
+                                Future.delayed(Duration.zero, () async {
+                                  setState(() {
+                                    middleMonthDate = viewChangedDetails.visibleDates[14];
+                                  });
                                 });
                               },
                             ),
