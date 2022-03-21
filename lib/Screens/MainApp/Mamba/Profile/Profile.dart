@@ -9,8 +9,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadlin
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaClient/Profile/ProfileScreens/Settings/Settings.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaClient/Profile/ProfileScreens/Feedback/FeedBack.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Profile/ProfileScreens/Settings/Settings.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Profile/ProfileScreens/Feedback/FeedBack.dart';
 import 'package:page_transition/page_transition.dart';
 
 // Profile Page
@@ -22,6 +22,9 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  // Screen Dimensions
+
+
   // Acceso a Base de Datos
   var _userDataService = new UserDataService();
   var _eventDataService = new EventDataService();
@@ -177,6 +180,7 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget build(BuildContext context) {
+    print(AppBar().preferredSize.height);
     return isLoading ?
     Center(
         child: LoadingViewPurple()
@@ -198,9 +202,9 @@ class _ProfileState extends State<Profile> {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height*0.27,
-                      width: MediaQuery.of(context).size.width,
+                    Expanded(
+                      //height: MediaQuery.of(context).size.height*0.27,
+                      //width: MediaQuery.of(context).size.width,
                       child: CarouselSlider(
                         items: buildProfileCarousel,
                         carouselController: _controller,
@@ -376,7 +380,6 @@ class _ProfileState extends State<Profile> {
                       ),
                     ),
                   ),
-                  // 57%
                 ],
               ),
             ),

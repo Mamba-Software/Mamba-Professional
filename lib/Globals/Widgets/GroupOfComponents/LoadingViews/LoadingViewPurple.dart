@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../Constants.dart';
 
-// Loading View Widget which displays a Circular Progress indicator with the MambaClient "M" inside.
+// Loading View Widget which displays a Circular Progress indicator with the Mamba "M" inside.
 class LoadingViewPurple extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

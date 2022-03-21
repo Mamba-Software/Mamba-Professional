@@ -12,10 +12,10 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaClient/Profile/ProfileScreens//Settings/SettingsEditPhotoPage.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaClient/Profile/ProfileScreens/Settings/SettingsPrivacy.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaClient/Profile/ProfileScreens/Settings/SettingsTheme.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaClient/Profile/ProfileScreens/Settings/SettingsYourData.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Profile/ProfileScreens//Settings/SettingsEditPhotoPage.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Profile/ProfileScreens/Settings/SettingsPrivacy.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Profile/ProfileScreens/Settings/SettingsTheme.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Profile/ProfileScreens/Settings/SettingsYourData.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';

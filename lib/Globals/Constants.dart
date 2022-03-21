@@ -1,7 +1,7 @@
 // Constants that are final and will NEVER change.
 class Constants {
   // App Name
-  static String appName = "MambaClient";
+  static String appName = "Mamba";
 
   // Constant Assets
   static String logoExtended = "assets/images/ExtendedWhite.png";

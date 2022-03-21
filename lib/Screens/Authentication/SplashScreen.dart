@@ -19,7 +19,7 @@ import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
 import 'package:provider/provider.dart';
 
 import '../../Globals/Widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
-import '../MainApp/MambaClient/MambaClient.dart';
+import '../MainApp/Mamba/Mamba.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen({Key? key}) : super(key: key);
