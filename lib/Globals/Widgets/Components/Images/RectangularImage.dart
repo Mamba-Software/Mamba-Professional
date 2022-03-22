@@ -7,11 +7,12 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 class RectangularImage extends StatefulWidget {
   final double? size;
   final double? borderWidth;
+  final double? borderRadius;
   final String? image;
   final File? file;
   final Color? color;
 
-  RectangularImage({Key? key, this.size, this.borderWidth, this.image, this.file, this.color}) : super(key: key);
+  RectangularImage({Key? key, this.size, this.borderWidth, this.borderRadius, this.image, this.file, this.color}) : super(key: key);
 
   @override
   _RectangularImageState createState() => new _RectangularImageState();
@@ -46,6 +47,7 @@ class _RectangularImageState extends State<RectangularImage> {
                   color: widget.color == null ? Styles.mainColor : widget.color!,
                   style: widget.borderWidth == null ? BorderStyle.none : BorderStyle.solid,
                 ),
+                borderRadius: BorderRadius.circular(widget.borderRadius == null ? 0.0 : widget.borderRadius!),
                 image: new DecorationImage(
                   fit: BoxFit.cover,
                   image: widget.file != null ? FileImage(widget.file!) : CachedNetworkImageProvider(widget.image!) as ImageProvider,
