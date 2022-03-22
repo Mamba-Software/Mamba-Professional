@@ -76,12 +76,12 @@ class _SesionsState extends State<Sesions> {
 
   void getBrandDetails() async {
     _brand = await _brandDataService.getBrandDetails(currentBrand.id!);
-    getEventsDone();
+    await getEventsDone();
     initCalendar();
   }
 
   // Gets the events passed by the trainer.
-  void getEventsDone() async {
+  Future<void> getEventsDone() async {
     DateTime today = DateTime.now();
     var tempMonth = 0;
     List<Event> list = await _eventDataService.getUserEvents(currentUser.id!);
@@ -146,57 +146,6 @@ class _SesionsState extends State<Sesions> {
     var hour = temp.split(".")[0];
     var min = temp.split(".")[1];
     return "${hour}h ${min}m ";
-  }
-
-  // Return bade on events Today
-  Widget returnBadge(Event event) {
-    int label = 0;
-    DateTime now = DateTime.now();
-    var startDate =  DateTime(
-      int.parse(event.year!),
-      int.parse(event.month!),
-      int.parse(event.day!),
-      int.parse(event.hour!),
-      int.parse(event.minute!),
-    );
-    var hour = event.duration.toString().split(".")[0];
-    var min = event.duration!.toStringAsFixed(2).split(".")[1];
-    var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
-    if (startDate.isBefore(now) && endDate.isBefore(now)) {
-      // Done
-      label = 2;
-    }
-    if (startDate.isBefore(now) && endDate.isAfter(now)) {
-      // Doing
-      label = 1;
-    }
-    if (startDate.isAfter(now) && endDate.isAfter(now)) {
-      // To Do
-      label = 0;
-    }
-    switch (label) {
-      default:
-        return Material(
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              const Radius.circular(5.0),
-            ),
-          ),
-          child: Container(
-            height: MediaQuery.of(context).size.height*0.015,
-            width: MediaQuery.of(context).size.width*0.05,
-            decoration: BoxDecoration(
-                color: Colors.green, borderRadius: BorderRadius.circular(5)
-            ),
-            child: Icon(
-              Icons.done_outline_outlined,
-              color: Colors.white,
-              size: 10,
-            ),
-          ),
-        );
-    }
   }
 
   String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
@@ -355,7 +304,7 @@ class _SesionsState extends State<Sesions> {
                           return Padding(
                             padding: EdgeInsets.symmetric(vertical: 8.0),
                             child: EventListTile(
-                                event: event,
+                                eventId: event.id!,
                                 height: safeAreaHeight*0.15,
                                 width: safeAreaWidth,
                             ),
