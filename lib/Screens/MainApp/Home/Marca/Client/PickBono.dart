@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
@@ -229,7 +230,10 @@ class _PickBonoState extends State<PickBono> {
                                     _bono.id!,
                                     _bono.title!,
                                     _bono.price.toString(),
-                                    _bono.classes.toString());
+                                    _bono.classes.toString(),
+                                     currentUser.name!,
+                                    Timestamp.now()
+                                );
 
                                 await _userDataService.addBonoRequestToUser(
                                     widget.brandId, currentUser.id!, _bono.id!);

@@ -10,6 +10,9 @@ import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ActionDialogs/Confir
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ActionDialogs/CreateBonoDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 
+import '../../../../../../../Globals/GlobalVars.dart';
+import 'BonosRequests.dart';
+
 class Bonos extends StatefulWidget {
   String brandId;
 
@@ -252,6 +255,19 @@ class _BonosState extends State<Bonos> {
                       ),
                     ],
                   )
+              ),
+              IconButton(
+                icon: Icon(Icons.request_quote, size: MediaQuery.of(context).size.width*0.06,),
+                onPressed: () async {
+                  Navigator.push(
+                      context,
+                      CupertinoPageRoute<String>(
+                        builder: (context) => BonosRequests(
+                          brandId: widget.brandId,
+                        ),
+                      )
+                  );
+                },
               ),
             ],
           ),

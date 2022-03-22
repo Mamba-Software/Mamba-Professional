@@ -1913,7 +1913,7 @@ class FirebaseDatabaseService {
   }
 
   //Add bono request to brand
-  Future<void> addBonoRequestToBrand(String brandId, String userId, String bonoId, String title, String price, String classes) async {
+  Future<void> addBonoRequestToBrand(String brandId, String userId, String bonoId, String title, String price, String classes, String userName, Timestamp timeRequested) async {
     var uid = Uuid().v4();
     await _firestore
         .collection(brands)
@@ -1926,6 +1926,8 @@ class FirebaseDatabaseService {
       "price": price,
       "classes": classes,
       "bonoId": bonoId,
+      "userName": userName,
+      "timeRequested": timeRequested,
     }).catchError((err) {
       print(err);
     });
@@ -1971,6 +1973,16 @@ class FirebaseDatabaseService {
         "Bonos Requests").doc(querySnapshot.docs[0].id).delete();
   }
 
+  //Bonos Request
+
+  //Get bonos from brand
+  Stream<QuerySnapshot>  getBonosRequestsFromBrand(String brandId) {
+    return _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Bonos Requests")
+        .snapshots();
+  }
 
     // Requests
 
