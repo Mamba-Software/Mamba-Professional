@@ -150,7 +150,7 @@ class _MambaClientState extends State<MambaClient> {
               padding: EdgeInsets.symmetric(vertical: 3.0),
               child: Icon(Icons.calendar_month_outlined),
             ),
-            label: AppLocalizations.of(context)!.calendarBottomNav,
+            label: AppLocalizations.of(context)!.sesionsBottomNav,
             backgroundColor: Theme.of(context).primaryColor,
           ),
           BottomNavigationBarItem(

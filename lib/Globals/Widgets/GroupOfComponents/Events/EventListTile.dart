@@ -1,4 +1,6 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
@@ -12,16 +14,17 @@ import 'package:shimmer/shimmer.dart';
 
 class EventListTile extends StatefulWidget {
   String eventId;
-  var height;
-  var width;
 
-  EventListTile({Key? key, required this.eventId, required this.height, required this.width,}) : super(key: key);
+  EventListTile({Key? key, required this.eventId}) : super(key: key);
 
   @override
   _EventListTileState createState() => _EventListTileState();
 }
 
 class _EventListTileState extends State<EventListTile> {
+  // Screen Dimensions
+  var safeAreaHeight;
+  var safeAreaWidth;
   // Boolean Loading
   bool isLoading = true;
   bool isFirstBuild = true;
@@ -43,6 +46,14 @@ class _EventListTileState extends State<EventListTile> {
     super.initState();
     isLoading = true;
     initEventTile();
+  }
+
+  // Init Device Sizes
+  initDeviceSizes() {
+    safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
+    safeAreaWidth = MediaQuery.of(context).size.width;
+    print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
+    print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
   }
 
   Future<void> initEventTile() async {
@@ -78,135 +89,210 @@ class _EventListTileState extends State<EventListTile> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading ?
+    if (isFirstBuild) {
+      initDeviceSizes();
+      isFirstBuild = false;
+    }
+    return !isLoading ?
       Shimmer.fromColors(
         baseColor: AppColors.grey,
         highlightColor: AppColors.white,
         child: Container(
-          height: widget.height,
-          width: widget.width,
-          padding: EdgeInsets.symmetric(horizontal: widget.width*0.05),
+          height: safeAreaHeight*0.12,
+          width: safeAreaWidth,
+          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                height: widget.height*0.8,
-                width: widget.width*0.20,
+                height: safeAreaHeight*0.10,
+                width: safeAreaWidth*0.20,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      height: widget.height*0.8,
-                      width: widget.width*0.20,
-                      color: AppColors.grey,
+                      height: safeAreaHeight*0.10,
+                      width: safeAreaWidth*0.20,
+                      decoration: new BoxDecoration(
+                        color: AppColors.grey,
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
                     ),
                   ],
                 ),
               ),
-              Container(
-                height: widget.height,
-                width: widget.width*0.65,
-                decoration: new BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  border: Border(
-                      bottom: BorderSide(color: Theme.of(context).backgroundColor, width: 1)
+              Row(
+                children: [
+                  Container(
+                    height: safeAreaHeight*15,
+                    width: safeAreaWidth*0.56,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: safeAreaHeight*0.03,
+                          width: safeAreaWidth*0.20,
+                          decoration: new BoxDecoration(
+                            color: AppColors.grey,
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                        ),
+                        SizedBox(height: safeAreaHeight*0.01,),
+                        Container(
+                          height: safeAreaHeight*0.02,
+                          width: safeAreaWidth*0.35,
+                          decoration: new BoxDecoration(
+                            color: AppColors.grey,
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                        ),
+                        SizedBox(height: safeAreaHeight*0.01,),
+                        Container(
+                          height: safeAreaHeight*0.02,
+                          width: safeAreaWidth*0.5,
+                          decoration: new BoxDecoration(
+                            color: AppColors.grey,
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                        ),
+                        SizedBox(height: safeAreaHeight*0.01,),
+                        Container(
+                          height: safeAreaHeight*0.02,
+                          width: safeAreaWidth*0.5,
+                          decoration: new BoxDecoration(
+                            color: AppColors.grey,
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                        ),
+
+                      ],
+                    ),
                   ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: widget.height*0.1,
-                      width: widget.width*0.20,
-                      color: Theme.of(context).backgroundColor,
+                  Container(
+                    height: safeAreaHeight*15,
+                    width: safeAreaWidth*0.12,
+                    child: Center(
+                      child: Container(
+                        height: safeAreaHeight*0.05,
+                        width: safeAreaHeight*0.05,
+                        decoration: new BoxDecoration(
+                          color: AppColors.grey,
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                      ),
                     ),
-                    Container(
-                      height: widget.height*0.1,
-                      width: widget.width*0.20,
-                      color: Theme.of(context).backgroundColor,
-                    ),
-                    Container(
-                      height: widget.height*0.1,
-                      width: widget.width*0.20,
-                      color: Theme.of(context).backgroundColor,
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               )
             ],
           ),
         ),
       )
         :
-      Container(
-        height: widget.height,
-        width: widget.width,
-        padding: EdgeInsets.symmetric(horizontal: widget.width*0.05),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              height: widget.height*0.8,
-              width: widget.width*0.20,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RectangularImage(
-                    image: _brand.logoUrl!,
-                    size: widget.height*0.7,
-                    borderRadius: 5,
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              height: widget.height,
-              width: widget.width*0.65,
-              decoration: new BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                border: Border(
-                    bottom: BorderSide(color: Theme.of(context).backgroundColor, width: 1)
+      FittedBox(
+        fit: BoxFit.fitHeight,
+        child: Container(
+          width: safeAreaWidth,
+          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                width: safeAreaWidth*0.20,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RectangularImage(
+                      image: _brand.logoUrl!,
+                      size: safeAreaHeight*0.10,
+                      borderRadius: 5,
+                    ),
+                  ],
                 ),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                        _brand.name!,
-                        style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center
-                    ),
+              Container(
+                width: safeAreaWidth*0.68,
+                decoration: new BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  /*
+                  border: Border(
+                      bottom: BorderSide(color: Theme.of(context).backgroundColor, width: 1)
                   ),
-                  Expanded(
-                    child: Text(
-                        _event.title!,
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.center
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Icon(Icons.date_range_outlined, color: AppColors.grey, size: widget.height*0.13,),
-                        Text(
-                            toCapitalized(eventDateString),
-                            style: Theme.of(context).textTheme.caption,
-                            textAlign: TextAlign.center
+                   */
+                ),
+                child: Row(
+                  children: [
+                    FittedBox(
+                      fit: BoxFit.fitHeight,
+                      child: Container(
+                        constraints: BoxConstraints(
+                          minHeight: safeAreaHeight*0.15
                         ),
-                      ],
+                        width: safeAreaWidth*0.56,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _brand.name!,
+                              style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center
+                            ),
+                            SizedBox(height: safeAreaHeight*0.01,),
+                            Text(
+                                _event.title!,
+                                style: Theme.of(context).textTheme.caption,
+                                textAlign: TextAlign.center
+                            ),
+                            SizedBox(height: safeAreaHeight*0.015,),
+                            Row(
+                              children: [
+                                Icon(Icons.date_range_outlined, color: AppColors.grey, size: safeAreaWidth*0.05,),
+                                SizedBox(width: safeAreaWidth*0.02),
+                                Text(
+                                    toCapitalized(eventDateString),
+                                    style: Theme.of(context).textTheme.caption,
+                                    textAlign: TextAlign.center
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: safeAreaHeight*0.01,),
+                            Row(
+                              children: [
+                                Icon(Icons.location_on_outlined, color: AppColors.grey, size: safeAreaWidth*0.05,),
+                                SizedBox(width: safeAreaWidth*0.02),
+                                Expanded(
+                                  child: Text(
+                                      _location.description!,
+                                      style: Theme.of(context).textTheme.caption,
+                                      textAlign: TextAlign.left
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                    FittedBox(
+                      fit: BoxFit.fitHeight,
+                      child: Container(
+                        width: safeAreaWidth*0.12,
+                        child: Center(
+                          child: Icon(Icons.poll_outlined, color: AppColors.grey, size: safeAreaWidth*0.08,),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
   }

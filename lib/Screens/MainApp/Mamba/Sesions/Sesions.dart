@@ -301,159 +301,32 @@ class _SesionsState extends State<Sesions> {
                         itemCount: listEvents.length,
                         itemBuilder: (context,int index) {
                           Event event = listEvents[index];
-                          return Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8.0),
-                            child: EventListTile(
+                          return Column(
+                            children: [
+                              EventListTile(
                                 eventId: event.id!,
-                                height: safeAreaHeight*0.15,
-                                width: safeAreaWidth,
-                            ),
-                          );
-                          /*
-                          var startDate =  DateTime(
-                            int.parse(event.year!),
-                            int.parse(event.month!),
-                            int.parse(event.day!),
-                            int.parse(event.hour!),
-                            int.parse(event.minute!),
-                          );
-                          String day = DateFormat('EEEE', Localizations.localeOf(context).languageCode).format(startDate);
-                          String _month = DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode).format(startDate);
-                          if (_month != month) {
-                            month = _month;
-                          }
-                          return ListTile(
-                            onTap: () {
-                              if (currentUser.isTrainer!) {
-                                Navigator.push(
-                                    context,
-                                    CupertinoPageRoute<Null>(
-                                        builder: (context) => ViewEventTrainer(
-                                          eventId: event.id!,
-                                          canEdit: false,
-                                          locale: Localizations.localeOf(context),
-                                        )
-                                    )
-                                );
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    CupertinoPageRoute<Null>(
-                                        builder: (context) => ViewEventClient(
-                                          eventId: event.id!,
-                                          canJoin: false,
-                                          locale: Localizations.localeOf(context),
-                                        )
-                                    )
-                                );
-                              }
-                            },
-                            leading: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  toCapitalized(day),
-                                  style: Theme.of(context).textTheme.bodyText2,
-                                ),
-                                Text(
-                                  "${event.day}/${event.month}/${event.year!.substring(2, 4)}",
-                                  style: Theme.of(context).textTheme.bodyText2,
-                                ),
-                              ],
-                            ),
-                            minLeadingWidth: MediaQuery.of(context).size.width*0.15,
-                            title: Text(
-                              event.title!,
-                              style: Theme.of(context).textTheme.bodyText2,
-                            ),
-                            subtitle: Column(
-                              children: [
-                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: safeAreaHeight*0.03,horizontal: safeAreaWidth*0.05),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Icon(
-                                      Icons.schedule,
-                                      color: Theme.of(context).primaryColor,
-                                      size: 15,
-                                    ),
-                                    SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                    Text(
-                                      event.hour.toString(),
-                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                                    ),
-                                    Text(
-                                      ":",
-                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                                    ),
-                                    Text(
-                                      event.minute=="0" ? "00" : event.minute.toString(),
-                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                                    ),
                                     Container(
-                                        height: 8,
-                                        width: 24,
-                                        child: VerticalDivider(color: Theme.of(context).primaryColor, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
-                                    ),
-                                    Icon(
-                                      Icons.timer,
-                                      color: Theme.of(context).primaryColor,
-                                      size: 15,
-                                    ),
-                                    SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                    Text(
-                                      durationToString(event.duration!),
-                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                                    ),
-                                    Container(
-                                        height: 8,
-                                        width: 24,
-                                        child: VerticalDivider(color: Theme.of(context).primaryColor, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
-                                    ),
-                                    Icon(
-                                      Icons.record_voice_over,
-                                      color: Theme.of(context).primaryColor,
-                                      size: 15,
-                                    ),
-                                    SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                    Text(
-                                      event.numTrainers.toString(),
-                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                                    ),
-                                    Container(
-                                        height: 8,
-                                        width: 24,
-                                        child: VerticalDivider(color: Theme.of(context).primaryColor, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
-                                    ),
-                                    Icon(
-                                      Icons.directions_run,
-                                      color: Theme.of(context).primaryColor,
-                                      size: 15,
-                                    ),
-                                    SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                    Text(
-                                      event.numClients.toString(),
-                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+                                      height: 1,
+                                      width: safeAreaWidth*0.68,
+                                      color: AppColors.grey,
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                            trailing: Icon(
-                              Icons.arrow_forward_ios,
-                              color: Theme.of(context).primaryColor,
-                              size: MediaQuery.of(context).size.width*0.04,
-                            ),
+                              ),
+                            ],
                           );
-                           */
                         },
                       ),
                     ),
                   ],
                 ),
               ),
-
             ],
           ),
         ),

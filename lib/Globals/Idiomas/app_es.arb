@@ -19,8 +19,8 @@
   "@chatBottomNav":{
   "description": "Chat Text"
   },
-  "calendarBottomNav": "Calendario",
-  "@calendarBottomNav":{
+  "sesionsBottomNav": "Sesiones",
+  "@sesionsBottomNav":{
   "description": "Calendario Text"
   },
   "yes": "Sí",
