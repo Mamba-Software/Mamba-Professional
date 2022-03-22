@@ -121,9 +121,9 @@ class _MyLocationsState extends State<MyLocations> {
                       location.placeId = result.placeId;
                       final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(location.placeId!);
                       // Get the information on Strings
-                      if(placeDetails.street!=null) location.street = placeDetails.street!;
+                      if(placeDetails.street!=null) location.street = placeDetails.street!; else location.street="N/A";
                       if(placeDetails.streetNumber!=null) location.streetNumber = placeDetails.streetNumber!; else location.streetNumber="N/A";
-                      if(placeDetails.city!=null) location.city = placeDetails.city!;
+                      if(placeDetails.city!=null) location.city = placeDetails.city!; else location.city="N/A";
                       if(placeDetails.zipCode!=null) location.zipCode = placeDetails.zipCode!; else location.zipCode="N/A";
                       //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
                       // Build Correct Description
@@ -167,117 +167,118 @@ class _MyLocationsState extends State<MyLocations> {
                     );
                   } else {
                     locationList = documentsToLocations(snapshot.data!.docs);
-                    return ListView.builder(
-                        physics: BouncingScrollPhysics(),
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        itemCount: locationList.length,
-                        itemBuilder: (context, index) {
-                          Location location = locationList[index];
-                          if (location.isBaseLocation!) {
-                            return Column(
-                              children: [
-                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                ListTile(
-                                  leading: Icon(Icons.home_filled, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,),
-                                  title: Text(
-                                      location.description!,
-                                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).accentColor)
-                                  ),
-                                  trailing: IconButton(
-                                    onPressed: () async {
-                                      // Generate a new token here
-                                      final sessionToken = Uuid().v4();
-                                      final language = currentUser.idioma;
-                                      final Suggestion? result = await showSearch(
-                                        context: context,
-                                        delegate: AddressSearch(sessionToken, language!),
-                                      );
-                                      // We have a result for our locations search
-                                      if (result != null) {
-                                        Location loc = Location();
-                                        loc.placeId = result.placeId;
-                                        final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(loc.placeId!);
-                                        // Get the information on Strings
-                                        if(placeDetails.street!=null) loc.street = placeDetails.street!; else loc.street="N/A";
-                                        if(placeDetails.streetNumber!=null) loc.streetNumber = placeDetails.streetNumber!; else loc.streetNumber="N/A";
-                                        if(placeDetails.city!=null) loc.city = placeDetails.city!; else loc.city="N/A";
-                                        if(placeDetails.zipCode!=null) loc.zipCode = placeDetails.zipCode!; else loc.zipCode="N/A";
-                                        //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
-                                        // Build Correct Description
-                                        loc.description = "${loc.street} ${loc.streetNumber}, ${loc.city}, ${loc.zipCode}";
-                                        // Get Latitude/Longitude
-                                        var temp = await gPlace!.details.get(loc.placeId!);
-                                        if (temp != null && temp.result != null && mounted) {
-                                          detailsResult = temp.result;
-                                          loc.latitude = detailsResult!.geometry!.location!.lat!;
-                                          loc.longitude = detailsResult!.geometry!.location!.lng!;
-                                        }
-                                        // Save location to DataBase
-                                        await _locationDataService.updateLocation(location.id!,widget.brandId, true, loc.placeId!, loc.description!, loc.street!, loc.streetNumber!, loc.city!, loc.zipCode!, loc.latitude!, loc.longitude!);
-                                      }
-                                    },
-                                    icon: Icon(Icons.edit, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,),
-                                  ),
-                                  onTap: () {
-
-                                  },
-                                ),
-                                Column(
-                                  children: [
-                                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              AppLocalizations.of(context)!.myLocationsBaseLocationDesc,
-                                              style: Theme.of(context).textTheme.caption,
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                    return Expanded(
+                      child: ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemCount: locationList.length,
+                          itemBuilder: (context, index) {
+                            Location location = locationList[index];
+                            if (location.isBaseLocation!) {
+                              return Column(
+                                children: [
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                  ListTile(
+                                    leading: Icon(Icons.home_filled, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,),
+                                    title: Text(
+                                        location.description!,
+                                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).accentColor)
                                     ),
-                                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                                  ],
-                                ),
-                              ],
-                            );
-                          } else {
-                            return ListTile(
-                              leading: Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
-                              title: Text(
-                                  location.description!,
-                                  style: Theme.of(context).textTheme.bodyText2,
-                              ),
-                              trailing: IconButton(
-                                onPressed: () async {
-                                  var result = await showDialog(
-                                      context: context,
-                                      builder: (_) {
-                                        return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.myLocationsDeleteDescription);
-                                      }
-                                  );
-                                  if (result) {
-                                    _locationDataService.deleteLocation(location.id!, baseLocationId);
-                                  }
-                                },
-                                icon: Icon(Icons.delete_outline, color: Colors.red, size: MediaQuery.of(context).size.width*0.06,),
-                              ),
-                              onTap: () {
+                                    trailing: IconButton(
+                                      onPressed: () async {
+                                        // Generate a new token here
+                                        final sessionToken = Uuid().v4();
+                                        final language = currentUser.idioma;
+                                        final Suggestion? result = await showSearch(
+                                          context: context,
+                                          delegate: AddressSearch(sessionToken, language!),
+                                        );
+                                        // We have a result for our locations search
+                                        if (result != null) {
+                                          Location loc = Location();
+                                          loc.placeId = result.placeId;
+                                          final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(loc.placeId!);
+                                          // Get the information on Strings
+                                          if(placeDetails.street!=null) loc.street = placeDetails.street!; else loc.street="N/A";
+                                          if(placeDetails.streetNumber!=null) loc.streetNumber = placeDetails.streetNumber!; else loc.streetNumber="N/A";
+                                          if(placeDetails.city!=null) loc.city = placeDetails.city!; else loc.city="N/A";
+                                          if(placeDetails.zipCode!=null) loc.zipCode = placeDetails.zipCode!; else loc.zipCode="N/A";
+                                          //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
+                                          // Build Correct Description
+                                          loc.description = "${loc.street} ${loc.streetNumber}, ${loc.city}, ${loc.zipCode}";
+                                          // Get Latitude/Longitude
+                                          var temp = await gPlace!.details.get(loc.placeId!);
+                                          if (temp != null && temp.result != null && mounted) {
+                                            detailsResult = temp.result;
+                                            loc.latitude = detailsResult!.geometry!.location!.lat!;
+                                            loc.longitude = detailsResult!.geometry!.location!.lng!;
+                                          }
+                                          // Save location to DataBase
+                                          await _locationDataService.updateLocation(location.id!,widget.brandId, true, loc.placeId!, loc.description!, loc.street!, loc.streetNumber!, loc.city!, loc.zipCode!, loc.latitude!, loc.longitude!);
+                                        }
+                                      },
+                                      icon: Icon(Icons.edit, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,),
+                                    ),
+                                    onTap: () {
 
-                              },
-                            );
+                                    },
+                                  ),
+                                  Column(
+                                    children: [
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                AppLocalizations.of(context)!.myLocationsBaseLocationDesc,
+                                                style: Theme.of(context).textTheme.caption,
+                                                textAlign: TextAlign.left,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                    ],
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return ListTile(
+                                leading: Icon(Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
+                                title: Text(
+                                    location.description!,
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                ),
+                                trailing: IconButton(
+                                  onPressed: () async {
+                                    var result = await showDialog(
+                                        context: context,
+                                        builder: (_) {
+                                          return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.myLocationsDeleteDescription);
+                                        }
+                                    );
+                                    if (result) {
+                                      _locationDataService.deleteLocation(location.id!, baseLocationId);
+                                    }
+                                  },
+                                  icon: Icon(Icons.delete_outline, color: Colors.red, size: MediaQuery.of(context).size.width*0.06,),
+                                ),
+                                onTap: () {
+
+                                },
+                              );
+                            }
                           }
-                        }
+                      ),
                     );
                   }
                 }
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
           ],
         ),
       ),
