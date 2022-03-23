@@ -1186,109 +1186,53 @@ class ScriptsDatabaseService {
       print('\n');
 
 
-      List<NotificationEvent> notis = [];
-      var userId = "uvBaEAa0FUXUgVsx7ri3Mgg1B8G2";
+      QuerySnapshot querySnapshotUsers = await _firestore.collection("Users").get();
+      for (int i = 0; i < querySnapshotUsers.docs.length; i++) {
+        var userId = querySnapshotUsers.docs[i].id;
+        QuerySnapshot querySnapshot = await _firestore.collection("Users").doc(userId).collection("Notifications").get();
 
-      QuerySnapshot querySnapshot = await _firestore.collection("Users").doc(userId).collection("Notifications").get();
-      for (int i = 0; i < querySnapshot.docs.length; i++) {
-        notis.add(NotificationEvent.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+        print('=================================================================================');
+        print('=================================================================================');
+        print('USER WITH ID: ' + userId + " AND TOTAL NOTIFICATIONS: " + querySnapshot.docs.length.toString());
+        print('\n');
+
+        for (int i = 0; i < querySnapshot.docs.length; i++) {
+          NotificationEvent notif = NotificationEvent.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+          // Get DateTime
+          DateTime notifDate = DateTime(
+            int.parse(notif.year!),
+            int.parse(notif.month!),
+            int.parse(notif.day!),
+            int.parse(notif.hour!),
+            int.parse(notif.minutes!),
+            int.parse(notif.seconds!),
+          );
+          // DateTime to TimeStamp
+          Timestamp notifTimeStamp = Timestamp.fromDate(notifDate);
+          // Save TimeStamp Firebase
+          await _firestore
+              .collection("Users")
+              .doc(userId)
+              .collection("Notifications")
+              .doc(notif.id)
+              .update({
+            "createdAt": notifTimeStamp,
+          });
+        }
+
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+
       }
 
-      print('=================================================================================');
-      print('=================================================================================');
-      print('USER WITH ID: ' + userId + " AND TOTAL NOTIFICATIONS: " + notis.length.toString());
-      print('\n');
 
-
-      print('Sorting Notifications by Date ...\n');
-
-      notis.sort((a,b) {
-        var aDate =  DateTime(
-          int.parse(a.year!),
-          int.parse(a.month!),
-          int.parse(a.day!),
-          int.parse(a.hour!),
-          int.parse(a.minutes!),
-          int.parse(a.seconds!),
-        );
-        var bDate =  DateTime(
-          int.parse(b.year!),
-          int.parse(b.month!),
-          int.parse(b.day!),
-          int.parse(b.hour!),
-          int.parse(b.minutes!),
-          int.parse(b.seconds!),
-        );
-        return aDate.compareTo(bDate);
-      });
-
-      /* notis = List.from(notis.reversed);
-      for (int i = 0; i < notis.length; i++) {
-        var notification = notis[i];
-        String eventTimeTime = "${notification.hour!.toString()}:${notification.minutes.toString() == "0" ? "00" : notification.minutes.toString()}h";
-        print('NOTIF WITH ID: ' + notification.id! + " AND DATE: " + notification.dateSent! +" $eventTimeTime ${notification.seconds}s");
-      }
-      */
-
-      int sliceNumber = 148;
-      print('Slice first $sliceNumber Notifications ...\n');
-      List firstNotis = notis.sublist(0, sliceNumber);
-      var set1 = Set.from(notis);
-      var set2 = Set.from(firstNotis);
-      List lastNotis = List.from(set1.difference(set2));
-
-      print('\n');
-      print('FirstNotis Length: ${firstNotis.length}\n');
-      print('\n');
-      print('LastNotis Length: ${lastNotis.length}\n');
-      print('\n');
-
-      for (int i = 0; i < firstNotis.length; i++) {
-        var notification = notis[i];
-        await _firestore
-            .collection("Users")
-            .doc(userId)
-            .collection("Moved Notifications")
-            .doc(notification.id)
-            .set({
-              "userId": notification.userId!,
-              "type": notification.type,
-              "isRead": notification.isRead,
-              "dateSent": notification.dateSent,
-              "year": notification.year,
-              "month": notification.month,
-              "day": notification.day,
-              "hour": notification.hour,
-              "minutes": notification.minutes,
-              "seconds": notification.seconds,
-              "parameters": notification.parameters,
-            });
-        await _firestore
-            .collection("Users")
-            .doc(userId)
-            .collection("Notifications")
-            .doc(notification.id)
-            .delete();
-      }
-
-      print('All First $sliceNumber Notifications Moved ...\n');
-
-      QuerySnapshot querySnapshot2 = await _firestore.collection("Users").doc(userId).collection("Notifications").get();
-      print('Notifications Left: ${querySnapshot2.docs.length}\n');
-      print('\n');
-
-
-      print('=================================================================================');
-      print('=================================================================================');
-      print('\n');
 
       return true;
     } catch (e) {
       return false;
     }
   }
-
-
 
 
 }
