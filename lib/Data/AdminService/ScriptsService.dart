@@ -1234,5 +1234,66 @@ class ScriptsDatabaseService {
     }
   }
 
+  Future<bool> migrateEventsDataMarch24th() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 24TH FEBRUARY 2022');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying Events Notifications collection:\n');
+      print('--------------');
+      print('\n');
+
+
+      QuerySnapshot querySnapshotUsers = await _firestore.collection("Events ").get();
+      for (int i = 0; i < querySnapshotUsers.docs.length; i++) {
+        var userId = querySnapshotUsers.docs[i].id;
+        QuerySnapshot querySnapshot = await _firestore.collection("Users").doc(userId).collection("Notifications").get();
+
+        print('=================================================================================');
+        print('=================================================================================');
+        print('USER WITH ID: ' + userId + " AND TOTAL NOTIFICATIONS: " + querySnapshot.docs.length.toString());
+        print('\n');
+
+        for (int i = 0; i < querySnapshot.docs.length; i++) {
+          NotificationEvent notif = NotificationEvent.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+          // Get DateTime
+          DateTime notifDate = DateTime(
+            int.parse(notif.year!),
+            int.parse(notif.month!),
+            int.parse(notif.day!),
+            int.parse(notif.hour!),
+            int.parse(notif.minutes!),
+            int.parse(notif.seconds!),
+          );
+          // DateTime to TimeStamp
+          Timestamp notifTimeStamp = Timestamp.fromDate(notifDate);
+          // Save TimeStamp Firebase
+          await _firestore
+              .collection("Users")
+              .doc(userId)
+              .collection("Notifications")
+              .doc(notif.id)
+              .update({
+            "createdAt": notifTimeStamp,
+          });
+        }
+
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+
+      }
+
+
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
 
 }

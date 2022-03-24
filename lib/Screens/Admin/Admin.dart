@@ -121,7 +121,7 @@ class EachList extends StatelessWidget{
         );
         break;
       case 3:
-        //var result = await _script.migrateNotificationsDataMarch17th();
+        //var result = await _script.migrateEventsDataMarch24th();
         //print("RESULT: "+result.toString());
         break;
     }
