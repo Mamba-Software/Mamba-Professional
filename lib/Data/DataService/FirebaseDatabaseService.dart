@@ -815,6 +815,20 @@ class FirebaseDatabaseService {
       return events;
     }
 
+    Future<List<Event>> getUserFirstEventsLimit10(String userId) async {
+      List<Event> events = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Events")
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        events.add(Event.fromObjectOnlyCoverData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+      return events;
+    }
+
     // Get All Events Finished Brand
     Future<List<Event>> getUserEventsUpcoming(String userId) async {
       DateTime today = DateTime.now();

@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,16 +6,13 @@ import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadline1.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadline3.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventClient.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventListTile.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 class Sesions extends StatefulWidget {
   Sesions({Key? key}) : super(key: key);
@@ -162,7 +158,9 @@ class _SesionsState extends State<Sesions> {
         :
     Scaffold (
       appBar: AppBar(
-        toolbarHeight: 0,
+        title: Text(AppLocalizations.of(context)!.sesionsBottomNav, style: Theme.of(context).textTheme.headline1,),
+        centerTitle: false,
+        automaticallyImplyLeading: false,
         elevation: 0,
       ),
       body: SafeArea(
@@ -175,19 +173,7 @@ class _SesionsState extends State<Sesions> {
               Column(
                 children: [
                   Container(
-                    height: safeAreaHeight*0.08,
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Mi Calendario",
-                          style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center
-                        ),
-                      ],
-                    ),
+                    height: safeAreaHeight*0.02,
                   ),
                   Container(
                     height: safeAreaHeight*0.4,
@@ -278,6 +264,9 @@ class _SesionsState extends State<Sesions> {
                         }
                     ),
                   ),
+                  Container(
+                    height: safeAreaHeight*0.02,
+                  ),
                 ],
               ),
               Container(
@@ -290,38 +279,49 @@ class _SesionsState extends State<Sesions> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          TitleHeadline1(text: "Sesiones"),
+                          Text(
+                          AppLocalizations.of(context)!.eventHistory,
+                          style: Theme.of(context).textTheme.headline3!.copyWith(color: AppColors.grey, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center
+                          ),
                         ],
                       ),
                     ),
                     Container(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: listEvents.length,
-                        itemBuilder: (context,int index) {
-                          Event event = listEvents[index];
-                          return Column(
-                            children: [
-                              EventListTile(
-                                eventId: event.id!,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(vertical: safeAreaHeight*0.03,horizontal: safeAreaWidth*0.05),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      height: 1,
-                                      width: safeAreaWidth*0.68,
-                                      color: AppColors.grey,
-                                    ),
-                                  ],
+                      height: safeAreaHeight*0.01,
+                    ),
+                    Container(
+                      child: LazyLoadScrollView(
+                        onEndOfPage: () {  },
+                        scrollOffset: 100,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: listEvents.length,
+                          itemBuilder: (context,int index) {
+                            Event event = listEvents[index];
+                            return Column(
+                              children: [
+                                EventListTile(
+                                  eventId: event.id!,
                                 ),
-                              ),
-                            ],
-                          );
-                        },
+                                Padding(
+                                  padding: EdgeInsets.symmetric(vertical: safeAreaHeight*0.03,horizontal: safeAreaWidth*0.05),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        height: 1,
+                                        width: safeAreaWidth*0.68,
+                                        color: AppColors.grey,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ), // A subclass of `ScrollView`
                       ),
                     ),
                   ],

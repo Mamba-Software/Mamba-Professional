@@ -93,7 +93,7 @@ class _EventListTileState extends State<EventListTile> {
       initDeviceSizes();
       isFirstBuild = false;
     }
-    return !isLoading ?
+    return isLoading ?
       Shimmer.fromColors(
         baseColor: AppColors.grey,
         highlightColor: AppColors.white,

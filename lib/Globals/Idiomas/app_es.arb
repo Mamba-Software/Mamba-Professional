@@ -1312,6 +1312,10 @@
   "@monthEvents": {
     "description": "Wellcome message"
   },
+  "eventHistory": "Historial de Sesiones",
+  "@eventHistory": {
+    "description": "Wellcome message"
+  },
   "sendRequestConfirmation": "¿Estás seguro de que quieres enviar una solicitud a esta marca?\n\nLos organizadores recibirán una notificación. Hasta que esta no sea aceptada o rechazada no podrás enviar otra solicitud a ninguna marca.",
   "@sendRequestConfirmation": {
     "description": "Wellcome message"
