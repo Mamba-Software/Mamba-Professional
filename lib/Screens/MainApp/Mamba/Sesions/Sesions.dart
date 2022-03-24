@@ -1,19 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventListTile.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/SesionsScreens/UserCalendarMonthWidget.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/SesionsScreens/UserEventHistoryWidget.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 class Sesions extends StatefulWidget {
   Sesions({Key? key}) : super(key: key);
@@ -55,10 +48,9 @@ class _SesionsState extends State<Sesions> {
     }
     return Scaffold (
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.sesionsBottomNav, style: Theme.of(context).textTheme.headline1,),
-        centerTitle: false,
+        title: Text(AppLocalizations.of(context)!.yourSesions, style: Theme.of(context).appBarTheme.titleTextStyle),
         automaticallyImplyLeading: false,
-        elevation: 0,
+        centerTitle: true,
       ),
       body: SafeArea(
         right: false,

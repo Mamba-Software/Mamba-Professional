@@ -1178,6 +1178,10 @@
   "@yourImages": {
     "description": "Wellcome message"
   },
+  "yourSesions": "Tus sesiones",
+  "@yourSesions": {
+    "description": "Wellcome message"
+  },
   "editYourPrivacy": "Cambia el tipo de perfil",
   "@editYourPrivacy": {
     "description": "Wellcome message"
