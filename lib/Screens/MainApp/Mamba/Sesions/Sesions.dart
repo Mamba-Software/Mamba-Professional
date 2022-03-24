@@ -19,8 +19,6 @@ class _SesionsState extends State<Sesions> {
   // Screen Dimensions
   var safeAreaHeight;
   var safeAreaWidth;
-  // Acceso a Base de Datos
-  var _eventDataService = new EventDataService();
   // Boolean Loading
   bool isLoading = true;
   bool isFirstBuild = true;
@@ -61,17 +59,13 @@ class _SesionsState extends State<Sesions> {
             children: [
               Column(
                 children: [
-                  Container(
-                    height: safeAreaHeight*0.02,
-                  ),
+                  SizedBox(height: safeAreaHeight*0.04,),
                   UserCalendarMonthWidget(
                     userId: currentUser.id!,
                     height: safeAreaHeight*0.4,
                     width: safeAreaWidth*0.9,
                   ),
-                  Container(
-                    height: safeAreaHeight*0.02,
-                  ),
+                  SizedBox(height: safeAreaHeight*0.02,),
                 ],
               ),
               Container(
@@ -92,9 +86,7 @@ class _SesionsState extends State<Sesions> {
                         ],
                       ),
                     ),
-                    Container(
-                      height: safeAreaHeight*0.01,
-                    ),
+                    SizedBox(height: safeAreaHeight*0.01,),
                     UserEventHistoryWidget(
                       userId: currentUser.id!,
                       height: safeAreaHeight,

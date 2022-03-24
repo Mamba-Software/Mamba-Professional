@@ -246,6 +246,7 @@
   "toDo": "Per realitzar",
   "doing": "Realitzant",
   "finished": "Realitzat",
+  "todayString": "Avui",
   "today": "Avui {date}",
   "full": "Ple",
   "available": "Disponible",

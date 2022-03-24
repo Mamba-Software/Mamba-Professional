@@ -1,14 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/MyCalendarWidget.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-
 import '../../../../../Data/Models/Event.dart';
 import '../../../../../Globals/Utils/Strings/StringUtils.dart';
-import '../../../../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import '../../../../../Globals/Widgets/GroupOfComponents/CalendarView/Calendars/UserCalendarWidget.dart';
 
 class UserCalendarMonthWidget extends StatefulWidget {
   String userId;
@@ -45,6 +46,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
     });
   }
 
+  // Build the Calendar Widget
   AppointmentDataSource _getCalendarDataSource() {
     List<Appointment> tempAllAppointments = [];
     for (var i=0; i < eventsList.length; i++) {
@@ -87,6 +89,20 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
     allAppointments = tempAllAppointments;
     return AppointmentDataSource(allAppointments);
   }
+
+  // Navigate to Feedback Screen on Tap
+  void navigateToMyCalendar(DateTime? dateTime) {
+    Navigator.push(
+      context,
+      CupertinoPageRoute<Null>(
+        builder: (context) => UserCalendarWidget(
+          userId: widget.userId,
+          dateTime: dateTime,
+        )
+      )
+    );
+  }
+
 
   @override
   void initState() {
@@ -566,13 +582,21 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
               backgroundColor: Colors.transparent,
               textStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.transparent),
             ),
-            monthViewSettings: MonthViewSettings(navigationDirection: MonthNavigationDirection.horizontal),
+            monthViewSettings: MonthViewSettings(
+                navigationDirection: MonthNavigationDirection.horizontal,
+            ),
+            selectionDecoration: BoxDecoration(
+                border: Border.all(width: 0.1, color: Colors.transparent)
+            ),
             onViewChanged: (ViewChangedDetails viewChangedDetails) {
               Future.delayed(Duration.zero, () async {
                 setState(() {
                   middleMonthDate = viewChangedDetails.visibleDates[14];
                 });
               });
+            },
+            onTap: (CalendarTapDetails details) {
+              navigateToMyCalendar(details.date);
             },
           ),
           Container(
