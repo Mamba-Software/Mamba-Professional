@@ -1953,6 +1953,14 @@ class FirebaseDatabaseService {
           .collection(users)
           .doc(userId)
           .collection("Notifications")
+          .orderBy("createdAt", descending: true)
+          .limit(10)
+          .get();
+      /*
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Notifications")
           .orderBy("year", descending: true)
           .orderBy("month", descending: true)
           .orderBy("day", descending: true)
@@ -1961,6 +1969,7 @@ class FirebaseDatabaseService {
           .orderBy("seconds", descending: true)
           .limit(10)
           .get();
+       */
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         notis.add(NotificationEvent.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
       }
@@ -1982,12 +1991,7 @@ class FirebaseDatabaseService {
           .collection(users)
           .doc(userId)
           .collection("Notifications")
-          .orderBy("year", descending: true)
-          .orderBy("month", descending: true)
-          .orderBy("day", descending: true)
-          .orderBy("hour", descending: true)
-          .orderBy("minutes", descending: true)
-          .orderBy("seconds", descending: true)
+          .orderBy("createdAt", descending: true)
           .startAfterDocument(docu)
           .limit(10)
           .get();
@@ -2004,6 +2008,7 @@ class FirebaseDatabaseService {
       DateTime now = DateTime.now();
       final DateFormat formatter = DateFormat('dd-MM-yy');
       final String formatted = formatter.format(now);
+      Timestamp notifTimeStamp = Timestamp.fromDate(now);
       await _firestore
           .collection(users)
           .doc(userId)
@@ -2021,6 +2026,7 @@ class FirebaseDatabaseService {
         "minutes": now.minute.toString(),
         "seconds": now.second.toString(),
         "parameters": parameters,
+        "createdAt": notifTimeStamp,
       });
     }
 
