@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
@@ -46,17 +45,19 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
   // Horari
   double? _startHour;
   double? _endHour;
-  // Location of Event
-  TextEditingController locationController = TextEditingController();
   // Descansos
   DateTime dateJoined = DateTime.now();
   // Events From Brand
   List<Event> eventsList = [];
   List<Appointment> allAppointments = <Appointment>[];
+  // Selecte Date Time
+  DateTime displayDateTimeStart = DateTime.now();
+  DateTime displayDateTimeEnd = DateTime.now();
 
   @override
   void initState() {
     isLoading = true;
+    initAppBarDateTitle();
     getUserBrandDetails();
     super.initState();
   }
@@ -69,6 +70,21 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
     print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
   }
 
+  // Init App Bar Title
+  initAppBarDateTitle() {
+    if (widget.dateTime == null) {
+      DateTime now = DateTime.now();
+      int currentDay = now.weekday;
+      displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
+      displayDateTimeEnd = displayDateTimeStart.add(Duration(days: 7));
+    } else {
+      DateTime dateTime = widget.dateTime!;
+      int currentDay = dateTime.weekday;
+      displayDateTimeStart = dateTime.subtract(Duration(days: currentDay - 1));
+      displayDateTimeEnd = displayDateTimeStart.add(Duration(days: 6));
+    }
+  }
+
   void getUserBrandDetails() async {
     List<Brand> result = await _brandDataService.getAllBrandsFromUser(widget.userId);
     if (result.length != 0) {
@@ -79,6 +95,21 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
   }
 
   void initCalendar() {
+    // Init App Bar Title
+    if (widget.dateTime == null) {
+      DateTime now = DateTime.now();
+      int currentDay = now.weekday;
+      displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
+      displayDateTimeEnd = displayDateTimeStart.add(Duration(days: 7));
+    } else {
+      DateTime dateTime = widget.dateTime!;
+      int currentDay = dateTime.weekday;
+      displayDateTimeStart = dateTime.subtract(Duration(days: currentDay - 1));
+      displayDateTimeEnd = displayDateTimeStart.add(Duration(days: 6));
+    }
+    DateTime now = DateTime.now();
+    int currentDay = now.weekday;
+    DateTime firstDayOfWeek = now.subtract(Duration(days: currentDay - 1));
     dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
     _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
     _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
@@ -105,6 +136,18 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
     return "${hour}h ${min}m ";
   }
 
+  Widget _buildWeekTitleFromDate(DateTime dateTimeStart, DateTime dateTimeEnd) {
+    // Day of the First Date
+    String dateTitleStart = DateFormat('dd MMMM yy', Localizations.localeOf(context).languageCode).format(dateTimeStart);
+    String dateStartDay = StringUtils().splitByChar(dateTitleStart, " ")[0];
+    // Day Month Year of the Last Date
+    String dateTitleEnd = DateFormat('dd MMMM yy', Localizations.localeOf(context).languageCode).format(dateTimeEnd);
+    // Format  the results
+    String dateTitle = dateStartDay + " - " + dateTitleEnd;
+    // Return the Title
+    return Text(StringUtils().capitalizedAllWords(dateTitle), style: Theme.of(context).appBarTheme.titleTextStyle);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isFirstBuild) {
@@ -115,7 +158,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
     return isLoading ?
       Scaffold(
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.mySessions, style: Theme.of(context).appBarTheme.titleTextStyle,),
+            title: _buildWeekTitleFromDate(displayDateTimeStart, displayDateTimeEnd),
             centerTitle: true,
             leading: IconButton(
               icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
@@ -129,7 +172,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
         :
       Scaffold(
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.mySessions, style: Theme.of(context).appBarTheme.titleTextStyle,),
+            title: _buildWeekTitleFromDate(displayDateTimeStart, displayDateTimeEnd),
             centerTitle: true,
             leading: IconButton(
               icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
@@ -172,7 +215,6 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                         todayHighlightColor: Theme.of(context).accentColor,
                         showCurrentTimeIndicator: true,
                         initialDisplayDate: widget.dateTime,
-                        initialSelectedDate: widget.dateTime,
                         selectionDecoration: BoxDecoration(
                             border: Border.all(width: 0.1, color: Colors.transparent)
                         ),
@@ -197,6 +239,14 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                           minimumAppointmentDuration: Duration(minutes: 30),
                           timeTextStyle: Theme.of(context).textTheme.bodyText2,
                         ),
+                        onViewChanged: (ViewChangedDetails viewChangedDetails) {
+                          Future.delayed(Duration.zero, () async {
+                            setState(() {
+                              displayDateTimeStart = viewChangedDetails.visibleDates[0];
+                              displayDateTimeEnd = viewChangedDetails.visibleDates[viewChangedDetails.visibleDates.length -1];
+                            });
+                          });
+                        },
                         appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
                           final Appointment appointment = details.appointments.first;
                           final DateTime today = DateTime.now();
