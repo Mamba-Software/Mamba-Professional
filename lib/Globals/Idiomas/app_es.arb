@@ -1058,6 +1058,14 @@
   "@todayString": {
     "description": "Wellcome message"
   },
+  "weekString": "Semanal",
+  "@weekString": {
+    "description": "Wellcome message"
+  },
+  "monthString": "Mensual",
+  "@monthString": {
+    "description": "Wellcome message"
+  },
   "today": "Hoy {date}",
   "@today": {
     "description": "Wellcome message",

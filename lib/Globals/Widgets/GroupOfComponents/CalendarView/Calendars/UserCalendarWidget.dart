@@ -190,6 +190,16 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                     style: Theme.of(context).textTheme.bodyText1,
                     textAlign: TextAlign.center
                 ),
+              ),
+              TextButton(
+                onPressed: () {
+                  _controller.displayDate = DateTime.now();
+                },
+                child: Text(
+                    AppLocalizations.of(context)!.todayString,
+                    style: Theme.of(context).textTheme.bodyText1,
+                    textAlign: TextAlign.center
+                ),
               )
             ],
           ),

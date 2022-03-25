@@ -247,6 +247,8 @@
   "doing": "Realitzant",
   "finished": "Realitzat",
   "todayString": "Avui",
+  "weekString": "Semanal",
+  "monthString": "Mensual",
   "today": "Avui {date}",
   "full": "Ple",
   "available": "Disponible",
