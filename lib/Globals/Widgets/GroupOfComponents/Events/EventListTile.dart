@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -8,14 +9,19 @@ import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventClient.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:shimmer/shimmer.dart';
 
 class EventListTile extends StatefulWidget {
   String eventId;
+  bool isTrainer;
 
-  EventListTile({Key? key, required this.eventId}) : super(key: key);
+  EventListTile({Key? key, required this.eventId, required this.isTrainer}) : super(key: key);
 
   @override
   _EventListTileState createState() => _EventListTileState();
@@ -85,7 +91,32 @@ class _EventListTileState extends State<EventListTile> {
     _location = await _locationDataService.getSingleLocation(_event.locationId!);
   }
 
-  String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
+  // Navigate to Event Screen
+  void navigateToEventScreen() {
+    if (widget.isTrainer) {
+      Navigator.push(
+          context,
+          CupertinoPageRoute<Null>(
+              builder: (context) => ViewEventTrainer(
+                  eventId: widget.eventId,
+                  canEdit: false,
+                  locale: Localizations.localeOf(context)
+              )
+          )
+      );
+    } else {
+      Navigator.push(
+          context,
+          CupertinoPageRoute<Null>(
+              builder: (context) => ViewEventClient(
+                  eventId: widget.eventId,
+                  canJoin: false,
+                  locale: Localizations.localeOf(context)
+              )
+          )
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,106 +223,109 @@ class _EventListTileState extends State<EventListTile> {
         ),
       )
         :
-      FittedBox(
-        fit: BoxFit.fitHeight,
-        child: Container(
-          width: safeAreaWidth,
-          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: safeAreaWidth*0.20,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RectangularImage(
-                      image: _brand.logoUrl!,
-                      size: safeAreaHeight*0.10,
-                      borderRadius: 5,
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                width: safeAreaWidth*0.68,
-                decoration: new BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  /*
-                  border: Border(
-                      bottom: BorderSide(color: Theme.of(context).backgroundColor, width: 1)
+      GestureDetector(
+        onTap: navigateToEventScreen,
+        child: FittedBox(
+          fit: BoxFit.fitHeight,
+          child: Container(
+            width: safeAreaWidth,
+            padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: safeAreaWidth*0.20,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RectangularImage(
+                        image: _brand.logoUrl!,
+                        size: safeAreaHeight*0.10,
+                        borderRadius: 5,
+                      ),
+                    ],
                   ),
-                   */
                 ),
-                child: Row(
-                  children: [
-                    FittedBox(
-                      fit: BoxFit.fitHeight,
-                      child: Container(
-                        constraints: BoxConstraints(
-                          minHeight: safeAreaHeight*0.15
-                        ),
-                        width: safeAreaWidth*0.56,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _brand.name!,
-                              style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center
-                            ),
-                            SizedBox(height: safeAreaHeight*0.01,),
-                            Text(
-                                _event.title!,
-                                style: Theme.of(context).textTheme.caption,
+                Container(
+                  width: safeAreaWidth*0.68,
+                  decoration: new BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    /*
+                    border: Border(
+                        bottom: BorderSide(color: Theme.of(context).backgroundColor, width: 1)
+                    ),
+                     */
+                  ),
+                  child: Row(
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: Container(
+                          constraints: BoxConstraints(
+                            minHeight: safeAreaHeight*0.15
+                          ),
+                          width: safeAreaWidth*0.56,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _brand.name!,
+                                style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.center
-                            ),
-                            SizedBox(height: safeAreaHeight*0.015,),
-                            Row(
-                              children: [
-                                Icon(Icons.date_range_outlined, color: AppColors.grey, size: safeAreaWidth*0.05,),
-                                SizedBox(width: safeAreaWidth*0.02),
-                                Text(
-                                    toCapitalized(eventDateString),
-                                    style: Theme.of(context).textTheme.caption,
-                                    textAlign: TextAlign.center
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: safeAreaHeight*0.01,),
-                            Row(
-                              children: [
-                                Icon(Icons.location_on_outlined, color: AppColors.grey, size: safeAreaWidth*0.05,),
-                                SizedBox(width: safeAreaWidth*0.02),
-                                Expanded(
-                                  child: Text(
-                                      _location.description!,
+                              ),
+                              SizedBox(height: safeAreaHeight*0.01,),
+                              Text(
+                                  _event.title!,
+                                  style: Theme.of(context).textTheme.caption,
+                                  textAlign: TextAlign.center
+                              ),
+                              SizedBox(height: safeAreaHeight*0.015,),
+                              Row(
+                                children: [
+                                  Icon(Icons.date_range_outlined, color: AppColors.grey, size: safeAreaWidth*0.05,),
+                                  SizedBox(width: safeAreaWidth*0.02),
+                                  Text(
+                                      StringUtils().toCapitalized(eventDateString),
                                       style: Theme.of(context).textTheme.caption,
-                                      textAlign: TextAlign.left
+                                      textAlign: TextAlign.center
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                              SizedBox(height: safeAreaHeight*0.01,),
+                              Row(
+                                children: [
+                                  Icon(Icons.location_on_outlined, color: AppColors.grey, size: safeAreaWidth*0.05,),
+                                  SizedBox(width: safeAreaWidth*0.02),
+                                  Expanded(
+                                    child: Text(
+                                        _location.description!,
+                                        style: Theme.of(context).textTheme.caption,
+                                        textAlign: TextAlign.left
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    FittedBox(
-                      fit: BoxFit.fitHeight,
-                      child: Container(
-                        width: safeAreaWidth*0.12,
-                        child: Center(
-                          child: Icon(Icons.poll_outlined, color: AppColors.grey, size: safeAreaWidth*0.08,),
+                      FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: Container(
+                          width: safeAreaWidth*0.12,
+                          child: Center(
+                            child: Icon(Icons.poll_outlined, color: AppColors.grey, size: safeAreaWidth*0.08,),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventListTile.dart';
 import 'package:shimmer/shimmer.dart';
@@ -25,9 +27,17 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
   // Boolean Loading
   bool isLoading = true;
   // Acceso a Base de Datos
+  var _userDataService = new UserDataService();
   var _eventDataService = new EventDataService();
+  // User
+  Usuario user = Usuario();
   // AlL Events From User
   List<Event> listEvents = [];
+
+  // Gets the Events Done by the User
+  Future<void> getUserDetails() async {
+    user = await _userDataService.getUserCoverDetails(widget.userId);
+  }
 
   // Gets the Events Done by the User
   Future<void> getUserEvents() async {
@@ -39,6 +49,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
 
   @override
   void initState() {
+    getUserDetails();
     getUserEvents();
     super.initState();
   }
@@ -183,6 +194,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
               children: [
                 EventListTile(
                   eventId: event.id!,
+                  isTrainer: user.isTrainer!,
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: widget.height*0.03,horizontal: widget.width*0.05),
