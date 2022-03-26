@@ -39,6 +39,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
   // Boolean Loading
   Brand _brand = Brand();
   // Sesions Controller
+  GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   final CalendarController _controller = CalendarController();
   // Dies de la semana que el entrenador no treballa
   List<int> nonWorkDays = [];
@@ -53,6 +54,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
   // Selecte Date Time
   DateTime displayDateTimeStart = DateTime.now();
   DateTime displayDateTimeEnd = DateTime.now();
+  DateTime middleMonthDate = DateTime.now();
 
   @override
   void initState() {
@@ -136,16 +138,26 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
     return "${hour}h ${min}m ";
   }
 
-  Widget _buildWeekTitleFromDate(DateTime dateTimeStart, DateTime dateTimeEnd) {
-    // Day of the First Date
-    String dateTitleStart = DateFormat('dd MMMM yy', Localizations.localeOf(context).languageCode).format(dateTimeStart);
-    String dateStartDay = StringUtils().splitByChar(dateTitleStart, " ")[0];
-    // Day Month Year of the Last Date
-    String dateTitleEnd = DateFormat('dd MMMM yy', Localizations.localeOf(context).languageCode).format(dateTimeEnd);
-    // Format  the results
-    String dateTitle = dateStartDay + " - " + dateTitleEnd;
-    // Return the Title
-    return Text(StringUtils().capitalizedAllWords(dateTitle), style: Theme.of(context).appBarTheme.titleTextStyle);
+  Widget _buildTitleFromDate(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
+    if (_controller.view == CalendarView.month) {
+      return Text(
+        StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
+        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+      );
+    } else {
+      // Day of the First Date
+      String dateTitleStart = DateFormat('dd MMMM yy', Localizations.localeOf(context).languageCode).format(dateTimeStart);
+      String dateStartDay = StringUtils().splitByChar(dateTitleStart, " ")[0];
+      // Day Month Year of the Last Date
+      String dateTitleEnd = DateFormat('dd MMMM yyyy', Localizations.localeOf(context).languageCode).format(dateTimeEnd);
+      // Format  the results
+      String dateTitle = dateStartDay + " - " + dateTitleEnd;
+      // Return the Title
+      return Text(
+          StringUtils().capitalizedAllWords(dateTitle),
+          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600)
+      );
+    }
   }
 
   @override
@@ -155,24 +167,10 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
       isFirstBuild = false;
     }
 
-    return isLoading ?
-      Scaffold(
+    return Scaffold(
+          key: _globalKey,
           appBar: AppBar(
-            title: _buildWeekTitleFromDate(displayDateTimeStart, displayDateTimeEnd),
-            centerTitle: true,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-          body: LoadingViewPurple(),
-      )
-        :
-      Scaffold(
-          appBar: AppBar(
-            title: _buildWeekTitleFromDate(displayDateTimeStart, displayDateTimeEnd),
+            title: _buildTitleFromDate(displayDateTimeStart, displayDateTimeEnd, middleMonthDate),
             centerTitle: true,
             leading: IconButton(
               icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
@@ -181,30 +179,78 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
               },
             ),
             actions: [
-              TextButton(
-                onPressed: () {
-                  _controller.displayDate = DateTime.now();
-                },
-                child: Text(
-                    AppLocalizations.of(context)!.todayString,
-                    style: Theme.of(context).textTheme.bodyText1,
-                    textAlign: TextAlign.center
+              Container(
+                width: safeAreaWidth*0.15,
+                child: TextButton(
+                  onPressed: () {
+                    _controller.displayDate = DateTime.now();
+                    _controller.selectedDate = DateTime.now();
+                  },
+                  child: Text(
+                      AppLocalizations.of(context)!.todayString,
+                      style: Theme.of(context).textTheme.bodyText2,
+                      textAlign: TextAlign.center
+                  ),
                 ),
               ),
-              TextButton(
+              IconButton(
                 onPressed: () {
-                  _controller.displayDate = DateTime.now();
+                  if (_controller.view == CalendarView.month) {
+                   setState(() {
+                     _controller.view = CalendarView.week;
+                   });
+                  } else {
+                    setState(() {
+                      _controller.view = CalendarView.month;
+                    });
+                  }
                 },
-                child: Text(
-                    AppLocalizations.of(context)!.todayString,
-                    style: Theme.of(context).textTheme.bodyText1,
-                    textAlign: TextAlign.center
+                icon: _controller.view == CalendarView.month ? Container(
+                  width: safeAreaWidth*0.15,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.calendar_view_week,
+                        color: Theme.of(context).primaryColor,
+                        size: safeAreaWidth*0.05,
+                      ),
+                      FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                            AppLocalizations.of(context)!.weekString,
+                            style: Theme.of(context).textTheme.bodyText2,
+                            textAlign: TextAlign.center
+                        ),
+                      ),
+                    ],
+                  ),
+                ) : Container(
+                  width: safeAreaWidth*0.15,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.calendar_view_month,
+                        color: Theme.of(context).primaryColor,
+                        size: safeAreaWidth*0.05,
+                      ),
+                      FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                            AppLocalizations.of(context)!.monthString,
+                            style: Theme.of(context).textTheme.bodyText2,
+                            textAlign: TextAlign.center
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               )
             ],
           ),
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          body: StreamBuilder<QuerySnapshot>(
+          body: !isLoading ? StreamBuilder<QuerySnapshot>(
               stream: _eventDataService.getUserEventsStream(currentUser.id!),
               builder: (context, snapshot) {
                 if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
@@ -229,6 +275,11 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                             border: Border.all(width: 0.1, color: Colors.transparent)
                         ),
                         headerHeight: 0,
+                        headerStyle: CalendarHeaderStyle(
+                          textAlign: TextAlign.center,
+                          backgroundColor: Colors.transparent,
+                          textStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.transparent),
+                        ),
                         viewHeaderHeight: 50,
                         viewHeaderStyle: ViewHeaderStyle(
                           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -249,14 +300,30 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                           minimumAppointmentDuration: Duration(minutes: 30),
                           timeTextStyle: Theme.of(context).textTheme.bodyText2,
                         ),
+                        monthViewSettings: MonthViewSettings(
+                          appointmentDisplayCount: 5,
+                          appointmentDisplayMode: MonthAppointmentDisplayMode.indicator,
+                          showAgenda: _controller.selectedDate != null,
+                          agendaViewHeight: safeAreaHeight*0.4,
+                            agendaStyle: AgendaStyle(),
+                        ),
                         onViewChanged: (ViewChangedDetails viewChangedDetails) {
-                          Future.delayed(Duration.zero, () async {
-                            setState(() {
-                              displayDateTimeStart = viewChangedDetails.visibleDates[0];
-                              displayDateTimeEnd = viewChangedDetails.visibleDates[viewChangedDetails.visibleDates.length -1];
+                          if (_controller.view == CalendarView.month) {
+                            Future.delayed(Duration.zero, () async {
+                              setState(() {
+                                middleMonthDate = viewChangedDetails.visibleDates[14];
+                              });
                             });
-                          });
+                          } else {
+                            Future.delayed(Duration.zero, () async {
+                              setState(() {
+                                displayDateTimeStart = viewChangedDetails.visibleDates[0];
+                                displayDateTimeEnd = viewChangedDetails.visibleDates[viewChangedDetails.visibleDates.length -1];
+                              });
+                            });
+                          }
                         },
+                        onTap: onTapCalendar,
                         appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
                           final Appointment appointment = details.appointments.first;
                           final DateTime today = DateTime.now();
@@ -359,7 +426,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                   );
                 }
               }
-          ), // This trailing comma makes auto-formatting nicer for build methods.
+          ) : LoadingViewPurple(), // This trailing comma makes auto-formatting nicer for build methods.
       );
   }
 
@@ -491,6 +558,12 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
             )
         );
       }
+  }
+
+  void onTapCalendar(CalendarTapDetails details) {
+    setState(() {
+      _controller.selectedDate = details.date;
+    });
   }
 
 }
