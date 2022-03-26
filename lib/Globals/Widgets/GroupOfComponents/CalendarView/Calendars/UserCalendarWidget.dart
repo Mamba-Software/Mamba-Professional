@@ -183,8 +183,14 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                 width: safeAreaWidth*0.15,
                 child: TextButton(
                   onPressed: () {
-                    _controller.displayDate = DateTime.now();
-                    _controller.selectedDate = DateTime.now();
+                    setState(() {
+                      _controller.displayDate = DateTime.now();
+                    });
+                    if (_controller.view == CalendarView.month) {
+                      setState(() {
+                        _controller.selectedDate = DateTime.now();
+                      });
+                    }
                   },
                   child: Text(
                       AppLocalizations.of(context)!.todayString,
@@ -312,11 +318,14 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                             Future.delayed(Duration.zero, () async {
                               setState(() {
                                 middleMonthDate = viewChangedDetails.visibleDates[14];
+                                displayDateTimeStart = viewChangedDetails.visibleDates[0];
+                                displayDateTimeEnd = viewChangedDetails.visibleDates[viewChangedDetails.visibleDates.length -1];
                               });
                             });
                           } else {
-                            Future.delayed(Duration.zero, () async {
+                            Future.delayed(Duration.zero, () {
                               setState(() {
+                                //middleMonthDate = viewChangedDetails.visibleDates[14];
                                 displayDateTimeStart = viewChangedDetails.visibleDates[0];
                                 displayDateTimeEnd = viewChangedDetails.visibleDates[viewChangedDetails.visibleDates.length -1];
                               });
