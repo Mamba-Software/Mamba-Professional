@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Profile/ProfileScreens/Settings/Settings.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Profile/ProfileScreens/Feedback/FeedBack.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shimmer/shimmer.dart';
 
 // Profile Page
 class Profile extends StatefulWidget {
@@ -53,8 +54,10 @@ class _ProfileState extends State<Profile> {
     await getUserEventsFinished();
     buildProfileCarousel = [buildShareAppContainer(), buildShareAppContainer()];
     if (mounted) {
-      setState(() {
-        isLoading = false;
+      Future.delayed(const Duration(milliseconds: 500), () {
+        setState(() {
+          isLoading = false;
+        });
       });
     }
   }
@@ -138,6 +141,132 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  // Build the Widget of the User Name
+  Widget buildUserTitle() {
+    return !isLoading ? Row(
+      children: [
+        Expanded(child: TitleHeadline1(text: currentUser.name!,)),
+      ],
+    ) : Shimmer.fromColors(
+      baseColor: AppColors.grey,
+      highlightColor: AppColors.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            height: safeAreaHeight*0.04,
+            width: safeAreaWidth*0.5,
+            decoration: BoxDecoration(
+                color: AppColors.grey,
+                borderRadius: BorderRadius.circular(10)
+            ),
+          ),
+        ],
+      )
+    );
+  }
+
+  // Build the Widget of the Image
+  Widget buildUserPicture() {
+    return !isLoading ? Center(
+      child: GestureDetector(
+        onTap: navigateToFullScreenImage,
+        child: Container(
+          height: safeAreaHeight * 0.25,
+          child: Center(
+            child: CircularImage(size: safeAreaHeight * 0.25, image: currentUser.imageUrl, color: Theme.of(context).backgroundColor, borderWidth: 2,),
+          ),
+        ),
+      ),
+    ) : Center(
+      child: Shimmer.fromColors(
+          baseColor: AppColors.grey,
+          highlightColor: AppColors.white,
+          child: Container(
+            height: safeAreaHeight * 0.25,
+            decoration: BoxDecoration(
+              color: AppColors.grey,
+              shape: BoxShape.circle,
+            ),
+          ),
+      ),
+    );
+  }
+
+  // Build the Widget of the Image
+  Widget buildUserEventCount() {
+    return !isLoading ? Material(
+      child: Container(
+        width: safeAreaWidth * 0.81,
+        height: safeAreaHeight * 0.10,
+        decoration: new BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              height: safeAreaHeight * 0.10,
+              width: safeAreaWidth * 0.38,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Text(
+                    totalEvents.toString(),
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    AppLocalizations.of(context)!.allEvents,
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: safeAreaWidth * 0.05,
+              height: safeAreaHeight * 0.03,
+              child: VerticalDivider(color: Theme.of(context).primaryColor,),
+            ),
+            Container(
+              height: safeAreaHeight * 0.10,
+              width: safeAreaWidth * 0.38,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Text(
+                    thisMonthEvents.toString(),
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    AppLocalizations.of(context)!.monthEvents,
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ) : Shimmer.fromColors(
+      baseColor: AppColors.grey,
+      highlightColor: AppColors.white,
+      child: Container(
+        width: safeAreaWidth * 0.70,
+        height: safeAreaHeight * 0.08,
+        decoration: new BoxDecoration(
+          color: AppColors.grey,
+          borderRadius: BorderRadius.circular(10)
+        ),
+      )
+    );
+  }
+
   // Build Share App Container.
   Widget buildShareAppContainer() {
     return Container(
@@ -156,9 +285,9 @@ class _ProfileState extends State<Profile> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
             child: Text(
-              AppLocalizations.of(context)!.shareAppText,
-              style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor),
-              textAlign: TextAlign.center
+                AppLocalizations.of(context)!.shareAppText,
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor),
+                textAlign: TextAlign.center
             ),
           ),
           SizedBox(height: safeAreaHeight*0.015),
@@ -193,12 +322,7 @@ class _ProfileState extends State<Profile> {
       initDeviceSizes();
       isFirstBuild = false;
     }
-    return isLoading ?
-    Center(
-      child: LoadingViewPurple()
-    )
-        :
-    Scaffold (
+    return Scaffold (
       appBar: AppBar(
         toolbarHeight: 0,
         elevation: 0,
@@ -230,26 +354,13 @@ class _ProfileState extends State<Profile> {
             Container(
               height: safeAreaHeight*0.06,
               width: double.infinity,
-              child: Row(
-                children: [
-                  Expanded(child: TitleHeadline1(text: currentUser.name!,)),
-                ],
-              ),
+              child: buildUserTitle(),
             ),
             Container(
               height: safeAreaHeight*0.30,
               width: double.infinity,
-              child: Center(
-                child: GestureDetector(
-                  onTap: navigateToFullScreenImage,
-                  child: Container(
-                    height: safeAreaHeight * 0.25,
-                    child: Center(
-                      child: CircularImage(size: safeAreaHeight * 0.25, image: currentUser.imageUrl, color: Theme.of(context).backgroundColor, borderWidth: 2,),
-                    ),
-                  ),
-                ),
-              ),
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: buildUserPicture(),
             ),
             Container(
               child: Stack(
@@ -287,65 +398,7 @@ class _ProfileState extends State<Profile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Material (
-                            child: Container(
-                              width: safeAreaWidth * 0.81,
-                              height: safeAreaHeight * 0.10,
-                              decoration: new BoxDecoration(
-                                color: Theme.of(context).scaffoldBackgroundColor,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: safeAreaHeight * 0.10,
-                                    width: safeAreaWidth * 0.38,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: <Widget>[
-                                        Text(
-                                          totalEvents.toString(),
-                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                                        ),
-                                        SizedBox(height: 2),
-                                        Text(
-                                          AppLocalizations.of(context)!.allEvents,
-                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    width: safeAreaWidth * 0.05,
-                                    height: safeAreaHeight * 0.03,
-                                    child: VerticalDivider(color: Theme.of(context).primaryColor,),
-                                  ),
-                                  Container(
-                                    height: safeAreaHeight * 0.10,
-                                    width: safeAreaWidth * 0.38,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: <Widget>[
-                                        Text(
-                                          thisMonthEvents.toString(),
-                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                                        ),
-                                        SizedBox(height: 2),
-                                        Text(
-                                          AppLocalizations.of(context)!.monthEvents,
-                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          buildUserEventCount(),
                         ],
                       ),
                     ),
@@ -356,7 +409,7 @@ class _ProfileState extends State<Profile> {
             Expanded(
               child: Container(
                 color: Theme.of(context).backgroundColor,
-                child: Column(
+                child: !isLoading ? Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Expanded(
@@ -364,13 +417,13 @@ class _ProfileState extends State<Profile> {
                           items: buildProfileCarousel,
                           carouselController: _controller,
                           options: CarouselOptions(
-                              autoPlay: false,
-                              viewportFraction: 1,
-                              onPageChanged: (index, reason) {
-                                setState(() {
-                                  _current = index;
-                                });
-                              }
+                            autoPlay: false,
+                            viewportFraction: 1,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                _current = index;
+                              });
+                            }
                           ),
                         ),
                       ),
@@ -395,6 +448,86 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ]
+                ) : Column(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: safeAreaHeight*0.15,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).backgroundColor
+                        ),
+                        child: Shimmer.fromColors(
+                          baseColor: AppColors.grey,
+                          highlightColor: AppColors.white,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                height: safeAreaHeight*0.04,
+                                width: safeAreaWidth*0.3,
+                                decoration: BoxDecoration(
+                                    color: AppColors.grey,
+                                    borderRadius: BorderRadius.circular(10)
+                                ),
+                              ),
+                              SizedBox(height: safeAreaHeight*0.015),
+                              Container(
+                                height: safeAreaHeight*0.03,
+                                width: safeAreaWidth*0.5,
+                                decoration: BoxDecoration(
+                                    color: AppColors.grey,
+                                    borderRadius: BorderRadius.circular(10)
+                                ),
+                              ),
+                              SizedBox(height: safeAreaHeight*0.015),
+                              OutlinedButton(
+                                onPressed: null,
+                                child: Container(),
+                                style: OutlinedButton.styleFrom(
+                                  elevation: 4,
+                                  backgroundColor: AppColors.grey,
+                                  fixedSize: Size(safeAreaWidth*0.35, safeAreaHeight*0.06),
+                                  side: BorderSide(width: 1.0, color: AppColors.grey),
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(30),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: safeAreaHeight*0.04,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 8.0,
+                            height: 8.0,
+                            margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(_current == 0 ? 0.9 : 0.4)
+                            ),
+                          ),
+                          Container(
+                            width: 8.0,
+                            height: 8.0,
+                            margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(_current == 1 ? 0.9 : 0.4)
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

@@ -49,9 +49,9 @@ class _EventListTileState extends State<EventListTile> {
 
   @override
   void initState() {
-    super.initState();
     isLoading = true;
     initEventTile();
+    super.initState();
   }
 
   // Init Device Sizes
