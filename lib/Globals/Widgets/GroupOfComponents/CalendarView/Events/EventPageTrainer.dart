@@ -20,8 +20,6 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -93,10 +91,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   Image? theImage;
   // String Deleted Photo
   String deletedObject = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/not-found-image.jpg?alt=media&token=70687295-6a17-4735-9c0a-e5749c777319";
-
-
-  String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
-  String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
 
   @override
   initState() {
@@ -198,7 +192,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     }
     startDateController.text = DateFormat('EEEE d/M/y - HH:mm', Localizations.localeOf(context).languageCode).format(startDate);
     datetitle = DateFormat('EEEE d MMMM', Localizations.localeOf(context).languageCode).format(startDate);
-    startDateController.text = toCapitalized(startDateController.text);
+    startDateController.text = StringUtils().toCapitalized(startDateController.text);
     duration = event!.duration!.toStringAsFixed(2);
     var hour = event!.duration.toString().split(".")[0];
     var min = event!.duration!.toStringAsFixed(2).split(".")[1];
@@ -294,6 +288,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
       mapController = controller;
     });
   }
+
   void _onLaunchCoordinates(LatLng) {
     MapsLauncher.launchCoordinates(location.latitude!, location.longitude!, location.description!);
   }
@@ -324,7 +319,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     var widgetPicker;
     // Init for differnt types
     if (type == 0) {
-      startDate = DateFormat('EEEE d/M/y - HH:mm', Localizations.localeOf(context).languageCode).parse(undoCapitalized(startDateController.text));
+      startDate = DateFormat('EEEE d/M/y - HH:mm', Localizations.localeOf(context).languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
       // Calcular el horari de la marca
       // Hora Inactiva Matí
       var startHourWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
@@ -357,7 +352,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
           onDateTimeChanged: (val) {
             setState(() {
               startDateController.text = DateFormat('EEEE d/M/y - HH:mm', Localizations.localeOf(context).languageCode).format(val);
-              startDateController.text = toCapitalized(startDateController.text);
+              startDateController.text = StringUtils().toCapitalized(startDateController.text);
             });
           }
       )
@@ -1736,7 +1731,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                             errorDate = false;
                             errorNoTrainerSelected = false;
                           });
-                          var startDate = DateFormat('EEEE d/M/y - HH:mm', Localizations.localeOf(context).languageCode).parse(undoCapitalized(startDateController.text));
+                          var startDate = DateFormat('EEEE d/M/y - HH:mm', Localizations.localeOf(context).languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
                           if (!formKeyInfo.currentState!.validate()) {
                             hasError = true;
                           }

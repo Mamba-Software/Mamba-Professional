@@ -10,6 +10,8 @@ class StringUtils {
 
   String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
 
+  String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
+
   String capitalizedAllWords(String s) {
     var result = "";
     var arrayStrings = splitByChar(s, " ");

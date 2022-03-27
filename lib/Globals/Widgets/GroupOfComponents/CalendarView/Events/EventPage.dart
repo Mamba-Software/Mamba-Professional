@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/EventPageClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/EventPageTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventClient.dart';
 
@@ -28,10 +29,8 @@ class _EventPageState extends State<EventPage> {
           eventId: widget.eventId,
         )
           :
-        ViewEventClient(
+        EventPageClient(
           eventId: widget.eventId,
-          canJoin: false,
-          locale: Localizations.localeOf(context),
         );
   }
 }
