@@ -2,14 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/MyCalendarWidget.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../../../../Data/Models/Event.dart';
 import '../../../../../Globals/Utils/Strings/StringUtils.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/CalendarView/Calendars/UserCalendarWidget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserCalendarMonthWidget extends StatefulWidget {
   String userId;
@@ -103,7 +102,6 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
     );
   }
 
-
   @override
   void initState() {
     getUserEvents();
@@ -115,46 +113,42 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
     return Container(
       height: widget.height,
       width: widget.width,
-      decoration: new BoxDecoration(
-        border: Border.all(
-          width: 1,
-          color: AppColors.grey,
-          style: BorderStyle.solid,
-        ),
-        borderRadius: new BorderRadius.vertical(
-          top: Radius.circular(15.0),
-          bottom: Radius.circular(10.0),
-        ),
-      ),
       child: isLoading ? Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            height: widget.height*0.14,
-            width: widget.width,
-            decoration: new BoxDecoration(
-              color: AppColors.grey.withOpacity(0.8),
-              borderRadius: new BorderRadius.vertical(
-                top: Radius.circular(10.0),
-              ),
-            ),
+            height: widget.height*0.18,
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back_ios, color: AppColors.white, size: widget.height*0.05,),
-                  alignment: Alignment.center,
-                  onPressed: null,
+                Container(
+                  child: Text(AppLocalizations.of(context)!.yourSesions, style: Theme.of(context).textTheme.headline1),
                 ),
-                Text(
-                  StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(DateTime.now())),
-                  style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                  textAlign: TextAlign.start,
-                ),
-                IconButton(
-                  icon: Icon(Icons.arrow_forward_ios, color: AppColors.white, size: widget.height*0.05,),
-                  alignment: Alignment.center,
-                  onPressed: null,
+                Container(
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.arrow_back_ios, color: AppColors.grey, size: widget.height*0.04,),
+                        alignment: Alignment.center,
+                        onPressed: () {
+                          _calendarController.backward!();
+                        },
+                      ),
+                      Text(
+                        StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
+                        style: Theme.of(context).textTheme.caption,
+                        textAlign: TextAlign.start,
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.arrow_forward_ios, color: AppColors.grey, size: widget.height*0.04,),
+                        alignment: Alignment.center,
+                        onPressed: () {
+                          _calendarController.forward!();
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -163,7 +157,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
             baseColor: AppColors.grey,
             highlightColor: AppColors.grey.withOpacity(0.5),
             child: Container(
-              height: widget.height*0.85,
+              height: widget.height*0.82,
               width: widget.width,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -566,69 +560,78 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
       ) : Stack(
         alignment: Alignment.topCenter,
         children: [
-          SfCalendar(
-            view: CalendarView.month,
-            controller: _calendarController,
-            dataSource: _getCalendarDataSource(),
-            firstDayOfWeek: 1,
-            showDatePickerButton: false,
-            showCurrentTimeIndicator: false,
-            showNavigationArrow: true,
-            todayHighlightColor: Theme.of(context).accentColor,
-            headerHeight: widget.height*0.15,
-            headerDateFormat: "MMMM yyyy",
-            headerStyle: CalendarHeaderStyle(
-              textAlign: TextAlign.center,
-              backgroundColor: Colors.transparent,
-              textStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.transparent),
-            ),
-            monthViewSettings: MonthViewSettings(
+          Container(
+            height: widget.height,
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
+            child: SfCalendar(
+              view: CalendarView.month,
+              controller: _calendarController,
+              dataSource: _getCalendarDataSource(),
+              firstDayOfWeek: 1,
+              showDatePickerButton: false,
+              showCurrentTimeIndicator: false,
+              showNavigationArrow: true,
+              todayHighlightColor: Theme.of(context).accentColor,
+              viewHeaderHeight:  widget.height*0.1,
+              headerHeight: widget.height*0.18,
+              headerDateFormat: "MMMM yyyy",
+              headerStyle: CalendarHeaderStyle(
+                textAlign: TextAlign.center,
+                backgroundColor: Colors.transparent,
+                textStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.transparent),
+              ),
+              cellBorderColor: Colors.transparent,
+              monthViewSettings: MonthViewSettings(
                 navigationDirection: MonthNavigationDirection.horizontal,
-            ),
-            selectionDecoration: BoxDecoration(
-                border: Border.all(width: 0.1, color: Colors.transparent)
-            ),
-            onViewChanged: (ViewChangedDetails viewChangedDetails) {
-              Future.delayed(Duration.zero, () async {
-                setState(() {
-                  middleMonthDate = viewChangedDetails.visibleDates[14];
+              ),
+              selectionDecoration: BoxDecoration(
+                  border: Border.all(width: 0.1, color: Colors.transparent)
+              ),
+              onViewChanged: (ViewChangedDetails viewChangedDetails) {
+                Future.delayed(Duration.zero, () async {
+                  setState(() {
+                    middleMonthDate = viewChangedDetails.visibleDates[14];
+                  });
                 });
-              });
-            },
-            onTap: (CalendarTapDetails details) {
-              navigateToMyCalendar(details.date);
-            },
+              },
+              onTap: (CalendarTapDetails details) {
+                navigateToMyCalendar(details.date);
+              },
+            ),
           ),
           Container(
-            height: widget.height*0.14,
-            width: widget.width,
-            decoration: new BoxDecoration(
-              color: AppColors.grey.withOpacity(0.8),
-              borderRadius: new BorderRadius.vertical(
-                top: Radius.circular(10.0),
-              ),
-            ),
+            height: widget.height*0.18,
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back_ios, color: AppColors.white, size: widget.height*0.05,),
-                  alignment: Alignment.center,
-                  onPressed: () {
-                    _calendarController.backward!();
-                  },
+                Container(
+                  child: Text(AppLocalizations.of(context)!.yourSesions, style: Theme.of(context).textTheme.headline1,)
                 ),
-                Text(
-                  StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
-                  style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                  textAlign: TextAlign.start,
-                ),
-                IconButton(
-                  icon: Icon(Icons.arrow_forward_ios, color: AppColors.white, size: widget.height*0.05,),
-                  alignment: Alignment.center,
-                  onPressed: () {
-                    _calendarController.forward!();
-                  },
+                Container(
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.arrow_back_ios, color: AppColors.grey, size: widget.height*0.04,),
+                        alignment: Alignment.center,
+                        onPressed: () {
+                          _calendarController.backward!();
+                        },
+                      ),
+                      Text(
+                        StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
+                        style: Theme.of(context).textTheme.caption,
+                        textAlign: TextAlign.start,
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.arrow_forward_ios, color: AppColors.grey, size: widget.height*0.04,),
+                        alignment: Alignment.center,
+                        onPressed: () {
+                          _calendarController.forward!();
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

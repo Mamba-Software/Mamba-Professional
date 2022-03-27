@@ -45,27 +45,24 @@ class _SesionsState extends State<Sesions> {
       isFirstBuild = false;
     }
     return Scaffold (
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.yourSesions, style: Theme.of(context).appBarTheme.titleTextStyle),
-        automaticallyImplyLeading: false,
-        centerTitle: true,
+      appBar:  AppBar(
+        toolbarHeight: 0,
+        elevation: 0,
       ),
       body: SafeArea(
         right: false,
         left: false,
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: ClampingScrollPhysics(),
           child: Column(
             children: [
               Column(
                 children: [
-                  SizedBox(height: safeAreaHeight*0.04,),
                   UserCalendarMonthWidget(
                     userId: currentUser.id!,
-                    height: safeAreaHeight*0.4,
-                    width: safeAreaWidth*0.9,
+                    height: safeAreaHeight*0.5,
+                    width: safeAreaWidth,
                   ),
-                  SizedBox(height: safeAreaHeight*0.02,),
                 ],
               ),
               Container(
@@ -86,7 +83,7 @@ class _SesionsState extends State<Sesions> {
                         ],
                       ),
                     ),
-                    SizedBox(height: safeAreaHeight*0.01,),
+                    SizedBox(height: safeAreaHeight*0.02,),
                     UserEventHistoryWidget(
                       userId: currentUser.id!,
                       height: safeAreaHeight,
