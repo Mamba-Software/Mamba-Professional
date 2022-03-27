@@ -113,7 +113,7 @@ class _EventListTileState extends State<EventListTile> {
     return isLoading ?
       Shimmer.fromColors(
         baseColor: AppColors.grey,
-        highlightColor: AppColors.white,
+        highlightColor: AppColors.grey.withOpacity(0.5),
         child: Container(
           height: safeAreaHeight*0.12,
           width: safeAreaWidth,

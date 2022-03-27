@@ -149,7 +149,7 @@ class _ProfileState extends State<Profile> {
       ],
     ) : Shimmer.fromColors(
       baseColor: AppColors.grey,
-      highlightColor: AppColors.white,
+      highlightColor: AppColors.grey.withOpacity(0.5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -181,7 +181,7 @@ class _ProfileState extends State<Profile> {
     ) : Center(
       child: Shimmer.fromColors(
           baseColor: AppColors.grey,
-          highlightColor: AppColors.white,
+          highlightColor: AppColors.grey.withOpacity(0.5),
           child: Container(
             height: safeAreaHeight * 0.25,
             decoration: BoxDecoration(
@@ -255,7 +255,7 @@ class _ProfileState extends State<Profile> {
       ),
     ) : Shimmer.fromColors(
       baseColor: AppColors.grey,
-      highlightColor: AppColors.white,
+      highlightColor: AppColors.grey.withOpacity(0.5),
       child: Container(
         width: safeAreaWidth * 0.70,
         height: safeAreaHeight * 0.08,
@@ -459,7 +459,7 @@ class _ProfileState extends State<Profile> {
                         ),
                         child: Shimmer.fromColors(
                           baseColor: AppColors.grey,
-                          highlightColor: AppColors.white,
+                          highlightColor: AppColors.grey.withOpacity(0.5),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

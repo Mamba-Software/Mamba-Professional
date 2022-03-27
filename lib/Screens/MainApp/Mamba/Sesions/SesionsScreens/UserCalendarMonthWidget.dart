@@ -161,7 +161,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
           ),
           Shimmer.fromColors(
             baseColor: AppColors.grey,
-            highlightColor: AppColors.white,
+            highlightColor: AppColors.grey.withOpacity(0.5),
             child: Container(
               height: widget.height*0.85,
               width: widget.width,

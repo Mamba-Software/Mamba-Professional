@@ -19,6 +19,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileVie
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -269,13 +270,16 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   }
 
   void initCameraPosition() {
-    _initialPosition = CameraPosition(target: LatLng(location.latitude!,location.longitude!));
+    setState(() {
+      _initialPosition = CameraPosition(target: LatLng(location.latitude!,location.longitude!));
+    });
   }
 
   void createMarker() async{
     Marker marker = new Marker(
       markerId: MarkerId('1'),
       position: LatLng(location.latitude!,location.longitude!),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
       onTap: () {},
     );
     setState(() {
@@ -546,7 +550,297 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     return isLoading ?
     Scaffold(
       appBar: null,
-      body: LoadingViewPurple(),
+      resizeToAvoidBottomInset: true,
+      body: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+            ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.25,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: Theme.of(context).backgroundColor
+            ),
+          ),
+          Positioned(
+            top: MediaQuery.of(context).size.height*0.23,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height*0.10,
+              ),
+              decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Material(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+                    ),
+                    elevation: 4,
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                      child:
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                              child: Container(
+                                height: MediaQuery.of(context).size.height * 0.04,
+                                width: MediaQuery.of(context).size.width * 0.1,
+                                decoration: BoxDecoration(
+                                    color: AppColors.grey,
+                                    borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                ),
+                              ),
+                            ),
+                          ),
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.04,
+                              width: MediaQuery.of(context).size.width*0.3,
+                              decoration: BoxDecoration(
+                                  color: AppColors.grey,
+                                  borderRadius: BorderRadius.all(Radius.circular(15.0))
+                              ),
+                            ),
+                          ),
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child:  Padding(
+                              padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
+                              child: Container(
+                                height: MediaQuery.of(context).size.height * 0.04,
+                                width: MediaQuery.of(context).size.width * 0.1,
+                                decoration: BoxDecoration(
+                                    color: AppColors.grey,
+                                    borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            top: MediaQuery.of(context).size.height*0.32,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.04,
+                              width: MediaQuery.of(context).size.width*0.4,
+                              decoration: BoxDecoration(
+                                  color: AppColors.grey,
+                                  borderRadius: BorderRadius.all(Radius.circular(15.0))
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.03,
+                              width: MediaQuery.of(context).size.width*0.6,
+                              decoration: BoxDecoration(
+                                  color: AppColors.grey,
+                                  borderRadius: BorderRadius.all(Radius.circular(15.0))
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  height: MediaQuery.of(context).size.height * 0.07,
+                                  width: MediaQuery.of(context).size.width*0.15,
+                                  decoration: BoxDecoration(
+                                      color: AppColors.grey,
+                                      borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                  ),
+                                ),
+                                Container(
+                                  height: MediaQuery.of(context).size.height * 0.07,
+                                  width: MediaQuery.of(context).size.width*0.7,
+                                  decoration: BoxDecoration(
+                                      color: AppColors.grey,
+                                      borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  height: MediaQuery.of(context).size.height * 0.07,
+                                  width: MediaQuery.of(context).size.width*0.15,
+                                  decoration: BoxDecoration(
+                                      color: AppColors.grey,
+                                      borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                  ),
+                                ),
+                                Container(
+                                  height: MediaQuery.of(context).size.height * 0.07,
+                                  width: MediaQuery.of(context).size.width*0.7,
+                                  decoration: BoxDecoration(
+                                      color: AppColors.grey,
+                                      borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height*0.2,
+                              width: MediaQuery.of(context).size.width*0.9,
+                              decoration: BoxDecoration(
+                                  color: AppColors.grey,
+                                  borderRadius: BorderRadius.all(Radius.circular(15.0))
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: MediaQuery.of(context).size.height*0.025),
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.03,
+                              width: MediaQuery.of(context).size.width*0.3,
+                              decoration: BoxDecoration(
+                                  color: AppColors.grey,
+                                  borderRadius: BorderRadius.all(Radius.circular(15.0))
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.025),
+                          Container(
+                            width: MediaQuery.of(context).size.height * 0.26,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Shimmer.fromColors(
+                                  baseColor: AppColors.grey,
+                                  highlightColor: AppColors.grey.withOpacity(0.5),
+                                  child: Container(
+                                    height: MediaQuery.of(context).size.height * 0.08,
+                                    width: MediaQuery.of(context).size.height * 0.08,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.grey,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ),
+                                Shimmer.fromColors(
+                                  baseColor: AppColors.grey,
+                                  highlightColor: AppColors.grey.withOpacity(0.5),
+                                  child: Container(
+                                    height: MediaQuery.of(context).size.height * 0.08,
+                                    width: MediaQuery.of(context).size.height * 0.08,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.grey,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ),
+                                Shimmer.fromColors(
+                                  baseColor: AppColors.grey,
+                                  highlightColor: AppColors.grey.withOpacity(0.5),
+                                  child: Container(
+                                    height: MediaQuery.of(context).size.height * 0.08,
+                                    width: MediaQuery.of(context).size.height * 0.08,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.grey,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ),
+        ],
+      ),
     )
         :
     Scaffold(
@@ -663,7 +957,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                   color: Theme.of(context).scaffoldBackgroundColor,
                 ),
                 child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
                   child: Column(
                     children: [
                       Padding(
@@ -671,6 +964,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
                             Form(
                               key: formKeyInfo,
                               child: Column(
@@ -801,188 +1095,275 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                 ),
                             ): Container(),
                             Container(
-                              height: MediaQuery.of(context).size.height * 0.18,
+                              height: MediaQuery.of(context).size.height * 0.08,
                               width: MediaQuery.of(context).size.width * 0.90,
                               decoration: BoxDecoration(
-                                  color: Theme.of(context).backgroundColor,
-                                  borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.all(Radius.circular(5.0))
                               ),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.05),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.05,),
-                                        Container(
-                                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06),
-                                            width: MediaQuery.of(context).size.width*0.70,
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                isEditing ? new Flexible(
-                                                  child: TextFormField(
-                                                    controller: startDateController,
-                                                    readOnly: true,
-                                                    onTap: () {
-                                                      if (isEditing) selectSlot(context, 0);
-                                                    },
-                                                    style: Theme.of(context).textTheme.bodyText2,
-                                                    decoration: InputDecoration(
-                                                      labelStyle: Theme.of(context).textTheme.bodyText2,
-                                                      border: InputBorder.none,
-                                                      enabledBorder: UnderlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: errorDate ? Colors.red : Colors.grey,
-                                                              width: 1.0
-                                                          )
-                                                      ),
-                                                      focusedBorder: UnderlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: errorDate ? Colors.red : Colors.grey,
-                                                              width: 1.0
-                                                          )
-                                                      ),
-                                                      disabledBorder: InputBorder.none,
-                                                    ),
-                                                    textAlign: TextAlign.start,
-                                                  ),
-                                                ) : new Flexible(
-                                                  child: TextFormField(
-                                                    controller: startDateController,
-                                                    readOnly: true,
-                                                    enabled: false,
-                                                    style: Theme.of(context).textTheme.bodyText2,
-                                                    decoration: InputDecoration(
-                                                      labelStyle: Theme.of(context).textTheme.bodyText2,
-                                                      border: InputBorder.none,
-                                                      focusedBorder: InputBorder.none,
-                                                      enabledBorder: InputBorder.none,
-                                                      errorBorder: InputBorder.none,
-                                                      disabledBorder: InputBorder.none,
-                                                    ),
-                                                    textAlign: TextAlign.start,
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Icon(Icons.timer, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,),
-                                        Container(
-                                            padding: EdgeInsets.only(left: 20),
-                                            width: MediaQuery.of(context).size.width*0.70,
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: <Widget>[
-                                                isEditing ? new Flexible(
-                                                  child: TextFormField(
-                                                    controller: durationController,
-                                                    onTap: () {
-                                                      if (isEditing) selectSlot(context, 1);
-                                                    },
-                                                    readOnly: true,
-                                                    style: Theme.of(context).textTheme.bodyText2,
-                                                    decoration: InputDecoration(
-                                                      border: InputBorder.none,
-                                                      enabledBorder: UnderlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: errorDate ? Colors.red : Colors.grey,
-                                                              width: 1.0
-                                                          )
-                                                      ),
-                                                      focusedBorder: UnderlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: errorDate ? Colors.red : Colors.grey,
-                                                              width: 1.0
-                                                          )
-                                                      ),
-                                                      disabledBorder: InputBorder.none,
-                                                    ),
-                                                    textAlign: TextAlign.start,
-                                                  ),
-                                                ) : new Flexible(
-                                                  child: TextFormField(
-                                                    controller: durationController,
-                                                    readOnly: true,
-                                                    enabled: false,
-                                                    style: Theme.of(context).textTheme.bodyText2,
-                                                    decoration: InputDecoration(
-                                                      border: InputBorder.none,
-                                                      focusedBorder: InputBorder.none,
-                                                      enabledBorder: InputBorder.none,
-                                                      errorBorder: InputBorder.none,
-                                                      disabledBorder: InputBorder.none,
-                                                    ),
-                                                    textAlign: TextAlign.start,
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Container(
-                              height: 200,
-                              width: MediaQuery.of(context).size.width,
-                              child: Stack(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
-                                  GoogleMap(
-                                    onMapCreated: _onMapCreated,
-                                    initialCameraPosition: _initialPosition,
-                                    scrollGesturesEnabled: false,
-                                    zoomGesturesEnabled: false,
-                                    rotateGesturesEnabled: false,
-                                    minMaxZoomPreference: MinMaxZoomPreference(15,15),
-                                    myLocationButtonEnabled: false,
-                                    markers: markers,
-                                  ),
-                                  Positioned(
-                                    left: 5.0,
-                                    bottom: 5.0,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        color: Theme.of(context).scaffoldBackgroundColor
-                                      ),
-                                      padding: EdgeInsets.all(10),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.location_on,
-                                            color: Theme.of(context).accentColor,
-                                            size: 15,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 5.0),
-                                            child: Text(
-                                              event!.description!,
-                                              style: Theme.of(context).textTheme.bodyText1,
-                                            ),
-                                          )
-                                        ],
-                                      ),
+                                  Container(
+                                    height: MediaQuery.of(context).size.height * 0.07,
+                                    width: MediaQuery.of(context).size.height * 0.07,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).accentColor.withOpacity(0.08),
+                                        borderRadius: BorderRadius.all(Radius.circular(5.0))
                                     ),
+                                    child: Center(
+                                        child: Text(
+                                            event!.day.toString(),
+                                            style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
+                                            textAlign: TextAlign.center
+                                        )
+                                    ),
+                                  ),
+                                  SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                                  Container(
+                                      height: MediaQuery.of(context).size.height * 0.08,
+                                      width: MediaQuery.of(context).size.width*0.64,
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            isEditing ? new Flexible(
+                                              child: TextFormField(
+                                                controller: startDateController,
+                                                readOnly: true,
+                                                onTap: () {
+                                                  if (isEditing) selectSlot(context, 0);
+                                                },
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                decoration: InputDecoration(
+                                                  labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                  border: InputBorder.none,
+                                                  enabledBorder: UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: errorDate ? Colors.red : Colors.grey,
+                                                          width: 1.0
+                                                      )
+                                                  ),
+                                                  focusedBorder: UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: errorDate ? Colors.red : Colors.grey,
+                                                          width: 1.0
+                                                      )
+                                                  ),
+                                                  disabledBorder: InputBorder.none,
+                                                ),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ) : new Flexible(
+                                              child: TextFormField(
+                                                controller: startDateController,
+                                                readOnly: true,
+                                                enabled: false,
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                decoration: InputDecoration(
+                                                  labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                  border: InputBorder.none,
+                                                  focusedBorder: InputBorder.none,
+                                                  enabledBorder: InputBorder.none,
+                                                  errorBorder: InputBorder.none,
+                                                  disabledBorder: InputBorder.none,
+                                                ),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
                                   ),
                                 ],
                               ),
                             ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.08,
+                              width: MediaQuery.of(context).size.width * 0.90,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.all(Radius.circular(5.0))
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                    height: MediaQuery.of(context).size.height * 0.07,
+                                    width: MediaQuery.of(context).size.height * 0.07,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).accentColor.withOpacity(0.08),
+                                        borderRadius: BorderRadius.all(Radius.circular(5.0))
+                                    ),
+                                    child: Center(
+                                        child: Icon(Icons.timer_outlined, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,)
+                                    ),
+                                  ),
+                                  SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                                  Container(
+                                      height: MediaQuery.of(context).size.height * 0.08,
+                                      width: MediaQuery.of(context).size.width*0.64,
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+
+                                            isEditing ? new Flexible(
+                                              child: TextFormField(
+                                                controller: durationController,
+                                                onTap: () {
+                                                  if (isEditing) selectSlot(context, 1);
+                                                },
+                                                readOnly: true,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                                decoration: InputDecoration(
+                                                  border: InputBorder.none,
+                                                  enabledBorder: UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: errorDate ? Colors.red : Colors.grey,
+                                                          width: 1.0
+                                                      )
+                                                  ),
+                                                  focusedBorder: UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: errorDate ? Colors.red : Colors.grey,
+                                                          width: 1.0
+                                                      )
+                                                  ),
+                                                  disabledBorder: InputBorder.none,
+                                                  contentPadding: EdgeInsets.zero,
+                                                ),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ) : new Flexible(
+                                              child: TextFormField(
+                                                controller: durationController,
+                                                readOnly: true,
+                                                enabled: false,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                                decoration: InputDecoration(
+                                                  border: InputBorder.none,
+                                                  focusedBorder: InputBorder.none,
+                                                  enabledBorder: InputBorder.none,
+                                                  errorBorder: InputBorder.none,
+                                                  disabledBorder: InputBorder.none,
+                                                  contentPadding: EdgeInsets.zero,
+                                                ),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.02),
                           ],
                         ),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                          Container(
+                            height: MediaQuery.of(context).size.height*0.2,
+                            width: MediaQuery.of(context).size.width*0.9,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).backgroundColor,
+                                borderRadius: BorderRadius.all(Radius.circular(15.0))
+                            ),
+                            child: Stack(
+                              children: <Widget>[
+                                Center(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(15),
+                                      topRight: Radius.circular(15),
+                                      bottomRight: Radius.circular(15),
+                                      bottomLeft: Radius.circular(15),
+                                    ),
+                                    child: Align(
+                                      alignment: Alignment.bottomRight,
+                                      heightFactor: 1,
+                                      widthFactor: 2.5,
+                                      child: GoogleMap(
+                                        onMapCreated: _onMapCreated,
+                                        initialCameraPosition: _initialPosition,
+                                        scrollGesturesEnabled: false,
+                                        zoomGesturesEnabled: false,
+                                        rotateGesturesEnabled: false,
+                                        mapToolbarEnabled: false,
+                                        zoomControlsEnabled: false,
+                                        minMaxZoomPreference: MinMaxZoomPreference(15,15),
+                                        myLocationButtonEnabled: false,
+                                        markers: markers,
+                                        mapType: MapType.hybrid,
+                                        onTap: isEditing ? (LatLng) async {
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+                                          var result = await Navigator.push(
+                                              context,
+                                              CupertinoPageRoute<String>(
+                                                builder: (context) => MyLocationsSelect(
+                                                  brandId: currentBrand.id!,
+                                                ),
+                                              )
+                                          );
+                                          if (result != null) {
+                                            await getLocationFromId(result);
+                                            setState(() {
+                                              isLoading = false;
+                                            });
+                                          } else {
+                                            setState(() {
+                                              isLoading = false;
+                                            });
+                                          }
+                                        } : null,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: 5.0,
+                                  bottom: 5.0,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        color: Theme.of(context).scaffoldBackgroundColor
+                                    ),
+                                    padding: EdgeInsets.all(10),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Icon(
+                                          Icons.location_on,
+                                          color: Theme.of(context).accentColor,
+                                          size: 15,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 5.0),
+                                          child: Text(
+                                            location.description!,
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.0),

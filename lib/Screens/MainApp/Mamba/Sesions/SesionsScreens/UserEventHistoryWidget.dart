@@ -71,7 +71,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
             children: [
               Shimmer.fromColors(
                 baseColor: AppColors.grey,
-                highlightColor: AppColors.white,
+                highlightColor: AppColors.grey.withOpacity(0.5),
                 child: Container(
                   height: widget.height*0.12,
                   width: widget.width,
