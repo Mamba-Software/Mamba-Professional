@@ -39,11 +39,11 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
   // Gets the Events Done by the User
   Future<void> getUserEvents() async {
     eventsList = await _eventDataService.getUserEvents(widget.userId);
-    Future.delayed(Duration(milliseconds: 750), () async {
+    //Future.delayed(Duration(milliseconds: 750), () async {
       setState(() {
         isLoading = false;
       });
-    });
+    //});
   }
 
   // Build the Calendar Widget

@@ -54,11 +54,11 @@ class _ProfileState extends State<Profile> {
     await getUserEventsFinished();
     buildProfileCarousel = [buildShareAppContainer(), buildShareAppContainer()];
     if (mounted) {
-      Future.delayed(const Duration(milliseconds: 500), () {
+      //Future.delayed(const Duration(milliseconds: 500), () {
         setState(() {
           isLoading = false;
         });
-      });
+      //});
     }
   }
 
