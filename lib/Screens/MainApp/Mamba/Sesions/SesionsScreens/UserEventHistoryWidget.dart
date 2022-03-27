@@ -34,6 +34,20 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
   // AlL Events From User
   List<Event> listEvents = [];
 
+  @override
+  void initState() {
+    initEventHistory();
+    super.initState();
+  }
+
+  Future<void> initEventHistory() async {
+    await getUserDetails();
+    await getUserEvents();
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   // Gets the Events Done by the User
   Future<void> getUserDetails() async {
     user = await _userDataService.getUserCoverDetails(widget.userId);
@@ -42,16 +56,6 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
   // Gets the Events Done by the User
   Future<void> getUserEvents() async {
     listEvents = await _eventDataService.getUserEvents(widget.userId);
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  @override
-  void initState() {
-    getUserDetails();
-    getUserEvents();
-    super.initState();
   }
 
   @override

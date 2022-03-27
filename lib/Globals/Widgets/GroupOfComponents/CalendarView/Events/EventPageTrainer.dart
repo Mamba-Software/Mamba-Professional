@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
@@ -6,6 +7,7 @@ import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
@@ -20,6 +22,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 
 class EventPageTrainer extends StatefulWidget {
@@ -35,8 +38,12 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   var _brandDataService = new BrandDataService();
   var _eventDataService = new EventDataService();
   var _locationDataService = new LocationDataService();
+  // Screen Dimensions
+  var safeAreaHeight;
+  var safeAreaWidth;
   // Boolean Loading
-  bool isLoading = false;
+  bool isFirstBuild = true;
+  bool isLoading = true;
   bool isLoadingBody = false;
   // Boolean isUpdated
   bool isEditing = false;
@@ -57,6 +64,9 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   List<String> durations = ["0.30","0.45","1.00","1.15","1.30","1.45","2.00","2.15","2.30","2.45","3.00"];
   // Location
   Location location = Location();
+  Set<Marker> markers = new Set<Marker>();
+  CameraPosition _initialPosition = CameraPosition(target: LatLng(26.8206, 30.8025));
+  Completer<GoogleMapController> _controller = Completer();
   // Participants
   TextEditingController membersController = TextEditingController();
   int members = 1;
@@ -70,7 +80,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   List<String> eventTrainersIds = [];
   List<bool> eventTrainersBool = [];
   bool errorNoTrainerSelected = false;
-  
   // Form To Validate User
   final formKeyInfo = GlobalKey<FormState>();
   final formKeyTime = GlobalKey<FormState>();
@@ -93,6 +102,14 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     isLoading = true;
     theImage = buildRandomImage();
     getEventInfo();
+  }
+
+  // Init Device Sizes
+  initDeviceSizes() {
+    safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
+    safeAreaWidth = MediaQuery.of(context).size.width;
+    print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
+    print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
   }
 
   // Did Change Dependencies
@@ -243,10 +260,31 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   
   Future<void> getEventLocation(String eventId) async {
     location = await _eventDataService.getEventLocation(eventId);
+    initCameraPosition();
+    createMarker();
     var temp = location;
     setState(() {
       location = temp;
     });
+  }
+
+  void initCameraPosition() {
+    _initialPosition = CameraPosition(target: LatLng(location.latitude!,location.longitude!));
+  }
+
+  void createMarker() async{
+    Marker marker = new Marker(
+      markerId: MarkerId('1'),
+      position: LatLng(location.latitude!,location.longitude!),
+      onTap: () {},
+    );
+    setState(() {
+      markers.add(marker);
+    });
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    _controller.complete(controller);
   }
 
   Future<void> getLocationFromId(String locationId) async {
@@ -486,11 +524,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     }
   }
 
-  String splitCommonName(String name) {
-    List<String> aux = name.split(" ");
-    return aux[0];
-  }
-
   Color getColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
       MaterialState.pressed,
@@ -505,6 +538,11 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    if (isFirstBuild) {
+      initDeviceSizes();
+      isFirstBuild = false;
+    }
+
     return isLoading ?
     Scaffold(
       appBar: null,
@@ -534,6 +572,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                   ),
                 ),
               ),
+              /*
               Container(
                 height: MediaQuery.of(context).size.height*0.26,
                 decoration: new BoxDecoration(
@@ -553,6 +592,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                 ),
                 child: Center(),
               ),
+               */
             ],
           ),
           Positioned(
@@ -749,7 +789,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                 ],
                               ),
                             ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.015),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.02),
                             errorDate ? Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: Center(
@@ -761,7 +801,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                 ),
                             ): Container(),
                             Container(
-                              height: MediaQuery.of(context).size.height * 0.30,
+                              height: MediaQuery.of(context).size.height * 0.18,
                               width: MediaQuery.of(context).size.width * 0.90,
                               decoration: BoxDecoration(
                                   color: Theme.of(context).backgroundColor,
@@ -891,78 +931,54 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                         ),
                                       ],
                                     ),
-                                    Column(
-                                      children: [
-                                        Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            Icon(Icons.location_on_outlined, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,),
-                                            Container(
-                                              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05),
-                                              width: MediaQuery.of(context).size.width*0.70,
-                                              child: ListTile(
-                                                contentPadding: EdgeInsets.all(0),
-                                                title: Text(
-                                                    location.description!,
-                                                    style: Theme.of(context).textTheme.bodyText2,
-                                                ),
-                                                trailing: !isEditing ? IconButton(
-                                                  onPressed: () async {
-                                                    Clipboard.setData(new ClipboardData(text: location.description!)).then((_){
-                                                      showTopSnackBar(
-                                                        context,
-                                                        CustomSnackBar.info(
-                                                          icon: Container(),
-                                                          iconRotationAngle: 0,
-                                                          backgroundColor: Theme.of(context).accentColor,
-                                                          message: AppLocalizations.of(context)!.copyCorrectLocation,
-                                                          textStyle: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),
-                                                        ),
-                                                      );
-                                                    });
-                                                  },
-                                                  icon: Icon(Icons.copy, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.05,),
-                                                ) : Icon(Icons.edit_location_outlined, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.05,),
-                                                onTap: isEditing ? () async {
-                                                  setState(() {
-                                                    isLoading = true;
-                                                  });
-                                                  var result = await Navigator.push(
-                                                      context,
-                                                    CupertinoPageRoute<String>(
-                                                      builder: (context) => MyLocationsSelect(
-                                                          brandId: currentBrand.id!,
-                                                        ),
-                                                      )
-                                                  );
-                                                  if (result != null) {
-                                                    await getLocationFromId(result);
-                                                    setState(() {
-                                                      isLoading = false;
-                                                    });
-                                                  } else {
-                                                    setState(() {
-                                                      isLoading = false;
-                                                    });
-                                                  }
-                                                } : null,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        isEditing ? Padding(
-                                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.08, top:MediaQuery.of(context).size.width*0.01),
-                                          child: Container(
-                                            height: 1,
-                                            width: MediaQuery.of(context).size.width*0.66,
-                                            color: AppColors.grey,
-                                          ),
-                                        ) : Container(),
-                                      ],
-                                    ),
                                   ],
                                 ),
+                              ),
+                            ),
+                            Container(
+                              height: 200,
+                              width: MediaQuery.of(context).size.width,
+                              child: Stack(
+                                children: <Widget>[
+                                  GoogleMap(
+                                    onMapCreated: _onMapCreated,
+                                    initialCameraPosition: _initialPosition,
+                                    scrollGesturesEnabled: false,
+                                    zoomGesturesEnabled: false,
+                                    rotateGesturesEnabled: false,
+                                    minMaxZoomPreference: MinMaxZoomPreference(15,15),
+                                    myLocationButtonEnabled: false,
+                                    markers: markers,
+                                  ),
+                                  Positioned(
+                                    left: 5.0,
+                                    bottom: 5.0,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        color: Theme.of(context).scaffoldBackgroundColor
+                                      ),
+                                      padding: EdgeInsets.all(10),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.location_on,
+                                            color: Theme.of(context).accentColor,
+                                            size: 15,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 5.0),
+                                            child: Text(
+                                              event!.description!,
+                                              style: Theme.of(context).textTheme.bodyText1,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -1023,7 +1039,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
                                                         Text(
-                                                          splitCommonName(trainer.name!),
+                                                          StringUtils().splitCommonName(trainer.name!),
                                                           style: Theme.of(context).textTheme.bodyText2,
                                                           textAlign: TextAlign.center,
                                                         ),
@@ -1091,7 +1107,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                                       children: [
                                                         Expanded(
                                                           child: Text(
-                                                            trainer.name! != AppLocalizations.of(context)!.notFoundUser ? splitCommonName(trainer.name!) : trainer.name!,
+                                                            trainer.name! != AppLocalizations.of(context)!.notFoundUser ? StringUtils().splitCommonName(trainer.name!) : trainer.name!,
                                                             style: Theme.of(context).textTheme.bodyText2,
                                                             textAlign: TextAlign.center,
                                                           ),
@@ -1252,7 +1268,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                                       children: [
                                                         Expanded(
                                                           child: Text(
-                                                            client.name! != AppLocalizations.of(context)!.notFoundUser ? splitCommonName(client.name!) : client.name!,
+                                                            client.name! != AppLocalizations.of(context)!.notFoundUser ? StringUtils().splitCommonName(client.name!) : client.name!,
                                                             style: Theme.of(context).textTheme.bodyText2,
                                                             textAlign: TextAlign.center,
                                                           ),

@@ -24,4 +24,9 @@ class StringUtils {
     return string.split(c);
   }
 
+  String splitCommonName(String name) {
+    List<String> aux = name.split(" ");
+    return aux[0];
+  }
+
 }

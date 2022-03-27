@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:shimmer/shimmer.dart';
@@ -93,29 +94,14 @@ class _EventListTileState extends State<EventListTile> {
 
   // Navigate to Event Screen
   void navigateToEventScreen() {
-    if (widget.isTrainer) {
-      Navigator.push(
-          context,
-          CupertinoPageRoute<Null>(
-              builder: (context) => ViewEventTrainer(
-                  eventId: widget.eventId,
-                  canEdit: false,
-                  locale: Localizations.localeOf(context)
-              )
-          )
-      );
-    } else {
-      Navigator.push(
-          context,
-          CupertinoPageRoute<Null>(
-              builder: (context) => ViewEventClient(
-                  eventId: widget.eventId,
-                  canJoin: false,
-                  locale: Localizations.localeOf(context)
-              )
-          )
-      );
-    }
+    Navigator.push(
+      context,
+      CupertinoPageRoute<Null>(
+        builder: (context) => EventPage(
+          eventId: widget.eventId,
+        ),
+      )
+    );
   }
 
   @override

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/EventPageTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventClient.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/MarcaClient.dart';
 
 class EventPage extends StatefulWidget {
   String eventId;
