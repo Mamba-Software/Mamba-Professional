@@ -67,6 +67,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   Location location = Location();
   Set<Marker> markers = new Set<Marker>();
   CameraPosition _initialPosition = CameraPosition(target: LatLng(26.8206, 30.8025));
+  GoogleMapController? mapController;
   Completer<GoogleMapController> _controller = Completer();
   // Participants
   TextEditingController membersController = TextEditingController();
@@ -289,10 +290,19 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
 
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
+    setState(() {
+      mapController = controller;
+    });
   }
 
   Future<void> getLocationFromId(String locationId) async {
     location = await _locationDataService.getSingleLocation(locationId);
+    createMarker();
+    mapController?.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(target: LatLng(location.latitude!,location.longitude!), zoom: 17)
+      )
+    );
     var temp = location;
     setState(() {
       location = temp;
@@ -1301,14 +1311,11 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                         rotateGesturesEnabled: false,
                                         mapToolbarEnabled: false,
                                         zoomControlsEnabled: false,
-                                        minMaxZoomPreference: MinMaxZoomPreference(15,15),
+                                        minMaxZoomPreference: MinMaxZoomPreference(17,17),
                                         myLocationButtonEnabled: false,
                                         markers: markers,
                                         mapType: MapType.hybrid,
                                         onTap: isEditing ? (LatLng) async {
-                                          setState(() {
-                                            isLoading = true;
-                                          });
                                           var result = await Navigator.push(
                                               context,
                                               CupertinoPageRoute<String>(
@@ -1319,10 +1326,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                           );
                                           if (result != null) {
                                             await getLocationFromId(result);
-                                            setState(() {
-                                              isLoading = false;
-                                            });
-                                          } else {
                                             setState(() {
                                               isLoading = false;
                                             });
@@ -1363,6 +1366,14 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                               ],
                             ),
                           ),
+                          isEditing ? Padding(
+                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05, top:MediaQuery.of(context).size.width*0.03),
+                            child: Container(
+                              height: 1,
+                              width: MediaQuery.of(context).size.width*0.9,
+                              color: AppColors.grey,
+                            ),
+                          ) : Container(),
                         ],
                       ),
                       Padding(
