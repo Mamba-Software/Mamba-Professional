@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:flutter/services.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
@@ -294,6 +294,9 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
       mapController = controller;
     });
   }
+  void _onLaunchCoordinates(LatLng) {
+    MapsLauncher.launchCoordinates(location.latitude!, location.longitude!, location.description!);
+  }
 
   Future<void> getLocationFromId(String locationId) async {
     location = await _locationDataService.getSingleLocation(locationId);
@@ -570,7 +573,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.25,
+            height: MediaQuery.of(context).size.height * 0.26,
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               color: Theme.of(context).backgroundColor
@@ -582,8 +585,10 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
             left: 0,
             right: 0,
             child: Container(
+              height:  MediaQuery.of(context).size.height*0.1,
               constraints: BoxConstraints(
                 maxHeight: MediaQuery.of(context).size.height*0.10,
+                minHeight: MediaQuery.of(context).size.height*0.10,
               ),
               decoration: BoxDecoration(
                   color: Theme.of(context).scaffoldBackgroundColor,
@@ -592,62 +597,69 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Material(
-                    shape: RoundedRectangleBorder(
+                  Container(
+                    height:  MediaQuery.of(context).size.height*0.1,
+                    child: Material(
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
-                    ),
-                    elevation: 4,
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
-                      child:
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Shimmer.fromColors(
-                            baseColor: AppColors.grey,
-                            highlightColor: AppColors.grey.withOpacity(0.5),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                      ),
+                      elevation: 4,
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Shimmer.fromColors(
+                              baseColor: AppColors.grey,
+                              highlightColor: AppColors.grey.withOpacity(0.5),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                child: Container(
+                                  height:  MediaQuery.of(context).size.height*0.1,
+                                  child: Center(
+                                    child: Container(
+                                      height: MediaQuery.of(context).size.height * 0.04,
+                                      width: MediaQuery.of(context).size.width * 0.1,
+                                      decoration: BoxDecoration(
+                                          color: AppColors.grey,
+                                          borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Shimmer.fromColors(
+                              baseColor: AppColors.grey,
+                              highlightColor: AppColors.grey.withOpacity(0.5),
                               child: Container(
                                 height: MediaQuery.of(context).size.height * 0.04,
-                                width: MediaQuery.of(context).size.width * 0.1,
+                                width: MediaQuery.of(context).size.width*0.3,
                                 decoration: BoxDecoration(
                                     color: AppColors.grey,
                                     borderRadius: BorderRadius.all(Radius.circular(15.0))
                                 ),
                               ),
                             ),
-                          ),
-                          Shimmer.fromColors(
-                            baseColor: AppColors.grey,
-                            highlightColor: AppColors.grey.withOpacity(0.5),
-                            child: Container(
-                              height: MediaQuery.of(context).size.height * 0.04,
-                              width: MediaQuery.of(context).size.width*0.3,
-                              decoration: BoxDecoration(
-                                  color: AppColors.grey,
-                                  borderRadius: BorderRadius.all(Radius.circular(15.0))
-                              ),
-                            ),
-                          ),
-                          Shimmer.fromColors(
-                            baseColor: AppColors.grey,
-                            highlightColor: AppColors.grey.withOpacity(0.5),
-                            child:  Padding(
-                              padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
-                              child: Container(
-                                height: MediaQuery.of(context).size.height * 0.04,
-                                width: MediaQuery.of(context).size.width * 0.1,
-                                decoration: BoxDecoration(
-                                    color: AppColors.grey,
-                                    borderRadius: BorderRadius.all(Radius.circular(15.0))
+                            Shimmer.fromColors(
+                              baseColor: AppColors.grey,
+                              highlightColor: AppColors.grey.withOpacity(0.5),
+                              child:  Padding(
+                                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
+                                child: Container(
+                                  height: MediaQuery.of(context).size.height * 0.04,
+                                  width: MediaQuery.of(context).size.width * 0.1,
+                                  decoration: BoxDecoration(
+                                      color: AppColors.grey,
+                                      borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -674,7 +686,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
                           Shimmer.fromColors(
                             baseColor: AppColors.grey,
                             highlightColor: AppColors.grey.withOpacity(0.5),
@@ -905,8 +917,10 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
             left: 0,
             right: 0,
             child: Container(
+              height: MediaQuery.of(context).size.height*0.10,
               constraints: BoxConstraints(
                 maxHeight: MediaQuery.of(context).size.height*0.10,
+                minHeight: MediaQuery.of(context).size.height*0.10,
               ),
               decoration: BoxDecoration(
                   color: Theme.of(context).scaffoldBackgroundColor,
@@ -967,6 +981,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                   color: Theme.of(context).scaffoldBackgroundColor,
                 ),
                 child: SingleChildScrollView(
+                  physics: ClampingScrollPhysics(),
                   child: Column(
                     children: [
                       Padding(
@@ -1330,7 +1345,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                               isLoading = false;
                                             });
                                           }
-                                        } : null,
+                                        } : _onLaunchCoordinates,
                                       ),
                                     ),
                                   ),
