@@ -1238,57 +1238,175 @@ class ScriptsDatabaseService {
     try {
       print('\n');
       print('-----------------------------');
-      print('DATA MIGRATION 24TH FEBRUARY 2022');
+      print('DATA MIGRATION 28TH March 2022');
       print('-----------------------------');
       print('\n');
 
-      print('Modifying Events Notifications collection:\n');
+      print('Modifying Events collection:\n');
       print('--------------');
       print('\n');
 
+      String eventsCollection = "7777 Events";
+      String userCollection = "7777 Users";
+      String brandsCollection = "7777 Brands";
+      String locationCollection = "7777 Locations";
 
-      QuerySnapshot querySnapshotUsers = await _firestore.collection("Events ").get();
-      for (int i = 0; i < querySnapshotUsers.docs.length; i++) {
-        var userId = querySnapshotUsers.docs[i].id;
-        QuerySnapshot querySnapshot = await _firestore.collection("Users").doc(userId).collection("Notifications").get();
-
+      QuerySnapshot querySnapshotEvents = await _firestore.collection(eventsCollection).get();
+      for (int i = 0; i < querySnapshotEvents.docs.length; i++) {
+        Event event = Event.fromObjectAllData(querySnapshotEvents.docs[i].id, querySnapshotEvents.docs[i]);
         print('=================================================================================');
         print('=================================================================================');
-        print('USER WITH ID: ' + userId + " AND TOTAL NOTIFICATIONS: " + querySnapshot.docs.length.toString());
+        print('EVENT WITH ID: ' + event.id!);
         print('\n');
-
-        for (int i = 0; i < querySnapshot.docs.length; i++) {
-          NotificationEvent notif = NotificationEvent.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
-          // Get DateTime
-          DateTime notifDate = DateTime(
-            int.parse(notif.year!),
-            int.parse(notif.month!),
-            int.parse(notif.day!),
-            int.parse(notif.hour!),
-            int.parse(notif.minutes!),
-            int.parse(notif.seconds!),
-          );
-          // DateTime to TimeStamp
-          Timestamp notifTimeStamp = Timestamp.fromDate(notifDate);
-          // Save TimeStamp Firebase
-          await _firestore
-              .collection("Users")
-              .doc(userId)
-              .collection("Notifications")
-              .doc(notif.id)
-              .update({
-            "createdAt": notifTimeStamp,
-          });
-        }
-
+        // Get DateTime
+        DateTime eventDate = DateTime(
+          int.parse(event.year!),
+          int.parse(event.month!),
+          int.parse(event.day!),
+          int.parse(event.hour!),
+          int.parse(event.minute!),
+        );
+        // DateTime to TimeStamp
+        Timestamp eventTimeStamp = Timestamp.fromDate(eventDate);
+        print("Timestamp is "+eventTimeStamp.toString());
+        // Save TimeStamp Firebase
+        await _firestore
+            .collection(eventsCollection)
+            .doc(event.id!)
+            .update({
+              "createdAt": eventTimeStamp,
+            });
+        print("Timestamp added");
         print('=================================================================================');
         print('=================================================================================');
         print('\n');
-
       }
 
+      print('Modifying User Events collection:\n');
+      print('--------------');
+      print('\n');
 
+      QuerySnapshot querySnapshotUsers = await _firestore.collection(userCollection).get();
+      for (int i = 0; i < querySnapshotUsers.docs.length; i++) {
+        String userId = querySnapshotUsers.docs[i].id;
+        print('=================================================================================');
+        print('=================================================================================');
+        print('USER WITH ID: ' + userId);
+        print('\n');
 
+        QuerySnapshot querySnapshotUsersEvents = await _firestore.collection(userCollection).doc(userId).collection("Events").get();
+        for (int i = 0; i < querySnapshotUsersEvents.docs.length; i++) {
+          Event event = Event.fromObjectAllData(querySnapshotUsersEvents.docs[i].id, querySnapshotUsersEvents.docs[i]);
+          // Get DateTime
+          DateTime eventDate = DateTime(
+            int.parse(event.year!),
+            int.parse(event.month!),
+            int.parse(event.day!),
+            int.parse(event.hour!),
+            int.parse(event.minute!),
+          );
+          // DateTime to TimeStamp
+          Timestamp eventTimeStamp = Timestamp.fromDate(eventDate);
+          // Save TimeStamp Firebase
+          await _firestore
+              .collection(userCollection)
+              .doc(userId)
+              .collection("Events")
+              .doc(event.id!)
+              .update({
+            "createdAt": eventTimeStamp,
+          });
+        }
+        print("All Events Modified");
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+
+      print('Modifying Brand Events collection:\n');
+      print('--------------');
+      print('\n');
+
+      QuerySnapshot querySnapshotBrands = await _firestore.collection(brandsCollection).get();
+      for (int i = 0; i < querySnapshotBrands.docs.length; i++) {
+        String brandId = querySnapshotBrands.docs[i].id;
+        print('=================================================================================');
+        print('=================================================================================');
+        print('BRAND WITH ID: ' + brandId);
+        print('\n');
+
+        QuerySnapshot querySnapshotBrandEvents = await _firestore.collection(brandsCollection).doc(brandId).collection("Events").get();
+        for (int i = 0; i < querySnapshotBrandEvents.docs.length; i++) {
+          Event event = Event.fromObjectAllData(querySnapshotBrandEvents.docs[i].id, querySnapshotBrandEvents.docs[i]);
+          // Get DateTime
+          DateTime eventDate = DateTime(
+            int.parse(event.year!),
+            int.parse(event.month!),
+            int.parse(event.day!),
+            int.parse(event.hour!),
+            int.parse(event.minute!),
+          );
+          // DateTime to TimeStamp
+          Timestamp eventTimeStamp = Timestamp.fromDate(eventDate);
+          // Save TimeStamp Firebase
+          await _firestore
+              .collection(brandsCollection)
+              .doc(brandId)
+              .collection("Events")
+              .doc(event.id!)
+              .update({
+            "createdAt": eventTimeStamp,
+          });
+        }
+        print("All Events Modified");
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+
+      print('Modifying Location Events collection:\n');
+      print('--------------');
+      print('\n');
+
+      QuerySnapshot querySnapshotLocations = await _firestore.collection(locationCollection).get();
+      for (int i = 0; i < querySnapshotLocations.docs.length; i++) {
+        String locationId = querySnapshotLocations.docs[i].id;
+        print('=================================================================================');
+        print('=================================================================================');
+        print('LOCATION WITH ID: ' + locationId);
+        print('\n');
+
+        QuerySnapshot querySnapshotLocationEvents = await _firestore.collection(locationCollection).doc(locationId).collection("Events").get();
+        for (int i = 0; i < querySnapshotLocationEvents.docs.length; i++) {
+          Event event = Event.fromObjectAllData(querySnapshotLocationEvents.docs[i].id, querySnapshotLocationEvents.docs[i]);
+          // Get DateTime
+          DateTime eventDate = DateTime(
+            int.parse(event.year!),
+            int.parse(event.month!),
+            int.parse(event.day!),
+            int.parse(event.hour!),
+            int.parse(event.minute!),
+          );
+          // DateTime to TimeStamp
+          Timestamp eventTimeStamp = Timestamp.fromDate(eventDate);
+          // Save TimeStamp Firebase
+          await _firestore
+              .collection(locationCollection)
+              .doc(locationId)
+              .collection("Events")
+              .doc(event.id!)
+              .update({
+            "createdAt": eventTimeStamp,
+          });
+        }
+        print("All Events Modified");
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
       return true;
     } catch (e) {
       return false;
