@@ -43,39 +43,39 @@ class TextStyles {
   }
 
   TextStyle blackHeadline1TextStyle() {
-    return TextStyle(color: AppColors.black, fontSize: headline1, fontWeight: FontWeight.w500);
+    return TextStyle(color: AppColors.black, fontSize: headline1, fontWeight: FontWeight.w700, fontFamily: 'UberMove');
   }
 
   TextStyle whiteHeadline1TextStyle() {
-    return TextStyle(color: AppColors.white, fontSize: headline1, fontWeight: FontWeight.w500);
+    return TextStyle(color: AppColors.white, fontSize: headline1, fontWeight: FontWeight.w700, fontFamily: 'UberMove');
   }
 
   TextStyle blackHeadline2TextStyle() {
-    return TextStyle(color: AppColors.black, fontSize: headline2, fontWeight: FontWeight.w500);
+    return TextStyle(color: AppColors.black, fontSize: headline2, fontWeight: FontWeight.w700, fontFamily: 'UberMove');
   }
 
   TextStyle whiteHeadline2TextStyle() {
-    return TextStyle(color: AppColors.white, fontSize: headline2, fontWeight: FontWeight.w500);
+    return TextStyle(color: AppColors.white, fontSize: headline2, fontWeight: FontWeight.w700, fontFamily: 'UberMove');
   }
 
   TextStyle blackBodyText1Style() {
-    return TextStyle(color: AppColors.black, fontSize: bodyText1, fontWeight: FontWeight.w400);
+    return TextStyle(color: AppColors.black, fontSize: bodyText1, fontWeight: FontWeight.w400, fontFamily: 'UberMove');
   }
 
   TextStyle whiteBodyText1Style() {
-    return TextStyle(color: AppColors.white, fontSize: bodyText1, fontWeight: FontWeight.w400);
+    return TextStyle(color: AppColors.white, fontSize: bodyText1, fontWeight: FontWeight.w400, fontFamily: 'UberMove');
   }
 
   TextStyle blackBodyText2Style() {
-    return TextStyle(color: AppColors.black, fontSize: bodyText2, fontWeight: FontWeight.w400);
+    return TextStyle(color: AppColors.black, fontSize: bodyText2, fontWeight: FontWeight.w400, fontFamily: 'UberMove');
   }
 
   TextStyle whiteBodyText2Style() {
-    return TextStyle(color: AppColors.white, fontSize: bodyText2, fontWeight: FontWeight.w400);
+    return TextStyle(color: AppColors.white, fontSize: bodyText2, fontWeight: FontWeight.w400, fontFamily: 'UberMove');
   }
 
   TextStyle greyBodyTextStyle() {
-    return TextStyle(color: AppColors.grey, fontSize: bodyText2, fontWeight: FontWeight.w400);
+    return TextStyle(color: AppColors.grey, fontSize: bodyText2, fontWeight: FontWeight.w400, fontFamily: 'UberMove');
   }
 
 

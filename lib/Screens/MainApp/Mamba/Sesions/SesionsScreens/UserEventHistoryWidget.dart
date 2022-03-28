@@ -75,7 +75,6 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                 child: Container(
                   height: widget.height*0.12,
                   width: widget.width,
-                  padding: EdgeInsets.symmetric(horizontal: widget.width*0.05),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -167,7 +166,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: widget.height*0.03,horizontal: widget.width*0.05),
+                padding: EdgeInsets.symmetric(vertical: widget.height*0.03),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -199,9 +198,11 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                 EventListTile(
                   eventId: event.id!,
                   isTrainer: user.isTrainer!,
+                  height: widget.height,
+                  width: widget.width,
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: widget.height*0.03,horizontal: widget.width*0.05),
+                  padding: EdgeInsets.symmetric(vertical: widget.height*0.03),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [

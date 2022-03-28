@@ -135,6 +135,11 @@ flutter:
       fonts:
         - asset: assets/fonts/FuturaExtraBlackFont.ttf
           weight: 700
+    - family: UberMove
+      fonts:
+        - asset: assets/fonts/UberMoveTextBold.otf
+          weight: 700
+        - asset: assets/fonts/UberMoveTextRegular.otf
 
 
   #

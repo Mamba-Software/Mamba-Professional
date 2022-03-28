@@ -333,9 +333,10 @@ class _ProfileState extends State<Profile> {
         child: Column(
           children: [
             Container(
-              height: safeAreaHeight*0.07,
+              height: safeAreaHeight*0.08,
               width: double.infinity,
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconButton(

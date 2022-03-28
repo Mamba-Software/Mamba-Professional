@@ -54,45 +54,47 @@ class _SesionsState extends State<Sesions> {
         left: false,
         child: SingleChildScrollView(
           physics: ClampingScrollPhysics(),
-          child: Column(
-            children: [
-              Column(
-                children: [
-                  UserCalendarMonthWidget(
-                    userId: currentUser.id!,
-                    height: safeAreaHeight*0.5,
-                    width: safeAreaWidth,
-                  ),
-                ],
-              ),
-              Container(
-                child: Column(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08, vertical: safeAreaWidth*0.02 ),
+            child: Column(
+              children: [
+                Column(
                   children: [
-                    Container(
-                      height: safeAreaHeight*0.08,
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                          AppLocalizations.of(context)!.eventHistory,
-                          style: Theme.of(context).textTheme.headline3!.copyWith(color: AppColors.grey, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: safeAreaHeight*0.02,),
-                    UserEventHistoryWidget(
+                    UserCalendarMonthWidget(
                       userId: currentUser.id!,
-                      height: safeAreaHeight,
-                      width: safeAreaWidth,
+                      height: safeAreaHeight*0.55,
+                      width: safeAreaWidth*0.9,
                     ),
                   ],
                 ),
-              ),
-            ],
+                Container(
+                  child: Column(
+                    children: [
+                      Container(
+                        height: safeAreaHeight*0.08,
+                        width: double.infinity,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                            AppLocalizations.of(context)!.recentEvents,
+                            style: Theme.of(context).textTheme.headline3!.copyWith(color: AppColors.grey, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: safeAreaHeight*0.02,),
+                      UserEventHistoryWidget(
+                        userId: currentUser.id!,
+                        height: safeAreaHeight,
+                        width: safeAreaWidth*0.9,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
