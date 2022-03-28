@@ -1889,7 +1889,23 @@ class FirebaseDatabaseService {
         .doc(brandId)
         .collection("Bonos Requests")
         .get();
-     return querySnapshot.docs[0].get("bonoId").toString();
+    if(querySnapshot.docs.length != 0) return querySnapshot.docs[0].get("bonoId").toString();
+    else return '';
+
+
+  }
+
+  //Get bono by user
+  Future<String> getBonoUser(String userId, String brandId) async {
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Brands")
+        .doc(brandId)
+        .collection("Bonos")
+        .get();
+    if(querySnapshot.docs.length != 0) return querySnapshot.docs[0].get("bonoId").toString();
+    else return '';
 
   }
 
@@ -1913,7 +1929,7 @@ class FirebaseDatabaseService {
   }
 
   //Add bono request to brand
-  Future<void> addBonoRequestToBrand(String brandId, String userId, String bonoId, String title, String price, String classes, String userName, Timestamp timeRequested) async {
+  Future<void> addBonoRequestToBrand(String brandId, String userId, String bonoId, String title, String price, String classes, Timestamp timeRequested) async {
     var uid = Uuid().v4();
     await _firestore
         .collection(brands)
@@ -1926,14 +1942,13 @@ class FirebaseDatabaseService {
       "price": price,
       "classes": classes,
       "bonoId": bonoId,
-      "userName": userName,
       "timeRequested": timeRequested,
     }).catchError((err) {
       print(err);
     });
   }
 
-  //Add bono to user
+  //Add bono request to user
   Future<void> addBonoRequestToUser(String brandId, String userId, String bonoId) async {
     var uid = Uuid().v4();
     await _firestore
@@ -1949,6 +1964,26 @@ class FirebaseDatabaseService {
       print(err);
     });
   }
+
+  //Add bono to user
+  Future<void> addBonoToUser(String brandId, String userId, String bonoId, int sessions, Timestamp time) async {
+    var uid = Uuid().v4();
+    await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Brands")
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(uid)
+        .set({
+      "bonoId": bonoId,
+      "time": time,
+      "sessions": sessions,
+    }).catchError((err) {
+      print(err);
+    });
+  }
+
 
   //UpdateBono
   Future<void> updateBono(String brandID, String bonoId, bool isActive) async {

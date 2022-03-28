@@ -32,7 +32,7 @@ class BrandDataService {
   Future<void> addBrandContentPictures(String brandID, List<File> images) => _firebase.addBrandContentPictures(brandID, images);
   Future<void> acceptRequestFromUser(RequestToBrand request) => _firebase.acceptRequestFromUser(request);
   Future<void> addBonoToBrand(String brandId, String title, String description, var price, var classes, bool isactive) => _firebase.addBonoToBrand(brandId, title, description, price, classes, isactive);
-  Future<void> addBonoRequestToBrand(String brandId, String userId, String bonoId, String title, var price, var classes, String userName, Timestamp timeRequested) => _firebase.addBonoRequestToBrand(brandId, userId, bonoId, title, price, classes, userName, timeRequested);
+  Future<void> addBonoRequestToBrand(String brandId, String userId, String bonoId, String title, var price, var classes, Timestamp timeRequested) => _firebase.addBonoRequestToBrand(brandId, userId, bonoId, title, price, classes, timeRequested);
 
   // Update Data
   Future<void> updateBrandInfo(String brandID, String name,String description, int maxMembers, List<double> workShift) => _firebase.updateBrandInfo(brandID, name, description, maxMembers, workShift);

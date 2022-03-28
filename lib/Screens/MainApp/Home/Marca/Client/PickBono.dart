@@ -24,7 +24,7 @@ class PickBono extends StatefulWidget {
 
 class _PickBonoState extends State<PickBono> {
   // Boolean Loading
-  bool isLoading = false;
+  bool isLoading = true;
 
   // Bonos list
   List<Bono> bonosList = [];
@@ -44,6 +44,9 @@ class _PickBonoState extends State<PickBono> {
   //Variable to know is user has solicited a Bono
   String bonoSol = '';
 
+  //Variable to know is user has a Bono
+  String bonoUser = '';
+
   @override
   void initState() {
     super.initState();
@@ -51,16 +54,12 @@ class _PickBonoState extends State<PickBono> {
   }
 
   Future<void> getUserSolicitedBono() async {
-    bonoSol =
-        await _userDataService.getBonoRequest(currentUser.id!, widget.brandId);
-    print('bonoSol');
+    bonoSol = await _userDataService.getBonoRequest(currentUser.id!, widget.brandId);
+    bonoUser = await _userDataService.getBonoUser(currentUser.id!, widget.brandId);
+    setState(() {
+      isLoading = false;
+    });
   }
-
-  // Gets the bonos from the brand
-  Future<void> getBrandBonos() async {
-    setState(() {});
-  }
-
 
   Widget returnBono(Bono _bono) {
     return Card(
@@ -100,7 +99,7 @@ class _PickBonoState extends State<PickBono> {
                       ? bonoSol == _bono.id!
                           ? Styles.mainColor
                           : Colors.grey
-                      : Styles.mainColor),
+                      : bonoUser == '' ? Styles.mainColor : Colors.grey),
             ),
           ),
           Expanded(
@@ -151,6 +150,16 @@ class _PickBonoState extends State<PickBono> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.02,
                         ),
+                        bonoUser != '' ?  Text(
+                              'Ya',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  ?.copyWith(
+                                  fontWeight: true
+                                      ? FontWeight.w500
+                                      : FontWeight.bold))
+                         :
                         bonoSol != ''
                             ? bonoSol == _bono.id! ? TextButton(
                           child: Text(
@@ -172,7 +181,7 @@ class _PickBonoState extends State<PickBono> {
                                             ? bonoSol == _bono.id!
                                             ? Styles.mainColor
                                             : Colors.grey
-                                            : Styles.mainColor,
+                                            : bonoUser == '' ? Styles.mainColor : Colors.grey,
                                       )))),
                           onPressed: () async {
                                 var result = await showDialog(
@@ -213,7 +222,7 @@ class _PickBonoState extends State<PickBono> {
                                             ? bonoSol == _bono.id!
                                             ? Styles.mainColor
                                             : Colors.grey
-                                            : Styles.mainColor,
+                                            : bonoUser == '' ? Styles.mainColor : Colors.grey,
                                       )))),
                           onPressed: () async {
 
@@ -231,7 +240,6 @@ class _PickBonoState extends State<PickBono> {
                                     _bono.title!,
                                     _bono.price.toString(),
                                     _bono.classes.toString(),
-                                     currentUser.name!,
                                     Timestamp.now()
                                 );
 
@@ -266,7 +274,7 @@ class _PickBonoState extends State<PickBono> {
           ? bonoSol == _bono.id!
               ? Styles.mainColor
               : Colors.grey
-          : Styles.mainColor,
+          : bonoUser == '' ? Styles.mainColor : Colors.grey,
       margin: EdgeInsets.symmetric(
           vertical: MediaQuery.of(context).size.height * 0.005,
           horizontal: MediaQuery.of(context).size.width * 0.05),
@@ -277,7 +285,7 @@ class _PickBonoState extends State<PickBono> {
                   ? bonoSol == _bono.id!
                       ? Styles.mainColor
                       : Colors.grey
-                  : Styles.mainColor,
+                  : bonoUser == '' ? Styles.mainColor : Colors.grey,
               width: MediaQuery.of(context).size.width * 0.003)),
     );
   }

@@ -23,9 +23,11 @@ import '../../../../../../../Data/Models/Usuario.dart';
 import '../../../../../../../Globals/Styles/Styles.dart';
 import '../../../../../../../Globals/Utils/Bonos/BonosUtils.dart';
 import '../../../../../../../Globals/Widgets/Dialogs/ActionDialogs/ConfirmationDialog.dart';
+import '../../../../../../../Globals/Widgets/Images/CircularImage.dart';
 
 class BonosRequests extends StatefulWidget {
   String brandId;
+
   BonosRequests({Key? key, required this.brandId}) : super(key: key);
 
   @override
@@ -33,7 +35,6 @@ class BonosRequests extends StatefulWidget {
 }
 
 class _BonosRequestsState extends State<BonosRequests> {
-
   // Acceso a Base de Datos
   var _brandDataService = new BrandDataService();
   var _userDataService = new UserDataService();
@@ -51,17 +52,73 @@ class _BonosRequestsState extends State<BonosRequests> {
     super.initState();
   }
 
-  Widget returnBonoRequest(BonoRequest _bonoRequest) {
-    //Usuario user = await _userDataService.getUserDetails(_bonoRequest.userId!);
+  Widget returnBonoRequest(BonoRequest _bonoRequest, var user) {
+    Usuario _user = user;
     return ListTile(
-      leading: Icon(Icons.record_voice_over, color: Theme.of(context).primaryColor, size: 25,),
+      leading: CircularImage(
+        size: MediaQuery.of(context).size.width*0.15,
+        image: _user.imageUrl!,
+        color: Theme.of(context).primaryColor,
+        borderWidth: 1,
+      ),
+      title: Text(
+        _user.name! + ' ha solicitado ' + _bonoRequest.title!.toUpperCase(),
+        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: MediaQuery.of(context).size.height*0.01),
+          Text(
+            _bonoRequest.classes! + ' sesiones por ' + _bonoRequest.price! + ' euros',
+            style: Theme.of(context).textTheme.caption,
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height*0.01),
+          Text(
+            _bonoRequest.timeRequested.toString(),
+            style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+          ),
+        ],
+      ),
+      onTap: () async {
+        var result = await showDialog(
+            context: context,
+            builder: (_) {
+              return RequestConfirmationDialog(
+                text: 'Si aceptas se le otorgaran ' + _bonoRequest.classes! + ' sesiones',
+                userId: _user.id!,
+              );
+            }
+        );
+        if (result) {
+          _userDataService.addBonoToUser(widget.brandId, _bonoRequest.userId!, _bonoRequest.bonoId!, int.parse(_bonoRequest.classes!), Timestamp.now());
+          _userDataService.deleteUserBonoRequest(_bonoRequest.userId!, widget.brandId, _bonoRequest.bonoId!);
+          _brandDataService.deleteBrandBonoRequest( widget.brandId, _bonoRequest.bonoId!);
+          //brandDataService.updateBono(brandID, bonoId, isActive)
+        }
+      }
+    );
+    return ListTile(
+      leading: Icon(
+        Icons.record_voice_over,
+        color: Theme.of(context).primaryColor,
+        size: 25,
+      ),
       title: Container(
         child: RichText(
           text: TextSpan(
             style: Theme.of(context).textTheme.bodyText2,
             children: [
-              TextSpan(text: _bonoRequest.userId!, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold),),
-              TextSpan(text: _bonoRequest.title, style: Theme.of(context).textTheme.bodyText2),
+              TextSpan(
+                text: _bonoRequest.userId!,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    ?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                  text: _bonoRequest.title,
+                  style: Theme.of(context).textTheme.bodyText2),
             ],
           ),
         ),
@@ -69,15 +126,17 @@ class _BonosRequestsState extends State<BonosRequests> {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: MediaQuery.of(context).size.height*0.01),
-          Text(
-                _bonoRequest.title!,
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+          Text(_bonoRequest.title!,
               //AppLocalizations.of(context)!.requestSent(request.dateSent!),
-              style: Theme.of(context).textTheme.caption
-          ),
+              style: Theme.of(context).textTheme.caption),
         ],
       ),
-      trailing: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 30,),
+      trailing: Icon(
+        Icons.help_outline,
+        color: Theme.of(context).primaryColor,
+        size: 30,
+      ),
       onTap: () async {
         /*
         var result = await showDialog(
@@ -104,74 +163,99 @@ class _BonosRequestsState extends State<BonosRequests> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,
-      body:  isLoading ?
-        Scaffold(
-          appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.myRequests, style: Theme.of(context).appBarTheme.titleTextStyle,),
-            centerTitle: true,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-          body: LoadingViewPurple(),
-        )
-            :
-        Scaffold(
-          appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.myRequests, style: Theme.of(context).appBarTheme.titleTextStyle,),
-            centerTitle: true,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-          body:
-          Column(
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              StreamBuilder<QuerySnapshot>(
-                  stream: _brandDataService.getBonosRequestsFromBrand(widget.brandId),
-                  builder: (context, snapshot) {
-                    if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null) {
-                      return Container(
-                          height: MediaQuery.of(context).size.height * 0.65,
-                          child: Center(child: LoadingViewPurple()
-                          )
-                      );
-                    } else {
-                      bonosRequestsList = _bonosUtils.documentsToBonosRequests(snapshot.data!.docs);
-                      return Expanded(
-                        child: ListView.builder(
-                            physics: AlwaysScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            //controller: scrollController,
-                            scrollDirection: Axis.vertical,
-                            itemCount: bonosRequestsList.length,
-                            itemExtent: MediaQuery.of(context).size.height * 0.20,
-                            itemBuilder: (context, index) {
-                              BonoRequest bonoRequest = bonosRequestsList[index];
-                              return Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: MediaQuery.of(context).size.height * 0.01),
-                                child: returnBonoRequest(bonoRequest),
-                              );
-                            }
-                        ),
-                      );
-                    }
-                  }
+      body: isLoading
+          ? Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  AppLocalizations.of(context)!.myRequests,
+                  style: Theme.of(context).appBarTheme.titleTextStyle,
+                ),
+                centerTitle: true,
+                leading: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                    size: MediaQuery.of(context).size.width * 0.06,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-            ],
-          ),
+              body: LoadingViewPurple(),
+            )
+          : Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  AppLocalizations.of(context)!.myRequests,
+                  style: Theme.of(context).appBarTheme.titleTextStyle,
+                ),
+                centerTitle: true,
+                leading: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                    size: MediaQuery.of(context).size.width * 0.06,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+              body: Column(
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                  StreamBuilder<QuerySnapshot>(
+                      stream: _brandDataService
+                          .getBonosRequestsFromBrand(widget.brandId),
+                      builder: (context, snapshot) {
+                        if (snapshot == null ||
+                            snapshot.data == null ||
+                            snapshot.data!.docs == null) {
+                          return Container(
+                              height: MediaQuery.of(context).size.height * 0.65,
+                              child: Center(child: LoadingViewPurple()));
+                        } else {
+                          bonosRequestsList = _bonosUtils
+                              .documentsToBonosRequests(snapshot.data!.docs);
+                          return Expanded(
+                            child: ListView.builder(
+                                physics: AlwaysScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                //controller: scrollController,
+                                scrollDirection: Axis.vertical,
+                                itemCount: bonosRequestsList.length,
+                                itemExtent:
+                                    MediaQuery.of(context).size.height * 0.20,
+                                itemBuilder: (context, index) {
+                                  BonoRequest bonoRequest =
+                                      bonosRequestsList[index];
+                                  return FutureBuilder(
+                                      future: _userDataService
+                                          .getUserDetails(bonoRequest.userId!),
+                                      // Run check for a single queryRow
+                                      builder: (context, snapshot) {
+                                        if (snapshot.data != null) {
+                                          return Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.01),
+                                            child: returnBonoRequest(
+                                                bonoRequest, snapshot.data),
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+                                      });
+                                }),
+                          );
+                        }
+                      }),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                ],
+              ),
 
-
-          /*
+              /*
           StreamBuilder<QuerySnapshot>(
                   stream: _brandDataService.getAllBonosFromBrand(widget.brandId),
                   builder: (context, snapshot) {
@@ -267,13 +351,12 @@ class _BonosRequestsState extends State<BonosRequests> {
               ),
 
            */
-          ),
-        );
+            ),
+    );
   }
 
   @override
   void dispose() {
     super.dispose();
   }
-
 }
