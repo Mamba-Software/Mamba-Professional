@@ -22,7 +22,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullS
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/GroupOfQuestions.dart';
+import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';

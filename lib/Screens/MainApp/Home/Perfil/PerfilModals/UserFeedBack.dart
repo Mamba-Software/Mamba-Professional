@@ -10,7 +10,7 @@ import 'package:survey_kit/survey_kit.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:mamba_castelldefels/Data/Models/GroupOfQuestions.dart';
+import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 

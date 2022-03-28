@@ -18,7 +18,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAutoComplete/BrandLocations.dart';
-import 'package:mamba_castelldefels/Data/Models/Conversation.dart';
+import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/BrandEventsToday.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';

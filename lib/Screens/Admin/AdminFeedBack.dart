@@ -8,7 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Data/Models/Question.dart';
+import 'package:mamba_castelldefels/Data/Models/Deprecated/Question.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Perfil/PerfilModals/FeedBack.dart';
 
