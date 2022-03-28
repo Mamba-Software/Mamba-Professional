@@ -816,14 +816,14 @@ class FirebaseDatabaseService {
     }
 
     // Get First Events
-    Future <List<Event>> getUserFirstEventsLimit10(String userId) async {
+    Future <List<Event>> getUserFirstEventsLimit(String userId, int limit) async {
       List<Event> events = [];
       QuerySnapshot querySnapshot = await _firestore
           .collection(users)
           .doc(userId)
           .collection("Events")
           .orderBy("createdAt", descending: true)
-          .limit(10)
+          .limit(limit)
           .get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         events.add(Event.fromObjectOnlyCoverData(
@@ -833,7 +833,7 @@ class FirebaseDatabaseService {
     }
 
     // Get More Notifications
-    Future <List<Event>> getUserMoreEventsLimit10(String userId, String eventId) async {
+    Future <List<Event>> getUserMoreEventsLimit(String userId, String eventId, int limit) async {
       // Get Last Notification document
       DocumentSnapshot docu = await _firestore
           .collection(users)
@@ -849,7 +849,7 @@ class FirebaseDatabaseService {
           .collection("Events")
           .orderBy("createdAt", descending: true)
           .startAfterDocument(docu)
-          .limit(10)
+          .limit(limit)
           .get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         events.add(Event.fromObjectOnlyCoverData(

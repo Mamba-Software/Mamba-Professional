@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/SesionsScreens/UserEventHistoryPage.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../../../../Data/Models/Event.dart';
@@ -102,6 +103,18 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
     );
   }
 
+  // Navigate to Event History Screen
+  void navigateToEventHistoryScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<Null>(
+            builder: (context) => UserEventHistoryPage(
+              userId: widget.userId,
+            )
+        )
+    );
+  }
+
   @override
   void initState() {
     getUserEvents();
@@ -122,7 +135,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(AppLocalizations.of(context)!.yourSesions, style: Theme.of(context).textTheme.headline1),
+                Text(AppLocalizations.of(context)!.sesionsBottomNav, style: Theme.of(context).textTheme.headline1),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -155,25 +168,28 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                     SizedBox(width: widget.width*0.05),
                     Container(
                       width: widget.width*0.08,
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.description,
-                              color: AppColors.grey,
-                              size: widget.width*0.1,
-                            ),
-                            FittedBox(
-                              fit: BoxFit.contain,
-                              child: Text(
-                                  AppLocalizations.of(context)!.eventHistory,
-                                  style: Theme.of(context).textTheme.caption,
-                                  textAlign: TextAlign.center
+                      child: GestureDetector(
+                        onTap: navigateToEventHistoryScreen,
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.description,
+                                color: AppColors.grey,
+                                size: widget.width*0.1,
                               ),
-                            ),
-                          ],
+                              FittedBox(
+                                fit: BoxFit.contain,
+                                child: Text(
+                                    AppLocalizations.of(context)!.eventHistory,
+                                    style: Theme.of(context).textTheme.caption,
+                                    textAlign: TextAlign.center
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -533,7 +549,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(AppLocalizations.of(context)!.yourSesions, style: Theme.of(context).textTheme.headline1),
+                Text(AppLocalizations.of(context)!.sesionsBottomNav, style: Theme.of(context).textTheme.headline1),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -566,25 +582,28 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                     SizedBox(width: widget.width*0.05),
                     Container(
                       width: widget.width*0.08,
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.description,
-                              color: AppColors.grey,
-                              size: widget.width*0.1,
-                            ),
-                            FittedBox(
-                              fit: BoxFit.contain,
-                              child: Text(
-                                  AppLocalizations.of(context)!.eventHistory,
-                                  style: Theme.of(context).textTheme.caption,
-                                  textAlign: TextAlign.center
+                      child: GestureDetector(
+                        onTap: navigateToEventHistoryScreen,
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.description,
+                                color: AppColors.grey,
+                                size: widget.width*0.1,
                               ),
-                            ),
-                          ],
+                              FittedBox(
+                                fit: BoxFit.contain,
+                                child: Text(
+                                    AppLocalizations.of(context)!.eventHistory,
+                                    style: Theme.of(context).textTheme.caption,
+                                    textAlign: TextAlign.center
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

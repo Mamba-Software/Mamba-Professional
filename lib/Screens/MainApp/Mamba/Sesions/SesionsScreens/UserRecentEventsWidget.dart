@@ -11,18 +11,18 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../../../../Data/Models/Event.dart';
 import '../../../../../Globals/Utils/Strings/StringUtils.dart';
 
-class UserEventHistoryWidget extends StatefulWidget {
+class UserRecentEventsWidget extends StatefulWidget {
   String userId;
   var height;
   var width;
 
-  UserEventHistoryWidget({Key? key, required this.userId, required this.height, required this.width}) : super(key: key);
+  UserRecentEventsWidget({Key? key, required this.userId, required this.height, required this.width}) : super(key: key);
 
   @override
-  _UserEventHistoryWidgetState createState() => _UserEventHistoryWidgetState();
+  _UserRecentEventsWidgetState createState() => _UserRecentEventsWidgetState();
 }
 
-class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
+class _UserRecentEventsWidgetState extends State<UserRecentEventsWidget> {
 
   // Boolean Loading
   bool isLoading = true;
@@ -55,7 +55,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
 
   // Gets the Events Done by the User
   Future<void> getUserEvents() async {
-    listEvents = await _eventDataService.getUserEvents(widget.userId);
+    listEvents = await _eventDataService.getUserFirstEventsLimit(widget.userId, 10);
   }
 
   @override
@@ -73,7 +73,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                 baseColor: AppColors.grey,
                 highlightColor: AppColors.grey.withOpacity(0.5),
                 child: Container(
-                  height: widget.height*0.15,
+                  height: widget.height*0.18,
                   width: widget.width,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,7 +100,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                       Row(
                         children: [
                           Container(
-                            height: widget.height*15,
+                            height: widget.height*18,
                             width: widget.width*0.56,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -118,6 +118,15 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                                 Container(
                                   height: widget.height*0.02,
                                   width: widget.width*0.35,
+                                  decoration: new BoxDecoration(
+                                    color: AppColors.grey,
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                ),
+                                SizedBox(height: widget.height*0.015,),
+                                Container(
+                                  height: widget.height*0.02,
+                                  width: widget.width*0.5,
                                   decoration: new BoxDecoration(
                                     color: AppColors.grey,
                                     borderRadius: BorderRadius.circular(5.0),
@@ -184,41 +193,37 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
       ),
     )        
     : Container(
-      child: LazyLoadScrollView(
-        onEndOfPage: () {},
-        scrollOffset: 100,
-        child: ListView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: listEvents.length,
-          itemBuilder: (context,int index) {
-            Event event = listEvents[index];
-            return Column(
-              children: [
-                EventListTile(
-                  eventId: event.id!,
-                  isTrainer: user.isTrainer!,
-                  height: widget.height,
-                  width: widget.width,
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: listEvents.length,
+        itemBuilder: (context,int index) {
+          Event event = listEvents[index];
+          return Column(
+            children: [
+              EventListTile(
+                eventId: event.id!,
+                isTrainer: user.isTrainer!,
+                height: widget.height,
+                width: widget.width,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: widget.height*0.04),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      height: 1,
+                      width: widget.width*0.68,
+                      color: AppColors.grey,
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: widget.height*0.04),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        height: 1,
-                        width: widget.width*0.68,
-                        color: AppColors.grey,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          },
-        ), // A subclass of `ScrollView`
-      ),
+              ),
+            ],
+          );
+        },
+      ), //
     );
   }
 }

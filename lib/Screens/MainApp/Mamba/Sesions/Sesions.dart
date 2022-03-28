@@ -5,7 +5,8 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/SesionsScreens/UserCalendarMonthWidget.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/SesionsScreens/UserEventHistoryWidget.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/SesionsScreens/UserEventHistoryPage.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/SesionsScreens/UserRecentEventsWidget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Sesions extends StatefulWidget {
@@ -55,7 +56,7 @@ class _SesionsState extends State<Sesions> {
         child: SingleChildScrollView(
           physics: ClampingScrollPhysics(),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08, vertical: safeAreaWidth*0.02 ),
+            padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08, vertical: safeAreaWidth*0.02),
             child: Column(
               children: [
                 Column(
@@ -85,7 +86,7 @@ class _SesionsState extends State<Sesions> {
                         ),
                       ),
                       SizedBox(height: safeAreaHeight*0.02,),
-                      UserEventHistoryWidget(
+                      UserRecentEventsWidget(
                         userId: currentUser.id!,
                         height: safeAreaHeight,
                         width: safeAreaWidth*0.9,

@@ -44,6 +44,7 @@ class _EventListTileState extends State<EventListTile> {
   // Event Date
   var eventDate;
   var eventDateString;
+  var eventHourString;
 
 
   @override
@@ -57,9 +58,12 @@ class _EventListTileState extends State<EventListTile> {
     await getEventDetails();
     await getBrandDetails();
     await getLocationDetails();
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      //await Future.delayed(const Duration(milliseconds: 2000));
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> getEventDetails() async {
@@ -72,6 +76,7 @@ class _EventListTileState extends State<EventListTile> {
       int.parse(_event.minute!),
     );
     eventDateString = DateFormat('EEEE dd/MM/yy', Localizations.localeOf(context).languageCode).format(eventDate);
+    eventHourString = DateFormat('Hm', Localizations.localeOf(context).languageCode).format(eventDate);
   }
 
   Future<void> getBrandDetails() async {
@@ -101,7 +106,7 @@ class _EventListTileState extends State<EventListTile> {
         baseColor: AppColors.grey,
         highlightColor: AppColors.grey.withOpacity(0.5),
         child: Container(
-          height: widget.height*0.15,
+          height: widget.height*0.18,
           width: widget.width,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,7 +133,7 @@ class _EventListTileState extends State<EventListTile> {
               Row(
                 children: [
                   Container(
-                    height: widget.height*15,
+                    height: widget.height*18,
                     width: widget.width*0.56,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -146,6 +151,15 @@ class _EventListTileState extends State<EventListTile> {
                         Container(
                           height: widget.height*0.02,
                           width: widget.width*0.35,
+                          decoration: new BoxDecoration(
+                            color: AppColors.grey,
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                        ),
+                        SizedBox(height: widget.height*0.015,),
+                        Container(
+                          height: widget.height*0.02,
+                          width: widget.width*0.5,
                           decoration: new BoxDecoration(
                             color: AppColors.grey,
                             borderRadius: BorderRadius.circular(5.0),
@@ -249,6 +263,18 @@ class _EventListTileState extends State<EventListTile> {
                                 SizedBox(width: widget.width*0.02),
                                 Text(
                                     StringUtils().toCapitalized(eventDateString),
+                                    style: Theme.of(context).textTheme.caption,
+                                    textAlign: TextAlign.center
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: widget.height*0.02,),
+                            Row(
+                              children: [
+                                Icon(Icons.schedule, color: AppColors.grey, size: widget.width*0.05,),
+                                SizedBox(width: widget.width*0.02),
+                                Text(
+                                    StringUtils().toCapitalized(eventHourString),
                                     style: Theme.of(context).textTheme.caption,
                                     textAlign: TextAlign.center
                                 ),
