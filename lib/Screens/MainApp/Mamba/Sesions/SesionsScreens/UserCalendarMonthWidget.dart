@@ -130,7 +130,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            height: widget.height*0.18,
+            height: widget.height*0.15,
             width: widget.width,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -147,8 +147,20 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                           icon: Icon(Icons.arrow_back_ios, color: AppColors.grey, size: widget.width*0.08,),
                           alignment: Alignment.centerRight,
                           onPressed: () {
-
+                            _calendarController.backward!();
                           },
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: widget.width*0.05,
+                      width: widget.width*0.05,
+                      child: FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: Text(
+                          StringUtils().toCapitalized(DateFormat('MM', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
+                          style: Theme.of(context).textTheme.caption,
+                          textAlign: TextAlign.start,
                         ),
                       ),
                     ),
@@ -160,36 +172,33 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                           icon: Icon(Icons.arrow_forward_ios, color: AppColors.grey, size: widget.width*0.08,),
                           alignment: Alignment.centerRight,
                           onPressed: () {
-
+                            _calendarController.forward!();
                           },
                         ),
                       ),
                     ),
-                    SizedBox(width: widget.width*0.05),
-                    Container(
-                      width: widget.width*0.08,
-                      child: GestureDetector(
-                        onTap: navigateToEventHistoryScreen,
-                        child: FittedBox(
-                          fit: BoxFit.contain,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.description,
-                                color: AppColors.grey,
-                                size: widget.width*0.1,
+                    IconButton(
+                      onPressed: navigateToEventHistoryScreen,
+                      splashColor: AppColors.grey.withOpacity(0.5),
+                      icon: Container(
+                        width: widget.width*0.1,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.description,
+                              color: AppColors.grey,
+                              size: widget.width*0.05,
+                            ),
+                            FittedBox(
+                              fit: BoxFit.contain,
+                              child: Text(
+                                  AppLocalizations.of(context)!.eventHistory,
+                                  style: Theme.of(context).textTheme.caption,
+                                  textAlign: TextAlign.center
                               ),
-                              FittedBox(
-                                fit: BoxFit.contain,
-                                child: Text(
-                                    AppLocalizations.of(context)!.eventHistory,
-                                    style: Theme.of(context).textTheme.caption,
-                                    textAlign: TextAlign.center
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -492,11 +501,88 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
             ),
           ),
         ],
-      ) : Stack(
-        alignment: Alignment.topCenter,
+      ) : Column(
         children: [
           Container(
-            height: widget.height,
+            height: widget.height*0.15,
+            width: widget.width,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(AppLocalizations.of(context)!.sesionsBottomNav, style: Theme.of(context).textTheme.headline1),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      width: widget.width*0.08,
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: IconButton(
+                          icon: Icon(Icons.arrow_back_ios, color: AppColors.grey, size: widget.width*0.08,),
+                          alignment: Alignment.centerRight,
+                          onPressed: () {
+                            _calendarController.backward!();
+                          },
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: widget.width*0.05,
+                      width: widget.width*0.05,
+                      child: FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: Text(
+                          StringUtils().toCapitalized(DateFormat('MM', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
+                          style: Theme.of(context).textTheme.caption,
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: widget.width*0.08,
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: IconButton(
+                          icon: Icon(Icons.arrow_forward_ios, color: AppColors.grey, size: widget.width*0.08,),
+                          alignment: Alignment.centerRight,
+                          onPressed: () {
+                            _calendarController.forward!();
+                          },
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: navigateToEventHistoryScreen,
+                      splashColor: AppColors.grey.withOpacity(0.5),
+                      icon: Container(
+                        width: widget.width*0.1,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.description,
+                              color: AppColors.grey,
+                              size: widget.width*0.05,
+                            ),
+                            FittedBox(
+                              fit: BoxFit.contain,
+                              child: Text(
+                                  AppLocalizations.of(context)!.eventHistory,
+                                  style: Theme.of(context).textTheme.caption,
+                                  textAlign: TextAlign.center
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            height: widget.height*0.82 ,
             width: widget.width,
             child: SfCalendar(
               view: CalendarView.month,
@@ -511,7 +597,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
               viewHeaderStyle: ViewHeaderStyle(
                 dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
               ),
-              headerHeight: widget.width*0.2,
+              headerHeight: 0,
               headerDateFormat: "MMMM yyyy",
               headerStyle: CalendarHeaderStyle(
                 textAlign: TextAlign.center,
@@ -543,75 +629,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
               },
             ),
           ),
-          Container(
-            height: widget.height*0.18,
-            width: widget.width,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(AppLocalizations.of(context)!.sesionsBottomNav, style: Theme.of(context).textTheme.headline1),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      width: widget.width*0.08,
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: IconButton(
-                          icon: Icon(Icons.arrow_back_ios, color: AppColors.grey, size: widget.width*0.08,),
-                          alignment: Alignment.centerRight,
-                          onPressed: () {
-                            _calendarController.backward!();
-                          },
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: widget.width*0.08,
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: IconButton(
-                          icon: Icon(Icons.arrow_forward_ios, color: AppColors.grey, size: widget.width*0.08,),
-                          alignment: Alignment.centerRight,
-                          onPressed: () {
-                            _calendarController.forward!();
-                          },
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: widget.width*0.05),
-                    Container(
-                      width: widget.width*0.08,
-                      child: GestureDetector(
-                        onTap: navigateToEventHistoryScreen,
-                        child: FittedBox(
-                          fit: BoxFit.contain,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.description,
-                                color: AppColors.grey,
-                                size: widget.width*0.1,
-                              ),
-                              FittedBox(
-                                fit: BoxFit.contain,
-                                child: Text(
-                                    AppLocalizations.of(context)!.eventHistory,
-                                    style: Theme.of(context).textTheme.caption,
-                                    textAlign: TextAlign.center
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+
         ],
       ),
     );
