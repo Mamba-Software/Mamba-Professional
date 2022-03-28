@@ -73,21 +73,21 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                 baseColor: AppColors.grey,
                 highlightColor: AppColors.grey.withOpacity(0.5),
                 child: Container(
-                  height: widget.height*0.12,
+                  height: widget.height*0.15,
                   width: widget.width,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        height: widget.height*0.10,
+                        height: widget.width*0.20,
                         width: widget.width*0.20,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              height: widget.height*0.10,
+                              height: widget.width*0.20,
                               width: widget.width*0.20,
                               decoration: new BoxDecoration(
                                 color: AppColors.grey,
@@ -114,7 +114,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                                     borderRadius: BorderRadius.circular(5.0),
                                   ),
                                 ),
-                                SizedBox(height: widget.height*0.01,),
+                                SizedBox(height: widget.height*0.02,),
                                 Container(
                                   height: widget.height*0.02,
                                   width: widget.width*0.35,
@@ -123,7 +123,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                                     borderRadius: BorderRadius.circular(5.0),
                                   ),
                                 ),
-                                SizedBox(height: widget.height*0.01,),
+                                SizedBox(height: widget.height*0.015,),
                                 Container(
                                   height: widget.height*0.02,
                                   width: widget.width*0.5,
@@ -132,7 +132,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                                     borderRadius: BorderRadius.circular(5.0),
                                   ),
                                 ),
-                                SizedBox(height: widget.height*0.01,),
+                                SizedBox(height: widget.height*0.015,),
                                 Container(
                                   height: widget.height*0.02,
                                   width: widget.width*0.5,
@@ -166,7 +166,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: widget.height*0.03),
+                padding: EdgeInsets.symmetric(vertical: widget.height*0.04),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -202,7 +202,7 @@ class _UserEventHistoryWidgetState extends State<UserEventHistoryWidget> {
                   width: widget.width,
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: widget.height*0.03),
+                  padding: EdgeInsets.symmetric(vertical: widget.height*0.04),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [

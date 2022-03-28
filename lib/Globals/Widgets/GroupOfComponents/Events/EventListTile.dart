@@ -101,21 +101,21 @@ class _EventListTileState extends State<EventListTile> {
         baseColor: AppColors.grey,
         highlightColor: AppColors.grey.withOpacity(0.5),
         child: Container(
-          height: widget.height*0.12,
+          height: widget.height*0.15,
           width: widget.width,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                height: widget.height*0.10,
+                height: widget.width*0.20,
                 width: widget.width*0.20,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      height: widget.height*0.10,
+                      height: widget.width*0.20,
                       width: widget.width*0.20,
                       decoration: new BoxDecoration(
                         color: AppColors.grey,
@@ -142,7 +142,7 @@ class _EventListTileState extends State<EventListTile> {
                             borderRadius: BorderRadius.circular(5.0),
                           ),
                         ),
-                        SizedBox(height: widget.height*0.01,),
+                        SizedBox(height: widget.height*0.02,),
                         Container(
                           height: widget.height*0.02,
                           width: widget.width*0.35,
@@ -151,7 +151,7 @@ class _EventListTileState extends State<EventListTile> {
                             borderRadius: BorderRadius.circular(5.0),
                           ),
                         ),
-                        SizedBox(height: widget.height*0.01,),
+                        SizedBox(height: widget.height*0.015,),
                         Container(
                           height: widget.height*0.02,
                           width: widget.width*0.5,
@@ -160,7 +160,7 @@ class _EventListTileState extends State<EventListTile> {
                             borderRadius: BorderRadius.circular(5.0),
                           ),
                         ),
-                        SizedBox(height: widget.height*0.01,),
+                        SizedBox(height: widget.height*0.015,),
                         Container(
                           height: widget.height*0.02,
                           width: widget.width*0.5,
@@ -212,7 +212,7 @@ class _EventListTileState extends State<EventListTile> {
                     children: [
                       RectangularImage(
                         image: _brand.logoUrl!,
-                        size: widget.height*0.10,
+                        size: widget.width*0.2,
                         borderRadius: 5,
                       ),
                     ],
@@ -236,7 +236,7 @@ class _EventListTileState extends State<EventListTile> {
                                 style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.center
                             ),
-                            SizedBox(height: widget.height*0.01,),
+                            SizedBox(height: widget.height*0.02,),
                             Text(
                                 _event.title!,
                                 style: Theme.of(context).textTheme.caption,
@@ -254,7 +254,7 @@ class _EventListTileState extends State<EventListTile> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: widget.height*0.01,),
+                            SizedBox(height: widget.height*0.015,),
                             Row(
                               children: [
                                 Icon(Icons.location_on_outlined, color: AppColors.grey, size: widget.width*0.05,),
