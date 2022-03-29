@@ -83,7 +83,7 @@ class _SesionsState extends State<Sesions> {
                 Container(
                   child: Column(
                     children: [
-                      SizedBox(height: safeAreaHeight*0.02,),
+                      SizedBox(height: safeAreaHeight*0.03,),
                       Container(
                         height: safeAreaHeight*0.08,
                         width: double.infinity,
@@ -113,7 +113,7 @@ class _SesionsState extends State<Sesions> {
                           ],
                         ),
                       ),
-                      SizedBox(height: safeAreaHeight*0.04,),
+                      SizedBox(height: safeAreaHeight*0.03,),
                       UserRecentEventsWidget(
                         userId: currentUser.id!,
                         height: safeAreaHeight,

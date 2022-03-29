@@ -2677,6 +2677,7 @@ exports.zzzzUserAddsEvent = functions
         "numTrainers",
         numTrainers,
       );
+      let now = new Date();
       // Add Event to Brands Event Subcollection
       for (var i in eventBrandSnapshot.docs) {
         const id = eventBrandSnapshot.docs[i].id;
@@ -2686,6 +2687,7 @@ exports.zzzzUserAddsEvent = functions
         .collection("Events")
         .doc(eventId).set({
           "title": eventDoc.title,
+          "createdAt": eventDoc.createdAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
           "day": eventDoc.day,
@@ -2706,6 +2708,7 @@ exports.zzzzUserAddsEvent = functions
         .collection("Events")
         .doc(eventId).set({
           "title": eventDoc.title,
+          "createdAt": eventDoc.createdAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
           "day": eventDoc.day,
@@ -2847,6 +2850,7 @@ exports.zzzzUserJoinsEvent = functions
         .collection("Events")
         .doc(eventId).set({
           "title": eventDoc.title,
+          "createdAt": eventDoc.createdAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
           "day": eventDoc.day,

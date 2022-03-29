@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,8 +17,6 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/SelectClientsEvent.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-
 
 class AddEvent extends StatefulWidget {
   Locale locale;
@@ -54,6 +54,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   // Starting Date and Time
   TextEditingController startDateController = TextEditingController();
   bool errorDate = false;
+  Timestamp? createdAt;
   // Duration
   TextEditingController durationController = TextEditingController();
   String duration = "1.00";
@@ -85,9 +86,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   var event;
   var placeDetails;
 
-  String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
-  String undoCapitalized(String s) => s.length > 0 ?'${s[0].toLowerCase()}${s.substring(1)}':'';
-
   Future<void> selectSlot(ctx, type) {
     // Initial Vars
     var startDate = DateTime.now();
@@ -99,7 +97,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     var widgetPicker;
     // Init for differnt types
     if (type == 0) {
-      startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
+      startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
       // Calcular el horari de la marca
       // Hora Inactiva Matí
       var startHourWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
@@ -135,7 +133,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
             onDateTimeChanged: (val) {
               setState(() {
                 startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(val);
-                startDateController.text = toCapitalized(startDateController.text);
+                startDateController.text = StringUtils().toCapitalized(startDateController.text);
                 oneWeek = val.add(Duration(days: 7));
                 twoWeek = val.add(Duration(days: 14));
                 oneMonth= val.add(Duration(days: 30));
@@ -283,12 +281,14 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     _tabController = TabController(length: 3, vsync: this);
     if (widget.initialDateTime != null) {
       startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(widget.initialDateTime!);
-      startDateController.text = toCapitalized(startDateController.text);
+      startDateController.text = StringUtils().toCapitalized(startDateController.text);
       oneWeek = widget.initialDateTime!.add(Duration(days: 7));
       twoWeek = widget.initialDateTime!.add(Duration(days: 14));
       oneMonth= widget.initialDateTime!.add(Duration(days: 30));
+      createdAt = Timestamp.fromDate(widget.initialDateTime!);
     } else {
       var startDate = DateTime.now();
+      createdAt = Timestamp.fromDate(startDate);
       startDate = DateTime(
         startDate.year,
         startDate.month,
@@ -297,7 +297,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         0,
       );
       startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(startDate);
-      startDateController.text = toCapitalized(startDateController.text);
+      startDateController.text = StringUtils().toCapitalized(startDateController.text);
       oneWeek = startDate.add(Duration(days: 7));
       twoWeek = startDate.add(Duration(days: 14));
       oneMonth= startDate.add(Duration(days: 30));
@@ -789,7 +789,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                           style: Theme.of(context).textTheme.bodyText2,
                                                         ),
                                                         subtitle: Text(
-                                                          AppLocalizations.of(context)!.until(toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneWeek))),
+                                                          AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneWeek))),
                                                           style: Theme.of(context).textTheme.caption,
                                                           textAlign: TextAlign.left,
                                                         ),
@@ -813,7 +813,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                           style: Theme.of(context).textTheme.bodyText2,
                                                         ),
                                                         subtitle: Text(
-                                                          AppLocalizations.of(context)!.until(toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(twoWeek))),
+                                                          AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(twoWeek))),
                                                           style: Theme.of(context).textTheme.caption,
                                                           textAlign: TextAlign.left,
                                                         ),
@@ -837,7 +837,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                           style: Theme.of(context).textTheme.bodyText2,
                                                         ),
                                                         subtitle: Text(
-                                                          AppLocalizations.of(context)!.until(toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneMonth))),
+                                                          AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneMonth))),
                                                           style: Theme.of(context).textTheme.caption,
                                                           textAlign: TextAlign.left,
                                                         ),
@@ -1438,7 +1438,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                         setState(() {
                           errorDate = false;
                         });
-                        var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
+                        var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
                         if (validateDateAndTime(startDate, double.parse(duration))) {
                           _tabController!.animateTo(_selectedIndex += 1);
                           setState(() {
@@ -1476,11 +1476,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
           ),
       ),
     );
-  }
-
-  String splitCommonName(String name) {
-    List<String> aux = name.split(" ");
-    return aux[0];
   }
 
   bool validateDateAndTime(DateTime startTime, double duration) {
@@ -1544,7 +1539,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     setState(() {
       isLoading = true;
     });
-    var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(undoCapitalized(startDateController.text));
+    var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
     var selectedTrainerId = [];
     for (var i=0; i< brandTrainers.length; i++) {
       if (brandTrainersSelected[i]) {
@@ -1553,7 +1548,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     }
     // EVENT IS NOT RECURRENT
     if (!isRecurrent) {
-      String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+      String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, createdAt!, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
       await Future.delayed(const Duration(milliseconds: 2000));
       for (var i=0; i<brandClientsSelected.length; i++) {
         var client = brandClientsSelected[i];
@@ -1562,7 +1557,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       }
     } else {
       // EVENT IS RECURRENT
-      String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+      String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, createdAt!, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
       await Future.delayed(const Duration(milliseconds: 2000));
       for (var i=0; i<brandClientsSelected.length; i++) {
         var client = brandClientsSelected[i];
@@ -1570,12 +1565,13 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         NotificationService().userJoinEvent(client.id!, currentBrand.id!, eid);
       }
       var tempDate = startDate.add(Duration(days: 1));
+      var tempTimestamp = Timestamp.fromDate(tempDate);
       var weekDay = tempDate.weekday;
       if (_value == 1) {
         // One Week
         for (var i=0; i<6; i++) {
           if(values[weekDay-1]!) {
-            String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+            String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempTimestamp, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
             await Future.delayed(const Duration(milliseconds: 1000));
             for (var i=0; i<brandClientsSelected.length; i++) {
               var client = brandClientsSelected[i];
@@ -1584,13 +1580,14 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
             }
           }
           tempDate = tempDate.add(Duration(days: 1));
+          tempTimestamp = Timestamp.fromDate(tempDate);
           weekDay = tempDate.weekday;
         }
       } else if (_value == 2) {
         // Two Weeks
         for (var i=0; i<13; i++) {
           if(values[weekDay-1]!) {
-            String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+            String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempTimestamp, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
             await Future.delayed(const Duration(milliseconds: 1000));
             for (var i=0; i<brandClientsSelected.length; i++) {
               var client = brandClientsSelected[i];
@@ -1599,6 +1596,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
             }
           }
           tempDate = tempDate.add(Duration(days: 1));
+          tempTimestamp = Timestamp.fromDate(tempDate);
           weekDay = tempDate.weekday;
         }
       } else if (_value == 3) {
@@ -1606,7 +1604,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
         for (var i=0; i<29; i++) {
           if(values[weekDay-1]!) {
             await Future.delayed(const Duration(milliseconds: 1000));
-            String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+            String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempTimestamp, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
             for (var i=0; i<brandClientsSelected.length; i++) {
               var client = brandClientsSelected[i];
               await _eventDataService.addUserToEvent(eid, client.id!, true);
@@ -1614,6 +1612,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
             }
           }
           tempDate = tempDate.add(Duration(days: 1));
+          tempTimestamp = Timestamp.fromDate(tempDate);
           weekDay = tempDate.weekday;
         }
       }
