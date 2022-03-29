@@ -112,7 +112,7 @@ class _SesionsState extends State<Sesions> {
                           ],
                         ),
                       ),
-                      SizedBox(height: safeAreaHeight*0.03,),
+                      SizedBox(height: safeAreaHeight*0.02,),
                       UserRecentEventsWidget(
                         userId: currentUser.id!,
                         height: safeAreaHeight,

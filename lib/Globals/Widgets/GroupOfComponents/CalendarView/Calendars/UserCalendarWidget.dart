@@ -76,12 +76,12 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
     if (widget.dateTime == null) {
       DateTime now = DateTime.now();
       int currentDay = now.weekday;
-      displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
-      displayDateTimeEnd = displayDateTimeStart.add(Duration(days: 7));
+      displayDateTimeStart = now.subtract(Duration(days: currentDay-1));
+      displayDateTimeEnd = displayDateTimeStart.add(Duration(days: 6));
     } else {
       DateTime dateTime = widget.dateTime!;
       int currentDay = dateTime.weekday;
-      displayDateTimeStart = dateTime.subtract(Duration(days: currentDay - 1));
+      displayDateTimeStart = dateTime.subtract(Duration(days: currentDay-1));
       displayDateTimeEnd = displayDateTimeStart.add(Duration(days: 6));
     }
   }
@@ -108,9 +108,6 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
       displayDateTimeStart = dateTime.subtract(Duration(days: currentDay - 1));
       displayDateTimeEnd = displayDateTimeStart.add(Duration(days: 6));
     }
-    DateTime now = DateTime.now();
-    int currentDay = now.weekday;
-    DateTime firstDayOfWeek = now.subtract(Duration(days: currentDay - 1));
     dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
     _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
     _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
@@ -138,6 +135,11 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
   }
 
   Widget _buildTitleFromDate(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
+    return Text(
+      StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
+      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+    );
+    // Deprecated
     if (_controller.view == CalendarView.month) {
       return Text(
         StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
@@ -206,6 +208,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                    });
                   } else {
                     setState(() {
+                      print(_controller.displayDate);
                       _controller.view = CalendarView.month;
                     });
                   }
@@ -309,6 +312,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                         ),
                         monthViewSettings: MonthViewSettings(
                           appointmentDisplayCount: 5,
+                          numberOfWeeksInView: 6,
                           showTrailingAndLeadingDates: false,
                           appointmentDisplayMode: MonthAppointmentDisplayMode.indicator,
                           showAgenda: _controller.selectedDate != null,
@@ -324,23 +328,13 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                           ),
                         ),
                         onViewChanged: (ViewChangedDetails viewChangedDetails) {
-                          if (_controller.view == CalendarView.month) {
-                            Future.delayed(Duration.zero, () async {
-                              setState(() {
-                                middleMonthDate = viewChangedDetails.visibleDates[14];
-                                displayDateTimeStart = viewChangedDetails.visibleDates[0];
-                                displayDateTimeEnd = viewChangedDetails.visibleDates[viewChangedDetails.visibleDates.length -1];
-                              });
+                          Future.delayed(Duration.zero, () async {
+                            setState(() {
+                              middleMonthDate = viewChangedDetails.visibleDates[viewChangedDetails.visibleDates.length -1];
+                              displayDateTimeStart = viewChangedDetails.visibleDates[0];
+                              displayDateTimeEnd = viewChangedDetails.visibleDates[viewChangedDetails.visibleDates.length -1];
                             });
-                          } else {
-                            Future.delayed(Duration.zero, () {
-                              setState(() {
-                                //middleMonthDate = viewChangedDetails.visibleDates[14];
-                                displayDateTimeStart = viewChangedDetails.visibleDates[0];
-                                displayDateTimeEnd = viewChangedDetails.visibleDates[viewChangedDetails.visibleDates.length -1];
-                              });
-                            });
-                          }
+                          });
                         },
                         onTap: onTapCalendar,
                         appointmentTextStyle: Theme.of(context).textTheme.bodyText2!,
@@ -366,18 +360,33 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                     child: Container(
                                       height: safeAreaHeight*0.08,
                                       width: details.bounds.width,
+                                      padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
                                       decoration: BoxDecoration(
-                                        color: AppColors.lightGrey,
+                                        color: appointment.color.withOpacity(0.15),
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(5),
                                         ),
                                       ),
-                                      child: Center(
-                                        child: Text(
-                                          event.title!,
-                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
-                                          textAlign: TextAlign.start,
-                                        ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                event.title!,
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                                                textAlign: TextAlign.start,
+                                              ),
+
+                                            ],
+                                          ),
+                                          Text(
+                                            DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
+                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -399,19 +408,28 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                     child: Container(
                                       height: safeAreaHeight*0.08,
                                       width: details.bounds.width,
-                                      padding: EdgeInsets.all(details.bounds.width*0.1),
+                                      padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
                                       decoration: BoxDecoration(
                                         color: appointment.color,
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(5),
                                         ),
                                       ),
-                                      child: Center(
-                                        child: Text(
-                                          event.title!,
-                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                                          textAlign: TextAlign.start,
-                                        ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            event.title!,
+                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                                            textAlign: TextAlign.start,
+                                          ),
+                                          Text(
+                                            DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
+                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -437,7 +455,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                       height: details.bounds.height,
                                       padding: EdgeInsets.all(details.bounds.width*0.1),
                                       decoration: BoxDecoration(
-                                        color: AppColors.lightGrey,
+                                        color: appointment.color.withOpacity(0.2),
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(5),
                                         ),
@@ -447,7 +465,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                         children: [
                                           AutoSizeText(
                                             event.title!,
-                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                             textAlign: TextAlign.center,
                                             wrapWords: false,
                                             minFontSize: 1,
