@@ -1332,7 +1332,7 @@
   "@eventHistory": {
     "description": "Wellcome message"
   },
-  "recentEvents": "Sesiones más recientes ...",
+  "recentEvents": "Últimas sesiones ...",
   "@recentEvents": {
     "description": "Wellcome message"
   },

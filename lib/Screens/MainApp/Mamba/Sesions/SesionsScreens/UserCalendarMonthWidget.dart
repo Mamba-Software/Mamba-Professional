@@ -103,18 +103,6 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
     );
   }
 
-  // Navigate to Event History Screen
-  void navigateToEventHistoryScreen() {
-    Navigator.push(
-        context,
-        CupertinoPageRoute<Null>(
-            builder: (context) => UserEventHistoryPage(
-              userId: widget.userId,
-            )
-        )
-    );
-  }
-
   @override
   void initState() {
     getUserEvents();
@@ -144,7 +132,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                       child: FittedBox(
                         fit: BoxFit.contain,
                         child: IconButton(
-                          icon: Icon(Icons.arrow_back_ios, color: AppColors.grey, size: widget.width*0.08,),
+                          icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).primaryColor, size: widget.width*0.06,),
                           alignment: Alignment.centerRight,
                           onPressed: () {
                             _calendarController.backward!();
@@ -159,7 +147,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                         fit: BoxFit.fitHeight,
                         child: Text(
                           StringUtils().toCapitalized(DateFormat('MM', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
-                          style: Theme.of(context).textTheme.caption,
+                          style: Theme.of(context).textTheme.bodyText2,
                           textAlign: TextAlign.start,
                         ),
                       ),
@@ -169,36 +157,11 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                       child: FittedBox(
                         fit: BoxFit.contain,
                         child: IconButton(
-                          icon: Icon(Icons.arrow_forward_ios, color: AppColors.grey, size: widget.width*0.08,),
-                          alignment: Alignment.centerRight,
+                          icon: Icon(Icons.arrow_forward_ios, color:Theme.of(context).primaryColor, size: widget.width*0.06,),
+                          alignment: Alignment.center,
                           onPressed: () {
                             _calendarController.forward!();
                           },
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: navigateToEventHistoryScreen,
-                      splashColor: AppColors.grey.withOpacity(0.5),
-                      icon: Container(
-                        width: widget.width*0.1,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.description,
-                              color: AppColors.grey,
-                              size: widget.width*0.05,
-                            ),
-                            FittedBox(
-                              fit: BoxFit.contain,
-                              child: Text(
-                                  AppLocalizations.of(context)!.eventHistory,
-                                  style: Theme.of(context).textTheme.caption,
-                                  textAlign: TextAlign.center
-                              ),
-                            ),
-                          ],
                         ),
                       ),
                     ),
@@ -518,7 +481,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                       child: FittedBox(
                         fit: BoxFit.contain,
                         child: IconButton(
-                          icon: Icon(Icons.arrow_back_ios, color: AppColors.grey, size: widget.width*0.08,),
+                          icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).primaryColor, size: widget.width*0.06,),
                           alignment: Alignment.centerRight,
                           onPressed: () {
                             _calendarController.backward!();
@@ -533,7 +496,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                         fit: BoxFit.fitHeight,
                         child: Text(
                           StringUtils().toCapitalized(DateFormat('MM', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
-                          style: Theme.of(context).textTheme.caption,
+                          style: Theme.of(context).textTheme.bodyText2,
                           textAlign: TextAlign.start,
                         ),
                       ),
@@ -543,36 +506,11 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                       child: FittedBox(
                         fit: BoxFit.contain,
                         child: IconButton(
-                          icon: Icon(Icons.arrow_forward_ios, color: AppColors.grey, size: widget.width*0.08,),
-                          alignment: Alignment.centerRight,
+                          icon: Icon(Icons.arrow_forward_ios, color:Theme.of(context).primaryColor, size: widget.width*0.06,),
+                          alignment: Alignment.center,
                           onPressed: () {
                             _calendarController.forward!();
                           },
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: navigateToEventHistoryScreen,
-                      splashColor: AppColors.grey.withOpacity(0.5),
-                      icon: Container(
-                        width: widget.width*0.1,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.description,
-                              color: AppColors.grey,
-                              size: widget.width*0.05,
-                            ),
-                            FittedBox(
-                              fit: BoxFit.contain,
-                              child: Text(
-                                  AppLocalizations.of(context)!.eventHistory,
-                                  style: Theme.of(context).textTheme.caption,
-                                  textAlign: TextAlign.center
-                              ),
-                            ),
-                          ],
                         ),
                       ),
                     ),

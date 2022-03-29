@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
@@ -40,6 +39,18 @@ class _SesionsState extends State<Sesions> {
     print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
   }
 
+  // Navigate to Event History Screen
+  void navigateToEventHistoryScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<Null>(
+            builder: (context) => UserEventHistoryPage(
+              userId: currentUser.id!,
+            )
+        )
+    );
+  }
+
   Widget build(BuildContext context) {
     if (isFirstBuild) {
       initDeviceSizes();
@@ -61,6 +72,7 @@ class _SesionsState extends State<Sesions> {
               children: [
                 Column(
                   children: [
+                    SizedBox(height: safeAreaHeight*0.02,),
                     UserCalendarMonthWidget(
                       userId: currentUser.id!,
                       height: safeAreaHeight*0.55,
@@ -71,10 +83,12 @@ class _SesionsState extends State<Sesions> {
                 Container(
                   child: Column(
                     children: [
+                      SizedBox(height: safeAreaHeight*0.02,),
                       Container(
                         height: safeAreaHeight*0.08,
                         width: double.infinity,
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
@@ -82,10 +96,24 @@ class _SesionsState extends State<Sesions> {
                             style: Theme.of(context).textTheme.headline3!.copyWith(color: AppColors.grey, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center
                             ),
+                            FloatingActionButton.extended(
+                              heroTag: "86",
+                              onPressed: navigateToEventHistoryScreen,
+                              backgroundColor: Theme.of(context).accentColor.withOpacity(0.8),
+                              icon: Icon(
+                                Icons.description,
+                                color: AppColors.white,
+                                size: safeAreaWidth*0.05,
+                              ),
+                              label: Text(
+                                  AppLocalizations.of(context)!.eventHistory,
+                                  style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white)
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                      SizedBox(height: safeAreaHeight*0.02,),
+                      SizedBox(height: safeAreaHeight*0.04,),
                       UserRecentEventsWidget(
                         userId: currentUser.id!,
                         height: safeAreaHeight,
