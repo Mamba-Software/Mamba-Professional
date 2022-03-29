@@ -118,7 +118,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            height: widget.height*0.15,
+            height: widget.height*0.18,
             width: widget.width,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -467,7 +467,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
       ) : Column(
         children: [
           Container(
-            height: widget.height*0.15,
+            height: widget.height*0.18,
             width: widget.width,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -550,7 +550,8 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                   trailingDatesTextStyle: Theme.of(context).textTheme.caption,
                   leadingDatesTextStyle: Theme.of(context).textTheme.caption,
                 ),
-                numberOfWeeksInView: 5
+                numberOfWeeksInView: 6,
+                showTrailingAndLeadingDates: false,
               ),
               selectionDecoration: BoxDecoration(
                   border: Border.all(width: 0.1, color: Colors.transparent)
@@ -567,7 +568,6 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
               },
             ),
           ),
-
         ],
       ),
     );

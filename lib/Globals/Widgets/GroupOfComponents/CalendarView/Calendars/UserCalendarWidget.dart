@@ -263,7 +263,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                 } else {
                   eventsList = documentsToEvents(snapshot.data!.docs);
                   return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.03, vertical: safeAreaWidth*0.01),
+                    padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05, vertical: safeAreaWidth*0.08),
                     child: SfCalendar(
                         cellEndPadding: 0,
                         view: CalendarView.week,
@@ -276,6 +276,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                         todayHighlightColor: Theme.of(context).accentColor,
                         showCurrentTimeIndicator: true,
                         initialDisplayDate: widget.dateTime,
+                        initialSelectedDate: widget.dateTime,
                         selectionDecoration: BoxDecoration(
                             border: Border.all(width: 0.1, color: Colors.transparent)
                         ),
@@ -289,8 +290,9 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                         viewHeaderStyle: ViewHeaderStyle(
                           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                           dateTextStyle: Theme.of(context).textTheme.bodyText2,
-                          dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 8),
+                          dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                         ),
+                        cellBorderColor: _controller.view == CalendarView.month ? Colors.transparent : AppColors.grey,
                         timeSlotViewSettings: TimeSlotViewSettings(
                           timelineAppointmentHeight: -1,
                           timeIntervalHeight: -1,
@@ -307,10 +309,19 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                         ),
                         monthViewSettings: MonthViewSettings(
                           appointmentDisplayCount: 5,
+                          showTrailingAndLeadingDates: false,
                           appointmentDisplayMode: MonthAppointmentDisplayMode.indicator,
                           showAgenda: _controller.selectedDate != null,
                           agendaViewHeight: safeAreaHeight*0.4,
-                            agendaStyle: AgendaStyle(),
+                          agendaItemHeight: safeAreaHeight*0.08,
+                          agendaStyle: AgendaStyle(
+                            appointmentTextStyle: Theme.of(context).textTheme.bodyText2,
+                          ),
+                          monthCellStyle: MonthCellStyle(
+                            textStyle: Theme.of(context).textTheme.bodyText1,
+                            trailingDatesTextStyle: Theme.of(context).textTheme.caption,
+                            leadingDatesTextStyle: Theme.of(context).textTheme.caption,
+                          ),
                         ),
                         onViewChanged: (ViewChangedDetails viewChangedDetails) {
                           if (_controller.view == CalendarView.month) {
@@ -332,102 +343,174 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                           }
                         },
                         onTap: onTapCalendar,
+                        appointmentTextStyle: Theme.of(context).textTheme.bodyText2!,
                         appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
                           final Appointment appointment = details.appointments.first;
                           final DateTime today = DateTime.now();
                           bool isCompleted = appointment.endTime.isBefore(today);
                           final Event event = getEvent(appointment.id.toString());
-                          if (isCompleted) {
-                            return GestureDetector(
-                              onTap: () {
-                                navigateToEventScreen(appointment.id.toString());
-                              },
-                              child: Center(
-                                child: Material(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: new BorderRadius.all(
-                                      const Radius.circular(5.0),
-                                    ),
-                                  ),
-                                  elevation: 2,
-                                  child: Container(
-                                    width: details.bounds.width,
-                                    height: details.bounds.height,
-                                    padding: EdgeInsets.all(details.bounds.width*0.1),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.lightGrey,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(5),
+                          if (_controller.view == CalendarView.month) {
+                            if (isCompleted) {
+                              return GestureDetector(
+                                onTap: () {
+                                  navigateToEventScreen(appointment.id.toString());
+                                },
+                                child: Center(
+                                  child: Material(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: new BorderRadius.all(
+                                        const Radius.circular(5.0),
                                       ),
                                     ),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        AutoSizeText(
+                                    elevation: 2,
+                                    child: Container(
+                                      height: safeAreaHeight*0.08,
+                                      width: details.bounds.width,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.lightGrey,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(5),
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
                                           event.title!,
                                           style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
-                                          textAlign: TextAlign.center,
-                                          wrapWords: false,
-                                          minFontSize: 1,
-                                          maxFontSize: 16,
+                                          textAlign: TextAlign.start,
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          } else {
-                            return GestureDetector(
-                              onTap: () {
-                                navigateToEventScreen(appointment.id.toString());
-                              },
-                              child: Center(
-                                child: Material(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: new BorderRadius.all(
-                                      const Radius.circular(5.0),
-                                    ),
-                                  ),
-                                  elevation: 2,
-                                  child: Container(
-                                    width: details.bounds.width,
-                                    height: details.bounds.height,
-                                    padding: EdgeInsets.all(details.bounds.width*0.1),
-                                    decoration: BoxDecoration(
-                                      color: appointment.color,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(5),
+                              );
+                            } else {
+                              return GestureDetector(
+                                onTap: () {
+                                  navigateToEventScreen(appointment.id.toString());
+                                },
+                                child: Center(
+                                  child: Material(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: new BorderRadius.all(
+                                        const Radius.circular(5.0),
                                       ),
                                     ),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        AutoSizeText(
+                                    elevation: 2,
+                                    child: Container(
+                                      height: safeAreaHeight*0.08,
+                                      width: details.bounds.width,
+                                      padding: EdgeInsets.all(details.bounds.width*0.1),
+                                      decoration: BoxDecoration(
+                                        color: appointment.color,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(5),
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
                                           event.title!,
                                           style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                                          textAlign: TextAlign.center,
-                                          wrapWords: false,
-                                          minFontSize: 1,
-                                          maxFontSize: 16,
+                                          textAlign: TextAlign.start,
                                         ),
-                                        SizedBox(
-                                          width: details.bounds.width*0.4,
-                                          child: AutoSizeText(
-                                            appointment.subject,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          } else {
+                            if (isCompleted) {
+                              return GestureDetector(
+                                onTap: () {
+                                  navigateToEventScreen(appointment.id.toString());
+                                },
+                                child: Center(
+                                  child: Material(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: new BorderRadius.all(
+                                        const Radius.circular(5.0),
+                                      ),
+                                    ),
+                                    elevation: 2,
+                                    child: Container(
+                                      width: details.bounds.width,
+                                      height: details.bounds.height,
+                                      padding: EdgeInsets.all(details.bounds.width*0.1),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.lightGrey,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(5),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          AutoSizeText(
+                                            event.title!,
+                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                                            textAlign: TextAlign.center,
+                                            wrapWords: false,
+                                            minFontSize: 1,
+                                            maxFontSize: 16,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return GestureDetector(
+                                onTap: () {
+                                  navigateToEventScreen(appointment.id.toString());
+                                },
+                                child: Center(
+                                  child: Material(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: new BorderRadius.all(
+                                        const Radius.circular(5.0),
+                                      ),
+                                    ),
+                                    elevation: 2,
+                                    child: Container(
+                                      width: details.bounds.width,
+                                      height: details.bounds.height,
+                                      padding: EdgeInsets.all(details.bounds.width*0.1),
+                                      decoration: BoxDecoration(
+                                        color: appointment.color,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(5),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          AutoSizeText(
+                                            event.title!,
                                             style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                             textAlign: TextAlign.center,
                                             wrapWords: false,
                                             minFontSize: 1,
-                                            maxFontSize: 8,
+                                            maxFontSize: 16,
                                           ),
-                                        ),
-                                      ],
+                                          SizedBox(
+                                            width: details.bounds.width*0.4,
+                                            child: AutoSizeText(
+                                              appointment.subject,
+                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                              textAlign: TextAlign.center,
+                                              wrapWords: false,
+                                              minFontSize: 1,
+                                              maxFontSize: 8,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
+                              );
+                            }
                           }
                         },
                       ),
@@ -551,9 +634,13 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
   }
 
   void onTapCalendar(CalendarTapDetails details) {
-    setState(() {
-      _controller.selectedDate = details.date;
-    });
+    if (_controller.view == CalendarView.week) {
+
+    } else {
+      setState(() {
+        _controller.selectedDate = details.date;
+      });
+    }
   }
 
 }

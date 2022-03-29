@@ -75,7 +75,7 @@ class _SesionsState extends State<Sesions> {
                     SizedBox(height: safeAreaHeight*0.02,),
                     UserCalendarMonthWidget(
                       userId: currentUser.id!,
-                      height: safeAreaHeight*0.55,
+                      height: safeAreaHeight*0.6,
                       width: safeAreaWidth*0.9,
                     ),
                   ],
@@ -83,7 +83,6 @@ class _SesionsState extends State<Sesions> {
                 Container(
                   child: Column(
                     children: [
-                      SizedBox(height: safeAreaHeight*0.03,),
                       Container(
                         height: safeAreaHeight*0.08,
                         width: double.infinity,
