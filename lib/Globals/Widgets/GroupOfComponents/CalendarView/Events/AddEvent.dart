@@ -54,7 +54,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   // Starting Date and Time
   TextEditingController startDateController = TextEditingController();
   bool errorDate = false;
-  Timestamp? createdAt;
+  Timestamp? doneAt;
   // Duration
   TextEditingController durationController = TextEditingController();
   String duration = "1.00";
@@ -285,10 +285,10 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       oneWeek = widget.initialDateTime!.add(Duration(days: 7));
       twoWeek = widget.initialDateTime!.add(Duration(days: 14));
       oneMonth= widget.initialDateTime!.add(Duration(days: 30));
-      createdAt = Timestamp.fromDate(widget.initialDateTime!);
+      doneAt = Timestamp.fromDate(widget.initialDateTime!);
     } else {
       var startDate = DateTime.now();
-      createdAt = Timestamp.fromDate(startDate);
+      doneAt = Timestamp.fromDate(startDate);
       startDate = DateTime(
         startDate.year,
         startDate.month,
@@ -1548,7 +1548,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     }
     // EVENT IS NOT RECURRENT
     if (!isRecurrent) {
-      String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, createdAt!, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+      String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, doneAt!, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
       await Future.delayed(const Duration(milliseconds: 2000));
       for (var i=0; i<brandClientsSelected.length; i++) {
         var client = brandClientsSelected[i];
@@ -1557,7 +1557,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       }
     } else {
       // EVENT IS RECURRENT
-      String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, createdAt!, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+      String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, doneAt!, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
       await Future.delayed(const Duration(milliseconds: 2000));
       for (var i=0; i<brandClientsSelected.length; i++) {
         var client = brandClientsSelected[i];

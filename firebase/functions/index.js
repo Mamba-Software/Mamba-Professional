@@ -2687,7 +2687,7 @@ exports.zzzzUserAddsEvent = functions
         .collection("Events")
         .doc(eventId).set({
           "title": eventDoc.title,
-          "createdAt": eventDoc.createdAt,
+          "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
           "day": eventDoc.day,
@@ -2708,7 +2708,7 @@ exports.zzzzUserAddsEvent = functions
         .collection("Events")
         .doc(eventId).set({
           "title": eventDoc.title,
-          "createdAt": eventDoc.createdAt,
+          "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
           "day": eventDoc.day,
@@ -2850,7 +2850,7 @@ exports.zzzzUserJoinsEvent = functions
         .collection("Events")
         .doc(eventId).set({
           "title": eventDoc.title,
-          "createdAt": eventDoc.createdAt,
+          "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
           "day": eventDoc.day,

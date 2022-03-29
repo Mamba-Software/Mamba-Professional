@@ -23,8 +23,8 @@ class EventDataService {
   // Get Data
   Future<Event> getSingleEvent(String eventId) => _firebase.getSingleEvent(eventId);
   Future<List<Event>> getUserEvents(String userId) => _firebase.getUserEvents(userId);
-  Future<List<Event>> getUserFirstEventsLimit(String userId, int limit) => _firebase.getUserFirstEventsLimit(userId, limit);
-  Future<List<Event>> getUserMoreEventsLimit(String userId, String eventId, int limit) => _firebase.getUserMoreEventsLimit(userId, eventId, limit);
+  Future<List<Event>> getUserFirstCompletedEventsLimit(String userId, int limit) => _firebase.getUserFirstCompletedEventsLimit(userId, limit);
+  Future<List<Event>> getUserMoreCompletedEventsLimit(String userId, String eventId, int limit) => _firebase.getUserMoreCompletedEventsLimit(userId, eventId, limit);
   Future<List<Event>> getUserEventsUpcoming(String userId) => _firebase.getUserEventsUpcoming(userId);
   Future<List<Event>> getUserEventsToday(String userId) => _firebase.getUserEventsToday(userId);
   Future<List<Event>> getAllEventsTodayBrand(String brandId) => _firebase.getAllEventsTodayBrand(brandId);
@@ -35,7 +35,7 @@ class EventDataService {
   Future<Location> getEventLocation(String eventId) => _firebase.getEventLocation(eventId);
 
   // Add Data
-  Future<String> addEvent(String? brandID, String? title, String? description, Timestamp createdAt, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.addEvent(brandID, title, description, createdAt, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);
+  Future<String> addEvent(String? brandID, String? title, String? description, Timestamp doneAt, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.addEvent(brandID, title, description, doneAt, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);
   Future<void> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) => _firebase.addUserToEvent(eid, uid, invitedDirectly);
 
   // Update Data

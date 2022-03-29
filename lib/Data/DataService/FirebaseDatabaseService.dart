@@ -704,13 +704,15 @@ class FirebaseDatabaseService {
     }
 
     // Get First Events
-    Future <List<Event>> getUserFirstEventsLimit(String userId, int limit) async {
+    Future <List<Event>> getUserFirstCompletedEventsLimit(String userId, int limit) async {
+      Timestamp now = Timestamp.fromDate(DateTime.now());
       List<Event> events = [];
       QuerySnapshot querySnapshot = await _firestore
           .collection(users)
           .doc(userId)
           .collection("Events")
-          .orderBy("createdAt", descending: true)
+          .where("doneAt", isLessThan: now)
+          .orderBy("doneAt", descending: true)
           .limit(limit)
           .get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
@@ -721,7 +723,8 @@ class FirebaseDatabaseService {
     }
 
     // Get More Notifications
-    Future <List<Event>> getUserMoreEventsLimit(String userId, String eventId, int limit) async {
+    Future <List<Event>> getUserMoreCompletedEventsLimit(String userId, String eventId, int limit) async {
+      Timestamp now = Timestamp.fromDate(DateTime.now());
       // Get Last Notification document
       DocumentSnapshot docu = await _firestore
           .collection(users)
@@ -735,7 +738,8 @@ class FirebaseDatabaseService {
           .collection(users)
           .doc(userId)
           .collection("Events")
-          .orderBy("createdAt", descending: true)
+          .where("doneAt", isLessThan: now)
+          .orderBy("doneAt", descending: true)
           .startAfterDocument(docu)
           .limit(limit)
           .get();
@@ -994,18 +998,20 @@ class FirebaseDatabaseService {
 
     // Events Sesions
     // Add Event
-    Future<String> addEvent(String? brandID, String? title, String? description, Timestamp createdAt,
+    Future<String> addEvent(String? brandID, String? title, String? description, Timestamp doneAt,
         String? year, String? month, String? day, String? hour, String? minute,
         double? duration, String? locationId, int? maxMembers,
         var selectedTrainers) async {
       var eventID = Uuid().v1();
       User? currentUser = await getCurrentUser();
+      Timestamp createdAt = Timestamp.fromDate(DateTime.now());
       try {
         await _firestore.collection(events).doc(eventID).set({
           "brandID": currentBrand.id,
           "creatorID": currentUser!.uid,
           "title": title,
           "description": description,
+          "doneAt": doneAt,
           "createdAt": createdAt,
           "year": year,
           "month": month,
@@ -1419,9 +1425,10 @@ class FirebaseDatabaseService {
     }
 
     // User Joins Event
-    Future<bool> addUserToEvent(String eid, String uid, [bool invitedDirectly = false, Timestamp? createdAt]) async {
+    Future<bool> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) async {
       try {
         Usuario user = await this.getUserDetails(uid);
+        Timestamp joinedAt = Timestamp.fromDate(DateTime.now());
         if (invitedDirectly) {
           await _firestore
           .collection(events)
@@ -1438,6 +1445,7 @@ class FirebaseDatabaseService {
             "isTrainer": user.isTrainer,
             "isPrivate": user.isPrivate,
             "invitedDirectly": invitedDirectly,
+            "joinedAt": joinedAt,
             "notificationToken": user.notificationToken,
           }).catchError((err) {
             print(err);
@@ -1457,6 +1465,7 @@ class FirebaseDatabaseService {
             "noImageUrl": user.noImageUrl,
             "isTrainer": user.isTrainer,
             "isPrivate": user.isPrivate,
+            "joinedAt": joinedAt,
             "notificationToken": user.notificationToken,
           }).catchError((err) {
             print(err);

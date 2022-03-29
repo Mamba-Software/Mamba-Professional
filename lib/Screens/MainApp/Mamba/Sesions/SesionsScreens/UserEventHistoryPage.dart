@@ -66,13 +66,13 @@ class _UserEventHistoryPageState extends State<UserEventHistoryPage> {
 
   // Gets the Events Done by the User
   Future<void> getUserFirstEvents() async {
-    listEvents = await _eventDataService.getUserFirstEventsLimit(widget.userId, 10);
+    listEvents = await _eventDataService.getUserFirstCompletedEventsLimit(widget.userId, 10);
   }
 
   // Gets the Events Done by the User
   Future<void> getUserMoreEvents(String lastEventId) async {
     var temp = listEvents;
-    var moreEvents = await _eventDataService.getUserMoreEventsLimit(widget.userId, lastEventId, 10);
+    var moreEvents = await _eventDataService.getUserMoreCompletedEventsLimit(widget.userId, lastEventId, 10);
     temp.addAll(moreEvents);
     if (mounted) {
       setState(() {

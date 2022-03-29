@@ -1275,6 +1275,7 @@ class ScriptsDatabaseService {
             .doc(event.id!)
             .update({
               "createdAt": eventTimeStamp,
+              "doneAt": eventTimeStamp,
             });
         print("Timestamp added");
         print('=================================================================================');
@@ -1315,6 +1316,7 @@ class ScriptsDatabaseService {
               .doc(event.id!)
               .update({
             "createdAt": eventTimeStamp,
+            "doneAt": eventTimeStamp,
           });
         }
         print("All Events Modified");
@@ -1357,6 +1359,7 @@ class ScriptsDatabaseService {
               .doc(event.id!)
               .update({
             "createdAt": eventTimeStamp,
+            "doneAt": eventTimeStamp,
           });
         }
         print("All Events Modified");
@@ -1399,6 +1402,7 @@ class ScriptsDatabaseService {
               .doc(event.id!)
               .update({
             "createdAt": eventTimeStamp,
+            "doneAt": eventTimeStamp,
           });
         }
         print("All Events Modified");
