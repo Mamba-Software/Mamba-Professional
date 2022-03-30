@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/AddEditEventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -427,11 +428,21 @@ class _CalendarWidgetTrainerState extends State<CalendarWidgetTrainer> {
   }
 
   void _addEvent({DateTime? dateTimeClicked}) {
+    /*
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
           builder: (context) => AddEvent(
             locale: Localizations.localeOf(context),
+            initialDateTime: dateTimeClicked ?? null,
+          ),
+        )
+    );
+     */
+    Navigator.push(
+        context,
+        CupertinoPageRoute<String>(
+          builder: (context) => AddEditEventPage(
             initialDateTime: dateTimeClicked ?? null,
           ),
         )
