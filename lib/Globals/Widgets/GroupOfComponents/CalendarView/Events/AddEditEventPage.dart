@@ -364,62 +364,66 @@ class _AddEditEventPageState extends State<AddEditEventPage> with SingleTickerPr
 
   // Build Event Image Widget
   Widget buildEventImageWidget() {
-    return Stack(
-      alignment: Alignment.topLeft,
-      children: [
-        Container(
-          height: safeAreaHeight * 0.3,
-          width: safeAreaWidth,
-          child: RectangularImage(
-            image: brand.logoUrl!,
-            size: MediaQuery.of(context).size.width,
-          ),
-        ),
-        SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                MaterialButton(
-                  padding: const EdgeInsets.all(15),
-                  elevation: 0,
-                  child: Icon(
-                    Icons.arrow_back,
-                    color: isDark ? Colors.white : Colors.black,
-                    size: safeAreaWidth*0.05,
-                  ),
-                  color: isDark ? Colors.black38 : Colors.white70,
-                  highlightElevation: 0,
-                  minWidth: double.minPositive,
-                  height: double.minPositive,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                MaterialButton(
-                  padding: const EdgeInsets.all(15),
-                  elevation: 0,
-                  child: Icon(
-                    Icons.arrow_back,
-                    color: isDark ? Colors.white : Colors.black,
-                    size: safeAreaWidth*0.05,
-                  ),
-                  color: isDark ? Colors.black38 : Colors.white70,
-                  highlightElevation: 0,
-                  minWidth: double.minPositive,
-                  height: double.minPositive,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
+    return Container(
+      height: safeAreaHeight * 0.3,
+      width: safeAreaWidth,
+      child: Stack(
+        alignment: Alignment.topLeft,
+        children: [
+          Container(
+            height: safeAreaHeight * 0.3,
+            width: safeAreaWidth,
+            child: RectangularImage(
+              image: brand.logoUrl!,
+              size: MediaQuery.of(context).size.width,
             ),
           ),
-        ),
-      ],
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MaterialButton(
+                    padding: const EdgeInsets.all(15),
+                    elevation: 0,
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: isDark ? Colors.white : Colors.black,
+                      size: safeAreaWidth*0.05,
+                    ),
+                    color: isDark ? Colors.black38 : Colors.white70,
+                    highlightElevation: 0,
+                    minWidth: double.minPositive,
+                    height: double.minPositive,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  MaterialButton(
+                    padding: const EdgeInsets.all(15),
+                    elevation: 0,
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: isDark ? Colors.white : Colors.black,
+                      size: safeAreaWidth*0.05,
+                    ),
+                    color: isDark ? Colors.black38 : Colors.white70,
+                    highlightElevation: 0,
+                    minWidth: double.minPositive,
+                    height: double.minPositive,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -437,485 +441,760 @@ class _AddEditEventPageState extends State<AddEditEventPage> with SingleTickerPr
       appBar: null,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       resizeToAvoidBottomInset: true,
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        physics: ClampingScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                buildEventImageWidget(),
-              ],
-            ),
-            StickyHeader(
-              header: Column(
-                children: [
-                  Container(),
-                  AppBar(
-                    title: Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
-                    automaticallyImplyLeading: false,
-                    centerTitle: true,
-                    elevation: 4,
-                  ),
-                ],
+      body: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          buildEventImageWidget(),
+          StickyHeader(
+            overlapHeaders: true,
+            header: Material(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
               ),
-              content: Column(
-                children: [
-                  Column(
+              elevation: 4,
+              child: Container(
+                width: safeAreaWidth,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: safeAreaHeight * 0.05),
+                    Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
+                    SizedBox(height: safeAreaHeight * 0.04),
+                  ],
+                ),
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: Column(
                     children: [
-                      Column(
-                        children: [
-                          Form(
-                            key: formKeyInfo,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-                                        child: new Row(
-                                          mainAxisSize: MainAxisSize.max,
+                      Form(
+                        key: formKeyInfo,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Padding(
+                                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
+                                    child: new Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        new Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
                                           children: <Widget>[
-                                            new Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                new Text(
-                                                  AppLocalizations.of(context)!.title,
-                                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        )
-                                    ),
-                                    Padding(
-                                        padding: EdgeInsets.only(top: 0),
-                                        child: new Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            new Flexible(
-                                              child: new TextFormField(
-                                                controller: titleController,
-                                                validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
-                                                onChanged: (val) {
-                                                  setState(() {
-                                                    titleString = val;
-                                                  });
-                                                },
-                                                style: Theme.of(context).textTheme.bodyText2,
-                                                decoration: InputDecoration(
-                                                  hintStyle: Theme.of(context).textTheme.caption,
-                                                  hintText: AppLocalizations.of(context)!.titleHint,
-                                                  border: InputBorder.none,
-                                                  focusedBorder: InputBorder.none,
-                                                  enabledBorder: InputBorder.none,
-                                                  errorBorder: InputBorder.none,
-                                                  disabledBorder: InputBorder.none,
-                                                ),
-                                                enabled: true,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                    ),
-                                    Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                                        child: new Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            new Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                new Text(
-                                                  AppLocalizations.of(context)!.description,
-                                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        )
-                                    ),
-                                    Padding(
-                                        padding: EdgeInsets.only(top: 0.0),
-                                        child: new Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            new Flexible(
-                                              child: new TextFormField(
-                                                keyboardType: TextInputType.visiblePassword,
-                                                controller: descriptionController,
-                                                minLines: 1,
-                                                maxLines: 4,
-                                                onChanged: (val) {
-                                                  setState(() {
-                                                    descriptionString = val;
-                                                  });
-                                                },
-                                                style: Theme.of(context).textTheme.bodyText2,
-                                                decoration: InputDecoration(
-                                                  hintStyle: Theme.of(context).textTheme.caption,
-                                                  hintText:AppLocalizations.of(context)!.descriptionError,
-                                                  border: InputBorder.none,
-                                                  focusedBorder: InputBorder.none,
-                                                  enabledBorder: InputBorder.none,
-                                                  errorBorder: InputBorder.none,
-                                                  disabledBorder: InputBorder.none,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                    ),
-                                    Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                                        child: new Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            new Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                new Text(
-                                                  AppLocalizations.of(context)!.location,
-                                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        )
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 15.0),
-                                      child: ListTile(
-                                        leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
-                                        title: Text(
-                                          location.description!,
-                                          style: Theme.of(context).textTheme.bodyText2,
-                                        ),
-                                        trailing: Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
-                                        onTap: () async {
-                                          setState(() {
-                                            isLoading = true;
-                                          });
-                                          var result = await Navigator.push(
-                                              context,
-                                              CupertinoPageRoute<String>(
-                                                builder: (context) => MyLocationsSelect(
-                                                  brandId: currentBrand.id!,
-                                                ),
-                                              )
-                                          );
-                                          if (result != null) {
-                                            getLocation(result);
-                                          } else {
-                                            setState(() {
-                                              isLoading = false;
-                                            });
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ]
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.05),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Container(
-                                      height: MediaQuery.of(context).size.height * 0.20,
-                                      width: MediaQuery.of(context).size.width * 0.90,
-                                      decoration: BoxDecoration(
-                                          color: Theme.of(context).backgroundColor,
-                                          borderRadius: BorderRadius.all(Radius.circular(15.0))
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.05, horizontal: MediaQuery.of(context).size.width*0.05),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: <Widget>[
-                                                Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,size: MediaQuery.of(context).size.width*0.05,),
-                                                Container(
-                                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                                  width: MediaQuery.of(context).size.width*0.70,
-                                                  child: GestureDetector(
-                                                      onTap: () {
-                                                        selectSlot(context, 0);
-                                                      },
-                                                      child: Row(
-                                                        mainAxisSize: MainAxisSize.max,
-                                                        children: <Widget>[
-                                                          new Flexible(
-                                                            child: TextFormField(
-                                                              controller: startDateController,
-                                                              readOnly: true,
-                                                              enabled: false,
-                                                              style: Theme.of(context).textTheme.bodyText2,
-                                                              decoration: InputDecoration(
-                                                                border: InputBorder.none,
-                                                                focusedBorder: InputBorder.none,
-                                                                enabledBorder: InputBorder.none,
-                                                                errorBorder: InputBorder.none,
-                                                                disabledBorder: InputBorder.none,
-                                                              ),
-                                                              textAlign: TextAlign.start,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      )
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: <Widget>[
-                                                Icon(Icons.timer, color: Theme.of(context).accentColor,size: MediaQuery.of(context).size.width*0.05,),
-                                                Container(
-                                                  padding: EdgeInsets.only(left: 20),
-                                                  width: MediaQuery.of(context).size.width*0.30,
-                                                  child: GestureDetector(
-                                                      onTap: () {
-                                                        selectSlot(context, 1);
-                                                      },
-                                                      child: Row(
-                                                        mainAxisSize: MainAxisSize.max,
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: <Widget>[
-                                                          new Flexible(
-                                                            child: TextFormField(
-                                                              controller: durationController,
-                                                              readOnly: true,
-                                                              enabled: false,
-                                                              style: Theme.of(context).textTheme.bodyText2,
-                                                              decoration: InputDecoration(
-                                                                border: InputBorder.none,
-                                                                focusedBorder: InputBorder.none,
-                                                                enabledBorder: InputBorder.none,
-                                                                errorBorder: InputBorder.none,
-                                                                disabledBorder: InputBorder.none,
-                                                              ),
-                                                              textAlign: TextAlign.start,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      )
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    errorDate ? Padding(
-                                      padding: EdgeInsets.only(left: 25, right: 25, top: 10.0),
-                                      child: Center(
-                                        child: Text(
-                                          AppLocalizations.of(context)!.errorDate,
-                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ) : Container(),
-                                    Padding(
-                                        padding: EdgeInsets.only(top: 15,),
-                                        child: new Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Text(
-                                              AppLocalizations.of(context)!.recurrentEvent,
+                                            new Text(
+                                              AppLocalizations.of(context)!.title,
                                               style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                             ),
-                                            SizedBox(width: 10,),
-                                            Checkbox(
-                                              checkColor: Colors.white,
-                                              fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                              value: isRecurrent,
-                                              onChanged: (bool? value) {
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                Padding(
+                                    padding: EdgeInsets.only(top: 0),
+                                    child: new Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        new Flexible(
+                                          child: new TextFormField(
+                                            controller: titleController,
+                                            validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
+                                            onChanged: (val) {
+                                              setState(() {
+                                                titleString = val;
+                                              });
+                                            },
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            decoration: InputDecoration(
+                                              hintStyle: Theme.of(context).textTheme.caption,
+                                              hintText: AppLocalizations.of(context)!.titleHint,
+                                              border: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                            ),
+                                            enabled: true,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                Padding(
+                                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                                    child: new Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        new Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            new Text(
+                                              AppLocalizations.of(context)!.description,
+                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                Padding(
+                                    padding: EdgeInsets.only(top: 0.0),
+                                    child: new Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        new Flexible(
+                                          child: new TextFormField(
+                                            keyboardType: TextInputType.visiblePassword,
+                                            controller: descriptionController,
+                                            minLines: 1,
+                                            maxLines: 4,
+                                            onChanged: (val) {
+                                              setState(() {
+                                                descriptionString = val;
+                                              });
+                                            },
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            decoration: InputDecoration(
+                                              hintStyle: Theme.of(context).textTheme.caption,
+                                              hintText:AppLocalizations.of(context)!.descriptionError,
+                                              border: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                Padding(
+                                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                                    child: new Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        new Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            new Text(
+                                              AppLocalizations.of(context)!.location,
+                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 15.0),
+                                  child: ListTile(
+                                    leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
+                                    title: Text(
+                                      location.description!,
+                                      style: Theme.of(context).textTheme.bodyText2,
+                                    ),
+                                    trailing: Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
+                                    onTap: () async {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      var result = await Navigator.push(
+                                          context,
+                                          CupertinoPageRoute<String>(
+                                            builder: (context) => MyLocationsSelect(
+                                              brandId: currentBrand.id!,
+                                            ),
+                                          )
+                                      );
+                                      if (result != null) {
+                                        getLocation(result);
+                                      } else {
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ]
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.05),
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Container(
+                                  height: MediaQuery.of(context).size.height * 0.20,
+                                  width: MediaQuery.of(context).size.width * 0.90,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).backgroundColor,
+                                      borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.05, horizontal: MediaQuery.of(context).size.width*0.05),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,size: MediaQuery.of(context).size.width*0.05,),
+                                            Container(
+                                              padding: EdgeInsets.symmetric(horizontal: 20),
+                                              width: MediaQuery.of(context).size.width*0.70,
+                                              child: GestureDetector(
+                                                  onTap: () {
+                                                    selectSlot(context, 0);
+                                                  },
+                                                  child: Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: <Widget>[
+                                                      new Flexible(
+                                                        child: TextFormField(
+                                                          controller: startDateController,
+                                                          readOnly: true,
+                                                          enabled: false,
+                                                          style: Theme.of(context).textTheme.bodyText2,
+                                                          decoration: InputDecoration(
+                                                            border: InputBorder.none,
+                                                            focusedBorder: InputBorder.none,
+                                                            enabledBorder: InputBorder.none,
+                                                            errorBorder: InputBorder.none,
+                                                            disabledBorder: InputBorder.none,
+                                                          ),
+                                                          textAlign: TextAlign.start,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Icon(Icons.timer, color: Theme.of(context).accentColor,size: MediaQuery.of(context).size.width*0.05,),
+                                            Container(
+                                              padding: EdgeInsets.only(left: 20),
+                                              width: MediaQuery.of(context).size.width*0.30,
+                                              child: GestureDetector(
+                                                  onTap: () {
+                                                    selectSlot(context, 1);
+                                                  },
+                                                  child: Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: <Widget>[
+                                                      new Flexible(
+                                                        child: TextFormField(
+                                                          controller: durationController,
+                                                          readOnly: true,
+                                                          enabled: false,
+                                                          style: Theme.of(context).textTheme.bodyText2,
+                                                          decoration: InputDecoration(
+                                                            border: InputBorder.none,
+                                                            focusedBorder: InputBorder.none,
+                                                            enabledBorder: InputBorder.none,
+                                                            errorBorder: InputBorder.none,
+                                                            disabledBorder: InputBorder.none,
+                                                          ),
+                                                          textAlign: TextAlign.start,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                errorDate ? Padding(
+                                  padding: EdgeInsets.only(left: 25, right: 25, top: 10.0),
+                                  child: Center(
+                                    child: Text(
+                                      AppLocalizations.of(context)!.errorDate,
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ) : Container(),
+                                Padding(
+                                    padding: EdgeInsets.only(top: 15,),
+                                    child: new Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)!.recurrentEvent,
+                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(width: 10,),
+                                        Checkbox(
+                                          checkColor: Colors.white,
+                                          fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                          value: isRecurrent,
+                                          onChanged: (bool? value) {
+                                            setState(() {
+                                              isRecurrent = value!;
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                isRecurrent ? Column(
+                                  children: [
+                                    Padding(
+                                        padding: EdgeInsets.only(top: 0),
+                                        child: new Column(
+                                          mainAxisSize: MainAxisSize.max,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: Text(
+                                                AppLocalizations.of(context)!.days,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                              ),
+                                            ),
+                                            WeekdaySelector(
+                                              fillColor: Colors.white,
+                                              selectedFillColor: Theme.of(context).accentColor,
+                                              textStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.black),
+                                              selectedTextStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white),
+                                              firstDayOfWeek: 0,
+                                              shortWeekdays: [
+                                                AppLocalizations.of(context)!.mondayLetter,
+                                                AppLocalizations.of(context)!.tuesdarLetter,
+                                                AppLocalizations.of(context)!.wednesdayLetter,
+                                                AppLocalizations.of(context)!.thursdayLetter,
+                                                AppLocalizations.of(context)!.fridayLetter,
+                                                AppLocalizations.of(context)!.saturadayLetter,
+                                                AppLocalizations.of(context)!.sundayLetter,
+                                              ],
+                                              // Working Days disabledFillColor: Colors.red,
+                                              onChanged: (v) {
+                                                print(v);
                                                 setState(() {
-                                                  isRecurrent = value!;
+                                                  values[v % 7] = !values[v % 7]!;
                                                 });
                                               },
+                                              selectedElevation: 15,
+                                              elevation: 5,
+                                              disabledElevation: 0,
+                                              values: values,
                                             ),
                                           ],
                                         )
                                     ),
-                                    isRecurrent ? Column(
-                                      children: [
-                                        Padding(
-                                            padding: EdgeInsets.only(top: 0),
-                                            child: new Column(
-                                              mainAxisSize: MainAxisSize.max,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                    Padding(
+                                        padding: EdgeInsets.only(top: 10),
+                                        child: new Column(
+                                          mainAxisSize: MainAxisSize.max,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: Text(
+                                                AppLocalizations.of(context)!.during,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                              ),
+                                            ),
+                                            Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.all(10.0),
-                                                  child: Text(
-                                                    AppLocalizations.of(context)!.days,
+                                                ListTile(
+                                                  dense: true,
+                                                  contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                                                  title: Text(
+                                                    AppLocalizations.of(context)!.thisWeek,
                                                     style: Theme.of(context).textTheme.bodyText2,
                                                   ),
+                                                  subtitle: Text(
+                                                    AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', Localizations.localeOf(context).languageCode).format(oneWeek))),
+                                                    style: Theme.of(context).textTheme.caption,
+                                                    textAlign: TextAlign.left,
+                                                  ),
+                                                  leading: Radio(
+                                                    value: 1,
+                                                    groupValue: _value,
+                                                    activeColor: Theme.of(context).accentColor,
+                                                    fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                                    onChanged: (value) {
+                                                      setState(() {
+                                                        _value = int.parse(value.toString());
+                                                      });
+                                                    },
+                                                  ),
                                                 ),
-                                                WeekdaySelector(
-                                                  fillColor: Colors.white,
-                                                  selectedFillColor: Theme.of(context).accentColor,
-                                                  textStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.black),
-                                                  selectedTextStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white),
-                                                  firstDayOfWeek: 0,
-                                                  shortWeekdays: [
-                                                    AppLocalizations.of(context)!.mondayLetter,
-                                                    AppLocalizations.of(context)!.tuesdarLetter,
-                                                    AppLocalizations.of(context)!.wednesdayLetter,
-                                                    AppLocalizations.of(context)!.thursdayLetter,
-                                                    AppLocalizations.of(context)!.fridayLetter,
-                                                    AppLocalizations.of(context)!.saturadayLetter,
-                                                    AppLocalizations.of(context)!.sundayLetter,
-                                                  ],
-                                                  // Working Days disabledFillColor: Colors.red,
-                                                  onChanged: (v) {
-                                                    print(v);
-                                                    setState(() {
-                                                      values[v % 7] = !values[v % 7]!;
-                                                    });
-                                                  },
-                                                  selectedElevation: 15,
-                                                  elevation: 5,
-                                                  disabledElevation: 0,
-                                                  values: values,
+                                                ListTile(
+                                                  dense: true,
+                                                  contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                                                  title: Text(
+                                                    AppLocalizations.of(context)!.nextTwoWeek,
+                                                    style: Theme.of(context).textTheme.bodyText2,
+                                                  ),
+                                                  subtitle: Text(
+                                                    AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', Localizations.localeOf(context).languageCode).format(twoWeek))),
+                                                    style: Theme.of(context).textTheme.caption,
+                                                    textAlign: TextAlign.left,
+                                                  ),
+                                                  leading: Radio(
+                                                    value: 2,
+                                                    groupValue: _value,
+                                                    activeColor: Theme.of(context).accentColor,
+                                                    fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                                    onChanged: (value) {
+                                                      setState(() {
+                                                        _value = int.parse(value.toString());
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
+                                                ListTile(
+                                                  dense: true,
+                                                  contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                                                  title: Text(
+                                                    AppLocalizations.of(context)!.wholeMonth,
+                                                    style: Theme.of(context).textTheme.bodyText2,
+                                                  ),
+                                                  subtitle: Text(
+                                                    AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', Localizations.localeOf(context).languageCode).format(oneMonth))),
+                                                    style: Theme.of(context).textTheme.caption,
+                                                    textAlign: TextAlign.left,
+                                                  ),
+                                                  leading: Radio(
+                                                    value: 3,
+                                                    groupValue: _value,
+                                                    activeColor: Theme.of(context).accentColor,
+                                                    fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                                    onChanged: (value) {
+                                                      setState(() {
+                                                        _value = int.parse(value.toString());
+                                                      });
+                                                    },
+                                                  ),
                                                 ),
                                               ],
                                             )
-                                        ),
-                                        Padding(
-                                            padding: EdgeInsets.only(top: 10),
-                                            child: new Column(
-                                              mainAxisSize: MainAxisSize.max,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.all(10.0),
-                                                  child: Text(
-                                                    AppLocalizations.of(context)!.during,
-                                                    style: Theme.of(context).textTheme.bodyText2,
-                                                  ),
-                                                ),
-                                                Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    ListTile(
-                                                      dense: true,
-                                                      contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
-                                                      title: Text(
-                                                        AppLocalizations.of(context)!.thisWeek,
-                                                        style: Theme.of(context).textTheme.bodyText2,
-                                                      ),
-                                                      subtitle: Text(
-                                                        AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', Localizations.localeOf(context).languageCode).format(oneWeek))),
-                                                        style: Theme.of(context).textTheme.caption,
-                                                        textAlign: TextAlign.left,
-                                                      ),
-                                                      leading: Radio(
-                                                        value: 1,
-                                                        groupValue: _value,
-                                                        activeColor: Theme.of(context).accentColor,
-                                                        fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                        onChanged: (value) {
-                                                          setState(() {
-                                                            _value = int.parse(value.toString());
-                                                          });
-                                                        },
-                                                      ),
-                                                    ),
-                                                    ListTile(
-                                                      dense: true,
-                                                      contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
-                                                      title: Text(
-                                                        AppLocalizations.of(context)!.nextTwoWeek,
-                                                        style: Theme.of(context).textTheme.bodyText2,
-                                                      ),
-                                                      subtitle: Text(
-                                                        AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', Localizations.localeOf(context).languageCode).format(twoWeek))),
-                                                        style: Theme.of(context).textTheme.caption,
-                                                        textAlign: TextAlign.left,
-                                                      ),
-                                                      leading: Radio(
-                                                        value: 2,
-                                                        groupValue: _value,
-                                                        activeColor: Theme.of(context).accentColor,
-                                                        fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                        onChanged: (value) {
-                                                          setState(() {
-                                                            _value = int.parse(value.toString());
-                                                          });
-                                                        },
-                                                      ),
-                                                    ),
-                                                    ListTile(
-                                                      dense: true,
-                                                      contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
-                                                      title: Text(
-                                                        AppLocalizations.of(context)!.wholeMonth,
-                                                        style: Theme.of(context).textTheme.bodyText2,
-                                                      ),
-                                                      subtitle: Text(
-                                                        AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', Localizations.localeOf(context).languageCode).format(oneMonth))),
-                                                        style: Theme.of(context).textTheme.caption,
-                                                        textAlign: TextAlign.left,
-                                                      ),
-                                                      leading: Radio(
-                                                        value: 3,
-                                                        groupValue: _value,
-                                                        activeColor: Theme.of(context).accentColor,
-                                                        fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                        onChanged: (value) {
-                                                          setState(() {
-                                                            _value = int.parse(value.toString());
-                                                          });
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            )
+                                          ],
+                                        )
+                                    ),
+                                  ],
+                                ) : Container(),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.10)
+                              ]
+                          )
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 0),
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                                    child: new Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        new Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            new Text(
+                                              AppLocalizations.of(context)!.designatedTrainers,
+                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
                                         ),
                                       ],
-                                    ) : Container(),
-                                    SizedBox(height: MediaQuery.of(context).size.height*0.10)
-                                  ]
-                              )
-                          ),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 0),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
+                                    )
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        height: MediaQuery.of(context).size.height*0.15,
+                                        width: MediaQuery.of(context).size.width,
+                                        child: ListView.builder(
+                                            shrinkWrap: true,
+                                            physics: BouncingScrollPhysics(),
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: brandTrainers.length,
+                                            itemBuilder: (context, int index) {
+                                              var trainer = brandTrainers[index];
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    brandTrainersSelected[index] = !brandTrainersSelected[index];
+                                                  });
+                                                },
+                                                child: Padding(
+                                                  padding: !(index == 0 || index == brandTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      CircularImage(
+                                                        size: MediaQuery.of(context).size.width*0.17,
+                                                        image: trainer.imageUrl,
+                                                        color: Theme.of(context).primaryColor,
+                                                        borderWidth: 1,
+                                                      ),
+                                                      Container(
+                                                        width: MediaQuery.of(context).size.width*0.2,
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            Text(
+                                                              trainer.firstName!,
+                                                              style: Theme.of(context).textTheme.bodyText2,
+                                                              textAlign: TextAlign.center,
+                                                            ),
+                                                            SizedBox(
+                                                              width: MediaQuery.of(context).size.width*0.01,
+                                                            ),
+                                                            SizedBox(
+                                                              width: MediaQuery.of(context).size.width*0.05,
+                                                              child: Checkbox(
+                                                                checkColor: Colors.white,
+                                                                fillColor: MaterialStateProperty.resolveWith(getColor),
+                                                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                                value: brandTrainersSelected[index],
+                                                                shape: CircleBorder(
+                                                                    side: BorderSide.none
+                                                                ),
+                                                                onChanged: (bool? value) {
+                                                                  setState(() {
+                                                                    brandTrainersSelected[index] = !brandTrainersSelected[index];
+                                                                  });
+                                                                },
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  /*
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                  children: [
+                                                                    Container(
+                                                                      height: MediaQuery.of(context).size.height*0.18,
+                                                                      width: MediaQuery.of(context).size.width*0.87,
+                                                                      child: ListView.builder(
+                                                                          shrinkWrap: true,
+                                                                          physics: AlwaysScrollableScrollPhysics(),
+                                                                          scrollDirection: Axis.horizontal,
+                                                                          itemCount: brandTrainers!.length,
+                                                                          itemBuilder: (context, int index) {
+                                                                            var trainer = brandTrainers![index];
+                                                                            return GestureDetector(
+                                                                              onTap: () {
+                                                                                setState(() {
+                                                                                  brandTrainersSelected[index] = !brandTrainersSelected[index];
+                                                                                });
+                                                                              },
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                                                child: Column(
+                                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                                  children: [
+                                                                                    CircularImage (
+                                                                                      size: MediaQuery.of(context).size.width*0.2,
+                                                                                      image: trainer.imageUrl,
+                                                                                      color: Theme.of(context).primaryColor,
+                                                                            borderWidth: 1,
+                                                                                    ),
+                                                                                    Row(
+                                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                                      children: [
+                                                                                        Text(
+                                                                                          trainer.name!,
+                                                                                          style: Styles.purpleTextStyle.copyWith(fontSize: 15),
+                                                                                          textAlign: TextAlign.center,
+                                                                                        ),
+                                                                                        SizedBox(
+                                                                                          width: MediaQuery.of(context).size.width*0.01,
+                                                                                        ),
+                                                                                        SizedBox(
+                                                                                          width: MediaQuery.of(context).size.width*0.05,
+                                                                                          child: Checkbox(
+                                                                                            checkColor: Colors.white,
+                                                                                            fillColor: MaterialStateProperty.resolveWith(getColor),
+                                                                                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                                                            value: brandTrainersSelected[index],
+                                                                                            shape: CircleBorder(
+                                                                                                side: BorderSide.none
+                                                                                            ),
+                                                                                            onChanged: (bool? value) {
+                                                                                            },
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                            );
+                                                                          }
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                 */
+                                ),
+                                errorNoTrainerSelected ? Padding(
+                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                                  child: Center(
+                                    child: Text(
+                                      AppLocalizations.of(context)!.noTrainerSelectedError,
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ) : Container(),
+                                Padding(
+                                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                                    child: new Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        new Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            new Text(
+                                              AppLocalizations.of(context)!.maxNumberClients,
+                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      selectSlot(context, 2);
+                                    },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Icon(Icons.person, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.05,),
+                                        Container(
+                                          padding: EdgeInsets.only(left: 20),
+                                          width: MediaQuery.of(context).size.width*0.11,
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: <Widget>[
+                                              new Flexible(
+                                                child: TextFormField(
+                                                  controller: membersController,
+                                                  readOnly: true,
+                                                  enabled: false,
+                                                  style: Theme.of(context).textTheme.bodyText2,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    focusedBorder: InputBorder.none,
+                                                    enabledBorder: InputBorder.none,
+                                                    errorBorder: InputBorder.none,
+                                                    disabledBorder: InputBorder.none,
+                                                  ),
+                                                  textAlign: TextAlign.start,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text(
+                                          AppLocalizations.of(context)!.members.toLowerCase(),
+                                          style: Theme.of(context).textTheme.bodyText2,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02, left: MediaQuery.of(context).size.width*0.03, right: MediaQuery.of(context).size.width*0.05),
+                                  child: TextButton(
+                                    onPressed: brandClientsSelected.length < members ? () async {
+                                      List<Usuario>? selectedClients = await Navigator.push(
+                                          context,
+                                          CupertinoPageRoute<List<Usuario>>(
+                                            builder: (context) => SelectClientsEvent(
+                                              selectedUsers: brandClientsSelected,
+                                              maxClients: members,
+                                            ),
+                                          )
+                                      );
+                                      if (selectedClients != null) {
+                                        setState(() {
+                                          brandClientsSelected = selectedClients;
+                                          errorClientsSelected = false;
+                                        });
+                                      }
+                                    } : null,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Icon(Icons.person_add_alt_1, color: brandClientsSelected.length < members ? Theme.of(context).accentColor : Theme.of(context).primaryColor.withOpacity(0.2), size: MediaQuery.of(context).size.width*0.05),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          AppLocalizations.of(context)!.addDesignatedClients,
+                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: brandClientsSelected.length != members ? Theme.of(context).accentColor : Theme.of(context).primaryColor.withOpacity(0.2), fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                brandClientsSelected.length > 0 ? Column(
                                   children: [
                                     Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
                                         child: new Row(
                                           mainAxisSize: MainAxisSize.max,
                                           children: <Widget>[
@@ -924,16 +1203,35 @@ class _AddEditEventPageState extends State<AddEditEventPage> with SingleTickerPr
                                               mainAxisSize: MainAxisSize.min,
                                               children: <Widget>[
                                                 new Text(
-                                                  AppLocalizations.of(context)!.designatedTrainers,
+                                                  AppLocalizations.of(context)!.clients,
                                                   style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                 ),
                                               ],
                                             ),
+                                            SizedBox(
+                                              width: MediaQuery.of(context).size.width*0.03,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "( "+brandClientsSelected.length.toString(),
+                                                  style: Theme.of(context).textTheme.bodyText2,
+                                                ),
+                                                Text(
+                                                  " / ",
+                                                  style: Theme.of(context).textTheme.bodyText2,
+                                                ),
+                                                Text(
+                                                  members.toString()+" )",
+                                                  style: Theme.of(context).textTheme.bodyText2,
+                                                ),
+                                              ],
+                                            )
                                           ],
                                         )
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
@@ -944,13 +1242,15 @@ class _AddEditEventPageState extends State<AddEditEventPage> with SingleTickerPr
                                                 shrinkWrap: true,
                                                 physics: BouncingScrollPhysics(),
                                                 scrollDirection: Axis.horizontal,
-                                                itemCount: brandTrainers.length,
+                                                itemCount: brandClientsSelected.length,
                                                 itemBuilder: (context, int index) {
-                                                  var trainer = brandTrainers[index];
+                                                  var trainer = brandClientsSelected[index];
                                                   return GestureDetector(
                                                     onTap: () {
+                                                      var temp = brandClientsSelected;
+                                                      temp.remove(trainer);
                                                       setState(() {
-                                                        brandTrainersSelected[index] = !brandTrainersSelected[index];
+                                                        brandClientsSelected = temp;
                                                       });
                                                     },
                                                     child: Padding(
@@ -958,11 +1258,28 @@ class _AddEditEventPageState extends State<AddEditEventPage> with SingleTickerPr
                                                       child: Column(
                                                         mainAxisAlignment: MainAxisAlignment.center,
                                                         children: [
-                                                          CircularImage(
-                                                            size: MediaQuery.of(context).size.width*0.17,
-                                                            image: trainer.imageUrl,
-                                                            color: Theme.of(context).primaryColor,
-                                                            borderWidth: 1,
+                                                          Stack(
+                                                            alignment: Alignment.topRight,
+                                                            children: [
+                                                              CircularImage(
+                                                                size: MediaQuery.of(context).size.width*0.17,
+                                                                image: trainer.imageUrl,
+                                                                color: Theme.of(context).primaryColor,
+                                                                borderWidth: 1,
+                                                              ),
+                                                              Positioned(
+                                                                top: 0,
+                                                                left: MediaQuery.of(context).size.width*0.12,
+                                                                child: CircleAvatar(
+                                                                  backgroundColor: AppColors.red,
+                                                                  radius: MediaQuery.of(context).size.width*0.025,
+                                                                  child: Icon(Icons.clear, color: AppColors.white, size: MediaQuery.of(context).size.width*0.035,),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          SizedBox(
+                                                            height: MediaQuery.of(context).size.width*0.02,
                                                           ),
                                                           Container(
                                                             width: MediaQuery.of(context).size.width*0.2,
@@ -974,29 +1291,38 @@ class _AddEditEventPageState extends State<AddEditEventPage> with SingleTickerPr
                                                                   style: Theme.of(context).textTheme.bodyText2,
                                                                   textAlign: TextAlign.center,
                                                                 ),
-                                                                SizedBox(
-                                                                  width: MediaQuery.of(context).size.width*0.01,
-                                                                ),
-                                                                SizedBox(
-                                                                  width: MediaQuery.of(context).size.width*0.05,
-                                                                  child: Checkbox(
-                                                                    checkColor: Colors.white,
-                                                                    fillColor: MaterialStateProperty.resolveWith(getColor),
-                                                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                                    value: brandTrainersSelected[index],
-                                                                    shape: CircleBorder(
-                                                                        side: BorderSide.none
-                                                                    ),
-                                                                    onChanged: (bool? value) {
-                                                                      setState(() {
-                                                                        brandTrainersSelected[index] = !brandTrainersSelected[index];
-                                                                      });
-                                                                    },
-                                                                  ),
-                                                                ),
                                                               ],
                                                             ),
                                                           ),
+                                                          /*
+                                                                                        Container(
+                                                                                          width: MediaQuery.of(context).size.width*0.2,
+                                                                                          child: Row(
+                                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                                            children: [
+                                                                                              Text(
+                                                                                                trainer.firstName!,
+                                                                                                style: Theme.of(context).textTheme.bodyText2,
+                                                                                                textAlign: TextAlign.center,
+                                                                                              ),
+                                                                                              SizedBox(
+                                                                                                width: MediaQuery.of(context).size.width*0.01,
+                                                                                              ),
+                                                                                              SizedBox(
+                                                                                                width: MediaQuery.of(context).size.width*0.05,
+                                                                                                child: IconButton(
+                                                                                                  icon: Icon(Icons.remove_circle, color: Theme.of(context).accentColor,),
+                                                                                                  onPressed: () {
+
+                                                                                                  },
+                                                                                                ),
+
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                        ),
+
+                                                                                         */
                                                         ],
                                                       ),
                                                     ),
@@ -1007,415 +1333,96 @@ class _AddEditEventPageState extends State<AddEditEventPage> with SingleTickerPr
                                         ],
                                       ),
                                       /*
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Container(
-                                                            height: MediaQuery.of(context).size.height*0.18,
-                                                            width: MediaQuery.of(context).size.width*0.87,
-                                                            child: ListView.builder(
-                                                                shrinkWrap: true,
-                                                                physics: AlwaysScrollableScrollPhysics(),
-                                                                scrollDirection: Axis.horizontal,
-                                                                itemCount: brandTrainers!.length,
-                                                                itemBuilder: (context, int index) {
-                                                                  var trainer = brandTrainers![index];
-                                                                  return GestureDetector(
-                                                                    onTap: () {
-                                                                      setState(() {
-                                                                        brandTrainersSelected[index] = !brandTrainersSelected[index];
-                                                                      });
-                                                                    },
-                                                                    child: Padding(
-                                                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                                      child: Column(
-                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                        children: [
-                                                                          CircularImage (
-                                                                            size: MediaQuery.of(context).size.width*0.2,
-                                                                            image: trainer.imageUrl,
-                                                                            color: Theme.of(context).primaryColor,
-                                                                  borderWidth: 1,
-                                                                          ),
-                                                                          Row(
-                                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                                            children: [
-                                                                              Text(
-                                                                                trainer.name!,
-                                                                                style: Styles.purpleTextStyle.copyWith(fontSize: 15),
-                                                                                textAlign: TextAlign.center,
-                                                                              ),
-                                                                              SizedBox(
-                                                                                width: MediaQuery.of(context).size.width*0.01,
-                                                                              ),
-                                                                              SizedBox(
-                                                                                width: MediaQuery.of(context).size.width*0.05,
-                                                                                child: Checkbox(
-                                                                                  checkColor: Colors.white,
-                                                                                  fillColor: MaterialStateProperty.resolveWith(getColor),
-                                                                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                                                  value: brandTrainersSelected[index],
-                                                                                  shape: CircleBorder(
-                                                                                      side: BorderSide.none
-                                                                                  ),
-                                                                                  onChanged: (bool? value) {
-                                                                                  },
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                  children: [
+                                                                    Container(
+                                                                      height: MediaQuery.of(context).size.height*0.18,
+                                                                      width: MediaQuery.of(context).size.width*0.87,
+                                                                      child: ListView.builder(
+                                                                          shrinkWrap: true,
+                                                                          physics: AlwaysScrollableScrollPhysics(),
+                                                                          scrollDirection: Axis.horizontal,
+                                                                          itemCount: brandTrainers!.length,
+                                                                          itemBuilder: (context, int index) {
+                                                                            var trainer = brandTrainers![index];
+                                                                            return GestureDetector(
+                                                                              onTap: () {
+                                                                                setState(() {
+                                                                                  brandTrainersSelected[index] = !brandTrainersSelected[index];
+                                                                                });
+                                                                              },
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                                                child: Column(
+                                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                                  children: [
+                                                                                    CircularImage (
+                                                                                      size: MediaQuery.of(context).size.width*0.2,
+                                                                                      image: trainer.imageUrl,
+                                                                                      color: Theme.of(context).primaryColor,
+                                                                            borderWidth: 1,
+                                                                                    ),
+                                                                                    Row(
+                                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                                      children: [
+                                                                                        Text(
+                                                                                          trainer.name!,
+                                                                                          style: Styles.purpleTextStyle.copyWith(fontSize: 15),
+                                                                                          textAlign: TextAlign.center,
+                                                                                        ),
+                                                                                        SizedBox(
+                                                                                          width: MediaQuery.of(context).size.width*0.01,
+                                                                                        ),
+                                                                                        SizedBox(
+                                                                                          width: MediaQuery.of(context).size.width*0.05,
+                                                                                          child: Checkbox(
+                                                                                            checkColor: Colors.white,
+                                                                                            fillColor: MaterialStateProperty.resolveWith(getColor),
+                                                                                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                                                            value: brandTrainersSelected[index],
+                                                                                            shape: CircleBorder(
+                                                                                                side: BorderSide.none
+                                                                                            ),
+                                                                                            onChanged: (bool? value) {
+                                                                                            },
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ],
                                                                                 ),
                                                                               ),
-                                                                            ],
-                                                                          ),
-                                                                        ],
+                                                                            );
+                                                                          }
                                                                       ),
                                                                     ),
-                                                                  );
-                                                                }
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                       */
+                                                                  ],
+                                                                ),
+                                                                 */
                                     ),
-                                    errorNoTrainerSelected ? Padding(
+                                    errorClientsSelected ? Padding(
                                       padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
                                       child: Center(
                                         child: Text(
-                                          AppLocalizations.of(context)!.noTrainerSelectedError,
+                                          AppLocalizations.of(context)!.clientsSelectedError,
                                           style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
                                     ) : Container(),
-                                    Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                        child: new Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            new Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                new Text(
-                                                  AppLocalizations.of(context)!.maxNumberClients,
-                                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        )
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          selectSlot(context, 2);
-                                        },
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            Icon(Icons.person, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.05,),
-                                            Container(
-                                              padding: EdgeInsets.only(left: 20),
-                                              width: MediaQuery.of(context).size.width*0.11,
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  new Flexible(
-                                                    child: TextFormField(
-                                                      controller: membersController,
-                                                      readOnly: true,
-                                                      enabled: false,
-                                                      style: Theme.of(context).textTheme.bodyText2,
-                                                      decoration: InputDecoration(
-                                                        border: InputBorder.none,
-                                                        focusedBorder: InputBorder.none,
-                                                        enabledBorder: InputBorder.none,
-                                                        errorBorder: InputBorder.none,
-                                                        disabledBorder: InputBorder.none,
-                                                      ),
-                                                      textAlign: TextAlign.start,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Text(
-                                              AppLocalizations.of(context)!.members.toLowerCase(),
-                                              style: Theme.of(context).textTheme.bodyText2,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02, left: MediaQuery.of(context).size.width*0.03, right: MediaQuery.of(context).size.width*0.05),
-                                      child: TextButton(
-                                        onPressed: brandClientsSelected.length < members ? () async {
-                                          List<Usuario>? selectedClients = await Navigator.push(
-                                              context,
-                                              CupertinoPageRoute<List<Usuario>>(
-                                                builder: (context) => SelectClientsEvent(
-                                                  selectedUsers: brandClientsSelected,
-                                                  maxClients: members,
-                                                ),
-                                              )
-                                          );
-                                          if (selectedClients != null) {
-                                            setState(() {
-                                              brandClientsSelected = selectedClients;
-                                              errorClientsSelected = false;
-                                            });
-                                          }
-                                        } : null,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Icon(Icons.person_add_alt_1, color: brandClientsSelected.length < members ? Theme.of(context).accentColor : Theme.of(context).primaryColor.withOpacity(0.2), size: MediaQuery.of(context).size.width*0.05),
-                                            SizedBox(width: 10),
-                                            Text(
-                                              AppLocalizations.of(context)!.addDesignatedClients,
-                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: brandClientsSelected.length != members ? Theme.of(context).accentColor : Theme.of(context).primaryColor.withOpacity(0.2), fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    brandClientsSelected.length > 0 ? Column(
-                                      children: [
-                                        Padding(
-                                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                            child: new Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: <Widget>[
-                                                new Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    new Text(
-                                                      AppLocalizations.of(context)!.clients,
-                                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  width: MediaQuery.of(context).size.width*0.03,
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      "( "+brandClientsSelected.length.toString(),
-                                                      style: Theme.of(context).textTheme.bodyText2,
-                                                    ),
-                                                    Text(
-                                                      " / ",
-                                                      style: Theme.of(context).textTheme.bodyText2,
-                                                    ),
-                                                    Text(
-                                                      members.toString()+" )",
-                                                      style: Theme.of(context).textTheme.bodyText2,
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            )
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                height: MediaQuery.of(context).size.height*0.15,
-                                                width: MediaQuery.of(context).size.width,
-                                                child: ListView.builder(
-                                                    shrinkWrap: true,
-                                                    physics: BouncingScrollPhysics(),
-                                                    scrollDirection: Axis.horizontal,
-                                                    itemCount: brandClientsSelected.length,
-                                                    itemBuilder: (context, int index) {
-                                                      var trainer = brandClientsSelected[index];
-                                                      return GestureDetector(
-                                                        onTap: () {
-                                                          var temp = brandClientsSelected;
-                                                          temp.remove(trainer);
-                                                          setState(() {
-                                                            brandClientsSelected = temp;
-                                                          });
-                                                        },
-                                                        child: Padding(
-                                                          padding: !(index == 0 || index == brandTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
-                                                          child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                            children: [
-                                                              Stack(
-                                                                alignment: Alignment.topRight,
-                                                                children: [
-                                                                  CircularImage(
-                                                                    size: MediaQuery.of(context).size.width*0.17,
-                                                                    image: trainer.imageUrl,
-                                                                    color: Theme.of(context).primaryColor,
-                                                                    borderWidth: 1,
-                                                                  ),
-                                                                  Positioned(
-                                                                    top: 0,
-                                                                    left: MediaQuery.of(context).size.width*0.12,
-                                                                    child: CircleAvatar(
-                                                                      backgroundColor: AppColors.red,
-                                                                      radius: MediaQuery.of(context).size.width*0.025,
-                                                                      child: Icon(Icons.clear, color: AppColors.white, size: MediaQuery.of(context).size.width*0.035,),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              SizedBox(
-                                                                height: MediaQuery.of(context).size.width*0.02,
-                                                              ),
-                                                              Container(
-                                                                width: MediaQuery.of(context).size.width*0.2,
-                                                                child: Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                                  children: [
-                                                                    Text(
-                                                                      trainer.firstName!,
-                                                                      style: Theme.of(context).textTheme.bodyText2,
-                                                                      textAlign: TextAlign.center,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              /*
-                                                                              Container(
-                                                                                width: MediaQuery.of(context).size.width*0.2,
-                                                                                child: Row(
-                                                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                                                  children: [
-                                                                                    Text(
-                                                                                      trainer.firstName!,
-                                                                                      style: Theme.of(context).textTheme.bodyText2,
-                                                                                      textAlign: TextAlign.center,
-                                                                                    ),
-                                                                                    SizedBox(
-                                                                                      width: MediaQuery.of(context).size.width*0.01,
-                                                                                    ),
-                                                                                    SizedBox(
-                                                                                      width: MediaQuery.of(context).size.width*0.05,
-                                                                                      child: IconButton(
-                                                                                        icon: Icon(Icons.remove_circle, color: Theme.of(context).accentColor,),
-                                                                                        onPressed: () {
-
-                                                                                        },
-                                                                                      ),
-
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ),
-
-                                                                               */
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      );
-                                                    }
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          /*
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Container(
-                                                            height: MediaQuery.of(context).size.height*0.18,
-                                                            width: MediaQuery.of(context).size.width*0.87,
-                                                            child: ListView.builder(
-                                                                shrinkWrap: true,
-                                                                physics: AlwaysScrollableScrollPhysics(),
-                                                                scrollDirection: Axis.horizontal,
-                                                                itemCount: brandTrainers!.length,
-                                                                itemBuilder: (context, int index) {
-                                                                  var trainer = brandTrainers![index];
-                                                                  return GestureDetector(
-                                                                    onTap: () {
-                                                                      setState(() {
-                                                                        brandTrainersSelected[index] = !brandTrainersSelected[index];
-                                                                      });
-                                                                    },
-                                                                    child: Padding(
-                                                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                                      child: Column(
-                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                        children: [
-                                                                          CircularImage (
-                                                                            size: MediaQuery.of(context).size.width*0.2,
-                                                                            image: trainer.imageUrl,
-                                                                            color: Theme.of(context).primaryColor,
-                                                                  borderWidth: 1,
-                                                                          ),
-                                                                          Row(
-                                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                                            children: [
-                                                                              Text(
-                                                                                trainer.name!,
-                                                                                style: Styles.purpleTextStyle.copyWith(fontSize: 15),
-                                                                                textAlign: TextAlign.center,
-                                                                              ),
-                                                                              SizedBox(
-                                                                                width: MediaQuery.of(context).size.width*0.01,
-                                                                              ),
-                                                                              SizedBox(
-                                                                                width: MediaQuery.of(context).size.width*0.05,
-                                                                                child: Checkbox(
-                                                                                  checkColor: Colors.white,
-                                                                                  fillColor: MaterialStateProperty.resolveWith(getColor),
-                                                                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                                                  value: brandTrainersSelected[index],
-                                                                                  shape: CircleBorder(
-                                                                                      side: BorderSide.none
-                                                                                  ),
-                                                                                  onChanged: (bool? value) {
-                                                                                  },
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                }
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                       */
-                                        ),
-                                        errorClientsSelected ? Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                          child: Center(
-                                            child: Text(
-                                              AppLocalizations.of(context)!.clientsSelectedError,
-                                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                        ) : Container(),
-                                      ],
-                                    ) : Container(),
-                                  ]
-                              )
-                          ),
-                        ],
-                      )
+                                  ],
+                                ) : Container(),
+                              ]
+                          )
+                      ),
                     ],
                   ),
-                ],
-              ),
+                )
+              ],
             ),
-
-          ],
-        ),
+          ),
+        ],
       ),
       floatingActionButton: Padding(
         padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.01, horizontal: MediaQuery.of(context).size.width*0.01),
