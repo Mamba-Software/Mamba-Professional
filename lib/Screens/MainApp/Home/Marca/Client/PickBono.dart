@@ -121,7 +121,7 @@ class _PickBonoState extends State<PickBono> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(_bono.description.toString()),
-                          Text("50% de compra"),
+                          Text(_bono.compras!.toString() + " persones l'han comprat"),
                         ],
                       ),
                     ),

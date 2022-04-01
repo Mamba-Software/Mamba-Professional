@@ -21,6 +21,8 @@ import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:uuid/uuid.dart';
 
+import '../Models/Bono.dart';
+
 // Firebase Service Class. All calls to Firebase are in this class.
 class FirebaseDatabaseService {
   // Firebase Instances
@@ -1923,6 +1925,7 @@ class FirebaseDatabaseService {
       "price": double.parse(price),
       "classes": int.parse(classes),
       "isActive": isactive,
+      "compras": 0,
     }).catchError((err) {
       print(err);
     });
@@ -1989,6 +1992,15 @@ class FirebaseDatabaseService {
   Future<void> updateBono(String brandID, String bonoId, bool isActive) async {
     await _firestore.collection(brands).doc(brandID).collection("Bonos").doc(bonoId).update({
       "isActive": isActive,
+    });
+  }
+
+  //UpdateBono Compras
+  Future<void> updateBonoCompras(String brandID, String bonoId) async {
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandID).collection("Bonos").doc(bonoId).get();
+    Bono b = Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    await _firestore.collection(brands).doc(brandID).collection("Bonos").doc(bonoId).update({
+      "compras": b.compras! + 1,
     });
   }
 

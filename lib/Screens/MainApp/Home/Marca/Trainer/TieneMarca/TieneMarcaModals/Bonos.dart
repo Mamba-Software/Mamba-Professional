@@ -108,7 +108,7 @@ class _BonosState extends State<Bonos> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(_bono.description.toString()),
-                          Text("50% de compra"),
+                          Text(_bono.compras!.toString() + " persones l'han comprat"),
                         ],
                       ),
                     ),

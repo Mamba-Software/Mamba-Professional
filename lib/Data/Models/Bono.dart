@@ -12,6 +12,7 @@ class Bono {
   double? price;
   int? classes;
   bool? isActive;
+  int? compras;
 
   Bono({
     this.id,
@@ -19,7 +20,8 @@ class Bono {
     this.description,
     this.price,
     this.classes,
-    this.isActive
+    this.isActive,
+    this.compras,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -41,6 +43,9 @@ class Bono {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isActive')) {
       this.isActive = documentSnapshot.get("isActive");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('compras')) {
+      this.compras = documentSnapshot.get("compras");
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -53,5 +58,6 @@ class Bono {
     this.price = bono.price;
     this.classes = bono.classes;
     this.isActive = bono.isActive;
+    this.compras = bono.compras;
   }
 }

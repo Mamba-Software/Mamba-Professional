@@ -75,8 +75,8 @@ class _BonosRequestsState extends State<BonosRequests> {
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.01),
           Text(
-            _bonoRequest.timeRequested.toString(),
-            style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+            _bonoRequest.timeRequested!.toDate().toString(),
+            style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 13),
           ),
         ],
       ),
@@ -91,10 +91,11 @@ class _BonosRequestsState extends State<BonosRequests> {
             }
         );
         if (result) {
+          await _brandDataService.addUserToBrand( _bonoRequest.userId!, widget.brandId, 0);
           _userDataService.addBonoToUser(widget.brandId, _bonoRequest.userId!, _bonoRequest.bonoId!, int.parse(_bonoRequest.classes!), Timestamp.now());
           _userDataService.deleteUserBonoRequest(_bonoRequest.userId!, widget.brandId, _bonoRequest.bonoId!);
           _brandDataService.deleteBrandBonoRequest( widget.brandId, _bonoRequest.bonoId!);
-          //brandDataService.updateBono(brandID, bonoId, isActive)
+          _brandDataService.updateBonoCompras(widget.brandId, _bonoRequest.bonoId!);
         }
       }
     );

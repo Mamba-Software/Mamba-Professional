@@ -249,11 +249,12 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                       color: Theme.of(context).primaryColor,
                                       borderWidth: 1.0,
                                     ),
-                                    title: Text(
-                                      getUsersFullName(user),
-                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.left,
-                                    ),
+                                    title:
+                                        Text(
+                                          getUsersFullName(user),
+                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                          textAlign: TextAlign.left,
+                                        ),
                                     subtitle: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -263,41 +264,53 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                         ),
                                       ],
                                     ),
-                                    trailing: user.id! == currentUser.id ? IconButton(
-                                      icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                                      alignment: Alignment.centerRight,
-                                      padding: EdgeInsets.all(0),
-                                      onPressed: false ? () {
-                                      } : null,
-                                    ) : IconButton(
-                                      icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
-                                      alignment: Alignment.centerRight,
-                                      padding: EdgeInsets.all(0),
-                                      onPressed: () async {
-                                        types.User otherUser = types.User(
-                                          firstName: user.firstName,
-                                          lastName: user.lastName,
-                                          id: user.id!, // UID from Firebase Authentication
-                                          imageUrl: user.imageUrl,
-                                        );
-                                        final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
-                                          "trainer" + user.id!: user.isTrainer,
-                                          "trainer" + currentUser.id!: currentUser.isTrainer,
-                                          "active" + user.id!: false,
-                                          "active" + currentUser.id!: true,
-                                        });
+                                    trailing: Container(
+                                      width: MediaQuery.of(context).size.width*0.30,
+                                      child: FittedBox(
+                                        fit: BoxFit.contain,
+                                        child: Row(
+                                          children: [
+                                            user.sessions != null ?
+                                            Text(user.sessions!.toString()) : Text("0"),
+                                            user.id! == currentUser.id ? IconButton(
+                                              icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+                                              alignment: Alignment.centerRight,
+                                              padding: EdgeInsets.all(0),
+                                              onPressed: false ? () {
+                                              } : null,
+                                            ) : IconButton(
+                                              icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
+                                              alignment: Alignment.centerRight,
+                                              padding: EdgeInsets.all(0),
+                                              onPressed: () async {
+                                                types.User otherUser = types.User(
+                                                  firstName: user.firstName,
+                                                  lastName: user.lastName,
+                                                  id: user.id!, // UID from Firebase Authentication
+                                                  imageUrl: user.imageUrl,
+                                                );
+                                                final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                                                  "trainer" + user.id!: user.isTrainer,
+                                                  "trainer" + currentUser.id!: currentUser.isTrainer,
+                                                  "active" + user.id!: false,
+                                                  "active" + currentUser.id!: true,
+                                                });
 
-                                        bool? deleteRoom = await Navigator.push(
-                                          context,
-                                          CupertinoPageRoute<bool>(
-                                              builder: (context) => ChatPage(room: room)),).whenComplete(() async {
-                                          room.metadata!["active" + currentUser.id!] = false;
-                                          _roomDataService.updateRoom(room.id, room.metadata!);
-                                        });
-                                        if (!deleteRoom!) {
-                                          _roomDataService.deleteRoom(room.id);
-                                        }
-                                      },
+                                                bool? deleteRoom = await Navigator.push(
+                                                  context,
+                                                  CupertinoPageRoute<bool>(
+                                                      builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                                                  room.metadata!["active" + currentUser.id!] = false;
+                                                  _roomDataService.updateRoom(room.id, room.metadata!);
+                                                });
+                                                if (!deleteRoom!) {
+                                                  _roomDataService.deleteRoom(room.id);
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                     onTap: () async {
                                       var result = await Navigator.push(
@@ -374,41 +387,41 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                   ],
                                 ),
                                 trailing: user.id! == currentUser.id ? IconButton(
-                                  icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                                  alignment: Alignment.centerRight,
-                                  padding: EdgeInsets.all(0),
-                                  onPressed: false ? () {
-                                  } : null,
-                                ) : IconButton(
-                                  icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
-                                  alignment: Alignment.centerRight,
-                                  padding: EdgeInsets.all(0),
-                                  onPressed: () async {
-                                    types.User otherUser = types.User(
-                                      firstName: user.firstName,
-                                      lastName: user.lastName,
-                                      id: user.id!, // UID from Firebase Authentication
-                                      imageUrl: user.imageUrl,
-                                    );
-                                    final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
-                                      "trainer" + user.id!: user.isTrainer,
-                                      "trainer" + currentUser.id!: currentUser.isTrainer,
-                                      "active" + user.id!: false,
-                                      "active" + currentUser.id!: true,
-                                    });
+                                          icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+                                          alignment: Alignment.centerRight,
+                                          padding: EdgeInsets.all(0),
+                                          onPressed: false ? () {
+                                          } : null,
+                                        ) : IconButton(
+                                          icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
+                                          alignment: Alignment.centerRight,
+                                          padding: EdgeInsets.all(0),
+                                          onPressed: () async {
+                                            types.User otherUser = types.User(
+                                              firstName: user.firstName,
+                                              lastName: user.lastName,
+                                              id: user.id!, // UID from Firebase Authentication
+                                              imageUrl: user.imageUrl,
+                                            );
+                                            final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                                              "trainer" + user.id!: user.isTrainer,
+                                              "trainer" + currentUser.id!: currentUser.isTrainer,
+                                              "active" + user.id!: false,
+                                              "active" + currentUser.id!: true,
+                                            });
 
-                                    bool? deleteRoom = await Navigator.push(
-                                      context,
-                                      CupertinoPageRoute<bool>(
-                                          builder: (context) => ChatPage(room: room)),).whenComplete(() async {
-                                      room.metadata!["active" + currentUser.id!] = false;
-                                      _roomDataService.updateRoom(room.id, room.metadata!);
-                                    });
-                                    if (!deleteRoom!) {
-                                      _roomDataService.deleteRoom(room.id);
-                                    }
-                                  },
-                                ),
+                                            bool? deleteRoom = await Navigator.push(
+                                              context,
+                                              CupertinoPageRoute<bool>(
+                                                  builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                                              room.metadata!["active" + currentUser.id!] = false;
+                                              _roomDataService.updateRoom(room.id, room.metadata!);
+                                            });
+                                            if (!deleteRoom!) {
+                                              _roomDataService.deleteRoom(room.id);
+                                            }
+                                          },
+                                        ),
                                 onTap: () async {
                                   var result = await Navigator.push(
                                       context,
