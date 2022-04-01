@@ -11,6 +11,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/Sesions.dart';
 import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
 import '../Home/Marca/Marca.dart';
@@ -188,7 +189,7 @@ class _MambaClientState extends State<MambaClient> {
         //allowImplicitScrolling: true,
         children: <Widget>[
           Marca(),
-          Marca(),
+          BrandPage(),
           Sesions(),
           Profile(),
         ],
