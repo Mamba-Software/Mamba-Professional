@@ -144,6 +144,7 @@ class _ProfileState extends State<Profile> {
   // Build the Widget of the User Name
   Widget buildUserTitle() {
     return !isLoading ? Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(child: TitleHeadline1(text: currentUser.name!,)),
       ],
@@ -269,50 +270,58 @@ class _ProfileState extends State<Profile> {
 
   // Build Share App Container.
   Widget buildShareAppContainer() {
-    return Container(
-      height: safeAreaHeight*0.15,
-      width: double.infinity,
-      decoration: BoxDecoration(
-          color: Theme.of(context).backgroundColor
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TitleHeadline1(
-            text: AppLocalizations.of(context)!.shareAppTitle,
-          ),
-          SizedBox(height: safeAreaHeight*0.015),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
-            child: Text(
-                AppLocalizations.of(context)!.shareAppText,
-                style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor),
-                textAlign: TextAlign.center
+    return SafeArea(
+      left: false,
+      right: false,
+      child: Container(
+        height: safeAreaHeight*0.15,
+        width: double.infinity,
+        decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TitleHeadline1(
+              text: AppLocalizations.of(context)!.shareAppTitle,
             ),
-          ),
-          SizedBox(height: safeAreaHeight*0.015),
-          OutlinedButton(
-            onPressed: () {
+            SizedBox(height: safeAreaHeight*0.015),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.0),
+              child: Text(
+                  AppLocalizations.of(context)!.shareAppText,
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor),
+                  textAlign: TextAlign.center
+              ),
+            ),
+            SizedBox(height: safeAreaHeight*0.015),
+            Container(
+              width: safeAreaWidth*0.4,
+              child: OutlinedButton(
+                onPressed: () {
 
-            },
-            child: Text(
-              AppLocalizations.of(context)!.shareApp,
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-            style: OutlinedButton.styleFrom(
-              elevation: 4,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              fixedSize: Size(safeAreaWidth*0.35, safeAreaHeight*0.06),
-              side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(30),
+                },
+                child: Text(
+                  AppLocalizations.of(context)!.shareApp,
+                  style: Theme.of(context).textTheme.bodyText1,
+                  textAlign: TextAlign.center,
+                ),
+                style: OutlinedButton.styleFrom(
+                  elevation: 4,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  fixedSize: Size(safeAreaWidth*0.35, safeAreaHeight*0.06),
+                  side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(30),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
 
+        ),
       ),
     );
   }
@@ -333,7 +342,7 @@ class _ProfileState extends State<Profile> {
         child: Column(
           children: [
             Container(
-              height: safeAreaHeight*0.1,
+              height: safeAreaHeight*0.08,
               width: double.infinity,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
