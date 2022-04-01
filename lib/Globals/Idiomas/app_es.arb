@@ -713,6 +713,10 @@
   "@calendar":{
     "description": "disponibilidad text"
   },
+  "myCalendar": "Mi Calendario",
+  "@myCalendar":{
+    "description": "disponibilidad text"
+  },
   "calendarBrandText": "Mira todas las sesiones de {brand}",
   "@calendarBrandText": {
     "description": "Wellcome message",

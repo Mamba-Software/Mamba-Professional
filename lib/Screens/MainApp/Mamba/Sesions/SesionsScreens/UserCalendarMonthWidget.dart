@@ -123,7 +123,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(AppLocalizations.of(context)!.sesionsBottomNav, style: Theme.of(context).textTheme.headline1),
+                Text(AppLocalizations.of(context)!.myCalendar, style: Theme.of(context).textTheme.headline1),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -473,7 +473,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(AppLocalizations.of(context)!.sesionsBottomNav, style: Theme.of(context).textTheme.headline1),
+                Text(AppLocalizations.of(context)!.myCalendar, style: Theme.of(context).textTheme.headline1),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
