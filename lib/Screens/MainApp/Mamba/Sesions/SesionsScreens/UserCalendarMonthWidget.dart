@@ -465,6 +465,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
           ),
         ],
       ) : Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
             height: widget.height*0.18,

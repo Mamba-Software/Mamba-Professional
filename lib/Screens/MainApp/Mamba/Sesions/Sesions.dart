@@ -67,58 +67,58 @@ class _SesionsState extends State<Sesions> {
         child: SingleChildScrollView(
           physics: ClampingScrollPhysics(),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08, vertical: safeAreaWidth*0.02),
+            padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
             child: Column(
               children: [
-                Column(
-                  children: [
-                    UserCalendarMonthWidget(
-                      userId: currentUser.id!,
-                      height: safeAreaHeight*0.56,
-                      width: safeAreaWidth*0.9,
-                    ),
-                  ],
-                ),
                 Container(
+                  height: safeAreaHeight*0.6,
+                  width: double.infinity,
                   child: Column(
                     children: [
-                      Container(
-                        height: safeAreaHeight*0.08,
-                        width: double.infinity,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                            AppLocalizations.of(context)!.recentEvents,
-                            style: Theme.of(context).textTheme.headline3!.copyWith(color: AppColors.grey, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center
-                            ),
-                            FloatingActionButton.extended(
-                              heroTag: "86",
-                              onPressed: navigateToEventHistoryScreen,
-                              backgroundColor: Theme.of(context).accentColor.withOpacity(0.8),
-                              icon: Icon(
-                                Icons.description,
-                                color: AppColors.white,
-                                size: safeAreaWidth*0.05,
-                              ),
-                              label: Text(
-                                  AppLocalizations.of(context)!.eventHistory,
-                                  style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white)
-                              ),
-                            ),
-                          ],
-                        ),
+                      SizedBox(height: safeAreaHeight*0.02,),
+                      UserCalendarMonthWidget(
+                        userId: currentUser.id!,
+                        height: safeAreaHeight*0.56,
+                        width: safeAreaWidth*0.9,
                       ),
                       SizedBox(height: safeAreaHeight*0.02,),
-                      UserRecentEventsWidget(
-                        userId: currentUser.id!,
-                        height: safeAreaHeight,
-                        width: safeAreaWidth*0.9,
+                    ],
+                  ),
+                ),
+                Container(
+                  height: safeAreaHeight*0.08,
+                  width: double.infinity,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                          AppLocalizations.of(context)!.recentEvents,
+                          style: Theme.of(context).textTheme.headline3!.copyWith(color: AppColors.grey, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center
+                      ),
+                      FloatingActionButton.extended(
+                        heroTag: "86",
+                        onPressed: navigateToEventHistoryScreen,
+                        backgroundColor: Theme.of(context).accentColor.withOpacity(0.4),
+                        icon: Icon(
+                          Icons.description,
+                          color: AppColors.white,
+                          size: safeAreaWidth*0.05,
+                        ),
+                        label: Text(
+                            AppLocalizations.of(context)!.eventHistory,
+                            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white)
+                        ),
                       ),
                     ],
                   ),
+                ),
+                SizedBox(height: safeAreaHeight*0.04,),
+                UserRecentEventsWidget(
+                  userId: currentUser.id!,
+                  height: safeAreaHeight,
+                  width: safeAreaWidth*0.9,
                 ),
               ],
             ),
