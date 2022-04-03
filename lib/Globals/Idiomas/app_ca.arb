@@ -368,5 +368,9 @@
   "updateAppText": "Actualitza l'app per a no perdre't cap novetat i evitar possibles errors.",
   "shareAppTitle": "Convidar amics",
   "shareAppText": "Comparteix la app amb els teus amics i familiars",
-  "shareApp": "Compartir app"
+  "shareApp": "Compartir app",
+  "brandDetailsTab": "Detallss",
+  "brandContentTab": "Fotos",
+  "readMore": "Veure més",
+  "readLess": "Veure menys"
 }

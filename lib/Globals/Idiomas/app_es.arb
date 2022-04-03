@@ -1682,5 +1682,21 @@
   "shareApp": "Compartir app",
   "@shareApp": {
     "description": "membersOfBrand message"
+  },
+  "brandDetailsTab": "Detalles",
+  "@brandDetailsTab": {
+    "description": "membersOfBrand message"
+  },
+  "brandContentTab": "Fotos",
+  "@brandContentTab": {
+    "description": "membersOfBrand message"
+  },
+  "readMore": "Ver más",
+  "@readMore": {
+    "description": "membersOfBrand message"
+  },
+  "readLess": "Ver menos",
+  "@readLess": {
+    "description": "membersOfBrand message"
   }
 }

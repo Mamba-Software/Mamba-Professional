@@ -1,6 +1,3 @@
-import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,25 +5,22 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/LongTextContainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadline1.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/BrandEventsToday.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembrosTrainer.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Users/UsersHorizontalScroll.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
-
 import '../../Home/Marca/Trainer/TieneMarca/TieneMarcaModals/MembershipRequests.dart';
 import '../../Home/Marca/Trainer/TieneMarca/TieneMarcaModals/SettingsBrand.dart';
 
@@ -55,6 +49,8 @@ class _BrandPageState extends State<BrandPage> {
   List<Event> todayEvents = [];
   int numberEventsFinished = 0;
   int numberEventsToDo = 0;
+  // Scroll Controller
+  List<Usuario> brandTrainers = [];
 
   @override
   void initState() {
@@ -89,6 +85,7 @@ class _BrandPageState extends State<BrandPage> {
     currentBrand.setBasicData = await _brandDataService.getBrandDetails(currentBrand.id!);
     currentBrand.setUserList = await _brandDataService.getBrandUsers(currentBrand.id!);
     _imagesUploaded = await _brandDataService.getBrandContentPictures(currentBrand.id!);
+    brandTrainers = await _brandDataService.getBrandTrainers(currentBrand.id!);
   }
 
   // Gets number of finished events
@@ -218,7 +215,7 @@ class _BrandPageState extends State<BrandPage> {
             highlightColor: AppColors.grey.withOpacity(0.5),
             child: Container(
               height: safeAreaHeight*0.04,
-              width: safeAreaWidth*0.06,
+              width: safeAreaWidth*0.08,
               decoration: BoxDecoration(
                 color: AppColors.grey,
                 borderRadius: BorderRadius.circular(10.0),
@@ -231,7 +228,7 @@ class _BrandPageState extends State<BrandPage> {
             highlightColor: AppColors.grey.withOpacity(0.5),
             child: Container(
               height: safeAreaHeight*0.04,
-              width: safeAreaWidth*0.06,
+              width: safeAreaWidth*0.08,
               decoration: BoxDecoration(
                 color: AppColors.grey,
                 borderRadius: BorderRadius.circular(10.0),
@@ -428,7 +425,7 @@ class _BrandPageState extends State<BrandPage> {
     }
 
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         appBar: null,
         body: NestedScrollView(
@@ -453,49 +450,93 @@ class _BrandPageState extends State<BrandPage> {
                   bottom: TabBar(
                     indicatorColor: Colors.white,
                     indicatorWeight: 5,
-                    //isScrollable: true,
+                    isScrollable: true,
                     tabs: [
-                      Tab(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.info_outlined, color: Colors.white, size: MediaQuery.of(context).size.width*0.06,)
-                            ],
+                      Container(
+                        width: safeAreaWidth*0.25,
+                        child: Tab(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                    AppLocalizations.of(context)!.brandDetailsTab.toUpperCase(),
+                                    style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).primaryColor),
+                                    textAlign: TextAlign.center
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      Tab(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.info_outlined, color: Colors.white, size: MediaQuery.of(context).size.width*0.06,)
-                            ],
+                      Container(
+                        width: safeAreaWidth*0.25,
+                        child: Tab(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.calendar.toUpperCase(),
+                                  style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).primaryColor),
+                                  textAlign: TextAlign.center
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      Tab(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.info_outlined, color: Colors.white, size: MediaQuery.of(context).size.width*0.06,)
-                            ],
+                      Container(
+                        width: safeAreaWidth*0.25,
+                        child: Tab(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                    AppLocalizations.of(context)!.locations.toUpperCase(),
+                                    style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).primaryColor),
+                                    textAlign: TextAlign.center
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: safeAreaWidth*0.25,
+                        child: Tab(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                    AppLocalizations.of(context)!.brandContentTab.toUpperCase(),
+                                    style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).primaryColor),
+                                    textAlign: TextAlign.center
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ],
+                    onTap: (index) {
+
+                    },
                   ),
                 ),
               ),
             )
           ],
           body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
             children: [
+              buildDetailsTabPage(),
               buildTabPage(),
               buildTabPage(),
               buildTabPage(),
@@ -519,18 +560,18 @@ class _BrandPageState extends State<BrandPage> {
             padding: EdgeInsets.all(12),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final childCount = 25;
-                  final hasSeparator = index != childCount - 1;
-                  final double bottom = hasSeparator ? 12 : 0;
-                  final child = ListTile(title: Text('Item #$index'));
+                      (context, index) {
+                    final childCount = 25;
+                    final hasSeparator = index != childCount - 1;
+                    final double bottom = hasSeparator ? 12 : 0;
+                    final child = ListTile(title: Text('Item #$index'));
 
-                  return Container(
-                    margin: EdgeInsets.only(bottom: bottom),
-                    child: child,
-                  );
-                },
-                childCount: 25
+                    return Container(
+                      margin: EdgeInsets.only(bottom: bottom),
+                      child: child,
+                    );
+                  },
+                  childCount: 25
               ),
             ),
           ),
@@ -538,4 +579,138 @@ class _BrandPageState extends State<BrandPage> {
       ),
     ),
   );
+
+  Widget buildDetailsTabPage() => SafeArea(
+    top: false,
+    bottom: false,
+    child: Builder(
+      builder: (context) => CustomScrollView(
+        shrinkWrap: true,
+        slivers: [
+          SliverOverlapInjector(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+          ),
+          SliverToBoxAdapter(
+              child: buildDescriptionContainer()
+          ),
+          SliverToBoxAdapter(
+              child: buildBrandTodayContainer()
+          ),
+          SliverToBoxAdapter(
+              child: buildBrandTrainersContainer()
+          ),
+        ],
+      ),
+    ),
+  );
+
+  Widget buildDescriptionContainer() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
+      child: Column(
+        children: [
+          SizedBox(
+            height: safeAreaHeight * 0.05,
+          ),
+          LongTextContainer(
+            text: currentBrand.description!,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildBrandTodayContainer() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            PageTransition(
+                type: PageTransitionType.bottomToTop,
+                child: BrandEventsToday(
+                    brandId: currentBrand.id!
+                )
+            )
+        ).whenComplete(() {
+          setState(() {
+            isLoading = true;
+            initBrandHome();
+          });
+        });
+      },
+      child: Column(
+        children: [
+          SizedBox(
+            height: safeAreaHeight * 0.02,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: safeAreaWidth * 0.90,
+                height: safeAreaHeight * 0.08,
+                decoration: new BoxDecoration(
+                  color: Theme.of(context).accentColor.withOpacity(0.4),
+                  borderRadius: new BorderRadius.all(
+                    const Radius.circular(10.0),
+                  ),
+                ),
+                child: Material(
+                  elevation: 4,
+                  color: Theme.of(context).accentColor.withOpacity(0.4),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.all(
+                      const Radius.circular(10.0),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                          width: MediaQuery.of(context).size.width * 0.09,
+                          child: Icon(Icons.calendar_today_outlined, color: AppColors.white, size: MediaQuery.of(context).size.height * 0.03,)
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.69,
+                        child: Center(child: Text(AppLocalizations.of(context)!.today(StringUtils().toCapitalized(DateFormat('EEEE d/M/yy', Localizations.localeOf(context).languageCode).format(DateTime.now()))), style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white,fontWeight: FontWeight.w400)),),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildBrandTrainersContainer() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: safeAreaHeight * 0.05,
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
+          child: Text(
+            AppLocalizations.of(context)!.trainers,
+            style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+            textAlign: TextAlign.left,
+          ),
+        ),
+        SizedBox(
+          height: safeAreaHeight * 0.02,
+        ),
+        UsersHorizontalScroll(
+          usuarios: brandTrainers,
+          height: safeAreaHeight * 0.15,
+          width: safeAreaWidth,
+        ),
+
+      ],
+    );
+  }
+
 }
