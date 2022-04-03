@@ -888,6 +888,10 @@
   "@members":{
     "description": "Añadir Miembros text"
   },
+  "membersTotal": "Miembros en total",
+  "@membersTotal":{
+    "description": "Añadir Miembros text"
+  },
   "membersBrandText": "Entrenadores y clientes todos aquí",
   "@membersBrandText": {
     "description": "Wellcome message"
