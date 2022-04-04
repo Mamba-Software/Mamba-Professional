@@ -17,7 +17,7 @@ class _LongTextContainerState extends State<LongTextContainer> {
 
   @override
   Widget build(BuildContext context) {
-    lines = readMore ? null : 2;
+    lines = readMore ? null : 1;
     return Container(
       child: Column(
         children: [
