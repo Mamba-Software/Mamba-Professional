@@ -169,6 +169,7 @@
   "calendar": "Calendari",
   "myCalendar": "El Meu Calendari",
   "calendarBrandText": "Mira totes les sessions de {brand}",
+  "calendarWeekBrandText": "Aquesta setmana tens ...",
   "add": "Afegir",
   "next": "Següent",
   "finish": "Finalitzar",

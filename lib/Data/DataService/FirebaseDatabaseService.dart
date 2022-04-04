@@ -1291,6 +1291,27 @@ class FirebaseDatabaseService {
       return eventsList.length;
     }
 
+    // Get First Events
+    Future <List<Event>> getBrandEventsThisMonth(String brandId) async {
+    DateTime now = DateTime.now();
+    now.subtract(Duration(days: 30));
+    Timestamp tmstp = Timestamp.fromDate(now);
+
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Events")
+        .where("doneAt", isGreaterThan: tmstp)
+        .orderBy("doneAt", descending: true)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObjectOnlyCoverData(
+          querySnapshot.docs[i].id, querySnapshot.docs[i]));
+    }
+    return events;
+  }
+
     // Get All Events for Today of Brand
     Future<List<Event>> getAllEventsTodayBrand(String brandId) async {
       DateTime today = DateTime.now();

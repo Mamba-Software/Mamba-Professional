@@ -18,6 +18,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullS
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/BrandEventsToday.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Users/UsersHorizontalScroll.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandCalendarWeekWidget.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -537,7 +538,7 @@ class _BrandPageState extends State<BrandPage> {
             physics: NeverScrollableScrollPhysics(),
             children: [
               buildDetailsTabPage(),
-              buildTabPage(),
+              buildCalendarTabPage(),
               buildTabPage(),
               buildTabPage(),
             ],
@@ -604,9 +605,57 @@ class _BrandPageState extends State<BrandPage> {
     ),
   );
 
+  Widget buildCalendarTabPage() => SafeArea(
+    top: false,
+    bottom: false,
+    child: Builder(
+      builder: (context) => CustomScrollView(
+        shrinkWrap: true,
+        slivers: [
+          SliverOverlapInjector(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+          ),
+          SliverToBoxAdapter(
+              child: Container(
+                height: safeAreaHeight*0.6,
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: safeAreaHeight * 0.05,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
+                      child: Text(
+                        AppLocalizations.of(context)!.calendarWeekBrandText,
+                        style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SizedBox(
+                      height: safeAreaHeight * 0.04,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
+                      child: BrandCalendarWeekWidget(
+                        brandId: currentBrand.id!,
+                        height: safeAreaHeight*0.5,
+                        width: safeAreaWidth*0.9,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ),
+        ],
+      ),
+    ),
+  );
+
   Widget buildDescriptionContainer() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
+      padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
       child: Column(
         children: [
           SizedBox(
@@ -647,7 +696,7 @@ class _BrandPageState extends State<BrandPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: safeAreaWidth * 0.90,
+                width: safeAreaWidth * 0.86,
                 height: safeAreaHeight * 0.08,
                 decoration: new BoxDecoration(
                   color: Theme.of(context).accentColor.withOpacity(0.4),
@@ -693,7 +742,7 @@ class _BrandPageState extends State<BrandPage> {
           height: safeAreaHeight * 0.05,
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
+          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
           child: Text(
             AppLocalizations.of(context)!.trainers,
             style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
@@ -701,7 +750,7 @@ class _BrandPageState extends State<BrandPage> {
           ),
         ),
         SizedBox(
-          height: safeAreaHeight * 0.02,
+          height: safeAreaHeight * 0.04,
         ),
         UsersHorizontalScroll(
           usuarios: brandTrainers,

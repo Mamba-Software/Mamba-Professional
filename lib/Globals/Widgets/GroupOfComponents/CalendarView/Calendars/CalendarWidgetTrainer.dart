@@ -428,21 +428,11 @@ class _CalendarWidgetTrainerState extends State<CalendarWidgetTrainer> {
   }
 
   void _addEvent({DateTime? dateTimeClicked}) {
-    /*
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
           builder: (context) => AddEvent(
             locale: Localizations.localeOf(context),
-            initialDateTime: dateTimeClicked ?? null,
-          ),
-        )
-    );
-     */
-    Navigator.push(
-        context,
-        CupertinoPageRoute<String>(
-          builder: (context) => AddEditEventPage(
             initialDateTime: dateTimeClicked ?? null,
           ),
         )

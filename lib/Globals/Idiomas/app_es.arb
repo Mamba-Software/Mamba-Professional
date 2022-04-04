@@ -726,6 +726,10 @@
       }
     }
   },
+  "calendarWeekBrandText": "Esta semana tienes ...",
+  "@calendarWeekBrandText": {
+    "description": "Wellcome message"
+  },
   "add": "Añadir",
   "@add":{
     "description": "Siguiente text"
