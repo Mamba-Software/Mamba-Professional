@@ -169,7 +169,7 @@
   "calendar": "Calendari",
   "myCalendar": "El Meu Calendari",
   "calendarBrandText": "Mira totes les sessions de {brand}",
-  "calendarWeekBrandText": "Aquesta setmana tens ...",
+  "calendarWeekBrandText": "Aquesta setmana a {brand}",
   "add": "Afegir",
   "next": "Següent",
   "finish": "Finalitzar",
@@ -370,7 +370,7 @@
   "shareAppTitle": "Convidar amics",
   "shareAppText": "Comparteix la app amb els teus amics i familiars",
   "shareApp": "Compartir app",
-  "brandDetailsTab": "Detallss",
+  "brandDetailsTab": "Detalls",
   "brandContentTab": "Fotos",
   "readMore": "Veure més",
   "readLess": "Veure menys"

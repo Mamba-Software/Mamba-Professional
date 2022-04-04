@@ -36,6 +36,10 @@ class _BrandCalendarWeekWidgetState extends State<BrandCalendarWeekWidget> {
   // AlL Events From User
   List<Event> eventsList = [];
   List<Appointment> allAppointments = <Appointment>[];
+  // DateTime Limits for Week
+  DateTime now = DateTime.now();
+  DateTime startWeek = DateTime.now();
+  DateTime endWeek = DateTime.now();
 
   // Gets the Events Done by the User
   Future<void> getBrandEvents() async {
@@ -97,19 +101,7 @@ class _BrandCalendarWeekWidgetState extends State<BrandCalendarWeekWidget> {
     return AppointmentDataSource(allAppointments);
   }
 
-  // Navigate to Feedback Screen on Tap
-  void navigateToMyCalendar(DateTime? dateTime) {
-    Navigator.push(
-      context,
-      CupertinoPageRoute<Null>(
-        builder: (context) => UserCalendarWidget(
-          userId: widget.brandId,
-          dateTime: dateTime,
-        )
-      )
-    );
-  }
-
+  // Navigate to Event Screen on Tap
   void navigateToEventScreen(String eventId) {
     // Navigate to Event Screen
     Navigator.push(
@@ -124,176 +116,186 @@ class _BrandCalendarWeekWidgetState extends State<BrandCalendarWeekWidget> {
 
   @override
   void initState() {
+    int day = now.weekday;
+    startWeek = now.subtract(Duration(days: day-1));
+    endWeek = startWeek.add(Duration(days: 6));
     getBrandEvents();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FittedBox(
-      fit: BoxFit.fitHeight,
-      child: Container(
-        width: widget.width,
-        decoration: new BoxDecoration(
-          color: Colors.transparent,
-          border: Border.all(color: AppColors.grey, width: 1),
+    return Container(
+      height: widget.height,
+      width: widget.width,
+      padding: EdgeInsets.symmetric(horizontal: 6.0),
+      decoration: new BoxDecoration(
+        color: Colors.transparent,
+        //border: Border.all(color: AppColors.grey, width: 1),
+        borderRadius: new BorderRadius.all(
+          const Radius.circular(10.0),
+        ),
+      ),
+      child: SfCalendar(
+        view: CalendarView.month,
+        controller: _calendarController,
+        dataSource: _getCalendarDataSource(),
+        firstDayOfWeek: 1,
+        minDate: startWeek,
+        maxDate: endWeek,
+        initialSelectedDate: DateTime.now(),
+        initialDisplayDate: DateTime.now(),
+        showDatePickerButton: false,
+        showCurrentTimeIndicator: false,
+        showNavigationArrow: false,
+        todayHighlightColor: Theme.of(context).accentColor,
+        viewHeaderHeight: widget.height*0.13,
+        viewHeaderStyle: ViewHeaderStyle(
+          dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+        ),
+        headerHeight: 0,
+        headerDateFormat: "MMMM yyyy",
+        headerStyle: CalendarHeaderStyle(
+          textAlign: TextAlign.center,
+          backgroundColor: Colors.transparent,
+          textStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.transparent),
+        ),
+        cellBorderColor: Colors.transparent,
+        monthViewSettings: MonthViewSettings(
+          navigationDirection: MonthNavigationDirection.horizontal,
+          monthCellStyle: MonthCellStyle(
+            textStyle: Theme.of(context).textTheme.bodyText1,
+            trailingDatesTextStyle: Theme.of(context).textTheme.caption,
+            leadingDatesTextStyle: Theme.of(context).textTheme.caption,
+          ),
+          numberOfWeeksInView: 1,
+          showAgenda: true,
+          agendaViewHeight: widget.height*0.75,
+          agendaItemHeight: widget.height*0.14,
+          agendaStyle: AgendaStyle(
+            appointmentTextStyle: Theme.of(context).textTheme.bodyText2,
+          ),
+        ),
+        selectionDecoration: BoxDecoration(
+          border: Border.all(width: 0.5, color: Theme.of(context).accentColor),
           borderRadius: new BorderRadius.all(
             const Radius.circular(10.0),
           ),
         ),
-        child: SfCalendar(
-          view: CalendarView.month,
-          controller: _calendarController,
-          dataSource: _getCalendarDataSource(),
-          firstDayOfWeek: 1,
-          initialSelectedDate: DateTime.now(),
-          initialDisplayDate: DateTime.now(),
-          showDatePickerButton: false,
-          showCurrentTimeIndicator: false,
-          showNavigationArrow: false,
-          todayHighlightColor: Theme.of(context).accentColor,
-          viewHeaderHeight: widget.width*0.15,
-          viewHeaderStyle: ViewHeaderStyle(
-            dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-          ),
-          headerHeight: 0,
-          headerDateFormat: "MMMM yyyy",
-          headerStyle: CalendarHeaderStyle(
-            textAlign: TextAlign.center,
-            backgroundColor: Colors.transparent,
-            textStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.transparent),
-          ),
-          cellBorderColor: Colors.transparent,
-          monthViewSettings: MonthViewSettings(
-            navigationDirection: MonthNavigationDirection.horizontal,
-            monthCellStyle: MonthCellStyle(
-              textStyle: Theme.of(context).textTheme.bodyText1,
-              trailingDatesTextStyle: Theme.of(context).textTheme.caption,
-              leadingDatesTextStyle: Theme.of(context).textTheme.caption,
-            ),
-            numberOfWeeksInView: 1,
-            showAgenda: true,
-            agendaViewHeight: widget.width*0.5,
-            agendaItemHeight: widget.width*0.22,
-            agendaStyle: AgendaStyle(
-              appointmentTextStyle: Theme.of(context).textTheme.bodyText2,
-            ),
-          ),
-          selectionDecoration: BoxDecoration(
-              border: Border.all(width: 0.1, color: Colors.transparent)
-          ),
-          onViewChanged: (ViewChangedDetails viewChangedDetails) {
-            Future.delayed(Duration.zero, () async {
-              setState(() {
-                middleMonthDate = viewChangedDetails.visibleDates[14];
-              });
-            });
-          },
-          onTap: (CalendarTapDetails details) {
-            setState(() {
-              _calendarController.selectedDate = details.date!;
-            });
-          },
-          appointmentTextStyle: Theme.of(context).textTheme.bodyText2!,
-          appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
-            final Appointment appointment = details.appointments.first;
-            final DateTime today = DateTime.now();
-            bool isCompleted = appointment.endTime.isBefore(today);
-            final Event event = getEvent(appointment.id.toString());
-            if (isCompleted) {
-              return GestureDetector(
-                onTap: () {
-                  navigateToEventScreen(appointment.id.toString());
-                },
-                child: Center(
-                  child: Material(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.all(
-                        const Radius.circular(5.0),
+        onTap: (CalendarTapDetails details) {
+          setState(() {
+            _calendarController.selectedDate = details.date!;
+          });
+        },
+        appointmentTextStyle: Theme.of(context).textTheme.bodyText2!,
+        appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
+          final Appointment appointment = details.appointments.first;
+          final DateTime today = DateTime.now();
+          bool isCompleted = appointment.endTime.isBefore(today);
+          final Event event = getEvent(appointment.id.toString());
+          if (isCompleted) {
+            return GestureDetector(
+              onTap: () {
+                navigateToEventScreen(appointment.id.toString());
+              },
+              child: Center(
+                child: Material(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.all(
+                      const Radius.circular(5.0),
+                    ),
+                  ),
+                  elevation: 2,
+                  child: Container(
+                    height: widget.height*0.14,
+                    width: details.bounds.width,
+                    padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: widget.height*0.01),
+                    decoration: BoxDecoration(
+                      color: appointment.color.withOpacity(0.15),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5),
                       ),
                     ),
-                    elevation: 2,
-                    child: Container(
-                      height: widget.width*0.25,
-                      width: details.bounds.width,
-                      padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: widget.height*0.01),
-                      decoration: BoxDecoration(
-                        color: appointment.color.withOpacity(0.15),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5),
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                event.title!,
-                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
-                                textAlign: TextAlign.start,
-                              ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              event.title!,
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                              textAlign: TextAlign.start,
+                            ),
 
-                            ],
-                          ),
-                          Text(
-                            DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                            textAlign: TextAlign.start,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            } else {
-              return GestureDetector(
-                onTap: () {
-                  navigateToEventScreen(appointment.id.toString());
-                },
-                child: Center(
-                  child: Material(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.all(
-                        const Radius.circular(5.0),
-                      ),
-                    ),
-                    elevation: 2,
-                    child: Container(
-                      height: widget.width*0.2,
-                      width: details.bounds.width,
-                      padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: widget.height*0.01),
-                      decoration: BoxDecoration(
-                        color: appointment.color,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5),
+                          ],
                         ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            event.title!,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
-                            textAlign: TextAlign.start,
-                          ),
-                          Text(
-                            DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                            textAlign: TextAlign.start,
-                          ),
-                        ],
-                      ),
+                        Text(
+                          DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                          textAlign: TextAlign.start,
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              );
-            }
-          },
-        ),
+              ),
+            );
+          } else {
+            return GestureDetector(
+              onTap: () {
+                navigateToEventScreen(appointment.id.toString());
+              },
+              child: Center(
+                child: Material(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.all(
+                      const Radius.circular(5.0),
+                    ),
+                  ),
+                  elevation: 2,
+                  child: Container(
+                    height: widget.height*0.14,
+                    width: details.bounds.width,
+                    padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: widget.height*0.01),
+                    decoration: BoxDecoration(
+                      color: appointment.color,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          event.title!,
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                          textAlign: TextAlign.start,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                              textAlign: TextAlign.start,
+                            ),
+                            Text(
+                              "("+appointment.subject+")",
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                              textAlign: TextAlign.start,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+        },
       ),
     );
   }

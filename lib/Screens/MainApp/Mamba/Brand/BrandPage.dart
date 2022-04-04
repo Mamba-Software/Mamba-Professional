@@ -17,6 +17,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/BrandEventsToday.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Users/UsersHorizontalScroll.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandCalendarWeekWidget.dart';
 import 'package:page_transition/page_transition.dart';
@@ -123,6 +124,24 @@ class _BrandPageState extends State<BrandPage> {
         context,
         CupertinoPageRoute<Null>(
           builder: (context) => SettingsBrand(),
+        )
+    ).whenComplete(() {
+      setState(() {
+        isLoading = true;
+        initBrandHome();
+      });
+    });
+  }
+
+  // Navigate to Settings Brand Screen
+  void navigateToBrandCalendarScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<Null>(
+          builder: (context) => CalendarWidgetTrainer(
+              brandID: currentBrand.id!,
+              canEdit: true
+          ),
         )
     ).whenComplete(() {
       setState(() {
@@ -595,9 +614,6 @@ class _BrandPageState extends State<BrandPage> {
               child: buildDescriptionContainer()
           ),
           SliverToBoxAdapter(
-              child: buildBrandTodayContainer()
-          ),
-          SliverToBoxAdapter(
               child: buildBrandTrainersContainer()
           ),
         ],
@@ -616,36 +632,63 @@ class _BrandPageState extends State<BrandPage> {
             handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
           ),
           SliverToBoxAdapter(
-              child: Container(
-                height: safeAreaHeight*0.6,
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: safeAreaHeight * 0.05,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: safeAreaHeight * 0.04,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FloatingActionButton.extended(
+                          heroTag: "87",
+                          onPressed: navigateToBrandCalendarScreen,
+                          backgroundColor: Theme.of(context).accentColor,
+                          icon: Icon(
+                            Icons.calendar_month,
+                            color: AppColors.white,
+                            size: safeAreaWidth*0.05,
+                          ),
+                          label: Text(
+                              AppLocalizations.of(context)!.planSessions,
+                              style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white)
+                          ),
+                        ),
+                      ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
-                      child: Text(
-                        AppLocalizations.of(context)!.calendarWeekBrandText,
-                        style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.left,
-                      ),
+                  ),
+                  SizedBox(
+                    height: safeAreaHeight * 0.04,
+                  ),
+                ],
+              )
+          ),
+          SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
+                    child: Text(
+                      AppLocalizations.of(context)!.calendarWeekBrandText(currentBrand.name!),
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.left,
                     ),
-                    SizedBox(
-                      height: safeAreaHeight * 0.04,
+                  ),
+                  SizedBox(
+                    height: safeAreaHeight * 0.01,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.1),
+                    child: BrandCalendarWeekWidget(
+                      brandId: currentBrand.id!,
+                      height: safeAreaHeight*0.68,
+                      width: safeAreaWidth*0.84,
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
-                      child: BrandCalendarWeekWidget(
-                        brandId: currentBrand.id!,
-                        height: safeAreaHeight*0.5,
-                        width: safeAreaWidth*0.9,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
           ),
         ],
@@ -689,9 +732,6 @@ class _BrandPageState extends State<BrandPage> {
       },
       child: Column(
         children: [
-          SizedBox(
-            height: safeAreaHeight * 0.02,
-          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -728,6 +768,9 @@ class _BrandPageState extends State<BrandPage> {
                 ),
               ),
             ],
+          ),
+          SizedBox(
+            height: safeAreaHeight * 0.05,
           ),
         ],
       ),

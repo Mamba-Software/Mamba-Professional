@@ -1294,8 +1294,8 @@ class FirebaseDatabaseService {
     // Get First Events
     Future <List<Event>> getBrandEventsThisMonth(String brandId) async {
     DateTime now = DateTime.now();
-    now.subtract(Duration(days: 30));
-    Timestamp tmstp = Timestamp.fromDate(now);
+    var temp = now.subtract(Duration(days: 7));
+    Timestamp tmstp = Timestamp.fromDate(temp);
 
     List<Event> events = [];
     QuerySnapshot querySnapshot = await _firestore
