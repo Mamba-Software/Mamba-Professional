@@ -1827,6 +1827,17 @@ class FirebaseDatabaseService {
       return Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
     }
 
+    // Get All Brand Locations
+    Future<List<Location>> getAllBrandLocations(String brandId) async {
+      // Get the Image documents of the Brand
+      List<Location> locations = [];
+      QuerySnapshot querySnapshot = await _firestore.collection(brands).doc(brandId).collection("Locations").get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        locations.add(Location.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+      return locations;
+    }
+
     // Requests
 
     // Send Request

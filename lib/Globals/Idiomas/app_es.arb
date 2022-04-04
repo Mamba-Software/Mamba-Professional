@@ -1022,6 +1022,10 @@
   "@numberClientJoining":{
     "description": "addEvent text"
   },
+  "numberClients": "Número de clientes:",
+  "@numberClients":{
+    "description": "addEvent text"
+  },
   "noClientJoining": "Sin asistentes",
   "@noClientJoining":{
     "description": "addEvent text"
@@ -1118,6 +1122,10 @@
   },
   "noRequestsFound": "No hemos encontrado ninguna solicitud",
   "@noRequestsFound": {
+    "description": "Wellcome message"
+  },
+  "noImagesFound": "No hemos encontrado ninguna imagen",
+  "@noImagesFound": {
     "description": "Wellcome message"
   },
   "requestFromUser": " quiere unirse como {type}",
@@ -1221,6 +1229,10 @@
   },
   "editYourInfo": "Edita tu información personal",
   "@editYourInfo": {
+    "description": "Wellcome message"
+  },
+  "photos": "Imágenes",
+  "@photos": {
     "description": "Wellcome message"
   },
   "profilePhoto": "Foto de perfil",

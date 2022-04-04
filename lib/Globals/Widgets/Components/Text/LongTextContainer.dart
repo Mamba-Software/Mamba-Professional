@@ -12,12 +12,12 @@ class LongTextContainer extends StatefulWidget {
 
 class _LongTextContainerState extends State<LongTextContainer> {
 
-  bool readMore = true;
+  bool readMore = false;
   var lines;
 
   @override
   Widget build(BuildContext context) {
-    lines = readMore ? null : 1;
+    lines = readMore ? null : 2;
     return Container(
       child: Column(
         children: [
