@@ -305,7 +305,7 @@ class _BrandPageState extends State<BrandPage> {
   Widget buildBrandEventCount() {
     return !isLoading ? Material(
       child: Container(
-        width: safeAreaWidth * 0.9,
+        width: safeAreaWidth * 0.86,
         height: safeAreaHeight * 0.09,
         decoration: new BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
