@@ -23,6 +23,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullS
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/BrandEventsToday.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/CalendarWidgetTrainer.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Location/LocationImageTile.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Users/UsersHorizontalScroll.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandCalendarWeekWidget.dart';
@@ -218,6 +219,7 @@ class _BrandPageState extends State<BrandPage> {
         initBrandHome();
       });
     });
+
   }
 
   // Navigate to Brand Calendar Screen
@@ -225,10 +227,9 @@ class _BrandPageState extends State<BrandPage> {
     Navigator.push(
         context,
         CupertinoPageRoute<Null>(
-          builder: (context) => CalendarWidgetTrainer(
-              brandID: currentBrand.id!,
-              canEdit: true
-          ),
+          builder: (context) => BrandCalendarWidget(
+            brandId: currentBrand.id!,
+          )
         )
     ).whenComplete(() {
       setState(() {

@@ -2381,6 +2381,14 @@ class FirebaseDatabaseService {
           .snapshots();
     }
 
+    Stream<QuerySnapshot> getBrandEventsStream(String brandId) {
+      return _firestore
+          .collection(brands)
+          .doc(brandId)
+          .collection("Events")
+          .snapshots();
+    }
+
     // Locations
     Stream<QuerySnapshot> getAllLocationsBrand(String brandId) {
       return _firestore

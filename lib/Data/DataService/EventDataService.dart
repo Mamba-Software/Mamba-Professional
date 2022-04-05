@@ -53,6 +53,9 @@ class EventDataService {
   // Streams
 
   Stream<QuerySnapshot> getUserEventsStream(String userId) => _firebase.getUserEventsStream(userId);
+
+  Stream<QuerySnapshot> getBrandEventsStream(String brandId) => _firebase.getBrandEventsStream(brandId);
+
   Stream<QuerySnapshot> getBrandsEventsTodayStream(String brandId) => _firebase.getBrandsEventsTodayStream(brandId);
 
 

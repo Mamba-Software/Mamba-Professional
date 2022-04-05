@@ -8,24 +8,25 @@ import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/EventPage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/AddEvent.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class UserCalendarWidget extends StatefulWidget {
-  String userId;
+class BrandCalendarWidget extends StatefulWidget {
+  String brandId;
   DateTime? dateTime;
 
-  UserCalendarWidget({Key? key, required this.userId, this.dateTime}) : super(key: key);
+  BrandCalendarWidget({Key? key, required this.brandId, this.dateTime}) : super(key: key);
 
   @override
-  _UserCalendarWidgetState createState() => _UserCalendarWidgetState();
+  _BrandCalendarWidgetState createState() => _BrandCalendarWidgetState();
 }
 
-class _UserCalendarWidgetState extends State<UserCalendarWidget> {
+class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
   // Acceso a Base de Datos
   var _brandDataService = new BrandDataService();
   var _eventDataService = new EventDataService();
@@ -35,6 +36,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
   // Boolean Loading
   bool isLoading = true;
   bool isFirstBuild = true;
+  bool canEdit = false;
   // Boolean Loading
   Brand _brand = Brand();
   // Sesions Controller
@@ -86,15 +88,6 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
     }
   }
 
-  void getUserBrandDetails() async {
-    List<Brand> result = await _brandDataService.getAllBrandsFromUser(widget.userId);
-    if (result.length != 0) {
-      _brand = await _brandDataService.getBrandDetails(result[0].id!);
-    }
-    // TODO: Aixo ho fa per fer el init del Calendari. S'hauria de fer loop per totes les brands del user.
-    initCalendar();
-  }
-
   void initCalendar() {
     // Init App Bar Title
     if (widget.dateTime == null) {
@@ -118,12 +111,30 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
     });
   }
 
+  void getUserBrandDetails() async {
+    _brand = await _brandDataService.getBrandDetails(widget.brandId);
+    if (currentUser.isTrainer!) canEdit = true;
+    initCalendar();
+  }
+
   Event getEvent(String eventId) {
     for (var i=0; i < eventsList.length; i++) {
       Event temp = eventsList[i];
       if (temp.id == eventId) return temp;
     }
     return Event();
+  }
+
+  void _addEvent({DateTime? dateTimeClicked}) {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<String>(
+          builder: (context) => AddEvent(
+            locale: Localizations.localeOf(context),
+            initialDateTime: dateTimeClicked ?? null,
+          ),
+        )
+    );
   }
 
   durationToString(double duration) {
@@ -259,7 +270,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
           ),
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           body: !isLoading ? StreamBuilder<QuerySnapshot>(
-              stream: _eventDataService.getUserEventsStream(currentUser.id!),
+              stream: _eventDataService.getBrandEventsStream(widget.brandId),
               builder: (context, snapshot) {
                 if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
                   return LoadingViewPurple();
@@ -280,8 +291,13 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                         showCurrentTimeIndicator: true,
                         initialDisplayDate: widget.dateTime,
                         initialSelectedDate: widget.dateTime,
-                        selectionDecoration: BoxDecoration(
+                        selectionDecoration: _controller.view == CalendarView.week ? BoxDecoration(
                             border: Border.all(width: 0.1, color: Colors.transparent)
+                        ) : BoxDecoration(
+                          border: Border.all(width: 0.5, color: Theme.of(context).accentColor),
+                          borderRadius: new BorderRadius.all(
+                            const Radius.circular(10.0),
+                          ),
                         ),
                         headerHeight: 0,
                         headerStyle: CalendarHeaderStyle(
@@ -327,6 +343,13 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                             leadingDatesTextStyle: Theme.of(context).textTheme.caption,
                           ),
                         ),
+                        onLongPress: (details) {
+                          if (canEdit) {
+                            if(details.date!.isAfter(DateTime.now())) {
+                              _addEvent(dateTimeClicked: details.date);
+                            }
+                          }
+                        },
                         onViewChanged: (ViewChangedDetails viewChangedDetails) {
                           Future.delayed(Duration.zero, () async {
                             setState(() {
@@ -535,7 +558,26 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                   );
                 }
               }
-          ) : LoadingViewPurple(), // This trailing comma makes auto-formatting nicer for build methods.
+          ) : LoadingViewPurple(),
+          floatingActionButton: canEdit ? Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Container(
+              height: MediaQuery.of(context).size.width*0.17,
+              width: MediaQuery.of(context).size.width*0.17,
+              child: FloatingActionButton(
+                heroTag: "3",
+                onPressed: () {
+                  _addEvent();
+                },
+                backgroundColor: Theme.of(context).accentColor,
+                child: Icon(
+                  Icons.more_time,
+                  size: MediaQuery.of(context).size.width*0.07,
+                  color: AppColors.white,
+                ),
+              ),
+            ),
+          ) : Container(), /// This trailing comma makes auto-formatting nicer for build methods.
       );
   }
 

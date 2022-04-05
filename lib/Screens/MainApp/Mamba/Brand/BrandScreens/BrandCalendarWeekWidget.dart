@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/EventPage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/SesionsScreens/UserEventHistoryPage.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../../../../Data/Models/Event.dart';
 import '../../../../../Globals/Utils/Strings/StringUtils.dart';
-import '../../../../../Globals/Widgets/GroupOfComponents/CalendarView/Calendars/UserCalendarWidget.dart';
+import '../../../../../Globals/Widgets/GroupOfComponents/Calendars/UserCalendarWidget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BrandCalendarWeekWidget extends StatefulWidget {
