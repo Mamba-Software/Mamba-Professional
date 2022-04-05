@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventListTile.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../../../../Data/Models/Event.dart';
-import '../../../../../Globals/Utils/Strings/StringUtils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserRecentEventsWidget extends StatefulWidget {
   String userId;
@@ -192,7 +191,7 @@ class _UserRecentEventsWidgetState extends State<UserRecentEventsWidget> {
         },
       ),
     )        
-    : Container(
+    : listEvents.length > 0 ? Container(
       child: ListView.builder(
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
@@ -203,7 +202,7 @@ class _UserRecentEventsWidgetState extends State<UserRecentEventsWidget> {
             children: [
               EventListTile(
                 eventId: event.id!,
-                isTrainer: user.isTrainer!,
+                showFeedback: currentUser.id! == user.id!,
                 height: widget.height,
                 width: widget.width,
               ),
@@ -224,6 +223,18 @@ class _UserRecentEventsWidgetState extends State<UserRecentEventsWidget> {
           );
         },
       ), //
+    ) : Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Container(
+            width: MediaQuery.of(context).size.width*0.25,
+            child: Image.asset(Constants.emptyCalendar)
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height*0.005),
+        Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+        SizedBox(height: MediaQuery.of(context).size.height*0.12),
+      ],
     );
   }
 }

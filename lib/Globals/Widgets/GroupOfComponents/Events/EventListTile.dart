@@ -20,11 +20,11 @@ import 'package:shimmer/shimmer.dart';
 
 class EventListTile extends StatefulWidget {
   String eventId;
-  bool isTrainer;
+  bool showFeedback;
   var height;
   var width;
 
-  EventListTile({Key? key, required this.eventId, required this.isTrainer, required this.height, required this.width}) : super(key: key);
+  EventListTile({Key? key, required this.eventId, required this.showFeedback, required this.height, required this.width}) : super(key: key);
 
   @override
   _EventListTileState createState() => _EventListTileState();
@@ -187,7 +187,7 @@ class _EventListTileState extends State<EventListTile> {
                       ],
                     ),
                   ),
-                  Container(
+                  widget.showFeedback ? Container(
                     height: widget.height*15,
                     width: widget.width*0.12,
                     child: Center(
@@ -196,6 +196,19 @@ class _EventListTileState extends State<EventListTile> {
                         width: widget.height*0.05,
                         decoration: new BoxDecoration(
                           color: AppColors.grey,
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                      ),
+                    ),
+                  ) : Container(
+                    height: widget.height*15,
+                    width: widget.width*0.12,
+                    child: Center(
+                      child: Container(
+                        height: widget.height*0.05,
+                        width: widget.height*0.05,
+                        decoration: new BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                       ),
@@ -298,7 +311,7 @@ class _EventListTileState extends State<EventListTile> {
                         ),
                       ),
                     ),
-                    FittedBox(
+                    widget.showFeedback ? FittedBox(
                       fit: BoxFit.fitHeight,
                       child: Container(
                         width: widget.width*0.12,
@@ -306,6 +319,9 @@ class _EventListTileState extends State<EventListTile> {
                           child: Icon(Icons.poll_outlined, color: AppColors.grey, size: widget.width*0.08,),
                         ),
                       ),
+                    ) : Container(
+                        width: widget.width*0.12,
+                        child: Center()
                     ),
                   ],
                 ),

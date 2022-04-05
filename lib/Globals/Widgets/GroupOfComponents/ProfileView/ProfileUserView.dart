@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
@@ -18,6 +19,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteFromEventConfirmationDialog.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventListTile.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
@@ -377,7 +379,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                       return Column(
                         children: [
                           addLabel ? Padding(
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.05),
                             child: Column(
                               children: [
                                 //if(index != 0) SizedBox(height: MediaQuery.of(context).size.height*0.02),
@@ -395,153 +397,24 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                           ) : Container(),
                           Padding(
                             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
-                            child: ListTile(
-                              onTap: () {
-                                if (currentUser.isTrainer!) {
-                                  Navigator.push(
-                                      context,
-                                    CupertinoPageRoute<Null>(
-                                      builder: (context) => ViewEventTrainer(
-                                            eventId: event.id!,
-                                            canEdit: false,
-                                            locale: Localizations.localeOf(context),
-                                          )
-                                      )
-                                  );
-                                } else {
-                                  Navigator.push(
-                                      context,
-                                      CupertinoPageRoute<Null>(
-                                          builder: (context) => ViewEventClient(
-                                            eventId: event.id!,
-                                            canJoin: false,
-                                            locale: Localizations.localeOf(context),
-                                          )
-                                      )
-                                  );
-                                }
-                              },
-                              leading: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    toCapitalized(day),
-                                    style: Theme.of(context).textTheme.bodyText2,
-                                  ),
-                                  Text(
-                                    "${event.day}/${event.month}/${event.year!.substring(2, 4)}",
-                                    style: Theme.of(context).textTheme.bodyText2,
-                                  ),
-                                ],
-                              ),
-                              minLeadingWidth: MediaQuery.of(context).size.width*0.15,
-                              title: Text(
-                                event.title!,
-                                style: Theme.of(context).textTheme.bodyText2,
-                              ),
-                              subtitle: Column(
-                                children: [
-                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        Icons.schedule,
-                                        color: Theme.of(context).primaryColor,
-                                        size: 15,
-                                      ),
-                                      SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                      Text(
-                                        event.hour.toString(),
-                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                                      ),
-                                      Text(
-                                        ":",
-                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                                      ),
-                                      Text(
-                                        event.minute=="0" ? "00" : event.minute.toString(),
-                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                                      ),
-                                      Container(
-                                          height: 8,
-                                          width: 24,
-                                          child: VerticalDivider(color: Theme.of(context).primaryColor, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
-                                      ),
-                                      Icon(
-                                        Icons.timer,
-                                        color: Theme.of(context).primaryColor,
-                                        size: 15,
-                                      ),
-                                      SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                      Text(
-                                        durationToString(event.duration!),
-                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                                      ),
-                                      Container(
-                                          height: 8,
-                                          width: 24,
-                                          child: VerticalDivider(color: Theme.of(context).primaryColor, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
-                                      ),
-                                      Icon(
-                                        Icons.record_voice_over,
-                                        color: Theme.of(context).primaryColor,
-                                        size: 15,
-                                      ),
-                                      SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                      Text(
-                                        event.numTrainers.toString(),
-                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                                      ),
-                                      Container(
-                                          height: 8,
-                                          width: 24,
-                                          child: VerticalDivider(color: Theme.of(context).primaryColor, width: MediaQuery.of(context).size.width*0.01, thickness: 1,)
-                                      ),
-                                      Icon(
-                                        Icons.directions_run,
-                                        color: Theme.of(context).primaryColor,
-                                        size: 15,
-                                      ),
-                                      SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                      Text(
-                                        event.numClients.toString(),
-                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              trailing: !canDeleteFromEvent(event.numTrainers!) ? Icon(
-                                Icons.arrow_forward_ios,
-                                color: Theme.of(context).primaryColor,
-                                size: MediaQuery.of(context).size.width*0.04,
-                              ) : GestureDetector(
-                                onTap: () async {
-                                  var result = await showDialog(
-                                      context: context,
-                                      builder: (_) {
-                                        return DeleteFromEventConfirmationDialog(
-                                          text: AppLocalizations.of(context)!.deleteFromEventConfirmation(event.title!),
-                                          userId: widget.userID,
-                                        );
-                                      }
-                                  );
-                                  if (result) {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    _eventDataService.deleteUserFromEvent(event.id!, user!.id!);
-                                    getUser();
-                                  }
-                                },
-                                child: Icon(
-                                  Icons.close,
-                                  color: Colors.red,
-                                  size: 25,
+                            child: EventListTile(
+                              eventId: event.id!,
+                              showFeedback: currentUser.id! == user!.id!,
+                              height: MediaQuery.of(context).size.height,
+                              width: MediaQuery.of(context).size.width*0.84,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02, horizontal: MediaQuery.of(context).size.width*0.08),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  height: 1,
+                                  width: MediaQuery.of(context).size.width*0.6,
+                                  color: AppColors.grey,
                                 ),
-                              ),
+                              ],
                             ),
                           ),
                         ],

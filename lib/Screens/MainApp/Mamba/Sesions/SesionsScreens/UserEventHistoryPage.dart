@@ -3,6 +3,8 @@ import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventListTile.dart';
 import 'package:shimmer/shimmer.dart';
@@ -241,7 +243,7 @@ class _UserEventHistoryPageState extends State<UserEventHistoryPage> {
         ),
       )
           :
-      Container(
+      listEvents.length > 0 ? Container(
         child: LazyLoadScrollView(
           onEndOfPage: () {
             print("Getting more events ...");
@@ -261,7 +263,7 @@ class _UserEventHistoryPageState extends State<UserEventHistoryPage> {
                     padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
                     child: EventListTile(
                       eventId: event.id!,
-                      isTrainer: user.isTrainer!,
+                      showFeedback: currentUser.id! == user.id!,
                       height: safeAreaHeight,
                       width: safeAreaWidth*0.9,
                     ),
@@ -283,6 +285,24 @@ class _UserEventHistoryPageState extends State<UserEventHistoryPage> {
               );
             },
           ), // A subclass of `ScrollView`
+        ),
+      ) :
+      Container(
+        height: safeAreaHeight,
+        width: safeAreaWidth,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Container(
+                width: MediaQuery.of(context).size.width*0.25,
+                child: Image.asset(Constants.emptyCalendar)
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.005),
+            Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+            SizedBox(height: MediaQuery.of(context).size.height*0.12),
+          ],
         ),
       ),
     );
