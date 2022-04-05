@@ -100,7 +100,7 @@ class _SesionsState extends State<Sesions> {
                       FloatingActionButton.extended(
                         heroTag: "86",
                         onPressed: navigateToEventHistoryScreen,
-                        backgroundColor: Theme.of(context).accentColor.withOpacity(0.4),
+                        backgroundColor: Theme.of(context).accentColor,
                         icon: Icon(
                           Icons.description,
                           color: AppColors.white,

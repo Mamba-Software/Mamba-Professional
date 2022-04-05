@@ -26,12 +26,13 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarVi
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Location/LocationImageTile.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Users/UsersHorizontalScroll.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandCalendarWeekWidget.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandMembers/BrandMembersPage.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandSettings/MembershipRequests.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandSettings/SettingsBrand.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../Home/Marca/Trainer/TieneMarca/TieneMarcaModals/MembershipRequests.dart';
-import '../../Home/Marca/Trainer/TieneMarca/TieneMarcaModals/SettingsBrand.dart';
 
 class BrandPage extends StatefulWidget {
   const BrandPage({Key? key}) : super(key: key);
@@ -219,7 +220,7 @@ class _BrandPageState extends State<BrandPage> {
     });
   }
 
-  // Navigate to Settings Brand Screen
+  // Navigate to Brand Calendar Screen
   void navigateToBrandCalendarScreen() {
     Navigator.push(
         context,
@@ -227,6 +228,24 @@ class _BrandPageState extends State<BrandPage> {
           builder: (context) => CalendarWidgetTrainer(
               brandID: currentBrand.id!,
               canEdit: true
+          ),
+        )
+    ).whenComplete(() {
+      setState(() {
+        isLoading = true;
+        initBrandHome();
+      });
+    });
+  }
+
+  // Navigate to Brand Calendar Screen
+  void navigateToBrandMembersScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<Null>(
+          builder: (context) => BrandMembersPage(
+              brandId: currentBrand.id!,
+              brandAdmin: currentBrand.adminID!,
           ),
         )
     ).whenComplete(() {
@@ -311,7 +330,7 @@ class _BrandPageState extends State<BrandPage> {
           ),
           SizedBox(width: safeAreaWidth*0.5,),
           IconButton(
-            icon: Icon(Icons.menu_outlined, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06,),
+            icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06,),
             onPressed: navigateToSettingsBrandScreen,
           ),
         ],
@@ -425,89 +444,103 @@ class _BrandPageState extends State<BrandPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Container(
-              height: safeAreaHeight * 0.09,
-              width: safeAreaWidth * 0.23,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Text(
-                    numberEventsFinished.toString(),
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                  ),
-                  SizedBox(height: safeAreaHeight*0.01),
+            GestureDetector(
+              onTap: navigateToBrandCalendarScreen,
+              child: Row(
+                children: [
                   Container(
+                    height: safeAreaHeight * 0.09,
                     width: safeAreaWidth * 0.23,
-                    child: FittedBox(
-                      fit: BoxFit.fitWidth,
-                      child: Text(
-                        AppLocalizations.of(context)!.sessionsDone,
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                        textAlign: TextAlign.center,
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Text(
+                          numberEventsFinished.toString(),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                        ),
+                        SizedBox(height: safeAreaHeight*0.01),
+                        Container(
+                          width: safeAreaWidth * 0.23,
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              AppLocalizations.of(context)!.sessionsDone,
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
+                  Container(
+                    width: safeAreaWidth * 0.05,
+                    height: safeAreaHeight * 0.03,
+                    child: VerticalDivider(color: Theme.of(context).primaryColor,),
+                  ),
+                  Container(
+                    height: safeAreaHeight * 0.09,
+                    width: safeAreaWidth * 0.23,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Text(
+                          numberEventsToDo.toString(),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                        ),
+                        SizedBox(height: safeAreaHeight*0.01),
+                        Container(
+                          width: safeAreaWidth * 0.23,
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              AppLocalizations.of(context)!.sessionsToDo,
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: safeAreaWidth * 0.05,
+                    height: safeAreaHeight * 0.03,
+                    child: VerticalDivider(color: Theme.of(context).primaryColor,),
                   ),
                 ],
               ),
             ),
-            Container(
-              width: safeAreaWidth * 0.05,
-              height: safeAreaHeight * 0.03,
-              child: VerticalDivider(color: Theme.of(context).primaryColor,),
-            ),
-            Container(
-              height: safeAreaHeight * 0.09,
-              width: safeAreaWidth * 0.23,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Text(
-                    numberEventsToDo.toString(),
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                  ),
-                  SizedBox(height: safeAreaHeight*0.01),
+            GestureDetector(
+              onTap: navigateToBrandMembersScreen,
+              child: Row(
+                children: [
                   Container(
+                    height: safeAreaHeight * 0.09,
                     width: safeAreaWidth * 0.23,
-                    child: FittedBox(
-                      fit: BoxFit.fitWidth,
-                      child: Text(
-                        AppLocalizations.of(context)!.sessionsToDo,
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              width: safeAreaWidth * 0.05,
-              height: safeAreaHeight * 0.03,
-              child: VerticalDivider(color: Theme.of(context).primaryColor,),
-            ),
-            Container(
-              height: safeAreaHeight * 0.09,
-              width: safeAreaWidth * 0.23,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Text(
-                    (currentBrand.numClients! + currentBrand.numTrainers! ).toString(),
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                  ),
-                  SizedBox(height: safeAreaHeight*0.01),
-                  Container(
-                    width: safeAreaWidth * 0.23,
-                    child: FittedBox(
-                      fit: BoxFit.fitWidth,
-                      child: Text(
-                        AppLocalizations.of(context)!.membersTotal,
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                        textAlign: TextAlign.center,
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Text(
+                          (currentBrand.numClients! + currentBrand.numTrainers! ).toString(),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                        ),
+                        SizedBox(height: safeAreaHeight*0.01),
+                        Container(
+                          width: safeAreaWidth * 0.23,
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              AppLocalizations.of(context)!.membersTotal,
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -800,10 +833,15 @@ class _BrandPageState extends State<BrandPage> {
                   ) :
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
-                    child: BrandCalendarWeekWidget(
-                      brandId: currentBrand.id!,
-                      height: safeAreaHeight*0.68,
-                      width: safeAreaWidth*0.84,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        BrandCalendarWeekWidget(
+                          brandId: currentBrand.id!,
+                          height: safeAreaHeight*0.68,
+                          width: safeAreaWidth*0.88,
+                        ),
+                      ],
                     ),
                   ),
                 ],
