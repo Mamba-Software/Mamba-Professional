@@ -270,24 +270,27 @@ class _BrandPageState extends State<BrandPage> {
 
   // Build Share App Container.
   Widget buildBrandAppBarContainer() {
-    return Container(
-      height: safeAreaHeight * 0.48,
-      width: safeAreaWidth * 0.9,
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          buildBrandOptions(),
-          SizedBox(height: safeAreaHeight*0.02,),
-          buildBrandTitle(),
-          SizedBox(height: safeAreaHeight*0.03,),
-          buildBrandPicture(),
-          SizedBox(height: safeAreaHeight*0.025,),
-          buildBrandEventCount(),
-        ],
+    return Center(
+      child: Container(
+        height: safeAreaHeight * 0.37,
+        width: safeAreaWidth * 0.9,
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              buildBrandOptions(),
+              buildBrandTitle(),
+              SizedBox(height: safeAreaHeight*0.02,),
+              buildBrandPicture(),
+              SizedBox(height: safeAreaHeight*0.02,),
+              buildBrandEventCount(),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -295,7 +298,7 @@ class _BrandPageState extends State<BrandPage> {
   // Build the Widget of the Brand Name
   Widget buildBrandOptions() {
     return !isLoading ? Container(
-      height: safeAreaHeight*0.08,
+      height: safeAreaHeight*0.06,
       width: safeAreaWidth,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -314,7 +317,7 @@ class _BrandPageState extends State<BrandPage> {
         ],
       ),
     ) : Container(
-      height: safeAreaHeight*0.08,
+      height: safeAreaHeight*0.06,
       width: safeAreaWidth,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -379,7 +382,7 @@ class _BrandPageState extends State<BrandPage> {
   // Build the Widget of the Image
   Widget buildBrandPicture() {
     return !isLoading ? Container(
-      width: safeAreaWidth,
+      height: safeAreaHeight*0.15,
       child: GestureDetector(
         onTap: navigateToFullScreenImage,
         child: Row(
@@ -387,7 +390,7 @@ class _BrandPageState extends State<BrandPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircularImage(
-              size: safeAreaWidth * 0.35,
+              size: safeAreaHeight*0.15,
               image: currentBrand.logoUrl,
               color: Theme.of(context).backgroundColor,
               borderWidth: 2,
@@ -400,7 +403,7 @@ class _BrandPageState extends State<BrandPage> {
         baseColor: AppColors.grey,
         highlightColor: AppColors.grey.withOpacity(0.5),
         child: Container(
-          height: safeAreaWidth * 0.35,
+          height: safeAreaHeight*0.15,
           decoration: BoxDecoration(
             color: AppColors.grey,
             shape: BoxShape.circle,
@@ -415,7 +418,7 @@ class _BrandPageState extends State<BrandPage> {
     return !isLoading ? Material(
       child: Container(
         width: safeAreaWidth * 0.86,
-        height: safeAreaHeight * 0.09,
+        height: safeAreaHeight * 0.07,
         decoration: new BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
         ),
@@ -518,7 +521,7 @@ class _BrandPageState extends State<BrandPage> {
         highlightColor: AppColors.grey.withOpacity(0.5),
         child: Container(
           width: safeAreaWidth * 0.70,
-          height: safeAreaHeight * 0.08,
+          height: safeAreaHeight * 0.06,
           decoration: new BoxDecoration(
               color: AppColors.grey,
               borderRadius: BorderRadius.circular(10)
@@ -536,6 +539,7 @@ class _BrandPageState extends State<BrandPage> {
 
     return DefaultTabController(
       length: 4,
+      initialIndex: 1,
       child: Scaffold(
         appBar: null,
         body: NestedScrollView(
@@ -550,7 +554,7 @@ class _BrandPageState extends State<BrandPage> {
                   floating: true,
                   title: buildBrandAppBarContainer(),
                   titleSpacing: 0,
-                  toolbarHeight: safeAreaHeight*0.48,
+                  toolbarHeight: safeAreaHeight*0.4,
                   centerTitle: true,
                   systemOverlayStyle: SystemUiOverlayStyle(
                     statusBarBrightness: Brightness.light,
@@ -558,7 +562,7 @@ class _BrandPageState extends State<BrandPage> {
                     statusBarIconBrightness: Brightness.light,
                   ),
                   bottom: TabBar(
-                    indicatorColor: Colors.white,
+                    indicatorColor: Theme.of(context).primaryColor,
                     indicatorWeight: 5,
                     isScrollable: true,
                     tabs: [
@@ -795,7 +799,7 @@ class _BrandPageState extends State<BrandPage> {
                     ),
                   ) :
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.1),
+                    padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
                     child: BrandCalendarWeekWidget(
                       brandId: currentBrand.id!,
                       height: safeAreaHeight*0.68,
@@ -1063,9 +1067,7 @@ class _BrandPageState extends State<BrandPage> {
           LongTextContainer(
             text: currentBrand.description!,
           ),
-          SizedBox(
-            height: safeAreaHeight * 0.01,
-          ),
+          /*
           Text(
             AppLocalizations.of(context)!.workingHours,
             style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
@@ -1077,8 +1079,9 @@ class _BrandPageState extends State<BrandPage> {
             startWorkShift + " - " + endWorkShift,
             style: Theme.of(context).textTheme.caption,
           ),
+           */
           SizedBox(
-            height: safeAreaHeight * 0.03,
+            height: safeAreaHeight * 0.00,
           ),
         ],
       ),
