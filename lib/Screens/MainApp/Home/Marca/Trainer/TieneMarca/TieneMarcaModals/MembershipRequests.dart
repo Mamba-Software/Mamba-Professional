@@ -111,7 +111,7 @@ class _MembershipRequestsState extends State<MembershipRequests> {
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               StreamBuilder<QuerySnapshot>(
-                  stream: _brandDataService.getBrandRequests(widget.brandId),
+                  stream: _brandDataService.getBrandRequestsStream(widget.brandId),
                   builder: (context, snapshot) {
                     if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
                       return Container(

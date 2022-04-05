@@ -447,10 +447,20 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                             style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
                                             textAlign: TextAlign.start,
                                           ),
-                                          Text(
-                                            DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                                            textAlign: TextAlign.start,
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                              Text(
+                                                "("+appointment.subject+")",
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -560,10 +570,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
               }
           ) : LoadingViewPurple(),
           floatingActionButton: canEdit ? Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(20),
             child: Container(
-              height: MediaQuery.of(context).size.width*0.17,
-              width: MediaQuery.of(context).size.width*0.17,
+              height: MediaQuery.of(context).size.width*0.15,
+              width: MediaQuery.of(context).size.width*0.15,
               child: FloatingActionButton(
                 heroTag: "3",
                 onPressed: () {
@@ -572,7 +582,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                 backgroundColor: Theme.of(context).accentColor,
                 child: Icon(
                   Icons.more_time,
-                  size: MediaQuery.of(context).size.width*0.07,
+                  size: MediaQuery.of(context).size.width*0.06,
                   color: AppColors.white,
                 ),
               ),

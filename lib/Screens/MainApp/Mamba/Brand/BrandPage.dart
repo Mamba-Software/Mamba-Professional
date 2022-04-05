@@ -11,9 +11,11 @@ import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/FullScreenImageCarousel.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/LongTextContainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadline1.dart';
@@ -24,8 +26,10 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/BrandEventsToday.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/CalendarWidgetTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandCalendarWidget.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/LeaveBrandConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Location/LocationImageTile.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Users/UsersHorizontalScroll.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandCalendarWeekWidget.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandMembers/BrandMembersPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandSettings/MembershipRequests.dart';
@@ -63,6 +67,8 @@ class _BrandPageState extends State<BrandPage> {
   int numberEventsToDo = 0;
   String startWorkShift = "";
   String endWorkShift = "";
+  // Brand Requests
+  int numberRequests = 0;
   // List Trainers
   List<Usuario> brandTrainers = [];
   // List Locations
@@ -88,6 +94,7 @@ class _BrandPageState extends State<BrandPage> {
   initBrandHome() async {
     await getBrand();
     await getNumberFinishedEvents();
+    await getNumberBrandRequests();
     await getAllEventsTodayBrand();
     await getBrandContentImages();
     if (mounted) {
@@ -114,7 +121,8 @@ class _BrandPageState extends State<BrandPage> {
     endWorkShift = DateFormat('HH:mm', Localizations.localeOf(context).languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endHourWS, endMinWS,));
     // Brand Locations
     brandLocations = await _locationDataService.getAllBrandLocations(currentBrand.id!);
-    brandLocations.removeWhere((element) => element.isBaseLocation == true);
+    print(brandLocations);
+    brandLocations.removeWhere((element) => element.id == currentBrand.baseLocation!);
   }
 
   // Gets the user info from firebase.
@@ -182,6 +190,10 @@ class _BrandPageState extends State<BrandPage> {
   Future<void> getNumberFinishedEvents() async {
     numberEventsFinished = await _eventDataService.getBrandsEventsFinished(currentBrand.id!);
     numberEventsToDo = await _eventDataService.getBrandsEventsUpcoming(currentBrand.id!);
+  }
+  // Gets number of finished events
+  Future<void> getNumberBrandRequests() async {
+    numberRequests = await _brandDataService.getBrandNumberRequests(currentBrand.id!);
   }
 
   // Gets all events of today.
@@ -317,60 +329,132 @@ class _BrandPageState extends State<BrandPage> {
 
   // Build the Widget of the Brand Name
   Widget buildBrandOptions() {
-    return !isLoading ? Container(
-      height: safeAreaHeight*0.06,
-      width: safeAreaWidth,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          IconButton(
-            icon: Icon(Icons.group_add, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
-            alignment: Alignment.center,
-            onPressed: navigateToMembershipRequestsScreen,
-          ),
-          SizedBox(width: safeAreaWidth*0.5,),
-          IconButton(
-            icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06,),
-            onPressed: navigateToSettingsBrandScreen,
-          ),
-        ],
-      ),
-    ) : Container(
-      height: safeAreaHeight*0.06,
-      width: safeAreaWidth,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Shimmer.fromColors(
-            baseColor: AppColors.grey,
-            highlightColor: AppColors.grey.withOpacity(0.5),
-            child: Container(
-              height: safeAreaHeight*0.04,
-              width: safeAreaWidth*0.08,
-              decoration: BoxDecoration(
-                color: AppColors.grey,
-                borderRadius: BorderRadius.circular(10.0),
+    if (currentUser.isTrainer!) {
+      return !isLoading ? Container(
+        height: safeAreaHeight*0.06,
+        width: safeAreaWidth,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            CounterBadgeIcon(
+              counter: numberRequests,
+              child: IconButton(
+                icon: Icon(Icons.group_add, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
+                alignment: Alignment.center,
+                onPressed: navigateToMembershipRequestsScreen,
               ),
             ),
-          ),
-          SizedBox(width: safeAreaWidth*0.5,),
-          Shimmer.fromColors(
-            baseColor: AppColors.grey,
-            highlightColor: AppColors.grey.withOpacity(0.5),
-            child: Container(
-              height: safeAreaHeight*0.04,
-              width: safeAreaWidth*0.08,
-              decoration: BoxDecoration(
-                color: AppColors.grey,
-                borderRadius: BorderRadius.circular(10.0),
+            SizedBox(width: safeAreaWidth*0.5,),
+            IconButton(
+              icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06,),
+              onPressed: navigateToSettingsBrandScreen,
+            ),
+          ],
+        ),
+      ) : Container(
+        height: safeAreaHeight*0.06,
+        width: safeAreaWidth,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Shimmer.fromColors(
+              baseColor: AppColors.grey,
+              highlightColor: AppColors.grey.withOpacity(0.5),
+              child: Container(
+                height: safeAreaHeight*0.04,
+                width: safeAreaWidth*0.08,
+                decoration: BoxDecoration(
+                  color: AppColors.grey,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+            SizedBox(width: safeAreaWidth*0.5,),
+            Shimmer.fromColors(
+              baseColor: AppColors.grey,
+              highlightColor: AppColors.grey.withOpacity(0.5),
+              child: Container(
+                height: safeAreaHeight*0.04,
+                width: safeAreaWidth*0.08,
+                decoration: BoxDecoration(
+                  color: AppColors.grey,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return !isLoading ? Container(
+        height: safeAreaHeight*0.06,
+        width: safeAreaWidth*0.8,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            IconButton(
+              icon: Icon(Icons.exit_to_app, color: Colors.red, size: MediaQuery.of(context).size.width*0.06,),
+              alignment: Alignment.centerRight,
+              padding: EdgeInsets.all(0),
+              onPressed: () async {
+                // DeleteDialog
+                var result = await showDialog(
+                    context: context,
+                    builder: (_) {
+                      return LeaveBrandConfirmationDialog(text: AppLocalizations.of(context)!.exitBrandConfirm);
+                    }
+                );
+                if (result) {
+                  setState(() {
+                    isLoading = true;
+                  });
+                  NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
+                  // New DataBase Restructure
+                  await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
+                  await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
+                  Navigator.pushReplacement(
+                      context,
+                      CupertinoPageRoute<Null>(
+                        builder: (context) =>
+                            SplashScreen(),
+                        settings: RouteSettings(
+                            name: 'SplashScreen'),
+                      )
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      ) : Container(
+        height: safeAreaHeight*0.06,
+        width:  safeAreaWidth*0.8,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Shimmer.fromColors(
+              baseColor: AppColors.grey,
+              highlightColor: AppColors.grey.withOpacity(0.5),
+              child: Container(
+                height: safeAreaHeight*0.04,
+                width: safeAreaWidth*0.08,
+                decoration: BoxDecoration(
+                  color: AppColors.grey,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+
+
   }
 
   // Build the Widget of the Brand Name
@@ -437,13 +521,13 @@ class _BrandPageState extends State<BrandPage> {
   Widget buildBrandEventCount() {
     return !isLoading ? Material(
       child: Container(
-        width: safeAreaWidth * 0.86,
+        width: safeAreaWidth * 0.84,
         height: safeAreaHeight * 0.07,
         decoration: new BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             GestureDetector(
               onTap: navigateToBrandCalendarScreen,
@@ -590,11 +674,6 @@ class _BrandPageState extends State<BrandPage> {
                   titleSpacing: 0,
                   toolbarHeight: safeAreaHeight*0.4,
                   centerTitle: true,
-                  systemOverlayStyle: SystemUiOverlayStyle(
-                    statusBarBrightness: Brightness.light,
-                    statusBarColor: Colors.transparent,
-                    statusBarIconBrightness: Brightness.light,
-                  ),
                   bottom: TabBar(
                     indicatorColor: Theme.of(context).primaryColor,
                     indicatorWeight: 5,
@@ -627,9 +706,9 @@ class _BrandPageState extends State<BrandPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!.calendar.toUpperCase(),
-                                  style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).primaryColor),
-                                  textAlign: TextAlign.center
+                                    AppLocalizations.of(context)!.calendar.toUpperCase(),
+                                    style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).primaryColor),
+                                    textAlign: TextAlign.center
                                 )
                               ],
                             ),
@@ -759,7 +838,7 @@ class _BrandPageState extends State<BrandPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        FloatingActionButton.extended(
+                        currentUser.isTrainer! ? FloatingActionButton.extended(
                           heroTag: "87",
                           onPressed: navigateToBrandCalendarScreen,
                           backgroundColor: Theme.of(context).accentColor,
@@ -770,6 +849,20 @@ class _BrandPageState extends State<BrandPage> {
                           ),
                           label: Text(
                               AppLocalizations.of(context)!.planSessions,
+                              style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white)
+                          ),
+                        ) :
+                        FloatingActionButton.extended(
+                          heroTag: "87",
+                          onPressed: navigateToBrandCalendarScreen,
+                          backgroundColor: Theme.of(context).accentColor,
+                          icon: Icon(
+                            Icons.calendar_month,
+                            color: AppColors.white,
+                            size: safeAreaWidth*0.05,
+                          ),
+                          label: Text(
+                              AppLocalizations.of(context)!.planNewEvent,
                               style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white)
                           ),
                         ),
@@ -919,6 +1012,7 @@ class _BrandPageState extends State<BrandPage> {
                   SizedBox(
                     height: safeAreaHeight * 0.06,
                   ),
+                  brandLocations.length > 0 ?
                   isLoading ? Padding(
                     padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
                     child: Shimmer.fromColors(
@@ -939,7 +1033,7 @@ class _BrandPageState extends State<BrandPage> {
                       AppLocalizations.of(context)!.locationsBrandText,
                       style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                  ),
+                  ) : Container(),
                   SizedBox(
                     height: safeAreaHeight * 0.02,
                   ),
@@ -1004,7 +1098,7 @@ class _BrandPageState extends State<BrandPage> {
               childCount: brandLocations.length
               ),
             ),
-          ),
+          )
         ],
       ),
     ),

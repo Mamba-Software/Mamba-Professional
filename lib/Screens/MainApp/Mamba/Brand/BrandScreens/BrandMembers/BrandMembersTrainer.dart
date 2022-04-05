@@ -6,6 +6,7 @@ import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
@@ -13,6 +14,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:shimmer/shimmer.dart';
 
 class BrandMembersTrainer extends StatefulWidget {
   const BrandMembersTrainer({Key? key}) : super(key: key);
@@ -108,10 +110,7 @@ class _BrandMembersTrainerState extends State<BrandMembersTrainer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,
-      body:  isLoading ?
-      Center(child: LoadingViewPurple())
-          :
-      DefaultTabController(
+      body:  DefaultTabController(
         length: 2,
         initialIndex: 0,
         child: Scaffold(
@@ -228,7 +227,85 @@ class _BrandMembersTrainerState extends State<BrandMembersTrainer> {
                 Column(
                   children: [
                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    allClients.length != 0 ?
+                    isLoading ? Expanded(
+                      child: Container(
+                        child: ListView.builder(
+                            physics: BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            itemCount: 12,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.005),
+                                child: ListTile(
+                                  dense: true,
+                                  leading: Shimmer.fromColors(
+                                    baseColor: AppColors.grey,
+                                    highlightColor: AppColors.grey.withOpacity(0.5),
+                                    child: Container(
+                                      height: MediaQuery.of(context).size.height*0.08,
+                                      width: MediaQuery.of(context).size.height*0.08,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.grey,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                  ),
+                                  title: Shimmer.fromColors(
+                                    baseColor: AppColors.grey,
+                                    highlightColor: AppColors.grey.withOpacity(0.5),
+                                    child: Container(
+                                      height: MediaQuery.of(context).size.height*0.03,
+                                      width: MediaQuery.of(context).size.width*0.02,
+                                      decoration: BoxDecoration(
+                                        borderRadius: new BorderRadius.all(
+                                          const Radius.circular(10.0),
+                                        ),
+                                        color: AppColors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                      Shimmer.fromColors(
+                                        baseColor: AppColors.grey,
+                                        highlightColor: AppColors.grey.withOpacity(0.5),
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.height*0.02,
+                                          width: MediaQuery.of(context).size.width*0.2,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.grey,
+                                            borderRadius: new BorderRadius.all(
+                                              const Radius.circular(10.0),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  trailing: Shimmer.fromColors(
+                                    baseColor: AppColors.grey,
+                                    highlightColor: AppColors.grey.withOpacity(0.5),
+                                    child: Container(
+                                      height: MediaQuery.of(context).size.height*0.04,
+                                      width: MediaQuery.of(context).size.height*0.04,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.grey,
+                                        borderRadius: new BorderRadius.all(
+                                          const Radius.circular(10.0),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  onTap: null,
+                                ),
+                              );
+                            }
+                        ),
+                      ),
+                    ) : allClients.length != 0 ?
                       Expanded(
                         child: Container(
                           padding: EdgeInsets.only(top: 0),
@@ -341,7 +418,85 @@ class _BrandMembersTrainerState extends State<BrandMembersTrainer> {
                 Column(
                   children: [
                     SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    Expanded(
+                    isLoading ? Expanded(
+                      child: Container(
+                        child: ListView.builder(
+                            physics: BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            itemCount: 12,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.005),
+                                child: ListTile(
+                                  dense: true,
+                                  leading: Shimmer.fromColors(
+                                    baseColor: AppColors.grey,
+                                    highlightColor: AppColors.grey.withOpacity(0.5),
+                                    child: Container(
+                                      height: MediaQuery.of(context).size.height*0.08,
+                                      width: MediaQuery.of(context).size.height*0.08,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.grey,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                  ),
+                                  title: Shimmer.fromColors(
+                                    baseColor: AppColors.grey,
+                                    highlightColor: AppColors.grey.withOpacity(0.5),
+                                    child: Container(
+                                      height: MediaQuery.of(context).size.height*0.03,
+                                      width: MediaQuery.of(context).size.width*0.02,
+                                      decoration: BoxDecoration(
+                                        borderRadius: new BorderRadius.all(
+                                          const Radius.circular(10.0),
+                                        ),
+                                        color: AppColors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                      Shimmer.fromColors(
+                                        baseColor: AppColors.grey,
+                                        highlightColor: AppColors.grey.withOpacity(0.5),
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.height*0.02,
+                                          width: MediaQuery.of(context).size.width*0.2,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.grey,
+                                            borderRadius: new BorderRadius.all(
+                                              const Radius.circular(10.0),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  trailing: Shimmer.fromColors(
+                                    baseColor: AppColors.grey,
+                                    highlightColor: AppColors.grey.withOpacity(0.5),
+                                    child: Container(
+                                      height: MediaQuery.of(context).size.height*0.04,
+                                      width: MediaQuery.of(context).size.height*0.04,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.grey,
+                                        borderRadius: new BorderRadius.all(
+                                          const Radius.circular(10.0),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  onTap: null,
+                                ),
+                              );
+                            }
+                        ),
+                      ),
+                    ) : Expanded(
                       child: Container(
                         child: ListView.builder(
                           shrinkWrap: true,

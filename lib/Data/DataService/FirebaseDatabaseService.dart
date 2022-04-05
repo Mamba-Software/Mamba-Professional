@@ -883,6 +883,21 @@ class FirebaseDatabaseService {
       }
     }
 
+    Future<int> getBrandNumberRequests(String brandID) async {
+      try {
+        QuerySnapshot querySnapshot =
+            await _firestore
+            .collection(brands)
+            .doc(brandID)
+            .collection("Requests")
+            .get();
+        return querySnapshot.docs.length;
+      } catch (e) {
+        print(e.toString());
+        return 0;
+      }
+    }
+
     Future<List<Usuario>> getBrandUsers(String brandId) async {
       List<Usuario> users = [];
       try {
@@ -2398,7 +2413,7 @@ class FirebaseDatabaseService {
     }
 
     // Requests
-    Stream<QuerySnapshot> getBrandRequests(String brandId) {
+    Stream<QuerySnapshot> getBrandRequestsStream(String brandId) {
       return _firestore
           .collection(brands)
           .doc(brandId)

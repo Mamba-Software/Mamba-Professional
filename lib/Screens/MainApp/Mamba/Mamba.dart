@@ -238,35 +238,6 @@ class _MambaClientState extends State<MambaClient> {
     pageController.jumpToPage(value);
   }
 
-  Widget buildCustomBadge({required int counter, required Widget child}) {
-
-    final text = counter.toString();
-    final deltaFontSize = (text.length - 1) * 3.0;
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        child,
-        Positioned(
-          top: -2,
-          right: -15,
-          child: CircleAvatar(
-            backgroundColor: Theme.of(context).accentColor,
-            radius: 8,
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 10 - deltaFontSize,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   void dispose() {
     super.dispose();
