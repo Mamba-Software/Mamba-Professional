@@ -67,9 +67,9 @@ class _HomepageState extends State<Homepage> {
 
   @override
   void initState() {
-    super.initState();
     isLoading = true;
     initProfileHome();
+    super.initState();
   }
 
   // Init for Brand Home
@@ -108,7 +108,6 @@ class _HomepageState extends State<Homepage> {
     bool indexFound = false;
     DateTime now = DateTime.now();
     todayEvents = await _eventDataService.getUserEventsToday(currentUser.id!);
-    //todayEvents = [todayEvents[0]];
     todayEventsLabels = [];
     for (var i=0; i < todayEvents.length; i++) {
       Event event = todayEvents[i];
@@ -193,8 +192,8 @@ class _HomepageState extends State<Homepage> {
     ).whenComplete(() {
       setState(() {
         isLoading = true;
-        initProfileHome();
       });
+      initProfileHome();
     });
   }
 
@@ -208,8 +207,8 @@ class _HomepageState extends State<Homepage> {
     ).whenComplete(() {
       setState(() {
         isLoading = true;
-        initProfileHome();
       });
+      initProfileHome();
     });
   }
 
@@ -226,8 +225,8 @@ class _HomepageState extends State<Homepage> {
     ).whenComplete(() {
       setState(() {
         isLoading = true;
-        initProfileHome();
       });
+      initProfileHome();
     });
   }
 
@@ -243,8 +242,8 @@ class _HomepageState extends State<Homepage> {
     ).whenComplete(() {
       setState(() {
         isLoading = true;
-        initProfileHome();
       });
+      initProfileHome();
     });
   }
 
@@ -498,7 +497,7 @@ class _HomepageState extends State<Homepage> {
         ],
       ),
     ) : Container(
-      height: safeAreaHeight*0.2,
+      width: safeAreaWidth,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -507,7 +506,7 @@ class _HomepageState extends State<Homepage> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal:safeAreaWidth*0.08),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(AppLocalizations.of(context)!.noEventsToday, style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start),
               ],
