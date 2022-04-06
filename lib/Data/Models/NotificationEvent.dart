@@ -41,7 +41,7 @@ class NotificationEvent {
       this.type = documentSnapshot.get("type").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isRead')) {
-      this.type = documentSnapshot.get("isRead");
+      this.isRead = documentSnapshot.get("isRead");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateSent')) {
       this.dateSent = documentSnapshot.get("dateSent").toString();

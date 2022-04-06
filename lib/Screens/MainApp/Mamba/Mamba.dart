@@ -12,6 +12,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ho
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandPage.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Home/Homepage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/Sesions.dart';
 import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
 import '../Home/Marca/Marca.dart';
@@ -135,7 +136,7 @@ class _MambaClientState extends State<MambaClient> {
               padding: EdgeInsets.symmetric(vertical: 3.0),
               child: Icon(Icons.home_filled),
             ),
-            label: AppLocalizations.of(context)!.profileBottomNav,
+            label: AppLocalizations.of(context)!.homeBottomNav,
             //backgroundColor: Theme.of(context).primaryColor,
           ),
           BottomNavigationBarItem(
@@ -188,7 +189,7 @@ class _MambaClientState extends State<MambaClient> {
         controller: pageController,
         //allowImplicitScrolling: true,
         children: <Widget>[
-          Marca(),
+          Homepage(),
           BrandPage(),
           Sesions(),
           Profile(),

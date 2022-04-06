@@ -1,9 +1,5 @@
-import 'package:file_picker/file_picker.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
-import 'dart:math';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // Text Styles contains all the TextStyles used in the App.
 class StringUtils {
@@ -30,5 +26,26 @@ class StringUtils {
     List<String> aux = name.split(" ");
     return aux[0];
   }
+
+  String greetingMessage(BuildContext context){
+    var timeNow = DateTime.now().hour;
+    if (timeNow <= 12) {
+      return AppLocalizations.of(context)!.goodMorningGreeting;
+    } else if ((timeNow > 12) && (timeNow <= 20)) {
+      return AppLocalizations.of(context)!.goodAfternoonGreeting;
+    } else {
+      return AppLocalizations.of(context)!.goodNightGreeting;
+    }
+  }
+
+  // Gets a double and returns a String Duration to be shown
+  durationToString(double duration) {
+    String temp = "";
+    temp = duration.toStringAsFixed(2);
+    var hour = temp.split(".")[0];
+    var min = temp.split(".")[1];
+    return "${hour}h ${min}m ";
+  }
+
 
 }
