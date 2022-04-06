@@ -3,6 +3,10 @@
   "@language":{
     "description": "Lenguaje de la App"
   },
+  "homeBottomNav": "Home",
+  "@homeBottomNav":{
+    "description": "Perfil Text"
+  },
   "profileBottomNav": "Perfil",
   "@profileBottomNav":{
     "description": "Perfil Text"
@@ -1718,6 +1722,18 @@
   },
   "readLess": "Ver menos",
   "@readLess": {
+    "description": "membersOfBrand message"
+  },
+  "goodMorningGreeting": "Buenos días,",
+  "@goodMorningGreeting": {
+    "description": "membersOfBrand message"
+  },
+  "goodAfternoonGreeting": "Buenas tardes,",
+  "@goodAfternoonGreeting": {
+    "description": "membersOfBrand message"
+  },
+  "goodNightGreeting": "Buenas noches,",
+  "@goodNightGreeting": {
     "description": "membersOfBrand message"
   }
 }

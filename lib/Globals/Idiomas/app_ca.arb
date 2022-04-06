@@ -1,5 +1,6 @@
 {
   "language": "Idioma",
+  "homeBottomNav": "Home",
   "profileBottomNav": "Perfil",
   "sesionsBottomNav": "Sessions",
   "brandBottomNav": "Marca",
@@ -376,5 +377,8 @@
   "brandDetailsTab": "Detalls",
   "brandContentTab": "Fotos",
   "readMore": "Veure més",
-  "readLess": "Veure menys"
+  "readLess": "Veure menys",
+  "goodMorningGreeting": "Bon dia,",
+  "goodAfternoonGreeting": "Bona tarda,",
+  "goodNightGreeting": "Bona nit,"
 }

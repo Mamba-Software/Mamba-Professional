@@ -11,6 +11,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
@@ -191,10 +192,10 @@ class _HomePageState extends State<HomePage> {
         controller: pageController,
         //allowImplicitScrolling: true,
         children: <Widget>[
-          Marca(),
-          Marca(),
-          Marca(),
           Perfil(),
+          Marca(),
+          Notifications(),
+          ChatCore(),
         ],
         onPageChanged: (page) async {
           unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
