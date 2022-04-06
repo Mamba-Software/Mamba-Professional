@@ -6,6 +6,7 @@ import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadline1.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
@@ -40,6 +41,8 @@ class _ProfileState extends State<Profile> {
   int _current = 0;
   final CarouselController _controller = CarouselController();
   List<Widget> buildProfileCarousel = [];
+  //Share Plus Utils
+  SharePlusUtils _sharePlusUtils = new SharePlusUtils();
 
   @override
   void initState() {
@@ -299,7 +302,7 @@ class _ProfileState extends State<Profile> {
               width: safeAreaWidth*0.4,
               child: OutlinedButton(
                 onPressed: () {
-
+                  _sharePlusUtils.shareMambaLink(currentUser.firstName!);
                 },
                 child: Text(
                   AppLocalizations.of(context)!.shareApp,
