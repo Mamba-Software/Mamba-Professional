@@ -1704,8 +1704,32 @@
   "@shareAppText": {
     "description": "membersOfBrand message"
   },
-  "shareApp": "Compartir app",
+  "shareApp": "Compartir",
   "@shareApp": {
+    "description": "membersOfBrand message"
+  },
+  "giveFeedbackTitle": "Ayúdanos a mejorar",
+  "@giveFeedbackTitle": {
+    "description": "membersOfBrand message"
+  },
+  "giveFeedbackText": "Tu opinión es vital para seguir mejorando",
+  "@giveFeedbackText": {
+    "description": "membersOfBrand message"
+  },
+  "giveFeedback": "Contestar",
+  "@giveFeedback": {
+    "description": "membersOfBrand message"
+  },
+  "getInTouchTitle": "¿Algo más?",
+  "@getInTouchTitle": {
+    "description": "membersOfBrand message"
+  },
+  "getInTouchText": "Envíanos un email para ponerte en contacto con nosotros",
+  "@getInTouchText": {
+    "description": "membersOfBrand message"
+  },
+  "getInTouch": "Contáctanos",
+  "@getInTouch": {
     "description": "membersOfBrand message"
   },
   "brandDetailsTab": "Detalles",

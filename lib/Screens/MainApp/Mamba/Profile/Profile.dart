@@ -15,6 +15,7 @@ import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Profile/ProfileScreens
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Profile/ProfileScreens/Feedback/FeedBack.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // Profile Page
 class Profile extends StatefulWidget {
@@ -55,7 +56,7 @@ class _ProfileState extends State<Profile> {
   initProfileHome() async {
     getUser();
     await getUserEventsFinished();
-    buildProfileCarousel = [buildShareAppContainer(), buildShareAppContainer()];
+    buildProfileCarousel = [buildShareAppContainer(), buildAnswerFeedbackContainer(), buildContactUsContainer()];
     if (mounted) {
       Future.delayed(const Duration(milliseconds: 500), () {
         setState(() {
@@ -329,6 +330,125 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  // Build Share App Container.
+  Widget buildAnswerFeedbackContainer() {
+    return SafeArea(
+      left: false,
+      right: false,
+      child: Container(
+        height: safeAreaHeight*0.15,
+        width: double.infinity,
+        decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TitleHeadline1(
+              text: AppLocalizations.of(context)!.giveFeedbackTitle,
+            ),
+            SizedBox(height: safeAreaHeight*0.015),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.0),
+              child: Text(
+                  AppLocalizations.of(context)!.giveFeedbackText,
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor),
+                  textAlign: TextAlign.center
+              ),
+            ),
+            SizedBox(height: safeAreaHeight*0.015),
+            Container(
+              width: safeAreaWidth*0.4,
+              child: OutlinedButton(
+                onPressed: navigateToFeedbackScreen,
+                child: Text(
+                  AppLocalizations.of(context)!.giveFeedback,
+                  style: Theme.of(context).textTheme.bodyText1,
+                  textAlign: TextAlign.center,
+                ),
+                style: OutlinedButton.styleFrom(
+                  elevation: 4,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  fixedSize: Size(safeAreaWidth*0.35, safeAreaHeight*0.06),
+                  side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(30),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+
+        ),
+      ),
+    );
+  }
+
+  // Build Share App Container.
+  Widget buildContactUsContainer() {
+    return SafeArea(
+      left: false,
+      right: false,
+      child: Container(
+        height: safeAreaHeight*0.15,
+        width: double.infinity,
+        decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TitleHeadline1(
+              text: AppLocalizations.of(context)!.getInTouchTitle,
+            ),
+            SizedBox(height: safeAreaHeight*0.015),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.0),
+              child: Text(
+                  AppLocalizations.of(context)!.getInTouchText,
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor),
+                  textAlign: TextAlign.center
+              ),
+            ),
+            SizedBox(height: safeAreaHeight*0.015),
+            Container(
+              width: safeAreaWidth*0.4,
+              child: OutlinedButton(
+                onPressed: () => launchEmail(),
+                child: Text(
+                  AppLocalizations.of(context)!.getInTouch,
+                  style: Theme.of(context).textTheme.bodyText1,
+                  textAlign: TextAlign.center,
+                ),
+                style: OutlinedButton.styleFrom(
+                  elevation: 4,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  fixedSize: Size(safeAreaWidth*0.35, safeAreaHeight*0.06),
+                  side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(30),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+
+        ),
+      ),
+    );
+  }
+
+  Future<void> launchEmail() async {
+    final url = 'mailto:mambastylecastelldefels@gmail.com';
+    if (await canLaunch(url)) {
+      await launch(url);
+    }
+  }
+
   Widget build(BuildContext context) {
     if (isFirstBuild) {
       initDeviceSizes();
@@ -421,6 +541,7 @@ class _ProfileState extends State<Profile> {
             ),
             Expanded(
               child: Container(
+                width: safeAreaWidth,
                 color: Theme.of(context).backgroundColor,
                 child: !isLoading ? Column(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -431,6 +552,7 @@ class _ProfileState extends State<Profile> {
                           carouselController: _controller,
                           options: CarouselOptions(
                             autoPlay: false,
+                            initialPage: _current,
                             viewportFraction: 1,
                             onPageChanged: (index, reason) {
                               setState(() {
@@ -536,7 +658,16 @@ class _ProfileState extends State<Profile> {
                                 shape: BoxShape.circle,
                                 color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(_current == 1 ? 0.9 : 0.4)
                             ),
-                          )
+                          ),
+                          Container(
+                            width: 8.0,
+                            height: 8.0,
+                            margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(_current == 1 ? 0.9 : 0.4)
+                            ),
+                          ),
                         ],
                       ),
                     ),
