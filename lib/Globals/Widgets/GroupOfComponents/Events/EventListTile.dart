@@ -11,13 +11,12 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/FeedbackDialogs/EventFeedbackDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventClient.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:shimmer/shimmer.dart';
 
 class EventListTile extends StatefulWidget {
@@ -44,11 +43,12 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
   Brand _brand = Brand();
   Location _location = Location();
   // Event Date
-  var eventDate;
+  DateTime eventDate = DateTime.now();
   var eventDateString;
   var eventHourString;
   // Feedback Event
-  var eventFeedbackValue = 1;
+  bool canAnswerFeedback = true;
+  var eventFeedbackValue;
   // Animation
   AnimationController? motionController;
   Animation? motionAnimation;
@@ -113,6 +113,11 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
     );
     eventDateString = DateFormat('EEEE dd/MM/yy', Localizations.localeOf(context).languageCode).format(eventDate);
     eventHourString = DateFormat('Hm', Localizations.localeOf(context).languageCode).format(eventDate);
+    if (widget.showFeedback) {
+      // Get Feedback you have been in this event
+      eventFeedbackValue = await _eventDataService.getEventUserFeedback(_event.id!,currentUser.id!);
+    }
+
   }
 
   Future<void> getBrandDetails() async {
@@ -147,25 +152,54 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
           );
         }
     );
-    print("result");
-    print(result);
+    if (result != null) {
+      setState(() {
+        eventFeedbackValue = result;
+      });
+    }
   }
 
   // Build EventFeedback Value
   Widget buildEventFeedbackWidget() {
     return eventFeedbackValue != null ?
-      buildEventFeedbackIcon(eventFeedbackValue) :
-      Icon(
-      Icons.rate_review_outlined,
-      color: Theme.of(context).primaryColor,
-      size: size,
-    );
+      buildEventFeedbackIcon(eventFeedbackValue)
+        :
+      buildAnswerFeedbackIcon();
+  }
+
+  // Build EventFeedback Value
+  Widget buildAnswerFeedbackIcon() {
+    var limitDateToAnswer = eventDate.add(Duration(days: 7));
+    if (DateTime.now().isBefore(limitDateToAnswer)) {
+      return Icon(
+        Icons.rate_review_outlined,
+        color: Theme.of(context).primaryColor,
+        size: size,
+      );
+    } else {
+      setState(() {
+        canAnswerFeedback = false;
+      });
+      return Container();
+    }
   }
 
   // Build EventFeedback Value
   Widget buildEventFeedbackIcon(int eventFeedbackValue) {
-    //if (currentUser.testGroup == "A") {
-    if (false) {
+    if (currentUser.testGroup == "A") {
+      var emoji;
+      if (eventFeedbackValue == 1) {
+        emoji = Image.asset(Constants.relaxedEmojiImage);
+      } else if (eventFeedbackValue == 2) {
+        emoji = Image.asset(Constants.tiredEmojiImage);
+      } else if (eventFeedbackValue == 3) {
+        emoji = Image.asset(Constants.sweatingEmojiImage);
+      }
+      return Container(
+        width: widget.width*0.06,
+        child: emoji,
+      );
+    } else {
       var eventFeedbackValueArray = [];
       for (var i=0; i<eventFeedbackValue; i++) {
         eventFeedbackValueArray.add(1);
@@ -187,22 +221,8 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
           ),
         ),
       );
-    } else {
-      var emoji;
-      if (eventFeedbackValue == 1) {
-        emoji = Image.asset(Constants.relaxedEmojiImage);
-      } else if (eventFeedbackValue == 2) {
-        emoji = Image.asset(Constants.tiredEmojiImage);
-      } else if (eventFeedbackValue == 3) {
-        emoji = Image.asset(Constants.sweatingEmojiImage);
-      }
-      return Container(
-        width: widget.width*0.06,
-        child: emoji,
-      );
     }
   }
-
 
   @override
   void dispose() {
@@ -422,15 +442,12 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                         ),
                       ),
                     ),
-                    widget.showFeedback ? FittedBox(
-                      fit: BoxFit.fitHeight,
-                      child: GestureDetector(
-                        onTap: navigateToFeedbackEventDialog,
-                        child: Container(
-                          width: widget.width*0.12,
-                          child: Center(
+                    widget.showFeedback ? GestureDetector(
+                      onTap: canAnswerFeedback ? navigateToFeedbackEventDialog : null,
+                      child: Container(
+                        width: widget.width*0.12,
+                        child: Center(
                             child: buildEventFeedbackWidget()
-                          ),
                         ),
                       ),
                     ) : Container(

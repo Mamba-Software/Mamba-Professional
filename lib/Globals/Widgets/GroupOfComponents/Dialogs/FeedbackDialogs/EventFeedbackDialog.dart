@@ -6,10 +6,12 @@ import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Providers/FirebaseAnalyticsProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 
 class EventFeedbackDialog extends StatefulWidget {
   final Event event;
@@ -25,8 +27,6 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
 
   // User Data Service
   var _eventDataService = new EventDataService();
-  // Boolean A/B Test
-  String testGroup = "A";
   // Event Date
   var eventDate;
   var eventDateString;
@@ -115,13 +115,33 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
   }
 
   void userHasAnsweredFeedback(int value) {
-    // Database
+    var limitDateToAnswer = eventDate.add(Duration(days: 7));
     print(widget.event.id!);
-    _eventDataService.updateEventFeedback(widget.event.id!, currentUser.id!, value);
-    // Send Analytics
-    // Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsUserAnswerEventFeedbackTestA();
-    // Pop out i passar valor.
-    Navigator.pop(context, value);
+    if (DateTime.now().isBefore(limitDateToAnswer)) {
+      // Database
+      _eventDataService.updateEventFeedback(widget.event.id!, currentUser.id!, value);
+      print(widget.event.id!);
+      // Send Analytics
+      if (currentUser.testGroup == "A") {
+        // Edit Event?
+        if (widget.feedbackScore != null) {
+          Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsUserEditEventFeedbackTestA();
+        } else {
+          // First Answer
+          Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsUserAnswerEventFeedbackTestA();
+        }
+      } else {
+        // Edit Event?
+        if (widget.feedbackScore != null) {
+          Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsUserEditEventFeedbackTestB();
+        } else {
+          // First Answer
+          Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsUserAnswerEventFeedbackTestB();
+        }
+      }
+      // Pop passing the Value;
+      Navigator.pop(context, value);
+    }
   }
 
   @override
@@ -132,7 +152,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
         backgroundColor: Colors.transparent,
         insetPadding: EdgeInsets.all(20),
         child: Container(
-          height: MediaQuery.of(context).size.height*0.39,
+          height: MediaQuery.of(context).size.height*0.4,
           width: MediaQuery.of(context).size.width*0.9,
           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
           decoration: BoxDecoration(
@@ -198,7 +218,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
                   SizedBox(height: MediaQuery.of(context).size.height*0.04),
                   Container(
                     width: MediaQuery.of(context).size.width*0.70,
-                    child: testGroup=="A" ? buildFeedbackWithEmjois() : buildFeedbackWithStarIcon(),
+                    child: currentUser.testGroup == "A" ? buildFeedbackWithEmjois() : buildFeedbackWithStarIcon(),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.04),
                 ],

@@ -803,6 +803,22 @@ class FirebaseDatabaseService {
       return Location();
     }
 
+    Future<int?> getEventUserFeedback(String eventId, String userId) async {
+      try {
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+          await _firestore
+            .collection(events)
+            .doc(eventId)
+            .collection("Users")
+            .doc(userId)
+            .get();
+        int feedbackScore = _documentSnapshot.get("feedbackScore");
+        return feedbackScore;
+      } catch (e) {
+        return null;
+      }
+    }
+
     Future<List<Event>> getUserEventsToday(String userId) async {
       DateTime today = DateTime.now();
       List<Event> events = [];

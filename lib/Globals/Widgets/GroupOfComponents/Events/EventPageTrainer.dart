@@ -77,6 +77,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   List<Usuario> allTrainers = [];
   List<Usuario> eventTrainers = [];
   List<Usuario> eventClients = [];
+  List<int?> eventClientsFeedback = [];
   List<String> eventTrainersIds = [];
   List<bool> eventTrainersBool = [];
   bool errorNoTrainerSelected = false;
@@ -91,6 +92,8 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   Image? theImage;
   // String Deleted Photo
   String deletedObject = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/not-found-image.jpg?alt=media&token=70687295-6a17-4735-9c0a-e5749c777319";
+
+  var eventFeedbackValue;
 
   @override
   initState() {
@@ -176,6 +179,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
 
   void getEventInfo() async {
     event = await _eventDataService.getSingleEvent(widget.eventId);
+    print(event?.id);
     titleController.text = "${event!.title}";
     titleString = "${event!.title}";
     descriptionController.text = "${event!.description}";
@@ -234,6 +238,8 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
         }
       } else {        
         clients.add(user);
+        int? feedbackClient = await _eventDataService.getEventUserFeedback(event!.id!, user.id!);
+        eventClientsFeedback.add(feedbackClient);
       }
     }
     eventTrainersBool = [];
@@ -245,6 +251,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
         eventTrainersBool.add(false);
       }
     }
+
     if (mounted) {
       setState(() {
         eventTrainers = trainers;
@@ -546,6 +553,23 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
       return Colors.blue;
     }
     return Theme.of(context).accentColor;
+  }
+
+  // Build EventFeedback Value
+  Widget buildEventFeedbackIcon(int eventFeedbackValue) {
+    var eventFeedbackValueArray = [];
+    for (var i=0; i<eventFeedbackValue; i++) {
+      eventFeedbackValueArray.add(1);
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: eventFeedbackValueArray.asMap().entries.map((entry) {
+        return Icon(
+            Icons.star,
+            color: Theme.of(context).accentColor
+        );
+      }).toList(),
+    );
   }
 
   @override
@@ -1646,6 +1670,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                         itemCount: eventClients.length,
                                         itemBuilder: (context, int index) {
                                           var client = eventClients[index];
+                                          var clientFeedback = eventClientsFeedback[index];
                                           return GestureDetector(
                                             onTap: () {
                                               Navigator.push(context, CupertinoPageRoute<Null>(
@@ -1678,6 +1703,15 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                                       ],
                                                     ),
                                                   ),
+                                                  SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                                                  clientFeedback != null ? Container(
+                                                    height: MediaQuery.of(context).size.height*0.015,
+                                                    width: MediaQuery.of(context).size.width*0.1,
+                                                    child: FittedBox(
+                                                        fit: BoxFit.fitHeight,
+                                                        child: buildEventFeedbackIcon(clientFeedback)
+                                                    ),
+                                                  ) : Container(),
                                                 ],
                                               ),
                                             ),

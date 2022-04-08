@@ -399,7 +399,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
                             child: EventListTile(
                               eventId: event.id!,
-                              showFeedback: currentUser.id! == user!.id!,
+                              showFeedback: currentUser.id! == user!.id! && currentUser.isTrainer == false,
                               height: MediaQuery.of(context).size.height,
                               width: MediaQuery.of(context).size.width*0.84,
                             ),
