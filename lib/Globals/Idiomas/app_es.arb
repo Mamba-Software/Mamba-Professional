@@ -343,6 +343,10 @@
   "@sendFeedback":{
     "description": "Feedback Text Enviar"
   },
+  "eventFeedbackText": "¿Qué te ha parecido la sesión?",
+  "@eventFeedbackText": {
+    "description": "Member Since message"
+  },
   "memberSince": "Creada el {dateJoined}",
   "@memberSince": {
     "description": "Member Since message",

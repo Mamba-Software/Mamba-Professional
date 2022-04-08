@@ -322,6 +322,7 @@
   "finishedFeedback": "Has acabat",
   "finishedFeedbackSubtitle": "Gràcies pel teu temps!",
   "sendFeedback": "Enviar",
+  "eventFeedbackText": "Què t'ha semblat la sessió?",
   "sendRequestConfirmation": "Estàs segur que vols enviar una sol·licitud a aquesta marca?\n\nEls organitzadors rebran una notificació. Fins que aquesta no sigui acceptada o rebutjada no podràs enviar una altra sol·licitud a cap marca.",
   "cancelRequestConfirmation": "Vols anul·lar la teva sol·licitud a aquesta marca? Encara no has rebut resposta dels organitzadors.\n\nAquesta canvi tindrà un efecte immediat i ara podràs enviar una sol·licitud a una altra marca.",
   "waitingRequestConfirmation": "Esperant resposta a sol·licitud d'admissió per part de ",

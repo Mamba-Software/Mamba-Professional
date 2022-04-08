@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/FeedbackDialogs/EventFeedbackDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventTrainer.dart';
@@ -98,6 +99,21 @@ class _EventListTileState extends State<EventListTile> {
       )
     );
   }
+
+  // Navigate to Event Feedback Screen
+  void navigateToFeedbackEventDialog() {
+    var result = showDialog(
+        context: context,
+        builder: (_) {
+          return EventFeedbackDialog(
+            event: _event,
+            brandLogo: _brand.logoUrl!,
+          );
+        }
+    );
+  }
+  
+  
 
   @override
   Widget build(BuildContext context) {
@@ -313,10 +329,13 @@ class _EventListTileState extends State<EventListTile> {
                     ),
                     widget.showFeedback ? FittedBox(
                       fit: BoxFit.fitHeight,
-                      child: Container(
-                        width: widget.width*0.12,
-                        child: Center(
-                          child: Icon(Icons.poll_outlined, color: AppColors.grey, size: widget.width*0.08,),
+                      child: GestureDetector(
+                        onTap: navigateToFeedbackEventDialog,
+                        child: Container(
+                          width: widget.width*0.12,
+                          child: Center(
+                            child: Icon(Icons.poll_outlined, color: AppColors.grey, size: widget.width*0.08,),
+                          ),
                         ),
                       ),
                     ) : Container(
