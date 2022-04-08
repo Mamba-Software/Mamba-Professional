@@ -1668,6 +1668,8 @@ class FirebaseDatabaseService {
         print(e.toString());
       }
     }
+
+
     // Update Event Location
     Future<void> updateEventLocation(String eventId, String locationId, String previousLocation) async {
       try {
@@ -1689,6 +1691,26 @@ class FirebaseDatabaseService {
               "description": location.description,
               "longitude": location.longitude,
               "latitude": location.latitude,
+            });
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+
+    // Update Event User Feedback
+    Future<void> updateEventFeedback(String eventId, String userId, int score) async {
+      try {
+        Timestamp feedbackAt = Timestamp.fromDate(DateTime.now());
+        await _firestore
+            .collection(events)
+            .doc(eventId)
+            .collection("Users")
+            .doc(userId)
+            .update({
+              "feedbackScore": score,
+              "feedbackAt": feedbackAt,
+            }).catchError((err) {
+              print(err);
             });
       } catch (e) {
         print(e.toString());

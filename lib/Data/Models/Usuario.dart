@@ -25,6 +25,7 @@ class Usuario {
   int? gender;
   String? dateJoined;
   String? dateOfBirth;
+  String? testGroup;
   String? idioma;
   String? brandID;
 
@@ -50,6 +51,7 @@ class Usuario {
     this.gender,
     this.dateJoined,
     this.dateOfBirth,
+    this.testGroup,
     this.idioma,
     this.brandID,
   });
@@ -105,6 +107,9 @@ class Usuario {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateOfBirth')) {
       this.dateOfBirth = documentSnapshot.get("dateOfBirth").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('testGroup')) {
+      this.testGroup = documentSnapshot.get("testGroup").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('idioma')) {
       this.idioma = documentSnapshot.get("idioma").toString();
@@ -165,6 +170,7 @@ class Usuario {
     this.gender = user.gender;
     this.dateJoined = user.dateJoined;
     this.dateOfBirth = user.dateOfBirth;
+    this.testGroup = user.testGroup;
     this.idioma = user.idioma;
     this.brandID = user.brandID;
   }

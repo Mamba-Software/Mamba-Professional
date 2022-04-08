@@ -54,7 +54,7 @@ class _UserRecentEventsWidgetState extends State<UserRecentEventsWidget> {
 
   // Gets the Events Done by the User
   Future<void> getUserEvents() async {
-    listEvents = await _eventDataService.getUserFirstCompletedEventsLimit(widget.userId, 10);
+    listEvents = await _eventDataService.getUserFirstCompletedEventsLimit(widget.userId, 5);
   }
 
   @override

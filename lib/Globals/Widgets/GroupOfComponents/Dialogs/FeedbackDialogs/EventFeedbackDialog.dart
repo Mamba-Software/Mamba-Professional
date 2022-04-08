@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
@@ -10,8 +13,9 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class EventFeedbackDialog extends StatefulWidget {
   final Event event;
+  final int? feedbackScore;
   final String brandLogo;
-  EventFeedbackDialog({Key? key, required this.event, required this.brandLogo}) : super(key: key);
+  EventFeedbackDialog({Key? key, required this.event, required this.brandLogo, this.feedbackScore}) : super(key: key);
 
   @override
   _EventFeedbackDialogState createState() => _EventFeedbackDialogState();
@@ -19,10 +23,16 @@ class EventFeedbackDialog extends StatefulWidget {
 
 class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
 
+  // User Data Service
+  var _eventDataService = new EventDataService();
+  // Boolean A/B Test
+  String testGroup = "A";
   // Event Date
   var eventDate;
   var eventDateString;
   var eventHourString;
+  // Event Feedback Score
+  int feedbackScore = 0;
 
   @override
   void initState() {
@@ -33,22 +43,85 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
       int.parse(widget.event.hour!),
       int.parse(widget.event.minute!),
     );
-
+    if (widget.feedbackScore != null) {
+      feedbackScore = widget.feedbackScore!;
+    }
     super.initState();
   }
 
-  Widget buildFeedbackIcon() {
-
-    return Icon(
-        Icons.star,
-        color: Theme.of(context).accentColor
+  Widget buildFeedbackWithStarIcon() {
+    return Center(
+        child: RatingBar.builder(
+            initialRating: feedbackScore.toDouble(),
+            itemCount: 3,
+            itemSize: MediaQuery.of(context).size.height*0.1,
+            itemBuilder: (context, _) => Icon(
+                Icons.star,
+                color: Theme.of(context).accentColor
+            ),
+            onRatingUpdate: (rating) {
+              userHasAnsweredFeedback(rating.toInt());
+            }
+        )
     );
+  }
 
-    return Icon(
-      Icons.favorite,
-      color: AppColors.red,
+  Widget buildFeedbackWithEmjois() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        GestureDetector(
+          onTap: () => userHasAnsweredFeedback(1),
+          child: Container(
+              height: MediaQuery.of(context).size.width*0.17,
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.02),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(width: 4.0, color: feedbackScore == 1 ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor),
+                ),
+              ),
+              child: Image.asset(Constants.relaxedEmojiImage)
+
+          ),
+        ),
+        GestureDetector(
+          onTap: () => userHasAnsweredFeedback(2),
+          child: Container(
+              height: MediaQuery.of(context).size.width*0.17,
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.02),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(width: 4.0, color: feedbackScore == 2 ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor),
+                ),
+              ),
+              child: Image.asset(Constants.tiredEmojiImage)
+          ),
+        ),
+        GestureDetector(
+          onTap: () => userHasAnsweredFeedback(3),
+          child: Container(
+              height: MediaQuery.of(context).size.width*0.17,
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.02),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(width: 4.0, color: feedbackScore == 3 ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor),
+                ),
+              ),
+              child: Image.asset(Constants.sweatingEmojiImage)
+          ),
+        ),
+      ],
     );
+  }
 
+  void userHasAnsweredFeedback(int value) {
+    // Database
+    print(widget.event.id!);
+    _eventDataService.updateEventFeedback(widget.event.id!, currentUser.id!, value);
+    // Send Analytics
+    // Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsUserAnswerEventFeedbackTestA();
+    // Pop out i passar valor.
+    Navigator.pop(context, value);
   }
 
   @override
@@ -59,7 +132,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
         backgroundColor: Colors.transparent,
         insetPadding: EdgeInsets.all(20),
         child: Container(
-          height: MediaQuery.of(context).size.height*0.4,
+          height: MediaQuery.of(context).size.height*0.39,
           width: MediaQuery.of(context).size.width*0.9,
           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
           decoration: BoxDecoration(
@@ -125,16 +198,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
                   SizedBox(height: MediaQuery.of(context).size.height*0.04),
                   Container(
                     width: MediaQuery.of(context).size.width*0.70,
-                    child: Center(
-                      child: RatingBar.builder(
-                        itemCount: 3,
-                        itemSize: MediaQuery.of(context).size.height*0.1,
-                        itemBuilder: (context, _) => buildFeedbackIcon(),
-                        onRatingUpdate: (rating) {
-
-                        }
-                      )
-                    ),
+                    child: testGroup=="A" ? buildFeedbackWithEmjois() : buildFeedbackWithStarIcon(),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.04),
                 ],

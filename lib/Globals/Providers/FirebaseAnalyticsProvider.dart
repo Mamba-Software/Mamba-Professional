@@ -140,4 +140,57 @@ class FirebaseAnalyticsProvider extends ChangeNotifier {
     print("EVENT create_brand_finished SENT!");
   }
 
+  // USER ANSWERS FEEDBACK
+
+  Future<void> sendAnalyticsUserOpenEventFeedback() async {
+    await analytics.logEvent(
+      name: 'user_open_event_feedback',
+      parameters: <String, dynamic>{
+        'string': "UserOpenEventFeedback",
+      },
+    );
+    print("EVENT user_open_event_feedback");
+  }
+
+  Future<void> sendAnalyticsUserAnswerEventFeedbackTestA() async {
+    await analytics.logEvent(
+      name: 'user_answer_event_feedback_testA',
+      parameters: <String, dynamic>{
+        'string': "UserAnswerEventFeedbackTestA",
+      },
+    );
+    print("EVENT user_answer_event_feedback_testA");
+  }
+
+  Future<void> sendAnalyticsUserAnswerEventFeedbackTestB() async {
+    await analytics.logEvent(
+      name: 'user_answer_event_feedback_testB',
+      parameters: <String, dynamic>{
+        'string': "UserAnswerEventFeedbackTestB",
+      },
+    );
+    print("EVENT user_answer_event_feedback_testB");
+  }
+
+  Future<void> sendAnalyticsUserEditEventFeedbackTestA() async {
+    await analytics.logEvent(
+      name: 'user_edit_event_feedback_testA',
+      parameters: <String, dynamic>{
+        'string': "UserEditEventFeedbackTestA",
+      },
+    );
+    print("EVENT user_edit_event_feedback_testA");
+  }
+
+  Future<void> sendAnalyticsUserEditEventFeedbackTestB() async {
+    await analytics.logEvent(
+      name: 'user_edit_event_feedback_testB',
+      parameters: <String, dynamic>{
+        'string': "UserEditEventFeedbackTestB",
+      },
+    );
+    print("EVENT user_edit_event_feedback_testB");
+  }
+
+
 }

@@ -10,6 +10,31 @@ const uuidv4 = require("uuid")
 // Firebase DataBase
 const db = admin.firestore();
 
+// New User Situate in Test Group
+exports.newUserAddsTestGroup = functions
+    .region("europe-west1")
+    .firestore
+    .document("/Users/{userId}")
+    .onCreate( async (snap, context) => {
+      // Get the value of the context triggers.
+      const userId = context.params.userId;
+      // Get the number of total users
+      const totalUsersSnapshot = await db.collection("Users").get();
+      let numberUsers = totalUsersSnapshot.size;
+      // Assign test group depending on isEven
+      let testGroup = "A";
+      if (numberUsers % 2 == 0) {
+        testGroup = "B"
+      }
+      await db
+       .collection("Users")
+       .doc(userId)
+       .update({
+         "testGroup": testGroup,
+       });
+      return null;
+    });
+
 // User Updates Cover Data
 exports.userUpdatesCoverData = functions
     .region("europe-west1")
@@ -1655,6 +1680,31 @@ exports.changeMessageStatus = functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // 7777 TEST ENVIRONMENT CLOUD FUNCTIONS
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// New User Situate in Test Group
+exports.zzzzNewUserAddsTestGroup = functions
+    .region("europe-west1")
+    .firestore
+    .document("/7777 Users/{userId}")
+    .onCreate( async (snap, context) => {
+      // Get the value of the context triggers.
+      const userId = context.params.userId;
+      // Get the number of total users
+      const totalUsersSnapshot = await db.collection("7777 Users").get();
+      let numberUsers = totalUsersSnapshot.size;
+      // Assign test group depending on isEven
+      let testGroup = "A";
+      if (numberUsers % 2 == 0) {
+        testGroup = "B"
+      }
+      await db
+       .collection("7777 Users")
+       .doc(userId)
+       .update({
+         "testGroup": testGroup,
+       });
+      return null;
+    });
 
 // User Updates Cover Data
 exports.zzzzUserUpdatesCoverData = functions

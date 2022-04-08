@@ -10,6 +10,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
@@ -31,7 +32,7 @@ class EventListTile extends StatefulWidget {
   _EventListTileState createState() => _EventListTileState();
 }
 
-class _EventListTileState extends State<EventListTile> {
+class _EventListTileState extends State<EventListTile> with TickerProviderStateMixin {
   // Boolean Loading
   bool isLoading = true;
   // Acceso a Base de Datos
@@ -46,6 +47,12 @@ class _EventListTileState extends State<EventListTile> {
   var eventDate;
   var eventDateString;
   var eventHourString;
+  // Feedback Event
+  var eventFeedbackValue = 1;
+  // Animation
+  AnimationController? motionController;
+  Animation? motionAnimation;
+  double size = 25;
 
 
   @override
@@ -53,6 +60,34 @@ class _EventListTileState extends State<EventListTile> {
     isLoading = true;
     initEventTile();
     super.initState();
+    motionController = AnimationController(
+      duration: Duration(milliseconds: 700),
+      vsync: this,
+      lowerBound: 0.5,
+    );
+
+    motionAnimation = CurvedAnimation(
+      parent: motionController!,
+      curve: Curves.bounceInOut,
+    );
+
+    motionController!.forward();
+    motionController!.addStatusListener((status) {
+      setState(() {
+        if (status == AnimationStatus.completed) {
+          motionController!.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          motionController!.forward();
+        }
+      });
+    });
+
+    motionController!.addListener(() {
+      setState(() {
+        size = motionController!.value * 35;
+      });
+    });
+    // motionController.repeat();
   }
 
   Future<void> initEventTile() async {
@@ -101,19 +136,79 @@ class _EventListTileState extends State<EventListTile> {
   }
 
   // Navigate to Event Feedback Screen
-  void navigateToFeedbackEventDialog() {
-    var result = showDialog(
+  Future<void> navigateToFeedbackEventDialog() async {
+    var result = await showDialog(
         context: context,
         builder: (_) {
           return EventFeedbackDialog(
             event: _event,
             brandLogo: _brand.logoUrl!,
+            feedbackScore: eventFeedbackValue,
           );
         }
     );
+    print("result");
+    print(result);
   }
-  
-  
+
+  // Build EventFeedback Value
+  Widget buildEventFeedbackWidget() {
+    return eventFeedbackValue != null ?
+      buildEventFeedbackIcon(eventFeedbackValue) :
+      Icon(
+      Icons.rate_review_outlined,
+      color: Theme.of(context).primaryColor,
+      size: size,
+    );
+  }
+
+  // Build EventFeedback Value
+  Widget buildEventFeedbackIcon(int eventFeedbackValue) {
+    //if (currentUser.testGroup == "A") {
+    if (false) {
+      var eventFeedbackValueArray = [];
+      for (var i=0; i<eventFeedbackValue; i++) {
+        eventFeedbackValueArray.add(1);
+      }
+      return Container(
+        width: widget.width*0.12,
+        child: Center(
+          child: FittedBox(
+            fit: BoxFit.contain,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: eventFeedbackValueArray.asMap().entries.map((entry) {
+                return Icon(
+                    Icons.star,
+                    color: Theme.of(context).accentColor
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      );
+    } else {
+      var emoji;
+      if (eventFeedbackValue == 1) {
+        emoji = Image.asset(Constants.relaxedEmojiImage);
+      } else if (eventFeedbackValue == 2) {
+        emoji = Image.asset(Constants.tiredEmojiImage);
+      } else if (eventFeedbackValue == 3) {
+        emoji = Image.asset(Constants.sweatingEmojiImage);
+      }
+      return Container(
+        width: widget.width*0.06,
+        child: emoji,
+      );
+    }
+  }
+
+
+  @override
+  void dispose() {
+    motionController!.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -334,7 +429,7 @@ class _EventListTileState extends State<EventListTile> {
                         child: Container(
                           width: widget.width*0.12,
                           child: Center(
-                            child: Icon(Icons.poll_outlined, color: AppColors.grey, size: widget.width*0.08,),
+                            child: buildEventFeedbackWidget()
                           ),
                         ),
                       ),

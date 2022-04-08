@@ -201,61 +201,69 @@ class _ProfileState extends State<Profile> {
   // Build the Widget of the Image
   Widget buildUserEventCount() {
     return !isLoading ? Material(
-      child: Container(
-        width: safeAreaWidth * 0.81,
-        height: safeAreaHeight * 0.10,
-        decoration: new BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              height: safeAreaHeight * 0.10,
-              width: safeAreaWidth * 0.38,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Text(
-                    totalEvents.toString(),
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                  ),
-                  SizedBox(height: 2),
-                  Text(
-                    AppLocalizations.of(context)!.allEvents,
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            currentIndex = 2;
+          });
+          pageController.jumpToPage(currentIndex);
+        },
+        child: Container(
+          width: safeAreaWidth * 0.81,
+          height: safeAreaHeight * 0.10,
+          decoration: new BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: safeAreaHeight * 0.10,
+                width: safeAreaWidth * 0.38,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Text(
+                      totalEvents.toString(),
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      AppLocalizations.of(context)!.allEvents,
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Container(
-              width: safeAreaWidth * 0.05,
-              height: safeAreaHeight * 0.03,
-              child: VerticalDivider(color: Theme.of(context).primaryColor,),
-            ),
-            Container(
-              height: safeAreaHeight * 0.10,
-              width: safeAreaWidth * 0.38,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Text(
-                    thisMonthEvents.toString(),
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                  ),
-                  SizedBox(height: 2),
-                  Text(
-                    AppLocalizations.of(context)!.monthEvents,
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+              Container(
+                width: safeAreaWidth * 0.05,
+                height: safeAreaHeight * 0.03,
+                child: VerticalDivider(color: Theme.of(context).primaryColor,),
               ),
-            ),
-          ],
+              Container(
+                height: safeAreaHeight * 0.10,
+                width: safeAreaWidth * 0.38,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Text(
+                      thisMonthEvents.toString(),
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      AppLocalizations.of(context)!.monthEvents,
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     ) : Shimmer.fromColors(

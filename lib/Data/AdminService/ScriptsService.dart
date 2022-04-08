@@ -1417,5 +1417,46 @@ class ScriptsDatabaseService {
     }
   }
 
+  Future<bool> migrateUserDataApril8th() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 8TH FEBRUARY 2022');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying '+users+' collection:\n');
+      print('--------------');
+      print('\n');
+
+
+      // REAL MIGRATION FOR REAL DATA OF USERS
+      QuerySnapshot querySnapshot = await _firestore.collection("Users").get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
+        Usuario user = Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('USER WITH ID: ' + user.id! + " AND NAME: " + user.name!);
+        if (i.isEven) {
+          await _firestore.collection("Users").doc(user.id!).update({
+            "testGroup": "A",
+          });
+        } else {
+          await _firestore.collection("Users").doc(user.id!).update({
+            "testGroup": "B",
+          });
+        }
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
 
 }
