@@ -387,5 +387,8 @@
   "readLess": "Veure menys",
   "goodMorningGreeting": "Bon dia,",
   "goodAfternoonGreeting": "Bona tarda,",
-  "goodNightGreeting": "Bona nit,"
+  "goodNightGreeting": "Bona nit,",
+  "relaxedFeedbackLabel": "Relaxat/da",
+  "tiredFeedbackLabel": "Cansat/da",
+  "exhaustedFeedbackLabel": "Exhaust/a"
 }
