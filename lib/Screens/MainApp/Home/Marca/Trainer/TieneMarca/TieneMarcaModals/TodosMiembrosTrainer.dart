@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:collection';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -13,6 +16,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import '../../../../../../../Globals/Widgets/MambaCoin/MambaCoin.dart';
 import 'MembershipRequests.dart';
 
 class TodosMiembrosTrainer extends StatefulWidget {
@@ -22,7 +26,7 @@ class TodosMiembrosTrainer extends StatefulWidget {
   _TodosMiembrosTrainerState createState() => _TodosMiembrosTrainerState();
 }
 
-class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
+class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> with TickerProviderStateMixin {
 
   // Brand Data Service
   var _brandDataService = BrandDataService();
@@ -41,7 +45,26 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
   List<Usuario> allClients = [];
   List<Usuario> allTrainers = [];
 
+  //Mamba Coin
+  MambaCoin _mambaCoin = new MambaCoin();
+
+  double sizeDef = 30;
+
+  bool gestioBonos = false;
+
+  HashMap hashMap = new HashMap<String, String>();
+
   var chatUsers = [];
+
+  late final AnimationController _controller = AnimationController(
+  duration: const Duration(seconds: 2),
+  vsync: this,
+  )..repeat(reverse: true);
+  late final Animation<double> _animation = CurvedAnimation(
+  parent: _controller,
+  curve: Curves.fastOutSlowIn,
+  );
+
 
   Future<void> getAllUsers() async {
     List<Usuario> brandUsers = await _brandDataService.getBrandUsers(currentBrand.id!);
@@ -103,7 +126,17 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
   initState() {
     isLoading = true;
     getAllUsers();
+    /*
+    Timer _everySecond = Timer.periodic(Duration(seconds: 2), (Timer t) {
+      if(sizeDef == 10) sizeDef = 30;
+      print(sizeDef.toString());
+      setState(() {
+        sizeDef = sizeDef - 5;
+      });
+    });
+     */
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -130,13 +163,25 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: !searchClicked ?
-                IconButton(
-                    icon: Icon(Icons.search, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).primaryColor),
-                    onPressed: () {
-                      setState(() {
-                        searchClicked = !searchClicked;
-                      });
-                    }
+                Row(
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            gestioBonos = !gestioBonos;
+                          });
+                        },
+                        child: _mambaCoin.mambaCoinLogo(context),
+                    ),
+                    IconButton(
+                        icon: Icon(Icons.search, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).primaryColor),
+                        onPressed: () {
+                          setState(() {
+                            searchClicked = !searchClicked;
+                          });
+                        }
+                    ),
+                  ],
                 )
                     :
                 IconButton(
@@ -265,14 +310,65 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
                                       ],
                                     ),
                                     trailing: Container(
-                                      width: MediaQuery.of(context).size.width*0.30,
+                                      width: MediaQuery.of(context).size.width*0.40,
                                       child: FittedBox(
                                         fit: BoxFit.contain,
                                         child: Row(
                                           children: [
-                                            user.sessions != null ?
-                                            Text(user.sessions!.toString()) : Text("0"),
-                                            user.id! == currentUser.id ? IconButton(
+                                            gestioBonos ? Row(
+                                              children: [
+                                                GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        if(user.sessions == null) user.sessions = '1';
+                                                        else user.sessions = (int.parse(user.sessions!) + 1).toString();
+                                                      });
+                                                    },
+                                                    child: Icon(Icons.done, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.02,)),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                                                GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        user.sessions = hashMap[user.id];
+                                                      });
+                                                    },
+                                                    child: Icon(Icons.close, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.02,)),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                                                GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+
+                                                        if(user.sessions == null) {
+                                                          if(!hashMap.containsKey(user.id)) hashMap.putIfAbsent(user.id, () => '0');
+                                                          user.sessions = '1';
+                                                        }
+                                                        else
+                                                       {
+                                                          if(!hashMap.containsKey(user.id)) hashMap.putIfAbsent(user.id, () => user.sessions);
+                                                          user.sessions = (int.parse(user
+                                                              .sessions!) + 1).toString();
+                                                          }
+                                                      });
+                                                    },
+                                                    child: Icon(Icons.add_circle_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.02,)),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                                user.sessions != null ?
+                                                int.parse(user.sessions!) > 5 ? _mambaCoin.mambaCoin(context, user.sessions!.toString(), sizeDef, currentBrand.logoUrl, _animation, false) : _mambaCoin.mambaCoin(context, user.sessions!, sizeDef, currentBrand.logoUrl, _animation, true) : _mambaCoin.mambaCoin(context, '0', sizeDef, currentBrand.logoUrl, _animation, true),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                                GestureDetector(
+                                                    onTap: () {
+                                                      if(user.sessions != null) {
+                                                        setState(() {
+                                                          if(!hashMap.containsKey(user.id)) hashMap.putIfAbsent(user.id, () => user.sessions);
+                                                          user.sessions = (int.parse(user.sessions!) + - 1).toString();
+                                                        });
+                                                      }
+                                                    },
+                                                    child: Icon(Icons.remove_circle_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.02,)),
+                                                SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                                              ],
+                                            ) : Container(),
+                                            gestioBonos ? Container() : user.id! == currentUser.id ? IconButton(
                                               icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
                                               alignment: Alignment.centerRight,
                                               padding: EdgeInsets.all(0),
@@ -550,6 +646,7 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> {
 
   @override
   void dispose() {
+    _controller.dispose();
     super.dispose();
   }
 
