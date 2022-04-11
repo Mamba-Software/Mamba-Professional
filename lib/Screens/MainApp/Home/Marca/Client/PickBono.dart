@@ -6,12 +6,12 @@ import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ActionDialogs/ConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/TopSnackBar/TopSnackBar.dart';
 
 import '../../../../../Globals/Styles/Styles.dart';
+import '../../../../../Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
+import '../../../../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 
 class PickBono extends StatefulWidget {
   String brandId;

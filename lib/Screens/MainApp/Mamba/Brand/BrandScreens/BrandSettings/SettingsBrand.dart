@@ -6,6 +6,7 @@ import 'package:mamba_castelldefels/Data/DataService/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAutoComplete/MyLocations.dart';
@@ -44,10 +45,37 @@ class _SettingsBrandState extends State<SettingsBrand> {
   bool isUpdated = false;
   // Boolean isSaved
   bool isSaved = false;
+  // Boolean to controll switch state
+  bool isSwitched = mambaProfessional;
+  // String to show if mamba pro is activated
+  String textValue = '';
 
   @override
   void initState() {
     super.initState();
+    if(mambaProfessional) textValue = "Mamba professional está activado";
+    else textValue = "Mamba professional está desactivado";
+  }
+
+  //Class to control swithc state
+  void toggleSwitch(bool value) {
+
+    if(isSwitched == false)
+    {
+      setState(() {
+        isSwitched = true;
+        mambaProfessional = isSwitched;
+        textValue = AppLocalizations.of(context)!.mambaProActivated;
+      });
+    }
+    else
+    {
+      setState(() {
+        isSwitched = false;
+        mambaProfessional = isSwitched;
+        textValue = AppLocalizations.of(context)!.mambaProDesactivated;
+      });
+    }
   }
 
   @override
@@ -78,6 +106,23 @@ class _SettingsBrandState extends State<SettingsBrand> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  currentUser.id == currentBrand.adminID ? Row(
+                    children: [
+                      Switch(
+                        onChanged: toggleSwitch,
+                        value: isSwitched,
+                        activeColor: Styles.mainColor,
+                        activeTrackColor: Styles.mainColor,
+                        inactiveThumbColor: Styles.mainColorTrans,
+                        inactiveTrackColor: Styles.mainColorTrans,
+                      ),
+                      Text(
+                          textValue,
+                          style: Theme.of(context).textTheme.bodyText2
+                      ),
+                    ],
+                  ) : Container(),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,6 +310,7 @@ class _SettingsBrandState extends State<SettingsBrand> {
                       ],
                     ),
                   ),
+
                 ],
               ),
             ),

@@ -14,6 +14,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Home/Homepage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/Sesions.dart';
+import '../../../Globals/Styles/Styles.dart';
 import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
 import '../Home/Marca/Marca.dart';
 import 'Profile/Profile.dart';
@@ -37,10 +38,30 @@ class _MambaClientState extends State<MambaClient> {
   bool isLoading = false;
   // Boolean hasSeenStartUpDialog
   bool hasSeenStartUpDialog = false;
+  // Boolean to controll switch state
+  bool isSwitched = mambaProfessional;
+  // String to show if mamba pro is activated
+  String textValue = '';
+
+  //Bools to controll show for drop down
+  bool seeNextWho = false;
+  bool seeNextWhat = false;
+  bool seeNextHow = false;
+  bool seeNextWhen = false;
+  bool seeNextWhere = false;
+
+  //Icons for drop down
+  var IconWho = Icons.keyboard_arrow_down;
+  var IconWhat = Icons.keyboard_arrow_down;
+  var IconHow = Icons.keyboard_arrow_down;
+  var IconWhen = Icons.keyboard_arrow_down;
+  var IconWhere = Icons.keyboard_arrow_down;
 
   @override
   void initState() {
     super.initState();
+    if(mambaProfessional) textValue = "Mamba professional está activado";
+    else textValue = "Mamba professional está desactivado";
     isLoading = true;
     // Init LocalNotificationsService
     LocalNotificationService.initialize(context);
@@ -87,6 +108,27 @@ class _MambaClientState extends State<MambaClient> {
     getUserAndBrand();
   }
 
+  //Class to control swithc state
+  void toggleSwitch(bool value) {
+
+    if(isSwitched == false)
+    {
+      setState(() {
+        isSwitched = true;
+        mambaProfessional = isSwitched;
+        textValue = AppLocalizations.of(context)!.mambaProActivated;
+      });
+    }
+    else
+    {
+      setState(() {
+        isSwitched = false;
+        mambaProfessional = isSwitched;
+        textValue = AppLocalizations.of(context)!.mambaProDesactivated;
+      });
+    }
+  }
+
   // Check version and Update App Dialog
   void checkMinimumAppVersion() async {
     // Check version
@@ -124,7 +166,266 @@ class _MambaClientState extends State<MambaClient> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return mambaProfessional ?  Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 0,
+        elevation: 0,
+      ),
+      drawer: Drawer(
+        backgroundColor: Colors.white,
+        child: ListView(
+          // Remove padding
+          padding: EdgeInsets.zero,
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text(currentUser.firstName! + ' ' + currentUser.lastName!,
+                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, backgroundColor: Colors.white)),
+              accountEmail: Text('Administrator',
+                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, backgroundColor: Colors.white)),
+              currentAccountPicture: CircleAvatar(
+                child: ClipOval(
+                  child: Image.network(
+                    currentUser.imageUrl!,
+                    fit: BoxFit.cover,
+                    width: 90,
+                    height: 90,
+                  ),
+                ),
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                image: DecorationImage(
+                  opacity: 1,
+                    fit: BoxFit.fill,
+                    image: NetworkImage(
+                       currentBrand.logoUrl!)),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.home_filled),
+              title: Text('Home'),
+              onTap: () => null,
+            ),
+            Divider(),
+
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(IconWho,
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                  Text('Quien'),
+                ],
+              ),
+              onTap: () => setState(() {
+                seeNextWho = !seeNextWho;
+                if(IconWho == Icons.keyboard_arrow_up) IconWho = Icons.keyboard_arrow_down;
+                else IconWho = Icons.keyboard_arrow_up;
+              }),
+            ),
+            seeNextWho ?
+            ListTile(
+              leading: Icon(
+                Icons.record_voice_over,
+              ),
+              title: Text('Entrenadores'),
+              onTap: () => null,
+            ) : Container(),
+            seeNextWho ? ListTile(
+              leading: Icon(
+                Icons.group,
+              ),
+              title: Text('Clientes'),
+              onTap: () => null,
+            ) : Container(),
+            Divider(),
+
+
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(IconWhat),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                  Text('Que'),
+                ],
+              ),
+              onTap: () => setState(() {
+                seeNextWhat = !seeNextWhat;
+                if(IconWhat == Icons.keyboard_arrow_up) IconWhat = Icons.keyboard_arrow_down;
+                else IconWhat = Icons.keyboard_arrow_up;
+              }),
+            ),
+            seeNextWhat ?
+            ListTile(
+              leading: Icon(
+                Icons.record_voice_over,
+              ),
+              title: Text('Información'),
+              onTap: () => null,
+            ) : Container(),
+            seeNextWhat ? ListTile(
+              leading: Icon(
+                Icons.record_voice_over,
+              ),
+              title: Text('Categorias'),
+              onTap: () => null,
+            ) : Container(),
+            seeNextWhat ? ListTile(
+              leading: Icon(
+                Icons.record_voice_over,
+              ),
+              title: Text('Bonos'),
+              onTap: () => null,
+            ) : Container(),
+            Divider(),
+
+
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(IconHow),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                  Text('Como'),
+                ],
+              ),
+              onTap: () => setState(() {
+                seeNextHow = !seeNextHow;
+                if(IconHow == Icons.keyboard_arrow_up) IconHow = Icons.keyboard_arrow_down;
+                else IconHow = Icons.keyboard_arrow_up;
+              }),
+            ),
+            seeNextHow ?
+            ListTile(
+              leading: Icon(
+                Icons.record_voice_over,
+              ),
+              title: Text('Estadísticas'),
+              onTap: () => null,
+            ) : Container(),
+            seeNextHow ? ListTile(
+              leading: Icon(
+                Icons.record_voice_over,
+              ),
+              title: Text('Contenido'),
+              onTap: () => null,
+            ) : Container(),
+            seeNextHow ? ListTile(
+              leading: Icon(
+                Icons.record_voice_over,
+              ),
+              title: Text('Opiniones'),
+              onTap: () => null,
+            ) : Container(),
+            Divider(),
+
+
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(IconWhen),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                  Text('Cuando'),
+                ],
+              ),
+              onTap: () => setState(() {
+                seeNextWhen = !seeNextWhen;
+                if(IconWhen == Icons.keyboard_arrow_up) IconWhen = Icons.keyboard_arrow_down;
+                else IconWhen = Icons.keyboard_arrow_up;
+              }),
+            ),
+            seeNextWhen ?
+            ListTile(
+              leading: Icon(
+                Icons.record_voice_over,
+              ),
+              title: Text('Calendario'),
+              onTap: () => null,
+            ) : Container(),
+            Divider(),
+
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(IconWhere),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                  Text('Donde'),
+                ],
+              ),
+              onTap: () => setState(() {
+                seeNextWhere = !seeNextWhere;
+                if(IconWhere == Icons.keyboard_arrow_up) IconWhere = Icons.keyboard_arrow_down;
+                else IconWhere = Icons.keyboard_arrow_up;
+              }),
+            ),
+            seeNextWhere ?
+            ListTile(
+              title: Text('Ubicaciones'),
+              onTap: () => null,
+            ) : Container(),
+            seeNextWhere ? ListTile(
+              title: Text('Online'),
+              onTap: () => null,
+            ) : Container(),
+            Divider(),
+/*
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Settings'),
+              onTap: () => null,
+            ),
+            ListTile(
+              leading: Icon(Icons.description),
+              title: Text('Policies'),
+              onTap: () => null,
+            ),
+            Divider(),
+            ListTile(
+              title: Text('Exit'),
+              leading: Icon(Icons.exit_to_app),
+              onTap: () => null,
+            ),
+
+ */
+          ],
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 50.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+            children: [
+              SizedBox(width: MediaQuery.of(context).size.width*0.05),
+              Switch(
+                onChanged: toggleSwitch,
+                value: isSwitched,
+                activeColor: Styles.mainColor,
+                activeTrackColor: Styles.mainColor,
+                inactiveThumbColor: Styles.mainColorTrans,
+                inactiveTrackColor: Styles.mainColorTrans,
+              ),
+              Text(
+                  textValue,
+                  style: Theme.of(context).textTheme.bodyText2
+              ),
+            ],
+          ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.36),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size:  MediaQuery.of(context).size.height*0.05,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ) : Scaffold(
       appBar: null,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,

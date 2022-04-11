@@ -387,5 +387,7 @@
   "readLess": "Veure menys",
   "goodMorningGreeting": "Bon dia,",
   "goodAfternoonGreeting": "Bona tarda,",
-  "goodNightGreeting": "Bona nit,"
+  "goodNightGreeting": "Bona nit,",
+  "mambaProActivated": "Mamba professional està activat",
+  "mambaProDesactivated": "Mamba professional està desactivat"
 }

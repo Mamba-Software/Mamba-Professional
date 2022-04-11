@@ -11,8 +11,6 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ActionDialogs/RequestConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -22,8 +20,10 @@ import '../../../../../../../Data/Models/Bono.dart';
 import '../../../../../../../Data/Models/Usuario.dart';
 import '../../../../../../../Globals/Styles/Styles.dart';
 import '../../../../../../../Globals/Utils/Bonos/BonosUtils.dart';
-import '../../../../../../../Globals/Widgets/Dialogs/ActionDialogs/ConfirmationDialog.dart';
-import '../../../../../../../Globals/Widgets/Images/CircularImage.dart';
+import '../../../../../../../Globals/Widgets/Components/Images/CircularImage.dart';
+import '../../../../../../../Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/RequestConfirmationDialog.dart';
+import '../../../../../../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+
 
 class BonosRequests extends StatefulWidget {
   String brandId;

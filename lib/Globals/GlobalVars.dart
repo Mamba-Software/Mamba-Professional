@@ -46,4 +46,7 @@ PageController pageController = PageController(initialPage: currentIndex);
 // Dynamic Links Path
 var brandPath;
 
+//Mamba professional
+bool mambaProfessional = false;
+
 

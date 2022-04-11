@@ -127,7 +127,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return mambaProfessional ?  Scaffold(
+      appBar: null,
+      body: Text("test"),
+    ) :
+     Scaffold(
       appBar: null,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,

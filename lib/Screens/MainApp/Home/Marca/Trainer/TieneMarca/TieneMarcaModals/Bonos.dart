@@ -6,11 +6,11 @@ import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ActionDialogs/CreateBonoDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
 
 import '../../../../../../../Globals/GlobalVars.dart';
+import '../../../../../../../Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
+import '../../../../../../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'BonosRequests.dart';
 
 class Bonos extends StatefulWidget {
