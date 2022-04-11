@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
+import 'ImageObject.dart';
 import 'RequestToBrand.dart';
 
 class Brand {
@@ -20,6 +21,7 @@ class Brand {
   var workShift;
   int? maxMembers;
 
+  List<ImageObject> imagesList = [];
   List<RequestToBrand> requestsList = [];
   List<Usuario> usersList = [];
   List<Event> eventsList = [];

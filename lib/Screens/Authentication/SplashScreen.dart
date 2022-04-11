@@ -10,14 +10,16 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/SplashScreenView.dart';
 import 'package:mamba_castelldefels/Screens/Admin/Admin.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/FirstTime.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
 import 'package:provider/provider.dart';
+
+import '../../Globals/Widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
+import '../MainApp/Mamba/Mamba.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen({Key? key}) : super(key: key);
@@ -97,7 +99,7 @@ class _SplashScreenState extends State<SplashScreen> {
               Navigator.pushReplacement(
                   context,
                   CupertinoPageRoute<Null>(
-                    builder: (context) => HomePage(),
+                    builder: (context) => MambaClient(),
                     settings: RouteSettings(name: 'HomePage'),
                   )
               );
@@ -156,7 +158,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Navigator.pushReplacement(
                 context,
                 CupertinoPageRoute<Null>(
-                  builder: (context) => HomePage(),
+                  builder: (context) => MambaClient(),
                   settings: RouteSettings(name: 'HomePage'),
                 )
             );

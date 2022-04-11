@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 bool isProduction = false;
 
 // App Version
-var appVersion = "MAMBA v0.0.6";
+var appVersion = "MAMBA v0.0.7";
 
 // App
 var androidGooglePlayUrl = "https://play.google.com/store/apps/details?id=com.mamba.mambastyleapp";
@@ -23,6 +23,8 @@ var termsAndConditionsCA = "https://mambastyle.net/ca/termes-i-condicions/";
 // API Keys
 var placesAPIAndroid = "AIzaSyBjUcoI0sYFY9H8mb2n0IoBv26GxnPTRgs";
 var placesAPIIOS = "AIzaSyAYFglgzIMLYXB9XQPaZ977MKUMseCJCvY";
+var googleMapsAPIAndroid = "AIzaSyBv6FwSFMHrhQE6w5i7bIW_DcOOW08FVR8";
+var googleMapsAPIIOS = "AIzaSyCHiJWFQzsfD-lO34bbctas1No0Kgxn9i4";
 
 // User & Brand Global Variables
 var currentUser = Usuario();

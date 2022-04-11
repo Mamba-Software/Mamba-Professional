@@ -8,11 +8,15 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ActionDialogs/ConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/HomeDialogs/AppUpdateDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
+import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
+
 import 'Chat/ChatCore/ChatCore.dart';
 import 'Marca/Marca.dart';
 import 'Perfil/Perfil.dart';
@@ -127,49 +131,61 @@ class _HomePageState extends State<HomePage> {
       appBar: null,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
-        iconSize: MediaQuery.of(context).size.height*0.032,
+        type: BottomNavigationBarType.fixed,
+        iconSize: MediaQuery.of(context).size.height*0.04,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Padding(
+              padding: EdgeInsets.symmetric(vertical: 3.0),
+              child: Icon(Icons.home_filled),
+            ),
             label: AppLocalizations.of(context)!.profileBottomNav,
             //backgroundColor: Theme.of(context).primaryColor,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.groups),
+            icon: Padding(
+              padding: EdgeInsets.symmetric(vertical: 3.0),
+              child: Icon(Icons.groups),
+            ),
             label: AppLocalizations.of(context)!.brandBottomNav,
             backgroundColor: Theme.of(context).primaryColor,
           ),
           BottomNavigationBarItem(
-            icon: unreadNotifications > 0 ? buildCustomBadge(
-              counter: unreadNotifications,
-              child: Icon(Icons.notifications_rounded),
-            ) : Icon(Icons.notifications_rounded),
-            label: AppLocalizations.of(context)!.notificationsBottomNav,
+            icon: Padding(
+              padding: EdgeInsets.symmetric(vertical: 3.0),
+              child: Icon(Icons.calendar_month_outlined),
+            ),
+            label: AppLocalizations.of(context)!.brandBottomNav,
             backgroundColor: Theme.of(context).primaryColor,
           ),
           BottomNavigationBarItem(
-            icon: unreadChats > 0 ? buildCustomBadge(
-              counter: unreadChats,
-              child: Icon(Icons.chat),
-            ) : Icon(Icons.chat),
-            label: AppLocalizations.of(context)!.chatBottomNav,
-            backgroundColor: Theme.of(context).primaryColor,
+            icon: Padding(
+              padding: EdgeInsets.symmetric(vertical: 3.0),
+              child: CircularImage(
+                size: MediaQuery.of(context).size.height*0.04,
+                image: currentUser.imageUrl!,
+                borderWidth: 1,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            label: AppLocalizations.of(context)!.profileBottomNav,
+            //backgroundColor: Theme.of(context).primaryColor,
           ),
         ],
         onTap: (index) {
           _onTappedBar(index);
         },
+        showUnselectedLabels: true,
         selectedItemColor: Theme.of(context).primaryColor,
-        selectedLabelStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 12, color:Theme.of(context).primaryColor),
+        selectedLabelStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 10, color:Theme.of(context).primaryColor),
         selectedIconTheme: IconThemeData(
           color: Theme.of(context).primaryColor
         ),
         unselectedItemColor: AppColors.grey.withOpacity(0.5),
-        unselectedLabelStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 12, color: AppColors.grey.withOpacity(0.5)),
+        unselectedLabelStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 10, color: AppColors.grey.withOpacity(0.5)),
         unselectedIconTheme: IconThemeData(
             color: AppColors.grey.withOpacity(0.5)
         ),
-        showUnselectedLabels: true,
       ),
       body: PageView(
         physics: NeverScrollableScrollPhysics(),

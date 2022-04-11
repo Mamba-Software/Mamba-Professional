@@ -7,6 +7,7 @@ class NotificationEvent {
   String? type;
   bool? isRead;
   String? dateSent;
+  Timestamp? createdAt;
   String? year;
   String? month;
   String? day;
@@ -21,6 +22,7 @@ class NotificationEvent {
     this.type,
     this.isRead,
     this.dateSent,
+    this.createdAt,
     this.year,
     this.month,
     this.day,
@@ -32,16 +34,42 @@ class NotificationEvent {
 
   NotificationEvent.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
-    this.userId = documentSnapshot.get("userId").toString();
-    this.type = documentSnapshot.get("type").toString();
-    this.isRead = documentSnapshot.get("isRead");
-    this.dateSent = documentSnapshot.get("dateSent").toString();
-    this.year = documentSnapshot.get("year").toString();
-    this.month = documentSnapshot.get("month").toString();
-    this.day = documentSnapshot.get("day").toString();
-    this.hour = documentSnapshot.get("hour").toString();
-    this.minutes = documentSnapshot.get("minutes").toString();
-    this.seconds = documentSnapshot.get("seconds").toString();
-    this.parameters = documentSnapshot.get("parameters");
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('userId')) {
+      this.userId = documentSnapshot.get("userId").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('type')) {
+      this.type = documentSnapshot.get("type").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isRead')) {
+      this.isRead = documentSnapshot.get("isRead");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateSent')) {
+      this.dateSent = documentSnapshot.get("dateSent").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('createdAt')) {
+      this.createdAt = documentSnapshot.get("createdAt");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('parameters')) {
+      this.parameters = documentSnapshot.get("parameters");
+    }
+    // Deprecated
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('year')) {
+      this.year = documentSnapshot.get("year").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('month')) {
+      this.month = documentSnapshot.get("month").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('day')) {
+      this.day = documentSnapshot.get("day").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('hour')) {
+      this.hour = documentSnapshot.get("hour").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('minutes')) {
+      this.minutes = documentSnapshot.get("minutes").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('seconds')) {
+      this.seconds = documentSnapshot.get("seconds").toString();
+    }
   }
 }

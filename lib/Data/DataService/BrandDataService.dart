@@ -19,6 +19,7 @@ class BrandDataService {
   Future<Brand> getBrandDetails(String brandId) => _firebase.getBrandDetails(brandId);
   Future<Brand> getBrandCoverDetails(String brandId) => _firebase.getBrandCoverDetails(brandId);
   Future<String> getBrandLogoUrl(String brandId) => _firebase.getBrandLogoUrl(brandId);
+  Future<int> getBrandNumberRequests(String brandId) => _firebase.getBrandNumberRequests(brandId);
   Future<List<Usuario>> getBrandUsers(String brandId) => _firebase.getBrandUsers(brandId);
   Future<List<Usuario>> getBrandTrainers(String brandId) => _firebase.getBrandTrainers(brandId);
   Future<List<Usuario>> getBrandClients(String brandId) => _firebase.getBrandClients(brandId);
@@ -55,7 +56,7 @@ class BrandDataService {
   // STREAMS
 
   // Requests
-  Stream<QuerySnapshot> getBrandRequests(String brandId) => _firebase.getBrandRequests(brandId);
+  Stream<QuerySnapshot> getBrandRequestsStream(String brandId) => _firebase.getBrandRequestsStream(brandId);
 
   // Events
   Stream<QuerySnapshot> getAllEventsFromBrand(String brandId) => _firebase.getAllEventsFromBrand(brandId);
