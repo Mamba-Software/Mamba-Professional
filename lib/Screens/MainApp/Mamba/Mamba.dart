@@ -11,11 +11,10 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandPage.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandWrapperPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Home/Homepage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/Sesions.dart';
 import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
-import '../Home/Marca/Marca.dart';
 import 'Profile/Profile.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
@@ -190,7 +189,7 @@ class _MambaClientState extends State<MambaClient> {
         //allowImplicitScrolling: true,
         children: <Widget>[
           Homepage(),
-          BrandPage(),
+          BrandWrapperPage(),
           Sesions(),
           Profile(),
         ],

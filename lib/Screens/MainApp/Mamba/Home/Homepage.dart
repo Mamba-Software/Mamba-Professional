@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Data/DataService/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
@@ -18,9 +19,12 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandCalendarWidget.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/CancelRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/ChatCore.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -78,10 +82,7 @@ class _HomepageState extends State<Homepage> {
     await getUserEventsToday();
     if (hasBrand == false) {
       await getUserPendingRequests();
-    } else {
-      //await getTrainerEventsDone();
     }
-    await checkIfAnswered();
     if (mounted) {
       await Future.delayed(Duration(milliseconds: 500));
       setState(() {
@@ -153,16 +154,6 @@ class _HomepageState extends State<Homepage> {
           child: buildEventContainer(item, safeAreaHeight*0.20, safeAreaWidth, buildRandomImage(imagesEventsNum)!, buildBadge(todayEvents.indexOf(item)))
         ))
         .toList();
-  }
-
-  // Check If Answered
-  Future<void> checkIfAnswered() async {
-    this.groupOfQuestions = await _feedbackDataService.getActiveGroupOfQuestions();
-    if (groupOfQuestions != null) {
-      alreadyAnswered = await _feedbackDataService.checkIfAnswersExist(this.groupOfQuestions!.id);
-    } else {
-      alreadyAnswered = true;
-    }
   }
 
   // Get user pending requests
@@ -497,6 +488,7 @@ class _HomepageState extends State<Homepage> {
         ],
       ),
     ) : Container(
+      height: safeAreaHeight*0.10,
       width: safeAreaWidth,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -865,9 +857,37 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
-  // Gets Random Image for each Event.
-  Widget buildUserPlanBookSessions() {
+  // Build Plan/Book sesion or join Brand, depending on if User has Brand
+  Widget buildUserPlanBookorJoinBrandSessions() {
     return isLoading ? Padding(
+      padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Shimmer.fromColors(
+            baseColor: AppColors.grey,
+            highlightColor: AppColors.grey.withOpacity(0.5),
+            child: Container(
+              height: safeAreaHeight*0.06,
+              width: safeAreaWidth*0.5,
+              decoration: BoxDecoration(
+                color: AppColors.grey,
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ) :
+        hasBrand ?
+          buildUserPlanBookSessions()
+            :
+          buildSendRequestToBrand();
+  }
+
+  // Builds the Widget for Planing/Booking Sessions
+  Widget buildUserPlanBookSessions() {
+      return isLoading ? Padding(
       padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -924,6 +944,140 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
+  // Build send request to Brand
+  Widget buildSendRequestToBrand() {
+    return request.id == null ?
+    Column(
+      children: [
+        currentUser.isTrainer! ? Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+              child: FloatingActionButton.extended(
+                heroTag: "46",
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      CupertinoPageRoute<Null>(
+                        builder: (context) => RegistrarMarca(
+                          locale: Localizations.localeOf(context),
+                        ),
+                        settings: RouteSettings(name: 'RegistrarMarca'),
+                      )
+                  );
+                },
+                icon: Icon(Icons.add_circle_outline, size: MediaQuery.of(context).size.height*0.04, color: Colors.white,),
+                label: Text(AppLocalizations.of(context)!.createBrand, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),),
+              ),
+            ),
+          ],
+        ) : Container(),
+        currentUser.isTrainer! ? SizedBox(height: MediaQuery.of(context).size.height*0.08) : Container(),
+        currentUser.isTrainer! ? Padding(
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+          child: ListTile(
+            leading: Icon(Icons.groups, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
+            title: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context)!.findBrandTrainerText,
+                    style: Theme.of(context).textTheme.bodyText2, textAlign: TextAlign.left,
+                  ),
+                ),
+              ],
+            ),
+            trailing: Icon(Icons.arrow_forward_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+            onTap: () async {
+              setState(() {
+                currentIndex = 1;
+              });
+              pageController.animateToPage(currentIndex, duration: Duration(milliseconds: 500), curve: Curves.ease);
+            },
+          ),
+        ) : Padding(
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+          child: ListTile(
+            leading: Icon(Icons.groups, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
+            title: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context)!.findBrandClientText,
+                    style: Theme.of(context).textTheme.bodyText2, textAlign: TextAlign.left,
+                  ),
+                ),
+              ],
+            ),
+            trailing: Icon(Icons.arrow_forward_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+            onTap: () async {
+              setState(() {
+                currentIndex = 1;
+              });
+              pageController.animateToPage(currentIndex, duration: Duration(milliseconds: 500), curve: Curves.ease);
+            },
+          ),
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height*0.04),
+      ],
+    ) :
+    Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.01),
+          child: ListTile(
+            leading: CircularImage(
+              size: MediaQuery.of(context).size.width*0.15,
+              image: brandRequested!.logoUrl!,
+              color: Theme.of(context).accentColor,
+              borderWidth: 1,
+            ),
+            title: Container(
+              child: RichText(
+                text: TextSpan(
+                  style: Theme.of(context).textTheme.bodyText2,
+                  children: [
+                    TextSpan(text: AppLocalizations.of(context)!.waitingRequestConfirmation),
+                    TextSpan(text: brandRequested!.name!, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold),),
+                  ],
+                ),
+              ),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  AppLocalizations.of(context)!.requestSent(request.dateSent!),
+                  style: Theme.of(context).textTheme.caption,
+                ),
+              ],
+            ),
+            trailing: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 30,),
+            onTap: () async {
+              var result = await showDialog(
+                  context: context,
+                  builder: (_) {
+                    return CancelRequestConfirmationDialog(
+                      text: AppLocalizations.of(context)!.cancelRequestConfirmation,
+                      brand: brandRequested!,
+                    );
+                  }
+              );
+              if (result) {
+                NotificationService().userCancelRequestToBrand(currentUser.id!, request.brandId!);
+                await _userDataService.deleteRequestToBrand(request);
+                getUserPendingRequests();
+              }
+            },
+          ),
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height*0.04),
+      ],
+    );
+  }
+
   Widget build(BuildContext context) {
     if (isFirstBuild) {
       initDeviceSizes();
@@ -950,9 +1104,9 @@ class _HomepageState extends State<Homepage> {
                 ),
                 SizedBox(height: safeAreaHeight*0.06,),
                 buildTodayEventsWidget(),
-                SizedBox(height: safeAreaHeight*0.04,),
-                buildUserPlanBookSessions(),
-                SizedBox(height: safeAreaHeight*0.04,),
+                SizedBox(height: safeAreaHeight*0.06,),
+                buildUserPlanBookorJoinBrandSessions(),
+                SizedBox(height: safeAreaHeight*0.06,),
               ],
             ),
           ),
