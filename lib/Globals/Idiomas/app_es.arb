@@ -1764,15 +1764,15 @@
   "@goodNightGreeting": {
     "description": "membersOfBrand message"
   },
-  "relaxedFeedbackLabel": "Relajado/a",
+  "relaxedFeedbackLabel": "Leve",
   "@relaxedFeedbackLabel": {
     "description": "membersOfBrand message"
   },
-  "tiredFeedbackLabel": "Cansado/a",
+  "tiredFeedbackLabel": "Moderado",
   "@tiredFeedbackLabel": {
     "description": "membersOfBrand message"
   },
-  "exhaustedFeedbackLabel": "Exhausto/a",
+  "exhaustedFeedbackLabel": "Intenso",
   "@exhaustedFeedbackLabel": {
     "description": "membersOfBrand message"
   }
