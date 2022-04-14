@@ -14,12 +14,12 @@ const db = admin.firestore();
 exports.scheduledDailyFunction = functions
    .region("europe-west1")
    .pubsub
-   .schedule('every day 21:10')
+   .schedule('every day 7:00')
    .timeZone('Europe/Madrid')
    .onRun( async (context) => {
       // For each User get Events of Today
       let today = new Date();
-      const usersSnapshot = await db.collection("7777 Users").get();
+      const usersSnapshot = await db.collection("Users").get();
       for (var i in usersSnapshot.docs) {
           const userId = usersSnapshot.docs[i].id;
           const userDoc = usersSnapshot.docs[i].data();
@@ -31,7 +31,7 @@ exports.scheduledDailyFunction = functions
           );
           // Get the Users events today
           const userEventsSnapshot = await db
-            .collection("7777 Users")
+            .collection("Users")
             .doc(userId)
             .collection("Events")
             .where('year', '==', today.getFullYear().toString())
