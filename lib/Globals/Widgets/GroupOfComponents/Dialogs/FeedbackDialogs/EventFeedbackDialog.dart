@@ -125,7 +125,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
         GestureDetector(
           onTap: () => userHasAnsweredFeedback(1),
           child: Container(
-              height: MediaQuery.of(context).size.height*0.15,
+              height: MediaQuery.of(context).size.height*0.16,
               width: MediaQuery.of(context).size.width*0.18,
               padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.02),
               decoration: BoxDecoration(
@@ -150,7 +150,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
         GestureDetector(
           onTap: () => userHasAnsweredFeedback(2),
           child: Container(
-              height: MediaQuery.of(context).size.height*0.15,
+              height: MediaQuery.of(context).size.height*0.16,
               width: MediaQuery.of(context).size.width*0.18,
               padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.01),
               decoration: BoxDecoration(
@@ -174,7 +174,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
         GestureDetector(
           onTap: () => userHasAnsweredFeedback(3),
           child: Container(
-              height: MediaQuery.of(context).size.height*0.15,
+              height: MediaQuery.of(context).size.height*0.16,
               width: MediaQuery.of(context).size.width*0.18,
               padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.02),
               decoration: BoxDecoration(
@@ -237,7 +237,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
         backgroundColor: Colors.transparent,
         insetPadding: EdgeInsets.all(20),
         child: Container(
-          height: MediaQuery.of(context).size.height*0.45,
+          height: MediaQuery.of(context).size.height*0.47,
           width: MediaQuery.of(context).size.width*0.9,
           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
           decoration: BoxDecoration(

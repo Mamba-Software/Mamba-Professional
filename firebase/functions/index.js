@@ -10,6 +10,170 @@ const uuidv4 = require("uuid")
 // Firebase DataBase
 const db = admin.firestore();
 
+// Daily Notification For Events
+exports.scheduledDailyFunction = functions
+   .region("europe-west1")
+   .pubsub
+   .schedule('every day 21:10')
+   .timeZone('Europe/Madrid')
+   .onRun( async (context) => {
+      // For each User get Events of Today
+      let today = new Date();
+      const usersSnapshot = await db.collection("7777 Users").get();
+      for (var i in usersSnapshot.docs) {
+          const userId = usersSnapshot.docs[i].id;
+          const userDoc = usersSnapshot.docs[i].data();
+          functions.logger.log(
+            "User with Id",
+            userId,
+            "and Name:",
+            userDoc.name,
+          );
+          // Get the Users events today
+          const userEventsSnapshot = await db
+            .collection("7777 Users")
+            .doc(userId)
+            .collection("Events")
+            .where('year', '==', today.getFullYear().toString())
+            .where('month', '==', (today.getMonth()+1).toString())
+            .where('day', '==', today.getDate().toString())
+            .get();
+          functions.logger.log(
+              "User Events Num =",
+              userEventsSnapshot.size,
+          );
+          // Get The Time of the First Event
+          let firstHour = 100;
+          let firstMinute = 100;
+          let firstEventDoc;
+          for (var i in userEventsSnapshot.docs) {
+            const eventDoc = userEventsSnapshot.docs[i].data();
+            if (eventDoc.hour < firstHour) {
+                firstEventDoc = eventDoc;
+            } else if (eventDoc.hour == firstHour) {
+                if (eventDoc.minute < firstMinute) {
+                  firstEventDoc = eventDoc;
+                }
+            }
+          }
+          // Send Notification if there is an Event Today
+          if (userEventsSnapshot.size > 0) {
+              if (userEventsSnapshot.size == 1) {
+                  functions.logger.log(
+                        "One Event this User"
+                  );
+                  // Send Good Morning Notification
+                  var payload = 0;
+                  if (userDoc.isTrainer == true) {
+                    functions.logger.log(
+                        "isTrainer"
+                    );
+                    let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
+                    if (userDoc.idioma == "es") {
+                        payload = {
+                          notification: {
+                            title: "Buenos días "+userDoc.firstName + " ☀️",
+                            body: "⏰ Hoy tienes 1 sesión prevista. Empiezas a las "+firstEventDoc.hour+":"+minutes,
+                          },
+                          data: {
+                            route: "SplashScreen0",
+                          },
+                        };
+                    } else {
+                      payload = {
+                          notification: {
+                            title: "Bon dia "+userDoc.firstName + " ☀️",
+                            body: "⏰ Avui tens 1 sessió prevista. Comences a les "+firstEventDoc.hour+":"+minutes,
+                          },
+                          data: {
+                            route: "SplashScreen0",
+                          },
+                        };
+                    }
+                  } else {
+                    functions.logger.log(
+                        "isClient"
+                    );
+                      let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
+                      if (userDoc.idioma == "es") {
+                          payload = {
+                            notification: {
+                              title: "Buenos días "+userDoc.firstName+ " ☀️",
+                              body: "⚠️ ¡Recuerda! Hoy a las "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
+                            },
+                            data: {
+                              route: "SplashScreen0",
+                            },
+                          };
+                      } else {
+                        payload = {
+                            notification: {
+                              title: "Bon dia "+userDoc.firstName+ " ☀️",
+                              body: "⚠️ Recorda! Avui a les "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
+                            },
+                            data: {
+                              route: "SplashScreen0",
+                            },
+                          };
+                      }
+                  }
+                  functions.logger.log(
+                    "Payload",
+                    payload
+                  );
+                  var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+                  functions.logger.log(
+                    "Response",
+                    response
+                  );
+              } else {
+                  functions.logger.log(
+                          "More Than Event this User"
+                  );
+                  // Send Good Morning Notification
+                  var payload = 0;
+                  if (userDoc.isTrainer == true) {
+                       functions.logger.log(
+                            "isTrainer"
+                        );
+                    let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
+                    if (userDoc.idioma == "es") {
+                        payload = {
+                          notification: {
+                            title: "Buenos días "+userDoc.firstName+ " ☀️",
+                            body: "⏰ Hoy tienes "+userEventsSnapshot.size+" sesiones previstas. Empiezas a las "+firstEventDoc.hour+":"+minutes,
+                          },
+                          data: {
+                            route: "SplashScreen0",
+                          },
+                        };
+                    } else {
+                      payload = {
+                          notification: {
+                            title: "Bon dia "+userDoc.firstName+ " ☀️",
+                            body: "⏰ Avui tens "+userEventsSnapshot.size+" sessions previstes. Comences a les "+firstEventDoc.hour+":"+minutes,
+                          },
+                          data: {
+                            route: "SplashScreen0",
+                          },
+                        };
+                    }
+                    functions.logger.log(
+                      "Payload",
+                      payload
+                    );
+                    var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+                    functions.logger.log(
+                      "Response",
+                      response
+                    );
+                  }
+              }
+          }
+      }
+     return null;
+   });
+
 // New User Situate in Test Group
 exports.newUserAddsTestGroup = functions
     .region("europe-west1")

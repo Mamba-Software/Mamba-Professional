@@ -71,7 +71,13 @@ class LocalNotificationService {
           if (ModalRoute.of(context)!.isCurrent) {
             print("Top Page, Moving to Notifications Page");
             currentIndex = int.parse(route[route.length-1]);
-            pageController.jumpToPage(currentIndex);
+            if (currentIndex == 2) {
+              Navigator.of(context).pushNamedAndRemoveUntil("Notifications", (Route<dynamic> route) => false, arguments: currentIndex);
+            } else if (currentIndex == 3) {
+              Navigator.of(context).pushNamedAndRemoveUntil("Chat", (Route<dynamic> route) => false, arguments: currentIndex);
+            } else {
+              pageController.jumpToPage(currentIndex);
+            }
           } else {
             print("Not in Home Page, Moving to Splash Screen");
             String routeFromMessage = route.substring(0, route.length - 1);;
