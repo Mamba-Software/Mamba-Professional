@@ -79,6 +79,8 @@ class _HomepageState extends State<Homepage> {
   // Init for Brand Home
   initProfileHome() async {
     await getUser();
+    unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
+    unreadChats = await _userDataService.getUnreadConversations(currentUser.id!);
     await getUserEventsToday();
     if (hasBrand == false) {
       await getUserPendingRequests();
@@ -953,7 +955,7 @@ class _HomepageState extends State<Homepage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+              padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
               child: FloatingActionButton.extended(
                 heroTag: "46",
                 onPressed: () {
@@ -975,7 +977,7 @@ class _HomepageState extends State<Homepage> {
         ) : Container(),
         currentUser.isTrainer! ? SizedBox(height: MediaQuery.of(context).size.height*0.08) : Container(),
         currentUser.isTrainer! ? Padding(
-          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
           child: ListTile(
             leading: Icon(Icons.groups, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
             title: Row(
@@ -997,7 +999,7 @@ class _HomepageState extends State<Homepage> {
             },
           ),
         ) : Padding(
-          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
           child: ListTile(
             leading: Icon(Icons.groups, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.04,),
             title: Row(
@@ -1025,7 +1027,7 @@ class _HomepageState extends State<Homepage> {
     Column(
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.01),
+          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.05),
           child: ListTile(
             leading: CircularImage(
               size: MediaQuery.of(context).size.width*0.15,
@@ -1035,6 +1037,7 @@ class _HomepageState extends State<Homepage> {
             ),
             title: Container(
               child: RichText(
+                textAlign: TextAlign.left,
                 text: TextSpan(
                   style: Theme.of(context).textTheme.bodyText2,
                   children: [
