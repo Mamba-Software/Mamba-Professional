@@ -9,7 +9,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mamba_castelldefels/Globals/Providers/FirebaseAnalyticsProvider.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppThemes/AppThemes.dart';
@@ -20,6 +19,7 @@ import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:resize/resize.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
 // Declaring Instance of AppThemes();
 AppThemes _appThemes = AppThemes();
@@ -36,6 +36,8 @@ void main() async {
     // Initialize App
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
+    // Initialise TimeZone
+    timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
     // Firebase Messaging Back Ground Message Handler
     FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
     //Get dynamic links on open app

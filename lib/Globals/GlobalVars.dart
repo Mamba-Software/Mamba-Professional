@@ -35,9 +35,10 @@ bool hasBrand = false;
 var unreadNotifications = 0;
 var unreadChats = 0;
 
-// Current User Location
+// Current User Location and TimeZone
 Position? currentPosition;
 String? currentAddress;
+String? timeZoneName;
 
 // Page Controller
 int currentIndex = 0;

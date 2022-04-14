@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Data/DataService/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
@@ -78,6 +79,7 @@ class _HomepageState extends State<Homepage> {
 
   // Init for Brand Home
   initProfileHome() async {
+    LocalNotificationService.initialize(context);
     await getUser();
     unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
     unreadChats = await _userDataService.getUnreadConversations(currentUser.id!);

@@ -122,6 +122,12 @@ class _MambaClientState extends State<MambaClient> {
   }
 
   @override
+  void dispose() {
+    didReceiveLocalNotificationSubject.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,
@@ -236,11 +242,6 @@ class _MambaClientState extends State<MambaClient> {
       currentIndex = value;
     });
     pageController.jumpToPage(value);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }
 
