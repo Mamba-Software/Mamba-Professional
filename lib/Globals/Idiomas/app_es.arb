@@ -1771,5 +1771,9 @@
   "mambaProDesactivated": "Activar Mamba pro",
   "@mambaProDesactivated":{
     "description": "Mamba pro descativated text"
+  },
+  "categories": "Categorias",
+  "@categories":{
+    "description": "Categories text"
   }
 }

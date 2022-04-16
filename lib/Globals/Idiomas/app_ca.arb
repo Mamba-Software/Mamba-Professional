@@ -389,5 +389,6 @@
   "goodAfternoonGreeting": "Bona tarda,",
   "goodNightGreeting": "Bona nit,",
   "mambaProActivated": "Activar Mamba pro",
-  "mambaProDesactivated": "Desactivar Mamba pro"
+  "mambaProDesactivated": "Desactivar Mamba pro",
+  "categories": "Categories"
 }

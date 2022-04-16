@@ -16,6 +16,7 @@ import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Home/Homepage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/Sesions.dart';
 import '../../../Globals/Styles/Styles.dart';
 import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
+import '../MambaPro/Categories.dart';
 import '../MambaPro/Trainers.dart';
 import '../MambaPro/Clients.dart';
 import '../MambaPro/HomePro.dart';
@@ -171,6 +172,7 @@ class _MambaClientState extends State<MambaClient> {
     if(pageIndex == 0)return Text(AppLocalizations.of(context)!.homeBottomNav, style: Theme.of(context).appBarTheme.titleTextStyle,);
     if(pageIndex == 1)return Text(AppLocalizations.of(context)!.trainers, style: Theme.of(context).appBarTheme.titleTextStyle,);
     if(pageIndex == 2)return Text(AppLocalizations.of(context)!.clients, style: Theme.of(context).appBarTheme.titleTextStyle,);
+    if(pageIndex == 4)return Text(AppLocalizations.of(context)!.categories, style: Theme.of(context).appBarTheme.titleTextStyle,);
     return Container();
   }
 
@@ -180,6 +182,7 @@ class _MambaClientState extends State<MambaClient> {
     if(pageIndex == 0) return HomePro(brandId: currentBrand.id!, numTrainers: currentBrand.numTrainers!, numClients: currentBrand.numClients!);
     if(pageIndex == 1) return Trainers(brandId: currentBrand.id!, numTrainers: currentBrand.numTrainers!, );
     if(pageIndex == 2) return Clients(brandId: currentBrand.id!, numClients: currentBrand.numClients!,);
+    if(pageIndex == 4) return Categories(brandId: currentBrand.id!);
     return Container();
   }
 
@@ -238,7 +241,12 @@ class _MambaClientState extends State<MambaClient> {
             ListTile(
               leading: Icon(Icons.home_filled),
               title: Text('Home'),
-              onTap: () => null,
+              onTap: () =>  {
+                Navigator.pop(context),
+                setState(() {
+                  pageIndex = 0;
+                }),
+              }
             ),
             Divider(),
 
@@ -310,10 +318,15 @@ class _MambaClientState extends State<MambaClient> {
             ) : Container(),
             seeNextWhat ? ListTile(
               leading: Icon(
-                Icons.record_voice_over,
+                Icons.category,
               ),
-              title: Text('Categorias'),
-              onTap: () => null,
+              title: Text(AppLocalizations.of(context)!.categories),
+              onTap: () => {
+                Navigator.pop(context),
+                setState(() {
+                  pageIndex = 4;
+                }),
+              },
             ) : Container(),
             seeNextWhat ? ListTile(
               leading: Icon(

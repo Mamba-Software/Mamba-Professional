@@ -1900,6 +1900,26 @@ class FirebaseDatabaseService {
 
     //Bonos
 
+  //Get all bonos from brand list
+  Future<List<Bono>> getAllBonosFromBrandList(String brandId) async {
+    List<Bono> bonos = [];
+    try {
+      await _firestore.collection(brands).doc(brandId)
+          .collection("Bonos")
+          .get()
+          .then((snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          bonos.add(Bono.fromObjectAllData(doc.id, doc));
+
+        }
+      });
+      return bonos;
+    } catch (e) {
+      print(e.toString());
+      return bonos;
+    }
+  }
+
   //Get bonos from brand
   Stream<QuerySnapshot>  getAllBonosFromBrand(String brandId) {
     return _firestore
