@@ -64,9 +64,16 @@ class _SettingsBrandState extends State<SettingsBrand> {
     {
       setState(() {
         isSwitched = true;
-        mambaProfessional = isSwitched;
         textValue = AppLocalizations.of(context)!.mambaProActivated;
+        Navigator.pop(context);
       });
+
+      print(mambaProfessional.toString());
+
+      setState(() {
+        mambaProfessional = isSwitched;
+      });
+      print(mambaProfessional.toString());
     }
     else
     {
@@ -74,6 +81,11 @@ class _SettingsBrandState extends State<SettingsBrand> {
         isSwitched = false;
         mambaProfessional = isSwitched;
         textValue = AppLocalizations.of(context)!.mambaProDesactivated;
+        Navigator.pop(context);
+      });
+
+      setState(() {
+
       });
     }
   }

@@ -16,7 +16,9 @@ import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Home/Homepage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/Sesions.dart';
 import '../../../Globals/Styles/Styles.dart';
 import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
-import '../Home/Marca/Marca.dart';
+import '../MambaPro/Trainers.dart';
+import '../MambaPro/Clients.dart';
+import '../MambaPro/HomePro.dart';
 import 'Profile/Profile.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
@@ -57,11 +59,12 @@ class _MambaClientState extends State<MambaClient> {
   var IconWhen = Icons.keyboard_arrow_down;
   var IconWhere = Icons.keyboard_arrow_down;
 
+  //Index to know which page to load
+  int pageIndex = 0;
+
   @override
   void initState() {
     super.initState();
-    if(mambaProfessional) textValue = "Mamba professional está activado";
-    else textValue = "Mamba professional está desactivado";
     isLoading = true;
     // Init LocalNotificationsService
     LocalNotificationService.initialize(context);
@@ -108,6 +111,12 @@ class _MambaClientState extends State<MambaClient> {
     getUserAndBrand();
   }
 
+  void initVariables() async {
+    isSwitched = mambaProfessional;
+    if(mambaProfessional) textValue = "Desactivar Mamba pro";
+    else textValue = "Activar Mamba pro";
+  }
+
   //Class to control swithc state
   void toggleSwitch(bool value) {
 
@@ -115,16 +124,26 @@ class _MambaClientState extends State<MambaClient> {
     {
       setState(() {
         isSwitched = true;
-        mambaProfessional = isSwitched;
         textValue = AppLocalizations.of(context)!.mambaProActivated;
+
+      });
+      Navigator.pop(context);
+      setState(() {
+        mambaProfessional = isSwitched;
+        print(mambaProfessional.toString());
       });
     }
     else
     {
       setState(() {
         isSwitched = false;
-        mambaProfessional = isSwitched;
+
         textValue = AppLocalizations.of(context)!.mambaProDesactivated;
+
+      });
+      Navigator.pop(context);
+      setState(() {
+        mambaProfessional = isSwitched;
       });
     }
   }
@@ -144,6 +163,24 @@ class _MambaClientState extends State<MambaClient> {
         );
       });
     }
+  }
+
+  //Function to select the title of the page loaded
+  Widget titlePageSelector()
+  {
+    if(pageIndex == 0)return Text(AppLocalizations.of(context)!.homeBottomNav, style: Theme.of(context).appBarTheme.titleTextStyle,);
+    if(pageIndex == 1)return Text(AppLocalizations.of(context)!.trainers, style: Theme.of(context).appBarTheme.titleTextStyle,);
+    if(pageIndex == 2)return Text(AppLocalizations.of(context)!.clients, style: Theme.of(context).appBarTheme.titleTextStyle,);
+    return Container();
+  }
+
+  //Function to select the page to load
+  Widget pageSelector()
+  {
+    if(pageIndex == 0) return HomePro(brandId: currentBrand.id!, numTrainers: currentBrand.numTrainers!, numClients: currentBrand.numClients!);
+    if(pageIndex == 1) return Trainers(brandId: currentBrand.id!, numTrainers: currentBrand.numTrainers!, );
+    if(pageIndex == 2) return Clients(brandId: currentBrand.id!, numClients: currentBrand.numClients!,);
+    return Container();
   }
 
   // Gets the user info from firebase.
@@ -166,11 +203,8 @@ class _MambaClientState extends State<MambaClient> {
 
   @override
   Widget build(BuildContext context) {
+    initVariables();
     return mambaProfessional ?  Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0,
-        elevation: 0,
-      ),
       drawer: Drawer(
         backgroundColor: Colors.white,
         child: ListView(
@@ -195,10 +229,10 @@ class _MambaClientState extends State<MambaClient> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 image: DecorationImage(
-                  opacity: 1,
+                    opacity: 1,
                     fit: BoxFit.fill,
                     image: NetworkImage(
-                       currentBrand.logoUrl!)),
+                        currentBrand.logoUrl!)),
               ),
             ),
             ListTile(
@@ -225,18 +259,29 @@ class _MambaClientState extends State<MambaClient> {
             ),
             seeNextWho ?
             ListTile(
-              leading: Icon(
-                Icons.record_voice_over,
-              ),
-              title: Text('Entrenadores'),
-              onTap: () => null,
+                leading: Icon(
+                  Icons.record_voice_over,
+                ),
+                title: Text(AppLocalizations.of(context)!.trainers),
+                onTap: () =>
+                {
+                  Navigator.pop(context),
+                  setState(() {
+                    pageIndex = 1;
+                  }),
+                }
             ) : Container(),
             seeNextWho ? ListTile(
               leading: Icon(
                 Icons.group,
               ),
-              title: Text('Clientes'),
-              onTap: () => null,
+              title: Text(AppLocalizations.of(context)!.clients),
+              onTap: () => {
+                Navigator.pop(context),
+                setState(() {
+                  pageIndex = 2;
+                }),
+              }
             ) : Container(),
             Divider(),
 
@@ -367,6 +412,25 @@ class _MambaClientState extends State<MambaClient> {
               onTap: () => null,
             ) : Container(),
             Divider(),
+
+            ListTile(
+              title: Row(
+                children: [
+                  Switch(
+                    onChanged: toggleSwitch,
+                    value: isSwitched,
+                    activeColor: Styles.mainColor,
+                    activeTrackColor: Styles.mainColor,
+                    inactiveThumbColor: Styles.mainColorTrans,
+                    inactiveTrackColor: Styles.mainColorTrans,
+                  ),
+                  Text(
+                      textValue,
+                      style: Theme.of(context).textTheme.bodyText2
+                  ),
+                ],
+              ),
+            )
 /*
             ListTile(
               leading: Icon(Icons.settings),
@@ -389,42 +453,11 @@ class _MambaClientState extends State<MambaClient> {
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 50.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(
-            children: [
-              SizedBox(width: MediaQuery.of(context).size.width*0.05),
-              Switch(
-                onChanged: toggleSwitch,
-                value: isSwitched,
-                activeColor: Styles.mainColor,
-                activeTrackColor: Styles.mainColor,
-                inactiveThumbColor: Styles.mainColorTrans,
-                inactiveTrackColor: Styles.mainColorTrans,
-              ),
-              Text(
-                  textValue,
-                  style: Theme.of(context).textTheme.bodyText2
-              ),
-            ],
-          ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.36),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size:  MediaQuery.of(context).size.height*0.05,
-                ),
-              ],
-            ),
-          ],
-        ),
+      appBar: AppBar(
+        title: titlePageSelector(),
+        centerTitle: true,
       ),
+      body: pageSelector(),
     ) : Scaffold(
       appBar: null,
       bottomNavigationBar: BottomNavigationBar(

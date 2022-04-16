@@ -1764,11 +1764,11 @@
   "@goodNightGreeting": {
     "description": "membersOfBrand message"
   },
-  "mambaProActivated": "Mamba professional está activado",
+  "mambaProActivated": "Desactivar Mamba pro",
   "@mambaProActivated":{
     "description": "Mamba pro actived text"
   },
-  "mambaProDesactivated": "Mamba professional está desactivado",
+  "mambaProDesactivated": "Activar Mamba pro",
   "@mambaProDesactivated":{
     "description": "Mamba pro descativated text"
   }

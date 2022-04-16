@@ -72,6 +72,7 @@ class _SplashScreenState extends State<SplashScreen> {
           // 3.1.1 Email has been verified
           // 4. Define Prod Config for FirebaseChatCore
           FirebaseChatCore.instance.setConfig(FirebaseChatCoreConfig(
+            'mamba-style',
             'Rooms',
             'Users',
           ));
@@ -131,6 +132,7 @@ class _SplashScreenState extends State<SplashScreen> {
         // 3.2 We are in DEVELOPMENT
         // 4. Define Development Config for FirebaseCore
         FirebaseChatCore.instance.setConfig(FirebaseChatCoreConfig(
+          'mamba-style',
           '7777 Rooms',
           '7777 Users',
         ));
