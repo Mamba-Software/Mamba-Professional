@@ -62,17 +62,15 @@ class _SettingsBrandState extends State<SettingsBrand> {
 
     if(isSwitched == false)
     {
-      setState(() {
         isSwitched = true;
         textValue = AppLocalizations.of(context)!.mambaProActivated;
         Navigator.pop(context);
-      });
-
-      print(mambaProfessional.toString());
-
-      setState(() {
         mambaProfessional = isSwitched;
-      });
+
+        setState(() {
+
+        });
+
       print(mambaProfessional.toString());
     }
     else

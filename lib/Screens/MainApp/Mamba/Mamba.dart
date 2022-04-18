@@ -16,6 +16,7 @@ import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Home/Homepage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/Sesions.dart';
 import '../../../Globals/Styles/Styles.dart';
 import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
+import '../MambaPro/Bonos.dart';
 import '../MambaPro/Categories.dart';
 import '../MambaPro/Trainers.dart';
 import '../MambaPro/Clients.dart';
@@ -173,6 +174,7 @@ class _MambaClientState extends State<MambaClient> {
     if(pageIndex == 1)return Text(AppLocalizations.of(context)!.trainers, style: Theme.of(context).appBarTheme.titleTextStyle,);
     if(pageIndex == 2)return Text(AppLocalizations.of(context)!.clients, style: Theme.of(context).appBarTheme.titleTextStyle,);
     if(pageIndex == 4)return Text(AppLocalizations.of(context)!.categories, style: Theme.of(context).appBarTheme.titleTextStyle,);
+    if(pageIndex == 5)return Text(AppLocalizations.of(context)!.bonos, style: Theme.of(context).appBarTheme.titleTextStyle,);
     return Container();
   }
 
@@ -183,6 +185,7 @@ class _MambaClientState extends State<MambaClient> {
     if(pageIndex == 1) return Trainers(brandId: currentBrand.id!, numTrainers: currentBrand.numTrainers!, );
     if(pageIndex == 2) return Clients(brandId: currentBrand.id!, numClients: currentBrand.numClients!,);
     if(pageIndex == 4) return Categories(brandId: currentBrand.id!);
+    if(pageIndex == 5) return Bonos(brandId: currentBrand.id!);
     return Container();
   }
 
@@ -330,10 +333,15 @@ class _MambaClientState extends State<MambaClient> {
             ) : Container(),
             seeNextWhat ? ListTile(
               leading: Icon(
-                Icons.record_voice_over,
+                Icons.shopping_bag,
               ),
-              title: Text('Bonos'),
-              onTap: () => null,
+              title: Text(AppLocalizations.of(context)!.bonos),
+              onTap: () => {
+                Navigator.pop(context),
+                setState(() {
+                  pageIndex = 5;
+                }),
+              },
             ) : Container(),
             Divider(),
 

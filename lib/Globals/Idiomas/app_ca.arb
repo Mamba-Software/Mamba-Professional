@@ -390,5 +390,9 @@
   "goodNightGreeting": "Bona nit,",
   "mambaProActivated": "Activar Mamba pro",
   "mambaProDesactivated": "Desactivar Mamba pro",
-  "categories": "Categories"
+  "categories": "Categories",
+  "bonos": "Bonos",
+  "yourBonos": "Els teus bonos",
+  "solicitudesBonos": "Sol·licituds",
+  "bonosClient": "Bonos de clients"
 }

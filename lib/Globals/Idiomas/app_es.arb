@@ -1775,5 +1775,21 @@
   "categories": "Categorias",
   "@categories":{
     "description": "Categories text"
+  },
+  "bonos": "Bonos",
+  "@bonos":{
+    "bonos": "Bonos text"
+  },
+  "yourBonos": "Tus bonos",
+  "@yourBonos":{
+    "yourBonos": "Tus bonos text"
+  },
+  "solicitudesBonos": "Solicitudes",
+  "@solicitudesBonos":{
+    "solicitudesBonos": "Bonos request text"
+  },
+  "bonosClient": "Bonos de clientes",
+  "@bonosClient":{
+    "bonosClient": "Bonos client text"
   }
 }
