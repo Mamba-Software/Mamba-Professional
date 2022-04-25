@@ -3,6 +3,10 @@
   "@language":{
     "description": "Lenguaje de la App"
   },
+  "homeBottomNav": "Home",
+  "@homeBottomNav":{
+    "description": "Perfil Text"
+  },
   "profileBottomNav": "Perfil",
   "@profileBottomNav":{
     "description": "Perfil Text"
@@ -18,6 +22,10 @@
   "chatBottomNav": "Chat",
   "@chatBottomNav":{
   "description": "Chat Text"
+  },
+  "sesionsBottomNav": "Sesiones",
+  "@sesionsBottomNav":{
+  "description": "Calendario Text"
   },
   "yes": "Sí",
   "@yes":{
@@ -334,6 +342,10 @@
   "sendFeedback": "Enviar",
   "@sendFeedback":{
     "description": "Feedback Text Enviar"
+  },
+  "eventFeedbackText": "¿Qué te ha parecido la sesión?",
+  "@eventFeedbackText": {
+    "description": "Member Since message"
   },
   "memberSince": "Creada el {dateJoined}",
   "@memberSince": {
@@ -709,8 +721,21 @@
   "@calendar":{
     "description": "disponibilidad text"
   },
+  "myCalendar": "Mi Calendario",
+  "@myCalendar":{
+    "description": "disponibilidad text"
+  },
   "calendarBrandText": "Mira todas las sesiones de {brand}",
   "@calendarBrandText": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarWeekBrandText": "Esta semana en {brand}",
+  "@calendarWeekBrandText": {
     "description": "Wellcome message",
     "placeholders": {
       "brand": {
@@ -880,6 +905,10 @@
   "@members":{
     "description": "Añadir Miembros text"
   },
+  "membersTotal": "Miembros en total",
+  "@membersTotal":{
+    "description": "Añadir Miembros text"
+  },
   "membersBrandText": "Entrenadores y clientes todos aquí",
   "@membersBrandText": {
     "description": "Wellcome message"
@@ -1001,6 +1030,10 @@
   "@numberClientJoining":{
     "description": "addEvent text"
   },
+  "numberClients": "Número de clientes:",
+  "@numberClients":{
+    "description": "addEvent text"
+  },
   "noClientJoining": "Sin asistentes",
   "@noClientJoining":{
     "description": "addEvent text"
@@ -1050,6 +1083,18 @@
   "@finished": {
     "description": "Wellcome message"
   },
+  "todayString": "Hoy",
+  "@todayString": {
+    "description": "Wellcome message"
+  },
+  "weekString": "Semanal",
+  "@weekString": {
+    "description": "Wellcome message"
+  },
+  "monthString": "Mensual",
+  "@monthString": {
+    "description": "Wellcome message"
+  },
   "today": "Hoy {date}",
   "@today": {
     "description": "Wellcome message",
@@ -1085,6 +1130,10 @@
   },
   "noRequestsFound": "No hemos encontrado ninguna solicitud",
   "@noRequestsFound": {
+    "description": "Wellcome message"
+  },
+  "noImagesFound": "No hemos encontrado ninguna imagen",
+  "@noImagesFound": {
     "description": "Wellcome message"
   },
   "requestFromUser": " quiere unirse como {type}",
@@ -1174,6 +1223,10 @@
   "@yourImages": {
     "description": "Wellcome message"
   },
+  "yourSesions": "Mis Sesiones",
+  "@yourSesions": {
+    "description": "Wellcome message"
+  },
   "editYourPrivacy": "Cambia el tipo de perfil",
   "@editYourPrivacy": {
     "description": "Wellcome message"
@@ -1184,6 +1237,10 @@
   },
   "editYourInfo": "Edita tu información personal",
   "@editYourInfo": {
+    "description": "Wellcome message"
+  },
+  "photos": "Imágenes",
+  "@photos": {
     "description": "Wellcome message"
   },
   "profilePhoto": "Foto de perfil",
@@ -1306,6 +1363,14 @@
   },
   "monthEvents": "sesiones este mes",
   "@monthEvents": {
+    "description": "Wellcome message"
+  },
+  "eventHistory": "Historial",
+  "@eventHistory": {
+    "description": "Wellcome message"
+  },
+  "recentEvents": "Últimas sesiones ...",
+  "@recentEvents": {
     "description": "Wellcome message"
   },
   "sendRequestConfirmation": "¿Estás seguro de que quieres enviar una solicitud a esta marca?\n\nLos organizadores recibirán una notificación. Hasta que esta no sea aceptada o rechazada no podrás enviar otra solicitud a ninguna marca.",
@@ -1633,6 +1698,82 @@
   },
   "updateAppText": "Actualiza la app para no perderte ninguna novedad y evitar posibles errores.",
   "@updateAppText": {
+    "description": "membersOfBrand message"
+  },
+  "shareAppTitle": "Invitar amigos",
+  "@shareAppTitle": {
+    "description": "membersOfBrand message"
+  },
+  "shareAppText": "Comparte la app con tus amigos y familiares",
+  "@shareAppText": {
+    "description": "membersOfBrand message"
+  },
+  "shareApp": "Compartir",
+  "@shareApp": {
+    "description": "membersOfBrand message"
+  },
+  "giveFeedbackTitle": "Ayúdanos a mejorar",
+  "@giveFeedbackTitle": {
+    "description": "membersOfBrand message"
+  },
+  "giveFeedbackText": "Tu opinión es vital para seguir mejorando",
+  "@giveFeedbackText": {
+    "description": "membersOfBrand message"
+  },
+  "giveFeedback": "Contestar",
+  "@giveFeedback": {
+    "description": "membersOfBrand message"
+  },
+  "getInTouchTitle": "¿Algo más?",
+  "@getInTouchTitle": {
+    "description": "membersOfBrand message"
+  },
+  "getInTouchText": "Envíanos un email para ponerte en contacto con nosotros",
+  "@getInTouchText": {
+    "description": "membersOfBrand message"
+  },
+  "getInTouch": "Contáctanos",
+  "@getInTouch": {
+    "description": "membersOfBrand message"
+  },
+  "brandDetailsTab": "Detalles",
+  "@brandDetailsTab": {
+    "description": "membersOfBrand message"
+  },
+  "brandContentTab": "Fotos",
+  "@brandContentTab": {
+    "description": "membersOfBrand message"
+  },
+  "readMore": "Ver más",
+  "@readMore": {
+    "description": "membersOfBrand message"
+  },
+  "readLess": "Ver menos",
+  "@readLess": {
+    "description": "membersOfBrand message"
+  },
+  "goodMorningGreeting": "Buenos días,",
+  "@goodMorningGreeting": {
+    "description": "membersOfBrand message"
+  },
+  "goodAfternoonGreeting": "Buenas tardes,",
+  "@goodAfternoonGreeting": {
+    "description": "membersOfBrand message"
+  },
+  "goodNightGreeting": "Buenas noches,",
+  "@goodNightGreeting": {
+    "description": "membersOfBrand message"
+  },
+  "relaxedFeedbackLabel": "Leve",
+  "@relaxedFeedbackLabel": {
+    "description": "membersOfBrand message"
+  },
+  "tiredFeedbackLabel": "Moderado",
+  "@tiredFeedbackLabel": {
+    "description": "membersOfBrand message"
+  },
+  "exhaustedFeedbackLabel": "Intenso",
+  "@exhaustedFeedbackLabel": {
     "description": "membersOfBrand message"
   }
 }

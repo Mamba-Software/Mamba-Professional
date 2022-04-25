@@ -60,4 +60,9 @@ class Constants {
   // Animations
   static String runningFemale = "assets/animations/runningFemale.gif";
 
+  // Emojis
+  static String relaxedEmojiImage = "assets/images/relaxedEmojiImage.png";
+  static String tiredEmojiImage = "assets/images/tiredEmojiImage.png";
+  static String sweatingEmojiImage = "assets/images/sweatingEmojiImage.png";
+
 }

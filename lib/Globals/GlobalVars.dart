@@ -23,6 +23,8 @@ var termsAndConditionsCA = "https://mambastyle.net/ca/termes-i-condicions/";
 // API Keys
 var placesAPIAndroid = "AIzaSyBjUcoI0sYFY9H8mb2n0IoBv26GxnPTRgs";
 var placesAPIIOS = "AIzaSyAYFglgzIMLYXB9XQPaZ977MKUMseCJCvY";
+var googleMapsAPIAndroid = "AIzaSyBv6FwSFMHrhQE6w5i7bIW_DcOOW08FVR8";
+var googleMapsAPIIOS = "AIzaSyCHiJWFQzsfD-lO34bbctas1No0Kgxn9i4";
 
 // User & Brand Global Variables
 var currentUser = Usuario();
@@ -33,9 +35,10 @@ bool hasBrand = false;
 var unreadNotifications = 0;
 var unreadChats = 0;
 
-// Current User Location
+// Current User Location and TimeZone
 Position? currentPosition;
 String? currentAddress;
+String? timeZoneName;
 
 // Page Controller
 int currentIndex = 0;

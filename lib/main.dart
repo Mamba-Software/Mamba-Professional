@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,6 +13,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:mamba_castelldefels/Globals/Providers/FirebaseAnalyticsProvider.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppThemes/AppThemes.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/ChatCore.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
@@ -18,6 +22,7 @@ import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:resize/resize.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
 // Declaring Instance of AppThemes();
 AppThemes _appThemes = AppThemes();
@@ -34,6 +39,8 @@ void main() async {
     // Initialize App
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
+    // Initialise TimeZone
+    timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
     // Firebase Messaging Back Ground Message Handler
     FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
     //Get dynamic links on open app
@@ -45,6 +52,11 @@ void main() async {
       initialLink = null;
     }
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    /* Configurint Google Maps Widget
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
+    }
+     */
     // Run App
     runApp(
       MultiProvider(
@@ -113,6 +125,8 @@ class Mamba extends StatelessWidget {
                 home: SplashScreen(),
                 routes: {
                   "SplashScreen": (_) => SplashScreen(),
+                  "Notifications": (_) => Notifications(),
+                  "Chat": (_) => ChatCore(),
                 },
               );
             },

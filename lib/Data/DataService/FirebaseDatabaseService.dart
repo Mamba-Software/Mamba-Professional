@@ -4,21 +4,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/ChatUsers.dart';
-import 'package:mamba_castelldefels/Data/Models/Conversation.dart';
+import 'package:mamba_castelldefels/Data/Models/Deprecated/ChatUsers.dart';
+import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/GroupOfQuestions.dart';
+import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/NotificationEvent.dart';
-import 'package:mamba_castelldefels/Data/Models/Message.dart';
-import 'package:mamba_castelldefels/Data/Models/Question.dart';
+import 'package:mamba_castelldefels/Data/Models/Deprecated/Message.dart';
+import 'package:mamba_castelldefels/Data/Models/Deprecated/Question.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:uuid/uuid.dart';
 
 // Firebase Service Class. All calls to Firebase are in this class.
@@ -530,120 +532,6 @@ class FirebaseDatabaseService {
     });
   }
 
-  Future<void> updateConversation(String? uid, var messagesRead,
-      String lastMessage, String year,
-      String month, String day, String hour, String minute,
-      String second) async {
-    await _firestore.collection(conversations).doc(uid).update({
-      "lastMessage": lastMessage,
-      "messagesRead": messagesRead,
-      "year": year,
-      "month": month,
-      "day": day,
-      "hour": hour,
-      "minute": minute,
-      "second": second,
-    });
-  }
-
-  Future<void> updateConversationUsers(String? uid, var users) async {
-    await _firestore.collection(conversations).doc(uid).update({
-      "users": users,
-    });
-  }
-
-  Future<void> updateConversationNewUser(String? brandId,
-      String? userId) async {
-    QuerySnapshot querySnapshot = await _firestore
-        .collection(conversations)
-        .where("brandId", isEqualTo: brandId)
-        .get();
-
-    Conversation conversation = Conversation.fromObject(
-        querySnapshot.docs[0], querySnapshot.docs[0].id);
-
-    DocumentSnapshot<Map<String, dynamic>> _docu =
-    await _firestore.collection(users).doc(userId).get();
-    Usuario user = Usuario.fromObjectAllData(_docu.id, _docu);
-    conversation.users.add({
-      'uid': user.id,
-    });
-
-    //List<Map> userMessagesRead = [];
-
-    /*for(int i = 0; i < conversation.isMessageRead.length; ++i) {
-      userMessagesRead.add(conversation.isMessageRead[i]);
-    }*/
-    //if(conversation.isMessageRead is Map) userMessagesRead.add(conversation.isMessageRead);
-    //else userMessagesRead = conversation.isMessageRead;
-
-    // userMessagesRead.add(toMapisMessageRead(user.id, true));
-
-    await _firestore.collection(conversations).doc(
-        conversation.conversationId).update({
-      "users": conversation.users,
-    });
-  }
-
-  Future<void> updateReadMessage(String? uid, var messagesRead) async {
-    await _firestore.collection(conversations).doc(uid).update({
-      "messagesRead": messagesRead,
-    });
-  }
-
-  Future<void> deleteUserMemberConversations(
-      Map<String, dynamic> currentUser) async {
-    QuerySnapshot querySnapshot = await _firestore
-        .collection(conversations)
-        .where("users", arrayContains: currentUser)
-        .get();
-
-    QuerySnapshot querySnapshotMessages;
-
-    for (var conv in querySnapshot.docs) {
-      querySnapshotMessages = await _firestore
-          .collection(messages)
-          .where("conversationId", isEqualTo: conv.id)
-          .get();
-
-      if (Conversation
-          .fromObject(conv, conv.id)
-          .brandId == 'null') {
-        for (var mess in querySnapshotMessages.docs) {
-          await this.deleteMessage(mess.id);
-        }
-        await this.deleteConversation(conv.id);
-      }
-      else {
-        print(currentUser["uid"]);
-        for (var mess in querySnapshotMessages.docs) {
-          print(Message
-              .fromObject(
-              mess, mess.id)
-              .userSent);
-          if (currentUser["uid"] == Message
-              .fromObject(
-              mess, mess.id)
-              .userSent) await this.deleteMessage(mess.id);
-        }
-      }
-    }
-  }
-
-  Future<void> deleteBrandConversations(String? brandId) async {
-    Conversation conv = await getConversationByBrand(brandId);
-
-    QuerySnapshot querySnapshotMessages = await _firestore
-        .collection(messages)
-        .where("conversationId", isEqualTo: conv.conversationId)
-        .get();
-
-    for (var mess in querySnapshotMessages.docs) {
-      await this.deleteMessage(mess.id);
-    }
-    await this.deleteConversation(conv.conversationId!);
-  }
-
   // Brand Model Services
 
   // Add Brand
@@ -815,6 +703,53 @@ class FirebaseDatabaseService {
       return events;
     }
 
+    // Get First Events
+    Future <List<Event>> getUserFirstCompletedEventsLimit(String userId, int limit) async {
+      Timestamp now = Timestamp.fromDate(DateTime.now());
+      List<Event> events = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Events")
+          .where("doneAt", isLessThan: now)
+          .orderBy("doneAt", descending: true)
+          .limit(limit)
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        events.add(Event.fromObjectOnlyCoverData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+      return events;
+    }
+
+    // Get More Notifications
+    Future <List<Event>> getUserMoreCompletedEventsLimit(String userId, String eventId, int limit) async {
+      Timestamp now = Timestamp.fromDate(DateTime.now());
+      // Get Last Notification document
+      DocumentSnapshot docu = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Events")
+          .doc(eventId)
+          .get();
+      // Get More Events
+      List<Event> events = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Events")
+          .where("doneAt", isLessThan: now)
+          .orderBy("doneAt", descending: true)
+          .startAfterDocument(docu)
+          .limit(limit)
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        events.add(Event.fromObjectOnlyCoverData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+      return events;
+    }
+
     // Get All Events Finished Brand
     Future<List<Event>> getUserEventsUpcoming(String userId) async {
       DateTime today = DateTime.now();
@@ -866,6 +801,22 @@ class FirebaseDatabaseService {
         return Location.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
       }
       return Location();
+    }
+
+    Future<int?> getEventUserFeedback(String eventId, String userId) async {
+      try {
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+          await _firestore
+            .collection(events)
+            .doc(eventId)
+            .collection("Users")
+            .doc(userId)
+            .get();
+        int feedbackScore = _documentSnapshot.get("feedbackScore");
+        return feedbackScore;
+      } catch (e) {
+        return null;
+      }
     }
 
     Future<List<Event>> getUserEventsToday(String userId) async {
@@ -945,6 +896,21 @@ class FirebaseDatabaseService {
       } catch (e) {
         print(e.toString());
         return "";
+      }
+    }
+
+    Future<int> getBrandNumberRequests(String brandID) async {
+      try {
+        QuerySnapshot querySnapshot =
+            await _firestore
+            .collection(brands)
+            .doc(brandID)
+            .collection("Requests")
+            .get();
+        return querySnapshot.docs.length;
+      } catch (e) {
+        print(e.toString());
+        return 0;
       }
     }
 
@@ -1061,20 +1027,23 @@ class FirebaseDatabaseService {
       }
     }
 
-    // Events Calendar
+    // Events Sesions
     // Add Event
-    Future<String> addEvent(String? brandID, String? title, String? description,
+    Future<String> addEvent(String? brandID, String? title, String? description, Timestamp doneAt,
         String? year, String? month, String? day, String? hour, String? minute,
         double? duration, String? locationId, int? maxMembers,
         var selectedTrainers) async {
       var eventID = Uuid().v1();
       User? currentUser = await getCurrentUser();
+      Timestamp createdAt = Timestamp.fromDate(DateTime.now());
       try {
         await _firestore.collection(events).doc(eventID).set({
           "brandID": currentBrand.id,
           "creatorID": currentUser!.uid,
           "title": title,
           "description": description,
+          "doneAt": doneAt,
+          "createdAt": createdAt,
           "year": year,
           "month": month,
           "day": day,
@@ -1118,6 +1087,7 @@ class FirebaseDatabaseService {
             "isTrainer": user.isTrainer,
             "isPrivate": user.isPrivate,
             "notificationToken": user.notificationToken,
+            "joinedAt": createdAt,
           });
         }
         return eventID;
@@ -1352,6 +1322,27 @@ class FirebaseDatabaseService {
       return eventsList.length;
     }
 
+    // Get First Events
+    Future <List<Event>> getBrandEventsThisMonth(String brandId) async {
+    DateTime now = DateTime.now();
+    var temp = now.subtract(Duration(days: 7));
+    Timestamp tmstp = Timestamp.fromDate(temp);
+
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Events")
+        .where("doneAt", isGreaterThan: tmstp)
+        .orderBy("doneAt", descending: true)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObjectOnlyCoverData(
+          querySnapshot.docs[i].id, querySnapshot.docs[i]));
+    }
+    return events;
+  }
+
     // Get All Events for Today of Brand
     Future<List<Event>> getAllEventsTodayBrand(String brandId) async {
       DateTime today = DateTime.now();
@@ -1489,6 +1480,7 @@ class FirebaseDatabaseService {
     Future<bool> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) async {
       try {
         Usuario user = await this.getUserDetails(uid);
+        Timestamp joinedAt = Timestamp.fromDate(DateTime.now());
         if (invitedDirectly) {
           await _firestore
           .collection(events)
@@ -1505,6 +1497,7 @@ class FirebaseDatabaseService {
             "isTrainer": user.isTrainer,
             "isPrivate": user.isPrivate,
             "invitedDirectly": invitedDirectly,
+            "joinedAt": joinedAt,
             "notificationToken": user.notificationToken,
           }).catchError((err) {
             print(err);
@@ -1524,6 +1517,7 @@ class FirebaseDatabaseService {
             "noImageUrl": user.noImageUrl,
             "isTrainer": user.isTrainer,
             "isPrivate": user.isPrivate,
+            "joinedAt": joinedAt,
             "notificationToken": user.notificationToken,
           }).catchError((err) {
             print(err);
@@ -1690,6 +1684,8 @@ class FirebaseDatabaseService {
         print(e.toString());
       }
     }
+
+
     // Update Event Location
     Future<void> updateEventLocation(String eventId, String locationId, String previousLocation) async {
       try {
@@ -1711,6 +1707,26 @@ class FirebaseDatabaseService {
               "description": location.description,
               "longitude": location.longitude,
               "latitude": location.latitude,
+            });
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+
+    // Update Event User Feedback
+    Future<void> updateEventFeedback(String eventId, String userId, int score) async {
+      try {
+        Timestamp feedbackAt = Timestamp.fromDate(DateTime.now());
+        await _firestore
+            .collection(events)
+            .doc(eventId)
+            .collection("Users")
+            .doc(userId)
+            .update({
+              "feedbackScore": score,
+              "feedbackAt": feedbackAt,
+            }).catchError((err) {
+              print(err);
             });
       } catch (e) {
         print(e.toString());
@@ -1862,6 +1878,17 @@ class FirebaseDatabaseService {
       DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
       await _firestore.collection(locations).doc(locationId).get();
       return Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    }
+
+    // Get All Brand Locations
+    Future<List<Location>> getAllBrandLocations(String brandId) async {
+      // Get the Image documents of the Brand
+      List<Location> locations = [];
+      QuerySnapshot querySnapshot = await _firestore.collection(brands).doc(brandId).collection("Locations").get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        locations.add(Location.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+      return locations;
     }
 
     // Requests
@@ -2299,49 +2326,6 @@ class FirebaseDatabaseService {
       }
     }
 
-    Future<List<Message>> getConversationMessagesInit(
-        String? conversationId) async {
-      List<Message> messagesList = [];
-      QuerySnapshot querySnapshot = await _firestore
-          .collection(messages)
-          .where("conversationId", isEqualTo: conversationId)
-          .orderBy("year", descending: true)
-          .orderBy("month", descending: true)
-          .orderBy("day", descending: true)
-          .orderBy("hour", descending: true)
-          .orderBy("minute", descending: true)
-          .orderBy("second", descending: true)
-          .get();
-      for (int i = 0; i < querySnapshot.docs.length; i++) {
-        messagesList.add(Message.fromObject(
-            querySnapshot.docs[i], querySnapshot.docs[i].id));
-      }
-
-      return messagesList;
-    }
-
-    Future<String?> getLastUserMessageSent(String? conversationId) async {
-      QuerySnapshot querySnapshot = await _firestore
-          .collection(messages)
-          .where("conversationId", isEqualTo: conversationId)
-          .orderBy("year", descending: false)
-          .orderBy("month", descending: false)
-          .orderBy("day", descending: false)
-          .orderBy("hour", descending: false)
-          .orderBy("minute", descending: false)
-          .orderBy("second", descending: false)
-          .get();
-
-      if (querySnapshot.docs.length == 0)
-        return '';
-      else
-        return Message
-            .fromObject(
-            querySnapshot.docs[querySnapshot.docs.length - 1],
-            querySnapshot.docs[querySnapshot.docs.length - 1].id)
-            .userSent;
-    }
-
 
     Future<List<Conversation>> getConversationByUsers(
         Map<String, dynamic> currentUser, Map<String, dynamic> user) async {
@@ -2450,6 +2434,14 @@ class FirebaseDatabaseService {
           .snapshots();
     }
 
+    Stream<QuerySnapshot> getBrandEventsStream(String brandId) {
+      return _firestore
+          .collection(brands)
+          .doc(brandId)
+          .collection("Events")
+          .snapshots();
+    }
+
     // Locations
     Stream<QuerySnapshot> getAllLocationsBrand(String brandId) {
       return _firestore
@@ -2459,7 +2451,7 @@ class FirebaseDatabaseService {
     }
 
     // Requests
-    Stream<QuerySnapshot> getBrandRequests(String brandId) {
+    Stream<QuerySnapshot> getBrandRequestsStream(String brandId) {
       return _firestore
           .collection(brands)
           .doc(brandId)

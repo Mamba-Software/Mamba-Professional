@@ -1,4 +1,4 @@
-// This class represents the Object <Event> that will be showed in the Calendar Widget.
+// This class represents the Object <Event> that will be showed in the Sesions Widget.
 import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,6 +13,7 @@ class Event {
   String? brandID;
   String? title;
   String? description;
+  Timestamp? createdAt;
   String? year;
   String? month;
   String? day;
@@ -36,6 +37,7 @@ class Event {
     this.brandID,
     this.title,
     this.description,
+    this.createdAt,
     this.year,
     this.month,
     this.day,
@@ -65,6 +67,9 @@ class Event {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('description')) {
       this.description = documentSnapshot.get("description").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('createdAt')) {
+      this.createdAt = documentSnapshot.get("createdAt");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('year')) {
       this.year = documentSnapshot.get("year").toString();
@@ -108,6 +113,9 @@ class Event {
     this.id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
       this.title = documentSnapshot.get("title").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('createdAt')) {
+      this.createdAt = documentSnapshot.get("createdAt");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('year')) {
       this.year = documentSnapshot.get("year").toString();

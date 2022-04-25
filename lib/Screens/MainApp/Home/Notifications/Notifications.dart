@@ -8,18 +8,20 @@ import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetClient.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Calendars/CalendarWidgetTrainer.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventClient.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/CalendarView/Events/ViewEventTrainer.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/LoadingViews/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/ProfileView/ProfileUserView.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/CalendarWidgetClient.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/CalendarWidgetTrainer.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventClient.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventTrainer.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/MembershipRequests.dart';
+import 'package:shimmer/shimmer.dart';
 
 class Notifications extends StatefulWidget {
   const Notifications({Key? key}) : super(key: key);
@@ -268,8 +270,98 @@ class _NotificationsState extends State<Notifications> {
           SizedBox(width: MediaQuery.of(context).size.width*0.03,),
         ],
       ),
-      body: !isLoading ? 
-        RefreshIndicator(
+      body: isLoading ? Container(
+        child: ListView.builder(
+            physics: BouncingScrollPhysics(),
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            itemCount: 12,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                child: ListTile(
+                  dense: true,
+                  leading: Shimmer.fromColors(
+                    baseColor: AppColors.grey,
+                    highlightColor: AppColors.grey.withOpacity(0.5),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height*0.08,
+                      width: MediaQuery.of(context).size.height*0.08,
+                      decoration: BoxDecoration(
+                        color: AppColors.grey,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                  title: Shimmer.fromColors(
+                    baseColor: AppColors.grey,
+                    highlightColor: AppColors.grey.withOpacity(0.5),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height*0.025,
+                      width: MediaQuery.of(context).size.width*0.02,
+                      decoration: BoxDecoration(
+                        borderRadius: new BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
+                        color: AppColors.grey,
+                      ),
+                    ),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                      Shimmer.fromColors(
+                        baseColor: AppColors.grey,
+                        highlightColor: AppColors.grey.withOpacity(0.5),
+                        child: Container(
+                          height: MediaQuery.of(context).size.height*0.02,
+                          width: MediaQuery.of(context).size.width*0.3,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey,
+                            borderRadius: new BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                      Shimmer.fromColors(
+                        baseColor: AppColors.grey,
+                        highlightColor: AppColors.grey.withOpacity(0.5),
+                        child: Container(
+                          height: MediaQuery.of(context).size.height*0.02,
+                          width: MediaQuery.of(context).size.width*0.2,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey,
+                            borderRadius: new BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  trailing: Shimmer.fromColors(
+                    baseColor: AppColors.grey,
+                    highlightColor: AppColors.grey.withOpacity(0.5),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height*0.04,
+                      width: MediaQuery.of(context).size.height*0.04,
+                      decoration: BoxDecoration(
+                        color: AppColors.grey,
+                        borderRadius: new BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  onTap: null,
+                ),
+              );
+            }
+        ),
+      ) : RefreshIndicator(
           displacement: MediaQuery.of(context).size.height*0.05,
           color: Theme.of(context).accentColor,
           onRefresh: () {
@@ -293,7 +385,7 @@ class _NotificationsState extends State<Notifications> {
                 );
               }
           ),
-        ) : LoadingViewPurple(),
+        ),
     );
   }
 
