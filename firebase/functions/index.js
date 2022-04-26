@@ -1230,6 +1230,7 @@ exports.userAddsEvent = functions
         .collection("Events")
         .doc(eventId).set({
           "title": eventDoc.title,
+          "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
           "day": eventDoc.day,
@@ -1250,6 +1251,7 @@ exports.userAddsEvent = functions
         .collection("Events")
         .doc(eventId).set({
           "title": eventDoc.title,
+          "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
           "day": eventDoc.day,
@@ -1391,6 +1393,7 @@ exports.userJoinsEvent = functions
         .collection("Events")
         .doc(eventId).set({
           "title": eventDoc.title,
+          "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
           "day": eventDoc.day,
