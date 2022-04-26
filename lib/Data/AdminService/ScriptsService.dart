@@ -1246,10 +1246,10 @@ class ScriptsDatabaseService {
       print('--------------');
       print('\n');
 
-      String eventsCollection = "7777 Events";
-      String userCollection = "7777 Users";
-      String brandsCollection = "7777 Brands";
-      String locationCollection = "7777 Locations";
+      String eventsCollection = "Events";
+      String userCollection = "Users";
+      String brandsCollection = "Brands";
+      String locationCollection = "Locations";
 
       QuerySnapshot querySnapshotEvents = await _firestore.collection(eventsCollection).get();
       for (int i = 0; i < querySnapshotEvents.docs.length; i++) {
