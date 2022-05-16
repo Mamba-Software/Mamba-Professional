@@ -1197,27 +1197,32 @@ class ScriptsDatabaseService {
         print('\n');
 
         for (int i = 0; i < querySnapshot.docs.length; i++) {
-          NotificationEvent notif = NotificationEvent.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
-          // Get DateTime
-          DateTime notifDate = DateTime(
-            int.parse(notif.year!),
-            int.parse(notif.month!),
-            int.parse(notif.day!),
-            int.parse(notif.hour!),
-            int.parse(notif.minutes!),
-            int.parse(notif.seconds!),
-          );
-          // DateTime to TimeStamp
-          Timestamp notifTimeStamp = Timestamp.fromDate(notifDate);
-          // Save TimeStamp Firebase
-          await _firestore
-              .collection("Users")
-              .doc(userId)
-              .collection("Notifications")
-              .doc(notif.id)
-              .update({
-            "createdAt": notifTimeStamp,
-          });
+          DocumentSnapshot doc = querySnapshot.docs[i];
+          if ((doc.data() as Map<String,dynamic>).containsKey('createdAt') == false) {
+            NotificationEvent notif = NotificationEvent.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+            // Get DateTime
+            DateTime notifDate = DateTime(
+              int.parse(notif.year!),
+              int.parse(notif.month!),
+              int.parse(notif.day!),
+              int.parse(notif.hour!),
+              int.parse(notif.minutes!),
+              int.parse(notif.seconds!),
+            );
+            // DateTime to TimeStamp
+            Timestamp notifTimeStamp = Timestamp.fromDate(notifDate);
+            // Save TimeStamp Firebase
+            await _firestore
+                .collection("Users")
+                .doc(userId)
+                .collection("Notifications")
+                .doc(notif.id)
+                .update({
+              "createdAt": notifTimeStamp,
+            });
+            print('OLD NOTIF');
+          }
+
         }
 
         print('=================================================================================');
