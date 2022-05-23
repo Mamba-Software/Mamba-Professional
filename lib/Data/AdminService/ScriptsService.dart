@@ -1463,5 +1463,18 @@ class ScriptsDatabaseService {
     }
   }
 
+  Future<bool> putUserInBrand() async {
+    String userId = "xpdj9FYZMBfQ16AXS34UppWuyBo2";
+    String brandId = "67650734-4c76-42ce-b7c3-ec92c0013bc8";
+    int role = 0;
+    try {
+      await _brandDataService.addUserToBrand(userId, brandId, role);
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
 
 }
