@@ -11,17 +11,25 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AddBrandPics.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/EditBrandInfo.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Home/Homepage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/Sesions.dart';
 import '../../../Globals/Styles/Styles.dart';
 import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
 import '../MambaPro/Bonos.dart';
+import '../MambaPro/BrandInfo.dart';
 import '../MambaPro/Categories.dart';
+import '../MambaPro/Content.dart';
+import '../MambaPro/Locations.dart';
+import '../MambaPro/Logo.dart';
 import '../MambaPro/Trainers.dart';
 import '../MambaPro/Clients.dart';
 import '../MambaPro/HomePro.dart';
+import 'Brand/BrandScreens/BrandCalendarWeekWidget.dart';
 import 'Profile/Profile.dart';
+import 'Sesions/SesionsScreens/UserCalendarMonthWidget.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
@@ -175,6 +183,13 @@ class _MambaClientState extends State<MambaClient> {
     if(pageIndex == 2)return Text(AppLocalizations.of(context)!.clients, style: Theme.of(context).appBarTheme.titleTextStyle,);
     if(pageIndex == 4)return Text(AppLocalizations.of(context)!.categories, style: Theme.of(context).appBarTheme.titleTextStyle,);
     if(pageIndex == 5)return Text(AppLocalizations.of(context)!.bonos, style: Theme.of(context).appBarTheme.titleTextStyle,);
+    if(pageIndex == 8)return Text(AppLocalizations.of(context)!.information, style: Theme.of(context).appBarTheme.titleTextStyle,);
+    if(pageIndex == 7)return Text(AppLocalizations.of(context)!.content, style: Theme.of(context).appBarTheme.titleTextStyle,);
+    if(pageIndex == 6)return Text(AppLocalizations.of(context)!.opinions, style: Theme.of(context).appBarTheme.titleTextStyle,);
+    if(pageIndex == 9)return Text(AppLocalizations.of(context)!.stats, style: Theme.of(context).appBarTheme.titleTextStyle,);
+    if(pageIndex == 10)return Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).appBarTheme.titleTextStyle,);
+    if(pageIndex == 11)return Text(AppLocalizations.of(context)!.locations, style: Theme.of(context).appBarTheme.titleTextStyle,);
+    if(pageIndex == 12)return Text(AppLocalizations.of(context)!.logo, style: Theme.of(context).appBarTheme.titleTextStyle,);
     return Container();
   }
 
@@ -186,6 +201,15 @@ class _MambaClientState extends State<MambaClient> {
     if(pageIndex == 2) return Clients(brandId: currentBrand.id!, numClients: currentBrand.numClients!,);
     if(pageIndex == 4) return Categories(brandId: currentBrand.id!);
     if(pageIndex == 5) return Bonos(brandId: currentBrand.id!);
+    if(pageIndex == 7) return Content(brandId: currentBrand.id!);
+    if(pageIndex == 8) return BrandInfo(locale: Localizations.localeOf(context), brandId: currentBrand.id!);
+    if(pageIndex == 12) return Logo(brandId: currentBrand.id!);
+    if(pageIndex == 10) return UserCalendarMonthWidget(
+      userId: currentUser.id!,
+      height: MediaQuery.of(context).size.height*0.68,
+      width: MediaQuery.of(context).size.width*0.88,
+    );
+    if(pageIndex == 11) return Locations(brandId: currentBrand.id!);
     return Container();
   }
 
@@ -314,10 +338,27 @@ class _MambaClientState extends State<MambaClient> {
             seeNextWhat ?
             ListTile(
               leading: Icon(
-                Icons.record_voice_over,
+                Icons.feed,
               ),
-              title: Text('Información'),
-              onTap: () => null,
+              title: Text(AppLocalizations.of(context)!.information),
+              onTap: () => {
+                Navigator.pop(context),
+                setState(() {
+                  pageIndex = 8;
+                }),
+              },
+            ) : Container(),
+            seeNextWhat ? ListTile(
+              leading: Icon(
+                Icons.run_circle,
+              ),
+              title: Text(AppLocalizations.of(context)!.logo),
+              onTap: () => {
+                Navigator.pop(context),
+                setState(() {
+                  pageIndex = 12;
+                }),
+              },
             ) : Container(),
             seeNextWhat ? ListTile(
               leading: Icon(
@@ -363,24 +404,39 @@ class _MambaClientState extends State<MambaClient> {
             seeNextHow ?
             ListTile(
               leading: Icon(
-                Icons.record_voice_over,
+                Icons.query_stats,
               ),
-              title: Text('Estadísticas'),
-              onTap: () => null,
+              title: Text(AppLocalizations.of(context)!.stats),
+              onTap: () => {
+                Navigator.pop(context),
+                setState(() {
+                  pageIndex = 9;
+                }),
+              },
             ) : Container(),
             seeNextHow ? ListTile(
               leading: Icon(
-                Icons.record_voice_over,
+                Icons.collections,
               ),
-              title: Text('Contenido'),
-              onTap: () => null,
+              title: Text(AppLocalizations.of(context)!.content),
+              onTap: () => {
+                Navigator.pop(context),
+                setState(() {
+                  pageIndex = 7;
+                }),
+              },
             ) : Container(),
             seeNextHow ? ListTile(
               leading: Icon(
-                Icons.record_voice_over,
+                Icons.chat_bubble_outline,
               ),
-              title: Text('Opiniones'),
-              onTap: () => null,
+              title: Text(AppLocalizations.of(context)!.opinions),
+              onTap: () => {
+                Navigator.pop(context),
+                setState(() {
+                  pageIndex = 6;
+                }),
+              },
             ) : Container(),
             Divider(),
 
@@ -402,10 +458,15 @@ class _MambaClientState extends State<MambaClient> {
             seeNextWhen ?
             ListTile(
               leading: Icon(
-                Icons.record_voice_over,
+                Icons.calendar_month,
               ),
-              title: Text('Calendario'),
-              onTap: () => null,
+              title: Text(AppLocalizations.of(context)!.calendar),
+              onTap: () => {
+                Navigator.pop(context),
+                setState(() {
+                  pageIndex = 10;
+                }),
+              },
             ) : Container(),
             Divider(),
 
@@ -425,8 +486,16 @@ class _MambaClientState extends State<MambaClient> {
             ),
             seeNextWhere ?
             ListTile(
-              title: Text('Ubicaciones'),
-              onTap: () => null,
+              leading: Icon(
+                Icons.location_on,
+              ),
+              title: Text(AppLocalizations.of(context)!.locations),
+              onTap: () => {
+                Navigator.pop(context),
+                setState(() {
+                  pageIndex = 11;
+                }),
+              },
             ) : Container(),
             seeNextWhere ? ListTile(
               title: Text('Online'),

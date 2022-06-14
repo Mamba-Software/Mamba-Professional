@@ -394,5 +394,10 @@
   "bonos": "Bonos",
   "yourBonos": "Els teus bonos",
   "solicitudesBonos": "Sol·licituds",
-  "bonosClient": "Bonos de clients"
+  "bonosClient": "Bonos de clients",
+  "information": "Informació",
+  "stats": "Estadístiques",
+  "content": "Contingut",
+  "opinions": "Opinions",
+  "locations": "Ubicacions"
 }

@@ -1791,5 +1791,25 @@
   "bonosClient": "Bonos de clientes",
   "@bonosClient":{
     "bonosClient": "Bonos client text"
+  },
+  "information": "Información",
+  "@information":{
+    "information": "Information text"
+  },
+  "stats": "Estadísticas",
+  "@stats":{
+    "stats": "Stats text"
+  },
+  "content": "Contenido",
+  "@content":{
+    "content": "Content text"
+  },
+  "opinions": "Opiniones",
+  "@opinions":{
+    "opinions": "opinions text"
+  },
+  "locations": "Ubicaciones",
+  "@locations":{
+    "locations": "locations text"
   }
 }
