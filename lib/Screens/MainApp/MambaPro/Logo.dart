@@ -74,7 +74,7 @@ class _LogoState extends State<Logo> {
         Center(
             child: LoadingViewPurple()
         )
-          :
+          ://
         Center(
           child: ListView(
             physics: NeverScrollableScrollPhysics(),

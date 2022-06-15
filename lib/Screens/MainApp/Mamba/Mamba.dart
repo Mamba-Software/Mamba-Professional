@@ -212,7 +212,7 @@ class _MambaClientState extends State<MambaClient> {
     if(pageIndex == 11) return Locations(brandId: currentBrand.id!);
     return Container();
   }
-
+//
   // Gets the user info from firebase.
   void getUserAndBrand() async {
     // Get User Main Data

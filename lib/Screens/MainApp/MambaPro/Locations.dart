@@ -81,7 +81,7 @@ class _LocationsState extends State<Locations> {
       Scaffold(
         body: LoadingViewPurple(),
       )
-          :
+          ://
       Scaffold(
         body: Column(
           children: [

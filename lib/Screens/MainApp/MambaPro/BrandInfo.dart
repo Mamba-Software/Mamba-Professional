@@ -274,7 +274,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
         isUpdated = false;
       }
     }
-
+//
     return isLoading ?
     Scaffold(
       body: LoadingViewPurple(),

@@ -176,7 +176,7 @@ class _ContentState extends State<Content> {
         Center(
             child: LoadingViewPurple()
         )
-          :
+          ://
         SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: Column(

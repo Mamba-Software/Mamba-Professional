@@ -183,7 +183,7 @@ class _Categories extends State<Categories> {
                   SizedBox(height: MediaQuery.of(context).size.height*0.05,),
                   Container(
                     width: 150,
-                    height: 50,
+                    height: 50,//
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: Colors.grey,
