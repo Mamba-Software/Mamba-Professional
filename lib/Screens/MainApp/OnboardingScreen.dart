@@ -42,6 +42,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         value: SystemUiOverlayStyle.light,
         child: Container(
           decoration: BoxDecoration(
+            color: AppColors.mainColor
+            /*
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -53,6 +55,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 AppColors.mainColorGrad2,
               ],
             ),
+             */
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.05),
@@ -193,16 +196,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: GestureDetector(
                 onTap: () => print('Get started'),
                 child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: 30.0),
-                    child: Text(
-                      'Get started',
-                      style: TextStyle(
-                        color: Color(0xFF5B16D0),
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                  child: Text(
+                      AppLocalizations.of(context)!.letsGo,
+                      style: Theme.of(context).textTheme.headline1!.copyWith(color: AppColors.black)
                   ),
                 ),
               ),
