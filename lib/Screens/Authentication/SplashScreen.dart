@@ -20,6 +20,7 @@ import 'package:provider/provider.dart';
 
 import '../../Globals/Widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
 import '../MainApp/Mamba/Mamba.dart';
+import '../MainApp/OnboardingScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen({Key? key}) : super(key: key);
@@ -108,9 +109,10 @@ class _SplashScreenState extends State<SplashScreen> {
                   context,
                   CupertinoPageRoute<Null>(
                     builder: (context) =>
-                        FirstTime(
+                    OnboardingScreen(),
+                      /*FirstTime(
                           locale: Localizations.localeOf(context),
-                        ),
+                        ),*/
                     settings: RouteSettings(name: 'FirstTimeWrapper'),
                   )
               );
@@ -167,9 +169,12 @@ class _SplashScreenState extends State<SplashScreen> {
                 context,
                 CupertinoPageRoute<Null>(
                   builder: (context) =>
-                      FirstTime(
+                      OnboardingScreen(),
+                  /*
+                  FirstTime(
                         locale: Localizations.localeOf(context),
                       ),
+                   */
                   settings: RouteSettings(name: 'FirstTimeWrapper'),
                 )
             );

@@ -5,6 +5,8 @@ class AppColors {
 
   // Main Colors
   static const Color mainColor = Color(0xFFF4AD1F);
+  static const Color mainColorGrad1 = Color(0xFFFCB44D);
+  static const Color mainColorGrad2 = Color(0xFFFFC177);
   static const Color mainColorTrans = Color(0x33E9B044);
 
   static const Color black = Color(0xFF000000);
@@ -13,6 +15,7 @@ class AppColors {
   static const Color grey = Color(0xFF969696);
   static const Color lightGrey = Color(0xFFF2F2F2);
   static const Color white = Color(0xFFFFFFFF);
+  static const Color whiteTrans = Color(0x8DFFFFFF);
 
   static const Color red = Color(0xFFFF0000);
 
