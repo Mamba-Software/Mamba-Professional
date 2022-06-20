@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 bool isProduction = false;
 
 // App Version
-var appVersion = "MAMBA v0.0.7";
+var appVersion = "MAMBA v0.0.8";
 
 // App
 var androidGooglePlayUrl = "https://play.google.com/store/apps/details?id=com.mamba.mambastyleapp";
@@ -35,9 +35,10 @@ bool hasBrand = false;
 var unreadNotifications = 0;
 var unreadChats = 0;
 
-// Current User Location
+// Current User Location and TimeZone
 Position? currentPosition;
 String? currentAddress;
+String? timeZoneName;
 
 // Page Controller
 int currentIndex = 0;
@@ -48,5 +49,6 @@ var brandPath;
 
 //Mamba professional
 bool mambaProfessional = false;
+
 
 

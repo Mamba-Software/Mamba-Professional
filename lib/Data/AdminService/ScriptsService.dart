@@ -1197,27 +1197,32 @@ class ScriptsDatabaseService {
         print('\n');
 
         for (int i = 0; i < querySnapshot.docs.length; i++) {
-          NotificationEvent notif = NotificationEvent.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
-          // Get DateTime
-          DateTime notifDate = DateTime(
-            int.parse(notif.year!),
-            int.parse(notif.month!),
-            int.parse(notif.day!),
-            int.parse(notif.hour!),
-            int.parse(notif.minutes!),
-            int.parse(notif.seconds!),
-          );
-          // DateTime to TimeStamp
-          Timestamp notifTimeStamp = Timestamp.fromDate(notifDate);
-          // Save TimeStamp Firebase
-          await _firestore
-              .collection("Users")
-              .doc(userId)
-              .collection("Notifications")
-              .doc(notif.id)
-              .update({
-            "createdAt": notifTimeStamp,
-          });
+          DocumentSnapshot doc = querySnapshot.docs[i];
+          if ((doc.data() as Map<String,dynamic>).containsKey('createdAt') == false) {
+            NotificationEvent notif = NotificationEvent.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+            // Get DateTime
+            DateTime notifDate = DateTime(
+              int.parse(notif.year!),
+              int.parse(notif.month!),
+              int.parse(notif.day!),
+              int.parse(notif.hour!),
+              int.parse(notif.minutes!),
+              int.parse(notif.seconds!),
+            );
+            // DateTime to TimeStamp
+            Timestamp notifTimeStamp = Timestamp.fromDate(notifDate);
+            // Save TimeStamp Firebase
+            await _firestore
+                .collection("Users")
+                .doc(userId)
+                .collection("Notifications")
+                .doc(notif.id)
+                .update({
+              "createdAt": notifTimeStamp,
+            });
+            print('OLD NOTIF');
+          }
+
         }
 
         print('=================================================================================');
@@ -1246,10 +1251,10 @@ class ScriptsDatabaseService {
       print('--------------');
       print('\n');
 
-      String eventsCollection = "7777 Events";
-      String userCollection = "7777 Users";
-      String brandsCollection = "7777 Brands";
-      String locationCollection = "7777 Locations";
+      String eventsCollection = "Events";
+      String userCollection = "Users";
+      String brandsCollection = "Brands";
+      String locationCollection = "Locations";
 
       QuerySnapshot querySnapshotEvents = await _firestore.collection(eventsCollection).get();
       for (int i = 0; i < querySnapshotEvents.docs.length; i++) {
@@ -1454,6 +1459,120 @@ class ScriptsDatabaseService {
       }
       return true;
     } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> putUserInBrand() async {
+    String userId = "xpdj9FYZMBfQ16AXS34UppWuyBo2";
+    String brandId = "67650734-4c76-42ce-b7c3-ec92c0013bc8";
+    int role = 0;
+    try {
+      await _brandDataService.addUserToBrand(userId, brandId, role);
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> getStatistics() async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore.collection("Users").get();
+      print('Users: '+ querySnapshot.docs.length.toString());
+
+      querySnapshot = await _firestore.collection("Users").where("isTrainer", isEqualTo:false).get();
+      print('Users Clients: '+ querySnapshot.docs.length.toString());
+
+      querySnapshot = await _firestore.collection("Users").where("isTrainer", isEqualTo:true).get();
+      print('Users Trainers: '+ querySnapshot.docs.length.toString());
+
+      querySnapshot = await _firestore.collection("Brands").get();
+      print('Brands: '+ querySnapshot.docs.length.toString());
+
+      querySnapshot = await _firestore.collection("Events").get();
+      print('Events: '+ querySnapshot.docs.length.toString());
+
+      querySnapshot = await _firestore.collection("Events").where("numClients", isGreaterThan:0).get();
+      print('Events With Clients: '+ querySnapshot.docs.length.toString());
+
+      for (int i = 1; i < 7; i++) {
+        querySnapshot = await _firestore.collection("Events")
+            .where("year", isEqualTo: DateTime.now().year.toString())
+            .where("month", isEqualTo: i.toString())
+            .get();
+        print("Events Month "+i.toString()+": "+ querySnapshot.docs.length.toString());
+
+        querySnapshot = await _firestore.collection("Events")
+            .where("numClients", isGreaterThan:0)
+            .where("year", isEqualTo: DateTime.now().year.toString())
+            .where("month", isEqualTo: i.toString())
+            .get();
+        print("Events with Clients Month "+i.toString()+": "+ querySnapshot.docs.length.toString());
+      }
+
+      querySnapshot = await _firestore.collection("Locations").get();
+      print('Locations: '+ querySnapshot.docs.length.toString());
+
+      querySnapshot = await _firestore.collection("Rooms").get();
+      print('Rooms: '+ querySnapshot.docs.length.toString());
+
+      querySnapshot = await _firestore.collection("Errors").get();
+      print('Errors: '+ querySnapshot.docs.length.toString());
+
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> getStatisticsSpecific() async {
+    try {
+
+      QuerySnapshot querySnapshot = await _firestore.collection("Brands").get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        String brandId = querySnapshot.docs[i].id;
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Brands").doc(brandId).get();
+        Brand brand = Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        print('=================================================================================');
+        print("BRAND "+brand.name!);
+
+        QuerySnapshot querySnapshotBrand = await _firestore.collection("Brands").doc(brandId).collection("Users").get();
+        print("Users: "+ querySnapshotBrand.docs.length.toString());
+
+        querySnapshotBrand = await _firestore.collection("Brands").doc(brandId).collection("Users").where("isTrainer", isEqualTo:false).get();
+        print("Clients: "+ querySnapshotBrand.docs.length.toString());
+
+        querySnapshotBrand = await _firestore.collection("Brands").doc(brandId).collection("Users").where("isTrainer", isEqualTo:true).get();
+        print("Trainers: "+ querySnapshotBrand.docs.length.toString());
+
+        querySnapshotBrand = await _firestore.collection("Brands").doc(brandId).collection("Events").get();
+        print("Events: "+ querySnapshotBrand.docs.length.toString());
+
+        for (int i = 1; i < 7; i++) {
+          querySnapshotBrand = await _firestore.collection("Brands").doc(brandId)
+              .collection("Events")
+              .where("year", isEqualTo: DateTime.now().year.toString())
+              .where("month", isEqualTo: i.toString())
+              .get();
+          print("Events Month "+i.toString()+": "+ querySnapshotBrand.docs.length.toString());
+        }
+
+        for (int i = 1; i < 7; i++) {
+          querySnapshotBrand = await _firestore.collection("Brands").doc(brandId)
+              .collection("Events")
+              .where("numClients", isGreaterThan:0)
+              .where("year", isEqualTo: DateTime.now().year.toString())
+              .where("month", isEqualTo: i.toString())
+              .get();
+          print("Events with Clients Month "+i.toString()+": "+ querySnapshotBrand.docs.length.toString());
+        }
+      }
+
+      return true;
+    } catch (e) {
+      print(e.toString());
       return false;
     }
   }

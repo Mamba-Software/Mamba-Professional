@@ -517,6 +517,7 @@ class _ChatCoreState extends State<ChatCore> {
         //initialData: const [],
         builder: (context, snapshot) {
           if (snapshot.data == null) {
+            print("1");
             return Container(
               child: ListView.builder(
                   physics: BouncingScrollPhysics(),
@@ -599,6 +600,7 @@ class _ChatCoreState extends State<ChatCore> {
               ),
             );
           } else if (snapshot.data!.isEmpty && snapshot.connectionState == ConnectionState.active ) {
+            print("2");
             return Container(
               height: MediaQuery.of(context).size.height *0.65,
               child: Column(
@@ -620,6 +622,7 @@ class _ChatCoreState extends State<ChatCore> {
               ),
             );
           } else {
+            print("3");
             allRooms = snapshot.data!;
             if (!isFiltered) {
               return ListView.builder(

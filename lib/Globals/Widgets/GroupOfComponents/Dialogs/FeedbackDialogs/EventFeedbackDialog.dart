@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -50,64 +51,148 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
   }
 
   Widget buildFeedbackWithStarIcon() {
-    return Center(
-        child: RatingBar.builder(
-            initialRating: feedbackScore.toDouble(),
-            itemCount: 3,
-            itemSize: MediaQuery.of(context).size.height*0.1,
-            itemBuilder: (context, _) => Icon(
-                Icons.star,
-                color: Theme.of(context).accentColor
+    return Container(
+      height: MediaQuery.of(context).size.height*0.15,
+      width: MediaQuery.of(context).size.width*0.70,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height*0.1,
+            width: MediaQuery.of(context).size.width*0.70,
+            child: Center(
+              child: RatingBar.builder(
+                  initialRating: feedbackScore.toDouble(),
+                  itemCount: 3,
+                  itemSize: MediaQuery.of(context).size.height*0.1,
+                  itemBuilder: (context, index) => Icon(
+                      Icons.star,
+                      color: Theme.of(context).accentColor
+                  ),
+                  onRatingUpdate: (rating) {
+                    userHasAnsweredFeedback(rating.toInt());
+                  }
+              ),
             ),
-            onRatingUpdate: (rating) {
-              userHasAnsweredFeedback(rating.toInt());
-            }
-        )
+          ),
+          buildFeedbackLabel(),
+        ],
+      )
+    );
+  }
+
+  Widget buildFeedbackLabel() {
+    return Container(
+      height: MediaQuery.of(context).size.height*0.05,
+      width: MediaQuery.of(context).size.width*0.70,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width*0.23,
+            child: Text(
+              AppLocalizations.of(context)!.relaxedFeedbackLabel,
+              style: Theme.of(context).textTheme.bodyText2,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width*0.23,
+            child: Text(
+              AppLocalizations.of(context)!.tiredFeedbackLabel,
+              style: Theme.of(context).textTheme.bodyText2,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width*0.23,
+            child: Text(
+              AppLocalizations.of(context)!.exhaustedFeedbackLabel,
+              style: Theme.of(context).textTheme.bodyText2,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget buildFeedbackWithEmjois() {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         GestureDetector(
           onTap: () => userHasAnsweredFeedback(1),
           child: Container(
-              height: MediaQuery.of(context).size.width*0.17,
+              height: MediaQuery.of(context).size.height*0.16,
+              width: MediaQuery.of(context).size.width*0.18,
               padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.02),
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(width: 4.0, color: feedbackScore == 1 ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor),
                 ),
               ),
-              child: Image.asset(Constants.relaxedEmojiImage)
+              child: Column(
+                children: [
+                  Image.asset(Constants.relaxedEmojiImage),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  Text(
+                    AppLocalizations.of(context)!.relaxedFeedbackLabel,
+                    style: Theme.of(context).textTheme.bodyText2,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              )
 
           ),
         ),
         GestureDetector(
           onTap: () => userHasAnsweredFeedback(2),
           child: Container(
-              height: MediaQuery.of(context).size.width*0.17,
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.02),
+              height: MediaQuery.of(context).size.height*0.16,
+              width: MediaQuery.of(context).size.width*0.18,
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.01),
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(width: 4.0, color: feedbackScore == 2 ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor),
                 ),
               ),
-              child: Image.asset(Constants.tiredEmojiImage)
+              child: Column(
+                children: [
+                  Image.asset(Constants.tiredEmojiImage),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  Text(
+                    AppLocalizations.of(context)!.tiredFeedbackLabel,
+                    style: Theme.of(context).textTheme.bodyText2,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              )
           ),
         ),
         GestureDetector(
           onTap: () => userHasAnsweredFeedback(3),
           child: Container(
-              height: MediaQuery.of(context).size.width*0.17,
+              height: MediaQuery.of(context).size.height*0.16,
+              width: MediaQuery.of(context).size.width*0.18,
               padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.02),
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(width: 4.0, color: feedbackScore == 3 ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor),
                 ),
               ),
-              child: Image.asset(Constants.sweatingEmojiImage)
+              child: Column(
+                children: [
+                  Image.asset(Constants.sweatingEmojiImage),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  Text(
+                    AppLocalizations.of(context)!.exhaustedFeedbackLabel,
+                    style: Theme.of(context).textTheme.bodyText2,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              )
           ),
         ),
       ],
@@ -152,7 +237,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
         backgroundColor: Colors.transparent,
         insetPadding: EdgeInsets.all(20),
         child: Container(
-          height: MediaQuery.of(context).size.height*0.4,
+          height: MediaQuery.of(context).size.height*0.47,
           width: MediaQuery.of(context).size.width*0.9,
           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
           decoration: BoxDecoration(

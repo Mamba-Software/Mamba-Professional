@@ -1811,5 +1811,17 @@
   "locations": "Ubicaciones",
   "@locations":{
     "locations": "locations text"
+  },
+  "relaxedFeedbackLabel": "Leve",
+  "@relaxedFeedbackLabel": {
+    "description": "membersOfBrand message"
+  },
+  "tiredFeedbackLabel": "Moderado",
+  "@tiredFeedbackLabel": {
+    "description": "membersOfBrand message"
+  },
+  "exhaustedFeedbackLabel": "Intenso",
+  "@exhaustedFeedbackLabel": {
+    "description": "membersOfBrand message"
   }
 }

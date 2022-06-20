@@ -11,6 +11,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandWrapperPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/AddBrandPics.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/EditBrandInfo.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandPage.dart';
@@ -104,12 +105,24 @@ class _MambaClientState extends State<MambaClient> {
         if (ModalRoute.of(context)!.isCurrent) {
           print("Top Page, Moving to Notifications Page");
           currentIndex = int.parse(route[route.length-1]);
-          pageController.jumpToPage(currentIndex);
+          if (currentIndex == 2) {
+            Navigator.of(context).pushNamedAndRemoveUntil("Notifications", (Route<dynamic> route) => false, arguments: currentIndex);
+          } else if (currentIndex == 3) {
+            Navigator.of(context).pushNamedAndRemoveUntil("Chat", (Route<dynamic> route) => false, arguments: currentIndex);
+          } else {
+            pageController.jumpToPage(currentIndex);
+          }
         } else {
           print("Not in Home Page, Moving to Splash Screen");
           String routeFromMessage = route.substring(0, route.length - 1);;
           currentIndex = int.parse(route[route.length-1]);
-          Navigator.of(context).pushNamedAndRemoveUntil(routeFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
+          if (currentIndex == 2) {
+            Navigator.of(context).pushNamedAndRemoveUntil("Notifications", (Route<dynamic> route) => false, arguments: currentIndex);
+          } else if (currentIndex == 3) {
+            Navigator.of(context).pushNamedAndRemoveUntil("Chat", (Route<dynamic> route) => false, arguments: currentIndex);
+          } else {
+            Navigator.of(context).pushNamedAndRemoveUntil(routeFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
+          }
         }
       }
     });
@@ -230,6 +243,12 @@ class _MambaClientState extends State<MambaClient> {
     setState(() {
       isLoading = false;
     });
+  }
+
+  @override
+  void dispose() {
+    didReceiveLocalNotificationSubject.close();
+    super.dispose();
   }
 
   @override
@@ -627,7 +646,7 @@ class _MambaClientState extends State<MambaClient> {
         //allowImplicitScrolling: true,
         children: <Widget>[
           Homepage(),
-          BrandPage(),
+          BrandWrapperPage(),
           Sesions(),
           Profile(),
         ],
@@ -675,11 +694,5 @@ class _MambaClientState extends State<MambaClient> {
     });
     pageController.jumpToPage(value);
   }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 }
 
-//
