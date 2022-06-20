@@ -27,6 +27,8 @@ import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../../../Globals/Widgets/GroupOfComponents/YourBrands/YourBrandsListTile.dart';
+
 // Profile page for a trainer user.
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -55,6 +57,8 @@ class _HomepageState extends State<Homepage> {
   // Images Of Events
   List<Image?> imagesEvents = [];
   var imagesEventsNum = [];
+  //Brands of the user
+  List<Brand> brandlist = [];
   // Codigo
   var _codigo;
   bool codigoError = false;
@@ -83,6 +87,10 @@ class _HomepageState extends State<Homepage> {
     await getUserEventsToday();
     if (hasBrand == false) {
       await getUserPendingRequests();
+    }
+    else {
+      brandlist = await _brandDataService.getAllBrandsFromUser(currentUser.id!);
+      //brandlist = await _brandDataService.getAllBrands();
     }
     if (mounted) {
       await Future.delayed(Duration(milliseconds: 500));
@@ -1109,10 +1117,16 @@ class _HomepageState extends State<Homepage> {
                 SizedBox(height: safeAreaHeight*0.06,),
                 buildUserPlanBookorJoinBrandSessions(),
                 SizedBox(height: safeAreaHeight*0.06,),
+                YourBrandsListTile(
+                  brands: brandlist,
+                  safeAreaHeight: safeAreaHeight,
+                  safeAreaWidth: safeAreaWidth,
+                ),
+                SizedBox(height: safeAreaHeight*0.06,),
               ],
             ),
           ),
-        )
+        ),
     );
   }
 

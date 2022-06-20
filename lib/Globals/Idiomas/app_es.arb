@@ -1823,5 +1823,9 @@
   "exhaustedFeedbackLabel": "Intenso",
   "@exhaustedFeedbackLabel": {
     "description": "membersOfBrand message"
+  },
+  "yourBrands": "Tus marcas",
+  "@yourBrands": {
+    "description": "YourBrands message"
   }
 }
