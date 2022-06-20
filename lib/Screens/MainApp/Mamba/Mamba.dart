@@ -190,6 +190,7 @@ class _MambaClientState extends State<MambaClient> {
     if(pageIndex == 10)return Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).appBarTheme.titleTextStyle,);
     if(pageIndex == 11)return Text(AppLocalizations.of(context)!.locations, style: Theme.of(context).appBarTheme.titleTextStyle,);
     if(pageIndex == 12)return Text(AppLocalizations.of(context)!.logo, style: Theme.of(context).appBarTheme.titleTextStyle,);
+    if(pageIndex == 13)return Text(AppLocalizations.of(context)!.feedback, style: Theme.of(context).appBarTheme.titleTextStyle,);
     return Container();
   }
 
@@ -266,14 +267,14 @@ class _MambaClientState extends State<MambaClient> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.home_filled),
-              title: Text('Home'),
-              onTap: () =>  {
-                Navigator.pop(context),
-                setState(() {
-                  pageIndex = 0;
-                }),
-              }
+                leading: Icon(Icons.home_filled),
+                title: Text('Home'),
+                onTap: () =>  {
+                  Navigator.pop(context),
+                  setState(() {
+                    pageIndex = 0;
+                  }),
+                }
             ),
             Divider(),
 
@@ -307,16 +308,16 @@ class _MambaClientState extends State<MambaClient> {
                 }
             ) : Container(),
             seeNextWho ? ListTile(
-              leading: Icon(
-                Icons.group,
-              ),
-              title: Text(AppLocalizations.of(context)!.clients),
-              onTap: () => {
-                Navigator.pop(context),
-                setState(() {
-                  pageIndex = 2;
-                }),
-              }
+                leading: Icon(
+                  Icons.group,
+                ),
+                title: Text(AppLocalizations.of(context)!.clients),
+                onTap: () => {
+                  Navigator.pop(context),
+                  setState(() {
+                    pageIndex = 2;
+                  }),
+                }
             ) : Container(),
             Divider(),
 
@@ -435,6 +436,18 @@ class _MambaClientState extends State<MambaClient> {
                 Navigator.pop(context),
                 setState(() {
                   pageIndex = 6;
+                }),
+              },
+            ) : Container(),
+            seeNextHow ? ListTile(
+              leading: Icon(
+                Icons.question_mark,
+              ),
+              title: Text(AppLocalizations.of(context)!.feedback),
+              onTap: () => {
+                Navigator.pop(context),
+                setState(() {
+                  pageIndex = 13;
                 }),
               },
             ) : Container(),
@@ -600,7 +613,7 @@ class _MambaClientState extends State<MambaClient> {
         selectedItemColor: Theme.of(context).primaryColor,
         selectedLabelStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 10, color:Theme.of(context).primaryColor),
         selectedIconTheme: IconThemeData(
-          color: Theme.of(context).primaryColor
+            color: Theme.of(context).primaryColor
         ),
         unselectedItemColor: AppColors.grey.withOpacity(0.5),
         unselectedLabelStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 10, color: AppColors.grey.withOpacity(0.5)),
