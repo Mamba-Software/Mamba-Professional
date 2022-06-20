@@ -387,10 +387,9 @@
   "readLess": "Veure menys",
   "goodMorningGreeting": "Bon dia,",
   "goodAfternoonGreeting": "Bona tarda,",
-  "goodNightGreeting": "Bona nit,",
   "relaxedFeedbackLabel": "Lleu",
   "tiredFeedbackLabel": "Moderat",
-  "exhaustedFeedbackLabel": "Intens"
+  "exhaustedFeedbackLabel": "Intens",
   "goodNightGreeting": "Bona nit,",
   "mambaProActivated": "Activar Mamba pro",
   "mambaProDesactivated": "Desactivar Mamba pro",
