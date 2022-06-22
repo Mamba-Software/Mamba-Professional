@@ -49,7 +49,7 @@ class _GenderWidgetState extends State<GenderWidget> {
                 Icon(
                   icon,
                   size: 30,
-                  color: Theme.of(context).primaryColor,
+                  color: AppColors.white,
                 ),
                 Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),

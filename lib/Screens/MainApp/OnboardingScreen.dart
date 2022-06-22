@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
@@ -846,7 +847,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                                               child: Text(
                                                 AppLocalizations.of(context)!.client,
-                                                style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
                                               ),
                                             ),
                                             subtitle: Row(
@@ -891,7 +892,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                                               child: Text(
                                                 AppLocalizations.of(context)!.trainer,
-                                                style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                                                style: Theme.of(context).textTheme.headline3?.copyWith( color: AppColors.white, fontWeight: FontWeight.bold),
                                               ),
                                             ),
                                             subtitle: Row(
@@ -1013,11 +1014,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         child: Align(
           alignment: FractionalOffset.centerRight,
           child: FlatButton(
-            onPressed: () {
-              _pageController.nextPage(
-                duration: Duration(milliseconds: 500),
-                curve: Curves.ease,
-              );
+            onPressed: () async {
+
+              if (_currentPage == 1) {
+                  await PermisionsService().getUserLocation();
+                  _pageController.nextPage(
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.ease,
+                  );
+              } else {
+                _pageController.nextPage(
+                  duration: Duration(milliseconds: 500),
+                  curve: Curves.ease,
+                );
+              }
+
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
