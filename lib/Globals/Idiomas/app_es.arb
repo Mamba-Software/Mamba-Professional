@@ -183,11 +183,11 @@
   "@nicknameError":{
     "description": "LogIn Text "
   },
-  "nicknameAvailable": "Este nombre de usuario está disponible",
+  "nicknameAvailable": "Disponible",
   "@nicknameAvailable":{
     "description": "LogIn Text "
   },
-  "nicknameOcuppied": "Este nombre de usuario ya está cogido",
+  "nicknameOcuppied": "Cogido",
   "@nicknameOcuppied":{
     "description": "LogIn Text "
   },
@@ -749,6 +749,10 @@
   },
   "next": "Siguiente",
   "@next":{
+    "description": "Siguiente text"
+  },
+  "start": "Empezar",
+  "@start":{
     "description": "Siguiente text"
   },
   "finish": "Finalizar",
