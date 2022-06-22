@@ -42,7 +42,7 @@
   "transgender": "Altres",
   "firstName": "Nom",
   "lastName": "Cognoms",
-  "lastNameError": "Escriu els teus congnoms",
+  "lastNameError": "Escriu els teus cognoms",
   "nickname": "Nom d'usuari",
   "nicknameError": "Introdueix el teu nom d'usuari si us plau",
   "nicknameAvailable": "Disponible",
