@@ -2042,6 +2042,28 @@ class FirebaseDatabaseService {
     });
   }
 
+  //Favourites
+  Future<void> addFavouriteToUser(String brandID, String userId, List<int> favourites) async {
+    await _firestore.collection(brands).doc(brandID).collection("Users").doc(userId).update({
+      "favourites": favourites,
+    });
+  }
+
+  Future<List<int>> getUserFavourites(String brandId, String userId) async {
+    var favourites;
+    List<int> favouritesList = [];
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).get();
+    if ((_documentSnapshot.data() as Map<String,dynamic>).containsKey('favourites')) {
+      favourites = _documentSnapshot.get("favourites");
+      for(int i = 0; i < favourites.length; ++i)
+        {
+          favouritesList.add(favourites[i]);
+        }
+      return favouritesList;
+    }
+    else return [];
+  }
+
   //UpdateBono Compras
   Future<void> updateBonoCompras(String brandID, String bonoId) async {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandID).collection("Bonos").doc(bonoId).get();

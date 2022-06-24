@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
@@ -19,15 +20,19 @@ import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Home/Homepage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/Sesions.dart';
 import '../../../Globals/Styles/Styles.dart';
 import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
+import '../Home/Chat/ChatCore/ChatCore.dart';
+import '../Home/Notifications/Notifications.dart';
 import '../MambaPro/Bonos.dart';
 import '../MambaPro/BrandInfo.dart';
 import '../MambaPro/Categories.dart';
 import '../MambaPro/Content.dart';
 import '../MambaPro/Locations.dart';
 import '../MambaPro/Logo.dart';
+import '../MambaPro/SesionsPro.dart';
 import '../MambaPro/Trainers.dart';
 import '../MambaPro/Clients.dart';
 import '../MambaPro/HomePro.dart';
+import '../MambaPro/UserCalendarPro.dart';
 import 'Brand/BrandScreens/BrandCalendarWeekWidget.dart';
 import 'Profile/Profile.dart';
 import 'Sesions/SesionsScreens/UserCalendarMonthWidget.dart';
@@ -43,6 +48,10 @@ class MambaClient extends StatefulWidget {
 
 class _MambaClientState extends State<MambaClient> {
 
+  // Screen Dimensions
+  var safeAreaHeight;
+  var safeAreaWidth;
+
   // Acceso a Base de Datos
   var _userDataService = new UserDataService();
   var _brandDataService = new BrandDataService();
@@ -56,7 +65,11 @@ class _MambaClientState extends State<MambaClient> {
   // String to show if mamba pro is activated
   String textValue = '';
 
+  bool IconStar = false;
+  bool isFirstBuild = true;
+
   //Bools to controll show for drop down
+  bool seeNextFavourites = false;
   bool seeNextWho = false;
   bool seeNextWhat = false;
   bool seeNextHow = false;
@@ -64,6 +77,7 @@ class _MambaClientState extends State<MambaClient> {
   bool seeNextWhere = false;
 
   //Icons for drop down
+  var IconFavourites = Icons.keyboard_arrow_down;
   var IconWho = Icons.keyboard_arrow_down;
   var IconWhat = Icons.keyboard_arrow_down;
   var IconHow = Icons.keyboard_arrow_down;
@@ -73,9 +87,15 @@ class _MambaClientState extends State<MambaClient> {
   //Index to know which page to load
   int pageIndex = 0;
 
+  //favourite tabs of user
+  List<int> favourites = [];
+
   @override
   void initState() {
     super.initState();
+    if(mambaProfessional = true) {
+      getFavourites();
+    }
     isLoading = true;
     // Init LocalNotificationsService
     LocalNotificationService.initialize(context);
@@ -134,10 +154,18 @@ class _MambaClientState extends State<MambaClient> {
     getUserAndBrand();
   }
 
+  // Init Device Sizes
+  initDeviceSizes() {
+    safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
+    safeAreaWidth = MediaQuery.of(context).size.width;
+    print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
+    print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
+  }
+
   void initVariables() async {
     isSwitched = mambaProfessional;
-    if(mambaProfessional) textValue = "Desactivar Mamba pro";
-    else textValue = "Activar Mamba pro";
+    if(mambaProfessional) textValue = "Desactivar Dark mode";
+    else textValue = "Activar Dark mode";
   }
 
   //Class to control swithc state
@@ -188,6 +216,41 @@ class _MambaClientState extends State<MambaClient> {
     }
   }
 
+  //Function to get the favourites of the user
+  void getFavourites() async{
+    favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
+    if(favourites.contains(pageIndex)) IconStar = true;
+  }
+
+  void setFavourites() {
+    if(favourites.length != 0 && favourites.contains(pageIndex)) IconStar = true;
+    else IconStar = false;
+  }
+
+  // Navigate to Notifications Screen
+  void navigateToNotificationsScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<Null>(
+          builder: (context) => Notifications(),
+        )
+    ).whenComplete(() {
+      getFavourites();
+    });
+  }
+
+  // Navigate to Notifications Screen
+  void navigateToChatScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<Null>(
+          builder: (context) => ChatCore(),
+        )
+    ).whenComplete(() {
+      getFavourites();
+    });
+  }
+
   //Function to select the title of the page loaded
   Widget titlePageSelector()
   {
@@ -207,6 +270,44 @@ class _MambaClientState extends State<MambaClient> {
     return Container();
   }
 
+  //Function to know the title on listview
+  Widget titlePageSelectorListView(int _pageIndex)
+  {
+    if(_pageIndex == 0)return Text(AppLocalizations.of(context)!.homeBottomNav);
+    if(_pageIndex == 1)return Text(AppLocalizations.of(context)!.trainers);
+    if(_pageIndex == 2)return Text(AppLocalizations.of(context)!.clients);
+    if(_pageIndex == 4)return Text(AppLocalizations.of(context)!.categories);
+    if(_pageIndex == 5)return Text(AppLocalizations.of(context)!.bonos);
+    if(_pageIndex == 8)return Text(AppLocalizations.of(context)!.information);
+    if(_pageIndex == 7)return Text(AppLocalizations.of(context)!.content);
+    if(_pageIndex == 6)return Text(AppLocalizations.of(context)!.opinions);
+    if(_pageIndex == 9)return Text(AppLocalizations.of(context)!.stats);
+    if(_pageIndex == 10)return Text(AppLocalizations.of(context)!.calendar);
+    if(_pageIndex == 11)return Text(AppLocalizations.of(context)!.locations);
+    if(_pageIndex == 12)return Text(AppLocalizations.of(context)!.logo);
+    if(_pageIndex == 13)return Text(AppLocalizations.of(context)!.feedback);
+    return Container();
+  }
+
+  //Function to select the icon to load
+  Widget iconSelector(int pageIndexView)
+  {
+    if(pageIndexView == 0) return Icon(Icons.home_filled);
+    if(pageIndexView == 1) return Icon(Icons.record_voice_over);
+    if(pageIndexView == 2) return Icon(Icons.group);
+    if(pageIndexView == 8) return Icon(Icons.feed);;
+    if(pageIndexView == 13) return Icon(Icons.question_mark);
+    if(pageIndexView == 4) return Icon(Icons.category);
+    if(pageIndexView == 5) return Icon(Icons.shopping_bag);
+    if(pageIndexView == 12) return Icon(Icons.run_circle);
+    if(pageIndexView == 7) return Icon(Icons.collections);
+    if(pageIndexView == 10) return Icon(Icons.calendar_month);
+    if(pageIndexView == 11) return Icon(Icons.location_on);
+    if(pageIndexView == 6) return Icon(Icons.chat_bubble_outline);
+    if(pageIndexView == 9) return Icon(Icons.query_stats);
+    return Container();
+  }
+
   //Function to select the page to load
   Widget pageSelector()
   {
@@ -218,11 +319,11 @@ class _MambaClientState extends State<MambaClient> {
     if(pageIndex == 7) return Content(brandId: currentBrand.id!);
     if(pageIndex == 8) return BrandInfo(locale: Localizations.localeOf(context), brandId: currentBrand.id!);
     if(pageIndex == 12) return Logo(brandId: currentBrand.id!);
-    if(pageIndex == 10) return UserCalendarMonthWidget(
-      userId: currentUser.id!,
-      height: MediaQuery.of(context).size.height*0.68,
-      width: MediaQuery.of(context).size.width*0.88,
-    );
+    if(pageIndex == 10) return BrandCalendarWeekWidget(
+      brandId: currentBrand.id!,
+      height: safeAreaHeight*0.68,
+      width: safeAreaWidth*0.88,
+    ); //return SesionsPro();
     if(pageIndex == 11) return Locations(brandId: currentBrand.id!);
     return Container();
   }
@@ -253,49 +354,137 @@ class _MambaClientState extends State<MambaClient> {
 
   @override
   Widget build(BuildContext context) {
+    if (isFirstBuild) {
+      initDeviceSizes();
+      isFirstBuild = false;
+    }
     initVariables();
     return mambaProfessional ?  Scaffold(
       drawer: Drawer(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColorDark,
         child: ListView(
           // Remove padding
           padding: EdgeInsets.zero,
           children: [
-            UserAccountsDrawerHeader(
-              accountName: Text(currentUser.firstName! + ' ' + currentUser.lastName!,
-                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, backgroundColor: Colors.white)),
-              accountEmail: Text('Administrator',
-                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, backgroundColor: Colors.white)),
-              currentAccountPicture: CircleAvatar(
-                child: ClipOval(
-                  child: Image.network(
-                    currentUser.imageUrl!,
-                    fit: BoxFit.cover,
-                    width: 90,
-                    height: 90,
+            Stack(
+              alignment: Alignment.topRight,
+              children: [
+                UserAccountsDrawerHeader(
+                  //onDetailsPressed: () {print('test');},
+                  arrowColor: Colors.red,
+                  //currentAccountPictureSize: Size(MediaQuery.of(context).size.height*0.10,MediaQuery.of(context).size.height*0.3),
+                  accountName: Text(currentUser.firstName! + ' ' + currentUser.lastName!,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 13,fontWeight: FontWeight.bold, background: Paint()
+                        ..color = Theme.of(context).primaryColorDark
+                        ..strokeWidth = 20
+                        ..strokeJoin = StrokeJoin.round
+                        ..strokeCap = StrokeCap.round
+                        ..style = PaintingStyle.stroke)),
+                  accountEmail: Text(''),
+                  currentAccountPicture: CircleAvatar(
+                    child: ClipOval(
+                      child: Image.network(
+                        currentUser.imageUrl!,
+                        fit: BoxFit.cover,
+                        width: MediaQuery.of(context).size.height*0.10,
+                        height: MediaQuery.of(context).size.height*0.3,
+                      ),
+                    ),
+                  ),
+
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColorDark,
+                    image: DecorationImage(
+                        opacity: 1,
+                        fit: BoxFit.fill,
+                        image: NetworkImage(
+                            currentBrand.logoUrl!)),
+                  ),
+
+
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.06, horizontal: MediaQuery.of(context).size.width*0.08),
+                  child: Container(
+                    //color: Theme.of(context).primaryColorDark,
+                    decoration: new BoxDecoration(
+                        color: Theme.of(context).primaryColorDark,
+                        borderRadius: new BorderRadius.only(
+                          topLeft: const Radius.circular(10.0),
+                          topRight: const Radius.circular(10.0),
+                          bottomLeft: const Radius.circular(10.0),
+                          bottomRight: const Radius.circular(10.0),
+                        ),
+                    ),
+                    child: IconButton(
+                      icon: Icon(Icons.exit_to_app, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColor),
+                      onPressed:() => {
+                        setState(() {
+                          mambaProfessional = false;
+                        }),
+                      },
+                    ),
                   ),
                 ),
-              ),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                image: DecorationImage(
-                    opacity: 1,
-                    fit: BoxFit.fill,
-                    image: NetworkImage(
-                        currentBrand.logoUrl!)),
-              ),
+              ],
             ),
             ListTile(
-                leading: Icon(Icons.home_filled),
+                title: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
+                      child: Text('Administrador'),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
+                      child: IconButton(
+                        icon: Icon(Icons.notifications, size: MediaQuery.of(context).size.width*0.06,),
+                        onPressed: navigateToNotificationsScreen,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
+                      child: IconButton(
+                        icon: Icon(Icons.chat, size: MediaQuery.of(context).size.width*0.06,),
+                        onPressed: navigateToChatScreen,
+                      ),
+                    ),
+                  ],
+                ),
+            ),
+            ListTile(
+                leading: iconSelector(0),
                 title: Text('Home'),
                 onTap: () =>  {
                   Navigator.pop(context),
                   setState(() {
                     pageIndex = 0;
+                    setFavourites();
                   }),
                 }
             ),
-            Divider(),
+            ListView.builder(
+                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.003),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: favourites.length,
+                itemBuilder: (context, index) {
+                  int favourite =  favourites[index];
+                  return ListTile(
+                      leading: iconSelector(favourite),
+                      title: titlePageSelectorListView(favourite),
+                      onTap: () =>
+                      {
+                        Navigator.pop(context),
+                        setState(() {
+                          pageIndex = favourite;
+                          setFavourites();
+                        }),
+                      }
+                  );
+                }
+            ),
 
             ListTile(
               title: Row(
@@ -314,31 +503,29 @@ class _MambaClientState extends State<MambaClient> {
             ),
             seeNextWho ?
             ListTile(
-                leading: Icon(
-                  Icons.record_voice_over,
-                ),
+                leading: iconSelector(1),
                 title: Text(AppLocalizations.of(context)!.trainers),
                 onTap: () =>
                 {
                   Navigator.pop(context),
                   setState(() {
                     pageIndex = 1;
+                    setFavourites();
+
                   }),
                 }
             ) : Container(),
             seeNextWho ? ListTile(
-                leading: Icon(
-                  Icons.group,
-                ),
+                leading: iconSelector(2),
                 title: Text(AppLocalizations.of(context)!.clients),
                 onTap: () => {
                   Navigator.pop(context),
                   setState(() {
                     pageIndex = 2;
+                    setFavourites();
                   }),
                 }
             ) : Container(),
-            Divider(),
 
 
             ListTile(
@@ -357,54 +544,49 @@ class _MambaClientState extends State<MambaClient> {
             ),
             seeNextWhat ?
             ListTile(
-              leading: Icon(
-                Icons.feed,
-              ),
+              leading: iconSelector(8),
               title: Text(AppLocalizations.of(context)!.information),
               onTap: () => {
                 Navigator.pop(context),
                 setState(() {
                   pageIndex = 8;
+                  setFavourites();
                 }),
               },
             ) : Container(),
             seeNextWhat ? ListTile(
-              leading: Icon(
-                Icons.run_circle,
-              ),
+              leading: iconSelector(12),
               title: Text(AppLocalizations.of(context)!.logo),
               onTap: () => {
                 Navigator.pop(context),
                 setState(() {
                   pageIndex = 12;
+                  setFavourites();
                 }),
               },
             ) : Container(),
             seeNextWhat ? ListTile(
-              leading: Icon(
-                Icons.category,
-              ),
+              leading: iconSelector(4),
               title: Text(AppLocalizations.of(context)!.categories),
               onTap: () => {
                 Navigator.pop(context),
                 setState(() {
                   pageIndex = 4;
+                  setFavourites();
                 }),
               },
             ) : Container(),
             seeNextWhat ? ListTile(
-              leading: Icon(
-                Icons.shopping_bag,
-              ),
+              leading: iconSelector(5),
               title: Text(AppLocalizations.of(context)!.bonos),
               onTap: () => {
                 Navigator.pop(context),
                 setState(() {
                   pageIndex = 5;
+                  setFavourites();
                 }),
               },
             ) : Container(),
-            Divider(),
 
 
             ListTile(
@@ -423,54 +605,49 @@ class _MambaClientState extends State<MambaClient> {
             ),
             seeNextHow ?
             ListTile(
-              leading: Icon(
-                Icons.query_stats,
-              ),
+              leading: iconSelector(9),
               title: Text(AppLocalizations.of(context)!.stats),
               onTap: () => {
                 Navigator.pop(context),
                 setState(() {
                   pageIndex = 9;
+                  setFavourites();
                 }),
               },
             ) : Container(),
             seeNextHow ? ListTile(
-              leading: Icon(
-                Icons.collections,
-              ),
+              leading: iconSelector(7),
               title: Text(AppLocalizations.of(context)!.content),
               onTap: () => {
                 Navigator.pop(context),
                 setState(() {
                   pageIndex = 7;
+                  setFavourites();
                 }),
               },
             ) : Container(),
             seeNextHow ? ListTile(
-              leading: Icon(
-                Icons.chat_bubble_outline,
-              ),
+              leading: iconSelector(6),
               title: Text(AppLocalizations.of(context)!.opinions),
               onTap: () => {
                 Navigator.pop(context),
                 setState(() {
                   pageIndex = 6;
+                  setFavourites();
                 }),
               },
             ) : Container(),
             seeNextHow ? ListTile(
-              leading: Icon(
-                Icons.question_mark,
-              ),
+              leading: iconSelector(13),
               title: Text(AppLocalizations.of(context)!.feedback),
               onTap: () => {
                 Navigator.pop(context),
                 setState(() {
                   pageIndex = 13;
+                  setFavourites();
                 }),
               },
             ) : Container(),
-            Divider(),
 
 
             ListTile(
@@ -489,18 +666,16 @@ class _MambaClientState extends State<MambaClient> {
             ),
             seeNextWhen ?
             ListTile(
-              leading: Icon(
-                Icons.calendar_month,
-              ),
+              leading: iconSelector(10),
               title: Text(AppLocalizations.of(context)!.calendar),
               onTap: () => {
                 Navigator.pop(context),
                 setState(() {
                   pageIndex = 10;
+                  setFavourites();
                 }),
               },
             ) : Container(),
-            Divider(),
 
             ListTile(
               title: Row(
@@ -518,41 +693,17 @@ class _MambaClientState extends State<MambaClient> {
             ),
             seeNextWhere ?
             ListTile(
-              leading: Icon(
-                Icons.location_on,
-              ),
+              leading: iconSelector(11),
               title: Text(AppLocalizations.of(context)!.locations),
               onTap: () => {
                 Navigator.pop(context),
                 setState(() {
                   pageIndex = 11;
+                  setFavourites();
                 }),
               },
             ) : Container(),
-            seeNextWhere ? ListTile(
-              title: Text('Online'),
-              onTap: () => null,
-            ) : Container(),
-            Divider(),
 
-            ListTile(
-              title: Row(
-                children: [
-                  Switch(
-                    onChanged: toggleSwitch,
-                    value: isSwitched,
-                    activeColor: Styles.mainColor,
-                    activeTrackColor: Styles.mainColor,
-                    inactiveThumbColor: Styles.mainColorTrans,
-                    inactiveTrackColor: Styles.mainColorTrans,
-                  ),
-                  Text(
-                      textValue,
-                      style: Theme.of(context).textTheme.bodyText2
-                  ),
-                ],
-              ),
-            )
 /*
             ListTile(
               leading: Icon(Icons.settings),
@@ -578,6 +729,29 @@ class _MambaClientState extends State<MambaClient> {
       appBar: AppBar(
         title: titlePageSelector(),
         centerTitle: true,
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
+            child: IconButton(
+              icon: pageIndex == 0? Container() : Icon(IconStar? Icons.star : Icons.star_border, size: MediaQuery.of(context).size.width*0.06,),
+              onPressed: () {
+                setState(() {
+                  IconStar = !IconStar;
+                  if (IconStar == true) {
+                    favourites.add(pageIndex);
+                  }
+                  else {
+                    favourites.remove(pageIndex);
+                  }
+                  favourites.sort();
+                  _userDataService.addFavouriteToUser(
+                      currentBrand.id!, currentUser.id!, favourites);
+                }
+                );
+              },
+            ),
+          ),
+        ],
       ),
       body: pageSelector(),
     ) : Scaffold(

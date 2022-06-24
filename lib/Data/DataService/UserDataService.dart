@@ -33,7 +33,7 @@ class UserDataService {
   Future<int> getUnreadConversations(String userId) => _firebase.getUnreadConversations(userId);
   Future<String> getBonoRequest(String userId, String brandId) => _firebase.getBonoRequest(userId, brandId);
   Future<String> getBonoUser(String userId, String brandId) => _firebase.getBonoUser(userId, brandId);
-
+  Future<List<int>> getUserFavourites(String brandId, String userId) => _firebase.getUserFavourites(brandId, userId);
   // Add Data
   Future<int> addUser(String email, String password, String idioma) => _firebase.addUser(email, password, idioma);
   Future<void> addUserNickname(String userId, String nickname) => _firebase.addUserNickname(userId, nickname);
@@ -41,6 +41,8 @@ class UserDataService {
   Future<void> sendRequestToBrand(String brandId, String name, bool isTrainer) => _firebase.sendRequestToBrand(brandId, name, isTrainer);
   Future<void> addBonoRequestToUser(String brandId, String userId, String bonoId) => _firebase.addBonoRequestToUser(brandId, userId, bonoId);
   Future<void> addBonoToUser(String brandId, String userId, String bonoId, int sessions, Timestamp time) => _firebase.addBonoToUser(brandId, userId, bonoId, sessions, time);
+  Future<void> addFavouriteToUser(String brandId, String userId, List<int> favourites) => _firebase.addFavouriteToUser(brandId, userId, favourites);
+
   // Update Data
   Future<void> updateUser(String uid, String name, String firstName, String lastName, String nick, String dateOfBirth, int gender, File? image, bool isTrainer) => _firebase.updateUser(uid, name, firstName, lastName, nick, dateOfBirth, gender, image, isTrainer);
   Future<void> updateUserThemePreferences(String uid, bool? isDark) => _firebase.updateUserThemePreferences(uid, isDark);
