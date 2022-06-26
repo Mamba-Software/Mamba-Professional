@@ -45,7 +45,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
   // Horari
   double _startHour = 8;
   double _endHour = 22;
-  DateTime dateJoined = DateFormat('dd-MM-yyyy').parse(currentUser.dateJoined!);
+  DateTime dateJoined = DateFormat('dd-MM-yyyy').parse(currentUser.dateJoined!).subtract(Duration(days: 365));
   // Events From Brand
   List<Event> eventsList = [];
   List<Appointment> allAppointments = <Appointment>[];
