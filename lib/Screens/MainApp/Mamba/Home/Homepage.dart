@@ -10,6 +10,7 @@ import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
@@ -24,7 +25,6 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/Eve
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
 import 'package:shimmer/shimmer.dart';
 
 // Profile page for a trainer user.
