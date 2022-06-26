@@ -13,7 +13,7 @@ import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.da
 import 'package:mamba_castelldefels/Globals/Providers/FirebaseAnalyticsProvider.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppThemes/AppThemes.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/ChatCore.dart';
+import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:provider/provider.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';

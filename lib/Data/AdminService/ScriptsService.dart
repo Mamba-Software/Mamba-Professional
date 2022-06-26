@@ -12,9 +12,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
-import 'package:uuid/uuid.dart';
 import '../DataService/BrandDataService.dart';
 
 class ScriptsDatabaseService {
