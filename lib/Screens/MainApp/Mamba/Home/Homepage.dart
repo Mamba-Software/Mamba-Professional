@@ -181,12 +181,7 @@ class _HomepageState extends State<Homepage> {
         CupertinoPageRoute<Null>(
           builder: (context) => Notifications(),
         )
-    ).whenComplete(() {
-      setState(() {
-        isLoading = true;
-      });
-      initProfileHome();
-    });
+    );
   }
 
   // Navigate to Notifications Screen
@@ -196,12 +191,7 @@ class _HomepageState extends State<Homepage> {
         CupertinoPageRoute<Null>(
           builder: (context) => ChatCore(),
         )
-    ).whenComplete(() {
-      setState(() {
-        isLoading = true;
-      });
-      initProfileHome();
-    });
+    );
   }
 
   // Navigate to Event Screen on Tap

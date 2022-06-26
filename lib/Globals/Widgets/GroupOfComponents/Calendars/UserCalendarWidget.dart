@@ -43,10 +43,9 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
   // Dies de la semana que el entrenador no treballa
   List<int> nonWorkDays = [];
   // Horari
-  double? _startHour;
-  double? _endHour;
-  // Descansos
-  DateTime dateJoined = DateTime.now();
+  double _startHour = 8;
+  double _endHour = 22;
+  DateTime dateJoined = DateFormat('dd-MM-yyyy').parse(currentUser.dateJoined!);
   // Events From Brand
   List<Event> eventsList = [];
   List<Appointment> allAppointments = <Appointment>[];
@@ -108,9 +107,11 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
       displayDateTimeStart = dateTime.subtract(Duration(days: currentDay - 1));
       displayDateTimeEnd = displayDateTimeStart.add(Duration(days: 6));
     }
-    dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
-    _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
-    _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
+    if (_brand.id != null) {
+      dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
+      _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
+      _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
+    }
     Future.delayed(const Duration(milliseconds: 1000), () {
       setState(() {
         isLoading = false;
@@ -305,8 +306,8 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                           timelineAppointmentHeight: -1,
                           timeIntervalHeight: -1,
                           timeIntervalWidth: 55,
-                          startHour: _startHour!-1,
-                          endHour:  _endHour!+1,
+                          startHour: _startHour-1,
+                          endHour:  _endHour+1,
                           timeFormat: 'HH',
                           dayFormat: 'E',
                           dateFormat: 'd',
@@ -546,44 +547,67 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
 
   List<TimeRegion> _getTimeRegions() {
     final List<TimeRegion> regions = <TimeRegion>[];
-    // Breaks
-    for (var i=2; i < _brand.workShift.length ; i+=2) {
-      var start = _brand.workShift[i];
-      var startHour = int.parse(start.toStringAsFixed(2).split(".")[0]);
-      var startMin = int.parse(start.toStringAsFixed(2).split(".")[1]);
-      var end = _brand.workShift[i+1];
-      var endHour = int.parse(end.toStringAsFixed(2).split(".")[0]);
-      var endMin = int.parse(end.toStringAsFixed(2).split(".")[1]);
-      DateTime inActiveHoursStart = DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHour, startMin, 0);
-      DateTime inActiveHoursEnd = DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHour, endMin, 0);
+    if (_brand.id != null) {
+      // Breaks
+      for (var i=2; i < _brand.workShift.length ; i+=2) {
+        var start = _brand.workShift[i];
+        var startHour = int.parse(start.toStringAsFixed(2).split(".")[0]);
+        var startMin = int.parse(start.toStringAsFixed(2).split(".")[1]);
+        var end = _brand.workShift[i+1];
+        var endHour = int.parse(end.toStringAsFixed(2).split(".")[0]);
+        var endMin = int.parse(end.toStringAsFixed(2).split(".")[1]);
+        DateTime inActiveHoursStart = DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHour, startMin, 0);
+        DateTime inActiveHoursEnd = DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHour, endMin, 0);
+        regions.add(TimeRegion(
+          enablePointerInteraction: false,
+          startTime: inActiveHoursStart,
+          endTime: inActiveHoursEnd,
+          color: Colors.grey.withOpacity(0.3),
+          recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+        ));
+      }
+      // Hora Inactiva Matí
+      var startHourWS = int.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
+      var startMinWS = int.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[1]);
       regions.add(TimeRegion(
         enablePointerInteraction: false,
-        startTime: inActiveHoursStart,
-        endTime: inActiveHoursEnd,
+        startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS-1, 0, 0),
+        endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS, startMinWS, 0),
+        color: Colors.grey.withOpacity(0.3),
+        recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+      ));
+      // Hora Inactiva Nit
+      var endHourWS = int.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
+      var endMinWS = int.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[1]);
+      regions.add(TimeRegion(
+        enablePointerInteraction: false,
+        startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS, endMinWS, 0),
+        endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS+1, 0, 0),
+        color: Colors.grey.withOpacity(0.3),
+        recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+      ));
+    } else {
+      // Hora Inactiva Matí
+      var startHourWS = int.parse(_startHour.toStringAsFixed(2).split(".")[0]);
+      var startMinWS = int.parse(_startHour.toStringAsFixed(2).split(".")[1]);
+      regions.add(TimeRegion(
+        enablePointerInteraction: false,
+        startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS-1, 0, 0),
+        endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS, startMinWS, 0),
+        color: Colors.grey.withOpacity(0.3),
+        recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+      ));
+      // Hora Inactiva Nit
+      var endHourWS = int.parse(_endHour.toStringAsFixed(2).split(".")[0]);
+      var endMinWS = int.parse(_endHour.toStringAsFixed(2).split(".")[1]);
+      regions.add(TimeRegion(
+        enablePointerInteraction: false,
+        startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS, endMinWS, 0),
+        endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS+1, 0, 0),
         color: Colors.grey.withOpacity(0.3),
         recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
       ));
     }
-    // Hora Inactiva Matí
-    var startHourWS = int.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
-    var startMinWS = int.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[1]);
-    regions.add(TimeRegion(
-      enablePointerInteraction: false,
-      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS-1, 0, 0),
-      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS, startMinWS, 0),
-      color: Colors.grey.withOpacity(0.3),
-      recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
-    ));
-    // Hora Inactiva Nit
-    var endHourWS = int.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
-    var endMinWS = int.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[1]);
-    regions.add(TimeRegion(
-      enablePointerInteraction: false,
-      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS, endMinWS, 0),
-      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS+1, 0, 0),
-      color: Colors.grey.withOpacity(0.3),
-      recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
-    ));
     return regions;
   }
 
