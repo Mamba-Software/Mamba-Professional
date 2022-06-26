@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
@@ -21,10 +20,10 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/TodosMiembrosClient.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandMembers/BrandMembersClient.dart';
 
 class NoBrandPage extends StatefulWidget {
   const NoBrandPage({Key? key}) : super(key: key);
@@ -442,7 +441,7 @@ class _NoBrandPageState extends State<NoBrandPage> {
                                       Navigator.push(
                                           context,
                                           CupertinoPageRoute<Null>(
-                                              builder: (context) => TodosMiembrosClient(
+                                              builder: (context) => BrandMembersClient(
                                                 brandID: brand.id!,
                                                 brandAdmin: brand.adminID!,
                                                 viewOnly: true,

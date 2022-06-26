@@ -24,7 +24,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/NoBrandScreens/RegistrarMarca.dart';
 import 'package:shimmer/shimmer.dart';
 
 // Profile page for a trainer user.

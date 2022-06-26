@@ -14,8 +14,8 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/TodosMiembrosClient.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/TodosMiembrosTrainer.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandMembers/BrandMembersClient.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandMembers/BrandMembersTrainer.dart';
 import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -433,10 +433,10 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                             userID: userId.id!, viewOnly: true))) : currentUser.isTrainer == true ?  Navigator.push(
                     context,
                     CupertinoPageRoute<Null>(
-                        builder: (context) => TodosMiembrosTrainer())) : Navigator.push(
+                        builder: (context) => BrandMembersTrainer())) : Navigator.push(
                     context,
                     CupertinoPageRoute<Null>(
-                        builder: (context) => TodosMiembrosClient(viewOnly: true, brandID: currentBrand.id!, brandAdmin: currentBrand.adminID!)));
+                        builder: (context) => BrandMembersClient(viewOnly: true, brandID: currentBrand.id!, brandAdmin: currentBrand.adminID!)));
               },
             ),
             SizedBox(
