@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/CalendarWidgetClient.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/SendRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/CancelRequestConfirmationDialog.dart';
@@ -141,14 +141,6 @@ class _NoBrandPageState extends State<NoBrandPage> {
           ) :
           Row(
             children: [
-              IconButton(
-                icon: Icon(Icons.qr_code_outlined, size: MediaQuery.of(context).size.width*0.07, color: !codigoClicked ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor,),
-                onPressed: !codigoClicked ? () {
-                  setState(() {
-                    codigoClicked = true;
-                  });
-                } : null,
-              ),
               SizedBox(width: MediaQuery.of(context).size.width*0.03,),
             ],
           ),
@@ -412,9 +404,9 @@ class _NoBrandPageState extends State<NoBrandPage> {
                                       Navigator.push(
                                           context,
                                           CupertinoPageRoute<Null>(
-                                              builder: (context) => CalendarWidgetClient(
-                                                brandID: brand.id!,
-                                                onlyView: true,
+                                              builder: (context) => BrandCalendarWidget(
+                                                  brandId: brand.id!,
+                                                  onlyView: true,
                                               )
                                           )
                                       ).whenComplete(() {

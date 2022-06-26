@@ -19,8 +19,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class BrandCalendarWidget extends StatefulWidget {
   String brandId;
   DateTime? dateTime;
+  bool? onlyView;
 
-  BrandCalendarWidget({Key? key, required this.brandId, this.dateTime}) : super(key: key);
+  BrandCalendarWidget({Key? key, required this.brandId, this.dateTime, this.onlyView}) : super(key: key);
 
   @override
   _BrandCalendarWidgetState createState() => _BrandCalendarWidgetState();
@@ -113,7 +114,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
 
   void getUserBrandDetails() async {
     _brand = await _brandDataService.getBrandDetails(widget.brandId);
-    if (currentUser.isTrainer!) canEdit = true;
+    if (currentUser.isTrainer! && widget.onlyView == false) canEdit = true;
     initCalendar();
   }
 
@@ -698,6 +699,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
         CupertinoPageRoute<Null>(
           builder: (context) => EventPage(
             eventId: eventId,
+            onlyView: widget.onlyView,
           ),
         )
     );

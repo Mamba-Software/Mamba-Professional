@@ -7,8 +7,9 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarVi
 
 class EventPage extends StatefulWidget {
   String eventId;
+  bool? onlyView;
 
-  EventPage({Key? key, required this.eventId}) : super(key: key);
+  EventPage({Key? key, required this.eventId, this.onlyView}) : super(key: key);
 
   @override
   _EventPageState createState() => _EventPageState();
@@ -24,13 +25,14 @@ class _EventPageState extends State<EventPage> {
 
   @override
   Widget build(BuildContext context) {
-    return currentUser.isTrainer! ?
+    return currentUser.isTrainer! && widget.onlyView == false ?
         EventPageTrainer(
           eventId: widget.eventId,
         )
           :
         EventPageClient(
           eventId: widget.eventId,
+          onlyView: widget.onlyView,
         );
   }
 }
