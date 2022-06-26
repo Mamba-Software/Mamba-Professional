@@ -40,16 +40,6 @@ class _LoginState extends State<Login> {
   @override
   initState() {
     super.initState();
-    //initDynamicLinks();
-  }
-
-  Future<void> initDynamicLinks() async {
-    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
-      brandPath = dynamicLinkData.link;
-    }).onError((error) {
-      print('onLink error');
-      print(error.message);
-    });
   }
 
   @override

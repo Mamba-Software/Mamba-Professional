@@ -1,3 +1,4 @@
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificatio
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandWrapperPage.dart';
@@ -90,12 +92,31 @@ class _MambaClientState extends State<MambaClient> {
         }
       }
     });
+    // Dynamic Links
+    //initDynamicLinks();
     // Defining the Page Controller
     pageController = PageController(initialPage: currentIndex);
-    // Check if User minimum version
-    checkMinimumAppVersion();
+    // On StartUp Dialogs
+    launchOnStartUpDialogs();
     // Getting User Information
     getUserAndBrand();
+  }
+
+  Future<void> initDynamicLinks() async {
+    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
+      brandPath = dynamicLinkData.link;
+    }).onError((error) {
+      print('onLink error');
+      print(error.message);
+    });
+  }
+
+  // On StartUp Dialogs
+  void launchOnStartUpDialogs() {
+    // First check if minimum version
+    checkMinimumAppVersion();
+    // Check if invited into Brand
+    checkBrandInvite();
   }
 
   // Check version and Update App Dialog
@@ -113,6 +134,26 @@ class _MambaClientState extends State<MambaClient> {
         );
       });
     }
+  }
+
+  // Check invited by Brand
+  void checkBrandInvite() async {
+    print("brandPath");
+    print(brandPath);
+    if (brandPath != null) {
+      // Start up Dialog
+      Future.delayed(Duration.zero, () {
+        return showDialog(
+            context: context,
+            builder: (_) {
+              return BrandInviteDialog(
+                  brandId: "d3a448cc-daa2-421a-b931-07c012d89f16"
+              );
+            }
+        );
+      });
+    }
+
   }
 
   // Gets the user info from firebase.

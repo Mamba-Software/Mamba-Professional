@@ -46,16 +46,15 @@ void main() async {
     PendingDynamicLinkData? initialLink;
     try {
       initialLink = await FirebaseDynamicLinks.instance.getInitialLink();
-      if(initialLink != null) brandPath = initialLink.link;
+      if (initialLink != null) {
+        brandPath = initialLink.link;
+        print("Dynamic Link recived :D");
+        print(brandPath);
+      }
     } catch (e) {
       initialLink = null;
     }
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-    /* Configurint Google Maps Widget
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
-    }
-     */
     // Run App
     runApp(
       MultiProvider(
