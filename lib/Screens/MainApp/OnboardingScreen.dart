@@ -1015,7 +1015,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           alignment: FractionalOffset.centerRight,
           child: FlatButton(
             onPressed: () async {
-
               if (_currentPage == 1) {
                   await PermisionsService().getUserLocation();
                   _pageController.nextPage(
