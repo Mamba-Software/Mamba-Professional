@@ -9,11 +9,9 @@ import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/CalendarWidgetClient.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/CalendarWidgetTrainer.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventClient.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventTrainer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandCalendarWidget.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
@@ -1064,27 +1062,14 @@ class _NotificationsState extends State<Notifications> {
       }
       case "UserJoinsBrand_User": {
         if (brand.id != null) {
-          if (currentUser.isTrainer!) {
-            Navigator.push(
-                context,
-              CupertinoPageRoute<Null>(
-                builder: (context) => CalendarWidgetTrainer(
-                      brandID: brand.id!,
-                      canEdit: true,
-                    )
+          Navigator.push(
+              context,
+            CupertinoPageRoute<Null>(
+              builder: (context) => BrandCalendarWidget(
+                  brandId: brand.id!,
                 )
-            );
-          } else {
-            Navigator.push(
-                context,
-              CupertinoPageRoute<Null>(
-                builder: (context) => CalendarWidgetClient(
-                      brandID: brand.id!,
-                      onlyView: false,
-                    )
-                )
-            );
-          }
+              )
+          );
         }
         break;
       }
@@ -1146,10 +1131,8 @@ class _NotificationsState extends State<Notifications> {
           Navigator.push(
               context,
               CupertinoPageRoute<Null>(
-                  builder: (context) => ViewEventClient(
+                  builder: (context) => EventPage(
                   eventId: event.id!,
-                  canJoin: canAction,
-                  locale: Localizations.localeOf(context),
                 ),
               )
           );
@@ -1172,10 +1155,8 @@ class _NotificationsState extends State<Notifications> {
           Navigator.push(
               context,
               CupertinoPageRoute<Null>(
-                                  builder: (context) => ViewEventTrainer(
+                  builder: (context) => EventPage(
                   eventId: event.id!,
-                  canEdit: canAction,
-                  locale: Localizations.localeOf(context),
                 ),
               )
           );
@@ -1187,9 +1168,8 @@ class _NotificationsState extends State<Notifications> {
           Navigator.push(
               context,
               CupertinoPageRoute<Null>(
-                                  builder: (context) => CalendarWidgetClient(
-                    brandID: brand.id!,
-                    onlyView: true,
+                  builder: (context) => BrandCalendarWidget(
+                    brandId: brand.id!,
                   )
               )
           );
@@ -1212,10 +1192,8 @@ class _NotificationsState extends State<Notifications> {
           Navigator.push(
               context,
               CupertinoPageRoute<Null>(
-                                  builder: (context) => ViewEventTrainer(
+                  builder: (context) => EventPage(
                   eventId: event.id!,
-                  canEdit: canAction,
-                  locale: Localizations.localeOf(context),
                 ),
               )
           );

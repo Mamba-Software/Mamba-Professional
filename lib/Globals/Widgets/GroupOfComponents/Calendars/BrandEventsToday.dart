@@ -5,8 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventClient.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventTrainer.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
@@ -341,30 +340,14 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
     if (startDate.isBefore(DateTime.now())) {
       canAction = false;
     }
-    if (currentUser.isTrainer!) {
-      Navigator.push(
-          context,
-          CupertinoPageRoute<Null>(
-                                  builder: (context) => ViewEventTrainer(
-                eventId: eventId,
-                canEdit: canAction,
-                locale: Localizations.localeOf(context),
-              )
-          )
-      );
-    } else {
-      Navigator.push(
-          context,
-          CupertinoPageRoute<Null>(
-                                  builder: (context) => ViewEventClient(
-                eventId: eventId,
-                canJoin: canAction,
-                locale: Localizations.localeOf(context),
-              )
-          )
-      );
-    }
-
+    Navigator.push(
+        context,
+        CupertinoPageRoute<Null>(
+            builder: (context) => EventPage(
+              eventId: eventId,
+            )
+        )
+    );
   }
 
 }
