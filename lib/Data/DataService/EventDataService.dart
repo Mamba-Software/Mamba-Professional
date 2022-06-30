@@ -36,6 +36,8 @@ class EventDataService {
   Future<List<Usuario>> getEventUsers(String eventId) => _firebase.getEventUsers(eventId);
   Future<Location> getEventLocation(String eventId) => _firebase.getEventLocation(eventId);
   Future<int?> getEventUserFeedback(String eventId, String userId) => _firebase.getEventUserFeedback(eventId, userId);
+  Future<List<Event>> getBrandFirstCompletedEventsLimit(String brandId, int limit) => _firebase.getBrandFirstCompletedEventsLimit(brandId, limit);
+  Future<List<Event>> getBrandMoreCompletedEventsLimit(String brandId, String eventId, int limit) => _firebase.getBrandMoreCompletedEventsLimit(brandId, eventId, limit);
 
   // Add Data
   Future<String> addEvent(String? brandID, String? title, String? description, Timestamp doneAt, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.addEvent(brandID, title, description, doneAt, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);

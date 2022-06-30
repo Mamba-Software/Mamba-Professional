@@ -1827,5 +1827,29 @@
   "yourBrands": "Tus marcas",
   "@yourBrands": {
     "description": "YourBrands message"
+  },
+  "howTheySeeMe": "Como me ven",
+  "@howTheySeeMe": {
+    "description": "howTheySeeMe message"
+  },
+  "quien": "Quien",
+  "@quien": {
+    "description": "Quien message"
+  },
+  "que": "Que",
+  "@que": {
+    "description": "Que message"
+  },
+  "como": "Como",
+  "@como": {
+    "description": "Como message"
+  },
+  "cuando": "Cuando",
+  "@cuando": {
+    "description": "Cuando message"
+  },
+  "donde": "Donde",
+  "@donde": {
+    "description": "Donde message"
   }
 }

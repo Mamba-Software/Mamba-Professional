@@ -4,20 +4,25 @@ import 'package:flutter/painting.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:graphic/graphic.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandCalendarWeekWidget.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../Data/DataService/BrandDataService.dart';
 import '../../../Data/DataService/UserDataService.dart';
 import '../../../Data/Models/Bono.dart';
 import '../../../Data/Models/Usuario.dart';
+import '../../../Globals/GlobalVars.dart';
 import '../../../Globals/Styles/AppColors/AppColors.dart';
+import 'UserCalendarPro.dart';
 
 class HomePro extends StatefulWidget {
   String brandId;
   int numClients;
   int numTrainers;
+  var safeAreaHeight;
+  var safeAreaWidth;
 
-  HomePro({Key? key, required this.brandId, required this.numTrainers, required this.numClients}) : super(key: key);
+  HomePro({Key? key, required this.brandId, required this.numTrainers, required this.numClients, this.safeAreaWidth, this.safeAreaHeight}) : super(key: key);
 
   @override
   _HomePro createState() => _HomePro();
@@ -87,7 +92,7 @@ class _HomePro extends State<HomePro> {
     print(clientesFechaGraph);
 
     setState(() {
-      graphClients = true;
+      graphClients = false;
     });
   }
 
@@ -101,7 +106,7 @@ class _HomePro extends State<HomePro> {
     }
     print(bonosVendidosGraph);
     setState(() {
-      graphBonos = true;
+      graphBonos = false;
     });
   }
 
@@ -113,8 +118,23 @@ class _HomePro extends State<HomePro> {
             padding:  EdgeInsets.symmetric( vertical: MediaQuery.of(context).size.height*0.04, horizontal:  MediaQuery.of(context).size.width*0.04,),
             child: ListView(
               children: [
-                !graphClients? Column(
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
+                  child: Text(
+                    AppLocalizations.of(context)!.calendarWeekBrandText(currentBrand.name!),
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.01,
+                ),
+                BrandCalendarWeekWidget(brandId: widget.brandId, width: widget.safeAreaWidth, height: widget.safeAreaWidth,),
+                /*!graphClients? Column(
                   children: [
+                    UserCalendarPro(userId: currentUser.id!, width: widget.safeAreaWidth, height: widget.safeAreaWidth,),
+
+                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
                      Row(
                        children: [
                          Shimmer.fromColors(
@@ -150,6 +170,8 @@ class _HomePro extends State<HomePro> {
                         ),
                       ),
                     ),
+
+
                   ],
                 ) : Column(
                   children: [
@@ -200,8 +222,9 @@ class _HomePro extends State<HomePro> {
                       ),
                     )
                   ],
-                ),
+                ), */
                 SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                /*
                 !graphBonos? Column(
                   children: [
                     Row(
@@ -289,7 +312,7 @@ class _HomePro extends State<HomePro> {
                       ),
                     )
                   ],
-                ),
+                ),*/
             ]
             ),
           ),

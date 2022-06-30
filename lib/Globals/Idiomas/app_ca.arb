@@ -403,5 +403,11 @@
   "content": "Contingut",
   "opinions": "Opinions",
   "locations": "Ubicacions",
-  "yourBrands": "Les teves marques"
+  "yourBrands": "Les teves marques",
+  "howTheySeeMe": "Com em veuen",
+  "quien": "Qui",
+  "que": "Que",
+  "como": "Com",
+  "cuando": "Quan",
+  "donde": "On"
 }

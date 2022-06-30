@@ -18,7 +18,9 @@ import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarc
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Home/Homepage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/Sesions.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../../Globals/Styles/Styles.dart';
+import '../../../Globals/Utils/MambaProSelector/MambaProUtils.dart';
 import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
 import '../Home/Chat/ChatCore/ChatCore.dart';
 import '../Home/Notifications/Notifications.dart';
@@ -56,15 +58,15 @@ class _MambaClientState extends State<MambaClient> {
   var _userDataService = new UserDataService();
   var _brandDataService = new BrandDataService();
   var _settingsDataService = new SettingsDataService();
+  var _mambaProUtils = new MambaProUtils();
   // Boolean Loading
   bool isLoading = false;
   // Boolean hasSeenStartUpDialog
   bool hasSeenStartUpDialog = false;
-  // Boolean to controll switch state
-  bool isSwitched = mambaProfessional;
-  // String to show if mamba pro is activated
-  String textValue = '';
 
+  CalendarController _controller = CalendarController();
+
+  //Icon to know if it's on favourites
   bool IconStar = false;
   bool isFirstBuild = true;
 
@@ -162,43 +164,6 @@ class _MambaClientState extends State<MambaClient> {
     print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
   }
 
-  void initVariables() async {
-    isSwitched = mambaProfessional;
-    if(mambaProfessional) textValue = "Desactivar Dark mode";
-    else textValue = "Activar Dark mode";
-  }
-
-  //Class to control swithc state
-  void toggleSwitch(bool value) {
-
-    if(isSwitched == false)
-    {
-      setState(() {
-        isSwitched = true;
-        textValue = AppLocalizations.of(context)!.mambaProActivated;
-
-      });
-      Navigator.pop(context);
-      setState(() {
-        mambaProfessional = isSwitched;
-        print(mambaProfessional.toString());
-      });
-    }
-    else
-    {
-      setState(() {
-        isSwitched = false;
-
-        textValue = AppLocalizations.of(context)!.mambaProDesactivated;
-
-      });
-      Navigator.pop(context);
-      setState(() {
-        mambaProfessional = isSwitched;
-      });
-    }
-  }
-
   // Check version and Update App Dialog
   void checkMinimumAppVersion() async {
     // Check version
@@ -251,81 +216,20 @@ class _MambaClientState extends State<MambaClient> {
     });
   }
 
-  //Function to select the title of the page loaded
-  Widget titlePageSelector()
+  //Return the ListTile of each screen of Mamba Pro
+  Widget ListTilePro(int _pageIndex)
   {
-    if(pageIndex == 0)return Text(AppLocalizations.of(context)!.homeBottomNav, style: Theme.of(context).appBarTheme.titleTextStyle,);
-    if(pageIndex == 1)return Text(AppLocalizations.of(context)!.trainers, style: Theme.of(context).appBarTheme.titleTextStyle,);
-    if(pageIndex == 2)return Text(AppLocalizations.of(context)!.clients, style: Theme.of(context).appBarTheme.titleTextStyle,);
-    if(pageIndex == 4)return Text(AppLocalizations.of(context)!.categories, style: Theme.of(context).appBarTheme.titleTextStyle,);
-    if(pageIndex == 5)return Text(AppLocalizations.of(context)!.bonos, style: Theme.of(context).appBarTheme.titleTextStyle,);
-    if(pageIndex == 8)return Text(AppLocalizations.of(context)!.information, style: Theme.of(context).appBarTheme.titleTextStyle,);
-    if(pageIndex == 7)return Text(AppLocalizations.of(context)!.content, style: Theme.of(context).appBarTheme.titleTextStyle,);
-    if(pageIndex == 6)return Text(AppLocalizations.of(context)!.opinions, style: Theme.of(context).appBarTheme.titleTextStyle,);
-    if(pageIndex == 9)return Text(AppLocalizations.of(context)!.stats, style: Theme.of(context).appBarTheme.titleTextStyle,);
-    if(pageIndex == 10)return Text(AppLocalizations.of(context)!.calendar, style: Theme.of(context).appBarTheme.titleTextStyle,);
-    if(pageIndex == 11)return Text(AppLocalizations.of(context)!.locations, style: Theme.of(context).appBarTheme.titleTextStyle,);
-    if(pageIndex == 12)return Text(AppLocalizations.of(context)!.logo, style: Theme.of(context).appBarTheme.titleTextStyle,);
-    if(pageIndex == 13)return Text(AppLocalizations.of(context)!.feedback, style: Theme.of(context).appBarTheme.titleTextStyle,);
-    return Container();
-  }
-
-  //Function to know the title on listview
-  Widget titlePageSelectorListView(int _pageIndex)
-  {
-    if(_pageIndex == 0)return Text(AppLocalizations.of(context)!.homeBottomNav);
-    if(_pageIndex == 1)return Text(AppLocalizations.of(context)!.trainers);
-    if(_pageIndex == 2)return Text(AppLocalizations.of(context)!.clients);
-    if(_pageIndex == 4)return Text(AppLocalizations.of(context)!.categories);
-    if(_pageIndex == 5)return Text(AppLocalizations.of(context)!.bonos);
-    if(_pageIndex == 8)return Text(AppLocalizations.of(context)!.information);
-    if(_pageIndex == 7)return Text(AppLocalizations.of(context)!.content);
-    if(_pageIndex == 6)return Text(AppLocalizations.of(context)!.opinions);
-    if(_pageIndex == 9)return Text(AppLocalizations.of(context)!.stats);
-    if(_pageIndex == 10)return Text(AppLocalizations.of(context)!.calendar);
-    if(_pageIndex == 11)return Text(AppLocalizations.of(context)!.locations);
-    if(_pageIndex == 12)return Text(AppLocalizations.of(context)!.logo);
-    if(_pageIndex == 13)return Text(AppLocalizations.of(context)!.feedback);
-    return Container();
-  }
-
-  //Function to select the icon to load
-  Widget iconSelector(int pageIndexView)
-  {
-    if(pageIndexView == 0) return Icon(Icons.home_filled);
-    if(pageIndexView == 1) return Icon(Icons.record_voice_over);
-    if(pageIndexView == 2) return Icon(Icons.group);
-    if(pageIndexView == 8) return Icon(Icons.feed);;
-    if(pageIndexView == 13) return Icon(Icons.question_mark);
-    if(pageIndexView == 4) return Icon(Icons.category);
-    if(pageIndexView == 5) return Icon(Icons.shopping_bag);
-    if(pageIndexView == 12) return Icon(Icons.run_circle);
-    if(pageIndexView == 7) return Icon(Icons.collections);
-    if(pageIndexView == 10) return Icon(Icons.calendar_month);
-    if(pageIndexView == 11) return Icon(Icons.location_on);
-    if(pageIndexView == 6) return Icon(Icons.chat_bubble_outline);
-    if(pageIndexView == 9) return Icon(Icons.query_stats);
-    return Container();
-  }
-
-  //Function to select the page to load
-  Widget pageSelector()
-  {
-    if(pageIndex == 0) return HomePro(brandId: currentBrand.id!, numTrainers: currentBrand.numTrainers!, numClients: currentBrand.numClients!);
-    if(pageIndex == 1) return Trainers(brandId: currentBrand.id!, numTrainers: currentBrand.numTrainers!, );
-    if(pageIndex == 2) return Clients(brandId: currentBrand.id!, numClients: currentBrand.numClients!,);
-    if(pageIndex == 4) return Categories(brandId: currentBrand.id!);
-    if(pageIndex == 5) return Bonos(brandId: currentBrand.id!);
-    if(pageIndex == 7) return Content(brandId: currentBrand.id!);
-    if(pageIndex == 8) return BrandInfo(locale: Localizations.localeOf(context), brandId: currentBrand.id!);
-    if(pageIndex == 12) return Logo(brandId: currentBrand.id!);
-    if(pageIndex == 10) return BrandCalendarWeekWidget(
-      brandId: currentBrand.id!,
-      height: safeAreaHeight*0.68,
-      width: safeAreaWidth*0.88,
-    ); //return SesionsPro();
-    if(pageIndex == 11) return Locations(brandId: currentBrand.id!);
-    return Container();
+    return ListTile(
+        leading: _mambaProUtils.iconSelector(_pageIndex),
+        title:  _mambaProUtils.titlePageSelectorListView(context, _pageIndex),
+        onTap: () =>  {
+          Navigator.pop(context),
+          setState(() {
+            pageIndex = _pageIndex;
+            setFavourites();
+          }),
+        }
+    );
   }
 //
   // Gets the user info from firebase.
@@ -358,7 +262,7 @@ class _MambaClientState extends State<MambaClient> {
       initDeviceSizes();
       isFirstBuild = false;
     }
-    initVariables();
+
     return mambaProfessional ?  Scaffold(
       drawer: Drawer(
         backgroundColor: Theme.of(context).primaryColorDark,
@@ -404,6 +308,7 @@ class _MambaClientState extends State<MambaClient> {
 
 
                 ),
+                /*
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.06, horizontal: MediaQuery.of(context).size.width*0.08),
                   child: Container(
@@ -427,6 +332,8 @@ class _MambaClientState extends State<MambaClient> {
                     ),
                   ),
                 ),
+
+                 */
               ],
             ),
             ListTile(
@@ -453,17 +360,7 @@ class _MambaClientState extends State<MambaClient> {
                   ],
                 ),
             ),
-            ListTile(
-                leading: iconSelector(0),
-                title: Text('Home'),
-                onTap: () =>  {
-                  Navigator.pop(context),
-                  setState(() {
-                    pageIndex = 0;
-                    setFavourites();
-                  }),
-                }
-            ),
+            ListTilePro(0),
             ListView.builder(
                 padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.003),
                 shrinkWrap: true,
@@ -471,18 +368,7 @@ class _MambaClientState extends State<MambaClient> {
                 itemCount: favourites.length,
                 itemBuilder: (context, index) {
                   int favourite =  favourites[index];
-                  return ListTile(
-                      leading: iconSelector(favourite),
-                      title: titlePageSelectorListView(favourite),
-                      onTap: () =>
-                      {
-                        Navigator.pop(context),
-                        setState(() {
-                          pageIndex = favourite;
-                          setFavourites();
-                        }),
-                      }
-                  );
+                  return ListTilePro(favourite);
                 }
             ),
 
@@ -492,7 +378,7 @@ class _MambaClientState extends State<MambaClient> {
                   Icon(IconWho,
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                  Text('Quien'),
+                  Text(AppLocalizations.of(context)!.quien),
                 ],
               ),
               onTap: () => setState(() {
@@ -502,38 +388,16 @@ class _MambaClientState extends State<MambaClient> {
               }),
             ),
             seeNextWho ?
-            ListTile(
-                leading: iconSelector(1),
-                title: Text(AppLocalizations.of(context)!.trainers),
-                onTap: () =>
-                {
-                  Navigator.pop(context),
-                  setState(() {
-                    pageIndex = 1;
-                    setFavourites();
-
-                  }),
-                }
-            ) : Container(),
-            seeNextWho ? ListTile(
-                leading: iconSelector(2),
-                title: Text(AppLocalizations.of(context)!.clients),
-                onTap: () => {
-                  Navigator.pop(context),
-                  setState(() {
-                    pageIndex = 2;
-                    setFavourites();
-                  }),
-                }
-            ) : Container(),
-
+            ListTilePro(1) : Container(),
+            seeNextWho ? ListTilePro(2) : Container(),
+            seeNextWho ? ListTilePro(15) : Container(),
 
             ListTile(
               title: Row(
                 children: [
                   Icon(IconWhat),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                  Text('Que'),
+                  Text(AppLocalizations.of(context)!.que),
                 ],
               ),
               onTap: () => setState(() {
@@ -543,58 +407,17 @@ class _MambaClientState extends State<MambaClient> {
               }),
             ),
             seeNextWhat ?
-            ListTile(
-              leading: iconSelector(8),
-              title: Text(AppLocalizations.of(context)!.information),
-              onTap: () => {
-                Navigator.pop(context),
-                setState(() {
-                  pageIndex = 8;
-                  setFavourites();
-                }),
-              },
-            ) : Container(),
-            seeNextWhat ? ListTile(
-              leading: iconSelector(12),
-              title: Text(AppLocalizations.of(context)!.logo),
-              onTap: () => {
-                Navigator.pop(context),
-                setState(() {
-                  pageIndex = 12;
-                  setFavourites();
-                }),
-              },
-            ) : Container(),
-            seeNextWhat ? ListTile(
-              leading: iconSelector(4),
-              title: Text(AppLocalizations.of(context)!.categories),
-              onTap: () => {
-                Navigator.pop(context),
-                setState(() {
-                  pageIndex = 4;
-                  setFavourites();
-                }),
-              },
-            ) : Container(),
-            seeNextWhat ? ListTile(
-              leading: iconSelector(5),
-              title: Text(AppLocalizations.of(context)!.bonos),
-              onTap: () => {
-                Navigator.pop(context),
-                setState(() {
-                  pageIndex = 5;
-                  setFavourites();
-                }),
-              },
-            ) : Container(),
-
+            ListTilePro(8) : Container(),
+            seeNextWhat ? ListTilePro(12) : Container(),
+            seeNextWhat ? ListTilePro(4) : Container(),
+            seeNextWhat ? ListTilePro(5) : Container(),
 
             ListTile(
               title: Row(
                 children: [
                   Icon(IconHow),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                  Text('Como'),
+                  Text(AppLocalizations.of(context)!.como),
                 ],
               ),
               onTap: () => setState(() {
@@ -604,58 +427,18 @@ class _MambaClientState extends State<MambaClient> {
               }),
             ),
             seeNextHow ?
-            ListTile(
-              leading: iconSelector(9),
-              title: Text(AppLocalizations.of(context)!.stats),
-              onTap: () => {
-                Navigator.pop(context),
-                setState(() {
-                  pageIndex = 9;
-                  setFavourites();
-                }),
-              },
-            ) : Container(),
-            seeNextHow ? ListTile(
-              leading: iconSelector(7),
-              title: Text(AppLocalizations.of(context)!.content),
-              onTap: () => {
-                Navigator.pop(context),
-                setState(() {
-                  pageIndex = 7;
-                  setFavourites();
-                }),
-              },
-            ) : Container(),
-            seeNextHow ? ListTile(
-              leading: iconSelector(6),
-              title: Text(AppLocalizations.of(context)!.opinions),
-              onTap: () => {
-                Navigator.pop(context),
-                setState(() {
-                  pageIndex = 6;
-                  setFavourites();
-                }),
-              },
-            ) : Container(),
-            seeNextHow ? ListTile(
-              leading: iconSelector(13),
-              title: Text(AppLocalizations.of(context)!.feedback),
-              onTap: () => {
-                Navigator.pop(context),
-                setState(() {
-                  pageIndex = 13;
-                  setFavourites();
-                }),
-              },
-            ) : Container(),
-
+            ListTilePro(9) : Container(),
+            seeNextHow ? ListTilePro(7) : Container(),
+            seeNextHow ? ListTilePro(6) : Container(),
+            seeNextHow ? ListTilePro(13) : Container(),
+            seeNextHow ? ListTilePro(16) : Container(),
 
             ListTile(
               title: Row(
                 children: [
                   Icon(IconWhen),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                  Text('Cuando'),
+                  Text(AppLocalizations.of(context)!.cuando),
                 ],
               ),
               onTap: () => setState(() {
@@ -665,24 +448,16 @@ class _MambaClientState extends State<MambaClient> {
               }),
             ),
             seeNextWhen ?
-            ListTile(
-              leading: iconSelector(10),
-              title: Text(AppLocalizations.of(context)!.calendar),
-              onTap: () => {
-                Navigator.pop(context),
-                setState(() {
-                  pageIndex = 10;
-                  setFavourites();
-                }),
-              },
-            ) : Container(),
+            ListTilePro(10) : Container(),
+            seeNextWhen ?
+            ListTilePro(14) : Container(),
 
             ListTile(
               title: Row(
                 children: [
                   Icon(IconWhere),
                   SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                  Text('Donde'),
+                  Text(AppLocalizations.of(context)!.donde),
                 ],
               ),
               onTap: () => setState(() {
@@ -692,44 +467,95 @@ class _MambaClientState extends State<MambaClient> {
               }),
             ),
             seeNextWhere ?
-            ListTile(
-              leading: iconSelector(11),
-              title: Text(AppLocalizations.of(context)!.locations),
-              onTap: () => {
-                Navigator.pop(context),
-                setState(() {
-                  pageIndex = 11;
-                  setFavourites();
-                }),
-              },
-            ) : Container(),
+            ListTilePro(11) : Container(),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
 
-/*
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
-              onTap: () => null,
-            ),
-            ListTile(
-              leading: Icon(Icons.description),
-              title: Text('Policies'),
-              onTap: () => null,
-            ),
-            Divider(),
-            ListTile(
-              title: Text('Exit'),
-              leading: Icon(Icons.exit_to_app),
-              onTap: () => null,
+                    Padding(
+                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.05),
+                      child: Column(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.exit_to_app, size: MediaQuery.of(context).size.width*0.06, color: Colors.red),
+                            onPressed:() => {
+                              setState(() {
+                                mambaProfessional = false;
+                              }),
+                            },
+                          ),
+                          Text('Exit'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
             ),
 
- */
           ],
         ),
       ),
-      appBar: AppBar(
-        title: titlePageSelector(),
+      appBar:  AppBar(
+        title: _mambaProUtils.titlePageSelector(context, pageIndex),
         centerTitle: true,
         actions: [
+          pageIndex == 10? IconButton(
+            onPressed: () {
+              if (_controller.view == CalendarView.month) {
+                setState(() {
+                  _controller.view = CalendarView.week;
+                });
+              } else {
+                setState(() {
+                  _controller.view = CalendarView.month;
+                  pageIndex = 10;
+                });
+              }
+            },
+            icon: _controller.view == CalendarView.month ? Container(
+              width: safeAreaWidth*0.15,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.calendar_view_week,
+                    color: Theme.of(context).primaryColor,
+                    size: safeAreaWidth*0.05,
+                  ),
+                  FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                        AppLocalizations.of(context)!.weekString,
+                        style: Theme.of(context).textTheme.bodyText2,
+                        textAlign: TextAlign.center
+                    ),
+                  ),
+                ],
+              ),
+            ) : Container(
+              width: safeAreaWidth*0.15,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.calendar_view_month,
+                    color: Theme.of(context).primaryColor,
+                    size: safeAreaWidth*0.05,
+                  ),
+                  FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                        AppLocalizations.of(context)!.monthString,
+                        style: Theme.of(context).textTheme.bodyText2,
+                        textAlign: TextAlign.center
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ) : Container(),
           Padding(
             padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
             child: IconButton(
@@ -750,10 +576,10 @@ class _MambaClientState extends State<MambaClient> {
                 );
               },
             ),
-          ),
+          )
         ],
       ),
-      body: pageSelector(),
+      body: _mambaProUtils.pageSelector(context,pageIndex, currentBrand.id!, currentBrand.numTrainers!, currentBrand.numClients!, _controller,safeAreaWidth, safeAreaHeight),
     ) : Scaffold(
       appBar: null,
       bottomNavigationBar: BottomNavigationBar(

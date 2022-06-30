@@ -728,6 +728,25 @@ class FirebaseDatabaseService {
       return events;
     }
 
+  // Get First Events Brand
+  Future <List<Event>> getBrandFirstCompletedEventsLimit(String brandId, int limit) async {
+    Timestamp now = Timestamp.fromDate(DateTime.now());
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Events")
+        .where("doneAt", isLessThan: now)
+        .orderBy("doneAt", descending: true)
+        .limit(limit)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObjectOnlyCoverData(
+          querySnapshot.docs[i].id, querySnapshot.docs[i]));
+    }
+    return events;
+  }
+
     // Get More Notifications
     Future <List<Event>> getUserMoreCompletedEventsLimit(String userId, String eventId, int limit) async {
       Timestamp now = Timestamp.fromDate(DateTime.now());
@@ -755,6 +774,34 @@ class FirebaseDatabaseService {
       }
       return events;
     }
+
+  // Get More Notifications Brand
+  Future <List<Event>> getBrandMoreCompletedEventsLimit(String brandId, String eventId, int limit) async {
+    Timestamp now = Timestamp.fromDate(DateTime.now());
+    // Get Last Notification document
+    DocumentSnapshot docu = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Events")
+        .doc(eventId)
+        .get();
+    // Get More Events
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Events")
+        .where("doneAt", isLessThan: now)
+        .orderBy("doneAt", descending: true)
+        .startAfterDocument(docu)
+        .limit(limit)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObjectOnlyCoverData(
+          querySnapshot.docs[i].id, querySnapshot.docs[i]));
+    }
+    return events;
+  }
 
     // Get All Events Finished Brand
     Future<List<Event>> getUserEventsUpcoming(String userId) async {
