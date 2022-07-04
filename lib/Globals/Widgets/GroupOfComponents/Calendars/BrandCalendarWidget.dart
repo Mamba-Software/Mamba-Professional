@@ -114,7 +114,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
 
   void getUserBrandDetails() async {
     _brand = await _brandDataService.getBrandDetails(widget.brandId);
-    if (currentUser.isTrainer! && widget.onlyView == false) canEdit = true;
+    if (currentUser.isTrainer! && (widget.onlyView == false || widget.onlyView == null)) canEdit = true;
     initCalendar();
   }
 

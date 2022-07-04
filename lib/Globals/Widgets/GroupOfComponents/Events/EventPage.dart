@@ -24,7 +24,7 @@ class _EventPageState extends State<EventPage> {
 
   @override
   Widget build(BuildContext context) {
-    return currentUser.isTrainer! && widget.onlyView == false ?
+    return currentUser.isTrainer! && (widget.onlyView == false || widget.onlyView == null)  ?
         EventPageTrainer(
           eventId: widget.eventId,
         )

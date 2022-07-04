@@ -328,7 +328,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     });
   }
 
-  void getLocation(String locationId) async {
+  Future<void> getLocation(String locationId) async {
     location = await _locationDataService.getSingleLocation(locationId);
     setState(() {
       isLoading = false;

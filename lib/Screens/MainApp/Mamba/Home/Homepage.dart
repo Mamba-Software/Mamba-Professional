@@ -155,6 +155,13 @@ class _HomepageState extends State<Homepage> {
           child: buildEventContainer(item, safeAreaHeight*0.20, safeAreaWidth, buildRandomImage(imagesEventsNum)!, buildBadge(todayEvents.indexOf(item)))
         ))
         .toList();
+    setState(() {
+      todayEvents = todayEvents;
+      todayEventsLabels = todayEventsLabels;
+      _current = _current;
+      imagesEvents = imagesEvents;
+      eventSliders = eventSliders;
+    });
   }
 
   // Get user pending requests
@@ -181,7 +188,12 @@ class _HomepageState extends State<Homepage> {
         CupertinoPageRoute<Null>(
           builder: (context) => Notifications(),
         )
-    );
+    ).whenComplete(() async {
+      var temp = await _userDataService.getUnreadNotifications(currentUser.id!);
+      setState(() {
+        unreadNotifications = temp;
+      });
+    });
   }
 
   // Navigate to Notifications Screen
@@ -191,7 +203,12 @@ class _HomepageState extends State<Homepage> {
         CupertinoPageRoute<Null>(
           builder: (context) => ChatCore(),
         )
-    );
+    ).whenComplete(() async {
+      var temp = await _userDataService.getUnreadConversations(currentUser.id!);
+      setState(() {
+        unreadChats = temp;
+      });
+    });
   }
 
   // Navigate to Event Screen on Tap
@@ -204,11 +221,9 @@ class _HomepageState extends State<Homepage> {
             eventId: eventId,
           ),
         )
-    ).whenComplete(() {
-      setState(() {
-        isLoading = true;
-      });
-      initProfileHome();
+    ).whenComplete(() async {
+      print("hola");
+      await getUserEventsToday();
     });
   }
 
@@ -221,11 +236,8 @@ class _HomepageState extends State<Homepage> {
               brandId: currentBrand.id!,
             )
         )
-    ).whenComplete(() {
-      setState(() {
-        isLoading = true;
-      });
-      initProfileHome();
+    ).whenComplete(() async {
+      await getUserEventsToday();
     });
   }
 
