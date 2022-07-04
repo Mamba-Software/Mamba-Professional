@@ -3,10 +3,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/Bonos.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/MembershipRequestsPro.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-import '../../../Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/Bonos.dart';
+
 import '../../../Screens/MainApp/MambaPro/BrandEventHistoryPage.dart';
 import '../../../Screens/MainApp/MambaPro/BrandInfo.dart';
 import '../../../Screens/MainApp/MambaPro/BrandPageView.dart';
@@ -100,7 +101,7 @@ class MambaProUtils {
     if(pageIndex == 1) return Trainers(brandId:brandId, numTrainers: numTrainers );
     if(pageIndex == 2) return Clients(brandId: brandId, numClients: numClients,);
     if(pageIndex == 4) return Categories(brandId:brandId);
-    if(pageIndex == 5) return Bonos(brandId:brandId);
+    if(pageIndex == 5) return BonosPro(brandId:brandId);
     if(pageIndex == 7) return Content(brandId:brandId);
     if(pageIndex == 8) return BrandInfo(locale: Localizations.localeOf(context), brandId:brandId);
     if(pageIndex == 12) return Logo(brandId:brandId);

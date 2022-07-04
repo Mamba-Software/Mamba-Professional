@@ -16,7 +16,7 @@ import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarc
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
-import 'Bonos.dart';
+import 'BonosDELÇ.dart';
 import 'EditBrandInfo.dart';
 import 'EditLogoPage.dart';
 

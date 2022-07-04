@@ -24,16 +24,16 @@ import '../../../Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.d
 import '../../../Globals/Widgets/MambaCoin/MambaCoin.dart';
 import 'BonosRequests.dart';
 
-class Bonos extends StatefulWidget {
+class BonosPro extends StatefulWidget {
   String brandId;
 
-  Bonos({Key? key, required this.brandId}) : super(key: key);
+  BonosPro({Key? key, required this.brandId}) : super(key: key);
 
   @override
-  _BonosState createState() => _BonosState();
+  _BonosProState createState() => _BonosProState();
 }
 
-class _BonosState extends State<Bonos> {
+class _BonosProState extends State<BonosPro> {
   // Boolean Loading
   bool isLoading = false;
 
