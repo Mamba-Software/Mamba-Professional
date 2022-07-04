@@ -256,7 +256,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 0,));
     breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 0,));
     breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0,));
-    isFirstTime = true;
     super.initState();
     Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventCreateBrandIntro();
   }
@@ -276,95 +275,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
           ),
         ),
         body: LoadingViewPurple(),
-    )
-        :
-      isFirstTime ?
-      Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.createBrand, style: Theme.of(context).appBarTheme.titleTextStyle,),
-          centerTitle: true,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
-        resizeToAvoidBottomInset: true,
-        body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.createBrandTitle,
-                    style: Theme.of(context).textTheme.bodyText2,
-                    textAlign: TextAlign.left,
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                  ListTile(
-                    leading: Icon(
-                      Icons.image_outlined,
-                      color: Theme.of(context).accentColor,
-                    ),
-                    title: Text(
-                      AppLocalizations.of(context)!.createBrandPortada,
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.info_outlined,
-                      color: Theme.of(context).accentColor,
-                    ),
-                    title: Text(
-                      AppLocalizations.of(context)!.createBrandInfo,
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.location_on_outlined,
-                      color: Theme.of(context).accentColor,
-                    ),
-                    title: Text(
-                      AppLocalizations.of(context)!.createBrandLocation,
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.calendar_today_outlined,
-                      color: Theme.of(context).accentColor,
-                    ),
-                    title: Text(
-                      AppLocalizations.of(context)!.createBrandTime,
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        ),
-        floatingActionButton: Padding(
-          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.01, horizontal: MediaQuery.of(context).size.width*0.01),
-          child: FloatingActionButton.extended(
-            heroTag: "73",
-            onPressed: () {
-              setState(() {
-                isFirstTime = false;
-              });
-              Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventCreateBrandProfile();
-            },
-            backgroundColor: _selectedIndex == 3 ? Colors.green : Theme.of(context).accentColor,
-            icon: Container(),
-            label: Text(
-              AppLocalizations.of(context)!.next,
-              style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Colors.white),),
-          ),
-        ),
       )
         :
       Scaffold(

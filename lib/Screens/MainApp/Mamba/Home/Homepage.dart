@@ -25,7 +25,10 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/Eve
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/NoBrandScreens/RegistrarMarca.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../Brand/NoBrandScreens/BrandIntroScreen.dart';
 
 // Profile page for a trainer user.
 class Homepage extends StatefulWidget {
@@ -959,16 +962,25 @@ class _HomepageState extends State<Homepage> {
               padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
               child: FloatingActionButton.extended(
                 heroTag: "46",
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  bool? result = await Navigator.push(
                       context,
-                      CupertinoPageRoute<Null>(
-                        builder: (context) => RegistrarMarca(
-                          locale: Localizations.localeOf(context),
-                        ),
-                        settings: RouteSettings(name: 'RegistrarMarca'),
+                      CupertinoPageRoute<bool>(
+                        builder: (context) => BrandIntroScreen(),
                       )
                   );
+                  if (result != null && result) {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute<Null>(
+                          builder: (context) => RegistrarMarca(
+                            locale: Localizations.localeOf(context),
+                          ),
+                          settings: RouteSettings(name: 'RegistrarMarca'),
+                        )
+                    );
+                  }
+
                 },
                 icon: Icon(Icons.add_circle_outline, size: MediaQuery.of(context).size.height*0.04, color: Colors.white,),
                 label: Text(AppLocalizations.of(context)!.createBrand, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),),

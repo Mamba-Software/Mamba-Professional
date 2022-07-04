@@ -751,6 +751,10 @@
   "@next":{
     "description": "Siguiente text"
   },
+  "skip": "Omitir",
+  "@skip":{
+    "description": "Siguiente text"
+  },
   "start": "Empezar",
   "@start":{
     "description": "Siguiente text"

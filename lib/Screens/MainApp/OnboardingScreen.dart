@@ -513,19 +513,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                               color: Colors.black,
                                                             ),
                                                             SizedBox(height: MediaQuery.of(context).size.width*0.02),
-                                                            Row(
-                                                              mainAxisAlignment: MainAxisAlignment.start,
-                                                              children: [
-                                                                Text(
-                                                                  AppLocalizations.of(context)!.uploadPhoto,
-                                                                  style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.black),
-                                                                  textAlign: TextAlign.center,
-                                                                ),
-                                                                SizedBox(width: MediaQuery.of(context).size.width*0.005),
-                                                                Icon(Icons.insert_photo, size: MediaQuery.of(context).size.width*0.04, color: Colors.black,),
-                                                              ],
+                                                            FittedBox(
+                                                              fit: BoxFit.fitWidth,
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                children: [
+                                                                  Text(
+                                                                    AppLocalizations.of(context)!.uploadPhoto,
+                                                                    style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.black),
+                                                                    textAlign: TextAlign.center,
+                                                                  ),
+                                                                  SizedBox(width: MediaQuery.of(context).size.width*0.005),
+                                                                  Icon(Icons.insert_photo, size: MediaQuery.of(context).size.width*0.04, color: Colors.black,),
+                                                                ],
+                                                              ),
                                                             ),
-
                                                           ],
                                                         ),
                                                       ) :
@@ -541,19 +543,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                               color: AppColors.black,
                                                             ),
                                                             SizedBox(height: MediaQuery.of(context).size.width*0.02),
-                                                            Row(
-                                                              mainAxisAlignment: MainAxisAlignment.start,
-                                                              children: [
-                                                                Text(
-                                                                  AppLocalizations.of(context)!.uploadPhoto,
-                                                                  style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.black),
-                                                                  textAlign: TextAlign.center,
-                                                                ),
-                                                                SizedBox(width: MediaQuery.of(context).size.width*0.005),
-                                                                Icon(Icons.edit, size: MediaQuery.of(context).size.width*0.04, color: Colors.black,),
-                                                              ],
+                                                            FittedBox(
+                                                              fit: BoxFit.fitWidth,
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                children: [
+                                                                  Text(
+                                                                    AppLocalizations.of(context)!.uploadPhoto,
+                                                                    style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.black),
+                                                                    textAlign: TextAlign.center,
+                                                                  ),
+                                                                  SizedBox(width: MediaQuery.of(context).size.width*0.005),
+                                                                  Icon(Icons.edit, size: MediaQuery.of(context).size.width*0.04, color: Colors.black,),
+                                                                ],
+                                                              ),
                                                             ),
-
                                                           ],
                                                         ),
                                                       )

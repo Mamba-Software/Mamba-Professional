@@ -173,6 +173,7 @@
   "calendarWeekBrandText": "Aquesta setmana a {brand}",
   "add": "Afegir",
   "next": "Següent",
+  "skip": "Ometre",
   "start": "Començar",
   "finish": "Finalitzar",
   "brandFound": "Marca trobada!",
