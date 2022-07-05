@@ -88,21 +88,57 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                             ),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                          Center(
-                            child: Image(
-                              image: AssetImage(Constants.onboardingApp),
-                              width: MediaQuery.of(context).size.width,
+                          Container(
+                            height: MediaQuery.of(context).size.height*0.3,
+                            width: MediaQuery.of(context).size.width,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                      height: MediaQuery.of(context).size.height*0.2,
+                                      decoration: new BoxDecoration(
+                                          border: Border.all(
+                                            width: 1,
+                                            color: AppColors.white,
+                                            style: BorderStyle.solid,
+                                          ),
+                                          shape: BoxShape.circle,
+                                          image: new DecorationImage(
+                                            fit: BoxFit.fitHeight,
+                                            image: AssetImage(Constants.portadaCreateBrandIntro),
+                                          ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: AppColors.black.withOpacity(0.5),
+                                            spreadRadius: 1,
+                                            blurRadius: 1,
+                                            offset: Offset(0, 3), // changes position of shadow
+                                          ),
+                                        ],
+                                      )
+                                  ),
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                  Text(
+                                    "La Era Fitness",
+                                    style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontStyle: FontStyle.italic, fontSize: 28),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
                           Text(
-                            'Connect people\naround the world',
+                            AppLocalizations.of(context)!.createBrandCover,
                             style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
                           ),
-                          SizedBox(height: 15.0),
-                          Text(
-                            'Lorem ipsum dolor sit amet, consect adipiscing elit, sed do eiusmod tempor incididunt ut labore et.',
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                          Container(
+                            height: MediaQuery.of(context).size.height*0.1,
+                            child: Text(
+                              AppLocalizations.of(context)!.createBrandPortada,
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                            ),
                           ),
                         ],
                       ),
@@ -133,21 +169,28 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                             ),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                          Center(
-                            child: Image(
-                              image: AssetImage(Constants.onboardingApp),
-                              width: MediaQuery.of(context).size.width,
+                          Container(
+                            height: MediaQuery.of(context).size.height*0.3,
+                            width: MediaQuery.of(context).size.width,
+                            child: Center(
+                              child: Image(
+                                image: AssetImage(Constants.informationCreateBrandIntro),
+                                width: MediaQuery.of(context).size.width,
+                              ),
                             ),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           Text(
-                            'Connect people\naround the world',
+                            AppLocalizations.of(context)!.info,
                             style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
                           ),
-                          SizedBox(height: 15.0),
-                          Text(
-                            'Lorem ipsum dolor sit amet, consect adipiscing elit, sed do eiusmod tempor incididunt ut labore et.',
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                          Container(
+                            height: MediaQuery.of(context).size.height*0.1,
+                            child: Text(
+                              AppLocalizations.of(context)!.createBrandInfo,
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                            ),
                           ),
                         ],
                       ),
@@ -178,21 +221,28 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                             ),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                          Center(
-                            child: Image(
-                              image: AssetImage(Constants.onboardingApp),
-                              width: MediaQuery.of(context).size.width,
+                          Container(
+                            height: MediaQuery.of(context).size.height*0.3,
+                            width: MediaQuery.of(context).size.width,
+                            child: Center(
+                              child: Image(
+                                image: AssetImage(Constants.locationCreateBrandIntro),
+                                height: MediaQuery.of(context).size.height*0.3,
+                              ),
                             ),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           Text(
-                            'Connect people\naround the world',
+                            AppLocalizations.of(context)!.createBrandBaseLocation,
                             style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
                           ),
-                          SizedBox(height: 15.0),
-                          Text(
-                            'Lorem ipsum dolor sit amet, consect adipiscing elit, sed do eiusmod tempor incididunt ut labore et.',
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                          Container(
+                            height: MediaQuery.of(context).size.height*0.1,
+                            child: Text(
+                              AppLocalizations.of(context)!.createBrandLocation,
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                            ),
                           ),
                         ],
                       ),
@@ -221,21 +271,28 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                             ),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                          Center(
-                            child: Image(
-                              image: AssetImage(Constants.onboardingApp),
-                              width: MediaQuery.of(context).size.width,
+                          Container(
+                            height: MediaQuery.of(context).size.height*0.3,
+                            width: MediaQuery.of(context).size.width,
+                            child: Center(
+                              child: Image(
+                                image: AssetImage(Constants.horarioCreateBrandIntro),
+                                height: MediaQuery.of(context).size.height*0.3,
+                              ),
                             ),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           Text(
-                            'Connect people\naround the world',
+                            AppLocalizations.of(context)!.createBrandWorkshift,
                             style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
                           ),
-                          SizedBox(height: 15.0),
-                          Text(
-                            'Lorem ipsum dolor sit amet, consect adipiscing elit, sed do eiusmod tempor incididunt ut labore et.',
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                          Container(
+                            height: MediaQuery.of(context).size.height*0.1,
+                            child: Text(
+                              AppLocalizations.of(context)!.createBrandWorkshiftDescription,
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                            ),
                           ),
                         ],
                       ),

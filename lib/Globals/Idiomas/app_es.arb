@@ -533,15 +533,15 @@
   "@createBrandTitle":{
     "description": "createBrand Text"
   },
-  "createBrandPortada": "Añade el nombre y el logo",
+  "createBrandPortada": "Empieza creando la portada de tu marca. Escoge tu logo y tu nombre, tu escaparate a todos los otros usuarios.",
   "@createBrandPortada":{
     "description": "createBrand Text"
   },
-  "createBrandInfo": "Introduce una descripción",
+  "createBrandInfo": "Añade la información más importante. Introduce una descripción general y define tus especialidades.",
   "@createBrandInfo":{
     "description": "createBrand Text"
   },
-  "createBrandLocation": "Situa tu marca en el mapa",
+  "createBrandLocation": "Sitúa tu marca en el mapa. Define tu ubicación principal para que tus clientes sepan dónde estás y como llegar hasta ti.",
   "@createBrandLocation":{
     "description": "createBrand Text"
   },

@@ -980,7 +980,6 @@ class _HomepageState extends State<Homepage> {
                         )
                     );
                   }
-
                 },
                 icon: Icon(Icons.add_circle_outline, size: MediaQuery.of(context).size.height*0.04, color: Colors.white,),
                 label: Text(AppLocalizations.of(context)!.createBrand, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),),

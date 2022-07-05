@@ -712,7 +712,7 @@ exports.userJoinsBrand = functions
         payload = {
                 notification: {
                   title: "Has creado tu marca "+brandDoc.name,
-                  body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece MAMBA",
+                  body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece Mamba",
                 },
                 data: {
                   route: "SplashScreen1",
@@ -722,7 +722,7 @@ exports.userJoinsBrand = functions
           payload = {
                 notification: {
                   title: "Has creat la teva marca "+brandDoc.name,
-                  body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece MAMBA",
+                  body: "Ara podràs usar totes les funcionalitats de calendarització, control i gestió que ofereix Mamba",
                 },
                 data: {
                   route: "SplashScreen1",
@@ -2385,7 +2385,7 @@ exports.zzzzUserJoinsBrand = functions
         payload = {
                 notification: {
                   title: "Has creado tu marca "+brandDoc.name,
-                  body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece MAMBA",
+                  body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece Mamba",
                 },
                 data: {
                   route: "SplashScreen1",
@@ -2395,7 +2395,7 @@ exports.zzzzUserJoinsBrand = functions
           payload = {
                 notification: {
                   title: "Has creat la teva marca "+brandDoc.name,
-                  body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece MAMBA",
+                  body: "Ara podràs usar totes les funcionalitats de calendarización, control i gestió que ofereix Mamba",
                 },
                 data: {
                   route: "SplashScreen1",
