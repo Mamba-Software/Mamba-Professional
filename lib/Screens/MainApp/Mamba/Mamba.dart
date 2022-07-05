@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
@@ -112,7 +113,12 @@ class _MambaClientState extends State<MambaClient> {
   }
 
   // On StartUp Dialogs
-  void launchOnStartUpDialogs() {
+  Future<void> launchOnStartUpDialogs() async {
+    // Check Notification Permissions
+    var notificationString = await PermisionsService().checkUserNotificationsPermision();
+    if (notificationString == "Provisional" || notificationString == "Unknown") {
+      await PermisionsService().askUserNotificationsPermision();
+    }
     // First check if minimum version
     checkMinimumAppVersion();
     // Check if invited into Brand

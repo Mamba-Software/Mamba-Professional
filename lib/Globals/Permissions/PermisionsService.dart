@@ -1,6 +1,35 @@
 import 'package:geolocator/geolocator.dart';
-
+import 'package:notification_permissions/notification_permissions.dart';
 class PermisionsService {
+
+  // Notifications
+
+  Future<String?> checkUserNotificationsPermision() async {
+    return NotificationPermissions.getNotificationPermissionStatus()
+        .then((status) {
+      switch (status) {
+        case PermissionStatus.denied:
+          return "Denied";
+        case PermissionStatus.granted:
+          return "Granted";
+        case PermissionStatus.unknown:
+          return "Unknown";
+        case PermissionStatus.provisional:
+          return "Provisional";
+        default:
+          return null;
+      }
+    });
+  }
+
+  Future<PermissionStatus> askUserNotificationsPermision() async {
+    // show the dialog/open settings screen
+    return NotificationPermissions.requestNotificationPermissions(
+        iosSettings: const NotificationSettingsIos(sound: true, badge: true, alert: true)
+    );
+  }
+
+  // Location
 
   Future<bool> checkUserLocationPermision() async {
     // Check Permissions
