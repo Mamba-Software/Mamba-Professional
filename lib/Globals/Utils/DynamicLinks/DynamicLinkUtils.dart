@@ -1,12 +1,12 @@
-import 'dart:io';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../GlobalVars.dart';
 
 //DynamicLinksUtils Class is used to administrate all the dynamic links, creations and gets
 class DynamicLinkUtils {
 
-  Future<Uri>  createDynamicLinkWithId(String id, String urlImage, String brandName) async {
+  Future<Uri> createDynamicLinkWithId(String id, String urlImage, String brandName) async {
 
     FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
 
@@ -34,6 +34,24 @@ class DynamicLinkUtils {
     );
     print((await dynamicLinks.buildShortLink(parameters)).shortUrl);
     return (await dynamicLinks.buildShortLink(parameters)).shortUrl;
+  }
+
+  Future<void> retrieveDynamicLink(BuildContext context) async {
+    try {
+      final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
+      final Uri? deepLink = data?.link;
+
+      if (deepLink != null) {
+        if (deepLink.queryParameters.containsKey('id')) {
+          dynamicLinkBrandId = deepLink.queryParameters['id'];
+          print("INITIAL DYNAMIC LINK");
+          print(dynamicLinkBrandId);
+        }
+      }
+
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
 }

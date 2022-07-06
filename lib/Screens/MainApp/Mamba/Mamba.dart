@@ -17,6 +17,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandWrapperPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Home/Homepage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/Sesions.dart';
+import '../../../Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
 import 'Profile/Profile.dart';
 
@@ -39,6 +40,8 @@ class _MambaClientState extends State<MambaClient> {
   bool isLoading = false;
   // Boolean hasSeenStartUpDialog
   bool hasSeenStartUpDialog = false;
+  // DynamicLink
+  var _dynamicLinkUtils = new DynamicLinkUtils();
 
   @override
   void initState() {
@@ -93,23 +96,19 @@ class _MambaClientState extends State<MambaClient> {
         }
       }
     });
-    // Dynamic Links
-    //initDynamicLinks();
+    // Listen Dynamic Link Foregrond / Background State
+    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
+      dynamicLinkBrandId = dynamicLinkData.link.queryParameters['id'];
+      checkBrandInvite();
+    }).onError((error) {
+      print(error.toString());
+    });
     // Defining the Page Controller
     pageController = PageController(initialPage: currentIndex);
     // On StartUp Dialogs
     launchOnStartUpDialogs();
     // Getting User Information
     getUserAndBrand();
-  }
-
-  Future<void> initDynamicLinks() async {
-    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
-      brandPath = dynamicLinkData.link;
-    }).onError((error) {
-      print('onLink error');
-      print(error.message);
-    });
   }
 
   // On StartUp Dialogs
@@ -146,22 +145,19 @@ class _MambaClientState extends State<MambaClient> {
 
   // Check invited by Brand
   void checkBrandInvite() async {
-    print("brandPath");
-    print(brandPath);
-    if (brandPath != null) {
+    if (dynamicLinkBrandId != null) {
       // Start up Dialog
       Future.delayed(Duration.zero, () {
         return showDialog(
             context: context,
             builder: (_) {
               return BrandInviteDialog(
-                  brandId: "d3a448cc-daa2-421a-b931-07c012d89f16"
+                  brandId: dynamicLinkBrandId,
               );
             }
         );
       });
     }
-
   }
 
   // Gets the user info from firebase.

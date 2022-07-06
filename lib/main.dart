@@ -23,6 +23,8 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:resize/resize.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
+import 'Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
+
 // Declaring Instance of AppThemes();
 AppThemes _appThemes = AppThemes();
 
@@ -42,18 +44,7 @@ void main() async {
     timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
     // Firebase Messaging Back Ground Message Handler
     FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
-    //Get dynamic links on open app
-    PendingDynamicLinkData? initialLink;
-    try {
-      initialLink = await FirebaseDynamicLinks.instance.getInitialLink();
-      if (initialLink != null) {
-        brandPath = initialLink.link;
-        print("Dynamic Link recived :D");
-        print(brandPath);
-      }
-    } catch (e) {
-      initialLink = null;
-    }
+    // Firebase Crash Lytics
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     // Run App
     runApp(
@@ -78,19 +69,44 @@ void main() async {
 
 }
 
-Future<void> _testAsyncErrorOnInit() async {
-  Future<void>.delayed(const Duration(seconds: 2), () async {
-    try {
-      final List<int> list = <int>[];
-      print(list[100]);
-    } catch (error, stackTrace) {
-      await FirebaseCrashlytics.instance.recordError(error, stackTrace, reason: 'as an example of non-fatal error');
-    }
-  });
+class Mamba extends StatefulWidget {
+  const Mamba({Key? key}) : super(key: key);
+
+  @override
+  _MambaState createState() => _MambaState();
 }
 
-// Launching the Splash Screen
-class Mamba extends StatelessWidget {
+class _MambaState extends State<Mamba> with WidgetsBindingObserver {
+
+  var _dynamicLinkUtils = new DynamicLinkUtils();
+  Timer? _timerLink;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _timerLink = new Timer(
+        const Duration(milliseconds: 1000), () {
+            _dynamicLinkUtils.retrieveDynamicLink(context);
+        },
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
+    if (_timerLink != null) {
+      _timerLink?.cancel();
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer3 <LanguageProvider, ThemeProvider, FirebaseAnalyticsProvider> (

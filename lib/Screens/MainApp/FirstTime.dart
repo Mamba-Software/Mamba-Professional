@@ -415,13 +415,6 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     );
     startDateController.text = DateFormat('dd-MM-yyyy', widget.locale.languageCode).format(startDate);
     nullDate = startDateController.text;
-    if(brandPath != null) {
-      if (brandPath.queryParameters.containsKey('id')) {
-        codeController.text = brandPath.queryParameters['id'];
-        hasCode = true;
-        checkIfBrandExists(codeController.text);
-      }
-    }
   }
 
   @override
