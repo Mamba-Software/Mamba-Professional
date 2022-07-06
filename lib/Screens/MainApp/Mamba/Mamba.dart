@@ -119,6 +119,8 @@ class _MambaClientState extends State<MambaClient> {
     if (notificationString == "Provisional" || notificationString == "Unknown") {
       await PermisionsService().askUserNotificationsPermision();
     }
+    // Check Location Permissions
+    await PermisionsService().getUserLocation();
     // First check if minimum version
     checkMinimumAppVersion();
     // Check if invited into Brand
