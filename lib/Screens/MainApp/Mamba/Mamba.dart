@@ -24,7 +24,7 @@ import '../../../Globals/Utils/MambaProSelector/MambaProUtils.dart';
 import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
 import '../Home/Chat/ChatCore/ChatCore.dart';
 import '../Home/Notifications/Notifications.dart';
-import '../MambaPro/Bonos.dart';
+import '../MambaPro/Bonos/Bonos.dart';
 import '../MambaPro/BrandInfo.dart';
 import '../MambaPro/Categories.dart';
 import '../MambaPro/Content.dart';

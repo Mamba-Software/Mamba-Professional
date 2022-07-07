@@ -273,7 +273,9 @@ class _BonosState extends State<Bonos> {
           ),
         ],
       ),
-      body: Column(
+      body: Container(),
+      /*
+      Column(
         children: [
           Padding(
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.02, horizontal: MediaQuery.of(context).size.width * 0.02, ),
@@ -337,6 +339,8 @@ class _BonosState extends State<Bonos> {
           ),
         ],
       ),
+
+       */
     );
   }
 }

@@ -471,7 +471,7 @@ class _PickBonoState extends State<PickBono> {
                             child: Center(child: LoadingViewPurple()));
                       } else {
                         bonosList = _bonosUtils.documentsToBonos(
-                            snapshot.data!.docs, true);
+                            snapshot.data!.docs, 0);
                         return ListView.builder(
                             physics: AlwaysScrollableScrollPhysics(),
                             shrinkWrap: true,

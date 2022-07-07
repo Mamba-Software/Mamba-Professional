@@ -6,12 +6,45 @@ import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 class BonosUtils {
 
   //Function to transform documents to bonos
-  List<Bono> documentsToBonos(List<DocumentSnapshot> documents, bool seeActives) {
+  List<Bono> documentsToBonos(List<DocumentSnapshot> documents, int ordenSelection) {
     List<Bono> bonos = [];
     for(int i = 0; i < documents.length; i++) {
       Bono bono = Bono.fromObjectAllData(documents[i].id, documents[i]);
-      if(bono.isActive == seeActives)   bonos.add(bono);
+      bonos.add(bono);
     }
+    if(ordenSelection == 0) {
+      bonos.sort((a, b) {
+        if (b.isActive!) {
+          return 1;
+        }
+        return -1;
+      });
+    }
+    if(ordenSelection == 1) {
+      bonos.sort((a, b) {
+        if (b.isActive!) {
+          return -1;
+        }
+        return 1;
+      });
+    }
+    if(ordenSelection == 2) {
+      bonos.sort((a, b) {
+        if (b.isActive!) {
+          return -1;
+        }
+        return 1;
+      });
+    }
+    if(ordenSelection == 3) {
+      bonos.sort((a, b) {
+        if (b.isActive!) {
+          return -1;
+        }
+        return 1;
+      });
+    }
+
     return bonos;
   }
 
