@@ -58,10 +58,13 @@ class _SplashScreenState extends State<SplashScreen> {
         if (firebaseUser.emailVerified) {
           // 3.1.1 Email has been verified
           // 4. Define Prod Config for FirebaseChatCore
-          FirebaseChatCore.instance.setConfig(FirebaseChatCoreConfig(
-            'Rooms',
-            'Users',
-          ));
+          FirebaseChatCore.instance.setConfig(
+            FirebaseChatCoreConfig(
+                null,
+              'Rooms',
+              'Users',
+            )
+          );
           // 5. Load Users Data
           await getUserData(firebaseUser.uid);
           // 6. Get Token for FirebaseMessaging
@@ -118,10 +121,13 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {
         // 3.2 We are in DEVELOPMENT
         // 4. Define Development Config for FirebaseCore
-        FirebaseChatCore.instance.setConfig(FirebaseChatCoreConfig(
-          '7777 Rooms',
-          '7777 Users',
-        ));
+        FirebaseChatCore.instance.setConfig(
+            FirebaseChatCoreConfig(
+              null,
+              'Rooms',
+              'Users',
+            )
+        );
         // 5. Load Users Data
         await getUserData(firebaseUser.uid);
         // 6. Get Token for FirebaseMessaging
