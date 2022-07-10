@@ -57,8 +57,8 @@
   "registerGenderError": "Selecciona el teu gènere si us plau",
   "registerTypeError": "Selecciona el teu tipus d'usuari si us plau",
   "wellcome": "Benvingut/da",
-  "thankyouDownload": "Gràcies per descarregar MAMBA!",
-  "wellcomeMessage": "Abans de començar a utilitzar la nostra plataforma, si us plau completa la següent informació per configurar el vostre perfil.",
+  "thankyouDownload": "Benvingut/da a Mamba!",
+  "wellcomeMessage": "La primera interfaç que connecta als apassionats de l'esport amb les marques d'entrenament fitness.",
   "alreadyCreatedClient": "Formes part d'una marca d'entrenament personal?",
   "perfectClient": "Perfecte!",
   "codigo": "Introdueix el seu codi",
@@ -393,5 +393,7 @@
   "relaxedFeedbackLabel": "Lleu",
   "tiredFeedbackLabel": "Moderat",
   "exhaustedFeedbackLabel": "Intens",
-  "brandInviteDialog": "Has accedit a Mamba amb un link d'invitació a aquesta marca. Si us plau confirma aquesta acció per a unir-te a ells i poder gaudir del seu servei."
+  "brandInviteDialog": "Has accedit a Mamba amb un link d'invitació a aquesta marca. Si us plau confirma aquesta acció per a unir-te a ells i poder gaudir del seu servei.",
+  "selectTypeProfile": "Selecciona el teu perfil",
+  "beforeMovingOn": "Ja quasi estem..."
 }

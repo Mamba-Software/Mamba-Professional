@@ -231,11 +231,11 @@
   "@wellcome": {
     "description": "Wellcome message"
   },
-  "thankyouDownload": "¡Gracias por descargar MAMBA!",
+  "thankyouDownload": "¡Bienvenido/a a Mamba!",
   "@thankyouDownload": {
     "description": "Wellcome message"
   },
-  "wellcomeMessage": "Antes de empezar a usar nuestra plataforma, por favor complete la siguiente información para configurar su perfil.",
+  "wellcomeMessage": "La primera interfaz que conecta a los apasionados del deporte con las marcas de entrenamiento fitness.",
   "@wellcomeMessage": {
     "description": "Wellcome message"
   },
@@ -1787,5 +1787,13 @@
   "brandInviteDialog": "Has accedido a Mamba con un link de invitación a esta marca. Por favor confirma esta acción para unirte a ellos y poder disfrutar de su servicio.",
   "@brandInviteDialog": {
     "description": "brandInviteDialog message"
+  },
+  "selectTypeProfile": "Selecciona tu perfil",
+  "@selectTypeProfile": {
+    "description": "selectTypeProfile message"
+  },
+  "beforeMovingOn": "Ya casi estamos...",
+  "@beforeMovingOn": {
+    "description": "beforeMovingOn message"
   }
 }
