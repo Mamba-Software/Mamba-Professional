@@ -15,6 +15,18 @@ class Constants {
   static String emptyCalendar = "assets/images/emptyCalendar.png";
   static String emptyPeople = "assets/images/emptyPeople.png";
 
+  // Onboarding Images
+  static String onboardingApp = "assets/images/OnboardingApp.png";
+  static String onboardingFindBrand = "assets/images/OnboardingFindBrand.png";
+  static String onboardingExercise = "assets/images/OnboardingExercise.png";
+
+  // Create Brand Infro
+  static String portadaCreateBrandIntro = "assets/images/PortadaCreateBrandInfo.png";
+  static String informationCreateBrandIntro = "assets/images/InformationCreateBrandIntro.png";
+  static String locationCreateBrandIntro = "assets/images/LocationCreateBrandIntro.png";
+  static String horarioCreateBrandIntro = "assets/images/HorarioCreateBrandIntro.png";
+
+
   // Event Background Pictures
   static String eventBackground = "assets/images/Eventbackground.jpg";
   static String eventBackground1 = "assets/images/Eventbackground1.jpg";

@@ -1,8 +1,5 @@
 import 'dart:io';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
@@ -418,13 +415,6 @@ class _FirstTimeState extends State<FirstTime> with SingleTickerProviderStateMix
     );
     startDateController.text = DateFormat('dd-MM-yyyy', widget.locale.languageCode).format(startDate);
     nullDate = startDateController.text;
-    if(brandPath != null) {
-      if (brandPath.queryParameters.containsKey('id')) {
-        codeController.text = brandPath.queryParameters['id'];
-        hasCode = true;
-        checkIfBrandExists(codeController.text);
-      }
-    }
   }
 
   @override

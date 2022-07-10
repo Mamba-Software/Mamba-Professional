@@ -1736,11 +1736,11 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
           ),
         ],
       ),
-      floatingActionButton: whichFloatingActionButton(),
+      floatingActionButton: whichFloatingActionButton(context),
     );
   }
 
-  Widget whichFloatingActionButton() {
+  Widget whichFloatingActionButton(BuildContext context) {
     if (isLoadingBody) {
       return Container();
     } else {

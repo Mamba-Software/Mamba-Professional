@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
@@ -9,7 +8,7 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Calendars/CalendarWidgetClient.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/SendRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/CancelRequestConfirmationDialog.dart';
@@ -21,10 +20,10 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Client/TieneMarca/TodosMiembrosClient.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
+import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandMembers/BrandMembersClient.dart';
 
 class NoBrandPage extends StatefulWidget {
   const NoBrandPage({Key? key}) : super(key: key);
@@ -142,14 +141,6 @@ class _NoBrandPageState extends State<NoBrandPage> {
           ) :
           Row(
             children: [
-              IconButton(
-                icon: Icon(Icons.qr_code_outlined, size: MediaQuery.of(context).size.width*0.07, color: !codigoClicked ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor,),
-                onPressed: !codigoClicked ? () {
-                  setState(() {
-                    codigoClicked = true;
-                  });
-                } : null,
-              ),
               SizedBox(width: MediaQuery.of(context).size.width*0.03,),
             ],
           ),
@@ -413,9 +404,9 @@ class _NoBrandPageState extends State<NoBrandPage> {
                                       Navigator.push(
                                           context,
                                           CupertinoPageRoute<Null>(
-                                              builder: (context) => CalendarWidgetClient(
-                                                brandID: brand.id!,
-                                                onlyView: true,
+                                              builder: (context) => BrandCalendarWidget(
+                                                  brandId: brand.id!,
+                                                  onlyView: true,
                                               )
                                           )
                                       ).whenComplete(() {
@@ -442,7 +433,7 @@ class _NoBrandPageState extends State<NoBrandPage> {
                                       Navigator.push(
                                           context,
                                           CupertinoPageRoute<Null>(
-                                              builder: (context) => TodosMiembrosClient(
+                                              builder: (context) => BrandMembersClient(
                                                 brandID: brand.id!,
                                                 brandAdmin: brand.adminID!,
                                                 viewOnly: true,

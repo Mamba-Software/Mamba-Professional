@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/AddEvent.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -19,8 +19,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class BrandCalendarWidget extends StatefulWidget {
   String brandId;
   DateTime? dateTime;
+  bool? onlyView;
 
-  BrandCalendarWidget({Key? key, required this.brandId, this.dateTime}) : super(key: key);
+  BrandCalendarWidget({Key? key, required this.brandId, this.dateTime, this.onlyView}) : super(key: key);
 
   @override
   _BrandCalendarWidgetState createState() => _BrandCalendarWidgetState();
@@ -113,7 +114,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
 
   void getUserBrandDetails() async {
     _brand = await _brandDataService.getBrandDetails(widget.brandId);
-    if (currentUser.isTrainer!) canEdit = true;
+    if (currentUser.isTrainer! && (widget.onlyView == false || widget.onlyView == null)) canEdit = true;
     initCalendar();
   }
 
@@ -698,6 +699,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
         CupertinoPageRoute<Null>(
           builder: (context) => EventPage(
             eventId: eventId,
+            onlyView: widget.onlyView,
           ),
         )
     );

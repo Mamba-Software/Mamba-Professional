@@ -1,3 +1,4 @@
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,13 +8,16 @@ import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandWrapperPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Home/Homepage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/Sesions.dart';
+import '../../../Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
 import 'Profile/Profile.dart';
 
@@ -36,6 +40,8 @@ class _MambaClientState extends State<MambaClient> {
   bool isLoading = false;
   // Boolean hasSeenStartUpDialog
   bool hasSeenStartUpDialog = false;
+  // DynamicLink
+  var _dynamicLinkUtils = new DynamicLinkUtils();
 
   @override
   void initState() {
@@ -90,12 +96,34 @@ class _MambaClientState extends State<MambaClient> {
         }
       }
     });
+    // Listen Dynamic Link Foregrond / Background State
+    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
+      dynamicLinkBrandId = dynamicLinkData.link.queryParameters['id'];
+      checkBrandInvite();
+    }).onError((error) {
+      print(error.toString());
+    });
     // Defining the Page Controller
     pageController = PageController(initialPage: currentIndex);
-    // Check if User minimum version
-    checkMinimumAppVersion();
     // Getting User Information
     getUserAndBrand();
+    // On StartUp Dialogs
+    launchOnStartUpDialogs();
+  }
+
+  // On StartUp Dialogs
+  Future<void> launchOnStartUpDialogs() async {
+    // Check Notification Permissions
+    var notificationString = await PermisionsService().checkUserNotificationsPermision();
+    if (notificationString == "Provisional" || notificationString == "Unknown") {
+      await PermisionsService().askUserNotificationsPermision();
+    }
+    // Check Location Permissions
+    await PermisionsService().getUserLocation();
+    // First check if minimum version
+    checkMinimumAppVersion();
+    // Check if invited into Brand
+    checkBrandInvite();
   }
 
   // Check version and Update App Dialog
@@ -109,6 +137,23 @@ class _MambaClientState extends State<MambaClient> {
             context: context,
             builder: (_) {
               return AppUpdateDialog();
+            }
+        );
+      });
+    }
+  }
+
+  // Check invited by Brand
+  void checkBrandInvite() async {
+    if (dynamicLinkBrandId != null && currentUser.brandsList.isEmpty) {
+      // Start up Dialog
+      Future.delayed(Duration.zero, () {
+        return showDialog(
+            context: context,
+            builder: (_) {
+              return BrandInviteDialog(
+                  brandId: dynamicLinkBrandId,
+              );
             }
         );
       });

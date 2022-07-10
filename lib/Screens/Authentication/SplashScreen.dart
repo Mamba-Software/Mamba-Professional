@@ -10,16 +10,13 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Screens/Admin/Admin.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/FirstTime.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
 import 'package:provider/provider.dart';
-
 import '../../Globals/Widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
 import '../MainApp/Mamba/Mamba.dart';
+import '../MainApp/OnboardingScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen({Key? key}) : super(key: key);
@@ -46,16 +43,6 @@ class _SplashScreenState extends State<SplashScreen> {
   initState() {
     super.initState();
     checkAndGetUserDetails();
-    //initDynamicLinks();
-  }
-
-  Future<void> initDynamicLinks() async {
-    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
-      brandPath = dynamicLinkData.link;
-    }).onError((error) {
-      print('onLink error');
-      print(error.message);
-    });
   }
 
   void checkAndGetUserDetails() async {
@@ -71,10 +58,13 @@ class _SplashScreenState extends State<SplashScreen> {
         if (firebaseUser.emailVerified) {
           // 3.1.1 Email has been verified
           // 4. Define Prod Config for FirebaseChatCore
-          FirebaseChatCore.instance.setConfig(FirebaseChatCoreConfig(
-            'Rooms',
-            'Users',
-          ));
+          FirebaseChatCore.instance.setConfig(
+            FirebaseChatCoreConfig(
+                null,
+              'Rooms',
+              'Users',
+            )
+          );
           // 5. Load Users Data
           await getUserData(firebaseUser.uid);
           // 6. Get Token for FirebaseMessaging
@@ -108,9 +98,10 @@ class _SplashScreenState extends State<SplashScreen> {
                   context,
                   CupertinoPageRoute<Null>(
                     builder: (context) =>
-                        FirstTime(
+                    OnboardingScreen(),
+                      /*FirstTime(
                           locale: Localizations.localeOf(context),
-                        ),
+                        ),*/
                     settings: RouteSettings(name: 'FirstTimeWrapper'),
                   )
               );
@@ -130,10 +121,13 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {
         // 3.2 We are in DEVELOPMENT
         // 4. Define Development Config for FirebaseCore
-        FirebaseChatCore.instance.setConfig(FirebaseChatCoreConfig(
-          '7777 Rooms',
-          '7777 Users',
-        ));
+        FirebaseChatCore.instance.setConfig(
+            FirebaseChatCoreConfig(
+              null,
+              '7777 Rooms',
+              '7777 Users',
+            )
+        );
         // 5. Load Users Data
         await getUserData(firebaseUser.uid);
         // 6. Get Token for FirebaseMessaging
@@ -167,9 +161,12 @@ class _SplashScreenState extends State<SplashScreen> {
                 context,
                 CupertinoPageRoute<Null>(
                   builder: (context) =>
-                      FirstTime(
+                      OnboardingScreen(),
+                  /*
+                  FirstTime(
                         locale: Localizations.localeOf(context),
                       ),
+                   */
                   settings: RouteSettings(name: 'FirstTimeWrapper'),
                 )
             );

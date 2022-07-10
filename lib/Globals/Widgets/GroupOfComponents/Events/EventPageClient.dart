@@ -197,7 +197,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
       int.parse(event!.hour!),
       int.parse(event!.minute!),
     );
-    if (startDate.isBefore(DateTime.now())) {
+    if (startDate.isBefore(DateTime.now()) || widget.onlyView == true) {
       canJoin = false;
     }
     startDateController.text = DateFormat('EEEE d/M/y - HH:mm', Localizations.localeOf(context).languageCode).format(startDate);
@@ -1257,109 +1257,6 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
     if (isLoadingBody) {
       return Container();
     } else {
-      if (canJoin) {
-        if (!isJoined && !isFull) {
-          return Padding(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
-            child: Container(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width*0.40,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Flexible(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
-                      child: FloatingActionButton.extended(
-                        heroTag: "6",
-                        onPressed: () async {
-                          var result = await showDialog(
-                              context: context,
-                              builder: (_) {
-                                return JoinConfirmationDialog(text: AppLocalizations.of(context)!.joinEventConfirmation);
-                              }
-                          );
-                          if (result) {
-                            // Join Event
-                            setState(() {
-                              isLoadingBody = true;
-                            });
-                            await _eventDataService.addUserToEvent(event!.id!, currentUser.id!);
-                            _notificationService.userJoinEvent(currentUser.id!, event!.brandID!, event!.id!);
-                            await Future.delayed(const Duration(milliseconds: 3000));
-                            await getEventInfo();
-                            setState(() {
-                              isJoined = true;
-                              isLoadingBody = false;
-                            });
-                          }
-                        },
-                        backgroundColor: Colors.green,
-                        icon: Icon(Icons.event_available_outlined, color: Colors.white,),
-                        label: Text(
-                          AppLocalizations.of(context)!.book,
-                          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        } else if (isJoined) {
-          return Padding(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
-            child: Container(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width*0.40,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Flexible(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
-                      child: FloatingActionButton.extended(
-                        heroTag: "50",
-                        onPressed: () async {
-                          var result = await showDialog(
-                              context: context,
-                              builder: (_) {
-                                return LeaveConfirmationDialog(text: AppLocalizations.of(context)!.leaveEventConfirmation);
-                              }
-                          );
-                          if (result) {
-                            // Leave Event
-                            setState(() {
-                              isLoadingBody = true;
-                            });
-                            await _eventDataService.deleteUserFromEvent(event!.id!, currentUser.id!);
-                            _notificationService.userLeaveEvent(currentUser.id!, event!.brandID!, event!.id!);
-                            await Future.delayed(const Duration(milliseconds: 3000));
-                            await getEventInfo();
-                            setState(() {
-                              isJoined = false;
-                              isLoadingBody = false;
-                            });
-                          }
-                        },
-                        backgroundColor: Colors.red,
-                        icon: Icon(Icons.event_busy_outlined, color: Colors.white,),
-                        label: Text(
-                          AppLocalizations.of(context)!.leave,
-                          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        } else {
-          return Container();
-        }
-      }
       if (widget.onlyView != null) {
         if (widget.onlyView!) {
           if (request == null || brandIdRequest == brand!.id!) {
@@ -1458,6 +1355,110 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                 ),
               );
             }
+          }
+        }
+      } else {
+        if (canJoin) {
+          if (!isJoined && !isFull) {
+            return Padding(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width*0.40,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
+                        child: FloatingActionButton.extended(
+                          heroTag: "6",
+                          onPressed: () async {
+                            var result = await showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return JoinConfirmationDialog(text: AppLocalizations.of(context)!.joinEventConfirmation);
+                                }
+                            );
+                            if (result) {
+                              // Join Event
+                              setState(() {
+                                isLoadingBody = true;
+                              });
+                              await _eventDataService.addUserToEvent(event!.id!, currentUser.id!);
+                              _notificationService.userJoinEvent(currentUser.id!, event!.brandID!, event!.id!);
+                              await Future.delayed(const Duration(milliseconds: 3000));
+                              await getEventInfo();
+                              setState(() {
+                                isJoined = true;
+                                isLoadingBody = false;
+                              });
+                            }
+                          },
+                          backgroundColor: Colors.green,
+                          icon: Icon(Icons.event_available_outlined, color: Colors.white,),
+                          label: Text(
+                            AppLocalizations.of(context)!.book,
+                            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          } else if (isJoined) {
+            return Padding(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width*0.40,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
+                        child: FloatingActionButton.extended(
+                          heroTag: "50",
+                          onPressed: () async {
+                            var result = await showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return LeaveConfirmationDialog(text: AppLocalizations.of(context)!.leaveEventConfirmation);
+                                }
+                            );
+                            if (result) {
+                              // Leave Event
+                              setState(() {
+                                isLoadingBody = true;
+                              });
+                              await _eventDataService.deleteUserFromEvent(event!.id!, currentUser.id!);
+                              _notificationService.userLeaveEvent(currentUser.id!, event!.brandID!, event!.id!);
+                              await Future.delayed(const Duration(milliseconds: 3000));
+                              await getEventInfo();
+                              setState(() {
+                                isJoined = false;
+                                isLoadingBody = false;
+                              });
+                            }
+                          },
+                          backgroundColor: Colors.red,
+                          icon: Icon(Icons.event_busy_outlined, color: Colors.white,),
+                          label: Text(
+                            AppLocalizations.of(context)!.leave,
+                            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return Container();
           }
         }
       }
