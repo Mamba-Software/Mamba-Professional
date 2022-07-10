@@ -108,7 +108,7 @@ class _BrandInviteDialogState extends State<BrandInviteDialog> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.06, bottom: MediaQuery.of(context).size.height*0.03, right: 10, left: 10),
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04, bottom: MediaQuery.of(context).size.height*0.03, right: 10, left: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
