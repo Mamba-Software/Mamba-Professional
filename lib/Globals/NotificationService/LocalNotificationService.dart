@@ -139,21 +139,35 @@ class LocalNotificationService {
     }
   }
 
-  Future<void> zonedScheduleNotification(DateTime scheduleNotifTime) async {
+  Future<void> zonedScheduleNotification(DateTime scheduleNotifTime) async {    
+      
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        '1',
+        'testNotif',        
+        icon: 'logo_foreground',
+        //sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
+        largeIcon: DrawableResourceAndroidBitmap('logo_foreground'),
+      );
+
+      var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+          //sound: 'a_long_cold_sting.wav',
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true);
+      var platformChannelSpecifics = NotificationDetails(
+          android: androidPlatformChannelSpecifics, 
+          iOS: iOSPlatformChannelSpecifics
+      );
+
     await _notificationsPlugin.zonedSchedule(
-      0,
-      'scheduled title',
-      'scheduled body',
-      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
-      const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'your channel id', 'your channel name',
-            channelDescription: 'your channel description'
-          )
-      ),
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime
+        0,
+        'scheduled title',
+        'scheduled body',
+        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+        platformChannelSpecifics,
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
     );
+    
   }
 }

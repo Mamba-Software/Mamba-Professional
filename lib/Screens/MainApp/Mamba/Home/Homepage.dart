@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Data/DataService/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -1121,6 +1122,23 @@ class _HomepageState extends State<Homepage> {
                 buildTodayEventsWidget(),
                 SizedBox(height: safeAreaHeight*0.06,),
                 buildUserPlanBookorJoinBrandSessions(),
+                SizedBox(height: safeAreaHeight*0.06,),
+                FloatingActionButton.extended(
+                  heroTag: "99",
+                  onPressed: () {
+                    LocalNotificationService().zonedScheduleNotification(DateTime.now());
+                  },
+                  backgroundColor: Theme.of(context).accentColor,
+                  icon: Icon(
+                    Icons.calendar_month,
+                    color: AppColors.white,
+                    size: safeAreaWidth*0.05,
+                  ),
+                  label: Text(
+                      "scheduleNotif",
+                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white)
+                  ),
+                ),
                 SizedBox(height: safeAreaHeight*0.06,),
               ],
             ),
