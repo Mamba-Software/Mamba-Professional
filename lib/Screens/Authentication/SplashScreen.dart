@@ -124,8 +124,8 @@ class _SplashScreenState extends State<SplashScreen> {
         FirebaseChatCore.instance.setConfig(
             FirebaseChatCoreConfig(
               null,
-              'Rooms',
-              'Users',
+              '7777 Rooms',
+              '7777 Users',
             )
         );
         // 5. Load Users Data
