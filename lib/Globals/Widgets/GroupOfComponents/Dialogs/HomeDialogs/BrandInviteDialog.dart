@@ -7,6 +7,8 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:store_redirect/store_redirect.dart';
 
+import '../../../../../Screens/Authentication/SplashScreen.dart';
+import '../../../../GlobalVars.dart';
 import '../../../Components/Images/CircularImage.dart';
 import '../../LoadingViews/LoadingViewPurple.dart';
 
@@ -24,6 +26,7 @@ class _BrandInviteDialogState extends State<BrandInviteDialog> {
   var _brandDataService = new BrandDataService();
   // Boolean Loading
   bool isLoading = true;
+  bool isBodyLoading = false;
   // Brand
   Brand brand = Brand();
 
@@ -40,14 +43,39 @@ class _BrandInviteDialogState extends State<BrandInviteDialog> {
     });
   }
 
+  Future<void> joinBrand() async {
+    setState(() {
+      isBodyLoading = true;
+    });
+    // Accept the user to Brand
+    int role = 0;
+    if (currentUser.isTrainer!) {
+      role = 5;
+    }
+    await _brandDataService.addUserToBrand(currentUser.id!,widget.brandId, role);
+    // Wait for CF
+    await Future.delayed(const Duration(seconds: 3));
+    // Push to Splash
+    Navigator.pushReplacement(
+        context,
+        CupertinoPageRoute<Null>(
+          builder: (context) => SplashScreen(),
+          settings: RouteSettings(name: 'SplashScreen'),
+        )
+    );
+    // Reset Dynamic Link
+    dynamicLinkBrandId = null;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return isLoading ?
       Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.all(20),
+        insetPadding: EdgeInsets.all(MediaQuery.of(context).size.height*0.02),
         child: Container(
-          height: MediaQuery.of(context).size.height*0.3,
+          height: MediaQuery.of(context).size.height*0.35,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -63,10 +91,10 @@ class _BrandInviteDialogState extends State<BrandInviteDialog> {
         :
       Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.all(20),
+        insetPadding: EdgeInsets.all(MediaQuery.of(context).size.height*0.02),
         child: Container(
-          padding: EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
-          height: MediaQuery.of(context).size.height*0.3,
+          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.1, bottom: MediaQuery.of(context).size.height*0.02, left: MediaQuery.of(context).size.height*0.02, right: MediaQuery.of(context).size.height*0.02),
+          //height: MediaQuery.of(context).size.height*0.35,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -80,70 +108,57 @@ class _BrandInviteDialogState extends State<BrandInviteDialog> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 24.0, right: 10, left: 10),
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.06, bottom: MediaQuery.of(context).size.height*0.03, right: 10, left: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Flexible(
-                          child: Text(" holahgoalhasldkfjalsjkdlf", style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),textAlign: TextAlign.center,),
+                          child: Text(
+                            AppLocalizations.of(context)!.brandInviteDialog,
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ],
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            elevation: 4.0,
-                            backgroundColor: Colors.green,
-                            fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(30),
-                              ),
-                            ),
+                    padding: EdgeInsets.only(top: 0, bottom: MediaQuery.of(context).size.height*0.02, right: 10, left: 10),
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        elevation: 4.0,
+                        backgroundColor: Colors.green,
+                        fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(30),
                           ),
-                          label: Text(
-                            AppLocalizations.of(context)!.accept,
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          ),
-                          icon: Icon(Icons.check_circle_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
-                          onPressed: () {
-                            Navigator.pop(context, true);
-                          },
                         ),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                        OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            elevation: 4.0,
-                            backgroundColor: Colors.red,
-                            fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(30),
-                              ),
-                            ),
+                      ),
+                      label: Text(
+                        AppLocalizations.of(context)!.join,
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                      ),
+                      icon: !isBodyLoading ? Icon(Icons.check_circle_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,) : Center(
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.05,
+                          height: MediaQuery.of(context).size.height * 0.03,
+                          child: CircularProgressIndicator(
+                            color: AppColors.white,
+                            strokeWidth: 2.5,
                           ),
-                          label: Text(
-                            AppLocalizations.of(context)!.delete,
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          ),
-                          icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06,color: AppColors.white),
-                          onPressed: () {
-                            Navigator.pop(context, false);
-                          },
                         ),
-                      ],
+                      ),
+                      onPressed: () {
+                        joinBrand();
+                      },
                     ),
                   ),
                 ],
               ),
               Positioned(
                   bottom: 0,
-                  top: -150,
+                  top: -MediaQuery.of(context).size.height*0.16,
                   child: Column(
                     children: <Widget>[
                       CircularImage(

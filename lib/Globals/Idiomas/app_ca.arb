@@ -392,5 +392,6 @@
   "goodNightGreeting": "Bona nit,",
   "relaxedFeedbackLabel": "Lleu",
   "tiredFeedbackLabel": "Moderat",
-  "exhaustedFeedbackLabel": "Intens"
+  "exhaustedFeedbackLabel": "Intens",
+  "brandInviteDialog": "Has accedit a Mamba amb un link d'invitació a aquesta marca. Si us plau confirma aquesta acció per a unir-te a ells i poder gaudir del seu servei."
 }

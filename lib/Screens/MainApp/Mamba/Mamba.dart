@@ -105,10 +105,10 @@ class _MambaClientState extends State<MambaClient> {
     });
     // Defining the Page Controller
     pageController = PageController(initialPage: currentIndex);
-    // On StartUp Dialogs
-    launchOnStartUpDialogs();
     // Getting User Information
     getUserAndBrand();
+    // On StartUp Dialogs
+    launchOnStartUpDialogs();
   }
 
   // On StartUp Dialogs
@@ -145,7 +145,7 @@ class _MambaClientState extends State<MambaClient> {
 
   // Check invited by Brand
   void checkBrandInvite() async {
-    if (dynamicLinkBrandId != null) {
+    if (dynamicLinkBrandId != null && currentUser.brandsList.isEmpty) {
       // Start up Dialog
       Future.delayed(Duration.zero, () {
         return showDialog(

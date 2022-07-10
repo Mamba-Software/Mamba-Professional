@@ -235,7 +235,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
     eventHourString = DateFormat('Hm', Localizations.localeOf(context).languageCode).format(eventDate);
     return Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.all(20),
+        insetPadding: EdgeInsets.all(MediaQuery.of(context).size.height*0.02),
         child: Container(
           height: MediaQuery.of(context).size.height*0.47,
           width: MediaQuery.of(context).size.width*0.9,

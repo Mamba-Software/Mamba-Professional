@@ -1783,5 +1783,9 @@
   "exhaustedFeedbackLabel": "Intenso",
   "@exhaustedFeedbackLabel": {
     "description": "membersOfBrand message"
+  },
+  "brandInviteDialog": "Has accedido a Mamba con un link de invitación a esta marca. Por favor confirma esta acción para unirte a ellos y poder disfrutar de su servicio.",
+  "@brandInviteDialog": {
+    "description": "brandInviteDialog message"
   }
 }
