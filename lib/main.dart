@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -143,10 +144,21 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 home: SplashScreen(),
-                routes: {
-                  "SplashScreen": (_) => SplashScreen(),
-                  "Notifications": (_) => Notifications(),
-                  "Chat": (_) => ChatCore(),
+                onGenerateRoute: (RouteSettings settings) {
+                  switch (settings.name) {
+                    case 'SplashScreen':
+                      return CupertinoPageRoute(
+                          builder: (_) => SplashScreen(), settings: settings
+                      );
+                    case 'Notifications':
+                      return CupertinoPageRoute(
+                          builder: (_) => Notifications(), settings: settings
+                      );
+                    case 'Chat':
+                      return CupertinoPageRoute(
+                          builder: (_) => ChatCore(), settings: settings
+                      );
+                  }
                 },
               );
             },
