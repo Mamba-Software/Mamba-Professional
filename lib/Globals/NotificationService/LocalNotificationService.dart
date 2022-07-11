@@ -82,9 +82,11 @@ class LocalNotificationService {
 
       // Defining PlatfromChannelSpecifics
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        '1',
+        '2',
         'testNotif',
         icon: 'logo_foreground',
+        importance: Importance.high,
+        priority: Priority.max,
         //sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
         largeIcon: DrawableResourceAndroidBitmap('logo_foreground'),
       );
@@ -92,7 +94,10 @@ class LocalNotificationService {
         //sound: 'a_long_cold_sting.wav',
           presentAlert: true,
           presentBadge: true,
-          presentSound: true
+          presentSound: true,
+          attachments: <IOSNotificationAttachment>[
+            IOSNotificationAttachment("assets/images/calendarImage.jpg")
+          ]
       );
       var platformChannelSpecifics = NotificationDetails(
           android: androidPlatformChannelSpecifics,
@@ -117,7 +122,7 @@ class LocalNotificationService {
     try {
       // Defining PlatfromChannelSpecifics
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        '1',
+        '2',
         'testNotif',
         icon: 'logo_foreground',
         importance: Importance.high,
