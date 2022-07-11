@@ -1,22 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAutoComplete/MyLocationsSelect.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/TieneMarca/TieneMarcaModals/SelectClientsEvent.dart';
-import 'package:weekday_selector/weekday_selector.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../../../Data/Models/Bono.dart';
 
@@ -54,7 +46,15 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin{
   final values = <bool?>[false, false, false, false, false, false, false];
   int _value = 1;
 
-  Bono bono = new Bono();
+  Bono bono = new Bono(
+    expiration: DateTime.now().add(const Duration(days: 3)),
+    activation: DateTime.now(),
+  );
+
+  String _selectedDate = '';
+  String _dateCount = '';
+  String _range = '';
+  String _rangeCount = '';
 
 
   @override
@@ -106,7 +106,7 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin{
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.calendar_today_outlined, color: tabs[1] ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
+                              Icon(Icons.local_atm, color: tabs[1] ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
                             ],
                           ),
                         ),
@@ -117,7 +117,7 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin{
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.group, color: tabs[2] ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
+                              Icon(Icons.color_lens, color: tabs[2] ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
                             ],
                           ),
                         ),
@@ -176,7 +176,7 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin{
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.calendar_today_outlined, color: tabs[1] ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
+                            Icon(Icons.local_atm, color: tabs[1] ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
                           ],
                         ),
                       ),
@@ -187,7 +187,7 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin{
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.group, color: tabs[2] ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
+                            Icon(Icons.color_lens, color: tabs[2] ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
                           ],
                         ),
                       ),
@@ -408,6 +408,117 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin{
                               ],
                             )
                         ),
+                        Row(
+                          children: [
+                            Column(
+                              children: [
+                                Padding(
+                                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                                    child: new Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        new Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            new Text(
+                                              'Fecha de activación',
+                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                Padding(
+                                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                                    child: new Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        new Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            new Text(
+                                              DateFormat('dd/MM/yyyy').format(bono.activation!),
+                                              style: Theme.of(context).textTheme.bodyText2,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                ),
+                              ],
+                            ),
+                            SizedBox(width: MediaQuery.of(context).size.width * 0.2),
+                            Column(
+                              children: [
+                                Padding(
+                                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                                    child: new Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        new Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            new Text(
+                                              'Fecha de expiración',
+                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                Padding(
+                                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                                    child: new Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        new Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            new Text(
+                                              DateFormat('dd/MM/yyyy').format(bono.expiration!),
+                                              style: Theme.of(context).textTheme.bodyText2,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+
+                        Padding(
+                            padding: EdgeInsets.all(10),
+                            child: new Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                new Flexible(
+                              child: SfDateRangePicker(
+                                //todayHighlightColor: Colors.red,
+                                selectionColor: Styles.mainColor,
+                                rangeSelectionColor: Styles.mainColorTrans,
+                                endRangeSelectionColor: Styles.mainColor,
+                                startRangeSelectionColor: Styles.mainColor,
+                                onSelectionChanged: _onSelectionChanged,
+                                selectionMode: DateRangePickerSelectionMode.range,
+                                initialSelectedRange: PickerDateRange(
+                                    DateTime.now(),
+                                    DateTime.now().add(const Duration(days: 3))),
+                              ),
+
+                          ),
+                              ],
+                            )
+                        ),
+
+
                       ]
                   ),
                 ),
@@ -492,12 +603,37 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin{
     }
   }
 
+  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
+    /// The argument value will return the changed date as [DateTime] when the
+    /// widget [SfDateRangeSelectionMode] set as single.
+    ///
+    /// The argument value will return the changed dates as [List<DateTime>]
+    /// when the widget [SfDateRangeSelectionMode] set as multiple.
+    ///
+    /// The argument value will return the changed range as [PickerDateRange]
+    /// when the widget [SfDateRangeSelectionMode] set as range.
+    ///
+    /// The argument value will return the changed ranges as
+    /// [List<PickerDateRange] when the widget [SfDateRangeSelectionMode] set as
+    /// multi range.
+    setState(() {
+      if (args.value is PickerDateRange) {
+        bono.activation = args.value.startDate;
+        bono.expiration = args.value.endDate ?? args.value.startDate;
+       // bono.expiration = DateFormat('dd/MM/yyyy').format(args.value.startDate) as DateTime?;
+        _range = '${DateFormat('dd/MM/yyyy').format(args.value.startDate)} -'
+        // ignore: lines_longer_than_80_chars
+            ' ${DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
+      }
+    });
+  }
+
 
   Future<void> _addBono() async {
     setState(() {
       isLoading = true;
     });
-   _brandDataService.addBonoToBrand(widget.brandId, bono.title!, bono.description!, '20', '20', true);
+   _brandDataService.addBonoToBrand(widget.brandId, bono);
     Navigator.pop(context);
   }
 }

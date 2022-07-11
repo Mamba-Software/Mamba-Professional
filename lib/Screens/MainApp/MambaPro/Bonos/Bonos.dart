@@ -220,7 +220,7 @@ class _BonosProState extends State<BonosPro> {
           bonoSee == _bono.id
               ? Padding(
                   padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.07, vertical: MediaQuery.of(context).size.width * 0.05),
+                      horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.05),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -241,7 +241,7 @@ class _BonosProState extends State<BonosPro> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.01, right: _bono.isActive!? MediaQuery.of(context).size.width * 0.08 : MediaQuery.of(context).size.width * 0.04),
+                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.01, right: _bono.isActive!? MediaQuery.of(context).size.width * 0.01 : MediaQuery.of(context).size.width * 0.01),
                             child: Text(
                               'Venciment: 07/07/2022',
                               style: Theme.of(context).textTheme.bodyText1,
@@ -594,7 +594,7 @@ class _BonosProState extends State<BonosPro> {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.15),
+                    left: MediaQuery.of(context).size.width * 0.08),
                 child: IconButton(
                     icon: Icon(Icons.request_quote,
                         color: Theme.of(context).primaryColor,

@@ -147,10 +147,10 @@ class CreateBonoDialog extends StatelessWidget {
                           }
                           else {
                             Navigator.pop(context, true);
-                            _brandDataService.addBonoToBrand(
+                           /* _brandDataService.addBonoToBrand(
                                 brandId, titleBono.text, descBono.text,
                                 priceBono.text,
-                                classesBono.text, true);
+                                classesBono.text, true);*/
                             _topSnackBar.topsnackbar(context, 'Se ha creado el bono', Colors.green);
                           }
                         },

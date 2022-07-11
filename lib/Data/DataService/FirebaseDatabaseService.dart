@@ -2006,7 +2006,7 @@ class FirebaseDatabaseService {
   }
 
   //Add bono to brand
-  Future<void> addBonoToBrand(String brandId, String title, String description, String price, String classes, bool isactive) async {
+  Future<void> addBonoToBrand(String brandId, Bono bono) async {
     var uid = Uuid().v4();
     await _firestore
         .collection(brands)
@@ -2014,11 +2014,14 @@ class FirebaseDatabaseService {
         .collection("Bonos")
         .doc(uid)
         .set({
-      "title": title,
-      "description": description,
-      "price": double.parse(price),
-      "classes": int.parse(classes),
-      "isActive": isactive,
+      "title": bono.title!,
+      "description": bono.description!,
+      "price": bono.price!,
+      "sessions": bono.classes,
+      "isActive": bono.isActive,
+      "color": bono.color,
+      "expiration": bono.expiration,
+      "maxSessionPerWeek": bono.maxSessions,
       "compras": 0,
     }).catchError((err) {
       print(err);
