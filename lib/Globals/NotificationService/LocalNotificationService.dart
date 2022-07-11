@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mamba_castelldefels/Data/Models/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:rxdart/subjects.dart';
@@ -130,14 +132,17 @@ class LocalNotificationService {
         //sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
         largeIcon: DrawableResourceAndroidBitmap('logo_foreground'),
       );
+      //await ImageUtils().getImageFileFromAssets("assets/images/calendarImage.jpg");
       var iOSPlatformChannelSpecifics = IOSNotificationDetails(
         //sound: 'a_long_cold_sting.wav',
           presentAlert: true,
           presentBadge: true,
           presentSound: true,
+          /*
           attachments: <IOSNotificationAttachment>[
             IOSNotificationAttachment("assets/images/calendarImage.jpg")
           ]
+           */
       );
       var platformChannelSpecifics = NotificationDetails(
           android: androidPlatformChannelSpecifics,
