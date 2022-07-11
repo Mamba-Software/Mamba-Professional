@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -63,11 +64,25 @@ class _MambaClientState extends State<MambaClient> {
     // If App in Foreground.
     FirebaseMessaging.onMessage.listen((message) {
       print("App in Foreground Notification Trigger HomePage");
-      LocalNotificationService.display(message);
+      ReceivedNotification notif = ReceivedNotification(
+        id: DateTime.now().millisecondsSinceEpoch ~/1000,
+        title: message.notification!.title,
+        body: message.notification!.body,
+        payload: message.data["payload"],
+      );
+      localNotificationService.showNotification(notif);
     });
     // If App in Background, Tap on Notification to be Opened
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       print("App in Background Notification Trigger HomePage");
+      ReceivedNotification notif = ReceivedNotification(
+        id: DateTime.now().millisecondsSinceEpoch ~/1000,
+        title: message.notification!.title,
+        body: message.notification!.body,
+        payload: message.data["payload"],
+      );
+      onClickedNotification(notif.payload);
+      /*
       final route = message.data["route"];
       if (route == "SplashScreen1") {
         String routeFromMessage = route.substring(0, route.length - 1);;
@@ -97,6 +112,7 @@ class _MambaClientState extends State<MambaClient> {
           }
         }
       }
+       */
     });
     // Listen Dynamic Link Foreground / Background State
     FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
@@ -188,7 +204,37 @@ class _MambaClientState extends State<MambaClient> {
 
   // onClickedNotification handles Redirection of Notification
   Future<void> onClickedNotification(String? payload) async {
+    print("Payload ...");
     print(payload);
+    Navigator.of(context).pushNamed("Notifications");
+  }
+
+  void handleNotificationOnClick(BuildContext context, String? payload) {
+    print("NOTIFICATION CLICKED BY USER");
+    if (payload != null) {
+      if (payload == "SplashScreen1") {
+        String routeFromMessage = payload.substring(0, payload.length - 1);;
+        currentIndex = int.parse(payload[payload.length-1]);
+        Navigator.of(context).pushNamedAndRemoveUntil(routeFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
+      } else {
+        if (ModalRoute.of(context)!.isCurrent) {
+          print("Top Page, Moving to Notifications Page");
+          currentIndex = int.parse(payload[payload.length-1]);
+          if (currentIndex == 2) {
+            Navigator.of(context).pushNamedAndRemoveUntil("Notifications", (Route<dynamic> route) => false, arguments: currentIndex);
+          } else if (currentIndex == 3) {
+            Navigator.of(context).pushNamedAndRemoveUntil("Chat", (Route<dynamic> route) => false, arguments: currentIndex);
+          } else {
+            pageController.jumpToPage(currentIndex);
+          }
+        } else {
+          print("Not in Home Page, Moving to Splash Screen");
+          String payloadFromMessage = payload.substring(0, payload.length - 1);;
+          currentIndex = int.parse(payload[payload.length-1]);
+          Navigator.of(context).pushNamedAndRemoveUntil(payloadFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
+        }
+      }
+    }
   }
 
   @override

@@ -49,92 +49,40 @@ class LocalNotificationService {
     );
   }
 
-  void handleNotificationOnClick(BuildContext context, String? payload) {
-    print("NOTIFICATION CLICKED BY USER");
-    if (payload != null) {
-      if (payload == "SplashScreen1") {
-        String routeFromMessage = payload.substring(0, payload.length - 1);;
-        currentIndex = int.parse(payload[payload.length-1]);
-        Navigator.of(context).pushNamedAndRemoveUntil(routeFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
-      } else {
-        if (ModalRoute.of(context)!.isCurrent) {
-          print("Top Page, Moving to Notifications Page");
-          currentIndex = int.parse(payload[payload.length-1]);
-          if (currentIndex == 2) {
-            Navigator.of(context).pushNamedAndRemoveUntil("Notifications", (Route<dynamic> route) => false, arguments: currentIndex);
-          } else if (currentIndex == 3) {
-            Navigator.of(context).pushNamedAndRemoveUntil("Chat", (Route<dynamic> route) => false, arguments: currentIndex);
-          } else {
-            pageController.jumpToPage(currentIndex);
-          }
-        } else {
-          print("Not in Home Page, Moving to Splash Screen");
-          String payloadFromMessage = payload.substring(0, payload.length - 1);;
-          currentIndex = int.parse(payload[payload.length-1]);
-          Navigator.of(context).pushNamedAndRemoveUntil(payloadFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
-        }
-      }
-    }
-  }
-
-  static void display(RemoteMessage message) async {
-    try {
-
-      final id = DateTime.now().millisecondsSinceEpoch ~/1000;
-
-      // Defining PlatfromChannelSpecifics
-      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        '2',
-        'testNotif',
+  AndroidNotificationDetails getAndroidNotificationDetails({String? imageSource}) {
+    var androidPlatformChannelSpecifics;
+    if (imageSource == null) {
+      androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'high_importance_channel',
+        'High Importance Notifications',
         icon: 'logo_foreground',
         importance: Importance.high,
         priority: Priority.max,
-        //sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
-        largeIcon: DrawableResourceAndroidBitmap('logo_foreground'),
       );
-      var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-        //sound: 'a_long_cold_sting.wav',
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-          attachments: <IOSNotificationAttachment>[
-            IOSNotificationAttachment("assets/images/calendarImage.jpg")
-          ]
-      );
-      var platformChannelSpecifics = NotificationDetails(
-          android: androidPlatformChannelSpecifics,
-          iOS: iOSPlatformChannelSpecifics
-      );
-
-      // Show Notification
-      await _notificationsPlugin.show(
-        id,
-        message.notification!.title,
-        message.notification!.body,
-        platformChannelSpecifics,
-        payload: message.data["route"],
-      );
-
-    } on Exception catch (e) {
-      print(e);
-    }
-  }
-
-  Future<void> showNotification() async {
-    try {
-      // Defining PlatfromChannelSpecifics
-      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        '2',
-        'testNotif',
+    } else {
+      androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'high_importance_channel',
+        'High Importance Notifications',
         icon: 'logo_foreground',
         importance: Importance.high,
         priority: Priority.max,
-        //sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
         largeIcon: DrawableResourceAndroidBitmap('logo_foreground'),
+        //sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
       );
-      //await ImageUtils().getImageFileFromAssets("assets/images/calendarImage.jpg");
-      var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-        //sound: 'a_long_cold_sting.wav',
+    }
+    return androidPlatformChannelSpecifics;
+  }
+
+  IOSNotificationDetails getIOSNotificationDetails({String? imageSource}) {
+    var iOSPlatformChannelSpecifics;
+    if (imageSource == null) {
+      iOSPlatformChannelSpecifics = IOSNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      );
+    } else {
+      iOSPlatformChannelSpecifics = IOSNotificationDetails(
           presentAlert: true,
           presentBadge: true,
           presentSound: true,
@@ -142,60 +90,51 @@ class LocalNotificationService {
           attachments: <IOSNotificationAttachment>[
             IOSNotificationAttachment("assets/images/calendarImage.jpg")
           ]
-           */
+          sound: 'a_long_cold_sting.wav',
+          */
       );
-      var platformChannelSpecifics = NotificationDetails(
-          android: androidPlatformChannelSpecifics,
-          iOS: iOSPlatformChannelSpecifics
-      );
+    }
+    return iOSPlatformChannelSpecifics;
+  }
 
+  Future<void> showNotification(ReceivedNotification notification) async {
+    try {
+      // Defining Platform Channel Specifics
+      var platformChannelSpecifics = NotificationDetails(
+          android: getAndroidNotificationDetails(),
+          iOS: getIOSNotificationDetails()
+      );
       // Showing Notification
       _notificationsPlugin.show(
-        0,
-        'plain title',
-        'plain body',
-        platformChannelSpecifics,
-        payload: 'item x'
+          notification.id,
+          notification.title,
+          notification.body,
+          platformChannelSpecifics,
+          payload: notification.payload,
       );
-
     } on Exception catch (e) {
       print(e);
     }
   }
 
-  Future<void> zonedScheduleNotification(DateTime scheduleNotifTime) async {    
-      
-    // Defining PlatfromChannelSpecifics
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        '1',
-        'testNotif',        
-        icon: 'logo_foreground',
-        //sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
-        largeIcon: DrawableResourceAndroidBitmap('logo_foreground'),
-      );
-      var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-          //sound: 'a_long_cold_sting.wav',
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true
-      );
-      var platformChannelSpecifics = NotificationDetails(
-          android: androidPlatformChannelSpecifics, 
-          iOS: iOSPlatformChannelSpecifics
-      );
+  Future<void> scheduleNotification(DateTime scheduleNotifTime, ReceivedNotification notification) async {
 
-    // Getting DateTime of Notification
-    // Find the 'current location'
+    // Defining Platform Channel Specifics
+    var platformChannelSpecifics = NotificationDetails(
+        android: getAndroidNotificationDetails(),
+        iOS: getIOSNotificationDetails()
+    );
+    // Getting DateTimeTZ from DateTime scheduleNotifTime
     final location = tz.getLocation(timeZoneName!);
     final scheduledDate = tz.TZDateTime.from(scheduleNotifTime, location);
-
-
+    // Scheduling Notification
     _notificationsPlugin.zonedSchedule(
-        0,
-        'scheduled title',
-        'scheduled body',
+        notification.id,
+        notification.title,
+        notification.body,
         scheduledDate,
         platformChannelSpecifics,
+        payload: notification.payload,
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
     );

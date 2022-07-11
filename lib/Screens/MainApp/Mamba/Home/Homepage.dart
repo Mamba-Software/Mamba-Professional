@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
@@ -1127,8 +1128,14 @@ class _HomepageState extends State<Homepage> {
                   heroTag: "99",
                   onPressed: () {
                     DateTime testDayTime = DateTime.now().add(Duration(seconds: 15));
-                    LocalNotificationService().showNotification();
-                    LocalNotificationService().zonedScheduleNotification(testDayTime);
+                    ReceivedNotification notif = ReceivedNotification(
+                        id: DateTime.now().millisecondsSinceEpoch ~/1000,
+                        title: "Test Notification",
+                        body: "Test Notification Body",
+                        payload: "Test Notification Payload",
+                    );
+                    LocalNotificationService().showNotification(notif);
+                    LocalNotificationService().scheduleNotification(testDayTime, notif);
                   },
                   backgroundColor: Theme.of(context).accentColor,
                   icon: Icon(
