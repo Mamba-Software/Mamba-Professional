@@ -134,7 +134,10 @@ class LocalNotificationService {
         //sound: 'a_long_cold_sting.wav',
           presentAlert: true,
           presentBadge: true,
-          presentSound: true
+          presentSound: true,
+          attachments: <IOSNotificationAttachment>[
+            IOSNotificationAttachment("assets/images/calendarImage.jpg")
+          ]
       );
       var platformChannelSpecifics = NotificationDetails(
           android: androidPlatformChannelSpecifics,
