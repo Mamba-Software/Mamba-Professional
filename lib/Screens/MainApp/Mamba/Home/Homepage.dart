@@ -1126,7 +1126,9 @@ class _HomepageState extends State<Homepage> {
                 FloatingActionButton.extended(
                   heroTag: "99",
                   onPressed: () {
-                    LocalNotificationService().zonedScheduleNotification(DateTime.now());
+                    DateTime testDayTime = DateTime.now().add(Duration(seconds: 15));
+                    LocalNotificationService().showNotification();
+                    LocalNotificationService().zonedScheduleNotification(testDayTime);
                   },
                   backgroundColor: Theme.of(context).accentColor,
                   icon: Icon(

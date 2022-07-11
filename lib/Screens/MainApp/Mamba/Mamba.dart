@@ -17,7 +17,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandWrapperPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Home/Homepage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/Sesions.dart';
-import '../../../Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import '../../../Globals/Widgets/Components/Images/CircularImage.dart';
 import 'Profile/Profile.dart';
 
@@ -40,15 +39,18 @@ class _MambaClientState extends State<MambaClient> {
   bool isLoading = false;
   // Boolean hasSeenStartUpDialog
   bool hasSeenStartUpDialog = false;
-  // DynamicLink
-  var _dynamicLinkUtils = new DynamicLinkUtils();
+  // Notifications
+  LocalNotificationService localNotificationService = LocalNotificationService();
+  FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
   @override
   void initState() {
     super.initState();
     isLoading = true;
     // Init LocalNotificationsService
-    LocalNotificationService.initialize(context);
+    localNotificationService.initialize(context);
+    listenNotifications();
+    // Firebase Cloud Messaging Notifications
     /// Message on which User has tapped from Terminated State
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
@@ -96,7 +98,7 @@ class _MambaClientState extends State<MambaClient> {
         }
       }
     });
-    // Listen Dynamic Link Foregrond / Background State
+    // Listen Dynamic Link Foreground / Background State
     FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
       dynamicLinkBrandId = dynamicLinkData.link.queryParameters['id'];
       checkBrandInvite();
@@ -176,6 +178,17 @@ class _MambaClientState extends State<MambaClient> {
     setState(() {
       isLoading = false;
     });
+  }
+
+  // listenNotifications if User Taps on Notifications
+  void listenNotifications() {
+    // Listen to the Notifications Stream
+    localNotificationService.onNotifications.stream.listen((payload) => onClickedNotification(payload));
+  }
+
+  // onClickedNotification handles Redirection of Notification
+  Future<void> onClickedNotification(String? payload) async {
+    print(payload);
   }
 
   @override

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -28,6 +29,11 @@ import 'Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 // Declaring Instance of AppThemes();
 AppThemes _appThemes = AppThemes();
 
+// Initialize the [FlutterLocalNotificationsPlugin] package.
+late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+// Create a [AndroidNotificationChannel] for heads up notifications
+late AndroidNotificationChannel channel;
+
 // BackGroundNotificationHandler
 Future<void> _backgroundMessageHandler(RemoteMessage message) async {
   currentIndex = 2;
@@ -35,7 +41,7 @@ Future<void> _backgroundMessageHandler(RemoteMessage message) async {
 
 // Starting app function. After initialization, we define the global providers:
 // - Language Provider: To change the Language of the App.
-void main() async {
+Future<void> main() async {
   await runZonedGuarded(() async {
     // Initialize App
     WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +50,7 @@ void main() async {
     timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
     // Firebase Messaging Back Ground Message Handler
     FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
-    // Firebase Crash Lytics
+    // Firebase Crashlytics
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     // Run App
     runApp(
