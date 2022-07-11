@@ -120,6 +120,8 @@ class LocalNotificationService {
         '1',
         'testNotif',
         icon: 'logo_foreground',
+        importance: Importance.high,
+        priority: Priority.max,
         //sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
         largeIcon: DrawableResourceAndroidBitmap('logo_foreground'),
       );
