@@ -858,7 +858,7 @@ class FirebaseDatabaseService {
       return Location();
     }
 
-    Future<int?> getEventUserFeedback(String eventId, String userId) async {
+    Future<double?> getEventUserFeedback(String eventId, String userId) async {
       try {
         DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
           await _firestore
@@ -867,7 +867,7 @@ class FirebaseDatabaseService {
             .collection("Users")
             .doc(userId)
             .get();
-        int feedbackScore = _documentSnapshot.get("feedbackScore");
+        double feedbackScore = _documentSnapshot.get("intensityScore");
         return feedbackScore;
       } catch (e) {
         return null;
@@ -1768,16 +1768,29 @@ class FirebaseDatabaseService {
     }
 
     // Update Event User Feedback
-    Future<void> updateEventFeedback(String eventId, String userId, double score) async {
+    Future<void> addEventFeedback(String eventId, String userId, double intensityScore) async {
       try {
         Timestamp feedbackAt = Timestamp.fromDate(DateTime.now());
+        // Add Feedback to Events Collection
         await _firestore
             .collection(events)
             .doc(eventId)
             .collection("Users")
             .doc(userId)
             .update({
-              "feedbackScore": score,
+              "intensityScore": intensityScore,
+              "feedbackAt": feedbackAt,
+            }).catchError((err) {
+              print(err);
+            });
+        // Add Feedback to Users Events Collection
+        await _firestore
+            .collection(users)
+            .doc(userId)
+            .collection("Events")
+            .doc(userId)
+            .update({
+              "intensityScore": intensityScore,
               "feedbackAt": feedbackAt,
             }).catchError((err) {
               print(err);

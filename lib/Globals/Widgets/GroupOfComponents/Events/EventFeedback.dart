@@ -12,16 +12,12 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class EventFeedback extends StatefulWidget {
   String eventId;
-  final double? feedbackScore;
-
-  EventFeedback({Key? key, required this.eventId, this.feedbackScore}) : super(key: key);
+  EventFeedback({Key? key, required this.eventId}) : super(key: key);
 
   @override
   _EventFeedbackState createState() => _EventFeedbackState();
@@ -67,9 +63,6 @@ class _EventFeedbackState extends State<EventFeedback> {
     );
     eventDateString = DateFormat('EEEE dd/MM/yy', Localizations.localeOf(context).languageCode).format(eventDate);
     eventHourString = DateFormat('Hm', Localizations.localeOf(context).languageCode).format(eventDate);
-    if (widget.feedbackScore != null) {
-      feedbackScore = widget.feedbackScore!;
-    }
     setState(() {
       isLoading = false;
     });
@@ -217,11 +210,11 @@ class _EventFeedbackState extends State<EventFeedback> {
 
   Future<void> userHasAnsweredFeedback(double value) async {
     // Database
-    await _eventDataService.updateEventFeedback(event.id!, currentUser.id!, value);
+    await _eventDataService.addEventFeedback(event.id!, currentUser.id!, value);
     // Send Analytics
     Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsUserAnswerEventFeedbackTestA();
     // Pop passing the Value;
-    Navigator.pop(context);
+    Navigator.pop(context, value);
   }
 
   @override

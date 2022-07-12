@@ -19,6 +19,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Fe
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
 import 'package:shimmer/shimmer.dart';
 
+import 'EventFeedback.dart';
+
 class EventListTile extends StatefulWidget {
   String eventId;
   bool showFeedback;
@@ -48,11 +50,11 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
   var eventHourString;
   // Feedback Event
   bool canAnswerFeedback = true;
-  var eventFeedbackValue;
+  double? eventFeedbackValue;
   // Animation
   AnimationController? motionController;
   Animation? motionAnimation;
-  double size = 25;
+  double size = 35;
 
 
   @override
@@ -84,7 +86,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
 
     motionController!.addListener(() {
       setState(() {
-        size = motionController!.value * 35;
+        size = motionController!.value * 50;
       });
     });
     // motionController.repeat();
@@ -141,28 +143,30 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
   }
 
   // Navigate to Event Feedback Screen
-  Future<void> navigateToFeedbackEventDialog() async {
-    var result = await showDialog(
-        context: context,
-        builder: (_) {
-          return EventFeedbackDialog(
-            event: _event,
-            brandLogo: _brand.logoUrl!,
-            feedbackScore: eventFeedbackValue,
-          );
-        }
-    );
-    if (result != null) {
-      setState(() {
-        eventFeedbackValue = result;
-      });
+  Future<void> navigateToFeedbackEventScreen() async {
+    if (eventFeedbackValue == null) {
+      var result = await Navigator.push(
+          context,
+          CupertinoPageRoute<double?>(
+            builder: (context) =>
+                EventFeedback(
+                  eventId: widget.eventId,
+                ),
+          )
+      );
+
+      if (result != null) {
+        setState(() {
+          eventFeedbackValue = result;
+        });
+      }
     }
   }
 
   // Build EventFeedback Value
   Widget buildEventFeedbackWidget() {
     return eventFeedbackValue != null ?
-      buildEventFeedbackIcon(eventFeedbackValue)
+      buildEventFeedbackIcon(eventFeedbackValue!)
         :
       buildAnswerFeedbackIcon();
   }
@@ -172,8 +176,8 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
     var limitDateToAnswer = eventDate.add(Duration(days: 7));
     if (DateTime.now().isBefore(limitDateToAnswer)) {
       return Icon(
-        Icons.rate_review_outlined,
-        color: Theme.of(context).primaryColor,
+        Icons.question_mark,
+        color: AppColors.red,
         size: size,
       );
     } else {
@@ -185,43 +189,28 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
   }
 
   // Build EventFeedback Value
-  Widget buildEventFeedbackIcon(int eventFeedbackValue) {
-    if (currentUser.testGroup == "A") {
-      var emoji;
-      if (eventFeedbackValue == 1) {
-        emoji = Image.asset(Constants.relaxedEmojiImage);
-      } else if (eventFeedbackValue == 2) {
-        emoji = Image.asset(Constants.tiredEmojiImage);
-      } else if (eventFeedbackValue == 3) {
-        emoji = Image.asset(Constants.sweatingEmojiImage);
-      }
+  Widget buildEventFeedbackIcon(double eventFeedbackValue) {
       return Container(
-        width: widget.width*0.06,
-        child: emoji,
-      );
-    } else {
-      var eventFeedbackValueArray = [];
-      for (var i=0; i<eventFeedbackValue; i++) {
-        eventFeedbackValueArray.add(1);
-      }
-      return Container(
-        width: widget.width*0.12,
-        child: Center(
-          child: FittedBox(
-            fit: BoxFit.contain,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: eventFeedbackValueArray.asMap().entries.map((entry) {
-                return Icon(
-                    Icons.star,
-                    color: Theme.of(context).accentColor
-                );
-              }).toList(),
-            ),
+        width: widget.width*0.1,
+        child: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                width: widget.width*0.04,
+                child: Image.asset(Constants.fireEmojiImage),
+              ),
+              Text(
+                eventFeedbackValue.toString(),
+                style: Theme.of(context).textTheme.bodyText1,
+                textAlign: TextAlign.center
+              ),
+            ],
           ),
         ),
       );
-    }
+
   }
 
   @override
@@ -443,7 +432,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                       ),
                     ),
                     widget.showFeedback ? GestureDetector(
-                      onTap: canAnswerFeedback ? navigateToFeedbackEventDialog : null,
+                      onTap: canAnswerFeedback ? navigateToFeedbackEventScreen : null,
                       child: Container(
                         width: widget.width*0.12,
                         child: Center(

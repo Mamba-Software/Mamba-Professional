@@ -85,6 +85,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
   List<Usuario> allUsers = [];
   List<Usuario> eventTrainers = [];
   List<Usuario> eventClients = [];
+  List<double?> eventClientsFeedback = [];
   // Form To Validate User
   final formKeyInfo = GlobalKey<FormState>();
   final formKeyTime = GlobalKey<FormState>();
@@ -242,8 +243,12 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
           // User has joined the event
           clients.insert(0, user);
           _isJoined = true;
+          double? feedbackClient = await _eventDataService.getEventUserFeedback(event!.id!, user.id!);
+          eventClientsFeedback.insert(0, feedbackClient);
         } else {
           clients.add(user);
+          double? feedbackClient = await _eventDataService.getEventUserFeedback(event!.id!, user.id!);
+          eventClientsFeedback.add(feedbackClient);
         }
       }
     }
@@ -284,6 +289,31 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
     setState(() {
       location = temp;
     });
+  }
+
+  // Build EventFeedback Value
+  Widget buildEventFeedbackIcon(double eventFeedbackValue) {
+    return Container(
+      width: MediaQuery.of(context).size.width*0.1,
+      child: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width*0.05,
+              child: Image.asset(Constants.fireEmojiImage),
+            ),
+            Text(
+                eventFeedbackValue.toString(),
+                style: Theme.of(context).textTheme.bodyText1,
+                textAlign: TextAlign.center
+            ),
+          ],
+        ),
+      ),
+    );
+
   }
 
   void initCameraPosition() {
@@ -1155,6 +1185,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                         itemCount: eventClients.length,
                                         itemBuilder: (context, int index) {
                                           var client = eventClients[index];
+                                          var clientFeedback = eventClientsFeedback[index];
                                           if (client.isPrivate! && client.id != currentUser.id) {
                                             return GestureDetector(
                                               onTap: () {
@@ -1224,6 +1255,15 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                         ],
                                                       ),
                                                     ),
+                                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                                    clientFeedback != null ? Container(
+                                                      height: MediaQuery.of(context).size.height*0.02,
+                                                      width: MediaQuery.of(context).size.width*0.1,
+                                                      child: FittedBox(
+                                                          fit: BoxFit.fitHeight,
+                                                          child: buildEventFeedbackIcon(clientFeedback)
+                                                      ),
+                                                    ) : Container(),
                                                   ],
                                                 ),
                                               ),

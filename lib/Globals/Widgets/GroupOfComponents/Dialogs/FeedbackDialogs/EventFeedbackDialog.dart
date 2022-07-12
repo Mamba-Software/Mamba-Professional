@@ -204,7 +204,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
     print(widget.event.id!);
     if (DateTime.now().isBefore(limitDateToAnswer)) {
       // Database
-      _eventDataService.updateEventFeedback(widget.event.id!, currentUser.id!, value);
+      //_eventDataService.updateEventFeedback(widget.event.id!, currentUser.id!, value);
       print(widget.event.id!);
       // Send Analytics
       if (currentUser.testGroup == "A") {
