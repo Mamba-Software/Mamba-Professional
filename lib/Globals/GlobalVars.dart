@@ -10,6 +10,8 @@ bool isProduction = false;
 // App Version
 var appVersion = "MAMBA v0.0.8";
 
+List<int> currentColors = [0x0000FF, 0x808080, 0x008000, 0x800080, 0xFF0000, 0x99E6FF, 0xFFFABF];
+
 // App
 var androidGooglePlayUrl = "https://play.google.com/store/apps/details?id=com.mamba.mambastyleapp";
 var iosAppStoreUrl = "https://apps.apple.com/us/app/mamba-style/id1601684650";

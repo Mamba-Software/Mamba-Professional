@@ -14,9 +14,10 @@ class Bono {
   bool? isActive;
   int? compras;
   var color;
-  DateTime? activation;
+  bool? bonoExpire;
   DateTime? expiration;
   int? maxSessions;
+
 
   Bono({
     this.id,
@@ -29,7 +30,7 @@ class Bono {
     this.color,
     this.expiration,
     this.maxSessions,
-    this.activation,
+    this.bonoExpire,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -63,8 +64,8 @@ class Bono {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('maxSessions')) {
       this.maxSessions = documentSnapshot.get("maxSessions");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('activation')) {
-      this.activation = documentSnapshot.get("activation");
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bonoExpire')) {
+      this.bonoExpire = documentSnapshot.get("bonoExpire");
     }
   }
 
@@ -82,6 +83,6 @@ class Bono {
     this.color = bono.color;
     this.expiration = bono.expiration;
     this.maxSessions = bono.maxSessions;
-    this.activation = bono.activation;
+    this.bonoExpire = bono.bonoExpire;
   }
 }
