@@ -23,6 +23,7 @@ import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/CancelRequestConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventFeedback.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
@@ -1127,15 +1128,31 @@ class _HomepageState extends State<Homepage> {
                 FloatingActionButton.extended(
                   heroTag: "99",
                   onPressed: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute<Null>(
+                          builder: (context) => EventFeedback(
+                              eventId: "b2c0f760-01c1-11ed-b589-ab641aee4206"
+                          ),
+                        )
+                    );
+                    /*
                     DateTime testDayTime = DateTime.now().add(Duration(seconds: 15));
                     ReceivedNotification notif = ReceivedNotification(
                         id: DateTime.now().millisecondsSinceEpoch ~/1000,
                         title: "Test Notification",
                         body: "Test Notification Body",
-                        payload: "Test Notification Payload",
+                        payload: "F-b2c0f760-01c1-11ed-b589-ab641aee4206",
                     );
                     LocalNotificationService().showNotification(notif);
-                    LocalNotificationService().scheduleNotification(testDayTime, notif);
+                    ReceivedNotification notifSchedule = ReceivedNotification(
+                      id: DateTime.now().millisecondsSinceEpoch ~/1000,
+                      title: "Test Notification Schedule",
+                      body: "Test Notification Body",
+                      payload: "F-b2c0f760-01c1-11ed-b589-ab641aee4206",
+                    );
+                    LocalNotificationService().scheduleNotification(testDayTime, notifSchedule);
+                     */
                   },
                   backgroundColor: Theme.of(context).accentColor,
                   icon: Icon(

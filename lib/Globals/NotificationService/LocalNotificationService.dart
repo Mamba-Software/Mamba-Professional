@@ -140,4 +140,31 @@ class LocalNotificationService {
     );
     
   }
+
+  // onClickedNotification handles Redirection of Notification
+  Future<void> onClickedNotification(BuildContext context, [String? payload, ReceivedNotification? notification]) async {
+    // Two types of Notifications:
+    //      LocalNotifications only send String payload
+    //      Remote Firebase Notifications we send the whole Notification with Arguments
+
+    // FIRST CASE: Local Notifications
+    if (payload != null && notification == null) {
+      String payloadFeedback = payload.substring(0,2);
+      String payloadSubString = payload.substring(2);
+      bool isFeedback = payloadFeedback == "F-";
+      if (isFeedback) {
+        await Navigator.of(context).pushNamed("EventPage", arguments: payloadSubString);
+        pageController.jumpToPage(2);
+      } else {
+        await Navigator.of(context).pushNamed("EventPage", arguments: payload);
+        pageController.jumpToPage(2);
+      }
+    } else
+    // SECOND CASE: Firebase Cloud Notifications
+    if (notification != null && payload == null) {
+
+    }
+  }
+
+
 }

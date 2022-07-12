@@ -26,6 +26,7 @@ import 'package:resize/resize.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
 import 'Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
+import 'Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
 
 // Declaring Instance of AppThemes();
 AppThemes _appThemes = AppThemes();
@@ -147,6 +148,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                 ],
                 home: SplashScreen(),
                 onGenerateRoute: (RouteSettings settings) {
+                  final args = settings.arguments;
                   switch (settings.name) {
                     case 'SplashScreen':
                       return CupertinoPageRoute(
@@ -159,6 +161,13 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                     case 'Chat':
                       return CupertinoPageRoute(
                           builder: (_) => ChatCore(), settings: settings
+                      );
+                    case 'EventPage':
+                      String eventId = args as String;
+                      return CupertinoPageRoute(
+                          builder: (_) => EventPage(
+                            eventId: eventId,
+                          ), settings: settings
                       );
                   }
                 },

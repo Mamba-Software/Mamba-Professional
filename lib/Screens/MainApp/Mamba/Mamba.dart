@@ -81,7 +81,7 @@ class _MambaClientState extends State<MambaClient> {
         body: message.notification!.body,
         payload: message.data["payload"],
       );
-      onClickedNotification(notif.payload);
+      localNotificationService.onClickedNotification(context, notif.payload);
       /*
       final route = message.data["route"];
       if (route == "SplashScreen1") {
@@ -199,14 +199,9 @@ class _MambaClientState extends State<MambaClient> {
   // listenNotifications if User Taps on Notifications
   void listenNotifications() {
     // Listen to the Notifications Stream
-    localNotificationService.onNotifications.stream.listen((payload) => onClickedNotification(payload));
-  }
-
-  // onClickedNotification handles Redirection of Notification
-  Future<void> onClickedNotification(String? payload) async {
-    print("Payload ...");
-    print(payload);
-    Navigator.of(context).pushNamed("Notifications");
+    localNotificationService.onNotifications.stream.listen(
+        (payload) => localNotificationService.onClickedNotification(context, payload)
+    );
   }
 
   void handleNotificationOnClick(BuildContext context, String? payload) {

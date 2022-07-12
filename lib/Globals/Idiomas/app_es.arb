@@ -347,6 +347,10 @@
   "@eventFeedbackText": {
     "description": "Member Since message"
   },
+  "eventFeedbackIntesityText": "\nIndica tu nivel de esfuerzo a lo largo de esta sesión",
+  "@eventFeedbackIntesityText": {
+    "description": "Member Since message"
+  },
   "memberSince": "Creada el {dateJoined}",
   "@memberSince": {
     "description": "Member Since message",
@@ -1780,7 +1784,11 @@
   "@tiredFeedbackLabel": {
     "description": "membersOfBrand message"
   },
-  "exhaustedFeedbackLabel": "Intenso",
+  "veryTiredFeedbackLabel": "Intenso",
+  "@veryTiredFeedbackLabel": {
+    "description": "membersOfBrand message"
+  },
+  "exhaustedFeedbackLabel": "Exhaustivo",
   "@exhaustedFeedbackLabel": {
     "description": "membersOfBrand message"
   },

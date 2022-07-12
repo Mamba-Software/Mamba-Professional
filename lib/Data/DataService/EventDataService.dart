@@ -35,6 +35,7 @@ class EventDataService {
   Future<int> getBrandsEventsUpcoming(String brandId) => _firebase.getBrandsEventsUpcoming(brandId);
   Future<List<Usuario>> getEventUsers(String eventId) => _firebase.getEventUsers(eventId);
   Future<Location> getEventLocation(String eventId) => _firebase.getEventLocation(eventId);
+  Future<List<Brand>> getEventBrands(String eventId) => _firebase.getEventBrands(eventId);
   Future<int?> getEventUserFeedback(String eventId, String userId) => _firebase.getEventUserFeedback(eventId, userId);
 
   // Add Data
@@ -44,7 +45,7 @@ class EventDataService {
   // Update Data
   Future<void> updateEvent(String id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.updateEvent(id, title, description, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);
   Future<void> updateEventLocation(String eid, String locationId, String previousLocation) => _firebase.updateEventLocation(eid, locationId, previousLocation);
-  Future<void> updateEventFeedback(String eid, String uid, int score) => _firebase.updateEventFeedback(eid, uid, score);
+  Future<void> updateEventFeedback(String eid, String uid, double score) => _firebase.updateEventFeedback(eid, uid, score);
 
   // Delete Data
   Future<void> deleteEvent(String id) => _firebase.deleteEvent(id);

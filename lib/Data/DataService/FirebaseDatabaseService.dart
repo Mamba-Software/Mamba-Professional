@@ -828,6 +828,24 @@ class FirebaseDatabaseService {
       return users;
     }
 
+    Future<List<Brand>> getEventBrands(String eventId) async {
+      List<Brand> brands = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(events)
+          .doc(eventId)
+          .collection("Brands")
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        brands.add(
+          Brand.fromObjectOnlyCoverData(
+            querySnapshot.docs[i].id,
+            querySnapshot.docs[i]
+          )
+        );
+      }
+      return brands;
+    }
+
     Future<Location> getEventLocation(String eventId) async {
       QuerySnapshot querySnapshot = await _firestore
           .collection(events)
@@ -905,8 +923,7 @@ class FirebaseDatabaseService {
       List<int> result = [eventsList.length, eventsMonth.length];
       return result;
     }
-
-
+    
     Future<Brand> getBrandDetails(String brandID) async {
       DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
       await _firestore.collection(brands).doc(brandID).get();
@@ -1751,7 +1768,7 @@ class FirebaseDatabaseService {
     }
 
     // Update Event User Feedback
-    Future<void> updateEventFeedback(String eventId, String userId, int score) async {
+    Future<void> updateEventFeedback(String eventId, String userId, double score) async {
       try {
         Timestamp feedbackAt = Timestamp.fromDate(DateTime.now());
         await _firestore
