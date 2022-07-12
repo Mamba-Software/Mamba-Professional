@@ -4,8 +4,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
@@ -45,6 +47,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
   var _eventDataService = new EventDataService();
   // Acceso a Base de Datos
   NotificationService _notificationService = NotificationService();
+  LocalNotificationService localNotificationService = LocalNotificationService();
   // Screen Dimensions
   var safeAreaHeight;
   var safeAreaWidth;
@@ -63,6 +66,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
   String? descriptionString;
   // Starting Date and Time
   String datetitle = "";
+  DateTime startDate = DateTime.now();
   TextEditingController startDateController = TextEditingController();
   bool errorDate = false;
   // Duration
@@ -191,7 +195,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
     titleString = "${event!.title}";
     descriptionController.text = "${event!.description}";
     descriptionString = "${event!.description}";
-    var startDate = DateTime(
+    startDate = DateTime(
       int.parse(event!.year!),
       int.parse(event!.month!),
       int.parse(event!.day!),
@@ -359,6 +363,19 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
         request = null;
       });
     }
+  }
+
+  // Set Local Notifications
+  Future<void> setLocalNotifications() async {
+    /* Notification one hour before
+    ReceivedNotification notification = ReceivedNotification(
+        id: DateTime.now().millisecondsSinceEpoch ~/1000,
+        title: '',
+        body: '',
+        payload: ,
+    );
+    //localNotificationService.scheduleNotification(scheduleNotifTime, notification);
+     */
   }
 
   @override
@@ -1426,6 +1443,8 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                               setState(() {
                                 isLoadingBody = true;
                               });
+                              // Schedule Local Notifications
+                              setLocalNotifications();
                               await _eventDataService.addUserToEvent(event!.id!, currentUser.id!);
                               _notificationService.userJoinEvent(currentUser.id!, event!.brandID!, event!.id!);
                               await Future.delayed(const Duration(milliseconds: 3000));

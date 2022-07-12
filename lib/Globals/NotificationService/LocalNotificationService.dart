@@ -18,6 +18,8 @@ class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
   final BehaviorSubject<String?> onNotifications = BehaviorSubject<String?>();
 
+  // Main Functions
+
   Future<void> initialize(BuildContext context) async {
     // Init Timezone
     tz.initializeTimeZones();
@@ -138,7 +140,6 @@ class LocalNotificationService {
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
     );
-    
   }
 
   // onClickedNotification handles Redirection of Notification
@@ -153,9 +154,11 @@ class LocalNotificationService {
       String payloadSubString = payload.substring(2);
       bool isFeedback = payloadFeedback == "F-";
       if (isFeedback) {
-        await Navigator.of(context).pushNamed("EventPage", arguments: payloadSubString);
+        print("Feedback Event Page");
+        await Navigator.of(context).pushNamed("EventFeedbackPage", arguments: payloadSubString);
         pageController.jumpToPage(2);
       } else {
+        print("Event Page");
         await Navigator.of(context).pushNamed("EventPage", arguments: payload);
         pageController.jumpToPage(2);
       }
@@ -165,6 +168,8 @@ class LocalNotificationService {
 
     }
   }
+
+
 
 
 }

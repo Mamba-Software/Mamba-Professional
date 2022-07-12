@@ -1128,31 +1128,21 @@ class _HomepageState extends State<Homepage> {
                 FloatingActionButton.extended(
                   heroTag: "99",
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute<Null>(
-                          builder: (context) => EventFeedback(
-                              eventId: "b2c0f760-01c1-11ed-b589-ab641aee4206"
-                          ),
-                        )
-                    );
-                    /*
                     DateTime testDayTime = DateTime.now().add(Duration(seconds: 15));
                     ReceivedNotification notif = ReceivedNotification(
                         id: DateTime.now().millisecondsSinceEpoch ~/1000,
                         title: "Test Notification",
                         body: "Test Notification Body",
-                        payload: "F-b2c0f760-01c1-11ed-b589-ab641aee4206",
+                        payload: "F-15b96830-01ee-11ed-821f-03a4f0c30c58",
                     );
                     LocalNotificationService().showNotification(notif);
                     ReceivedNotification notifSchedule = ReceivedNotification(
                       id: DateTime.now().millisecondsSinceEpoch ~/1000,
                       title: "Test Notification Schedule",
                       body: "Test Notification Body",
-                      payload: "F-b2c0f760-01c1-11ed-b589-ab641aee4206",
+                      payload: "F-15b96830-01ee-11ed-821f-03a4f0c30c58",
                     );
                     LocalNotificationService().scheduleNotification(testDayTime, notifSchedule);
-                     */
                   },
                   backgroundColor: Theme.of(context).accentColor,
                   icon: Icon(

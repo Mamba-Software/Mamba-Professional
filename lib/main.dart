@@ -16,6 +16,7 @@ import 'package:mamba_castelldefels/Globals/Providers/FirebaseAnalyticsProvider.
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppThemes/AppThemes.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventFeedback.dart';
 import 'package:provider/provider.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
@@ -166,6 +167,13 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                       String eventId = args as String;
                       return CupertinoPageRoute(
                           builder: (_) => EventPage(
+                            eventId: eventId,
+                          ), settings: settings
+                      );
+                    case 'EventFeedbackPage':
+                      String eventId = args as String;
+                      return CupertinoPageRoute(
+                          builder: (_) => EventFeedback(
                             eventId: eventId,
                           ), settings: settings
                       );
