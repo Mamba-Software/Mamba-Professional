@@ -353,7 +353,7 @@ class _EventFeedbackState extends State<EventFeedback> {
                             bottomLeft: Radius.circular(MediaQuery.of(context).size.height*0.35),
                             bottomRight: Radius.circular(MediaQuery.of(context).size.height*0.35)
                         ),
-                        color: AppColors.lightGrey,
+                        color: Theme.of(context).backgroundColor,
                         shape: BoxShape.rectangle,
                       ),
 
