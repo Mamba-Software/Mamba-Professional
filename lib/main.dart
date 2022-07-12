@@ -51,6 +51,8 @@ Future<void> main() async {
     timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
     // Firebase Messaging Back Ground Message Handler
     FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
+    // Firebase Dynamic Links
+    DynamicLinkUtils().retrieveDynamicLink();
     // Firebase Crashlytics
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     // Run App
@@ -99,7 +101,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
     if (state == AppLifecycleState.resumed) {
       _timerLink = new Timer(
         const Duration(milliseconds: 1000), () {
-            _dynamicLinkUtils.retrieveDynamicLink(context);
+            _dynamicLinkUtils.retrieveDynamicLink();
         },
       );
     }

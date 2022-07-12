@@ -36,7 +36,7 @@ class DynamicLinkUtils {
     return (await dynamicLinks.buildShortLink(parameters)).shortUrl;
   }
 
-  Future<void> retrieveDynamicLink(BuildContext context) async {
+  Future<void> retrieveDynamicLink() async {
     try {
       final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
       final Uri? deepLink = data?.link;
