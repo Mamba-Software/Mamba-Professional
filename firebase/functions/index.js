@@ -12,7 +12,7 @@ const db = admin.firestore();
 
 // Daily Notification For Events
 exports.scheduledDailyFunction = functions
-   .region("europe-west1")
+   .region("europe-west1")  
    .pubsub
    .schedule('every day 7:00')
    .timeZone('Europe/Madrid')
@@ -619,7 +619,6 @@ exports.locationUpdatesCoverData = functions
       }
       return null;
     });
-
 
 // User Joins Brand
 exports.userJoinsBrand = functions
@@ -2376,30 +2375,30 @@ exports.zzzzUserJoinsBrand = functions
         "myTotalSessions": 0,
       });
       functions.logger.log(
-                "userId",
-                userId,
-              );
+        "userId",
+        userId,
+      );
       // Brand Was Just Created By Admin
       if (brandDoc.adminID == userId) {
         if (userDoc.idioma == "es") {
-        payload = {
-                notification: {
-                  title: "Has creado tu marca "+brandDoc.name,
-                  body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece Mamba",
-                },
-                data: {
-                  route: "SplashScreen1",
-                },
-              };
+          payload = {
+            notification: {
+              title: "Has creado tu marca "+brandDoc.name,
+              body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece Mamba",
+            },
+            data: {
+              route: "SplashScreen1",
+            },
+          };
         } else {
           payload = {
-                notification: {
-                  title: "Has creat la teva marca "+brandDoc.name,
-                  body: "Ara podràs usar totes les funcionalitats de calendarización, control i gestió que ofereix Mamba",
-                },
-                data: {
-                  route: "SplashScreen1",
-                },
+            notification: {
+              title: "Has creat la teva marca "+brandDoc.name,
+              body: "Ara podràs usar totes les funcionalitats de calendarización, control i gestió que ofereix Mamba",
+            },
+            data: {
+              route: "SplashScreen1",
+            },
           }
         }
         functions.logger.log(
