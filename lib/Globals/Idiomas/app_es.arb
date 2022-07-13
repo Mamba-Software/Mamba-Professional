@@ -1803,5 +1803,29 @@
   "beforeMovingOn": "Ya casi estamos...",
   "@beforeMovingOn": {
     "description": "beforeMovingOn message"
+  },
+  "beforeEventTitleNotification": "⚠️ \uD83C\uDFCB️\u200D♀ {event} a las {horas} \uD83C\uDFCB️\u200D♀ ⚠️ ",
+  "@beforeEventTitleNotification": {
+    "description": "beforeEventBodyNotification message",
+    "placeholders": {
+      "event": {
+        "type": "String"
+      },
+      "horas": {
+        "type": "String"
+      }
+    }
+  },
+  "beforeEventBodyNotification": "Esta sesión está a punto de empezar. Haz clic para consultar todos los detalles",
+  "@beforeEventBodyNotification": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "afterEventTitleNotification": "\uD83D\uDCAA ✅️ Sesión completada ✅️\uD83D\uDCAA",
+  "@afterEventTitleNotification": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "afterEventBodyNotification": "¿Qué te ha parecido? ¿Demasiado intensa? Comunica tu nivel de esfuerzo a tu entrenador",
+  "@afterEventBodyNotification": {
+    "description": "beforeEventBodyNotification message"
   }
 }

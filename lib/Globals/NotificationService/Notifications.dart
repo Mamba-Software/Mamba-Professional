@@ -15,7 +15,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/Eve
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/NotificationEvent.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandSettings/MembershipRequests.dart';
 import 'package:shimmer/shimmer.dart';

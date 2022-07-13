@@ -1,13 +1,15 @@
 import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/RecievedNotification.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
@@ -1127,22 +1129,30 @@ class _HomepageState extends State<Homepage> {
                 SizedBox(height: safeAreaHeight*0.06,),
                 FloatingActionButton.extended(
                   heroTag: "99",
-                  onPressed: () {
-                    DateTime testDayTime = DateTime.now().add(Duration(seconds: 15));
-                    ReceivedNotification notif = ReceivedNotification(
-                        id: DateTime.now().millisecondsSinceEpoch ~/1000,
-                        title: "Test Notification",
-                        body: "Test Notification Body",
-                        payload: "F-15b96830-01ee-11ed-821f-03a4f0c30c58",
-                    );
-                    LocalNotificationService().showNotification(notif);
-                    ReceivedNotification notifSchedule = ReceivedNotification(
+                  onPressed: () async {
+                    // Get the Dates
+                    DateTime before = DateTime.now().add(Duration(seconds: 10));
+                    String eventTimeTime = StringUtils().hourMinutesToString(before.hour, before.minute);
+                    // Notification one hour before
+                    ReceivedNotification notification = ReceivedNotification(
                       id: DateTime.now().millisecondsSinceEpoch ~/1000,
-                      title: "Test Notification Schedule",
-                      body: "Test Notification Body",
-                      payload: "F-15b96830-01ee-11ed-821f-03a4f0c30c58",
+                      title: AppLocalizations.of(context)!.beforeEventTitleNotification("Wod", eventTimeTime),
+                      body: AppLocalizations.of(context)!.beforeEventBodyNotification,
+                      payload: "15b96830-01ee-11ed-821f-03a4f0c30c58",
+                      createdAt: Timestamp.now(),
+                      firesAt: before,
                     );
-                    LocalNotificationService().scheduleNotification(testDayTime, notifSchedule);
+                    await Future.delayed(Duration(seconds: 5));
+                    LocalNotificationService().addLocalNotification(notification);
+                    ReceivedNotification notification2 = ReceivedNotification(
+                      id: DateTime.now().millisecondsSinceEpoch ~/1000,
+                      title: AppLocalizations.of(context)!.afterEventTitleNotification,
+                      body: AppLocalizations.of(context)!.afterEventBodyNotification,
+                      payload: "F-15b96830-01ee-11ed-821f-03a4f0c30c58",
+                      createdAt: Timestamp.now(),
+                      firesAt: before,
+                    );
+                    LocalNotificationService().addLocalNotification(notification2);
                   },
                   backgroundColor: Theme.of(context).accentColor,
                   icon: Icon(

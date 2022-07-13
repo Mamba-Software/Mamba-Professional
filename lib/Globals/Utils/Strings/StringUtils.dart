@@ -47,5 +47,17 @@ class StringUtils {
     return "${hour}h ${min}m ";
   }
 
+  // Gets two ints and returns a String in format hh:mm
+  hourMinutesToString(int hour, int minutes) {
+    String hourSt = hour.toString();
+    String minuteSt;
+    if (minutes < 10) {
+      minuteSt = "0" + minutes.toString();
+    } else {
+      minuteSt = minutes.toString();
+    }
+    return "$hourSt:${minuteSt}h";
+  }
+
 
 }

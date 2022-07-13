@@ -397,5 +397,9 @@
   "exhaustedFeedbackLabel": "Exhaustiu",
   "brandInviteDialog": "Has accedit a Mamba amb un link d'invitació a aquesta marca. Si us plau confirma aquesta acció per a unir-te a ells i poder gaudir del seu servei.",
   "selectTypeProfile": "Selecciona el teu perfil",
-  "beforeMovingOn": "Ja quasi estem..."
+  "beforeMovingOn": "Ja quasi estem...",
+  "beforeEventTitleNotification": "⚠️ \uD83C\uDFCB️\u200D♀ {event} a les {horas} \uD83C\uDFCB️\u200D♀ ⚠️ ",
+  "beforeEventBodyNotification": "Aquesta sessió està a punt de començar. Fes clic per a consultar tots els detalls",
+  "afterEventTitleNotification": "\uD83D\uDCAA ✅️ Sessió completada ✅️\uD83D\uDCAA",
+  "afterEventBodyNotification": "Què t'ha semblat? Massa intensa? Comunica el teu nivell d'esforç al teu entrenador"
 }

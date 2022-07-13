@@ -112,7 +112,7 @@ class _EventFeedbackState extends State<EventFeedback> {
 
   Widget buildResultEmojis() {
     var result = 0;
-    if (feedbackScore >= 8) {
+    if (feedbackScore > 8) {
       result = 4;
     } else if (feedbackScore >= 6) {
       result = 3;

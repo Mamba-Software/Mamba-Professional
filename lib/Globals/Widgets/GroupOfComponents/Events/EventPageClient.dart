@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/RecievedNotification.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
@@ -367,15 +368,19 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
 
   // Set Local Notifications
   Future<void> setLocalNotifications() async {
-    /* Notification one hour before
+    // Get the Dates
+    DateTime before = DateTime.now().add(Duration(seconds: 10));
+    // Notification one hour before
     ReceivedNotification notification = ReceivedNotification(
         id: DateTime.now().millisecondsSinceEpoch ~/1000,
-        title: '',
-        body: '',
-        payload: ,
+        title: AppLocalizations.of(context)!.editEvent,
+        body: AppLocalizations.of(context)!.editEvent,
+        payload: event!.id!,
+        createdAt: Timestamp.now(),
+        firesAt: before,
+
     );
-    //localNotificationService.scheduleNotification(scheduleNotifTime, notification);
-     */
+    localNotificationService.addLocalNotification(notification);
   }
 
   @override

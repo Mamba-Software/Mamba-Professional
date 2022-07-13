@@ -1,7 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:mamba_castelldefels/Data/Models/RecievedNotification.dart';
+import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
@@ -15,6 +16,10 @@ final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject =
 
 class LocalNotificationService {
 
+  // Data Service
+  var _userDataService = new UserDataService();
+  
+  // Variables 
   static final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
   final BehaviorSubject<String?> onNotifications = BehaviorSubject<String?>();
 
@@ -108,7 +113,7 @@ class LocalNotificationService {
       );
       // Showing Notification
       _notificationsPlugin.show(
-          notification.id,
+          notification.id!,
           notification.title,
           notification.body,
           platformChannelSpecifics,
@@ -131,7 +136,7 @@ class LocalNotificationService {
     final scheduledDate = tz.TZDateTime.from(scheduleNotifTime, location);
     // Scheduling Notification
     _notificationsPlugin.zonedSchedule(
-        notification.id,
+        notification.id!,
         notification.title,
         notification.body,
         scheduledDate,
@@ -160,7 +165,6 @@ class LocalNotificationService {
       } else {
         print("Event Page");
         await Navigator.of(context).pushNamed("EventPage", arguments: payload);
-        pageController.jumpToPage(2);
       }
     } else
     // SECOND CASE: Firebase Cloud Notifications
@@ -169,7 +173,32 @@ class LocalNotificationService {
     }
   }
 
+  // Detailed Functions
 
+  Future<void> addLocalNotification(ReceivedNotification notification) async {
+    // Defining Platform Channel Specifics
+    var platformChannelSpecifics = NotificationDetails(
+        android: getAndroidNotificationDetails(),
+        iOS: getIOSNotificationDetails()
+    );
+    // Getting DateTimeTZ from DateTime scheduleNotifTime
+    final location = tz.getLocation(timeZoneName!);
+    final scheduledDate = tz.TZDateTime.from(notification.firesAt!, location);
+    // Add Notification Firebase
+    _userDataService.addLocalNotification(currentUser.id!, notification);
+    // Scheduling Notification
+    _notificationsPlugin.zonedSchedule(
+        notification.id!,
+        notification.title,
+        notification.body,
+        scheduledDate,
+        platformChannelSpecifics,
+        payload: notification.payload,
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
+    );
+  }
+  
 
 
 }
