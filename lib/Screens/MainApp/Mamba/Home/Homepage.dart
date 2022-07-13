@@ -1131,7 +1131,7 @@ class _HomepageState extends State<Homepage> {
                   heroTag: "99",
                   onPressed: () async {
                     // Get the Dates
-                    DateTime before = DateTime.now().add(Duration(seconds: 10));
+                    DateTime before = DateTime.now().add(Duration(seconds: 120));
                     String eventTimeTime = StringUtils().hourMinutesToString(before.hour, before.minute);
                     // Notification one hour before
                     ReceivedNotification notification = ReceivedNotification(
@@ -1153,6 +1153,7 @@ class _HomepageState extends State<Homepage> {
                       firesAt: before,
                     );
                     LocalNotificationService().addLocalNotification(notification2);
+                    LocalNotificationService().deleteLocalNotification(1);
                   },
                   backgroundColor: Theme.of(context).accentColor,
                   icon: Icon(

@@ -198,6 +198,12 @@ class LocalNotificationService {
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
     );
   }
+
+  Future<void> deleteLocalNotification(int notificationId) async {
+    final List<PendingNotificationRequest> pendingNotificationRequests = await _notificationsPlugin.pendingNotificationRequests();
+    print(pendingNotificationRequests);
+
+  }
   
 
 
