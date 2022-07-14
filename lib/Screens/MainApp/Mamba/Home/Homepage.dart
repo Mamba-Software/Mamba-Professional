@@ -1122,62 +1122,6 @@ class _HomepageState extends State<Homepage> {
                 SizedBox(height: safeAreaHeight*0.06,),
                 buildUserPlanBookorJoinBrandSessions(),
                 SizedBox(height: safeAreaHeight*0.06,),
-                FloatingActionButton.extended(
-                  heroTag: "99",
-                  onPressed: () async {
-                    // Get the Dates
-                    DateTime before = DateTime.now().add(Duration(seconds: 3600));
-                    String eventTimeTime = StringUtils().hourMinutesToString(before.hour, before.minute);
-                    // Notification one hour before
-                    ReceivedNotification notification = ReceivedNotification(
-                      id: DateTime.now().millisecondsSinceEpoch ~/1000,
-                      title: AppLocalizations.of(context)!.beforeEventTitleNotification("Wod", eventTimeTime),
-                      body: AppLocalizations.of(context)!.beforeEventBodyNotification,
-                      payload: "15b96830-01ee-11ed-821f-03a4f0c30c58",
-                      createdAt: Timestamp.now(),
-                      firesAt: before,
-                    );
-                    LocalNotificationService().addLocalNotification(notification);
-                    await Future.delayed(Duration(seconds: 5));
-                    ReceivedNotification notification2 = ReceivedNotification(
-                      id: DateTime.now().millisecondsSinceEpoch ~/1000,
-                      title: AppLocalizations.of(context)!.afterEventTitleNotification,
-                      body: AppLocalizations.of(context)!.afterEventBodyNotification,
-                      payload: "F-15b96830-01ee-11ed-821f-03a4f0c30c58",
-                      createdAt: Timestamp.now(),
-                      firesAt: before,
-                    );
-                    LocalNotificationService().addLocalNotification(notification2);
-                  },
-                  backgroundColor: Theme.of(context).accentColor,
-                  icon: Icon(
-                    Icons.calendar_month,
-                    color: AppColors.white,
-                    size: safeAreaWidth*0.05,
-                  ),
-                  label: Text(
-                      "scheduleNotif",
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white)
-                  ),
-                ),
-                SizedBox(height: safeAreaHeight*0.06,),
-                FloatingActionButton.extended(
-                  heroTag: "100",
-                  onPressed: () async {
-                    LocalNotificationService().cancellAllLocalNotification();
-                  },
-                  backgroundColor: Theme.of(context).accentColor,
-                  icon: Icon(
-                    Icons.calendar_month,
-                    color: AppColors.white,
-                    size: safeAreaWidth*0.05,
-                  ),
-                  label: Text(
-                      "Cancell All",
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white)
-                  ),
-                ),
-                SizedBox(height: safeAreaHeight*0.06,),
               ],
             ),
           ),

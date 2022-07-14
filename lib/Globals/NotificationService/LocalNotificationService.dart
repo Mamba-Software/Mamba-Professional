@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
@@ -197,32 +198,95 @@ class LocalNotificationService {
 
   // Detailed Functions
 
-  Future<void> addLocalNotification(ReceivedNotification notification) async {
+  Future<void> addEventLocalNotifications(BuildContext context, String eventId, bool? isTrainer) async {
     // Defining Platform Channel Specifics
     var platformChannelSpecifics = NotificationDetails(
         android: getAndroidNotificationDetails(),
         iOS: getIOSNotificationDetails()
     );
+    // Getting Event Data
+    Event event = await _eventDataService.getSingleEvent(eventId);
+    DateTime startDate = DateTime(
+      int.parse(event.year!),
+      int.parse(event.month!),
+      int.parse(event.day!),
+      int.parse(event.hour!),
+      int.parse(event.minute!),
+    );
+
+    // Send Feedback Notification To Clients
+    if (isTrainer == false) {
+      // Schedule Before Notification
+      DateTime afterDate = startDate.add(Duration(minutes: 1));
+      // Notification 1 minute after
+      ReceivedNotification notificationAfter = ReceivedNotification(
+        id: DateTime.now().millisecondsSinceEpoch ~/1000,
+        title: AppLocalizations.of(context)!.afterEventTitleNotification,
+        body: AppLocalizations.of(context)!.afterEventBodyNotification,
+        payload: "F-"+event.id!,
+        createdAt: Timestamp.now(),
+        firesAt: afterDate,
+      );
+      // Getting DateTimeTZ from DateTime scheduleNotifTime
+      final location = tz.getLocation(timeZoneName!);
+      final scheduledDate = tz.TZDateTime.from(notificationAfter.firesAt!, location);
+      // Add Notification Firebase
+      _userDataService.addLocalNotification(currentUser.id!, notificationAfter);
+      // Scheduling Notification
+      _notificationsPlugin.zonedSchedule(
+          notificationAfter.id!,
+          notificationAfter.title,
+          notificationAfter.body,
+          scheduledDate,
+          platformChannelSpecifics,
+          payload: notificationAfter.payload,
+          androidAllowWhileIdle: true,
+          uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
+      );
+      // To make sure not the same Timestamp
+      await Future.delayed(Duration(seconds: 1));
+    }
+
+    // Schedule Before Notification
+    DateTime beforeDate = startDate.subtract(Duration(hours: 1));
+    String eventTimeTime = StringUtils().hourMinutesToString(startDate.hour, startDate.minute);
+    // Notification one hour before
+    ReceivedNotification notificationBefore = ReceivedNotification(
+      id: DateTime.now().millisecondsSinceEpoch ~/1000,
+      title: AppLocalizations.of(context)!.beforeEventTitleNotification(event.title!, eventTimeTime),
+      body: AppLocalizations.of(context)!.beforeEventBodyNotification,
+      payload: event.id!,
+      createdAt: Timestamp.now(),
+      firesAt: beforeDate,
+    );
     // Getting DateTimeTZ from DateTime scheduleNotifTime
     final location = tz.getLocation(timeZoneName!);
-    final scheduledDate = tz.TZDateTime.from(notification.firesAt!, location);
+    final scheduledDate = tz.TZDateTime.from(notificationBefore.firesAt!, location);
     // Add Notification Firebase
-    _userDataService.addLocalNotification(currentUser.id!, notification);
+    _userDataService.addLocalNotification(currentUser.id!, notificationBefore);
     // Scheduling Notification
     _notificationsPlugin.zonedSchedule(
-        notification.id!,
-        notification.title,
-        notification.body,
+        notificationBefore.id!,
+        notificationBefore.title,
+        notificationBefore.body,
         scheduledDate,
         platformChannelSpecifics,
-        payload: notification.payload,
+        payload: notificationBefore.payload,
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
     );
+
   }
 
-  Future<void> cancellAllLocalNotification() async {
-    _notificationsPlugin.cancelAll();
+  Future<void> deleteEventLocalNotifications(String eventId) async {
+    // Find Notifications under this Event Id.
+    List<ReceivedNotification> eventNotifications = await _userDataService.findEventLocalNotification(currentUser.id!, eventId);
+    // Delete the ones that have been fired
+    for (int i = 0; i < eventNotifications.length; i++) {
+      ReceivedNotification notif = eventNotifications[i];
+      _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
+      _notificationsPlugin.cancel(notif.id!);
+    }
   }
 
   Future<void> handleLocalNotifications(BuildContext context) async {
@@ -285,7 +349,5 @@ class LocalNotificationService {
     print(localNotif.length.toString() + " pending ...");
     print("Finished Handling Local Notifications...");
   }
-  
-
 
 }

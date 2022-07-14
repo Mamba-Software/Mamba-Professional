@@ -2086,6 +2086,23 @@ class FirebaseDatabaseService {
     }
 
     // Get First Notifications
+    Future<List<ReceivedNotification>> findEventLocalNotification(String userId, String eventId) async {
+      List<ReceivedNotification> notis = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Local Notifications")
+          .where("eventId", isEqualTo: eventId)
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        notis.add(
+            ReceivedNotification.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i])
+        );
+      }
+      return notis;
+    }
+
+    // Get First Notifications
     Future <List<NotificationEvent>> getUserFirstNotificationsLimit10(String userId) async {
       List<NotificationEvent> notis = [];
       QuerySnapshot querySnapshot = await _firestore

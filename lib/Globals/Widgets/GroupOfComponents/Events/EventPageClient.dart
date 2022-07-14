@@ -340,10 +340,13 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
   }
 
   void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
-    setState(() {
-      mapController = controller;
-    });
+    if (!_controller.isCompleted) {
+      _controller.complete(controller);
+      setState(() {
+        mapController = controller;
+      });
+    }
+
   }
 
   void _onLaunchCoordinates(LatLng) {
@@ -364,23 +367,6 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
         request = null;
       });
     }
-  }
-
-  // Set Local Notifications
-  Future<void> setLocalNotifications() async {
-    // Get the Dates
-    DateTime before = DateTime.now().add(Duration(seconds: 10));
-    // Notification one hour before
-    ReceivedNotification notification = ReceivedNotification(
-        id: DateTime.now().millisecondsSinceEpoch ~/1000,
-        title: AppLocalizations.of(context)!.editEvent,
-        body: AppLocalizations.of(context)!.editEvent,
-        payload: event!.id!,
-        createdAt: Timestamp.now(),
-        firesAt: before,
-
-    );
-    localNotificationService.addLocalNotification(notification);
   }
 
   @override
@@ -1449,7 +1435,8 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                 isLoadingBody = true;
                               });
                               // Schedule Local Notifications
-                              setLocalNotifications();
+                              localNotificationService.addEventLocalNotifications(context, event!.id!, false);
+                              // Add To Data Base
                               await _eventDataService.addUserToEvent(event!.id!, currentUser.id!);
                               _notificationService.userJoinEvent(currentUser.id!, event!.brandID!, event!.id!);
                               await Future.delayed(const Duration(milliseconds: 3000));
@@ -1499,6 +1486,9 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                               setState(() {
                                 isLoadingBody = true;
                               });
+                              // Schedule Local Notifications
+                              localNotificationService.deleteEventLocalNotifications(event!.id!);
+                              // Base de Dades
                               await _eventDataService.deleteUserFromEvent(event!.id!, currentUser.id!);
                               _notificationService.userLeaveEvent(currentUser.id!, event!.brandID!, event!.id!);
                               await Future.delayed(const Duration(milliseconds: 3000));
