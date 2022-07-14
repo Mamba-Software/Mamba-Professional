@@ -1131,7 +1131,7 @@ class _HomepageState extends State<Homepage> {
                   heroTag: "99",
                   onPressed: () async {
                     // Get the Dates
-                    DateTime before = DateTime.now().add(Duration(seconds: 60));
+                    DateTime before = DateTime.now().add(Duration(seconds: 3600));
                     String eventTimeTime = StringUtils().hourMinutesToString(before.hour, before.minute);
                     // Notification one hour before
                     ReceivedNotification notification = ReceivedNotification(

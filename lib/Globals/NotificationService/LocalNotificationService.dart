@@ -137,8 +137,8 @@ class LocalNotificationService {
     // Scheduling Notification
     _notificationsPlugin.zonedSchedule(
         notification.id!,
-        notification.title,
-        notification.body,
+        "test",
+        "test",
         scheduledDate,
         platformChannelSpecifics,
         payload: notification.payload,
@@ -244,7 +244,7 @@ class LocalNotificationService {
       for (int i = 0; i < firebaseLeftTemp.length; i++) {
         ReceivedNotification notif = firebaseNotifications[i];
         // Schedule Notif
-        this.scheduleNotification(notif.firesAt!, notif);
+        await this.scheduleNotification(notif.firesAt!, notif);
       }
     }
     // Handle the Remaining Local Notifications
