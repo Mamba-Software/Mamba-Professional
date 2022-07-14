@@ -50,7 +50,7 @@ class _MambaState extends State<Mamba> {
     isLoading = true;
     // Init LocalNotificationsService
     localNotificationService.initialize(context);
-    listenNotifications(context);
+    handleAndlistenNotifications(context);
     // Firebase Cloud Messaging Notifications
     /// Message on which User has tapped from Terminated State
     FirebaseMessaging.instance.getInitialMessage().then((message) {
@@ -197,7 +197,7 @@ class _MambaState extends State<Mamba> {
   }
 
   // listenNotifications if User Taps on Notifications
-  Future<void> listenNotifications(BuildContext context) async {
+  Future<void> handleAndlistenNotifications(BuildContext context) async {
     // Handle Local Notifications
     await localNotificationService.handleLocalNotifications(context);
     // Listen to the Notifications Stream
