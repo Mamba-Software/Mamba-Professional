@@ -2025,12 +2025,19 @@ class FirebaseDatabaseService {
     Future<void> addLocalNotification(String userId, ReceivedNotification notification) async {
         String id = notification.id!.toString();
         Timestamp now = Timestamp.now();
+        // Event Id
+        String payloadFeedback = notification.payload!.substring(0,2);
+        String payloadSubString = notification.payload!.substring(2);
+        bool isFeedback = payloadFeedback == "F-";
+        String eventId = isFeedback ? payloadSubString : notification.payload!;
+        // Firebase Query
         await _firestore
             .collection(users)
             .doc(userId)
             .collection("Local Notifications")
             .doc(id)
             .set({
+                "eventId": eventId,
                 "payload": notification.payload!,
                 "createdAt": now,
                 "firesAt": notification.firesAt!,
@@ -2061,6 +2068,21 @@ class FirebaseDatabaseService {
         );
       }
       return notis;
+    }
+
+    // Get First Notifications
+    Future<ReceivedNotification?> getIndividualLocalNotification(String userId, String notificationId) async {
+      try {
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+        await _firestore.collection(users)
+            .doc(userId)
+            .collection("Local Notifications")
+            .doc(notificationId)
+            .get();
+        return ReceivedNotification.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+      } catch (e) {
+        return null;
+      }
     }
 
     // Get First Notifications

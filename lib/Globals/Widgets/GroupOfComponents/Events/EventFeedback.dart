@@ -451,22 +451,24 @@ class _EventFeedbackState extends State<EventFeedback> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        setState(() {
-                          isLoadingBody = true;
-                        });
-                        userHasAnsweredFeedback(feedbackScore);
+                        if (feedbackScore != 0) {
+                          setState(() {
+                            isLoadingBody = true;
+                          });
+                          userHasAnsweredFeedback(feedbackScore);
+                        }                         
                       },
                       child: Container(
                         height: MediaQuery.of(context).size.height * 0.06,
                         width: MediaQuery.of(context).size.width * 0.8,
                         decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
+                            color: feedbackScore != 0 ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),
                             borderRadius: BorderRadius.all(Radius.circular(20))
                         ),
                         child: !isLoadingBody ? Center(
                           child: Text(
                             AppLocalizations.of(context)!.save,
-                            style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark),
+                            style: Theme.of(context).textTheme.headline3?.copyWith(color: feedbackScore != 0 ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColorDark.withOpacity(0.4)),
                             textAlign: TextAlign.center,
                           ),
                         ) : Center(

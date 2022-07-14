@@ -1131,7 +1131,7 @@ class _HomepageState extends State<Homepage> {
                   heroTag: "99",
                   onPressed: () async {
                     // Get the Dates
-                    DateTime before = DateTime.now().add(Duration(seconds: 120));
+                    DateTime before = DateTime.now().add(Duration(seconds: 60));
                     String eventTimeTime = StringUtils().hourMinutesToString(before.hour, before.minute);
                     // Notification one hour before
                     ReceivedNotification notification = ReceivedNotification(
@@ -1142,8 +1142,8 @@ class _HomepageState extends State<Homepage> {
                       createdAt: Timestamp.now(),
                       firesAt: before,
                     );
-                    await Future.delayed(Duration(seconds: 5));
                     LocalNotificationService().addLocalNotification(notification);
+                    await Future.delayed(Duration(seconds: 5));
                     ReceivedNotification notification2 = ReceivedNotification(
                       id: DateTime.now().millisecondsSinceEpoch ~/1000,
                       title: AppLocalizations.of(context)!.afterEventTitleNotification,
@@ -1153,7 +1153,6 @@ class _HomepageState extends State<Homepage> {
                       firesAt: before,
                     );
                     LocalNotificationService().addLocalNotification(notification2);
-                    LocalNotificationService().deleteLocalNotification(1);
                   },
                   backgroundColor: Theme.of(context).accentColor,
                   icon: Icon(
@@ -1163,6 +1162,23 @@ class _HomepageState extends State<Homepage> {
                   ),
                   label: Text(
                       "scheduleNotif",
+                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white)
+                  ),
+                ),
+                SizedBox(height: safeAreaHeight*0.06,),
+                FloatingActionButton.extended(
+                  heroTag: "100",
+                  onPressed: () async {
+                    LocalNotificationService().cancellAllLocalNotification();
+                  },
+                  backgroundColor: Theme.of(context).accentColor,
+                  icon: Icon(
+                    Icons.calendar_month,
+                    color: AppColors.white,
+                    size: safeAreaWidth*0.05,
+                  ),
+                  label: Text(
+                      "Cancell All",
                       style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white)
                   ),
                 ),

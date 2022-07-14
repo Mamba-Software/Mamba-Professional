@@ -1820,7 +1820,7 @@
   "@beforeEventBodyNotification": {
     "description": "beforeEventBodyNotification message"
   },
-  "afterEventTitleNotification": "\uD83D\uDCAA ✅️ Sesión completada ✅️\uD83D\uDCAA",
+  "afterEventTitleNotification": "\uD83D\uDCAA ✅️ Sesión completada ✅️ \uD83D\uDCAA",
   "@afterEventTitleNotification": {
     "description": "beforeEventBodyNotification message"
   },

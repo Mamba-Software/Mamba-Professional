@@ -1,6 +1,7 @@
 // This class represents the Object <RecievedNotification> that will handle local notifications.
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class ReceivedNotification {
   ReceivedNotification({
@@ -28,7 +29,7 @@ class ReceivedNotification {
       this.createdAt = documentSnapshot.get("createdAt");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('firesAt')) {
-      this.firesAt = documentSnapshot.get("firesAt");
+      this.firesAt = (documentSnapshot.get("firesAt") as Timestamp).toDate();
     }
   }
 }

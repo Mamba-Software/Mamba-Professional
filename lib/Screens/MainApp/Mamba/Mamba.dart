@@ -23,14 +23,14 @@ import 'Profile/Profile.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
-class MambaClient extends StatefulWidget {
-  const MambaClient({Key? key}) : super(key: key);
+class Mamba extends StatefulWidget {
+  const Mamba({Key? key}) : super(key: key);
 
   @override
-  _MambaClientState createState() => _MambaClientState();
+  _MambaState createState() => _MambaState();
 }
 
-class _MambaClientState extends State<MambaClient> {
+class _MambaState extends State<Mamba> {
 
   // Acceso a Base de Datos
   var _userDataService = new UserDataService();
@@ -197,7 +197,9 @@ class _MambaClientState extends State<MambaClient> {
   }
 
   // listenNotifications if User Taps on Notifications
-  void listenNotifications() {
+  Future<void> listenNotifications() async {
+    // Handle Local Notifications
+    await localNotificationService.handleLocalNotifications();
     // Listen to the Notifications Stream
     localNotificationService.onNotifications.stream.listen(
         (payload) => localNotificationService.onClickedNotification(context, payload)

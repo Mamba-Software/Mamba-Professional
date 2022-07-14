@@ -89,7 +89,7 @@ class _SplashScreenState extends State<SplashScreen> {
               Navigator.pushReplacement(
                   context,
                   CupertinoPageRoute<Null>(
-                    builder: (context) => MambaClient(),
+                    builder: (context) => Mamba(),
                     settings: RouteSettings(name: 'HomePage'),
                   )
               );
@@ -152,7 +152,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Navigator.pushReplacement(
                 context,
                 CupertinoPageRoute<Null>(
-                  builder: (context) => MambaClient(),
+                  builder: (context) => Mamba(),
                   settings: RouteSettings(name: 'HomePage'),
                 )
             );
