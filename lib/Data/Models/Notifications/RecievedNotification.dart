@@ -9,6 +9,7 @@ class ReceivedNotification {
     this.title,
     this.body,
     this.payload,
+    this.eventId,
     this.createdAt,
     this.firesAt,
   });
@@ -17,6 +18,7 @@ class ReceivedNotification {
   String? title;
   String? body;
   String? payload;
+  String? eventId;
   Timestamp? createdAt;
   DateTime? firesAt;
 
@@ -24,6 +26,9 @@ class ReceivedNotification {
     this.id = int.parse(documentId);
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('payload')) {
       this.payload = documentSnapshot.get("payload").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('eventId')) {
+      this.eventId = documentSnapshot.get("eventId").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('createdAt')) {
       this.createdAt = documentSnapshot.get("createdAt");
