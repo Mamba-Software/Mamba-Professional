@@ -28,7 +28,7 @@ class LocalNotificationService {
 
   // Main Functions
 
-  Future<void> initialize(BuildContext context) async {
+  Future<void> initialize() async {
     // Init Timezone
     tz.initializeTimeZones();
     tz.setLocalLocation(tz.getLocation(timeZoneName!));
@@ -196,7 +196,100 @@ class LocalNotificationService {
     }
   }
 
+  // didNotificationLaunch handle
+  Future<void> didNotificationLaunch(BuildContext context) async {
+    NotificationAppLaunchDetails? notificationAppLaunchDetails = await _notificationsPlugin.getNotificationAppLaunchDetails();
+    if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
+      onClickedNotification(context, notificationAppLaunchDetails!.payload);
+    }
+  }
+
+  Future<void> handleLocalNotifications(BuildContext context) async {
+    print("Handling Local Notifications...");
+    // Get Firebase Notifications
+    List<ReceivedNotification> firebaseNotifications = await _userDataService.getLocalNotifications(currentUser.id!);
+    // Create Aux Variables
+    var firebaseNotificationsTemp = List.from(firebaseNotifications);
+    // Delete the ones that have been fired
+    for (int i = 0; i < firebaseNotifications.length; i++) {
+      ReceivedNotification notif = firebaseNotifications[i];
+      if (DateTime.now().isAfter(notif.firesAt!)) {
+        // Find index in Local Notifications
+        firebaseNotificationsTemp.remove(notif);
+        _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
+        print("Removing Fired Notification "+notif.id.toString());
+      }
+    }
+    print(firebaseNotificationsTemp.length.toString()+ " Firebase notifications left...");
+    // Compare the ones left to fire with Local Device Notifications
+    List<PendingNotificationRequest> pendingNotificationRequests = await _notificationsPlugin.pendingNotificationRequests();
+    print(pendingNotificationRequests.length.toString()+ " Local notifications...");
+    // Create Aux Variables
+    var pendingNotificationRequestsTemp = List.from(pendingNotificationRequests);
+    var firebaseLeftTemp = List.from(firebaseNotificationsTemp);
+    // Iterate Firebase Notifications
+    for (int i = 0; i < firebaseNotificationsTemp.length; i++) {
+      ReceivedNotification notif = firebaseNotificationsTemp[i];
+      // Find index in Local Notifications
+      int index = pendingNotificationRequests.indexWhere((element) => element.id == notif.id);
+      // Notification Found
+      if (index != -1) {
+        // Remove From Firebase and Local Notifications Lists
+        pendingNotificationRequestsTemp.removeWhere((element) => element.id == notif.id);
+        firebaseLeftTemp.removeWhere((element) => element.id == notif.id);
+        print("Notification Matched "+notif.id.toString());
+      }
+    }
+    // Handle the Remaining Firebase Notifications
+    if (firebaseLeftTemp.isNotEmpty) {
+      // Firebase notifications that have not been matched with Local Device Notifications have to be created
+      for (int i = 0; i < firebaseLeftTemp.length; i++) {
+        ReceivedNotification notif = firebaseLeftTemp[i];
+        // Schedule Notif
+        await this.scheduleNotification(context,notif);
+        print("Local Notification Added "+notif.id.toString());
+      }
+    }
+    // Handle the Remaining Local Notifications
+    if (pendingNotificationRequestsTemp.isNotEmpty) {
+      // Local Device Notifications that have not been matched have to be cancelled
+      for (int i = 0; i < pendingNotificationRequestsTemp.length; i++) {
+        PendingNotificationRequest notif = pendingNotificationRequestsTemp[i];
+        // Cancel Local Notification
+        _notificationsPlugin.cancel(notif.id);
+        print("Local Notification Canceled "+notif.id.toString());
+      }
+    }
+    var localNotif = await _notificationsPlugin.pendingNotificationRequests();
+    print(localNotif.length.toString() + " pending ...");
+    print("Finished Handling Local Notifications...");
+  }
+
   // Detailed Functions
+
+  Future<void> addLocalNotification(ReceivedNotification notification) async {
+    // Defining Platform Channel Specifics
+    var platformChannelSpecifics = NotificationDetails(
+        android: getAndroidNotificationDetails(),
+        iOS: getIOSNotificationDetails()
+    );
+    // Getting DateTimeTZ from DateTime scheduleNotifTime
+    final location = tz.getLocation(timeZoneName!);
+    final scheduledDate = tz.TZDateTime.from(notification.firesAt!, location);
+    // Add Notification Firebase
+    _userDataService.addLocalNotification(currentUser.id!, notification);
+    // Scheduling Notification
+    _notificationsPlugin.zonedSchedule(
+        notification.id!,
+        notification.title,
+        notification.body,
+        scheduledDate,
+        platformChannelSpecifics,
+        payload: notification.payload,
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
+    );
+  }
 
   Future<void> addEventLocalNotifications(BuildContext context, String eventId, bool? isTrainer) async {
     // Defining Platform Channel Specifics
@@ -289,65 +382,6 @@ class LocalNotificationService {
     }
   }
 
-  Future<void> handleLocalNotifications(BuildContext context) async {
-    print("Handling Local Notifications...");
-    // Get Firebase Notifications
-    List<ReceivedNotification> firebaseNotifications = await _userDataService.getLocalNotifications(currentUser.id!);
-    // Create Aux Variables
-    var firebaseNotificationsTemp = List.from(firebaseNotifications);
-    // Delete the ones that have been fired
-    for (int i = 0; i < firebaseNotifications.length; i++) {
-      ReceivedNotification notif = firebaseNotifications[i];
-      if (DateTime.now().isAfter(notif.firesAt!)) {
-        // Find index in Local Notifications
-        firebaseNotificationsTemp.remove(notif);
-        _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
-        print("Removing Fired Notification "+notif.id.toString());
-      }
-    }
-    print(firebaseNotificationsTemp.length.toString()+ " Firebase notifications left...");
-    // Compare the ones left to fire with Local Device Notifications
-    List<PendingNotificationRequest> pendingNotificationRequests = await _notificationsPlugin.pendingNotificationRequests();
-    print(pendingNotificationRequests.length.toString()+ " Local notifications...");
-    // Create Aux Variables
-    var pendingNotificationRequestsTemp = List.from(pendingNotificationRequests);
-    var firebaseLeftTemp = List.from(firebaseNotificationsTemp);
-    // Iterate Firebase Notifications
-    for (int i = 0; i < firebaseNotificationsTemp.length; i++) {
-      ReceivedNotification notif = firebaseNotificationsTemp[i];
-      // Find index in Local Notifications
-      int index = pendingNotificationRequests.indexWhere((element) => element.id == notif.id);
-      // Notification Found
-      if (index != -1) {
-        // Remove From Firebase and Local Notifications Lists
-        pendingNotificationRequestsTemp.removeWhere((element) => element.id == notif.id);
-        firebaseLeftTemp.removeWhere((element) => element.id == notif.id);
-        print("Notification Matched "+notif.id.toString());
-      }
-    }
-    // Handle the Remaining Firebase Notifications
-    if (firebaseLeftTemp.isNotEmpty) {
-      // Firebase notifications that have not been matched with Local Device Notifications have to be created
-      for (int i = 0; i < firebaseLeftTemp.length; i++) {
-        ReceivedNotification notif = firebaseLeftTemp[i];
-        // Schedule Notif
-        await this.scheduleNotification(context,notif);
-        print("Local Notification Added "+notif.id.toString());
-      }
-    }
-    // Handle the Remaining Local Notifications
-    if (pendingNotificationRequestsTemp.isNotEmpty) {
-      // Local Device Notifications that have not been matched have to be cancelled
-      for (int i = 0; i < pendingNotificationRequestsTemp.length; i++) {
-        PendingNotificationRequest notif = pendingNotificationRequestsTemp[i];
-        // Cancel Local Notification
-        _notificationsPlugin.cancel(notif.id);
-        print("Local Notification Canceled "+notif.id.toString());
-      }
-    }
-    var localNotif = await _notificationsPlugin.pendingNotificationRequests();
-    print(localNotif.length.toString() + " pending ...");
-    print("Finished Handling Local Notifications...");
-  }
+
 
 }
