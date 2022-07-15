@@ -190,6 +190,7 @@ exports.newUserAddsTestGroup = functions
       if (numberUsers % 2 == 0) {
         testGroup = "B"
       }
+      // Update Firebase
       await db
        .collection("Users")
        .doc(userId)
@@ -268,7 +269,7 @@ exports.userUpdatesCoverData = functions
             "notificationToken": after.notificationToken,
           });
         }
-        // Update the Users Subcollection in Brands
+        // Update the Users Subcollection in Events
         const userEventsSnapshot = await db.collection("Users").doc(userId).collection("Events").get();
         functions.logger.log(
             "User Events Num =",
@@ -433,6 +434,7 @@ exports.eventUpdatesCoverData = functions
           "Add Event To Location",
           after.locationId,
         );
+        // Add Event to New Location
         await db
         .collection("Locations")
         .doc(after.locationId)
@@ -482,6 +484,7 @@ exports.eventUpdatesCoverData = functions
             "Event Users Num =",
             eventUsersSnapshot.size,
           );
+        // Update the Event Subcollection in Users
         for (var i in eventUsersSnapshot.docs) {
           const id = eventUsersSnapshot.docs[i].id;
           await db
@@ -654,7 +657,7 @@ exports.userJoinsBrand = functions
           brandDoc,
         );
 
-      // Get Data of the Room
+      // Get Data of the Brand Room
       const roomSnapshot = await db.collection("Rooms").doc(brandDoc.roomId).get();
       const roomDoc = roomSnapshot.data();
 
@@ -667,15 +670,18 @@ exports.userJoinsBrand = functions
        );
       roomDoc.userIds.push(userId);
 
+      // Get Data of the Brand Room
       if (roomDoc.lastMessages != undefined) {
         metadataMessage = roomDoc.lastMessages[0].metadata;
         metadataMessage[userId] = "delivered";
+        // Updates all messages so that they are delivered for new user.
         await db.doc("Rooms" + "/" + brandDoc.roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
           metadata: metadataMessage,
           status: "delivered",
         })
       }
 
+      // Creates metadata for new user and adds it.  
       metadataRoom = roomDoc.metadata;
       metadataRoom["trainer" + userId] = userDoc.isTrainer;
       metadataRoom["active" + userId] = false;
@@ -684,7 +690,7 @@ exports.userJoinsBrand = functions
             userIds: roomDoc.userIds,
       })
 
-      // Add the User Cover Data to Users in Brands Collection
+      // Add the Brand Cover Data to Users/Brands Collection
       let date = new Date();
       let day = date.getDate();
       let month = date.getMonth() + 1;
@@ -1863,6 +1869,7 @@ exports.zzzzNewUserAddsTestGroup = functions
       if (numberUsers % 2 == 0) {
         testGroup = "B"
       }
+      // Update Firebase
       await db
        .collection("7777 Users")
        .doc(userId)
@@ -1941,7 +1948,7 @@ exports.zzzzUserUpdatesCoverData = functions
             "notificationToken": after.notificationToken,
           });
         }
-        // Update the Users Subcollection in Brands
+        // Update the Users Subcollection in Events
         const userEventsSnapshot = await db.collection("7777 Users").doc(userId).collection("Events").get();
         functions.logger.log(
             "User Events Num =",
@@ -2106,6 +2113,7 @@ exports.zzzzEventUpdatesCoverData = functions
           "Add Event To Location",
           after.locationId,
         );
+        // Add Event to New Location
         await db
         .collection("7777 Locations")
         .doc(after.locationId)
@@ -2155,6 +2163,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "Event Users Num =",
             eventUsersSnapshot.size,
           );
+        // Update the Event Subcollection in Users
         for (var i in eventUsersSnapshot.docs) {
           const id = eventUsersSnapshot.docs[i].id;
           await db
@@ -2327,7 +2336,7 @@ exports.zzzzUserJoinsBrand = functions
           brandDoc,
         );
 
-      // Get Data of the Room
+      // Get Data of the Brand Room
       const roomSnapshot = await db.collection("7777 Rooms").doc(brandDoc.roomId).get();
       const roomDoc = roomSnapshot.data();
 
@@ -2343,12 +2352,14 @@ exports.zzzzUserJoinsBrand = functions
       if (roomDoc.lastMessages != undefined) {
         metadataMessage = roomDoc.lastMessages[0].metadata;
         metadataMessage[userId] = "delivered";
+        // Updates all messages so that they are delivered for new user.
         await db.doc("7777 Rooms" + "/" + brandDoc.roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
           metadata: metadataMessage,
           status: "delivered",
         })
       }
 
+      // Creates metadata for new user and adds it.
       metadataRoom = roomDoc.metadata;
       metadataRoom["trainer" + userId] = userDoc.isTrainer;
       metadataRoom["active" + userId] = false;
@@ -2357,7 +2368,7 @@ exports.zzzzUserJoinsBrand = functions
             userIds: roomDoc.userIds,
       })
 
-      // Add the User Cover Data to Users in Brands Collection
+      // Add the Brand Cover Data to Users/Brands Collection
       let date = new Date();
       let day = date.getDate();
       let month = date.getMonth() + 1;
