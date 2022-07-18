@@ -7,7 +7,7 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Message.dart';
-import 'package:mamba_castelldefels/Data/Models/NotificationEvent.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Question.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
@@ -35,16 +35,18 @@ class EventDataService {
   Future<int> getBrandsEventsUpcoming(String brandId) => _firebase.getBrandsEventsUpcoming(brandId);
   Future<List<Usuario>> getEventUsers(String eventId) => _firebase.getEventUsers(eventId);
   Future<Location> getEventLocation(String eventId) => _firebase.getEventLocation(eventId);
-  Future<int?> getEventUserFeedback(String eventId, String userId) => _firebase.getEventUserFeedback(eventId, userId);
+  Future<List<Brand>> getEventBrands(String eventId) => _firebase.getEventBrands(eventId);
+  Future<double?> getEventUserFeedback(String eventId, String userId) => _firebase.getEventUserFeedback(eventId, userId);
 
   // Add Data
   Future<String> addEvent(String? brandID, String? title, String? description, Timestamp doneAt, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.addEvent(brandID, title, description, doneAt, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);
   Future<void> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) => _firebase.addUserToEvent(eid, uid, invitedDirectly);
+  Future<void> addEventFeedback(String eid, String uid, double intensityScore) => _firebase.addEventFeedback(eid, uid, intensityScore);
 
   // Update Data
   Future<void> updateEvent(String id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.updateEvent(id, title, description, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);
   Future<void> updateEventLocation(String eid, String locationId, String previousLocation) => _firebase.updateEventLocation(eid, locationId, previousLocation);
-  Future<void> updateEventFeedback(String eid, String uid, int score) => _firebase.updateEventFeedback(eid, uid, score);
+
 
   // Delete Data
   Future<void> deleteEvent(String id) => _firebase.deleteEvent(id);

@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
@@ -45,6 +48,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
   var _eventDataService = new EventDataService();
   // Acceso a Base de Datos
   NotificationService _notificationService = NotificationService();
+  LocalNotificationService localNotificationService = LocalNotificationService();
   // Screen Dimensions
   var safeAreaHeight;
   var safeAreaWidth;
@@ -63,6 +67,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
   String? descriptionString;
   // Starting Date and Time
   String datetitle = "";
+  DateTime startDate = DateTime.now();
   TextEditingController startDateController = TextEditingController();
   bool errorDate = false;
   // Duration
@@ -85,6 +90,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
   List<Usuario> allUsers = [];
   List<Usuario> eventTrainers = [];
   List<Usuario> eventClients = [];
+  List<double?> eventClientsFeedback = [];
   // Form To Validate User
   final formKeyInfo = GlobalKey<FormState>();
   final formKeyTime = GlobalKey<FormState>();
@@ -190,7 +196,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
     titleString = "${event!.title}";
     descriptionController.text = "${event!.description}";
     descriptionString = "${event!.description}";
-    var startDate = DateTime(
+    startDate = DateTime(
       int.parse(event!.year!),
       int.parse(event!.month!),
       int.parse(event!.day!),
@@ -242,8 +248,12 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
           // User has joined the event
           clients.insert(0, user);
           _isJoined = true;
+          double? feedbackClient = await _eventDataService.getEventUserFeedback(event!.id!, user.id!);
+          eventClientsFeedback.insert(0, feedbackClient);
         } else {
           clients.add(user);
+          double? feedbackClient = await _eventDataService.getEventUserFeedback(event!.id!, user.id!);
+          eventClientsFeedback.add(feedbackClient);
         }
       }
     }
@@ -286,6 +296,31 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
     });
   }
 
+  // Build EventFeedback Value
+  Widget buildEventFeedbackIcon(double eventFeedbackValue) {
+    return Container(
+      width: MediaQuery.of(context).size.width*0.1,
+      child: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width*0.05,
+              child: Image.asset(Constants.fireEmojiImage),
+            ),
+            Text(
+                eventFeedbackValue.toString(),
+                style: Theme.of(context).textTheme.bodyText1,
+                textAlign: TextAlign.center
+            ),
+          ],
+        ),
+      ),
+    );
+
+  }
+
   void initCameraPosition() {
     setState(() {
       _initialPosition = CameraPosition(target: LatLng(location.latitude!,location.longitude!));
@@ -305,10 +340,13 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
   }
 
   void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
-    setState(() {
-      mapController = controller;
-    });
+    if (!_controller.isCompleted) {
+      _controller.complete(controller);
+      setState(() {
+        mapController = controller;
+      });
+    }
+
   }
 
   void _onLaunchCoordinates(LatLng) {
@@ -1155,6 +1193,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                         itemCount: eventClients.length,
                                         itemBuilder: (context, int index) {
                                           var client = eventClients[index];
+                                          var clientFeedback = eventClientsFeedback[index];
                                           if (client.isPrivate! && client.id != currentUser.id) {
                                             return GestureDetector(
                                               onTap: () {
@@ -1224,6 +1263,15 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                                         ],
                                                       ),
                                                     ),
+                                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                                    clientFeedback != null ? Container(
+                                                      height: MediaQuery.of(context).size.height*0.02,
+                                                      width: MediaQuery.of(context).size.width*0.1,
+                                                      child: FittedBox(
+                                                          fit: BoxFit.fitHeight,
+                                                          child: buildEventFeedbackIcon(clientFeedback)
+                                                      ),
+                                                    ) : Container(),
                                                   ],
                                                 ),
                                               ),
@@ -1386,6 +1434,9 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                               setState(() {
                                 isLoadingBody = true;
                               });
+                              // Schedule Local Notifications
+                              localNotificationService.addEventLocalNotifications(context, event!.id!, false);
+                              // Add To Data Base
                               await _eventDataService.addUserToEvent(event!.id!, currentUser.id!);
                               _notificationService.userJoinEvent(currentUser.id!, event!.brandID!, event!.id!);
                               await Future.delayed(const Duration(milliseconds: 3000));
@@ -1435,6 +1486,9 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                               setState(() {
                                 isLoadingBody = true;
                               });
+                              // Schedule Local Notifications
+                              localNotificationService.deleteEventLocalNotifications(event!.id!);
+                              // Base de Dades
                               await _eventDataService.deleteUserFromEvent(event!.id!, currentUser.id!);
                               _notificationService.userLeaveEvent(currentUser.id!, event!.brandID!, event!.id!);
                               await Future.delayed(const Duration(milliseconds: 3000));

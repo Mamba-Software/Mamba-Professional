@@ -77,7 +77,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   List<Usuario> allTrainers = [];
   List<Usuario> eventTrainers = [];
   List<Usuario> eventClients = [];
-  List<int?> eventClientsFeedback = [];
+  List<double?> eventClientsFeedback = [];
   List<String> eventTrainersIds = [];
   List<bool> eventTrainersBool = [];
   bool errorNoTrainerSelected = false;
@@ -238,7 +238,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
         }
       } else {        
         clients.add(user);
-        int? feedbackClient = await _eventDataService.getEventUserFeedback(event!.id!, user.id!);
+        double? feedbackClient = await _eventDataService.getEventUserFeedback(event!.id!, user.id!);
         eventClientsFeedback.add(feedbackClient);
       }
     }
@@ -556,20 +556,28 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   }
 
   // Build EventFeedback Value
-  Widget buildEventFeedbackIcon(int eventFeedbackValue) {
-    var eventFeedbackValueArray = [];
-    for (var i=0; i<eventFeedbackValue; i++) {
-      eventFeedbackValueArray.add(1);
-    }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: eventFeedbackValueArray.asMap().entries.map((entry) {
-        return Icon(
-            Icons.star,
-            color: Theme.of(context).accentColor
-        );
-      }).toList(),
+  Widget buildEventFeedbackIcon(double eventFeedbackValue) {
+    return Container(
+      width: MediaQuery.of(context).size.width*0.1,
+      child: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width*0.05,
+              child: Image.asset(Constants.fireEmojiImage),
+            ),
+            Text(
+                eventFeedbackValue.toString(),
+                style: Theme.of(context).textTheme.bodyText1,
+                textAlign: TextAlign.center
+            ),
+          ],
+        ),
+      ),
     );
+
   }
 
   @override
@@ -1703,9 +1711,9 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                                       ],
                                                     ),
                                                   ),
-                                                  SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                                   clientFeedback != null ? Container(
-                                                    height: MediaQuery.of(context).size.height*0.015,
+                                                    height: MediaQuery.of(context).size.height*0.02,
                                                     width: MediaQuery.of(context).size.width*0.1,
                                                     child: FittedBox(
                                                         fit: BoxFit.fitHeight,

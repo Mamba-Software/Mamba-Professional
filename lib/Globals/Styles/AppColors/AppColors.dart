@@ -18,5 +18,6 @@ class AppColors {
   static const Color whiteTrans = Color(0x8DFFFFFF);
 
   static const Color red = Color(0xFFFF0000);
+  static const Color ligthRed = Color(0xFFFF5D5D);
 
 }

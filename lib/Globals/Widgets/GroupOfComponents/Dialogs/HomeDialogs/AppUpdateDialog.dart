@@ -7,7 +7,9 @@ import 'package:store_redirect/store_redirect.dart';
 
 class AppUpdateDialog extends StatelessWidget {
 
-  const AppUpdateDialog({Key? key}) : super(key: key);
+  bool isMandatory;
+
+  AppUpdateDialog({Key? key, required this.isMandatory}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,34 @@ class AppUpdateDialog extends StatelessWidget {
                   Flexible(
                     child: Text(AppLocalizations.of(context)!.updateAppText, style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),textAlign: TextAlign.center,),
                   ),
+                  isMandatory ? Column(
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+                      Container(
+                          padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: AppColors.ligthRed.withOpacity(0.8),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.error_outline,
+                                color: AppColors.white,
+                              ),
+                              SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                              Text(
+                                AppLocalizations.of(context)!.mandatoryUpdate,
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          )
+                      ),
+                    ],
+                  ) : Container(),
+
                   SizedBox(height: MediaQuery.of(context).size.height*0.01,),
                   Center(
                     child: Container(
@@ -65,6 +95,7 @@ class AppUpdateDialog extends StatelessWidget {
                         androidAppId: "com.mamba.mambastyleapp",
                         iOSAppId: "1601684650",
                       );
+                      await Future.delayed(Duration(seconds: 3));
                       Navigator.of(context).pop();
                     },
                   ),

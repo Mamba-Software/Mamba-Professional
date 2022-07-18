@@ -347,6 +347,10 @@
   "@eventFeedbackText": {
     "description": "Member Since message"
   },
+  "eventFeedbackIntesityText": "\nIndica tu nivel de esfuerzo a lo largo de esta sesión",
+  "@eventFeedbackIntesityText": {
+    "description": "Member Since message"
+  },
   "memberSince": "Creada el {dateJoined}",
   "@memberSince": {
     "description": "Member Since message",
@@ -1708,6 +1712,10 @@
   "@updateAppText": {
     "description": "membersOfBrand message"
   },
+  "mandatoryUpdate": "Actualización obligatoria",
+  "@mandatoryUpdate": {
+    "description": "membersOfBrand message"
+  },
   "shareAppTitle": "Invitar amigos",
   "@shareAppTitle": {
     "description": "membersOfBrand message"
@@ -1780,7 +1788,11 @@
   "@tiredFeedbackLabel": {
     "description": "membersOfBrand message"
   },
-  "exhaustedFeedbackLabel": "Intenso",
+  "veryTiredFeedbackLabel": "Intenso",
+  "@veryTiredFeedbackLabel": {
+    "description": "membersOfBrand message"
+  },
+  "exhaustedFeedbackLabel": "Exhaustivo",
   "@exhaustedFeedbackLabel": {
     "description": "membersOfBrand message"
   },
@@ -1795,5 +1807,29 @@
   "beforeMovingOn": "Ya casi estamos...",
   "@beforeMovingOn": {
     "description": "beforeMovingOn message"
+  },
+  "beforeEventTitleNotification": "⚠️ \uD83C\uDFCB️\u200D♀ {event} a las {horas} \uD83C\uDFCB️\u200D♀ ⚠️ ",
+  "@beforeEventTitleNotification": {
+    "description": "beforeEventBodyNotification message",
+    "placeholders": {
+      "event": {
+        "type": "String"
+      },
+      "horas": {
+        "type": "String"
+      }
+    }
+  },
+  "beforeEventBodyNotification": "Esta sesión está a punto de empezar. Haz clic para consultar todos los detalles",
+  "@beforeEventBodyNotification": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "afterEventTitleNotification": "\uD83D\uDCAA ✅️ Sesión completada ✅️ \uD83D\uDCAA",
+  "@afterEventTitleNotification": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "afterEventBodyNotification": "¿Qué te ha parecido? ¿Demasiado intensa? Comunica tu nivel de esfuerzo a tu entrenador",
+  "@afterEventBodyNotification": {
+    "description": "beforeEventBodyNotification message"
   }
 }

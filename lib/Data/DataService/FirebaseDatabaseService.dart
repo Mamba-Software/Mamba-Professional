@@ -2,25 +2,20 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Deprecated/ChatUsers.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Data/Models/NotificationEvent.dart';
-import 'package:mamba_castelldefels/Data/Models/Deprecated/Message.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Question.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:uuid/uuid.dart';
 
 // Firebase Service Class. All calls to Firebase are in this class.
@@ -157,16 +152,18 @@ class FirebaseDatabaseService {
       return false;
   }
 
-  Future<bool> checkIfMinimumAppVersion(String clientAppVersion) async {
+  Future<List<bool>> checkIfMinimumAppVersion(String clientAppVersion) async {
     // Get Minimum Version from Settings Collection
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Settings").doc("MinimumAppVersion").get();
     String minimumAppVersion = _documentSnapshot.get("version");
-    print(minimumAppVersion);
-    print(clientAppVersion);
+    bool isMandatory = _documentSnapshot.get("isMandatory");
+    List<bool> result = [isMandatory];
     if (clientAppVersion == minimumAppVersion) {
-      return true;
+      result.insert(0, true);
+      return result;
     } else {
-      return false;
+      result.insert(0, false);
+      return result;
     }
   }
 
@@ -828,6 +825,24 @@ class FirebaseDatabaseService {
       return users;
     }
 
+    Future<List<Brand>> getEventBrands(String eventId) async {
+      List<Brand> brands = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(events)
+          .doc(eventId)
+          .collection("Brands")
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        brands.add(
+          Brand.fromObjectOnlyCoverData(
+            querySnapshot.docs[i].id,
+            querySnapshot.docs[i]
+          )
+        );
+      }
+      return brands;
+    }
+
     Future<Location> getEventLocation(String eventId) async {
       QuerySnapshot querySnapshot = await _firestore
           .collection(events)
@@ -840,7 +855,7 @@ class FirebaseDatabaseService {
       return Location();
     }
 
-    Future<int?> getEventUserFeedback(String eventId, String userId) async {
+    Future<double?> getEventUserFeedback(String eventId, String userId) async {
       try {
         DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
           await _firestore
@@ -849,7 +864,7 @@ class FirebaseDatabaseService {
             .collection("Users")
             .doc(userId)
             .get();
-        int feedbackScore = _documentSnapshot.get("feedbackScore");
+        double feedbackScore = _documentSnapshot.get("intensityScore");
         return feedbackScore;
       } catch (e) {
         return null;
@@ -905,8 +920,7 @@ class FirebaseDatabaseService {
       List<int> result = [eventsList.length, eventsMonth.length];
       return result;
     }
-
-
+    
     Future<Brand> getBrandDetails(String brandID) async {
       DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
       await _firestore.collection(brands).doc(brandID).get();
@@ -1751,16 +1765,29 @@ class FirebaseDatabaseService {
     }
 
     // Update Event User Feedback
-    Future<void> updateEventFeedback(String eventId, String userId, int score) async {
+    Future<void> addEventFeedback(String eventId, String userId, double intensityScore) async {
       try {
         Timestamp feedbackAt = Timestamp.fromDate(DateTime.now());
+        // Add Feedback to Events Collection
         await _firestore
             .collection(events)
             .doc(eventId)
             .collection("Users")
             .doc(userId)
             .update({
-              "feedbackScore": score,
+              "intensityScore": intensityScore,
+              "feedbackAt": feedbackAt,
+            }).catchError((err) {
+              print(err);
+            });
+        // Add Feedback to Users Events Collection
+        await _firestore
+            .collection(users)
+            .doc(userId)
+            .collection("Events")
+            .doc(userId)
+            .update({
+              "intensityScore": intensityScore,
               "feedbackAt": feedbackAt,
             }).catchError((err) {
               print(err);
@@ -1995,6 +2022,87 @@ class FirebaseDatabaseService {
     }
 
     // Notifications
+
+    // Get First Notifications
+    Future<void> addLocalNotification(String userId, ReceivedNotification notification) async {
+        String id = notification.id!.toString();
+        Timestamp now = Timestamp.now();
+        // Event Id
+        String payloadFeedback = notification.payload!.substring(0,2);
+        String payloadSubString = notification.payload!.substring(2);
+        bool isFeedback = payloadFeedback == "F-";
+        String eventId = isFeedback ? payloadSubString : notification.payload!;
+        // Firebase Query
+        await _firestore
+            .collection(users)
+            .doc(userId)
+            .collection("Local Notifications")
+            .doc(id)
+            .set({
+                "eventId": eventId,
+                "payload": notification.payload!,
+                "createdAt": now,
+                "firesAt": notification.firesAt!,
+            });
+    }
+
+    // Get First Notifications
+    Future<void> deleteLocalNotification(String userId, String notificationId) async {
+        await _firestore
+            .collection(users)
+            .doc(userId)
+            .collection("Local Notifications")
+            .doc(notificationId)
+            .delete();
+      }
+
+    // Get First Notifications
+    Future<List<ReceivedNotification>> getLocalNotifications(String userId) async {
+      List<ReceivedNotification> notis = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Local Notifications")
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        notis.add(
+            ReceivedNotification.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i])
+        );
+      }
+      return notis;
+    }
+
+    // Get First Notifications
+    Future<ReceivedNotification?> getIndividualLocalNotification(String userId, String notificationId) async {
+      try {
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+        await _firestore.collection(users)
+            .doc(userId)
+            .collection("Local Notifications")
+            .doc(notificationId)
+            .get();
+        return ReceivedNotification.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Get First Notifications
+    Future<List<ReceivedNotification>> findEventLocalNotification(String userId, String eventId) async {
+      List<ReceivedNotification> notis = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Local Notifications")
+          .where("eventId", isEqualTo: eventId)
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        notis.add(
+            ReceivedNotification.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i])
+        );
+      }
+      return notis;
+    }
 
     // Get First Notifications
     Future <List<NotificationEvent>> getUserFirstNotificationsLimit10(String userId) async {

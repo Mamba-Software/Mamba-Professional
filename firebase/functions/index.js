@@ -12,7 +12,7 @@ const db = admin.firestore();
 
 // Daily Notification For Events
 exports.scheduledDailyFunction = functions
-   .region("europe-west1")
+   .region("europe-west1")  
    .pubsub
    .schedule('every day 7:00')
    .timeZone('Europe/Madrid')
@@ -190,6 +190,7 @@ exports.newUserAddsTestGroup = functions
       if (numberUsers % 2 == 0) {
         testGroup = "B"
       }
+      // Update Firebase
       await db
        .collection("Users")
        .doc(userId)
@@ -268,7 +269,7 @@ exports.userUpdatesCoverData = functions
             "notificationToken": after.notificationToken,
           });
         }
-        // Update the Users Subcollection in Brands
+        // Update the Users Subcollection in Events
         const userEventsSnapshot = await db.collection("Users").doc(userId).collection("Events").get();
         functions.logger.log(
             "User Events Num =",
@@ -433,6 +434,7 @@ exports.eventUpdatesCoverData = functions
           "Add Event To Location",
           after.locationId,
         );
+        // Add Event to New Location
         await db
         .collection("Locations")
         .doc(after.locationId)
@@ -482,6 +484,7 @@ exports.eventUpdatesCoverData = functions
             "Event Users Num =",
             eventUsersSnapshot.size,
           );
+        // Update the Event Subcollection in Users
         for (var i in eventUsersSnapshot.docs) {
           const id = eventUsersSnapshot.docs[i].id;
           await db
@@ -620,7 +623,6 @@ exports.locationUpdatesCoverData = functions
       return null;
     });
 
-
 // User Joins Brand
 exports.userJoinsBrand = functions
     .region("europe-west1")
@@ -655,7 +657,7 @@ exports.userJoinsBrand = functions
           brandDoc,
         );
 
-      // Get Data of the Room
+      // Get Data of the Brand Room
       const roomSnapshot = await db.collection("Rooms").doc(brandDoc.roomId).get();
       const roomDoc = roomSnapshot.data();
 
@@ -668,15 +670,18 @@ exports.userJoinsBrand = functions
        );
       roomDoc.userIds.push(userId);
 
+      // Get Data of the Brand Room
       if (roomDoc.lastMessages != undefined) {
         metadataMessage = roomDoc.lastMessages[0].metadata;
         metadataMessage[userId] = "delivered";
+        // Updates all messages so that they are delivered for new user.
         await db.doc("Rooms" + "/" + brandDoc.roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
           metadata: metadataMessage,
           status: "delivered",
         })
       }
 
+      // Creates metadata for new user and adds it.  
       metadataRoom = roomDoc.metadata;
       metadataRoom["trainer" + userId] = userDoc.isTrainer;
       metadataRoom["active" + userId] = false;
@@ -685,7 +690,7 @@ exports.userJoinsBrand = functions
             userIds: roomDoc.userIds,
       })
 
-      // Add the User Cover Data to Users in Brands Collection
+      // Add the Brand Cover Data to Users/Brands Collection
       let date = new Date();
       let day = date.getDate();
       let month = date.getMonth() + 1;
@@ -1864,6 +1869,7 @@ exports.zzzzNewUserAddsTestGroup = functions
       if (numberUsers % 2 == 0) {
         testGroup = "B"
       }
+      // Update Firebase
       await db
        .collection("7777 Users")
        .doc(userId)
@@ -1942,7 +1948,7 @@ exports.zzzzUserUpdatesCoverData = functions
             "notificationToken": after.notificationToken,
           });
         }
-        // Update the Users Subcollection in Brands
+        // Update the Users Subcollection in Events
         const userEventsSnapshot = await db.collection("7777 Users").doc(userId).collection("Events").get();
         functions.logger.log(
             "User Events Num =",
@@ -2107,6 +2113,7 @@ exports.zzzzEventUpdatesCoverData = functions
           "Add Event To Location",
           after.locationId,
         );
+        // Add Event to New Location
         await db
         .collection("7777 Locations")
         .doc(after.locationId)
@@ -2156,6 +2163,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "Event Users Num =",
             eventUsersSnapshot.size,
           );
+        // Update the Event Subcollection in Users
         for (var i in eventUsersSnapshot.docs) {
           const id = eventUsersSnapshot.docs[i].id;
           await db
@@ -2328,7 +2336,7 @@ exports.zzzzUserJoinsBrand = functions
           brandDoc,
         );
 
-      // Get Data of the Room
+      // Get Data of the Brand Room
       const roomSnapshot = await db.collection("7777 Rooms").doc(brandDoc.roomId).get();
       const roomDoc = roomSnapshot.data();
 
@@ -2344,12 +2352,14 @@ exports.zzzzUserJoinsBrand = functions
       if (roomDoc.lastMessages != undefined) {
         metadataMessage = roomDoc.lastMessages[0].metadata;
         metadataMessage[userId] = "delivered";
+        // Updates all messages so that they are delivered for new user.
         await db.doc("7777 Rooms" + "/" + brandDoc.roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
           metadata: metadataMessage,
           status: "delivered",
         })
       }
 
+      // Creates metadata for new user and adds it.
       metadataRoom = roomDoc.metadata;
       metadataRoom["trainer" + userId] = userDoc.isTrainer;
       metadataRoom["active" + userId] = false;
@@ -2358,7 +2368,7 @@ exports.zzzzUserJoinsBrand = functions
             userIds: roomDoc.userIds,
       })
 
-      // Add the User Cover Data to Users in Brands Collection
+      // Add the Brand Cover Data to Users/Brands Collection
       let date = new Date();
       let day = date.getDate();
       let month = date.getMonth() + 1;
@@ -2376,30 +2386,30 @@ exports.zzzzUserJoinsBrand = functions
         "myTotalSessions": 0,
       });
       functions.logger.log(
-                "userId",
-                userId,
-              );
+        "userId",
+        userId,
+      );
       // Brand Was Just Created By Admin
       if (brandDoc.adminID == userId) {
         if (userDoc.idioma == "es") {
-        payload = {
-                notification: {
-                  title: "Has creado tu marca "+brandDoc.name,
-                  body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece Mamba",
-                },
-                data: {
-                  route: "SplashScreen1",
-                },
-              };
+          payload = {
+            notification: {
+              title: "Has creado tu marca "+brandDoc.name,
+              body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece Mamba",
+            },
+            data: {
+              route: "BrandPage",
+            },
+          };
         } else {
           payload = {
-                notification: {
-                  title: "Has creat la teva marca "+brandDoc.name,
-                  body: "Ara podràs usar totes les funcionalitats de calendarización, control i gestió que ofereix Mamba",
-                },
-                data: {
-                  route: "SplashScreen1",
-                },
+            notification: {
+              title: "Has creat la teva marca "+brandDoc.name,
+              body: "Ara podràs usar totes les funcionalitats de calendarización, control i gestió que ofereix Mamba",
+            },
+            data: {
+              route: "BrandPage",
+            },
           }
         }
         functions.logger.log(
@@ -2422,7 +2432,7 @@ exports.zzzzUserJoinsBrand = functions
                 body: "Consulta el calendario para participar en tu primera sesión",
               },
               data: {
-                route: "SplashScreen1",
+                route: "BrandPage",
               },
             };
         } else {
@@ -2432,7 +2442,7 @@ exports.zzzzUserJoinsBrand = functions
                 body: "Consulta el calendari per participar en la teva primera sessió",
               },
               data: {
-                route: "SplashScreen1",
+                route: "BrandPage",
               },
             };
         }
@@ -2470,7 +2480,7 @@ exports.zzzzUserJoinsBrand = functions
                   body: "Ya sois un total de "+numberMembers.toString()+" miembros",
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",
                 },
               };
         } else {
@@ -2480,7 +2490,7 @@ exports.zzzzUserJoinsBrand = functions
                   body: "Ja sou un total de "+numberMembers.toString()+" membres",
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",
                 },
           }
         }
@@ -2584,7 +2594,7 @@ exports.zzzzUserLeavesBrand = functions
                 body: "Ahora sois un total de "+numberMembers.toString()+" miembros",
               },
               data: {
-                route: "SplashScreen2",
+                route: "Notifications",
               },
             };
           } else {
@@ -2594,7 +2604,7 @@ exports.zzzzUserLeavesBrand = functions
                 body: "Ara sou un total de "+numberMembers.toString()+" membres",
               },
               data: {
-                route: "SplashScreen2",
+                route: "Notifications",
               },
             }
           }
@@ -2795,7 +2805,7 @@ exports.zzzzUserSendsRequest = functions
                   body: "Enviada el "+requestDoc.dateSent,
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",                
                 },
               };
           } else {
@@ -2805,7 +2815,7 @@ exports.zzzzUserSendsRequest = functions
                   body: "Enviada el "+requestDoc.dateSent,
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",                  
                 },
               }
           }
@@ -3152,7 +3162,7 @@ exports.zzzzUserJoinsEvent = functions
                       body: "Se realizará el "+dateString+" a las "+eventTimeTime,
                     },
                     data: {
-                      route: "SplashScreen2",
+                      route: eventId,
                     },
                   };
                 } else {
@@ -3169,7 +3179,7 @@ exports.zzzzUserJoinsEvent = functions
                       body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
                     },
                     data: {
-                      route: "SplashScreen2",
+                      route: eventId,
                     },
                   };
                 }
@@ -3217,7 +3227,7 @@ exports.zzzzUserJoinsEvent = functions
                         body: "Se realizará el "+dateString+" a las "+eventTimeTime,
                       },
                       data: {
-                        route: "SplashScreen2",
+                        route: eventId,
                       },
                     };
                   } else {
@@ -3234,7 +3244,7 @@ exports.zzzzUserJoinsEvent = functions
                         body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
                       },
                       data: {
-                        route: "SplashScreen2",
+                        route: eventId,
                       },
                     };
                   }
@@ -3277,7 +3287,7 @@ exports.zzzzUserJoinsEvent = functions
                  body: "Se realizará el "+dateString+" a las "+eventTimeTime,
                },
                data: {
-                 route: "SplashScreen2",
+                 route: eventId,
                },
              };
            } else {
@@ -3294,7 +3304,7 @@ exports.zzzzUserJoinsEvent = functions
                  body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
                },
                data: {
-                 route: "SplashScreen2",
+                 route: eventId,
                },
              };
             }

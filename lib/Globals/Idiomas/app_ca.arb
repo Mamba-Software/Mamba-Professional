@@ -325,6 +325,7 @@
   "finishedFeedbackSubtitle": "Gràcies pel teu temps!",
   "sendFeedback": "Enviar",
   "eventFeedbackText": "Què t'ha semblat la sessió?",
+  "eventFeedbackIntesityText": "Indica el teu nivell d'esforç al llarg d'aquesta sessió",
   "sendRequestConfirmation": "Estàs segur que vols enviar una sol·licitud a aquesta marca?\n\nEls organitzadors rebran una notificació. Fins que aquesta no sigui acceptada o rebutjada no podràs enviar una altra sol·licitud a cap marca.",
   "cancelRequestConfirmation": "Vols anul·lar la teva sol·licitud a aquesta marca? Encara no has rebut resposta dels organitzadors.\n\nAquesta canvi tindrà un efecte immediat i ara podràs enviar una sol·licitud a una altra marca.",
   "waitingRequestConfirmation": "Esperant resposta a sol·licitud d'admissió per part de ",
@@ -374,6 +375,10 @@
   "findBrandTrainerText": "Crea la teva marca o uneix-te a una per desbloquejar totes les nostres eines",
   "updateAppTitle": "Nova versió de MAMBA disponible!",
   "updateAppText": "Actualitza l'app per a no perdre't cap novetat i evitar possibles errors.",
+  "mandatoryUpdate": "Actualització obligatòria",
+  "@mandatoryUpdate": {
+    "description": "membersOfBrand message"
+  },
   "shareAppTitle": "Convidar amics",
   "shareAppText": "Comparteix la app amb els teus amics i familiars",
   "shareApp": "Compartir",
@@ -392,8 +397,13 @@
   "goodNightGreeting": "Bona nit,",
   "relaxedFeedbackLabel": "Lleu",
   "tiredFeedbackLabel": "Moderat",
-  "exhaustedFeedbackLabel": "Intens",
+  "veryTiredFeedbackLabel": "Intens",
+  "exhaustedFeedbackLabel": "Exhaustiu",
   "brandInviteDialog": "Has accedit a Mamba amb un link d'invitació a aquesta marca. Si us plau confirma aquesta acció per a unir-te a ells i poder gaudir del seu servei.",
   "selectTypeProfile": "Selecciona el teu perfil",
-  "beforeMovingOn": "Ja quasi estem..."
+  "beforeMovingOn": "Ja quasi estem...",
+  "beforeEventTitleNotification": "⚠️ \uD83C\uDFCB️\u200D♀ {event} a les {horas} \uD83C\uDFCB️\u200D♀ ⚠️ ",
+  "beforeEventBodyNotification": "Aquesta sessió està a punt de començar. Fes clic per a consultar tots els detalls",
+  "afterEventTitleNotification": "\uD83D\uDCAA ✅️ Sessió completada ✅️ \uD83D\uDCAA",
+  "afterEventBodyNotification": "Què t'ha semblat? Massa intensa? Comunica el teu nivell d'esforç al teu entrenador"
 }
