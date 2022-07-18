@@ -5,7 +5,11 @@ import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDateAndTimeDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:flutter/cupertino.dart';
@@ -52,13 +56,14 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   // Location
   Location location = Location();
   // Starting Date and Time
+  DateTime? startDate;
   TextEditingController startDateController = TextEditingController();
   bool errorDate = false;
   Timestamp? doneAt;
   // Duration
-  TextEditingController durationController = TextEditingController();
   String duration = "1.00";
   List<String> durations = ["0.30","0.45","1.00","1.15","1.30","1.45","2.00","2.15","2.30","2.45","3.00"];
+  TextEditingController durationController = TextEditingController();
   // Ubicació
   var ubicacionController =  TextEditingController();
   // Participants
@@ -86,194 +91,65 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   var event;
   var placeDetails;
 
-  Future<void> selectSlot(ctx, type) {
-    // Initial Vars
-    var startDate = DateTime.now();
-    var minimumDate = DateTime.now().subtract(Duration(days: 365));
-    var maximumDate = DateTime.now().add(Duration(days: 365));
-    var title;
-    var initialDuration = 2;
-    var initialMembers = 1;
-    var widgetPicker;
-    // Init for differnt types
-    if (type == 0) {
-      startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
-      // Calcular el horari de la marca
-      // Hora Inactiva Matí
-      var startHourWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
-      var startMinWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[1]);
-      minimumDate = DateTime(startDate.year, startDate.month, startDate.day, startHourWS, startMinWS);
-      if (startDate.isBefore(minimumDate)) {
-        startDate = minimumDate;
-      }
-      // Hora Inactiva Nit
-      var endHourWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
-      var endMinWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
-      var temp = DateTime(startDate.year, startDate.month, startDate.day, endHourWS, endMinWS);
-      maximumDate = temp.add(Duration(days: 365));
-    } else if (type == 1) {
-      initialDuration = durations.indexWhere((element) => element == duration);
-    } else if (type == 2) {
-      initialMembers = members-1;
+  Future selectDateAndTime() async {
+    if (startDate == null) {
+      startDate = DateTime.now();
+      startDate = DateTime(startDate!.year, startDate!.month, startDate!.day, startDate!.hour+1, 0);
     }
-    // Different types of pickers
-    Widget dateTimePicker = CupertinoTheme(
-        data: CupertinoThemeData(
-            textTheme: CupertinoTextThemeData(
-              dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText2,
-            )
-        ),
-        child: CupertinoDatePicker(
-            mode: CupertinoDatePickerMode.dateAndTime,
-            initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-            minimumDate: minimumDate,
-            maximumDate: maximumDate,
-            use24hFormat: true,
-            minuteInterval: 15,
-            onDateTimeChanged: (val) {
-              setState(() {
-                startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(val);
-                startDateController.text = StringUtils().toCapitalized(startDateController.text);
-                oneWeek = val.add(Duration(days: 7));
-                twoWeek = val.add(Duration(days: 14));
-                oneMonth= val.add(Duration(days: 30));
-              });
-            }
+    var pickedDateTemp =  await showCupertinoModalPopup(
+        context: context,
+        builder: (_) => SelectDateAndTimeDialog(
+          title: AppLocalizations.of(context)!.selectDayTime,
+          startDate: startDate!,
+          onlyFuture: true,
         )
     );
-    Widget durationPicker = CupertinoTheme(
-        data: CupertinoThemeData(
-            textTheme: CupertinoTextThemeData(
-              dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText2,
-            )
-        ),
-        child: CupertinoPicker(
-            scrollController: new FixedExtentScrollController(
-                initialItem: initialDuration
-            ),
-            itemExtent: 40.0,
-            backgroundColor: Colors.transparent,
-            onSelectedItemChanged: (int index) {
-              setState(() {
-                duration = durations[index];
-                var hour = durations[index].split(".")[0];
-                var min = durations[index].split(".")[1];
-                durationController.text = "${hour}h ${min}min";
-              });
-            },
-            children: new List<Widget>.generate(
-                durations.length, (int index) {
-              var item = durations[index];
-              var hour = item.split(".")[0];
-              var min = item.split(".")[1];
-              return new Center(
-                child: new Text(
-                  "${hour}h ${min}min",
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-              );
-            }
-            )
-        )
-    );
-    Widget membersPicker = CupertinoTheme(
-        data: CupertinoThemeData(
-            textTheme: CupertinoTextThemeData(
-              dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText2,
-            )
-        ),
-        child: CupertinoPicker(
-            scrollController: new FixedExtentScrollController(
-                initialItem: initialMembers
-            ),
-            itemExtent: 40.0,
-            backgroundColor: Colors.transparent,
-            onSelectedItemChanged: (int index) {
-              setState(() {
-                members = index+1;
-                membersController.text = "${members.toString()}";
-              });
-            },
-            children: new List<Widget>.generate(
-                membersMax, (int index) {
-              var member = index+1;
-              return new Center(
-                child: new Text(
-                  "${member.toString()}",
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-              );
-            }
-            )
-        )
-    );
-    if (type == 0) {
-      title = AppLocalizations.of(context)!.selectDayTime;
-      widgetPicker = dateTimePicker;
-    } else if (type == 1) {
-      title = AppLocalizations.of(context)!.selectDuration;
-      widgetPicker = durationPicker;
-    } else if (type == 2) {
-      title = AppLocalizations.of(context)!.selectMembers;
-      widgetPicker = membersPicker;
+    if (pickedDateTemp != null) {
+      setState(() {
+        startDate = pickedDateTemp;
+        startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(pickedDateTemp);
+        startDateController.text = StringUtils().toCapitalized(startDateController.text);
+        oneWeek = pickedDateTemp.add(Duration(days: 7));
+        twoWeek = pickedDateTemp.add(Duration(days: 14));
+        oneMonth= pickedDateTemp.add(Duration(days: 30));
+      });
     }
-    showCupertinoModalPopup(
-        context: ctx,
-        builder: (_) => Material(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
-          ),
-          child: Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height*0.40,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(
-                        child: Text(title,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,)
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
-                    child: widgetPicker,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 0),
-                      child: TextButton(
-                          child: Text(AppLocalizations.of(context)!.entendido,
-                              style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
-                          onPressed: () {
-                            Navigator.of(ctx).pop();
-                          }
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-              ],
-            ),
-          ),
-        )
-    );
-    return Future.value("");
   }
+
+  Future selectDuration() async {
+    String? pickedDuration =  await showCupertinoModalPopup(
+        context: context,
+        builder: (_) => SelectDurationDialog(
+          title: AppLocalizations.of(context)!.selectDuration,
+          initialDuration: duration,
+        )
+    );
+    if (pickedDuration != null) {
+      setState(() {
+        var hour = pickedDuration.split(".")[0];
+        var min = pickedDuration.split(".")[1];
+        duration = pickedDuration;
+        durationController.text = "${hour}h ${min}min";
+      });
+    }
+  }
+
+  Future selectNumberOfMembers() async {
+    int? pickedMembers =  await showCupertinoModalPopup(
+        context: context,
+        builder: (_) => SelectMembersDialog(
+          title: AppLocalizations.of(context)!.selectMembers,
+          initialMembers: members-1,
+        )
+    );
+    if (pickedMembers != null) {
+      setState(() {
+        members = pickedMembers;
+        membersController.text = "${members.toString()}";
+      });
+    }
+  }
+
 
   @override
   initState() {
@@ -618,7 +494,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                     width: MediaQuery.of(context).size.width*0.70,
                                                     child: GestureDetector(
                                                         onTap: () {
-                                                          selectSlot(context, 0);
+                                                          selectDateAndTime();
                                                         },
                                                         child: Row(
                                                           mainAxisSize: MainAxisSize.max,
@@ -655,7 +531,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                     width: MediaQuery.of(context).size.width*0.30,
                                                     child: GestureDetector(
                                                         onTap: () {
-                                                          selectSlot(context, 1);
+                                                          selectDuration();
                                                         },
                                                         child: Row(
                                                           mainAxisSize: MainAxisSize.max,
@@ -1072,7 +948,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
                                         child: GestureDetector(
                                           onTap: () {
-                                            selectSlot(context, 2);
+                                            selectNumberOfMembers();
                                           },
                                           child: Row(
                                             mainAxisSize: MainAxisSize.max,

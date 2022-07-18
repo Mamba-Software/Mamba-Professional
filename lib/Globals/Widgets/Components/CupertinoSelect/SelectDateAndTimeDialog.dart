@@ -2,19 +2,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class SelectDateTimeDialog extends StatefulWidget {
+class SelectDateAndTimeDialog extends StatefulWidget {
 
   String title;
-  SelectDateTimeDialog({Key? key, required this.title}) : super(key: key);
+  DateTime startDate;
+  bool onlyFuture;
+  SelectDateAndTimeDialog({Key? key, required this.title, required this.startDate, required this.onlyFuture}) : super(key: key);
 
   @override
-  _SelectDateTimeDialogState createState() => _SelectDateTimeDialogState();
+  _SelectDateAndTimeDialogState createState() => _SelectDateAndTimeDialogState();
 }
 
-class _SelectDateTimeDialogState extends State<SelectDateTimeDialog> {
-  // Initial Vars
-  var startDate = DateTime.now();
+class _SelectDateAndTimeDialogState extends State<SelectDateAndTimeDialog> {
+  // Initial Vars  
   var pickedDate = DateTime.now();
+  
+  @override
+  void initState() {
+    pickedDate = widget.startDate;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,13 +63,12 @@ class _SelectDateTimeDialogState extends State<SelectDateTimeDialog> {
                       )
                   ),
                   child: CupertinoDatePicker(
-                      mode: CupertinoDatePickerMode.date,
-                      initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
-                      minimumDate: startDate.subtract(Duration(days: 365*80)),
-                      maximumDate: DateTime(startDate.year, 12, 31, 0, 0),
-                      minimumYear: 1941,
-                      maximumYear: startDate.year,
+                      mode: CupertinoDatePickerMode.dateAndTime,
+                      initialDateTime: DateTime(widget.startDate.year, widget.startDate.month, widget.startDate.day, widget.startDate.hour,widget.startDate.minute),
+                      minimumDate: widget.onlyFuture ? (widget.startDate).subtract(Duration(hours: 1)): widget.startDate.subtract(Duration(days: 365*80)),
+                      maximumDate: DateTime(widget.startDate.year, 12, 31, 0, 0),
                       use24hFormat: true,
+                      minuteInterval: 15,
                       onDateTimeChanged: (val) {
                         pickedDate = val;
                       }
@@ -83,6 +89,7 @@ class _SelectDateTimeDialogState extends State<SelectDateTimeDialog> {
                       ),
                       onPressed: () {
                         Navigator.pop(context, pickedDate);
+
                       }
                   ),
                 ),

@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/DateTime/SelectDateTimeDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDateDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import '../../Data/DataService/BrandDataService.dart';
@@ -68,6 +68,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   bool nickOkay = false;
   bool nickUsed = false;
   // Date Of Birth
+  DateTime startDate = DateTime.now();
   TextEditingController startDateController = TextEditingController();
   String nullDate = "";
   bool errorDate = false;
@@ -89,15 +90,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     //isLoading = true;
   }
 
-  Future getDate() async {
+  Future selectDate() async {
     var pickedDateTemp =  await showCupertinoModalPopup(
         context: context,
-        builder: (_) => SelectDateTimeDialog(
-            title: AppLocalizations.of(context)!.selectDateOfBirth,
+        builder: (_) => SelectDateDialog(
+          title: AppLocalizations.of(context)!.selectDateOfBirth,
+          startDate: startDate,
+          onlyFuture: false,
         )
     );
     if (pickedDateTemp != null) {
       setState(() {
+        startDate = pickedDateTemp;
         startDateController.text = DateTimeUtils().formatDateTimeToStringDDMMYYYY(pickedDateTemp, Localizations.localeOf(context).languageCode);
       });
     }
@@ -678,7 +682,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               if (!currentFocus.hasPrimaryFocus) {
                                                 currentFocus.unfocus();
                                               }
-                                              getDate();
+                                              selectDate();
                                             },
                                             child: Row(
                                               mainAxisSize: MainAxisSize.max,

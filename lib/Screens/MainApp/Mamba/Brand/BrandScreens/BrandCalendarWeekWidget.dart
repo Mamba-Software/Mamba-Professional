@@ -36,7 +36,7 @@ class _BrandCalendarWeekWidgetState extends State<BrandCalendarWeekWidget> {
   // AlL Events From User
   List<Event> eventsList = [];
   List<Appointment> allAppointments = <Appointment>[];
-  // DateTime Limits for Week
+  // CupertinoSelect Limits for Week
   DateTime now = DateTime.now();
   DateTime startWeek = DateTime.now();
   DateTime endWeek = DateTime.now();

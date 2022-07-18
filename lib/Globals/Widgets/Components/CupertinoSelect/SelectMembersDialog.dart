@@ -1,0 +1,114 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+class SelectMembersDialog extends StatefulWidget {
+
+  String title;
+  int initialMembers;
+  SelectMembersDialog({Key? key, required this.title, required this.initialMembers}) : super(key: key);
+
+  @override
+  _SelectMembersDialogState createState() => _SelectMembersDialogState();
+}
+
+class _SelectMembersDialogState extends State<SelectMembersDialog> {
+
+  // Initial Vars
+  int pickedMembers = 0;
+  int membersMax = 100;
+
+  @override
+  void initState() {
+    pickedMembers = widget.initialMembers;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+      ),
+      child: Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height*0.40,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                    child: Text(
+                      widget.title,
+                      style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center
+                    )
+                ),
+              ],
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
+                child: CupertinoTheme(
+                    data: CupertinoThemeData(
+                        textTheme: CupertinoTextThemeData(
+                          dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText2,
+                        )
+                    ),
+                    child: CupertinoPicker(
+                        scrollController: new FixedExtentScrollController(
+                            initialItem: widget.initialMembers
+                        ),
+                        itemExtent: 40.0,
+                        backgroundColor: Colors.transparent,
+                        onSelectedItemChanged: (int index) {
+                          pickedMembers = index+1;
+                        },
+                        children: new List<Widget>.generate(
+                            membersMax, (int index) {
+                          var member = index+1;
+                          return new Center(
+                            child: new Text(
+                              "${member.toString()}",
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                          );
+                        }
+                        )
+                    )
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 0),
+                  child: TextButton(
+                      child: Text(
+                          AppLocalizations.of(context)!.entendido,
+                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context, pickedMembers);
+                      }
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+          ],
+        ),
+      ),
+    );
+  }
+}

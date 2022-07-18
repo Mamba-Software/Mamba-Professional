@@ -133,7 +133,7 @@ class LocalNotificationService {
         android: getAndroidNotificationDetails(),
         iOS: getIOSNotificationDetails()
     );
-    // Getting DateTimeTZ from DateTime scheduleNotifTime
+    // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
     final location = tz.getLocation(timeZoneName!);
     final scheduledDate = tz.TZDateTime.from(notification.firesAt!, location);    
     // Get Event
@@ -292,7 +292,7 @@ class LocalNotificationService {
         android: getAndroidNotificationDetails(),
         iOS: getIOSNotificationDetails()
     );
-    // Getting DateTimeTZ from DateTime scheduleNotifTime
+    // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
     final location = tz.getLocation(timeZoneName!);
     final scheduledDate = tz.TZDateTime.from(notification.firesAt!, location);
     // Add Notification Firebase
@@ -339,7 +339,7 @@ class LocalNotificationService {
         createdAt: Timestamp.now(),
         firesAt: afterDate,
       );
-      // Getting DateTimeTZ from DateTime scheduleNotifTime
+      // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
       final location = tz.getLocation(timeZoneName!);
       final scheduledDate = tz.TZDateTime.from(notificationAfter.firesAt!, location);
       // Add Notification Firebase
@@ -371,7 +371,7 @@ class LocalNotificationService {
       createdAt: Timestamp.now(),
       firesAt: beforeDate,
     );
-    // Getting DateTimeTZ from DateTime scheduleNotifTime
+    // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
     final location = tz.getLocation(timeZoneName!);
     final scheduledDate = tz.TZDateTime.from(notificationBefore.firesAt!, location);
     // Add Notification Firebase
