@@ -52,7 +52,6 @@ class _MambaState extends State<Mamba> {
     localNotificationService.initialize();
     handleAndlistenNotifications(context);
     // Firebase Cloud Messaging Notifications
-    /// Message on which User has tapped from Terminated State
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
         print("App in Terminated State Notification Trigger HomePage");
@@ -80,37 +79,6 @@ class _MambaState extends State<Mamba> {
       String route = message.data["route"];
       // Handling OnClickNotification Firebase Messaging Notification
       localNotificationService.onClickedNotification(context, route);
-      /*
-      final route = message.data["route"];
-      if (route == "SplashScreen1") {
-        String routeFromMessage = route.substring(0, route.length - 1);;
-        currentIndex = int.parse(route[route.length-1]);
-        Navigator.of(context).pushNamedAndRemoveUntil(routeFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
-      } else {
-        if (ModalRoute.of(context)!.isCurrent) {
-          print("Top Page, Moving to Notifications Page");
-          currentIndex = int.parse(route[route.length-1]);
-          if (currentIndex == 2) {
-            Navigator.of(context).pushNamedAndRemoveUntil("Notifications", (Route<dynamic> route) => false, arguments: currentIndex);
-          } else if (currentIndex == 3) {
-            Navigator.of(context).pushNamedAndRemoveUntil("Chat", (Route<dynamic> route) => false, arguments: currentIndex);
-          } else {
-            pageController.jumpToPage(currentIndex);
-          }
-        } else {
-          print("Not in Home Page, Moving to Splash Screen");
-          String routeFromMessage = route.substring(0, route.length - 1);;
-          currentIndex = int.parse(route[route.length-1]);
-          if (currentIndex == 2) {
-            Navigator.of(context).pushNamedAndRemoveUntil("Notifications", (Route<dynamic> route) => false, arguments: currentIndex);
-          } else if (currentIndex == 3) {
-            Navigator.of(context).pushNamedAndRemoveUntil("Chat", (Route<dynamic> route) => false, arguments: currentIndex);
-          } else {
-            Navigator.of(context).pushNamedAndRemoveUntil(routeFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
-          }
-        }
-      }
-       */
     });
     // Listen Dynamic Link Foreground / Background State
     FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
@@ -129,33 +97,59 @@ class _MambaState extends State<Mamba> {
 
   // On StartUp Dialogs
   Future<void> launchOnStartUpDialogs() async {
+    // First check if minimum version
+    print("Checking Minimum App Version...");
+    checkMinimumAppVersion();
+    print("Checking if invited into Brand...");
+    // Check if invited into Brand
+    checkBrandInvite();
+    print("Checking Notification Permissions...");
     // Check Notification Permissions
     var notificationString = await PermisionsService().checkUserNotificationsPermision();
     if (notificationString == "Provisional" || notificationString == "Unknown") {
       await PermisionsService().askUserNotificationsPermision();
     }
+    print("Checking Location Permissions...");
     // Check Location Permissions
     await PermisionsService().getUserLocation();
-    // First check if minimum version
-    checkMinimumAppVersion();
-    // Check if invited into Brand
-    checkBrandInvite();
+
   }
 
   // Check version and Update App Dialog
   void checkMinimumAppVersion() async {
     // Check version
-    bool result = await _settingsDataService.checkIfMinimumAppVersion(appVersion);
-    if (result == false) {
-      // Start up Dialog
-      Future.delayed(Duration.zero, () {
-        return showDialog(
+    List<bool> result = await _settingsDataService.checkIfMinimumAppVersion(appVersion);
+    print(result[0]);
+    print(result[1]);
+    //if (result[0] == false) {
+    if (true) {
+      if (result[1]) {
+        Future.delayed(Duration.zero, () {
+          showDialog(
             context: context,
-            builder: (_) {
-              return AppUpdateDialog();
-            }
-        );
-      });
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return WillPopScope(
+                onWillPop: () async => false,
+                child: AppUpdateDialog(
+                  isMandatory: true,
+                ),
+              );
+            },
+          );
+        });
+      } else {
+        Future.delayed(Duration.zero, () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AppUpdateDialog(
+                isMandatory: false,
+              );
+            },
+          );
+        });
+      }
     }
   }
 

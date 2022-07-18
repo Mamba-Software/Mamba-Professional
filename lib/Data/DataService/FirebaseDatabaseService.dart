@@ -152,16 +152,18 @@ class FirebaseDatabaseService {
       return false;
   }
 
-  Future<bool> checkIfMinimumAppVersion(String clientAppVersion) async {
+  Future<List<bool>> checkIfMinimumAppVersion(String clientAppVersion) async {
     // Get Minimum Version from Settings Collection
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Settings").doc("MinimumAppVersion").get();
     String minimumAppVersion = _documentSnapshot.get("version");
-    print(minimumAppVersion);
-    print(clientAppVersion);
+    bool isMandatory = _documentSnapshot.get("isMandatory");
+    List<bool> result = [isMandatory];
     if (clientAppVersion == minimumAppVersion) {
-      return true;
+      result.insert(0, true);
+      return result;
     } else {
-      return false;
+      result.insert(0, false);
+      return result;
     }
   }
 

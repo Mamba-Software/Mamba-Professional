@@ -1712,6 +1712,10 @@
   "@updateAppText": {
     "description": "membersOfBrand message"
   },
+  "mandatoryUpdate": "Actualización obligatoria",
+  "@mandatoryUpdate": {
+    "description": "membersOfBrand message"
+  },
   "shareAppTitle": "Invitar amigos",
   "@shareAppTitle": {
     "description": "membersOfBrand message"

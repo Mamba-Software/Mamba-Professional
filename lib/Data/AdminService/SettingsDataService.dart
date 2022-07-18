@@ -6,7 +6,7 @@ class SettingsDataService {
   final _firebase = FirebaseDatabaseService();
 
   // Check Data
-  Future<bool> checkIfMinimumAppVersion(String clientAppVersion) => _firebase.checkIfMinimumAppVersion(clientAppVersion);
+  Future<List<bool>> checkIfMinimumAppVersion(String clientAppVersion) => _firebase.checkIfMinimumAppVersion(clientAppVersion);
 
   // Get Data
 
