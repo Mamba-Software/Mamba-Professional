@@ -153,29 +153,34 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                   switch (settings.name) {
                     case 'SplashScreen':
                       return CupertinoPageRoute(
-                          builder: (_) => SplashScreen(), settings: settings
+                          builder: (_) => SplashScreen(),
+                          settings: RouteSettings(name: 'SplashScreen'),
                       );
                     case 'Notifications':
                       return CupertinoPageRoute(
-                          builder: (_) => Notifications(), settings: settings
+                          builder: (_) => Notifications(),
+                          settings: RouteSettings(name: 'Notifications'),
                       );
                     case 'Chat':
                       return CupertinoPageRoute(
-                          builder: (_) => ChatCore(), settings: settings
+                          builder: (_) => ChatCore(),
+                          settings: RouteSettings(name: 'ChatCore'),
                       );
                     case 'EventPage':
                       String eventId = args as String;
                       return CupertinoPageRoute(
                           builder: (_) => EventPage(
                             eventId: eventId,
-                          ), settings: settings
+                          ),
+                          settings: RouteSettings(name: 'EventPage'),
                       );
                     case 'EventFeedbackPage':
                       String eventId = args as String;
                       return CupertinoPageRoute(
                           builder: (_) => EventFeedback(
                             eventId: eventId,
-                          ), settings: settings
+                          ),
+                          settings: RouteSettings(name: 'EventFeedback'),
                       );
                   }
                 },

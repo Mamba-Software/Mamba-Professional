@@ -2398,7 +2398,7 @@ exports.zzzzUserJoinsBrand = functions
               body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece Mamba",
             },
             data: {
-              route: "SplashScreen1",
+              route: "BrandPage",
             },
           };
         } else {
@@ -2408,7 +2408,7 @@ exports.zzzzUserJoinsBrand = functions
               body: "Ara podràs usar totes les funcionalitats de calendarización, control i gestió que ofereix Mamba",
             },
             data: {
-              route: "SplashScreen1",
+              route: "BrandPage",
             },
           }
         }
@@ -2432,7 +2432,7 @@ exports.zzzzUserJoinsBrand = functions
                 body: "Consulta el calendario para participar en tu primera sesión",
               },
               data: {
-                route: "SplashScreen1",
+                route: "BrandPage",
               },
             };
         } else {
@@ -2442,7 +2442,7 @@ exports.zzzzUserJoinsBrand = functions
                 body: "Consulta el calendari per participar en la teva primera sessió",
               },
               data: {
-                route: "SplashScreen1",
+                route: "BrandPage",
               },
             };
         }
@@ -2480,7 +2480,7 @@ exports.zzzzUserJoinsBrand = functions
                   body: "Ya sois un total de "+numberMembers.toString()+" miembros",
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",
                 },
               };
         } else {
@@ -2490,7 +2490,7 @@ exports.zzzzUserJoinsBrand = functions
                   body: "Ja sou un total de "+numberMembers.toString()+" membres",
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",
                 },
           }
         }
@@ -2594,7 +2594,7 @@ exports.zzzzUserLeavesBrand = functions
                 body: "Ahora sois un total de "+numberMembers.toString()+" miembros",
               },
               data: {
-                route: "SplashScreen2",
+                route: "Notifications",
               },
             };
           } else {
@@ -2604,7 +2604,7 @@ exports.zzzzUserLeavesBrand = functions
                 body: "Ara sou un total de "+numberMembers.toString()+" membres",
               },
               data: {
-                route: "SplashScreen2",
+                route: "Notifications",
               },
             }
           }
@@ -3162,7 +3162,7 @@ exports.zzzzUserJoinsEvent = functions
                       body: "Se realizará el "+dateString+" a las "+eventTimeTime,
                     },
                     data: {
-                      route: "SplashScreen2",
+                      route: eventId,
                     },
                   };
                 } else {
@@ -3179,7 +3179,7 @@ exports.zzzzUserJoinsEvent = functions
                       body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
                     },
                     data: {
-                      route: "SplashScreen2",
+                      route: eventId,
                     },
                   };
                 }
@@ -3227,7 +3227,7 @@ exports.zzzzUserJoinsEvent = functions
                         body: "Se realizará el "+dateString+" a las "+eventTimeTime,
                       },
                       data: {
-                        route: "SplashScreen2",
+                        route: eventId,
                       },
                     };
                   } else {
@@ -3244,7 +3244,7 @@ exports.zzzzUserJoinsEvent = functions
                         body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
                       },
                       data: {
-                        route: "SplashScreen2",
+                        route: eventId,
                       },
                     };
                   }
@@ -3287,7 +3287,7 @@ exports.zzzzUserJoinsEvent = functions
                  body: "Se realizará el "+dateString+" a las "+eventTimeTime,
                },
                data: {
-                 route: "SplashScreen2",
+                 route: eventId,
                },
              };
            } else {
@@ -3304,7 +3304,7 @@ exports.zzzzUserJoinsEvent = functions
                  body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
                },
                data: {
-                 route: "SplashScreen2",
+                 route: eventId,
                },
              };
             }

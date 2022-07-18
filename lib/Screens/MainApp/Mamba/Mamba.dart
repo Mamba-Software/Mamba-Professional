@@ -64,6 +64,8 @@ class _MambaState extends State<Mamba> {
     // If App in Foreground.
     FirebaseMessaging.onMessage.listen((message) {
       print("App in Foreground Notification Trigger HomePage");
+      print("route ... ");
+      print(message.data["route"]);
       ReceivedNotification notif = ReceivedNotification(
         id: DateTime.now().millisecondsSinceEpoch ~/1000,
         title: message.notification!.title,
@@ -353,6 +355,7 @@ class _MambaState extends State<Mamba> {
       currentIndex = value;
     });
     pageController.jumpToPage(value);
+    print(ModalRoute.of(context)?.settings.name);
   }
 }
 

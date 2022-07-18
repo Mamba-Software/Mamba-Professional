@@ -90,7 +90,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   context,
                   CupertinoPageRoute<Null>(
                     builder: (context) => Mamba(),
-                    settings: RouteSettings(name: 'HomePage'),
+                    settings: RouteSettings(name: 'Mamba'),
                   )
               );
             } else {
@@ -99,10 +99,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   CupertinoPageRoute<Null>(
                     builder: (context) =>
                     OnboardingScreen(),
-                      /*FirstTime(
-                          locale: Localizations.localeOf(context),
-                        ),*/
-                    settings: RouteSettings(name: 'FirstTimeWrapper'),
+                    settings: RouteSettings(name: 'OnboardingScreen'),
                   )
               );
             }
@@ -153,21 +150,15 @@ class _SplashScreenState extends State<SplashScreen> {
                 context,
                 CupertinoPageRoute<Null>(
                   builder: (context) => Mamba(),
-                  settings: RouteSettings(name: 'HomePage'),
+                  settings: RouteSettings(name: 'Mamba'),
                 )
             );
           } else {
             Navigator.pushReplacement(
                 context,
                 CupertinoPageRoute<Null>(
-                  builder: (context) =>
-                      OnboardingScreen(),
-                  /*
-                  FirstTime(
-                        locale: Localizations.localeOf(context),
-                      ),
-                   */
-                  settings: RouteSettings(name: 'FirstTimeWrapper'),
+                  builder: (context) => OnboardingScreen(),
+                  settings: RouteSettings(name: 'OnboardingScreen'),
                 )
             );
           }
