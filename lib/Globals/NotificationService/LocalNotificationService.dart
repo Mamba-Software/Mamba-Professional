@@ -171,28 +171,37 @@ class LocalNotificationService {
   }
 
   // onClickedNotification handles Redirection of Notification
-  Future<void> onClickedNotification(BuildContext context, [String? payload, ReceivedNotification? notification]) async {
+  Future<void> onClickedNotification(BuildContext context, String payload) async {
     // Two types of Notifications:
     //      LocalNotifications only send String payload
     //      Remote Firebase Notifications we send the whole Notification with Arguments
-
-    // FIRST CASE: Local Notifications
-    if (payload != null && notification == null) {
-      String payloadFeedback = payload.substring(0,2);
-      String payloadSubString = payload.substring(2);
-      bool isFeedback = payloadFeedback == "F-";
-      if (isFeedback) {
-        print("Feedback Event Page");
-        await Navigator.of(context).pushNamed("EventFeedbackPage", arguments: payloadSubString);
-        pageController.jumpToPage(2);
-      } else {
-        print("Event Page");
-        await Navigator.of(context).pushNamed("EventPage", arguments: payload);
-      }
-    } else
-    // SECOND CASE: Firebase Cloud Notifications
-    if (notification != null && payload == null) {
-
+    switch (payload) {
+      case "SplashScreen":
+        currentIndex = 0;
+        await Navigator.of(context).pushNamedAndRemoveUntil("SplashScreen", (Route<dynamic> route) => false, arguments: currentIndex);
+        break;
+      case "Notifications":
+        await Navigator.of(context).pushNamed("Notifications", arguments: 0);
+        pageController.jumpToPage(0);
+        break;
+      case "Chat":
+        await Navigator.of(context).pushNamed("Chat", arguments: 0);
+        pageController.jumpToPage(0);
+        break;
+      default:
+        String payloadFeedback = payload.substring(0,2);
+        String payloadSubString = payload.substring(2);
+        bool isFeedback = payloadFeedback == "F-";
+        if (isFeedback) {
+          print("Feedback Event Page");
+          await Navigator.of(context).pushNamed("EventFeedbackPage", arguments: payloadSubString);
+          // Jump to Page 2, Feedback
+          pageController.jumpToPage(2);
+        } else {
+          print("Event Page");
+          await Navigator.of(context).pushNamed("EventPage", arguments: payload);
+        }
+        break;
     }
   }
 
@@ -200,7 +209,7 @@ class LocalNotificationService {
   Future<void> didNotificationLaunch(BuildContext context) async {
     NotificationAppLaunchDetails? notificationAppLaunchDetails = await _notificationsPlugin.getNotificationAppLaunchDetails();
     if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
-      onClickedNotification(context, notificationAppLaunchDetails!.payload);
+      onClickedNotification(context, notificationAppLaunchDetails!.payload!);
     }
   }
 

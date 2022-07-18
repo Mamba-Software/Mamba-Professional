@@ -2805,7 +2805,7 @@ exports.zzzzUserSendsRequest = functions
                   body: "Enviada el "+requestDoc.dateSent,
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",                
                 },
               };
           } else {
@@ -2815,7 +2815,7 @@ exports.zzzzUserSendsRequest = functions
                   body: "Enviada el "+requestDoc.dateSent,
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",                  
                 },
               }
           }

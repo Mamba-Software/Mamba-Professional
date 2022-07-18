@@ -56,9 +56,9 @@ class _MambaState extends State<Mamba> {
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
         print("App in Terminated State Notification Trigger HomePage");
-        final route = message.data["route"];
-        currentIndex = int.parse(route[route.length-1]);
-        pageController.jumpToPage(currentIndex);
+        String route = message.data["route"];
+        // Handling OnClickNotification Firebase Messaging Notification
+        localNotificationService.onClickedNotification(context, route);
       }
     });
     // If App in Foreground.
@@ -68,20 +68,16 @@ class _MambaState extends State<Mamba> {
         id: DateTime.now().millisecondsSinceEpoch ~/1000,
         title: message.notification!.title,
         body: message.notification!.body,
-        payload: message.data["payload"],
+        payload: message.data["route"],
       );
       localNotificationService.showNotification(notif);
     });
     // If App in Background, Tap on Notification to be Opened
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       print("App in Background Notification Trigger HomePage");
-      ReceivedNotification notif = ReceivedNotification(
-        id: DateTime.now().millisecondsSinceEpoch ~/1000,
-        title: message.notification!.title,
-        body: message.notification!.body,
-        payload: message.data["payload"],
-      );
-      localNotificationService.onClickedNotification(context, notif.payload);
+      String route = message.data["route"];
+      // Handling OnClickNotification Firebase Messaging Notification
+      localNotificationService.onClickedNotification(context, route);
       /*
       final route = message.data["route"];
       if (route == "SplashScreen1") {
@@ -204,7 +200,7 @@ class _MambaState extends State<Mamba> {
     await localNotificationService.handleLocalNotifications(context);
     // Listen to the Notifications Stream
     localNotificationService.onNotifications.stream.listen(
-        (payload) => localNotificationService.onClickedNotification(context, payload)
+        (payload) => localNotificationService.onClickedNotification(context, payload!)
     );
   }
 
