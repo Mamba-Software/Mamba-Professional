@@ -121,8 +121,7 @@ class _MambaState extends State<Mamba> {
     List<bool> result = await _settingsDataService.checkIfMinimumAppVersion(appVersion);
     print(result[0]);
     print(result[1]);
-    //if (result[0] == false) {
-    if (true) {
+    if (result[0] == false) {
       if (result[1]) {
         Future.delayed(Duration.zero, () {
           showDialog(
