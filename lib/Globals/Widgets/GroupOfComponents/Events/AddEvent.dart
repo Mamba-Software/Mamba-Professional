@@ -990,6 +990,52 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                         ),
                                       ),
                                       Padding(
+                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: MediaQuery.of(context).size.width*0.1, right: MediaQuery.of(context).size.width*0.05),
+                                          child: new Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: <Widget>[
+                                              new Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  new Text(
+                                                    AppLocalizations.of(context)!.addDesignatedClients,
+                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          )
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                                        child: GestureDetector(
+                                          onTap: () {
+
+                                          },
+                                          child: Container(
+                                            height: MediaQuery.of(context).size.height*0.17,
+                                            width: MediaQuery.of(context).size.width*0.17,
+                                            decoration: new BoxDecoration(
+                                              color: Colors.transparent,
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color: Theme.of(context).primaryColor,
+                                                  style: BorderStyle.solid,
+                                              ),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.add,
+                                                color: Theme.of(context).primaryColor,
+                                                size:  MediaQuery.of(context).size.width*0.05
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
                                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02, left: MediaQuery.of(context).size.width*0.03, right: MediaQuery.of(context).size.width*0.05),
                                         child: TextButton(
                                           onPressed: brandClientsSelected.length < members ? () async {
