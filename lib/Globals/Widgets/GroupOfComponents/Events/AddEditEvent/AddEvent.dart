@@ -11,6 +11,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/S
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/SelectTrainersEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAutoComplete/MyLocationsSelect.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/SelectClientsEvent.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/SelectClientsEvent.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -78,9 +79,10 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   final values = <bool?>[false, false, false, false, false, false, false];
   int _value = 1;
   // Members Page
-  List<Usuario> brandTrainers = [];
-  List<bool> brandTrainersSelected = [];
+  // Trainers
+  List<Usuario> brandTrainersSelected = [];
   bool errorNoTrainerSelected = false;
+  // Clients
   bool errorClientsSelected = false;
   List<Usuario> brandClientsSelected = [];
   // Form To Validate User
@@ -90,6 +92,56 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   // Event Retrieved From BD
   var event;
   var placeDetails;
+
+
+
+  @override
+  initState() {
+    isLoading = true;
+    _tabController = TabController(length: 3, vsync: this);
+    getEventInfo();
+  }
+
+  Future<void> getEventInfo() async {
+    if (widget.initialDateTime != null) {
+      startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(widget.initialDateTime!);
+      startDateController.text = StringUtils().toCapitalized(startDateController.text);
+      oneWeek = widget.initialDateTime!.add(Duration(days: 7));
+      twoWeek = widget.initialDateTime!.add(Duration(days: 14));
+      oneMonth= widget.initialDateTime!.add(Duration(days: 30));
+      doneAt = Timestamp.fromDate(widget.initialDateTime!);
+    } else {
+      var startDate = DateTime.now();
+      doneAt = Timestamp.fromDate(startDate);
+      startDate = DateTime(
+        startDate.year,
+        startDate.month,
+        startDate.day,
+        startDate.hour+1,
+        0,
+      );
+      startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(startDate);
+      startDateController.text = StringUtils().toCapitalized(startDateController.text);
+      oneWeek = startDate.add(Duration(days: 7));
+      twoWeek = startDate.add(Duration(days: 14));
+      oneMonth= startDate.add(Duration(days: 30));
+    }
+    titleController.text = "${currentBrand.name!.replaceAll(RegExp(r"\s+"), "")}";
+    titleString = titleController.text;
+    var hour = durations[2].split(".")[0];
+    var min = durations[2].split(".")[1];
+    durationController.text = "${hour}h ${min}min";
+    membersController.text = "${members.toString()}";
+    brandTrainersSelected.add(currentUser);
+    getLocation(currentBrand.baseLocation!);
+  }
+
+  Future<void> getLocation(String locationId) async {
+    location = await _locationDataService.getSingleLocation(locationId);
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   Future selectDateAndTime() async {
     if (startDate == null) {
@@ -150,65 +202,149 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     }
   }
 
-
-  @override
-  initState() {
-    isLoading = true;
-    _tabController = TabController(length: 3, vsync: this);
-    if (widget.initialDateTime != null) {
-      startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(widget.initialDateTime!);
-      startDateController.text = StringUtils().toCapitalized(startDateController.text);
-      oneWeek = widget.initialDateTime!.add(Duration(days: 7));
-      twoWeek = widget.initialDateTime!.add(Duration(days: 14));
-      oneMonth= widget.initialDateTime!.add(Duration(days: 30));
-      doneAt = Timestamp.fromDate(widget.initialDateTime!);
-    } else {
-      var startDate = DateTime.now();
-      doneAt = Timestamp.fromDate(startDate);
-      startDate = DateTime(
-        startDate.year,
-        startDate.month,
-        startDate.day,
-        startDate.hour+1,
-        0,
+  Widget buildAddUserButton(bool isTrainer) {
+    if (isTrainer) {
+      return GestureDetector(
+        onTap: () async {
+          List<Usuario>? selectedTrainers = await Navigator.push(
+              context,
+              CupertinoPageRoute<List<Usuario>>(
+                builder: (context) => SelectTrainersEvent(
+                  selectedTrainers: brandClientsSelected,
+                ),
+              )
+          );
+          if (selectedTrainers != null) {
+            setState(() {
+              brandTrainersSelected = selectedTrainers;
+              errorNoTrainerSelected = false;
+            });
+          }
+        }, //: null,
+        child: Padding(
+          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0),
+          child: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.width*0.17,
+                  width: MediaQuery.of(context).size.width*0.17,
+                  decoration: new BoxDecoration(
+                    color: Theme.of(context).backgroundColor,
+                    border: Border.all(
+                      width: 1,
+                      color: Theme.of(context).primaryColor,
+                      style: BorderStyle.solid,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context).primaryColor.withOpacity(0.1),
+                        spreadRadius: 3,
+                        blurRadius: 4,
+                      ),
+                    ],
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Icon(
+                        Icons.person_add_alt_1,
+                        color: Theme.of(context).primaryColor,
+                        size:  MediaQuery.of(context).size.width*0.05
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.width*0.025),
+                Container(
+                  width: MediaQuery.of(context).size.width*0.2,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.add,
+                        style: Theme.of(context).textTheme.bodyText2,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       );
-      startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(startDate);
-      startDateController.text = StringUtils().toCapitalized(startDateController.text);
-      oneWeek = startDate.add(Duration(days: 7));
-      twoWeek = startDate.add(Duration(days: 14));
-      oneMonth= startDate.add(Duration(days: 30));
+    } else {
+      return GestureDetector(
+        onTap: () async {
+          List<Usuario>? selectedClients = await Navigator.push(
+              context,
+              CupertinoPageRoute<List<Usuario>>(
+                builder: (context) => SelectClientsEvent(
+                  selectedUsers: brandClientsSelected,
+                  maxClients: members,
+                ),
+              )
+          );
+          if (selectedClients != null) {
+            setState(() {
+              brandClientsSelected = selectedClients;
+              errorClientsSelected = false;
+            });
+          }
+        },
+        child: Padding(
+          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0),
+          child: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.width*0.17,
+                  width: MediaQuery.of(context).size.width*0.17,
+                  decoration: new BoxDecoration(
+                    color: Theme.of(context).backgroundColor,
+                    border: Border.all(
+                      width: 1,
+                      color: Theme.of(context).primaryColor,
+                      style: BorderStyle.solid,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context).primaryColor.withOpacity(0.1),
+                        spreadRadius: 3,
+                        blurRadius: 4,
+                      ),
+                    ],
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Icon(
+                        Icons.person_add_alt_1,
+                        color: Theme.of(context).primaryColor,
+                        size:  MediaQuery.of(context).size.width*0.05
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.width*0.025),
+                Container(
+                  width: MediaQuery.of(context).size.width*0.2,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.add,
+                        style: Theme.of(context).textTheme.bodyText2,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
     }
-    titleController.text = "${currentBrand.name!.replaceAll(RegExp(r"\s+"), "")}";
-    titleString = titleController.text;
-    var hour = durations[2].split(".")[0];
-    var min = durations[2].split(".")[1];
-    durationController.text = "${hour}h ${min}min";
-    membersController.text = "${members.toString()}";
-    getAllTrainersFromBrand();
-    getLocation(currentBrand.baseLocation!);
-  }
-
-  Future<void> getAllTrainersFromBrand() async {
-    brandTrainers = await _brandDataService.getBrandTrainers(currentBrand.id!);
-    print(brandTrainers.length);
-    for (var i=0; i < brandTrainers.length; i++) {
-      Usuario trainer = brandTrainers[i];
-      if (trainer.id == currentUser.id) {
-        brandTrainersSelected.add(true);
-      } else {
-        brandTrainersSelected.add(false);
-      }
-    }
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  Future<void> getLocation(String locationId) async {
-    location = await _locationDataService.getSingleLocation(locationId);
-    setState(() {
-      isLoading = false;
-    });
   }
 
   @override
@@ -783,95 +919,51 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
-                                                GestureDetector(
-                                                  onTap: (brandClientsSelected.length) < members ? () async {
-                                                    List<Usuario>? selectedClients = await Navigator.push(
-                                                        context,
-                                                        CupertinoPageRoute<List<Usuario>>(
-                                                          builder: (context) => SelectClientsEvent(
-                                                            selectedUsers: brandClientsSelected,
-                                                            maxClients: members,
-                                                          ),
-                                                        )
-                                                    );
-                                                    if (selectedClients != null) {
-                                                      setState(() {
-                                                        brandClientsSelected = selectedClients;
-                                                        errorClientsSelected = false;
-                                                      });
-                                                    }
-                                                  } : null,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0),
-                                                    child: Container(
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          Container(
-                                                            height: MediaQuery.of(context).size.width*0.17,
-                                                            width: MediaQuery.of(context).size.width*0.17,
-                                                            decoration: new BoxDecoration(
-                                                              color: Colors.transparent,
-                                                              border: Border.all(
-                                                                width: 1,
-                                                                color: Theme.of(context).accentColor,
-                                                                style: BorderStyle.solid,
-                                                              ),
-                                                              shape: BoxShape.circle,
-                                                            ),
-                                                            child: Center(
-                                                              child: Icon(
-                                                                  Icons.person_add_alt_1,
-                                                                  color: Theme.of(context).accentColor,
-                                                                  size:  MediaQuery.of(context).size.width*0.05
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(height: MediaQuery.of(context).size.width*0.025),
-                                                          Container(
-                                                            width: MediaQuery.of(context).size.width*0.2,
-                                                            child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                Text(
-                                                                  AppLocalizations.of(context)!.add,
-                                                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).accentColor),
-                                                                  textAlign: TextAlign.center,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
+                                                buildAddUserButton(true),
                                                 Container(
                                                   height: MediaQuery.of(context).size.height*0.15,
-                                                  width: MediaQuery.of(context).size.width,
                                                   child: ListView.builder(
                                                       shrinkWrap: true,
-                                                      physics: BouncingScrollPhysics(),
+                                                      physics: NeverScrollableScrollPhysics(),
                                                       scrollDirection: Axis.horizontal,
-                                                      itemCount: brandTrainers.length,
+                                                      itemCount: brandTrainersSelected.length,
                                                       itemBuilder: (context, int index) {
-                                                        var trainer = brandTrainers[index];
+                                                        var trainer = brandTrainersSelected[index];
                                                         return GestureDetector(
                                                           onTap: () {
+                                                            var temp = brandTrainersSelected;
+                                                            temp.remove(trainer);
                                                             setState(() {
-                                                              brandTrainersSelected[index] = !brandTrainersSelected[index];
+                                                              brandTrainersSelected = temp;
                                                             });
                                                           },
                                                           child: Padding(
-                                                            padding: !(index == 0 || index == brandTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: brandTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                                            padding: !(index == brandTrainersSelected.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : EdgeInsets.only(right: brandTrainersSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                                             child: Column(
                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                               children: [
-                                                                CircularImage(
-                                                                  size: MediaQuery.of(context).size.width*0.17,
-                                                                  image: trainer.imageUrl,
-                                                                  color: Theme.of(context).primaryColor,
-                                                                  borderWidth: 1,
+                                                                Stack(
+                                                                  alignment: Alignment.topRight,
+                                                                  children: [
+                                                                    CircularImage(
+                                                                      size: MediaQuery.of(context).size.width*0.17,
+                                                                      image: trainer.imageUrl,
+                                                                      color: Theme.of(context).primaryColor,
+                                                                      borderWidth: 1,
+                                                                    ),
+                                                                    Positioned(
+                                                                      top: 0,
+                                                                      left: MediaQuery.of(context).size.width*0.12,
+                                                                      child: CircleAvatar(
+                                                                        backgroundColor: AppColors.red,
+                                                                        radius: MediaQuery.of(context).size.width*0.025,
+                                                                        child: Icon(Icons.clear, color: AppColors.white, size: MediaQuery.of(context).size.width*0.035,),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                SizedBox(
+                                                                  height: MediaQuery.of(context).size.width*0.02,
                                                                 ),
                                                                 Container(
                                                                   width: MediaQuery.of(context).size.width*0.2,
@@ -882,26 +974,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                                         trainer.firstName!,
                                                                         style: Theme.of(context).textTheme.bodyText2,
                                                                         textAlign: TextAlign.center,
-                                                                      ),
-                                                                      SizedBox(
-                                                                        width: MediaQuery.of(context).size.width*0.01,
-                                                                      ),
-                                                                      SizedBox(
-                                                                        width: MediaQuery.of(context).size.width*0.05,
-                                                                        child: Checkbox(
-                                                                          checkColor: Colors.white,
-                                                                          fillColor: MaterialStateProperty.resolveWith(getColor),
-                                                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                                          value: brandTrainersSelected[index],
-                                                                          shape: CircleBorder(
-                                                                              side: BorderSide.none
-                                                                          ),
-                                                                          onChanged: (bool? value) {
-                                                                            setState(() {
-                                                                              brandTrainersSelected[index] = !brandTrainersSelected[index];
-                                                                            });
-                                                                          },
-                                                                        ),
                                                                       ),
                                                                     ],
                                                                   ),
@@ -918,7 +990,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                           ),
                                         ),
                                       ),
-
                                       errorNoTrainerSelected ? Padding(
                                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
                                         child: Center(
@@ -1005,7 +1076,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
                                                   new Text(
-                                                    AppLocalizations.of(context)!.clients,
+                                                    AppLocalizations.of(context)!.addDesignatedClients,
                                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
                                                 ],
@@ -1042,69 +1113,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
-                                                GestureDetector(
-                                                  onTap: (brandClientsSelected.length) < members ? () async {
-                                                    List<Usuario>? selectedClients = await Navigator.push(
-                                                        context,
-                                                        CupertinoPageRoute<List<Usuario>>(
-                                                          builder: (context) => SelectClientsEvent(
-                                                            selectedUsers: brandClientsSelected,
-                                                            maxClients: members,
-                                                          ),
-                                                        )
-                                                    );
-                                                    if (selectedClients != null) {
-                                                      setState(() {
-                                                        brandClientsSelected = selectedClients;
-                                                        errorClientsSelected = false;
-                                                      });
-                                                    }
-                                                  } : null,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0),
-                                                    child: Container(
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          Container(
-                                                            height: MediaQuery.of(context).size.width*0.17,
-                                                            width: MediaQuery.of(context).size.width*0.17,
-                                                            decoration: new BoxDecoration(
-                                                              color: Theme.of(context).backgroundColor,
-                                                              border: Border.all(
-                                                                width: 1,
-                                                                color: Theme.of(context).primaryColor,
-                                                                style: BorderStyle.solid,
-                                                              ),
-                                                              shape: BoxShape.circle,
-                                                            ),
-                                                            child: Center(
-                                                              child: Icon(
-                                                                  Icons.person_add_alt_1,
-                                                                  color: Theme.of(context).primaryColor,
-                                                                  size:  MediaQuery.of(context).size.width*0.05
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(height: MediaQuery.of(context).size.width*0.025),
-                                                          Container(
-                                                            width: MediaQuery.of(context).size.width*0.2,
-                                                            child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                Text(
-                                                                  AppLocalizations.of(context)!.add,
-                                                                  style: Theme.of(context).textTheme.bodyText2,
-                                                                  textAlign: TextAlign.center,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
+                                                buildAddUserButton(false),
                                                 Container(
                                                   height: MediaQuery.of(context).size.height*0.15,
                                                   child: ListView.builder(
@@ -1123,7 +1132,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                                                             });
                                                           },
                                                           child: Padding(
-                                                            padding: !(index == brandTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : EdgeInsets.only(right: brandTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                                            padding: !(index == brandClientsSelected.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : EdgeInsets.only(right: brandClientsSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                                             child: Column(
                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                               children: [
@@ -1295,7 +1304,7 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                           });
                         }
                       } else if (_selectedIndex == 2) {
-                        if (!brandTrainersSelected.contains(true)) {
+                        if (brandTrainersSelected.length == 0) {
                           setState(() {
                             errorNoTrainerSelected = true;
                           });
@@ -1385,10 +1394,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     });
     var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
     var selectedTrainerId = [];
-    for (var i=0; i< brandTrainers.length; i++) {
-      if (brandTrainersSelected[i]) {
-        selectedTrainerId.add(brandTrainers[i].id);
-      }
+    for (var i=0; i< brandTrainersSelected.length; i++) {
+      selectedTrainerId.add(brandTrainersSelected[i].id);
     }
     // EVENT IS NOT RECURRENT
     if (!isRecurrent) {

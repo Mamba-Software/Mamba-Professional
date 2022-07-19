@@ -1054,7 +1054,7 @@
   "@designatedTrainers":{
     "description": "addEvent text"
   },
-  "addDesignatedClients": "Añadir clientes manualmente",
+  "addDesignatedClients": "Invitar clientes",
   "@addDesignatedClients":{
     "description": "addEvent text"
   },

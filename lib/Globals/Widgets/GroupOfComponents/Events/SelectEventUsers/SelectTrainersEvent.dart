@@ -9,17 +9,16 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularIm
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
-class SelectClientsEvent extends StatefulWidget {
-  List<Usuario> selectedUsers = [];
-  int maxClients = 0;
+class SelectTrainersEvent extends StatefulWidget {
+  List<Usuario> selectedTrainers = [];  
 
-  SelectClientsEvent({Key? key, required this.selectedUsers, required this.maxClients}) : super(key: key);
+  SelectTrainersEvent({Key? key, required this.selectedTrainers}) : super(key: key);
 
   @override
-  _SelectClientsEventState createState() => _SelectClientsEventState();
+  _SelectTrainersEventState createState() => _SelectTrainersEventState();
 }
 
-class _SelectClientsEventState extends State<SelectClientsEvent> {
+class _SelectTrainersEventState extends State<SelectTrainersEvent> {
 
   // Brand Data Service
   var _brandDataService = BrandDataService();
@@ -28,25 +27,23 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
   // Search Controller
   bool searchClicked = false;
   var searchController = TextEditingController();
-  // Selected Clients
-  var selectedClientsController = TextEditingController();
   // Members Page
-  List<Usuario> allClients = [];
-  List<Usuario> filteredClients = [];
-  List<Usuario> selectedClients = [];
+  List<Usuario> allTrainers = [];
+  List<Usuario> filteredTrainers = [];
+  List<Usuario> selectedTrainers = [];
 
-  Future<void> getAllClients() async {
-    allClients = await _brandDataService.getBrandClients(currentBrand.id!);
+  Future<void> getAllTrainers() async {
+    allTrainers = await _brandDataService.getBrandTrainers(currentBrand.id!);
     // Sort Clients
-    allClients.sort((a, b) {
+    allTrainers.sort((a, b) {
       return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
     });
-    filteredClients = allClients;
+    filteredTrainers = allTrainers;
     // Selected Clients
-    for (var user in widget.selectedUsers) {
+    for (var user in widget.selectedTrainers) {
       String id = user.id!;
-      var index = filteredClients.indexWhere((element) => element.id! == id);
-      selectedClients.add(filteredClients[index]);
+      var index = filteredTrainers.indexWhere((element) => element.id! == id);
+      selectedTrainers.add(filteredTrainers[index]);
     }
     // Return Future Delayed
     await Future.delayed(const Duration(milliseconds: 500));
@@ -58,17 +55,17 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
   void filterSearchResults(String query) {
     List<Usuario> usersFiltered = [];
     if (query.isNotEmpty || query != "") {
-      for (var item in allClients) {
+      for (var item in allTrainers) {
         if (item.name!.toLowerCase().startsWith(query)) {
           usersFiltered.add(item);
         }
       }
       setState(() {
-        filteredClients = usersFiltered;
+        filteredTrainers = usersFiltered;
       });
     } else {
       setState(() {
-        filteredClients = allClients;
+        filteredTrainers = allTrainers;
       });
     }
   }
@@ -88,7 +85,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
   @override
   initState() {
     isLoading = true;
-    getAllClients();
+    getAllTrainers();
   }
 
   @override
@@ -126,7 +123,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
               icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
               onPressed: () {
                 Navigator.pop(context, null);
-                selectedClients = [];
+                selectedTrainers = [];
               },
             ),
             actions: [
@@ -143,7 +140,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
           backgroundColor: Colors.transparent,
           body: Column(
               children: [
-                selectedClients.length > 0 ? Container(
+                selectedTrainers.length > 0 ? Container(
                   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05,),
                   color: Theme.of(context).backgroundColor,
                   height: MediaQuery.of(context).size.height*0.04,
@@ -155,12 +152,12 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                         child: ListView.builder(
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
-                            itemCount: selectedClients.length,
+                            itemCount: selectedTrainers.length,
                             itemBuilder: (context, index) {
-                              Usuario user = selectedClients[index];
+                              Usuario user = selectedTrainers[index];
                               return Center(
                                 child: Text(
-                                  index == 0 && selectedClients.length == 1 || index == selectedClients.length-1 ? user.name! : user.name! + ", ",
+                                  index == 0 && selectedTrainers.length == 1 || index == selectedTrainers.length-1 ? user.name! : user.name! + ", ",
                                   style: Theme.of(context).textTheme.bodyText2,
                                 ),
                               );
@@ -173,15 +170,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              "( "+selectedClients.length.toString(),
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 8),
-                            ),
-                            Text(
-                              " / ",
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 8),
-                            ),
-                            Text(
-                              widget.maxClients.toString()+" )",
+                              "( "+selectedTrainers.length.toString()+" )",
                               style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 8),
                             ),
                           ],
@@ -195,13 +184,13 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                     child: ListView.builder(
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
-                        itemCount: filteredClients.length,
+                        itemCount: filteredTrainers.length,
                         itemBuilder: (context, index) {
-                          Usuario user = filteredClients[index];
+                          Usuario user = filteredTrainers[index];
                           return Padding(
                             padding: EdgeInsets.symmetric(vertical: 0),
                             child: ListTile(
-                              tileColor: selectedClients.contains(user) ? Theme.of(context).backgroundColor.withOpacity(0.5) : Theme.of(context).scaffoldBackgroundColor,
+                              tileColor: selectedTrainers.contains(user) ? Theme.of(context).backgroundColor.withOpacity(0.5) : Theme.of(context).scaffoldBackgroundColor,
                               leading: Stack(
                                 alignment: Alignment.bottomRight,
                                 children: [
@@ -221,7 +210,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                           tristate: false,
                                           fillColor: MaterialStateProperty.resolveWith(getColor),
                                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                          value: selectedClients.contains(user),
+                                          value: selectedTrainers.contains(user),
                                           shape: CircleBorder(
                                               side: BorderSide.none
                                           ),
@@ -246,19 +235,17 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                 ],
                               ),
                               onTap: () {
-                                var selectedUsers = selectedClients;
+                                var selectedUsers = selectedTrainers;
                                 if (selectedUsers.contains(user)) {
                                   selectedUsers.remove(user);
                                   setState(() {
-                                    selectedClients = selectedUsers;
+                                    selectedTrainers = selectedUsers;
                                   });
                                 } else {
-                                  if (selectedClients.length < widget.maxClients) {
-                                    selectedUsers.add(user);
-                                    setState(() {
-                                      selectedClients = selectedUsers;
-                                    });
-                                  }
+                                  selectedUsers.add(user);
+                                  setState(() {
+                                    selectedTrainers = selectedUsers;
+                                  });
                                 }
                               },
                             ),
@@ -277,7 +264,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
               child: FloatingActionButton(
                 heroTag: "84",
                 onPressed: () {
-                  Navigator.pop(context, selectedClients);
+                  Navigator.pop(context, selectedTrainers);
                 },
                 backgroundColor: Theme.of(context).accentColor,
                 child: Icon(
