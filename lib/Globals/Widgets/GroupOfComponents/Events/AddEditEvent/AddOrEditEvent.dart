@@ -1,16 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDateAndTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/SelectTrainersEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,19 +23,19 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/Sel
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class AddEvent extends StatefulWidget {
+class AddOrEditEvent extends StatefulWidget {
   Locale locale;
   DateTime? initialDateTime;
+  String? eventId;
 
-  AddEvent({Key? key, required this.locale, this.initialDateTime}) : super(key: key);
+  AddOrEditEvent({Key? key, required this.locale, this.initialDateTime, this.eventId}) : super(key: key);
 
   @override
-  _AddEventState createState() => _AddEventState();
+  _AddOrEditEventState createState() => _AddOrEditEventState();
 }
 
-class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin{
+class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProviderStateMixin{
   // Acceso a Base de Datos
-  var _brandDataService = new BrandDataService();
   var _eventDataService = new EventDataService();
   var _locationDataService = new LocationDataService();
   // Boolean Loading
@@ -48,6 +48,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   TabController? _tabController;
   int _selectedIndex = 0;
   List<bool> tabs = [true, false, false];
+  // Event Object -- IF Edit Event
+  Event event = Event();
   // Title Controller
   var titleController = TextEditingController();
   String? titleString;
@@ -63,7 +65,6 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   Timestamp? doneAt;
   // Duration
   String duration = "1.00";
-  List<String> durations = ["0.30","0.45","1.00","1.15","1.30","1.45","2.00","2.15","2.30","2.45","3.00"];
   TextEditingController durationController = TextEditingController();
   // Ubicació
   var ubicacionController =  TextEditingController();
@@ -89,20 +90,19 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
   final formKeyInfo = GlobalKey<FormState>();
   final formKeyTime = GlobalKey<FormState>();
   final formKeyMembers = GlobalKey<FormState>();
-  // Event Retrieved From BD
-  var event;
-  var placeDetails;
-
-
 
   @override
   initState() {
     isLoading = true;
     _tabController = TabController(length: 3, vsync: this);
-    getEventInfo();
+    if (widget.eventId != null) {
+      getEventInfo();
+    } else {
+      initializeEventInfo();
+    }
   }
 
-  Future<void> getEventInfo() async {
+  Future<void> initializeEventInfo() async {
     if (widget.initialDateTime != null) {
       startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(widget.initialDateTime!);
       startDateController.text = StringUtils().toCapitalized(startDateController.text);
@@ -128,12 +128,53 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     }
     titleController.text = "${currentBrand.name!.replaceAll(RegExp(r"\s+"), "")}";
     titleString = titleController.text;
-    var hour = durations[2].split(".")[0];
-    var min = durations[2].split(".")[1];
+    var hour = duration.split(".")[0];
+    var min = duration.split(".")[1];
     durationController.text = "${hour}h ${min}min";
     membersController.text = "${members.toString()}";
     brandTrainersSelected.add(currentUser);
     getLocation(currentBrand.baseLocation!);
+  }
+
+  Future<void> getEventInfo() async {
+    // Get Event Info
+    event = await _eventDataService.getSingleEvent(widget.eventId!);
+    // Event Date
+    startDate = DateTime(
+      int.parse(event.year!),
+      int.parse(event.month!),
+      int.parse(event.day!),
+      int.parse(event.hour!),
+      int.parse(event.minute!),
+    );
+    doneAt = Timestamp.fromDate(startDate!);
+    startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(startDate!);
+    startDateController.text = StringUtils().toCapitalized(startDateController.text);
+    oneWeek = startDate!.add(Duration(days: 7));
+    twoWeek = startDate!.add(Duration(days: 14));
+    oneMonth= startDate!.add(Duration(days: 30));
+    // Event Title
+    titleController.text = event.title!;
+    titleString = titleController.text;
+    // Event Duration
+    durationController.text = StringUtils().durationToString(event.duration!);
+    // Event Members
+    members = event.maxMembers!;
+    membersController.text = "${event.maxMembers!}";
+    getEventMembers(event.id!);
+    // Event Locations
+    getLocation(currentBrand.baseLocation!);
+  }
+
+  Future<void> getEventMembers(String eventId) async {
+    List<Usuario> members = await _eventDataService.getEventUsers(eventId);
+    for (var m in members) {
+      if (m.isTrainer!) {
+        brandTrainersSelected.add(m);
+      } else {
+        brandClientsSelected.add(m);
+      }
+    }
   }
 
   Future<void> getLocation(String locationId) async {
@@ -356,7 +397,8 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     Scaffold(
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height*0.14,
-        title: Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
+        title: widget.eventId == null ? Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
+            : Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
@@ -364,6 +406,53 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
             Navigator.pop(context);
           },
         ),
+        actions: [
+          widget.eventId != null ? Row(
+            children: [
+              IconButton(
+                  onPressed: () async {
+                    // DeleteDialog
+                    var result = await showDialog(
+                        context: context,
+                        builder: (_) {
+                          return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteEventConfirmation);
+                        }
+                    );
+                    if (result) {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      await _eventDataService.deleteEvent(widget.eventId!);
+                      await Future.delayed(const Duration(milliseconds: 3000));
+                      Navigator.pop(context);
+                    }
+                  },
+                  icon: Container(
+                    width: MediaQuery.of(context).size.width*0.15,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,),
+                        /*
+                        FittedBox(
+                          fit: BoxFit.contain,
+                          child: Text(
+                              AppLocalizations.of(context)!.delete,
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                              textAlign: TextAlign.center
+                          ),
+                        ),
+                         */
+                      ],
+                    ),
+                  )
+
+
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.02)
+            ],
+          ) : Container(),
+        ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(0),
           child: IgnorePointer(
@@ -1313,14 +1402,16 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
                             errorClientsSelected = true;
                           });
                         } else {
-                          _addEvent();
+                          widget.eventId == null ? _addEvent() : _updateEvent();
                         }
                       }
                     },
                     backgroundColor: _selectedIndex == 2 ? Colors.green : Theme.of(context).accentColor,
                     icon: Container(),
-                    label: Text(
+                    label: widget.eventId == null ? Text(
                       _selectedIndex == 2 ? AppLocalizations.of(context)!.createEvent : AppLocalizations.of(context)!.next,
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),) : Text(
+                      _selectedIndex == 2 ? AppLocalizations.of(context)!.updateEvent : AppLocalizations.of(context)!.next,
                       style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),),
                   ),
                 ),
@@ -1469,5 +1560,29 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
       }
     }
     Navigator.pop(context);
+  }
+
+  Future<void> _updateEvent() async {
+    setState(() {
+      isLoading = true;
+    });
+    var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
+    var selectedTrainerId = [];
+    for (var i=0; i< brandTrainersSelected.length; i++) {
+      selectedTrainerId.add(brandTrainersSelected[i].id);
+    }
+    // EVENT IS NOT RECURRENT
+    if (!isRecurrent) {
+      await _eventDataService.updateEvent(event.id!, titleController.text, descriptionController.text, doneAt!, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+      await Future.delayed(const Duration(milliseconds: 2000));
+      /*
+      for (var i=0; i<brandClientsSelected.length; i++) {
+        var client = brandClientsSelected[i];
+        await _eventDataService.addUserToEvent(eid, client.id!, true);
+        NotificationService().userJoinEvent(client.id!, currentBrand.id!, eid);
+      }
+       */
+    }
+    Navigator.pop(context, true);
   }
 }

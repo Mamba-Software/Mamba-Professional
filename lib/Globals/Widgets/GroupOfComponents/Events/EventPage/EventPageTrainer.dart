@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
@@ -1753,145 +1754,36 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
       return Container();
     } else {
       if (canEdit) {
-        if (isEditing) {
-          return Padding(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
-            child: Container(
-              width: MediaQuery.of(context).size.width*0.70,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      FloatingActionButton.extended(
-                        heroTag: "8",
-                        onPressed: () async {
-                          bool hasError = false;
-                          setState(() {
-                            errorDate = false;
-                            errorNoTrainerSelected = false;
-                          });
-                          var startDate = DateFormat('EEEE d/M/y - HH:mm', Localizations.localeOf(context).languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
-                          if (!formKeyInfo.currentState!.validate()) {
-                            hasError = true;
-                          }
-                          if (!validateDateAndTime(startDate, double.parse(duration))) {
-                            hasError = true;
-                            setState(() {
-                              errorDate = true;
-                            });
-                          }
-                          if (!eventTrainersBool.contains(true)) {
-                            hasError = true;
-                            setState(() {
-                              errorNoTrainerSelected = true;
-                            });
-                          }
-                          if (!hasError) {
-                            setState(() {
-                              isLoadingBody = true;
-                            });
-                            var selectedTrainerId = [];
-                            for (var i=0; i< allTrainers.length; i++) {
-                              if (eventTrainersBool[i]) {
-                                selectedTrainerId.add(allTrainers[i].id);
-                              }
-                            }
-                            for (var i=0; i< selectedTrainerId.length; i++) {
-                              String id = selectedTrainerId[i];
-                              if (!eventTrainersIds.contains(id)) {
-                                await _eventDataService.addUserToEvent(event!.id!, id);
-                              } else {
-                                eventTrainersIds.remove(id);
-                              }
-                            }
-                            for (var i=0; i< eventTrainersIds.length; i++) {
-                              String id = eventTrainersIds[i];
-                              await _eventDataService.deleteUserFromEvent(event!.id!, id);
-                            }
-                            if (location.id! != event!.locationId!) {
-                              await _eventDataService.updateEventLocation(event!.id!, location.id!, event!.locationId!);
-                            }
-                            await _eventDataService.updateEvent(widget.eventId, titleController.text, descriptionController.text, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
-                            getEventInfo();
-                          }
-                        },
-                        backgroundColor: Colors.green,
-                        icon: Icon(Icons.save_rounded, color: Colors.white, size: MediaQuery.of(context).size.width*0.05,),
-                        label: Text(AppLocalizations.of(context)!.save,
-                          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
+        return Padding(
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+          child: Container(
+            width: MediaQuery.of(context).size.width*0.25,
+            child: FloatingActionButton.extended(
+              heroTag: "9",
+              onPressed: () async {
+                bool? result = await Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => AddOrEditEvent(
+                        locale: Localizations.localeOf(context),
+                        eventId: event!.id!,
                       ),
-                      SizedBox(width: MediaQuery.of(context).size.width*0.01,),
-                      FloatingActionButton.extended(
-                        heroTag: "75",
-                        icon: SizedBox(width: MediaQuery.of(context).size.width*0.001,),
-                        label: Padding(
-                          padding: EdgeInsets.only(right:MediaQuery.of(context).size.width*0.015,),
-                          child: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.08,),
-                        ),
-                        backgroundColor: Theme.of(context).primaryColor,
-                        foregroundColor:  Theme.of(context).primaryColorDark,
-                        onPressed: () async {
-                          setState(() {
-                            isLoadingBody = true;
-                            errorNoTrainerSelected = false;
-                          });
-                          getEventInfo();
-                        },
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02,),
-                  FloatingActionButton.extended(
-                    heroTag: "7",
-                    onPressed: () async {
-                      // DeleteDialog
-                      var result = await showDialog(
-                          context: context,
-                          builder: (_) {
-                            return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteEventConfirmation);
-                          }
-                      );
-                      if (result) {
-                        setState(() {
-                          isLoadingBody = true;
-                        });
-                        await _eventDataService.deleteEvent(widget.eventId);
-                        await Future.delayed(const Duration(milliseconds: 3000));
-                        Navigator.pop(context);
-                      }
-                    },
-                    backgroundColor: AppColors.red,
-                    icon: Icon(Icons.save_rounded, color: Colors.white, size: MediaQuery.of(context).size.width*0.05,),
-                    label: Text(AppLocalizations.of(context)!.delete,
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white),),
-                  ),
-                ],
-              ),
-            ),
-          );
-        } else {
-          return Padding(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
-            child: Container(
-              width: MediaQuery.of(context).size.width*0.25,
-              child: FloatingActionButton.extended(
-                heroTag: "9",
-                onPressed: () {
+                    )
+                );
+                if (result != null && result) {
                   setState(() {
-                    isEditing = true;
+                    isLoading = true;
+                    getEventInfo();
                   });
-                },
-                backgroundColor: Colors.green,
-                icon: Icon(Icons.edit, color: Colors.white, size: MediaQuery.of(context).size.width*0.05,),
-                label: Text(AppLocalizations.of(context)!.edit,
-                  style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
-              ),
+                }
+              },
+              backgroundColor: Colors.green,
+              icon: Icon(Icons.edit, color: Colors.white, size: MediaQuery.of(context).size.width*0.05,),
+              label: Text(AppLocalizations.of(context)!.edit,
+                style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
             ),
-          );
-        }
+          ),
+        );
       } else {
         return Container();
       }

@@ -65,7 +65,7 @@ class _SelectDateAndTimeDialogState extends State<SelectDateAndTimeDialog> {
                   child: CupertinoDatePicker(
                       mode: CupertinoDatePickerMode.dateAndTime,
                       initialDateTime: DateTime(widget.startDate.year, widget.startDate.month, widget.startDate.day, widget.startDate.hour,widget.startDate.minute),
-                      minimumDate: widget.onlyFuture ? (widget.startDate).subtract(Duration(hours: 1)): widget.startDate.subtract(Duration(days: 365*80)),
+                      minimumDate: widget.onlyFuture ? (DateTime.now()).subtract(Duration(hours: 1)): widget.startDate.subtract(Duration(days: 365*80)),
                       maximumDate: DateTime(widget.startDate.year, 12, 31, 0, 0),
                       use24hFormat: true,
                       minuteInterval: 15,

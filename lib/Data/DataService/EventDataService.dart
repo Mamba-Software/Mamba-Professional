@@ -44,7 +44,7 @@ class EventDataService {
   Future<void> addEventFeedback(String eid, String uid, double intensityScore) => _firebase.addEventFeedback(eid, uid, intensityScore);
 
   // Update Data
-  Future<void> updateEvent(String id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.updateEvent(id, title, description, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);
+  Future<void> updateEvent(String id, String? title, String? description, Timestamp doneAt, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.updateEvent(id, title, description, doneAt, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);
   Future<void> updateEventLocation(String eid, String locationId, String previousLocation) => _firebase.updateEventLocation(eid, locationId, previousLocation);
 
 

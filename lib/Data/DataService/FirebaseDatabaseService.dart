@@ -1705,9 +1705,10 @@ class FirebaseDatabaseService {
     }
 
     // Update Event
-    Future<void> updateEvent(String? id,
+    Future<void> updateEvent(String? eventId,
         String? title,
         String? description,
+        Timestamp doneAt,
         String? year,
         String? month,
         String? day,
@@ -1717,10 +1718,13 @@ class FirebaseDatabaseService {
         String? locationId,
         int? maxMembers,
         var selectedTrainers) async {
+      Timestamp createdAt = Timestamp.fromDate(DateTime.now());
       try {
-        await _firestore.collection(events).doc(id).update({
+        await _firestore.collection(events).doc(eventId).update({
           "title": title,
           "description": description,
+          "doneAt": doneAt,
+          "createdAt": createdAt,
           "year": year,
           "month": month,
           "day": day,
@@ -1731,6 +1735,23 @@ class FirebaseDatabaseService {
           "maxMembers": maxMembers,
           "selectedTrainers": selectedTrainers,
         });
+        for (var i = 0; i < selectedTrainers.length; i++) {
+          Usuario user = await this.getUserDetails(selectedTrainers[i]);
+          await _firestore.collection(events).doc(eventId)
+              .collection("Users")
+              .doc(user.id)
+              .set({
+            "name": user.name,
+            "firstName": user.firstName,
+            "lastName": user.lastName,
+            "imageUrl": user.imageUrl,
+            "noImageUrl": user.noImageUrl,
+            "isTrainer": user.isTrainer,
+            "isPrivate": user.isPrivate,
+            "notificationToken": user.notificationToken,
+            "joinedAt": createdAt,
+          });
+        }
       } catch (e) {
         print(e.toString());
       }
