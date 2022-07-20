@@ -310,6 +310,8 @@ class LocalNotificationService {
     );
   }
 
+  // Local Notification Current User
+
   Future<void> addEventLocalNotifications(BuildContext context, String eventId, bool? isTrainer) async {
     // Defining Platform Channel Specifics
     var platformChannelSpecifics = NotificationDetails(
@@ -401,6 +403,61 @@ class LocalNotificationService {
     }
   }
 
+  // Local Notification Other User. Do it Remotely, aka Firebase
 
+  Future<void> addRemoteEventLocalNotifications(BuildContext context, String eventId, String userId, bool? isTrainer) async {
+    // Getting Event Data
+    Event event = await _eventDataService.getSingleEvent(eventId);
+    DateTime startDate = DateTime(
+      int.parse(event.year!),
+      int.parse(event.month!),
+      int.parse(event.day!),
+      int.parse(event.hour!),
+      int.parse(event.minute!),
+    );
+    // Send Feedback Notification To Clients
+    if (isTrainer == false) {
+      // Schedule Before Notification
+      DateTime afterDate = startDate.add(Duration(minutes: 1));
+      // Notification 1 minute after
+      ReceivedNotification notificationAfter = ReceivedNotification(
+        id: DateTime.now().millisecondsSinceEpoch ~/1000,
+        title: AppLocalizations.of(context)!.afterEventTitleNotification,
+        body: AppLocalizations.of(context)!.afterEventBodyNotification,
+        payload: "F-"+event.id!,
+        createdAt: Timestamp.now(),
+        firesAt: afterDate,
+      );
+      // Add Notification Firebase
+      _userDataService.addLocalNotification(userId, notificationAfter);
+      // To make sure not the same Timestamp
+      await Future.delayed(Duration(seconds: 1));
+    }
+
+    // Schedule Before Notification
+    DateTime beforeDate = startDate.subtract(Duration(hours: 1));
+    String eventTimeTime = StringUtils().hourMinutesToString(startDate.hour, startDate.minute);
+    // Notification one hour before
+    ReceivedNotification notificationBefore = ReceivedNotification(
+      id: DateTime.now().millisecondsSinceEpoch ~/1000,
+      title: AppLocalizations.of(context)!.beforeEventTitleNotification(event.title!, eventTimeTime),
+      body: AppLocalizations.of(context)!.beforeEventBodyNotification,
+      payload: event.id!,
+      createdAt: Timestamp.now(),
+      firesAt: beforeDate,
+    );
+    // Add Notification Firebase
+    _userDataService.addLocalNotification(userId, notificationBefore);
+  }
+
+  Future<void> deleteRemoteEventLocalNotifications(String eventId, String userId) async {
+    // Find Notifications under this Event Id.
+    List<ReceivedNotification> eventNotifications = await _userDataService.findEventLocalNotification(userId, eventId);
+    // Delete the ones that have been fired
+    for (int i = 0; i < eventNotifications.length; i++) {
+      ReceivedNotification notif = eventNotifications[i];
+      _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
+    }
+  }
 
 }

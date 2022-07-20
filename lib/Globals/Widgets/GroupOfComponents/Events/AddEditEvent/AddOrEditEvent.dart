@@ -3,6 +3,7 @@ import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
@@ -38,6 +39,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   // Acceso a Base de Datos
   var _eventDataService = new EventDataService();
   var _locationDataService = new LocationDataService();
+  // Notification Services
+  NotificationService _notificationService = NotificationService();
+  LocalNotificationService _localNotificationService = LocalNotificationService();
   // Boolean Loading
   bool isLoading = false;
   // Boolean isUpdated
@@ -1623,13 +1627,19 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       if (user.isTrainer!) {
         // Firebase Call
         await _eventDataService.addUserToEvent(eventId, user.id!, true);
+        if (user.id! == currentUser.id!) {
+
+        } else {
+
+        }
         // Local Notifications Service
       } else {
         // Firebase Call
         await _eventDataService.addUserToEvent(eventId, user.id!, true);
         // Notifications Service, this also send Notifications to Trainers
-        NotificationService().userJoinEvent(user.id!, currentBrand.id!, eventId);
+        _notificationService.userJoinEvent(user.id!, currentBrand.id!, eventId);
         // Local Notifications Service
+        _localNotificationService.addRemoteEventLocalNotifications(context, eventId, user.id!, user.isTrainer);
       }
     }
   }

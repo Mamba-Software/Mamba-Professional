@@ -1121,7 +1121,27 @@ class FirebaseDatabaseService {
               "longitude": location.longitude,
               "latitude": location.latitude,
             });
+
         // Add Event To Brands/Events Subcollection To Avoid Cloud Function Doing It :D
+        // We do it like this to avoid Cold Start and make the User wait.
+        await _firestore
+            .collection("7777 Brands")
+            .doc(currentBrand.id!)
+            .collection("Events")
+            .doc(eventID).
+            set({
+              "title": event.title,
+              "doneAt": event.doneAt,
+              "year": event.year,
+              "month": event.month,
+              "day": event.day,
+              "hour": event.hour,
+              "minute": event.minute,
+              "duration": event.duration,
+              "numTrainers": event.numTrainers,
+              "numClients": event.numClients,
+              "maxMembers": event.maxMembers,
+            });
         return eventID;
       } catch (e) {
         print(e.toString());

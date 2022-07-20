@@ -2905,7 +2905,7 @@ exports.zzzzUserAddsEvent = functions
         numTrainers,
       );
       let now = new Date();
-      // Add Event to Brands Event Subcollection
+      /* Add Event to Brands Event Subcollection
       for (var i in eventBrandSnapshot.docs) {
         const id = eventBrandSnapshot.docs[i].id;
         await db
@@ -2926,6 +2926,7 @@ exports.zzzzUserAddsEvent = functions
           "maxMembers": eventDoc.maxMembers,
         });
       }
+      */
       // Add Event to Locations Event Subcollection
       for (var i in eventLocationsSnapshot.docs) {
         const id = eventLocationsSnapshot.docs[i].id;
