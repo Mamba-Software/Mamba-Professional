@@ -61,6 +61,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   var descriptionController = TextEditingController();
   String? descriptionString;
   // Location
+  String? originalLocationId;
   Location location = Location();
   // Starting Date and Time
   DateTime? startDate;
@@ -70,8 +71,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   // Duration
   String duration = "1.00";
   TextEditingController durationController = TextEditingController();
-  // Ubicació
-  var ubicacionController =  TextEditingController();
   // Participants
   TextEditingController membersController = TextEditingController();
   int eventMaxMembers = 1;
@@ -84,6 +83,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   final values = <bool?>[false, false, false, false, false, false, false];
   int _value = 1;
   // Members Page
+  List<Usuario> originalTrainers = [];
+  List<Usuario> originalClients = [];
   // Trainers
   List<Usuario> brandTrainersSelected = [];
   bool errorNoTrainerSelected = false;
@@ -167,7 +168,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     membersController.text = "${event.maxMembers!}";
     getEventMembers(event.id!);
     // Event Locations
-    getLocation(currentBrand.baseLocation!);
+    originalLocationId = event.locationId!;
+    getLocation(event.locationId!);
   }
 
   Future<void> getEventMembers(String eventId) async {
@@ -175,8 +177,10 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     for (var m in members) {
       if (m.isTrainer!) {
         brandTrainersSelected.add(m);
+        originalTrainers.add(m);
       } else {
         brandClientsSelected.add(m);
+        originalClients.add(m);
       }
     }
   }
@@ -255,7 +259,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
               context,
               CupertinoPageRoute<List<Usuario>>(
                 builder: (context) => SelectTrainersEvent(
-                  selectedTrainers: brandClientsSelected,
+                  selectedTrainers: brandTrainersSelected,
                 ),
               )
           );
@@ -1626,12 +1630,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Delete Event Local Notifications
     for (var i=0; i<eventMembers.length; i++) {
       var user = eventMembers[i];
-      // Local Notifications Service
-      if (user.id! == currentUser.id!) {
-        await _localNotificationService.deleteEventLocalNotifications(event.id!);
-      } else {
-        await _localNotificationService.deleteRemoteEventLocalNotifications(event.id!, user.id!);
-      }
+      // Remove Local Notifications Service
+      _deleteEventLocalNotificationsCall(event.id!, user.id!);
     }
     // Pop to Last Page
     Navigator.pop(context, false);
@@ -1641,26 +1641,108 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     setState(() {
       isLoading = true;
     });
+    // Event Start Date
     var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
-    var selectedTrainerId = [];
-    for (var i=0; i< brandTrainersSelected.length; i++) {
-      selectedTrainerId.add(brandTrainersSelected[i].id);
+    Timestamp doneAt = Timestamp.fromDate(startDate);
+    // Creating Event Object
+    Event event = Event(
+      id: widget.eventId!,
+      title: titleController.text,
+      description: descriptionController.text,
+      doneAt: doneAt,
+      createdAt: Timestamp.now(),
+      year: startDate.year.toString(),
+      month: startDate.month.toString(),
+      day: startDate.day.toString(),
+      hour: startDate.hour.toString(),
+      minute: startDate.minute.toString(),
+      duration: double.parse(duration),
+      locationId: location.id,
+      numClients: brandClientsSelected.length,
+      numTrainers: brandTrainersSelected.length,
+      maxMembers: eventMaxMembers,
+    );
+    // Event Members
+    List<Usuario> eventTrainers = new List.from(brandTrainersSelected);
+    List<Usuario> eventTrainersAdded = new List.from(eventTrainers);
+    List<Usuario> eventClients = new List.from(brandClientsSelected);
+    List<Usuario> eventClientsAdded = new List.from(eventClients);
+    // Update Event
+    await _eventDataService.updateEvent(event);
+    // Update Event Location
+    if (event.locationId! != originalLocationId) {
+      await _eventDataService.updateEventLocation(event.id!, event.locationId!, originalLocationId!);
+    }
+    // Compare Current Members vs Original Members
+    /// Start With Trainers
+    for (int i = 0; i < eventTrainers.length; i++) {
+      var user = eventTrainers[i];
+      // Find index in EventTrainers
+      int index = originalTrainers.indexWhere((element) => element.id == user.id);
+      // Trainer Found
+      if (index != -1) {
+        // Remove Trainer Left
+        eventTrainersAdded.removeWhere((element) => element.id == user.id);
+        originalTrainers.removeWhere((element) => element.id == user.id);
+        print("Trainer Matched "+user.id.toString());
+      }
+    }
+    /// Handle Trainers Not Matched
+    // Original Trainers Not Matched means that they have been removed from Event
+    for (int i = 0; i < originalTrainers.length; i++) {
+      var user = originalTrainers[i];
+      // Remove Trainer From Event
+      await _eventDataService.deleteUserFromEvent(event.id!, user.id!);
+      // Remove Event Local Notifications
+      await _deleteEventLocalNotificationsCall(event.id!, user.id!);
+      print("Trainer Removed "+user.id.toString());
+    }
+    // Handle Trainers Added
+    // Trainers Added Not Matched means that they have added to the Event
+    for (int i = 0; i < eventTrainersAdded.length; i++) {
+      var user = eventTrainersAdded[i];
+      // Add Trainer to Event
+      await _eventDataService.addUserToEvent(event.id!, user.id!);
+      // Add Event Local Notifications
+      await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
+      print("Trainer Added "+user.id.toString());
+    }
+    /// Continue With Clients
+    for (int i = 0; i < eventClients.length; i++) {
+      var user = eventClients[i];
+      // Find index in EventClients
+      int index = originalClients.indexWhere((element) => element.id == user.id);
+      // Client Found
+      if (index != -1) {
+        // Remove Trainer Left
+        eventClientsAdded.removeWhere((element) => element.id == user.id);
+        originalClients.removeWhere((element) => element.id == user.id);
+        print("Client Matched "+user.id.toString());
+      }
+    }
+    // Handle Clients Not Matched
+    // Original Clients Not Matched means that they have been removed from Event
+    for (int i = 0; i < originalClients.length; i++) {
+      var user = originalClients[i];
+      // Remove Trainer From Event
+      await _eventDataService.deleteUserFromEvent(event.id!, user.id!);
+      // Remove Event Local Notifications
+      await _deleteEventLocalNotificationsCall(event.id!, user.id!);
+      print("Client Removed "+user.id.toString());
+    }
+    // Handle Clients Added
+    // Clients Added Not Matched means that they have added to the Event
+    for (int i = 0; i < eventClientsAdded.length; i++) {
+      var user = eventClientsAdded[i];
+      // Add Trainer to Event
+      await _eventDataService.addUserToEvent(event.id!, user.id!);
+      // Add Event Local Notifications
+      await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
+      print("Client Added "+user.id.toString());
     }
     // EVENT IS NOT RECURRENT
-    if (!isRecurrent) {
-      await _eventDataService.updateEvent(event.id!, titleController.text, descriptionController.text, doneAt!, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, eventMaxMembers, selectedTrainerId);
-      await Future.delayed(const Duration(milliseconds: 2000));
-      /*
-      for (var i=0; i<brandClientsSelected.length; i++) {
-        var client = brandClientsSelected[i];
-        await _eventDataService.addUserToEvent(eid, client.id!, true);
-        NotificationService().userJoinEvent(client.id!, currentBrand.id!, eid);
-      }
-       */
-    }
     Navigator.pop(context, true);
   }
-
 
   // Firebase Calls
 
@@ -1678,12 +1760,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         print("Notifications Trainer "+user.name!);
         // Firebase Call
         await _eventDataService.addUserToEvent(eventId, user.id!);
-        // Local Notifications Service
-        if (user.id! == currentUser.id!) {
-          await _localNotificationService.addEventLocalNotifications(context, eventId, user.isTrainer);
-        } else {
-          await _localNotificationService.addRemoteEventLocalNotifications(context, eventId, user.id!, user.isTrainer!);
-        }
+        // Local Notifications
+        _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
       } else {
         print("Notifications Client "+user.name!);
         // Firebase Call
@@ -1691,10 +1769,26 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         // Notifications Service, this also send Notifications to Trainers
         _notificationService.userJoinEvent(user.id!, currentBrand.id!, eventId);
         // Local Notifications Service
-        await _localNotificationService.addRemoteEventLocalNotifications(context, eventId, user.id!, user.isTrainer!);
+        _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
       }
     }
   }
 
+  Future<void> _addEventLocalNotificationsCall(String eventId, String userId, bool isTrainer) async {
+    // Local Notifications Service
+    if (userId == currentUser.id!) {
+      await _localNotificationService.addEventLocalNotifications(context, eventId, isTrainer);
+    } else {
+      await _localNotificationService.addRemoteEventLocalNotifications(context, eventId, userId, isTrainer);
+    }
+  }
+
+  Future<void> _deleteEventLocalNotificationsCall(String eventId, String userId) async {
+    if (userId == currentUser.id!) {
+      await _localNotificationService.deleteEventLocalNotifications(eventId);
+    } else {
+      await _localNotificationService.deleteRemoteEventLocalNotifications(eventId, userId);
+    }
+  }
 
 }

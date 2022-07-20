@@ -1722,58 +1722,28 @@ class FirebaseDatabaseService {
     }
 
     // Update Event
-    Future<void> updateEvent(String? eventId,
-        String? title,
-        String? description,
-        Timestamp doneAt,
-        String? year,
-        String? month,
-        String? day,
-        String? hour,
-        String? minute,
-        double? duration,
-        String? locationId,
-        int? maxMembers,
-        var selectedTrainers) async {
-      Timestamp createdAt = Timestamp.fromDate(DateTime.now());
+    Future<void> updateEvent(Event event) async {
       try {
-        await _firestore.collection(events).doc(eventId).update({
-          "title": title,
-          "description": description,
-          "doneAt": doneAt,
-          "createdAt": createdAt,
-          "year": year,
-          "month": month,
-          "day": day,
-          "hour": hour,
-          "minute": minute,
-          "duration": duration,
-          "locationId": locationId,
-          "maxMembers": maxMembers,
-          "selectedTrainers": selectedTrainers,
+        await _firestore.collection(events).doc(event.id).update({
+          "title": event.title,
+          "description": event.description,
+          "doneAt": event.doneAt,
+          "createdAt": event.createdAt,
+          "year": event.year,
+          "month": event.month,
+          "day": event.day,
+          "hour": event.hour,
+          "minute": event.minute,
+          "duration": event.duration,
+          "locationId": event.locationId,
+          "numClients": event.numClients,
+          "numTrainers": event.numTrainers,
+          "maxMembers": event.maxMembers,
         });
-        for (var i = 0; i < selectedTrainers.length; i++) {
-          Usuario user = await this.getUserDetails(selectedTrainers[i]);
-          await _firestore.collection(events).doc(eventId)
-              .collection("Users")
-              .doc(user.id)
-              .set({
-            "name": user.name,
-            "firstName": user.firstName,
-            "lastName": user.lastName,
-            "imageUrl": user.imageUrl,
-            "noImageUrl": user.noImageUrl,
-            "isTrainer": user.isTrainer,
-            "isPrivate": user.isPrivate,
-            "notificationToken": user.notificationToken,
-            "joinedAt": createdAt,
-          });
-        }
       } catch (e) {
         print(e.toString());
       }
     }
-
 
     // Update Event Location
     Future<void> updateEventLocation(String eventId, String locationId, String previousLocation) async {
