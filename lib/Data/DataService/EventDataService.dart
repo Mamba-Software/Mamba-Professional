@@ -39,7 +39,7 @@ class EventDataService {
   Future<double?> getEventUserFeedback(String eventId, String userId) => _firebase.getEventUserFeedback(eventId, userId);
 
   // Add Data
-  Future<String> addEvent(String? brandID, String? title, String? description, Timestamp doneAt, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.addEvent(brandID, title, description, doneAt, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);
+  Future<String> addEvent(Event event) => _firebase.addEvent(event);
   Future<void> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) => _firebase.addUserToEvent(eid, uid, invitedDirectly);
   Future<void> addEventFeedback(String eid, String uid, double intensityScore) => _firebase.addEventFeedback(eid, uid, intensityScore);
 

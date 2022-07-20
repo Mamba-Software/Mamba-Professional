@@ -1080,67 +1080,48 @@ class FirebaseDatabaseService {
 
     // Events Sesions
     // Add Event
-    Future<String> addEvent(String? brandID, String? title, String? description, Timestamp doneAt,
-        String? year, String? month, String? day, String? hour, String? minute,
-        double? duration, String? locationId, int? maxMembers,
-        var selectedTrainers) async {
+    Future<String> addEvent(Event event) async {
       var eventID = Uuid().v1();
       User? currentUser = await getCurrentUser();
-      Timestamp createdAt = Timestamp.fromDate(DateTime.now());
       try {
+        // Create Document in "\Events"
         await _firestore.collection(events).doc(eventID).set({
           "brandID": currentBrand.id,
           "creatorID": currentUser!.uid,
-          "title": title,
-          "description": description,
-          "doneAt": doneAt,
-          "createdAt": createdAt,
-          "year": year,
-          "month": month,
-          "day": day,
-          "hour": hour,
-          "minute": minute,
-          "duration": duration,
-          "locationId": locationId,
-          "numClients": 0,
-          "numTrainers": selectedTrainers.length,
-          "maxMembers": maxMembers,
-          "joinedMembers": [],
-          "selectedTrainers": selectedTrainers,
+          "title": event.title,
+          "description": event.description,
+          "doneAt": event.doneAt,
+          "createdAt": event.createdAt,
+          "year": event.year,
+          "month": event.month,
+          "day": event.day,
+          "hour": event.hour,
+          "minute": event.minute,
+          "duration": event.duration,
+          "locationId": event.locationId,
+          "numClients": event.numClients,
+          "numTrainers": event.numTrainers,
+          "maxMembers": event.maxMembers,
         });
+        // Set the Brand Document in "\Events\Brands"
         await _firestore.collection(events).doc(eventID)
             .collection("Brands")
             .doc(currentBrand.id)
             .set({
-          "name": currentBrand.name,
-          "logoUrl": currentBrand.logoUrl,
-        });
-        Location location = await this.getSingleLocation(locationId!);
+              "name": currentBrand.name,
+              "logoUrl": currentBrand.logoUrl,
+            });
+        // Set the Location Document in "\Events\Location"
+        Location location = await this.getSingleLocation(event.locationId!);
         await _firestore.collection(events).doc(eventID)
             .collection("Locations")
-            .doc(locationId)
+            .doc(event.locationId!)
             .set({
-          "description": location.description,
-          "longitude": location.longitude,
-          "latitude": location.latitude,
-        });
-        for (var i = 0; i < selectedTrainers.length; i++) {
-          Usuario user = await this.getUserDetails(selectedTrainers[i]);
-          await _firestore.collection(events).doc(eventID)
-              .collection("Users")
-              .doc(user.id)
-              .set({
-            "name": user.name,
-            "firstName": user.firstName,
-            "lastName": user.lastName,
-            "imageUrl": user.imageUrl,
-            "noImageUrl": user.noImageUrl,
-            "isTrainer": user.isTrainer,
-            "isPrivate": user.isPrivate,
-            "notificationToken": user.notificationToken,
-            "joinedAt": createdAt,
-          });
-        }
+              "description": location.description,
+              "longitude": location.longitude,
+              "latitude": location.latitude,
+            });
+        // Add Event To Brands/Events Subcollection To Avoid Cloud Function Doing It :D
         return eventID;
       } catch (e) {
         print(e.toString());

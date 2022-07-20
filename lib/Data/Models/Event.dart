@@ -13,6 +13,7 @@ class Event {
   String? brandID;
   String? title;
   String? description;
+  Timestamp? doneAt;
   Timestamp? createdAt;
   String? year;
   String? month;
@@ -37,6 +38,7 @@ class Event {
     this.brandID,
     this.title,
     this.description,
+    this.doneAt,
     this.createdAt,
     this.year,
     this.month,
@@ -67,6 +69,9 @@ class Event {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('description')) {
       this.description = documentSnapshot.get("description").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('doneAt')) {
+      this.doneAt = documentSnapshot.get("doneAt");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('createdAt')) {
       this.createdAt = documentSnapshot.get("createdAt");
@@ -113,6 +118,9 @@ class Event {
     this.id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
       this.title = documentSnapshot.get("title").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('doneAt')) {
+      this.doneAt = documentSnapshot.get("doneAt");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('createdAt')) {
       this.createdAt = documentSnapshot.get("createdAt");

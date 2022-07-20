@@ -70,7 +70,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   var ubicacionController =  TextEditingController();
   // Participants
   TextEditingController membersController = TextEditingController();
-  int members = 1;
+  int eventMaxMembers = 1;
   int membersMax = currentBrand.maxMembers!;
   // Evento Recurrente
   bool isRecurrent = false;
@@ -131,7 +131,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     var hour = duration.split(".")[0];
     var min = duration.split(".")[1];
     durationController.text = "${hour}h ${min}min";
-    membersController.text = "${members.toString()}";
+    membersController.text = "${eventMaxMembers.toString()}";
     brandTrainersSelected.add(currentUser);
     getLocation(currentBrand.baseLocation!);
   }
@@ -159,7 +159,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Event Duration
     durationController.text = StringUtils().durationToString(event.duration!);
     // Event Members
-    members = event.maxMembers!;
+    eventMaxMembers = event.maxMembers!;
     membersController.text = "${event.maxMembers!}";
     getEventMembers(event.id!);
     // Event Locations
@@ -232,13 +232,13 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         context: context,
         builder: (_) => SelectMembersDialog(
           title: AppLocalizations.of(context)!.selectMembers,
-          initialMembers: members-1,
+          initialMembers: eventMaxMembers-1,
         )
     );
     if (pickedMembers != null) {
       setState(() {
-        members = pickedMembers;
-        membersController.text = "${members.toString()}";
+        eventMaxMembers = pickedMembers;
+        membersController.text = "${eventMaxMembers.toString()}";
       });
     }
   }
@@ -322,7 +322,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
               CupertinoPageRoute<List<Usuario>>(
                 builder: (context) => SelectClientsEvent(
                   selectedUsers: brandClientsSelected,
-                  maxClients: members,
+                  maxClients: eventMaxMembers,
                 ),
               )
           );
@@ -1184,7 +1184,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                     style: Theme.of(context).textTheme.bodyText2,
                                                   ),
                                                   Text(
-                                                    members.toString()+" )",
+                                                    eventMaxMembers.toString()+" )",
                                                     style: Theme.of(context).textTheme.bodyText2,
                                                   ),
                                                 ],
@@ -1397,12 +1397,12 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                           setState(() {
                             errorNoTrainerSelected = true;
                           });
-                        } else if (brandClientsSelected.length > members) {
+                        } else if (brandClientsSelected.length > eventMaxMembers) {
                           setState(() {
                             errorClientsSelected = true;
                           });
                         } else {
-                          widget.eventId == null ? _addEvent() : _updateEvent();
+                          widget.eventId == null ? _addEventFunction() : _updateEvent();
                         }
                       }
                     },
@@ -1479,47 +1479,67 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     return Theme.of(context).accentColor;
   }
 
-  Future<void> _addEvent() async {
+  Future<void> _addEventFunction() async {
     setState(() {
       isLoading = true;
     });
+    // Event Start Date
     var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
-    var selectedTrainerId = [];
-    for (var i=0; i< brandTrainersSelected.length; i++) {
-      selectedTrainerId.add(brandTrainersSelected[i].id);
-    }
-    // EVENT IS NOT RECURRENT
-    if (!isRecurrent) {
-      String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, doneAt!, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
-      await Future.delayed(const Duration(milliseconds: 2000));
-      for (var i=0; i<brandClientsSelected.length; i++) {
-        var client = brandClientsSelected[i];
-        await _eventDataService.addUserToEvent(eid, client.id!, true);
-        NotificationService().userJoinEvent(client.id!, currentBrand.id!, eid);
-      }
-    } else {
-      // EVENT IS RECURRENT
-      String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, doneAt!, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
-      await Future.delayed(const Duration(milliseconds: 2000));
-      for (var i=0; i<brandClientsSelected.length; i++) {
-        var client = brandClientsSelected[i];
-        await _eventDataService.addUserToEvent(eid, client.id!, true);
-        NotificationService().userJoinEvent(client.id!, currentBrand.id!, eid);
-      }
+    Timestamp doneAt = Timestamp.fromDate(startDate);
+    // Creating Event Object
+    Event event = Event(
+      title: titleController.text,
+      description: descriptionController.text,
+      doneAt: doneAt,
+      createdAt: Timestamp.now(),
+      year: startDate.year.toString(),
+      month: startDate.month.toString(),
+      day: startDate.day.toString(),
+      hour: startDate.hour.toString(),
+      minute: startDate.minute.toString(),
+      duration: double.parse(duration),
+      locationId: location.id,
+      numClients: brandClientsSelected.length,
+      numTrainers: brandTrainersSelected.length,
+      maxMembers: eventMaxMembers,
+    );
+    // Event Members
+    List<Usuario> eventMembers = new List.from(brandTrainersSelected);
+    eventMembers.addAll(brandClientsSelected);
+    // Add Event
+    String eventId = await _addEventCall(event);
+    // Add Event Members
+    await _addEventMembersCall(eventId, eventMembers);
+    // EVENT IS RECURRENT
+    if (isRecurrent) {
       var tempDate = startDate.add(Duration(days: 1));
       var tempTimestamp = Timestamp.fromDate(tempDate);
       var weekDay = tempDate.weekday;
       if (_value == 1) {
         // One Week
         for (var i=0; i<6; i++) {
-          if(values[weekDay-1]!) {
-            String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempTimestamp, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
-            await Future.delayed(const Duration(milliseconds: 1000));
-            for (var i=0; i<brandClientsSelected.length; i++) {
-              var client = brandClientsSelected[i];
-              await _eventDataService.addUserToEvent(eid, client.id!, true);
-              NotificationService().userJoinEvent(client.id!, currentBrand.id!, eid);
-            }
+          if (values[weekDay-1]!) {
+            // Event Object
+            event = Event(
+              title: titleController.text,
+              description: descriptionController.text,
+              doneAt: tempTimestamp,
+              createdAt: Timestamp.now(),
+              year: tempDate.year.toString(),
+              month: tempDate.month.toString(),
+              day: tempDate.day.toString(),
+              hour: tempDate.hour.toString(),
+              minute: tempDate.minute.toString(),
+              duration: double.parse(duration),
+              locationId: location.id,
+              numClients: brandClientsSelected.length,
+              numTrainers: brandTrainersSelected.length,
+              maxMembers: eventMaxMembers,
+            );
+            // Add Event
+            String eventId = await _addEventCall(event);
+            // Add Event Members
+            await _addEventMembersCall(eventId, eventMembers);
           }
           tempDate = tempDate.add(Duration(days: 1));
           tempTimestamp = Timestamp.fromDate(tempDate);
@@ -1528,14 +1548,28 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       } else if (_value == 2) {
         // Two Weeks
         for (var i=0; i<13; i++) {
-          if(values[weekDay-1]!) {
-            String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempTimestamp, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
-            await Future.delayed(const Duration(milliseconds: 1000));
-            for (var i=0; i<brandClientsSelected.length; i++) {
-              var client = brandClientsSelected[i];
-              await _eventDataService.addUserToEvent(eid, client.id!, true);
-              NotificationService().userJoinEvent(client.id!, currentBrand.id!, eid);
-            }
+          if (values[weekDay-1]!) {
+            // Event Object
+            event = Event(
+              title: titleController.text,
+              description: descriptionController.text,
+              doneAt: tempTimestamp,
+              createdAt: Timestamp.now(),
+              year: tempDate.year.toString(),
+              month: tempDate.month.toString(),
+              day: tempDate.day.toString(),
+              hour: tempDate.hour.toString(),
+              minute: tempDate.minute.toString(),
+              duration: double.parse(duration),
+              locationId: location.id,
+              numClients: brandClientsSelected.length,
+              numTrainers: brandTrainersSelected.length,
+              maxMembers: eventMaxMembers,
+            );
+            // Add Event
+            String eventId = await _addEventCall(event);
+            // Add Event Members
+            await _addEventMembersCall(eventId, eventMembers);
           }
           tempDate = tempDate.add(Duration(days: 1));
           tempTimestamp = Timestamp.fromDate(tempDate);
@@ -1544,14 +1578,28 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       } else if (_value == 3) {
         // One Month
         for (var i=0; i<29; i++) {
-          if(values[weekDay-1]!) {
-            await Future.delayed(const Duration(milliseconds: 1000));
-            String eid = await _eventDataService.addEvent(currentBrand.id, titleController.text, descriptionController.text, tempTimestamp, tempDate.year.toString(),tempDate.month.toString(),tempDate.day.toString(),tempDate.hour.toString(), tempDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
-            for (var i=0; i<brandClientsSelected.length; i++) {
-              var client = brandClientsSelected[i];
-              await _eventDataService.addUserToEvent(eid, client.id!, true);
-              NotificationService().userJoinEvent(client.id!, currentBrand.id!, eid);
-            }
+          if (values[weekDay-1]!) {
+            // Event Object
+            event = Event(
+              title: titleController.text,
+              description: descriptionController.text,
+              doneAt: tempTimestamp,
+              createdAt: Timestamp.now(),
+              year: tempDate.year.toString(),
+              month: tempDate.month.toString(),
+              day: tempDate.day.toString(),
+              hour: tempDate.hour.toString(),
+              minute: tempDate.minute.toString(),
+              duration: double.parse(duration),
+              locationId: location.id,
+              numClients: brandClientsSelected.length,
+              numTrainers: brandTrainersSelected.length,
+              maxMembers: eventMaxMembers,
+            );
+            // Add Event
+            String eventId = await _addEventCall(event);
+            // Add Event Members
+            await _addEventMembersCall(eventId, eventMembers);
           }
           tempDate = tempDate.add(Duration(days: 1));
           tempTimestamp = Timestamp.fromDate(tempDate);
@@ -1560,6 +1608,30 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       }
     }
     Navigator.pop(context);
+  }
+
+  Future<String> _addEventCall(Event event) async {
+    // Add Event
+    String eid = await _eventDataService.addEvent(event);
+    return eid;
+  }
+
+  Future<void> _addEventMembersCall(String eventId, List<Usuario> eventMembers) async {
+    // Add Event Members
+    for (var i=0; i<eventMembers.length; i++) {
+      var user = eventMembers[i];
+      if (user.isTrainer!) {
+        // Firebase Call
+        await _eventDataService.addUserToEvent(eventId, user.id!, true);
+        // Local Notifications Service
+      } else {
+        // Firebase Call
+        await _eventDataService.addUserToEvent(eventId, user.id!, true);
+        // Notifications Service, this also send Notifications to Trainers
+        NotificationService().userJoinEvent(user.id!, currentBrand.id!, eventId);
+        // Local Notifications Service
+      }
+    }
   }
 
   Future<void> _updateEvent() async {
@@ -1573,7 +1645,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     }
     // EVENT IS NOT RECURRENT
     if (!isRecurrent) {
-      await _eventDataService.updateEvent(event.id!, titleController.text, descriptionController.text, doneAt!, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, members, selectedTrainerId);
+      await _eventDataService.updateEvent(event.id!, titleController.text, descriptionController.text, doneAt!, startDate.year.toString(),startDate.month.toString(),startDate.day.toString(),startDate.hour.toString(), startDate.minute.toString(), double.parse(duration), location.id, eventMaxMembers, selectedTrainerId);
       await Future.delayed(const Duration(milliseconds: 2000));
       /*
       for (var i=0; i<brandClientsSelected.length; i++) {
