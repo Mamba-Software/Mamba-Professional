@@ -797,170 +797,175 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                           ),
                                         ),
                                       ) : Container(),
-                                      Padding(
-                                          padding: EdgeInsets.only(top: 15,),
-                                          child: new Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Text(
-                                                AppLocalizations.of(context)!.recurrentEvent,
-                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                              ),
-                                              SizedBox(width: 10,),
-                                              Checkbox(
-                                                checkColor: Colors.white,
-                                                fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                value: isRecurrent,
-                                                onChanged: (bool? value) {
-                                                  setState(() {
-                                                    isRecurrent = value!;
-                                                  });
-                                                },
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      isRecurrent ? Column(
+                                      widget.eventId == null ? Column(
                                         children: [
                                           Padding(
-                                              padding: EdgeInsets.only(top: 0),
-                                              child: new Column(
+                                              padding: EdgeInsets.only(top: 15,),
+                                              child: new Row(
                                                 mainAxisSize: MainAxisSize.max,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets.all(10.0),
-                                                    child: Text(
-                                                      AppLocalizations.of(context)!.days,
-                                                      style: Theme.of(context).textTheme.bodyText2,
-                                                    ),
+                                                  Text(
+                                                    AppLocalizations.of(context)!.recurrentEvent,
+                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
-                                                  WeekdaySelector(
-                                                    fillColor: Colors.white,
-                                                    selectedFillColor: Theme.of(context).accentColor,
-                                                    textStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.black),
-                                                    selectedTextStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white),
-                                                    firstDayOfWeek: 0,
-                                                    shortWeekdays: [
-                                                      AppLocalizations.of(context)!.mondayLetter,
-                                                      AppLocalizations.of(context)!.tuesdarLetter,
-                                                      AppLocalizations.of(context)!.wednesdayLetter,
-                                                      AppLocalizations.of(context)!.thursdayLetter,
-                                                      AppLocalizations.of(context)!.fridayLetter,
-                                                      AppLocalizations.of(context)!.saturadayLetter,
-                                                      AppLocalizations.of(context)!.sundayLetter,
-                                                    ],
-                                                    // Working Days disabledFillColor: Colors.red,
-                                                    onChanged: (v) {
-                                                      print(v);
+                                                  SizedBox(width: 10,),
+                                                  Checkbox(
+                                                    checkColor: Colors.white,
+                                                    fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                                    value: isRecurrent,
+                                                    onChanged: (bool? value) {
                                                       setState(() {
-                                                        values[v % 7] = !values[v % 7]!;
+                                                        isRecurrent = value!;
                                                       });
                                                     },
-                                                    selectedElevation: 15,
-                                                    elevation: 5,
-                                                    disabledElevation: 0,
-                                                    values: values,
                                                   ),
                                                 ],
                                               )
                                           ),
-                                          Padding(
-                                              padding: EdgeInsets.only(top: 10),
-                                              child: new Column(
-                                                mainAxisSize: MainAxisSize.max,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets.all(10.0),
-                                                    child: Text(
-                                                      AppLocalizations.of(context)!.during,
-                                                      style: Theme.of(context).textTheme.bodyText2,
-                                                    ),
-                                                  ),
-                                                  Column(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                          isRecurrent ? Column(
+                                            children: [
+                                              Padding(
+                                                  padding: EdgeInsets.only(top: 0),
+                                                  child: new Column(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
-                                                      ListTile(
-                                                        dense: true,
-                                                        contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
-                                                        title: Text(
-                                                          AppLocalizations.of(context)!.thisWeek,
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: Text(
+                                                          AppLocalizations.of(context)!.days,
                                                           style: Theme.of(context).textTheme.bodyText2,
-                                                        ),
-                                                        subtitle: Text(
-                                                          AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneWeek))),
-                                                          style: Theme.of(context).textTheme.caption,
-                                                          textAlign: TextAlign.left,
-                                                        ),
-                                                        leading: Radio(
-                                                          value: 1,
-                                                          groupValue: _value,
-                                                          activeColor: Theme.of(context).accentColor,
-                                                          fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                          onChanged: (value) {
-                                                            setState(() {
-                                                              _value = int.parse(value.toString());
-                                                            });
-                                                          },
                                                         ),
                                                       ),
-                                                      ListTile(
-                                                        dense: true,
-                                                        contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
-                                                        title: Text(
-                                                          AppLocalizations.of(context)!.nextTwoWeek,
-                                                          style: Theme.of(context).textTheme.bodyText2,
-                                                        ),
-                                                        subtitle: Text(
-                                                          AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(twoWeek))),
-                                                          style: Theme.of(context).textTheme.caption,
-                                                          textAlign: TextAlign.left,
-                                                        ),
-                                                        leading: Radio(
-                                                          value: 2,
-                                                          groupValue: _value,
-                                                          activeColor: Theme.of(context).accentColor,
-                                                          fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                          onChanged: (value) {
-                                                            setState(() {
-                                                              _value = int.parse(value.toString());
-                                                            });
-                                                          },
-                                                        ),
-                                                      ),
-                                                      ListTile(
-                                                        dense: true,
-                                                        contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
-                                                        title: Text(
-                                                          AppLocalizations.of(context)!.wholeMonth,
-                                                          style: Theme.of(context).textTheme.bodyText2,
-                                                        ),
-                                                        subtitle: Text(
-                                                          AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneMonth))),
-                                                          style: Theme.of(context).textTheme.caption,
-                                                          textAlign: TextAlign.left,
-                                                        ),
-                                                        leading: Radio(
-                                                          value: 3,
-                                                          groupValue: _value,
-                                                          activeColor: Theme.of(context).accentColor,
-                                                          fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                          onChanged: (value) {
-                                                            setState(() {
-                                                              _value = int.parse(value.toString());
-                                                            });
-                                                          },
-                                                        ),
+                                                      WeekdaySelector(
+                                                        fillColor: Colors.white,
+                                                        selectedFillColor: Theme.of(context).accentColor,
+                                                        textStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.black),
+                                                        selectedTextStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white),
+                                                        firstDayOfWeek: 0,
+                                                        shortWeekdays: [
+                                                          AppLocalizations.of(context)!.mondayLetter,
+                                                          AppLocalizations.of(context)!.tuesdarLetter,
+                                                          AppLocalizations.of(context)!.wednesdayLetter,
+                                                          AppLocalizations.of(context)!.thursdayLetter,
+                                                          AppLocalizations.of(context)!.fridayLetter,
+                                                          AppLocalizations.of(context)!.saturadayLetter,
+                                                          AppLocalizations.of(context)!.sundayLetter,
+                                                        ],
+                                                        // Working Days disabledFillColor: Colors.red,
+                                                        onChanged: (v) {
+                                                          print(v);
+                                                          setState(() {
+                                                            values[v % 7] = !values[v % 7]!;
+                                                          });
+                                                        },
+                                                        selectedElevation: 15,
+                                                        elevation: 5,
+                                                        disabledElevation: 0,
+                                                        values: values,
                                                       ),
                                                     ],
                                                   )
-                                                ],
-                                              )
-                                          ),
+                                              ),
+                                              Padding(
+                                                  padding: EdgeInsets.only(top: 10),
+                                                  child: new Column(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: Text(
+                                                          AppLocalizations.of(context)!.during,
+                                                          style: Theme.of(context).textTheme.bodyText2,
+                                                        ),
+                                                      ),
+                                                      Column(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        children: [
+                                                          ListTile(
+                                                            dense: true,
+                                                            contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                                                            title: Text(
+                                                              AppLocalizations.of(context)!.thisWeek,
+                                                              style: Theme.of(context).textTheme.bodyText2,
+                                                            ),
+                                                            subtitle: Text(
+                                                              AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneWeek))),
+                                                              style: Theme.of(context).textTheme.caption,
+                                                              textAlign: TextAlign.left,
+                                                            ),
+                                                            leading: Radio(
+                                                              value: 1,
+                                                              groupValue: _value,
+                                                              activeColor: Theme.of(context).accentColor,
+                                                              fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                                              onChanged: (value) {
+                                                                setState(() {
+                                                                  _value = int.parse(value.toString());
+                                                                });
+                                                              },
+                                                            ),
+                                                          ),
+                                                          ListTile(
+                                                            dense: true,
+                                                            contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                                                            title: Text(
+                                                              AppLocalizations.of(context)!.nextTwoWeek,
+                                                              style: Theme.of(context).textTheme.bodyText2,
+                                                            ),
+                                                            subtitle: Text(
+                                                              AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(twoWeek))),
+                                                              style: Theme.of(context).textTheme.caption,
+                                                              textAlign: TextAlign.left,
+                                                            ),
+                                                            leading: Radio(
+                                                              value: 2,
+                                                              groupValue: _value,
+                                                              activeColor: Theme.of(context).accentColor,
+                                                              fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                                              onChanged: (value) {
+                                                                setState(() {
+                                                                  _value = int.parse(value.toString());
+                                                                });
+                                                              },
+                                                            ),
+                                                          ),
+                                                          ListTile(
+                                                            dense: true,
+                                                            contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                                                            title: Text(
+                                                              AppLocalizations.of(context)!.wholeMonth,
+                                                              style: Theme.of(context).textTheme.bodyText2,
+                                                            ),
+                                                            subtitle: Text(
+                                                              AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneMonth))),
+                                                              style: Theme.of(context).textTheme.caption,
+                                                              textAlign: TextAlign.left,
+                                                            ),
+                                                            leading: Radio(
+                                                              value: 3,
+                                                              groupValue: _value,
+                                                              activeColor: Theme.of(context).accentColor,
+                                                              fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                                              onChanged: (value) {
+                                                                setState(() {
+                                                                  _value = int.parse(value.toString());
+                                                                });
+                                                              },
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  )
+                                              ),
+                                            ],
+                                          ) : Container(),
+                                          SizedBox(height: MediaQuery.of(context).size.height*0.10)
                                         ],
                                       ) : Container(),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.10)
+
                                     ]
                                 )
                             ),
@@ -1615,6 +1620,19 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     });
     // Delete Event Call
     await _eventDataService.deleteEvent(widget.eventId!);
+    // Event Members
+    List<Usuario> eventMembers = new List.from(brandTrainersSelected);
+    eventMembers.addAll(brandClientsSelected);
+    // Delete Event Local Notifications
+    for (var i=0; i<eventMembers.length; i++) {
+      var user = eventMembers[i];
+      // Local Notifications Service
+      if (user.id! == currentUser.id!) {
+        await _localNotificationService.deleteEventLocalNotifications(event.id!);
+      } else {
+        await _localNotificationService.deleteRemoteEventLocalNotifications(event.id!, user.id!);
+      }
+    }
     // Pop to Last Page
     Navigator.pop(context, false);
   }
@@ -1642,6 +1660,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     }
     Navigator.pop(context, true);
   }
+
 
   // Firebase Calls
 

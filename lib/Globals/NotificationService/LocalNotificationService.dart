@@ -458,7 +458,7 @@ class LocalNotificationService {
     // Delete the ones that have been fired
     for (int i = 0; i < eventNotifications.length; i++) {
       ReceivedNotification notif = eventNotifications[i];
-      _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
+      _userDataService.deleteLocalNotification(userId, notif.id!.toString());
     }
   }
 
