@@ -405,7 +405,7 @@ class LocalNotificationService {
 
   // Local Notification Other User. Do it Remotely, aka Firebase
 
-  Future<void> addRemoteEventLocalNotifications(BuildContext context, String eventId, String userId, bool? isTrainer) async {
+  Future<void> addRemoteEventLocalNotifications(BuildContext context, String eventId, String userId, bool isTrainer) async {
     // Getting Event Data
     Event event = await _eventDataService.getSingleEvent(eventId);
     DateTime startDate = DateTime(
@@ -432,6 +432,7 @@ class LocalNotificationService {
       _userDataService.addLocalNotification(userId, notificationAfter);
       // To make sure not the same Timestamp
       await Future.delayed(Duration(seconds: 1));
+      print("Feedback Event Notification Added");
     }
 
     // Schedule Before Notification
@@ -448,6 +449,7 @@ class LocalNotificationService {
     );
     // Add Notification Firebase
     _userDataService.addLocalNotification(userId, notificationBefore);
+    print("Reminder Event Notification Added");
   }
 
   Future<void> deleteRemoteEventLocalNotifications(String eventId, String userId) async {

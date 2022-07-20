@@ -423,12 +423,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                         }
                     );
                     if (result) {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      await _eventDataService.deleteEvent(widget.eventId!);
-                      await Future.delayed(const Duration(milliseconds: 3000));
-                      Navigator.pop(context);
+                      _deleteEventFunction();
                     }
                   },
                   icon: Container(
@@ -1406,7 +1401,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                             errorClientsSelected = true;
                           });
                         } else {
-                          widget.eventId == null ? _addEventFunction() : _updateEvent();
+                          widget.eventId == null ? _addEventFunction() : _updateEventFunction();
                         }
                       }
                     },
@@ -1614,37 +1609,17 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     Navigator.pop(context);
   }
 
-  Future<String> _addEventCall(Event event) async {
-    // Add Event
-    String eid = await _eventDataService.addEvent(event);
-    return eid;
+  Future<void> _deleteEventFunction() async {
+    setState(() {
+      isLoading = true;
+    });
+    // Delete Event Call
+    await _eventDataService.deleteEvent(widget.eventId!);
+    // Pop to Last Page
+    Navigator.pop(context, false);
   }
 
-  Future<void> _addEventMembersCall(String eventId, List<Usuario> eventMembers) async {
-    // Add Event Members
-    for (var i=0; i<eventMembers.length; i++) {
-      var user = eventMembers[i];
-      if (user.isTrainer!) {
-        // Firebase Call
-        await _eventDataService.addUserToEvent(eventId, user.id!, true);
-        if (user.id! == currentUser.id!) {
-
-        } else {
-
-        }
-        // Local Notifications Service
-      } else {
-        // Firebase Call
-        await _eventDataService.addUserToEvent(eventId, user.id!, true);
-        // Notifications Service, this also send Notifications to Trainers
-        _notificationService.userJoinEvent(user.id!, currentBrand.id!, eventId);
-        // Local Notifications Service
-        _localNotificationService.addRemoteEventLocalNotifications(context, eventId, user.id!, user.isTrainer);
-      }
-    }
-  }
-
-  Future<void> _updateEvent() async {
+  Future<void> _updateEventFunction() async {
     setState(() {
       isLoading = true;
     });
@@ -1667,4 +1642,40 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     }
     Navigator.pop(context, true);
   }
+
+  // Firebase Calls
+
+  Future<String> _addEventCall(Event event) async {
+    // Add Event
+    String eid = await _eventDataService.addEvent(event);
+    return eid;
+  }
+
+  Future<void> _addEventMembersCall(String eventId, List<Usuario> eventMembers) async {
+    // Add Event Members
+    for (var i=0; i<eventMembers.length; i++) {
+      var user = eventMembers[i];
+      if (user.isTrainer!) {
+        print("Notifications Trainer "+user.name!);
+        // Firebase Call
+        await _eventDataService.addUserToEvent(eventId, user.id!);
+        // Local Notifications Service
+        if (user.id! == currentUser.id!) {
+          await _localNotificationService.addEventLocalNotifications(context, eventId, user.isTrainer);
+        } else {
+          await _localNotificationService.addRemoteEventLocalNotifications(context, eventId, user.id!, user.isTrainer!);
+        }
+      } else {
+        print("Notifications Client "+user.name!);
+        // Firebase Call
+        await _eventDataService.addUserToEvent(eventId, user.id!, true);
+        // Notifications Service, this also send Notifications to Trainers
+        _notificationService.userJoinEvent(user.id!, currentBrand.id!, eventId);
+        // Local Notifications Service
+        await _localNotificationService.addRemoteEventLocalNotifications(context, eventId, user.id!, user.isTrainer!);
+      }
+    }
+  }
+
+
 }

@@ -399,16 +399,26 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                             children: [
                                               Text(
                                                 event.title!,
-                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(0.5), fontWeight: FontWeight.w600),
                                                 textAlign: TextAlign.start,
                                               ),
 
                                             ],
                                           ),
-                                          Text(
-                                            DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                                            textAlign: TextAlign.start,
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                              Text(
+                                                "("+appointment.subject+")",
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -527,7 +537,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                     child: Container(
                                       width: details.bounds.width,
                                       height: details.bounds.height,
-                                      padding: EdgeInsets.all(details.bounds.width*0.1),
+                                      padding: EdgeInsets.all(details.bounds.height*0.1),
                                       decoration: BoxDecoration(
                                         color: appointment.color,
                                         borderRadius: BorderRadius.all(

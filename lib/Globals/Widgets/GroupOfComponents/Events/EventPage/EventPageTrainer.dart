@@ -1773,8 +1773,12 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                 if (result != null && result) {
                   setState(() {
                     isLoading = true;
-                    getEventInfo();
                   });
+                  getEventInfo();
+                  print("Updating Event ...");
+                } else if (result != null && !result) {
+                  print("Deleting Event ...");
+                  Navigator.pop(context);
                 }
               },
               backgroundColor: Colors.green,

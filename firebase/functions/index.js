@@ -1226,7 +1226,7 @@ exports.userAddsEvent = functions
         "numTrainers",
         numTrainers,
       );
-      // Add Event to Brands Event Subcollection
+      /* Add Event to Brands Event Subcollection
       for (var i in eventBrandSnapshot.docs) {
         const id = eventBrandSnapshot.docs[i].id;
         await db
@@ -1247,6 +1247,7 @@ exports.userAddsEvent = functions
           "maxMembers": eventDoc.maxMembers,
         });
       }
+      */
       // Add Event to Locations Event Subcollection
       for (var i in eventLocationsSnapshot.docs) {
         const id = eventLocationsSnapshot.docs[i].id;
@@ -1314,7 +1315,7 @@ exports.userDeletesEvent = functions
           .doc(eventUsersSnapshot.docs[i].id)
           .delete();
       }
-      // Delete Event in Brands Subcollection
+      /* Delete Event in Brands Subcollection
       for (var i in eventBrandSnapshot.docs) {
         await db
         .collection("Brands")
@@ -1329,7 +1330,7 @@ exports.userDeletesEvent = functions
         .collection("Brands")
         .doc(eventBrandSnapshot.docs[i].id)
         .delete();
-      }
+      }*/
       // Delete Event in Locations Subcollection
       for (var i in eventLocationsSnapshot.docs) {
         await db
@@ -2994,7 +2995,7 @@ exports.zzzzUserDeletesEvent = functions
           .doc(eventUsersSnapshot.docs[i].id)
           .delete();
       }
-      // Delete Event in Brands Subcollection
+      /* Delete Event in Brands Subcollection
       for (var i in eventBrandSnapshot.docs) {
         await db
         .collection("7777 Brands")
@@ -3010,6 +3011,7 @@ exports.zzzzUserDeletesEvent = functions
         .doc(eventBrandSnapshot.docs[i].id)
         .delete();
       }
+      */
       // Delete Event in Locations Subcollection
       for (var i in eventLocationsSnapshot.docs) {
         await db

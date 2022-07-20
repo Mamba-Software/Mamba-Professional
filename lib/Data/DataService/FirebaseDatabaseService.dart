@@ -1125,7 +1125,7 @@ class FirebaseDatabaseService {
         // Add Event To Brands/Events Subcollection To Avoid Cloud Function Doing It :D
         // We do it like this to avoid Cold Start and make the User wait.
         await _firestore
-            .collection("7777 Brands")
+            .collection(brands)
             .doc(currentBrand.id!)
             .collection("Events")
             .doc(eventID).
@@ -1451,7 +1451,23 @@ class FirebaseDatabaseService {
     // Delete Event
     Future<void> deleteEvent(String id) async {
       try {
+        // Delete Event From \Events Collection
         await _firestore.collection(events).doc(id).delete();
+        // Delete Event To Brands/Events Subcollection To Avoid Cloud Function Doing It :D
+        // We do it like this to avoid Cold Start and make the User wait.
+        await _firestore
+            .collection(brands)
+            .doc(currentBrand.id!)
+            .collection("Events")
+            .doc(id)
+            .delete();
+        // Delete Event To Events/Brand Subcollection To Avoid Cloud Function Doing It :D
+        await _firestore
+            .collection(events)
+            .doc(id)
+            .collection("Brands")
+            .doc(currentBrand.id!)
+            .delete();
       } catch (e) {
         print(e.toString());
       }
