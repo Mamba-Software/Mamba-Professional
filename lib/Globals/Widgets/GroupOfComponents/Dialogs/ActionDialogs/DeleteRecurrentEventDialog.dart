@@ -125,7 +125,7 @@ class _DeleteRecurrentEventDialogState extends State<DeleteRecurrentEventDialog>
                         ),
                         icon: Icon(Icons.delete_outline, size: MediaQuery.of(context).size.width*0.06, color: _value == 0 ? AppColors.white.withOpacity(0.5) : AppColors.white),
                         onPressed: _value != 0 ? () {
-                          Navigator.pop(context, [true, _value]);
+                          Navigator.pop(context, _value);
                         } : null,
                       ),
                       SizedBox(width: MediaQuery.of(context).size.width*0.01),

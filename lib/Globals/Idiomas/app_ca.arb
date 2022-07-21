@@ -406,7 +406,7 @@
   "beforeEventBodyNotification": "Aquesta sessió està a punt de començar. Fes clic per a consultar tots els detalls",
   "afterEventTitleNotification": "\uD83D\uDCAA ✅️ Sessió completada ✅️ \uD83D\uDCAA",
   "afterEventBodyNotification": "Què t'ha semblat? Massa intensa? Comunica el teu nivell d'esforç al teu entrenador",
-  "deleteRecurrentEvent": "Segur que vols eliminar aquest esdeveniment recurrent?",
+  "deleteRecurrentEvent": "Com vols eliminar aquest esdeveniment recurrent?",
   "saveRecurrentEvent": "Com vols editar aquest esdeveniment recurrent?",
   "thisEvent": "Només aquest esdeveniment",
   "thisEventAndRest": "Aquest i els esdeveniments següents"

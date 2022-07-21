@@ -61,7 +61,7 @@ class Event {
   Event.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('eventGroupId')) {
-      this.eventGroupId = documentSnapshot.get("eventGroupId").toString();
+      this.eventGroupId = documentSnapshot.get("eventGroupId");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('creatorID')) {
       this.creatorID = documentSnapshot.get("creatorID").toString();

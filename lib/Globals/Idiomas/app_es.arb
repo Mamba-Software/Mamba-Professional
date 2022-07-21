@@ -1832,7 +1832,7 @@
   "@afterEventBodyNotification": {
     "description": "beforeEventBodyNotification message"
   },
-  "deleteRecurrentEvent": "¿Seguro que quieres eliminar este evento recurrente?",
+  "deleteRecurrentEvent": "¿Cómo quieres quieres eliminar este evento recurrente?",
   "@deleteRecurrentEvent": {
     "description": "beforeEventBodyNotification message"
   },

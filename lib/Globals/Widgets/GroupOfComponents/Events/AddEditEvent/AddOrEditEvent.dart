@@ -119,7 +119,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       startDateController.text = StringUtils().toCapitalized(startDateController.text);
       oneWeek = widget.initialDateTime!.add(Duration(days: 7));
       twoWeek = widget.initialDateTime!.add(Duration(days: 14));
-      oneMonth= widget.initialDateTime!.add(Duration(days: 30));
+      oneMonth= widget.initialDateTime!.add(Duration(days: 28));
       doneAt = Timestamp.fromDate(widget.initialDateTime!);
     } else {
       startDate = DateTime(
@@ -133,7 +133,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       startDateController.text = StringUtils().toCapitalized(startDateController.text);
       oneWeek = startDate.add(Duration(days: 7));
       twoWeek = startDate.add(Duration(days: 14));
-      oneMonth= startDate.add(Duration(days: 30));
+      oneMonth= startDate.add(Duration(days: 28));
       doneAt = Timestamp.fromDate(startDate);
     }
     titleController.text = "${currentBrand.name!.replaceAll(RegExp(r"\s+"), "")}";
@@ -443,8 +443,17 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                         },
                       );
                       if (result != null) {
-                        print(result[0]);
-                        print(result[1]);
+                        if (result == 1) {
+                          print("Delete Only This Event..");
+                          print("Get Recurrent Group Ids..");
+                          print("Delete Event From Recurrent Group..");
+                        } else {
+                          print("Delete This Event and the Rest Forward ...");
+                          print("Get Recurrent Group Ids..");
+                          print("Get Cover Event Cover Data");
+                          print("Delete this event and the Ones Later in Time");
+                          print("Delete those Events From Recurrent Group..");
+                        }
                       }
                     }
                   },
@@ -1453,8 +1462,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                 },
                               );
                               if (result != null) {
-                                print(result[0]);
-                                print(result[1]);
+                                if (result == 1) {
+                                  print("Edit Only This Event..");
+                                } else {
+                                  print("Edit This Event and the Rest Forward ...");
+                                  print("Get Recurrent Group Ids..");
+                                  print("Get Cover Event Cover Data");
+                                  print("Edit this event and the Ones Later in Time");
+                                }
                               }
 
                             }
@@ -1848,7 +1863,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         // Firebase Call
         await _eventDataService.addUserToEvent(eventId, user.id!);
         // Local Notifications
-        _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
+        await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
       } else {
         print("Notifications Client "+user.name!);
         // Firebase Call
@@ -1856,7 +1871,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         // Notifications Service, this also send Notifications to Trainers
         _notificationService.userJoinEvent(user.id!, currentBrand.id!, eventId);
         // Local Notifications Service
-        _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
+        await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
       }
     }
   }
