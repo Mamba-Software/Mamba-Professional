@@ -381,16 +381,26 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                             children: [
                                               Text(
                                                 event.title!,
-                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
                                                 textAlign: TextAlign.start,
                                               ),
 
                                             ],
                                           ),
-                                          Text(
-                                            DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                                            textAlign: TextAlign.start,
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                              Text(
+                                                "("+appointment.subject+")",
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -430,10 +440,20 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                             style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
                                             textAlign: TextAlign.start,
                                           ),
-                                          Text(
-                                            DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                                            textAlign: TextAlign.start,
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                              Text(
+                                                "("+appointment.subject+")",
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),

@@ -4,13 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Sesions/SesionsScreens/UserEventHistoryPage.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../../../../Data/Models/Event.dart';
-import '../../../../../Globals/Utils/Strings/StringUtils.dart';
-import '../../../../../Globals/Widgets/GroupOfComponents/Calendars/UserCalendarWidget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BrandCalendarWeekWidget extends StatefulWidget {
   String brandId;
@@ -224,16 +219,26 @@ class _BrandCalendarWeekWidgetState extends State<BrandCalendarWeekWidget> {
                           children: [
                             Text(
                               event.title!,
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
                               textAlign: TextAlign.start,
                             ),
 
                           ],
                         ),
-                        Text(
-                          DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          textAlign: TextAlign.start,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
+                              textAlign: TextAlign.start,
+                            ),
+                            Text(
+                              "("+appointment.subject+")",
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
+                              textAlign: TextAlign.start,
+                            ),
+                          ],
                         ),
                       ],
                     ),

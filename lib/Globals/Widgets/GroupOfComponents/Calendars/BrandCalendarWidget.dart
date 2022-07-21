@@ -399,7 +399,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                             children: [
                                               Text(
                                                 event.title!,
-                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(0.5), fontWeight: FontWeight.w600),
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
                                                 textAlign: TextAlign.start,
                                               ),
 
