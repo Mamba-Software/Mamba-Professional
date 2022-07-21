@@ -27,17 +27,18 @@ import 'package:uuid/uuid.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class AddOrEditEvent extends StatefulWidget {
+class AddOrEditPrivateEvent extends StatefulWidget {
   Locale locale;
+  DateTime? initialDateTime;
   String? eventId;
 
-  AddOrEditEvent({Key? key, required this.locale, this.eventId}) : super(key: key);
+  AddOrEditPrivateEvent({Key? key, required this.locale, this.initialDateTime, this.eventId}) : super(key: key);
 
   @override
-  _AddOrEditEventState createState() => _AddOrEditEventState();
+  _AddOrEditPrivateEventState createState() => _AddOrEditPrivateEventState();
 }
 
-class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProviderStateMixin{
+class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with SingleTickerProviderStateMixin{
   // Acceso a Base de Datos
   var _eventDataService = new EventDataService();
   var _locationDataService = new LocationDataService();
@@ -112,19 +113,29 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
 
 
   Future<void> initializeEventInfo() async {
-    startDate = DateTime(
-      startDate.year,
-      startDate.month,
-      startDate.day,
-      startDate.hour+1,
-      0,
-    );
-    startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(startDate);
-    startDateController.text = StringUtils().toCapitalized(startDateController.text);
-    oneWeek = startDate.add(Duration(days: 7));
-    twoWeek = startDate.add(Duration(days: 14));
-    oneMonth= startDate.add(Duration(days: 28));
-    doneAt = Timestamp.fromDate(startDate);
+    if (widget.initialDateTime != null) {
+      startDate = widget.initialDateTime!;
+      startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(widget.initialDateTime!);
+      startDateController.text = StringUtils().toCapitalized(startDateController.text);
+      oneWeek = widget.initialDateTime!.add(Duration(days: 7));
+      twoWeek = widget.initialDateTime!.add(Duration(days: 14));
+      oneMonth= widget.initialDateTime!.add(Duration(days: 28));
+      doneAt = Timestamp.fromDate(widget.initialDateTime!);
+    } else {
+      startDate = DateTime(
+        startDate.year,
+        startDate.month,
+        startDate.day,
+        startDate.hour+1,
+        0,
+      );
+      startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(startDate);
+      startDateController.text = StringUtils().toCapitalized(startDateController.text);
+      oneWeek = startDate.add(Duration(days: 7));
+      twoWeek = startDate.add(Duration(days: 14));
+      oneMonth= startDate.add(Duration(days: 28));
+      doneAt = Timestamp.fromDate(startDate);
+    }
     titleController.text = "${currentBrand.name!.replaceAll(RegExp(r"\s+"), "")}";
     titleString = titleController.text;
     var hour = duration.split(".")[0];

@@ -126,13 +126,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
     return Event();
   }
 
-  void _addEvent({DateTime? dateTimeClicked}) {
+  void _addEvent() {
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
           builder: (context) => AddOrEditEvent(
             locale: Localizations.localeOf(context),
-            initialDateTime: dateTimeClicked ?? null,
           ),
         )
     );
@@ -344,13 +343,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                             leadingDatesTextStyle: Theme.of(context).textTheme.caption,
                           ),
                         ),
-                        onLongPress: (details) {
-                          if (canEdit) {
-                            if(details.date!.isAfter(DateTime.now())) {
-                              _addEvent(dateTimeClicked: details.date);
-                            }
-                          }
-                        },
                         onViewChanged: (ViewChangedDetails viewChangedDetails) {
                           Future.delayed(Duration.zero, () async {
                             setState(() {
