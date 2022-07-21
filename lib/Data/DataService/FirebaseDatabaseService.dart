@@ -31,7 +31,6 @@ class FirebaseDatabaseService {
   String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
   String brands = isProduction ? 'Brands' : '7777 Brands';
   String events = isProduction ? 'Events' : '7777 Events';
-  String eventGroups = isProduction ? 'Event Groups' : '7777 Event Groups';
   String locations = isProduction ? 'Locations' : '7777 Locations';
   String groupOfQuestions = isProduction ? 'GroupOfQuestions' : '7777 GroupOfQuestions';
   String questions = isProduction ? 'Questions' : '7777 Questions';
@@ -1154,7 +1153,12 @@ class FirebaseDatabaseService {
     // Add Event
     Future<List<String>> getRecurrentEventGroup(String eventGroupId) async {
       DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-      await _firestore.collection(eventGroups).doc(eventGroupId).get();
+      await _firestore
+          .collection(events)
+          .doc("Recurrent Events")
+          .collection("Recurrent Events")
+          .doc(eventGroupId)
+          .get();
       List<String> eventIds = _documentSnapshot.get("groupEvents");
       return eventIds;
     }
@@ -1164,7 +1168,9 @@ class FirebaseDatabaseService {
       try {
         // Create Document in "\Event Groups"
         await _firestore
-            .collection(eventGroups)
+            .collection(events)
+            .doc("Recurrent Events")
+            .collection("Recurrent Events")
             .doc(eventGroupId)
             .set({
               "groupEvents": eventIds
@@ -1791,7 +1797,9 @@ class FirebaseDatabaseService {
       try {
         // Create Document in "\Event Groups"
         await _firestore
-            .collection(eventGroups)
+            .collection(events)
+            .doc("Recurrent Events")
+            .collection("Recurrent Events")
             .doc(eventGroupId)
             .update({
               "groupEvents": eventIds
@@ -1806,7 +1814,9 @@ class FirebaseDatabaseService {
       try {
         // Create Document in "\Event Groups"
         await _firestore
-            .collection(eventGroups)
+            .collection(events)
+            .doc("Recurrent Events")
+            .collection("Recurrent Events")
             .doc(eventGroupId)
             .delete();
       } catch (e) {

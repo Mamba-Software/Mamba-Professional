@@ -1614,7 +1614,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       var weekDay = tempDate.weekday;
       if (_value == 1) {
         // One Week
-        for (var i=0; i<7; i++) {
+        for (var i=0; i<6; i++) {
           if (values[weekDay-1]!) {
             // Event Object
             event = Event(
@@ -1647,7 +1647,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         }
       } else if (_value == 2) {
         // Two Weeks
-        for (var i=0; i<14; i++) {
+        for (var i=0; i<13; i++) {
           if (values[weekDay-1]!) {
             // Event Object
             event = Event(
@@ -1680,7 +1680,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         }
       } else if (_value == 3) {
         // One Month
-        for (var i=0; i<28; i++) {
+        for (var i=0; i<27; i++) {
           if (values[weekDay-1]!) {
             // Event Object
             event = Event(
