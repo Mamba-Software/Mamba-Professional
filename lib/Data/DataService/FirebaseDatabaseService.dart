@@ -1151,7 +1151,7 @@ class FirebaseDatabaseService {
     }
 
     // Add Event
-    Future<List<String>> getRecurrentEventGroup(String eventGroupId) async {
+    Future<dynamic> getRecurrentEventGroup(String eventGroupId) async {
       DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
       await _firestore
           .collection(events)
@@ -1159,8 +1159,7 @@ class FirebaseDatabaseService {
           .collection("Recurrent Events")
           .doc(eventGroupId)
           .get();
-      List<String> eventIds = _documentSnapshot.get("groupEvents");
-      return eventIds;
+      return _documentSnapshot.get("groupEvents");
     }
 
     // Add Event
@@ -1793,7 +1792,7 @@ class FirebaseDatabaseService {
     }
 
     // Update Event Location
-    Future<void> updateRecurrentEventGroup(String eventGroupId, List<String> eventIds) async {
+    Future<void> updateRecurrentEventGroup(String eventGroupId, var eventIds) async {
       try {
         // Create Document in "\Event Groups"
         await _firestore

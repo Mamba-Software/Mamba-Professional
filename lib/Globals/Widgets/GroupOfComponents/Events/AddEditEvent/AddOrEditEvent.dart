@@ -444,15 +444,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                       );
                       if (result != null) {
                         if (result == 1) {
-                          print("Delete Only This Event..");
-                          print("Get Recurrent Group Ids..");
-                          print("Delete Event From Recurrent Group..");
+                          print("Deleting Only This Event..");
+                          _deleteEventFunction();
                         } else {
                           print("Delete This Event and the Rest Forward ...");
-                          print("Get Recurrent Group Ids..");
-                          print("Get Cover Event Cover Data");
-                          print("Delete this event and the Ones Later in Time");
-                          print("Delete those Events From Recurrent Group..");
+                          _deleteRecurrentEventFunction();
                         }
                       }
                     }
@@ -466,8 +462,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                       ],
                     ),
                   )
-
-
               ),
               SizedBox(width: MediaQuery.of(context).size.width*0.02)
             ],
@@ -1452,6 +1446,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                           if (widget.eventId == null) {
                             _addEventFunction();
                           } else {
+                            _updateEventFunction();
+                            /*
                             if (event.eventGroupId == null) {
                               _updateEventFunction();
                             } else {
@@ -1464,17 +1460,15 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                               if (result != null) {
                                 if (result == 1) {
                                   print("Edit Only This Event..");
+                                  _updateEventFunction();
                                 } else {
                                   print("Edit This Event and the Rest Forward ...");
-                                  print("Get Recurrent Group Ids..");
-                                  print("Get Cover Event Cover Data");
-                                  print("Edit this event and the Ones Later in Time");
+                                  _updateRecurrentEventFunction();
                                 }
                               }
-
                             }
+                             */
                           }
-
                         }
                       }
                     },
@@ -1733,6 +1727,20 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       // Remove Local Notifications Service
       await _deleteEventLocalNotificationsCall(event.id!, user.id!);
     }
+    // Delete Event From Event Group Id in Case it has any.
+    if (event.eventGroupId != null) {
+      // Get Recurrent Group Ids ..
+      print(event.eventGroupId);
+      var eventGroupIds = await _eventDataService.getRecurrentEventGroup(event.eventGroupId!);
+      // Delete Only This Event..
+      eventGroupIds.removeWhere((element) => element == event.id!);
+      // Delete Event From Recurrent Group..
+      if (eventGroupIds.isNotEmpty) {
+        await _eventDataService.updateRecurrentEventGroup(event.eventGroupId!, eventGroupIds);
+      } else {
+        await _eventDataService.deleteRecurrentEventGroup(event.eventGroupId!);
+      }
+    }
     // Pop to Last Page
     Navigator.pop(context, false);
   }
@@ -1842,7 +1850,158 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
       print("Client Added "+user.id.toString());
     }
-    // EVENT IS NOT RECURRENT
+    Navigator.pop(context, true);
+  }
+
+  Future<void> _deleteRecurrentEventFunction() async {
+    setState(() {
+      isLoading = true;
+    });
+    // Get Recurrent Group Ids ..
+    var eventGroupIds = await _eventDataService.getRecurrentEventGroup(event.eventGroupId!);
+    List<String> eventGroupIdsList = eventGroupIds.cast<String>();
+    // Find index of Current Event
+    int index = eventGroupIdsList.indexWhere((element) => element == event.id!);
+    // Update Recurrent Event Group
+    if (index == 0) {
+      await _eventDataService.deleteRecurrentEventGroup(event.eventGroupId!);
+    } else {
+      eventGroupIds = eventGroupIds.sublist(0, index);
+      await _eventDataService.updateRecurrentEventGroup(event.eventGroupId!, eventGroupIds);
+    }
+    // Delete All Events After The Index
+    for (var i=index; i<eventGroupIdsList.length; i++) {
+      String eventId = eventGroupIdsList[i];
+      // Delete Event Call
+      await _eventDataService.deleteEvent(eventId);
+      // Delete Event Members
+      List<Usuario> eventMembers = await _eventDataService.getEventUsers(eventId);
+      // Delete Event Local Notifications
+      for (var i=0; i<eventMembers.length; i++) {
+        var user = eventMembers[i];
+        // Remove Local Notifications Service
+        await _deleteEventLocalNotificationsCall(event.id!, user.id!);
+      }
+    }
+    // Pop to Last Page
+    Navigator.pop(context, false);
+  }
+
+  Future<void> _updateRecurrentEventFunction() async {
+    setState(() {
+      isLoading = true;
+    });
+    // Get Recurrent Group Ids ..
+    var eventGroupIds = await _eventDataService.getRecurrentEventGroup(event.eventGroupId!);
+    List<String> eventGroupIdsList = eventGroupIds.cast<String>();
+    // Find index of Current Event
+    int index = eventGroupIdsList.indexWhere((element) => element == event.id!);
+    // Update All Events After The Index
+    for (var i=index; i<eventGroupIdsList.length; i++) {
+      String eventId = eventGroupIdsList[i];
+      // Event Start Date
+      var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
+      Timestamp doneAt = Timestamp.fromDate(startDate);
+      // Creating Event Object
+      Event updatedEvent = Event(
+        id: eventId,
+        title: titleController.text,
+        description: descriptionController.text,
+        doneAt: doneAt,
+        createdAt: Timestamp.now(),
+        year: startDate.year.toString(),
+        month: startDate.month.toString(),
+        day: startDate.day.toString(),
+        hour: startDate.hour.toString(),
+        minute: startDate.minute.toString(),
+        duration: double.parse(duration),
+        locationId: location.id,
+        numClients: brandClientsSelected.length,
+        numTrainers: brandTrainersSelected.length,
+        maxMembers: eventMaxMembers,
+      );
+      // Update Event
+      await _eventDataService.updateEvent(updatedEvent);
+      // Update Event Location
+      if (event.locationId! != originalLocationId) {
+        await _eventDataService.updateEventLocation(eventId, event.locationId!, originalLocationId!);
+      }
+      // Event Members
+      List<Usuario> eventTrainers = new List.from(brandTrainersSelected);
+      List<Usuario> eventTrainersAdded = new List.from(eventTrainers);
+      List<Usuario> eventClients = new List.from(brandClientsSelected);
+      List<Usuario> eventClientsAdded = new List.from(eventClients);
+      // Compare Current Members vs Original Members
+      /// Start With Trainers
+      for (int i = 0; i < eventTrainers.length; i++) {
+        var user = eventTrainers[i];
+        // Find index in EventTrainers
+        int index = originalTrainers.indexWhere((element) => element.id == user.id);
+        // Trainer Found
+        if (index != -1) {
+          // Remove Trainer Left
+          eventTrainersAdded.removeWhere((element) => element.id == user.id);
+          originalTrainers.removeWhere((element) => element.id == user.id);
+          print("Trainer Matched "+user.id.toString());
+        }
+      }
+      /// Handle Trainers Not Matched
+      // Original Trainers Not Matched means that they have been removed from Event
+      for (int i = 0; i < originalTrainers.length; i++) {
+        var user = originalTrainers[i];
+        // Remove Trainer From Event
+        await _eventDataService.deleteUserFromEvent(eventId, user.id!);
+        // Remove Event Local Notifications
+        await _deleteEventLocalNotificationsCall(eventId, user.id!);
+        print("Trainer Removed "+user.id.toString());
+      }
+      // Handle Trainers Added
+      // Trainers Added Not Matched means that they have added to the Event
+      for (int i = 0; i < eventTrainersAdded.length; i++) {
+        var user = eventTrainersAdded[i];
+        // Add Trainer to Event
+        await _eventDataService.addUserToEvent(eventId, user.id!);
+        // Add Event Local Notifications
+        await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
+        print("Trainer Added "+user.id.toString());
+      }
+      /// Continue With Clients
+      for (int i = 0; i < eventClients.length; i++) {
+        var user = eventClients[i];
+        // Find index in EventClients
+        int index = originalClients.indexWhere((element) => element.id == user.id);
+        // Client Found
+        if (index != -1) {
+          // Remove Trainer Left
+          eventClientsAdded.removeWhere((element) => element.id == user.id);
+          originalClients.removeWhere((element) => element.id == user.id);
+          print("Client Matched "+user.id.toString());
+        }
+      }
+      // Handle Clients Not Matched
+      // Original Clients Not Matched means that they have been removed from Event
+      for (int i = 0; i < originalClients.length; i++) {
+        var user = originalClients[i];
+        // Remove Client From Event
+        await _eventDataService.deleteUserFromEvent(eventId, user.id!);
+        // Send Client Left Event
+        _notificationService.userLeaveEvent(user.id!, currentBrand.id!, eventId);
+        // Remove Event Local Notifications
+        await _deleteEventLocalNotificationsCall(eventId, user.id!);
+        print("Client Removed "+user.id.toString());
+      }
+      // Handle Clients Added
+      // Clients Added Not Matched means that they have added to the Event
+      for (int i = 0; i < eventClientsAdded.length; i++) {
+        var user = eventClientsAdded[i];
+        // Add Trainer to Event
+        await _eventDataService.addUserToEvent(eventId, user.id!);
+        // Add Event Local Notifications
+        await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
+        print("Client Added "+user.id.toString());
+      }
+    }
+    // Pop to Get Back
     Navigator.pop(context, true);
   }
 

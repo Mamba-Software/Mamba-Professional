@@ -38,7 +38,7 @@ class EventDataService {
   Future<List<Brand>> getEventBrands(String eventId) => _firebase.getEventBrands(eventId);
   Future<double?> getEventUserFeedback(String eventId, String userId) => _firebase.getEventUserFeedback(eventId, userId);
 
-  Future<List<String>> getRecurrentEventGroup(String eventGroupId) => _firebase.getRecurrentEventGroup(eventGroupId);
+  Future<dynamic> getRecurrentEventGroup(String eventGroupId) => _firebase.getRecurrentEventGroup(eventGroupId);
 
   // Add Data
   Future<String> addEvent(Event event) => _firebase.addEvent(event);
@@ -49,7 +49,7 @@ class EventDataService {
   // Update Data
   Future<void> updateEvent(Event event) => _firebase.updateEvent(event);
   Future<void> updateEventNumberMembers(String eventId, int numberClients, int numberTrainers) => _firebase.updateEventNumberMembers(eventId, numberClients, numberTrainers);
-  Future<void> updateRecurrentEventGroup(String eventGroupId, List<String> eventIds) => _firebase.updateRecurrentEventGroup(eventGroupId, eventIds);
+  Future<void> updateRecurrentEventGroup(String eventGroupId, var eventIds) => _firebase.updateRecurrentEventGroup(eventGroupId, eventIds);
   Future<void> updateEventLocation(String eid, String locationId, String previousLocation) => _firebase.updateEventLocation(eid, locationId, previousLocation);
 
   // Delete Data

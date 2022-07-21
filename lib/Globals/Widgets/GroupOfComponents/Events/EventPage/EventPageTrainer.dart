@@ -291,10 +291,12 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   }
 
   void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
-    setState(() {
-      mapController = controller;
-    });
+    if (!_controller.isCompleted) {
+      _controller.complete(controller);
+      setState(() {
+        mapController = controller;
+      });
+    }
   }
 
   void _onLaunchCoordinates(LatLng) {
