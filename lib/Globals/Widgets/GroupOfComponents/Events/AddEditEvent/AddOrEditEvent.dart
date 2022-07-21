@@ -1724,8 +1724,10 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Original Clients Not Matched means that they have been removed from Event
     for (int i = 0; i < originalClients.length; i++) {
       var user = originalClients[i];
-      // Remove Trainer From Event
+      // Remove Client From Event
       await _eventDataService.deleteUserFromEvent(event.id!, user.id!);
+      // Send Client Left Event
+      _notificationService.userLeaveEvent(user.id!, currentBrand.id!, event.id!);
       // Remove Event Local Notifications
       await _deleteEventLocalNotificationsCall(event.id!, user.id!);
       print("Client Removed "+user.id.toString());

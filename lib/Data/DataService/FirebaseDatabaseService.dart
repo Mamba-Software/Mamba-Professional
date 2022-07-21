@@ -1746,6 +1746,22 @@ class FirebaseDatabaseService {
     }
 
     // Update Event Location
+    Future<void> updateEventNumberMembers(String eventId, int numberClients, int numberTrainers) async {
+      try {
+        // Delete Previous Location
+        await _firestore
+            .collection(events)
+            .doc(eventId)
+            .update({
+              "numClients": numberClients,
+              "numTrainers": numberTrainers,
+            });
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+
+    // Update Event Location
     Future<void> updateEventLocation(String eventId, String locationId, String previousLocation) async {
       try {
         // Delete Previous Location

@@ -1438,8 +1438,11 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                               localNotificationService.addEventLocalNotifications(context, event!.id!, false);
                               // Add To Data Base
                               await _eventDataService.addUserToEvent(event!.id!, currentUser.id!);
+                              // Update Events collection, so that Cloud Functions does not have to do it
+                              await _eventDataService.updateEventNumberMembers(event!.id!,(eventClients.length+1), eventTrainers.length);
+                              // Send Notification Service
                               _notificationService.userJoinEvent(currentUser.id!, event!.brandID!, event!.id!);
-                              await Future.delayed(const Duration(milliseconds: 3000));
+                              // Get New Event Info
                               await getEventInfo();
                               setState(() {
                                 isJoined = true;
@@ -1490,8 +1493,11 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                               localNotificationService.deleteEventLocalNotifications(event!.id!);
                               // Base de Dades
                               await _eventDataService.deleteUserFromEvent(event!.id!, currentUser.id!);
+                              // Update Events collection, so that Cloud Functions does not have to do it
+                              await _eventDataService.updateEventNumberMembers(event!.id!,(eventClients.length-1), eventTrainers.length);
+                              // Send Local Notifications
                               _notificationService.userLeaveEvent(currentUser.id!, event!.brandID!, event!.id!);
-                              await Future.delayed(const Duration(milliseconds: 3000));
+                              // Get New Event Info
                               await getEventInfo();
                               setState(() {
                                 isJoined = false;

@@ -1384,14 +1384,14 @@ exports.userJoinsEvent = functions
           numClients += 1;
         }
       }
-      // Update Event Assisting Members
+      /* Update Event Assisting Members
       await db
       .collection("Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });
+      });*/
       // Add Event To Users Event Subcollection
       await db
         .collection("Users")
@@ -1680,14 +1680,14 @@ exports.userLeavesEvent = functions
       .collection("Events")
       .doc(eventId)
       .delete();
-      // Update Event Assisting Members
+      /* Update Event Assisting Members
       await db
       .collection("Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });
+      });*/
       // Update Number of Client and Trainers on Each of Event Subcollection
       // User´s Event First
       for (var i in eventUsersSnapshot.docs) {
@@ -3065,14 +3065,14 @@ exports.zzzzUserJoinsEvent = functions
           numClients += 1;
         }
       }
-      // Update Event Assisting Members
+      /* Update Event Assisting Members
       await db
       .collection("7777 Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });
+      });*/
       // Add Event To Users Event Subcollection
       await db
         .collection("7777 Users")
@@ -3361,14 +3361,14 @@ exports.zzzzUserLeavesEvent = functions
       .collection("Events")
       .doc(eventId)
       .delete();
-      // Update Event Assisting Members
+      /* Update Event Assisting Members
       await db
       .collection("7777 Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });
+      });*/
       // Update Number of Client and Trainers on Each of Event Subcollection
       // User´s Event First
       for (var i in eventUsersSnapshot.docs) {

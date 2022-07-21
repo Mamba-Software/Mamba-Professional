@@ -45,6 +45,7 @@ class EventDataService {
 
   // Update Data
   Future<void> updateEvent(Event event) => _firebase.updateEvent(event);
+  Future<void> updateEventNumberMembers(String eventId, int numberClients, int numberTrainers) => _firebase.updateEventNumberMembers(eventId, numberClients, numberTrainers);
   Future<void> updateEventLocation(String eid, String locationId, String previousLocation) => _firebase.updateEventLocation(eid, locationId, previousLocation);
 
   // Delete Data
