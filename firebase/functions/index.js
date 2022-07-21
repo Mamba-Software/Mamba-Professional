@@ -76,7 +76,7 @@ exports.scheduledDailyFunction = functions
                             body: "⏰ Hoy tienes 1 sesión prevista. Empiezas a las "+firstEventDoc.hour+":"+minutes,
                           },
                           data: {
-                            route: "SplashScreen0",
+                            route: "SplashScreen",
                           },
                         };
                     } else {
@@ -86,7 +86,7 @@ exports.scheduledDailyFunction = functions
                             body: "⏰ Avui tens 1 sessió prevista. Comences a les "+firstEventDoc.hour+":"+minutes,
                           },
                           data: {
-                            route: "SplashScreen0",
+                            route: "SplashScreen",
                           },
                         };
                     }
@@ -716,21 +716,21 @@ exports.userJoinsBrand = functions
         if (userDoc.idioma == "es") {
         payload = {
                 notification: {
-                  title: "Has creado tu marca "+brandDoc.name,
+                  title: "Has creado tu marca "+brandDoc.name+" ✅",
                   body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece Mamba",
                 },
                 data: {
-                  route: "SplashScreen1",
+                  route: "BrandPage",
                 },
               };
         } else {
           payload = {
                 notification: {
-                  title: "Has creat la teva marca "+brandDoc.name,
+                  title: "Has creat la teva marca "+brandDoc.name+" ✅",
                   body: "Ara podràs usar totes les funcionalitats de calendarització, control i gestió que ofereix Mamba",
                 },
                 data: {
-                  route: "SplashScreen1",
+                  route: "BrandPage",
                 },
           }
         }
@@ -750,21 +750,21 @@ exports.userJoinsBrand = functions
         if (userDoc.idioma == "es") {
           payload = {
               notification: {
-                title: "Te has unido a "+brandDoc.name,
+                title: "Te has unido a "+brandDoc.name+" ✅",
                 body: "Consulta el calendario para participar en tu primera sesión",
               },
               data: {
-                route: "SplashScreen1",
+                route: "BrandPage",
               },
             };
         } else {
           payload = {
               notification: {
-                title: "T'has unit a "+brandDoc.name,
+                title: "T'has unit a "+brandDoc.name+" ✅",
                 body: "Consulta el calendari per participar en la teva primera sessió",
               },
               data: {
-                route: "SplashScreen1",
+                route: "BrandPage",
               },
             };
         }
@@ -797,22 +797,22 @@ exports.userJoinsBrand = functions
         );
         if (adminDoc.idioma == "es") {
           payload = {
-                notification: {
-                  title: userDoc.name+" se ha unido a "+brandDoc.name,
-                  body: "Ya sois un total de "+numberMembers.toString()+" miembros",
-                },
-                data: {
-                  route: "SplashScreen2",
-                },
-              };
+              notification: {
+                title: "Nuevo miembro en "+brandDoc.name+" ➕1️⃣ ",
+                body: userDoc.name+" se ha unido. Ya sois un total de "+numberMembers.toString()+" miembros",
+              },
+              data: {
+                route: "Notifications",
+              },
+            };
         } else {
           payload = {
                 notification: {
-                  title: userDoc.name+" s'ha unit a "+brandDoc.name,
-                  body: "Ja sou un total de "+numberMembers.toString()+" membres",
+                  title: "Nou membre a "+brandDoc.name+" ➕1️⃣ ",
+                  body: userDoc.name+" s'ha unit. Ja sou un total de "+numberMembers.toString()+" membres",
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",
                 },
           }
         }
@@ -911,22 +911,22 @@ exports.userLeavesBrand = functions
           );
         if (brandOwnersDoc.idioma == "es") {
             payload = {
-              notification: {
-                title: userDoc.firstName+" "+userDoc.lastName+" ha abandonado a "+brandDoc.name,
-                body: "Ahora sois un total de "+numberMembers.toString()+" miembros",
+              notification: {               
+                title: "Miembro ha abandonado "+brandDoc.name+" ➖1️⃣ ",
+                body: userDoc.firstName+" "+userDoc.lastName+" se ha ido, ahora sois un total de "+numberMembers.toString()+" miembros",
               },
               data: {
-                route: "SplashScreen2",
+                route: "Notifications",
               },
             };
           } else {
             payload = {
               notification: {
-                title: userDoc.firstName+" "+userDoc.lastName+" ha abandonat a "+brandDoc.name,
-                body: "Ara sou un total de "+numberMembers.toString()+" membres",
+                title: "Membre ha abandonat "+brandDoc.name+" ➖1️⃣ ",
+                body: userDoc.firstName+" "+userDoc.lastName+" ha marxat, ara sou un total "+numberMembers.toString()+" membres",
               },
               data: {
-                route: "SplashScreen2",
+                route: "Notifications",
               },
             }
           }
@@ -1123,21 +1123,21 @@ exports.userSendsRequest = functions
           if (brandOwnersDoc.idioma == "es") {
               payload = {
                 notification: {
-                  title: requestDoc.name+" ha enviado una solicitud de afiliación",
-                  body: "Enviada el "+requestDoc.dateSent,
+                  title: "Nueva solicitud de afiliación ⁉️",
+                  body: requestDoc.name+" quiere formar parte de tu marca "+ brandDoc.name,
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",                
                 },
               };
           } else {
               payload = {
                 notification: {
-                  title: requestDoc.name+" ha enviat una sol·licitud d'afiliació",
-                  body: "Enviada el "+requestDoc.dateSent,
+                  title: "Nova sol·licitud d'afiliació ⁉️",
+                  body: requestDoc.name+" vol formar part de la teva marca "+ brandDoc.name,
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",                  
                 },
               }
           }
@@ -1480,11 +1480,11 @@ exports.userJoinsEvent = functions
                     // Send Payload
                     payload = {
                       notification: {
-                        title: "El evento "+eventDoc.title+" está totalmente reservado",
-                        body: "Se realizará el "+dateString+" a las "+eventTimeTime,
+                        title: "Evento totalmente reservado 💯",
+                        body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
                       },
                       data: {
-                        route: "SplashScreen2",
+                        route: eventId,
                       },
                     };
                   } else {
@@ -1497,11 +1497,11 @@ exports.userJoinsEvent = functions
                     // Send Payload
                     payload = {
                       notification: {
-                        title: "L'esdeveniment "+eventDoc.title+" està totalment reservat",
-                        body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
+                        title: "Esdeveniment totalment reservat 💯",
+                        body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,            
                       },
                       data: {
-                        route: "SplashScreen2",
+                        route: eventId,
                       },
                     };
                   }
@@ -1545,11 +1545,11 @@ exports.userJoinsEvent = functions
                       // Send Payload
                       payload = {
                         notification: {
-                          title: "El evento "+eventDoc.title+" ya tiene un 50% de las plazas reservadas",
-                          body: "Se realizará el "+dateString+" a las "+eventTimeTime,
+                          title: "Cada vez quedan menos plazas ⏱️",
+                          body: "El evento "+eventDoc.title+" ya tiene un 50% de las plazas reservadas",
                         },
                         data: {
-                          route: "SplashScreen2",
+                          route: eventId,
                         },
                       };
                     } else {
@@ -1562,11 +1562,11 @@ exports.userJoinsEvent = functions
                       // Send Payload
                       payload = {
                         notification: {
-                          title: "L'esdeveniment "+eventDoc.title+" ja té un 50% de les places reservades",
-                          body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
+                          title: "Cada cop queden menys places ⏱️",
+                          body: "L'esdeveniment "+eventDoc.title+" ja té un 50% de les places reservades",
                         },
                         data: {
-                          route: "SplashScreen2",
+                          route: eventId,
                         },
                       };
                     }
@@ -1602,16 +1602,16 @@ exports.userJoinsEvent = functions
                let eventTimeTime = eventDoc.hour+":";
                let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
                eventTimeTime += minutes;
-               // Send Payload
+               // Send Payload               
                payload = {
                  notification: {
-                   title: "Te han añadido al evento "+eventDoc.title,
-                   body: "Se realizará el "+dateString+" a las "+eventTimeTime,
+                   title: "Nuevo evento programado ⁉️ 🏋️‍♂️",
+                   body: "Te han añadido al evento "+eventDoc.title+". Se realizará el "+dateString+" a las "+eventTimeTime,
                  },
                  data: {
-                   route: "SplashScreen2",
+                   route: eventId,
                  },
-               };
+               };               
              } else {
                // Date To String
                let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
@@ -1622,11 +1622,11 @@ exports.userJoinsEvent = functions
                // Send Payload
                payload = {
                  notification: {
-                   title: "T'han afegit a l'esdeveniment "+eventDoc.title,
-                   body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
+                   title: "Nou esdeveniment programat ⁉️ 🏋️‍♂️",
+                   body: "T'han afegit a l'esdeveniment "+eventDoc.title+". Es realitzarà el "+dateString+" a les "+eventTimeTime,
                  },
                  data: {
-                   route: "SplashScreen2",
+                   route: eventId,
                  },
                };
               }
@@ -2395,7 +2395,7 @@ exports.zzzzUserJoinsBrand = functions
         if (userDoc.idioma == "es") {
           payload = {
             notification: {
-              title: "Has creado tu marca "+brandDoc.name,
+              title: "Has creado tu marca "+brandDoc.name+" ✅",
               body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece Mamba",
             },
             data: {
@@ -2405,7 +2405,7 @@ exports.zzzzUserJoinsBrand = functions
         } else {
           payload = {
             notification: {
-              title: "Has creat la teva marca "+brandDoc.name,
+              title: "Has creat la teva marca "+brandDoc.name+" ✅",
               body: "Ara podràs usar totes les funcionalitats de calendarización, control i gestió que ofereix Mamba",
             },
             data: {
@@ -2429,7 +2429,7 @@ exports.zzzzUserJoinsBrand = functions
         if (userDoc.idioma == "es") {
           payload = {
               notification: {
-                title: "Te has unido a "+brandDoc.name,
+                title: "Te has unido a "+brandDoc.name+" ✅",
                 body: "Consulta el calendario para participar en tu primera sesión",
               },
               data: {
@@ -2439,7 +2439,7 @@ exports.zzzzUserJoinsBrand = functions
         } else {
           payload = {
               notification: {
-                title: "T'has unit a "+brandDoc.name,
+                title: "T'has unit a "+brandDoc.name+" ✅",
                 body: "Consulta el calendari per participar en la teva primera sessió",
               },
               data: {
@@ -2475,20 +2475,20 @@ exports.zzzzUserJoinsBrand = functions
           numberMembers,
         );
         if (adminDoc.idioma == "es") {
-          payload = {
-                notification: {
-                  title: userDoc.name+" se ha unido a "+brandDoc.name,
-                  body: "Ya sois un total de "+numberMembers.toString()+" miembros",
-                },
-                data: {
-                  route: "Notifications",
-                },
-              };
+           payload = {
+              notification: {
+                title: "Nuevo miembro en "+brandDoc.name+" ➕1️⃣ ",
+                body: userDoc.name+" se ha unido. Ya sois un total de "+numberMembers.toString()+" miembros",
+              },
+              data: {
+                route: "Notifications",
+              },
+            };
         } else {
           payload = {
                 notification: {
-                  title: userDoc.name+" s'ha unit a "+brandDoc.name,
-                  body: "Ja sou un total de "+numberMembers.toString()+" membres",
+                  title: "Nou membre a "+brandDoc.name+" ➕1️⃣ ",
+                  body: userDoc.name+" s'ha unit. Ja sou un total de "+numberMembers.toString()+" membres",
                 },
                 data: {
                   route: "Notifications",
@@ -2590,9 +2590,9 @@ exports.zzzzUserLeavesBrand = functions
           );
         if (brandOwnersDoc.idioma == "es") {
             payload = {
-              notification: {
-                title: userDoc.firstName+" "+userDoc.lastName+" ha abandonado a "+brandDoc.name,
-                body: "Ahora sois un total de "+numberMembers.toString()+" miembros",
+              notification: {               
+                title: "Miembro ha abandonado "+brandDoc.name+" ➖1️⃣ ",
+                body: userDoc.firstName+" "+userDoc.lastName+" se ha ido, ahora sois un total de "+numberMembers.toString()+" miembros",
               },
               data: {
                 route: "Notifications",
@@ -2601,8 +2601,8 @@ exports.zzzzUserLeavesBrand = functions
           } else {
             payload = {
               notification: {
-                title: userDoc.firstName+" "+userDoc.lastName+" ha abandonat a "+brandDoc.name,
-                body: "Ara sou un total de "+numberMembers.toString()+" membres",
+                title: "Membre ha abandonat "+brandDoc.name+" ➖1️⃣ ",
+                body: userDoc.firstName+" "+userDoc.lastName+" ha marxat, ara sou un total "+numberMembers.toString()+" membres",
               },
               data: {
                 route: "Notifications",
@@ -2802,8 +2802,8 @@ exports.zzzzUserSendsRequest = functions
           if (brandOwnersDoc.idioma == "es") {
               payload = {
                 notification: {
-                  title: requestDoc.name+" ha enviado una solicitud de afiliación",
-                  body: "Enviada el "+requestDoc.dateSent,
+                  title: "Nueva solicitud de afiliación ⁉️",
+                  body: requestDoc.name+" quiere formar parte de tu marca "+ brandDoc.name,
                 },
                 data: {
                   route: "Notifications",                
@@ -2812,8 +2812,8 @@ exports.zzzzUserSendsRequest = functions
           } else {
               payload = {
                 notification: {
-                  title: requestDoc.name+" ha enviat una sol·licitud d'afiliació",
-                  body: "Enviada el "+requestDoc.dateSent,
+                  title: "Nova sol·licitud d'afiliació ⁉️",
+                  body: requestDoc.name+" vol formar part de la teva marca "+ brandDoc.name,
                 },
                 data: {
                   route: "Notifications",                  
@@ -3161,8 +3161,8 @@ exports.zzzzUserJoinsEvent = functions
                   // Send Payload
                   payload = {
                     notification: {
-                      title: "El evento "+eventDoc.title+" está totalmente reservado",
-                      body: "Se realizará el "+dateString+" a las "+eventTimeTime,
+                      title: "Evento totalmente reservado 💯",
+                      body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
                     },
                     data: {
                       route: eventId,
@@ -3178,8 +3178,8 @@ exports.zzzzUserJoinsEvent = functions
                   // Send Payload
                   payload = {
                     notification: {
-                      title: "L'esdeveniment "+eventDoc.title+" està totalment reservat",
-                      body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
+                      title: "Esdeveniment totalment reservat 💯",
+                      body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,            
                     },
                     data: {
                       route: eventId,
@@ -3226,8 +3226,8 @@ exports.zzzzUserJoinsEvent = functions
                     // Send Payload
                     payload = {
                       notification: {
-                        title: "El evento "+eventDoc.title+" ya tiene un 50% de las plazas reservadas",
-                        body: "Se realizará el "+dateString+" a las "+eventTimeTime,
+                        title: "Cada vez quedan menos plazas ⏱️",
+                        body: "El evento "+eventDoc.title+" ya tiene un 50% de las plazas reservadas",
                       },
                       data: {
                         route: eventId,
@@ -3243,8 +3243,8 @@ exports.zzzzUserJoinsEvent = functions
                     // Send Payload
                     payload = {
                       notification: {
-                        title: "L'esdeveniment "+eventDoc.title+" ja té un 50% de les places reservades",
-                        body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
+                        title: "Cada cop queden menys places ⏱️",
+                        body: "L'esdeveniment "+eventDoc.title+" ja té un 50% de les places reservades",
                       },
                       data: {
                         route: eventId,
@@ -3286,8 +3286,8 @@ exports.zzzzUserJoinsEvent = functions
              // Send Payload
              payload = {
                notification: {
-                 title: "Te han añadido al evento "+eventDoc.title,
-                 body: "Se realizará el "+dateString+" a las "+eventTimeTime,
+                 title: "Nuevo evento programado ⁉️ 🏋️‍♂️",
+                 body: "Te han añadido al evento "+eventDoc.title+". Se realizará el "+dateString+" a las "+eventTimeTime,
                },
                data: {
                  route: eventId,
@@ -3303,8 +3303,8 @@ exports.zzzzUserJoinsEvent = functions
              // Send Payload
              payload = {
                notification: {
-                 title: "T'han afegit a l'esdeveniment "+eventDoc.title,
-                 body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
+                 title: "Nou esdeveniment programat ⁉️ 🏋️‍♂️",
+                 body: "T'han afegit a l'esdeveniment "+eventDoc.title+". Es realitzarà el "+dateString+" a les "+eventTimeTime,
                },
                data: {
                  route: eventId,

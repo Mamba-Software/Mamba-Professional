@@ -175,12 +175,16 @@ class LocalNotificationService {
     // Two types of Notifications:
     //      LocalNotifications only send String payload
     //      Remote Firebase Notifications we send the whole Notification with Arguments
-    print("onClickedNotification. Paylod....");
+    print("onClickedNotification. Payload....");
     print(payload);
     switch (payload) {
       case "SplashScreen":
-        currentIndex = 0;
-        await Navigator.of(context).pushNamedAndRemoveUntil("SplashScreen", (Route<dynamic> route) => false, arguments: currentIndex);
+        if (ModalRoute.of(context)?.settings.name == "Mamba") {
+          pageController.jumpToPage(0);
+        } else {
+          currentIndex = 0;
+          await Navigator.of(context).pushNamedAndRemoveUntil("SplashScreen", (Route<dynamic> route) => false, arguments: currentIndex);
+        }
         break;
       case "Notifications":
         await Navigator.of(context).pushNamed("Notifications", arguments: 0);

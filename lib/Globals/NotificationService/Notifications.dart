@@ -992,7 +992,7 @@ class _NotificationsState extends State<Notifications> {
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Text(
-                  AppLocalizations.of(context)!.userLeavesEventBrandSubtitle(event.joinedMembers.length.toString(), event.maxMembers.toString() ),
+                  AppLocalizations.of(context)!.userLeavesEventBrandSubtitle(event.numClients.toString(), event.maxMembers.toString() ),
                   style: Theme.of(context).textTheme.caption,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
