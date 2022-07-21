@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
@@ -27,7 +28,7 @@ class BrandCalendarWidget extends StatefulWidget {
   _BrandCalendarWidgetState createState() => _BrandCalendarWidgetState();
 }
 
-class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
+class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   // Acceso a Base de Datos
   var _brandDataService = new BrandDataService();
   var _eventDataService = new EventDataService();
@@ -137,39 +138,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
     );
   }
 
-  durationToString(double duration) {
-    String temp = "";
-    temp = duration.toStringAsFixed(2);
-    var hour = temp.split(".")[0];
-    var min = temp.split(".")[1];
-    return "${hour}h ${min}m ";
-  }
-
   Widget _buildTitleFromDate(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
     return Text(
       StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
       style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
     );
-    // Deprecated
-    if (_controller.view == CalendarView.month) {
-      return Text(
-        StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
-        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
-      );
-    } else {
-      // Day of the First Date
-      String dateTitleStart = DateFormat('dd MMMM yy', Localizations.localeOf(context).languageCode).format(dateTimeStart);
-      String dateStartDay = StringUtils().splitByChar(dateTitleStart, " ")[0];
-      // Day Month Year of the Last Date
-      String dateTitleEnd = DateFormat('dd MMMM yyyy', Localizations.localeOf(context).languageCode).format(dateTimeEnd);
-      // Format  the results
-      String dateTitle = dateStartDay + " - " + dateTitleEnd;
-      // Return the Title
-      return Text(
-          StringUtils().capitalizedAllWords(dateTitle),
-          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600)
-      );
-    }
   }
 
   @override
@@ -572,26 +545,104 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                 }
               }
           ) : LoadingViewPurple(),
-          floatingActionButton: canEdit ? Padding(
-            padding: EdgeInsets.all(20),
-            child: Container(
-              height: MediaQuery.of(context).size.width*0.15,
-              width: MediaQuery.of(context).size.width*0.15,
-              child: FloatingActionButton(
-                heroTag: "3",
-                onPressed: () {
-                  _addEvent();
-                },
-                backgroundColor: Theme.of(context).accentColor,
-                child: Icon(
-                  Icons.more_time,
-                  size: MediaQuery.of(context).size.width*0.06,
-                  color: AppColors.white,
+          floatingActionButton: whichFloatingActionButton(),
+      );
+  }
+
+  Widget whichFloatingActionButton() {
+    return canEdit ? Padding(
+      padding: EdgeInsets.all(20),
+      child: Container(
+        height: MediaQuery.of(context).size.width*0.15,
+        width: MediaQuery.of(context).size.width*0.15,
+        child: SpeedDial(
+          animatedIcon: AnimatedIcons.add_event,
+          foregroundColor: AppColors.white,
+          overlayColor: Theme.of(context).scaffoldBackgroundColor,
+          spacing: MediaQuery.of(context).size.height*0.02,
+          spaceBetweenChildren: MediaQuery.of(context).size.height*0.02,
+          children: [
+            SpeedDialChild(
+              child: Icon(
+                Icons.lock_outlined,
+              ),
+              elevation: 10,
+              backgroundColor: Theme.of(context).backgroundColor,
+              labelWidget: Container(
+                color: Colors.transparent,
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                height: MediaQuery.of(context).size.height*0.1,
+                width: MediaQuery.of(context).size.width*0.6,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                          AppLocalizations.of(context)!.privateEvent,
+                          style: Theme.of(context).textTheme.bodyText2,
+                          textAlign: TextAlign.right
+                      ),
+                      Text(
+                          "Solo se puede acceder por invitación",
+                          style: Theme.of(context).textTheme.caption,
+                          textAlign: TextAlign.right
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ) : Container(), /// This trailing comma makes auto-formatting nicer for build methods.
-      );
+            SpeedDialChild(
+                child: Icon(
+                  Icons.lock_open,
+                ),
+              elevation: 10,
+              backgroundColor: Theme.of(context).backgroundColor,
+              labelWidget: Container(
+                color: Colors.transparent,
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                height: MediaQuery.of(context).size.height*0.1,
+                width: MediaQuery.of(context).size.width*0.6,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                          AppLocalizations.of(context)!.eventoGrupal,
+                          style: Theme.of(context).textTheme.bodyText2,
+                          textAlign: TextAlign.right
+                      ),
+                      Text(
+                          "Disponible para todos los clientes",
+                          style: Theme.of(context).textTheme.caption,
+                          textAlign: TextAlign.right
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+          ],
+        ),
+        /*
+        FloatingActionButton(
+          heroTag: "3",
+          onPressed: () {
+            _addEvent();
+          },
+          backgroundColor: Theme.of(context).accentColor,
+          child: Icon(
+            Icons.more_time,
+            size: MediaQuery.of(context).size.width*0.06,
+            color: AppColors.white,
+          ),
+        ),
+         */
+      ),
+    ) : Container();
   }
 
   List<TimeRegion> _getTimeRegions() {

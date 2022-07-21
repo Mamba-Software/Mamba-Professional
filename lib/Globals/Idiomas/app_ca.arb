@@ -305,6 +305,8 @@
   "deleteBrandConfirmation": "Segur que vols eliminar la teva marca?",
   "writeDeleteBrand": "Escriu el nom de la teva marca per confirmar aquesta acció:",
   "logo": "Logo",
+  "eventoGrupal": "Esdeveniment Grupal",
+  "privateEvent": "Esdeveniment Privat",
   "noEventsToday": "Res previst per avui ...",
   "planNewEvent": "Reservar una sessió",
   "calendarBrandTextClient": "Reserva una sessió amb {brand}",

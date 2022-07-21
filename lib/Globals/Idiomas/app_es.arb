@@ -1336,6 +1336,14 @@
   "@logo": {
     "description": "Wellcome message"
   },
+  "eventoGrupal": "Evento Grupal",
+  "@eventoGrupal": {
+    "description": "Wellcome message"
+  },
+  "privateEvent": "Evento Privado",
+  "@privateEvent": {
+    "description": "Wellcome message"
+  },
   "noEventsToday": "Nada previsto para hoy ...",
   "@noEventsToday": {
     "description": "Wellcome message"
