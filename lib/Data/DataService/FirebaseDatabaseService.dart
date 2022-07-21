@@ -31,6 +31,7 @@ class FirebaseDatabaseService {
   String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
   String brands = isProduction ? 'Brands' : '7777 Brands';
   String events = isProduction ? 'Events' : '7777 Events';
+  String eventGroups = isProduction ? 'Event Groups' : '7777 Event Groups';
   String locations = isProduction ? 'Locations' : '7777 Locations';
   String groupOfQuestions = isProduction ? 'GroupOfQuestions' : '7777 GroupOfQuestions';
   String questions = isProduction ? 'Questions' : '7777 Questions';
@@ -1086,6 +1087,7 @@ class FirebaseDatabaseService {
       try {
         // Create Document in "\Events"
         await _firestore.collection(events).doc(eventID).set({
+          "eventGroupId": event.eventGroupId,
           "brandID": currentBrand.id,
           "creatorID": currentUser!.uid,
           "title": event.title,
@@ -1146,6 +1148,29 @@ class FirebaseDatabaseService {
       } catch (e) {
         print(e.toString());
         return "Error";
+      }
+    }
+
+    // Add Event
+    Future<List<String>> getRecurrentEventGroup(String eventGroupId) async {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      await _firestore.collection(eventGroups).doc(eventGroupId).get();
+      List<String> eventIds = _documentSnapshot.get("groupEvents");
+      return eventIds;
+    }
+
+    // Add Event
+    Future<void> addRecurrentEventGroups(String eventGroupId, List<String> eventIds) async {
+      try {
+        // Create Document in "\Event Groups"
+        await _firestore
+            .collection(eventGroups)
+            .doc(eventGroupId)
+            .set({
+              "groupEvents": eventIds
+            });
+      } catch (e) {
+        print(e.toString());
       }
     }
 
@@ -1756,6 +1781,34 @@ class FirebaseDatabaseService {
               "numClients": numberClients,
               "numTrainers": numberTrainers,
             });
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+
+    // Update Event Location
+    Future<void> updateRecurrentEventGroup(String eventGroupId, List<String> eventIds) async {
+      try {
+        // Create Document in "\Event Groups"
+        await _firestore
+            .collection(eventGroups)
+            .doc(eventGroupId)
+            .update({
+              "groupEvents": eventIds
+            });
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+
+    // Update Event Location
+    Future<void> deleteRecurrentEventGroup(String eventGroupId) async {
+      try {
+        // Create Document in "\Event Groups"
+        await _firestore
+            .collection(eventGroups)
+            .doc(eventGroupId)
+            .delete();
       } catch (e) {
         print(e.toString());
       }

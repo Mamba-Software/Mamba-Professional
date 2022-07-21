@@ -993,7 +993,7 @@
   "@nextTwoWeek":{
     "description": "Días text"
   },
-  "wholeMonth": "Todo el mes",
+  "wholeMonth": "Cuatro semanas",
   "@wholeMonth":{
     "description": "Días text"
   },
@@ -1830,6 +1830,22 @@
   },
   "afterEventBodyNotification": "¿Qué te ha parecido? ¿Demasiado intensa? Comunica tu nivel de esfuerzo a tu entrenador",
   "@afterEventBodyNotification": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "deleteRecurrentEvent": "¿Seguro que quieres eliminar este evento recurrente?",
+  "@deleteRecurrentEvent": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "saveRecurrentEvent": "¿Cómo quieres editar este evento recurrente?",
+  "@saveRecurrentEvent": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "thisEvent": "Solo este evento",
+  "@thisEvent": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "thisEventAndRest": "Este y los eventos siguientes",
+  "@thisEventAndRest": {
     "description": "beforeEventBodyNotification message"
   }
 }

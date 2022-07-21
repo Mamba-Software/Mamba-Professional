@@ -38,20 +38,25 @@ class EventDataService {
   Future<List<Brand>> getEventBrands(String eventId) => _firebase.getEventBrands(eventId);
   Future<double?> getEventUserFeedback(String eventId, String userId) => _firebase.getEventUserFeedback(eventId, userId);
 
+  Future<List<String>> getRecurrentEventGroup(String eventGroupId) => _firebase.getRecurrentEventGroup(eventGroupId);
+
   // Add Data
   Future<String> addEvent(Event event) => _firebase.addEvent(event);
+  Future<void> addRecurrentEventGroup(String eventGroupId, List<String> eventIds) => _firebase.addRecurrentEventGroups(eventGroupId, eventIds);
   Future<void> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) => _firebase.addUserToEvent(eid, uid, invitedDirectly);
   Future<void> addEventFeedback(String eid, String uid, double intensityScore) => _firebase.addEventFeedback(eid, uid, intensityScore);
 
   // Update Data
   Future<void> updateEvent(Event event) => _firebase.updateEvent(event);
   Future<void> updateEventNumberMembers(String eventId, int numberClients, int numberTrainers) => _firebase.updateEventNumberMembers(eventId, numberClients, numberTrainers);
+  Future<void> updateRecurrentEventGroup(String eventGroupId, List<String> eventIds) => _firebase.updateRecurrentEventGroup(eventGroupId, eventIds);
   Future<void> updateEventLocation(String eid, String locationId, String previousLocation) => _firebase.updateEventLocation(eid, locationId, previousLocation);
 
   // Delete Data
   Future<void> deleteEvent(String id) => _firebase.deleteEvent(id);
   Future<void> deleteUserFromEvent(String eid, String uid,) => _firebase.deleteUserFromEvent(eid, uid);
   Future<void> deleteUserFromUpcomingEvents(String uid, bool isTrainer) => _firebase.deleteUserFromUpcomingEvents(uid, isTrainer);
+  Future<void> deleteRecurrentEventGroup(String eventGroupId) => _firebase.deleteRecurrentEventGroup(eventGroupId);
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams

@@ -9,6 +9,7 @@ import 'Usuario.dart';
 
 class Event {
   String? id;
+  String? eventGroupId;
   String? creatorID;
   String? brandID;
   String? title;
@@ -34,6 +35,7 @@ class Event {
 
   Event({
     this.id,
+    this.eventGroupId,
     this.creatorID,
     this.brandID,
     this.title,
@@ -58,6 +60,9 @@ class Event {
 
   Event.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('eventGroupId')) {
+      this.eventGroupId = documentSnapshot.get("eventGroupId").toString();
+    }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('creatorID')) {
       this.creatorID = documentSnapshot.get("creatorID").toString();
     }

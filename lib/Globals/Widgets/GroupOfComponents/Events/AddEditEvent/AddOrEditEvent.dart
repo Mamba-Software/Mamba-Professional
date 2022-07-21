@@ -12,6 +12,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/S
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/EditRecurrentEventDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/SelectTrainersEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,6 +23,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAu
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/SelectClientsEvent.dart';
+import 'package:uuid/uuid.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -64,7 +67,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   String? originalLocationId;
   Location location = Location();
   // Starting Date and Time
-  DateTime? startDate;
+  DateTime startDate = DateTime.now();
   TextEditingController startDateController = TextEditingController();
   bool errorDate = false;
   Timestamp? doneAt;
@@ -76,11 +79,12 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   int eventMaxMembers = 1;
   int membersMax = currentBrand.maxMembers!;
   // Evento Recurrente
+  bool modifyAllEventGroup = false;
   bool isRecurrent = false;
   var oneWeek;
   var twoWeek;
   var oneMonth;
-  final values = <bool?>[false, false, false, false, false, false, false];
+  List<bool?> values = [false, false, false, false, false, false, false];
   int _value = 1;
   // Members Page
   List<Usuario> originalTrainers = [];
@@ -107,8 +111,10 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     }
   }
 
+
   Future<void> initializeEventInfo() async {
     if (widget.initialDateTime != null) {
+      startDate = widget.initialDateTime!;
       startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(widget.initialDateTime!);
       startDateController.text = StringUtils().toCapitalized(startDateController.text);
       oneWeek = widget.initialDateTime!.add(Duration(days: 7));
@@ -116,8 +122,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       oneMonth= widget.initialDateTime!.add(Duration(days: 30));
       doneAt = Timestamp.fromDate(widget.initialDateTime!);
     } else {
-      var startDate = DateTime.now();
-      doneAt = Timestamp.fromDate(startDate);
       startDate = DateTime(
         startDate.year,
         startDate.month,
@@ -130,6 +134,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       oneWeek = startDate.add(Duration(days: 7));
       twoWeek = startDate.add(Duration(days: 14));
       oneMonth= startDate.add(Duration(days: 30));
+      doneAt = Timestamp.fromDate(startDate);
     }
     titleController.text = "${currentBrand.name!.replaceAll(RegExp(r"\s+"), "")}";
     titleString = titleController.text;
@@ -152,12 +157,12 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       int.parse(event.hour!),
       int.parse(event.minute!),
     );
-    doneAt = Timestamp.fromDate(startDate!);
-    startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(startDate!);
+    doneAt = Timestamp.fromDate(startDate);
+    startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(startDate);
     startDateController.text = StringUtils().toCapitalized(startDateController.text);
-    oneWeek = startDate!.add(Duration(days: 7));
-    twoWeek = startDate!.add(Duration(days: 14));
-    oneMonth= startDate!.add(Duration(days: 30));
+    oneWeek = startDate.add(Duration(days: 7));
+    twoWeek = startDate.add(Duration(days: 14));
+    oneMonth= startDate.add(Duration(days: 30));
     // Event Title
     titleController.text = event.title!;
     titleString = titleController.text;
@@ -193,15 +198,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   }
 
   Future selectDateAndTime() async {
-    if (startDate == null) {
-      startDate = DateTime.now();
-      startDate = DateTime(startDate!.year, startDate!.month, startDate!.day, startDate!.hour+1, 0);
-    }
     var pickedDateTemp =  await showCupertinoModalPopup(
         context: context,
         builder: (_) => SelectDateAndTimeDialog(
           title: AppLocalizations.of(context)!.selectDayTime,
-          startDate: startDate!,
+          startDate: startDate,
           onlyFuture: true,
         )
     );
@@ -212,7 +213,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         startDateController.text = StringUtils().toCapitalized(startDateController.text);
         oneWeek = pickedDateTemp.add(Duration(days: 7));
         twoWeek = pickedDateTemp.add(Duration(days: 14));
-        oneMonth= pickedDateTemp.add(Duration(days: 30));
+        oneMonth= pickedDateTemp.add(Duration(days: 28));
+        if (isRecurrent) {
+          values = [false, false, false, false, false, false, false];
+          values[startDate.weekday-1] = true;
+        }
       });
     }
   }
@@ -419,15 +424,28 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
             children: [
               IconButton(
                   onPressed: () async {
-                    // DeleteDialog
-                    var result = await showDialog(
+                    if (event.eventGroupId == null) {
+                      // DeleteDialog
+                      var result = await showDialog(
+                          context: context,
+                          builder: (_) {
+                            return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteEventConfirmation);
+                          }
+                      );
+                      if (result) {
+                        _deleteEventFunction();
+                      }
+                    } else {
+                      var result = await showDialog(
                         context: context,
-                        builder: (_) {
-                          return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteEventConfirmation);
-                        }
-                    );
-                    if (result) {
-                      _deleteEventFunction();
+                        builder: (BuildContext context) {
+                          return DeleteRecurrentEventDialog();
+                        },
+                      );
+                      if (result != null) {
+                        print(result[0]);
+                        print(result[1]);
+                      }
                     }
                   },
                   icon: Container(
@@ -436,16 +454,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,),
-                        /*
-                        FittedBox(
-                          fit: BoxFit.contain,
-                          child: Text(
-                              AppLocalizations.of(context)!.delete,
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                              textAlign: TextAlign.center
-                          ),
-                        ),
-                         */
                       ],
                     ),
                   )
@@ -819,6 +827,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                     value: isRecurrent,
                                                     onChanged: (bool? value) {
                                                       setState(() {
+                                                        if (isRecurrent) {
+                                                          values = [false, false, false, false, false, false, false];
+                                                        } else {
+                                                          values[startDate.weekday-1] = true;
+                                                        }
                                                         isRecurrent = value!;
                                                       });
                                                     },
@@ -858,7 +871,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                         ],
                                                         // Working Days disabledFillColor: Colors.red,
                                                         onChanged: (v) {
-                                                          print(v);
                                                           setState(() {
                                                             values[v % 7] = !values[v % 7]!;
                                                           });
@@ -966,10 +978,28 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                               ),
                                             ],
                                           ) : Container(),
-                                          SizedBox(height: MediaQuery.of(context).size.height*0.10)
+                                          SizedBox(height: MediaQuery.of(context).size.height*0.05)
                                         ],
                                       ) : Container(),
-
+                                      event.eventGroupId != null ? Padding(
+                                          padding: EdgeInsets.only(top: 15,),
+                                          child: new Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Text(
+                                                AppLocalizations.of(context)!.recurrentEvent,
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                              ),
+                                              SizedBox(width: 10,),
+                                              Checkbox(
+                                                checkColor: Colors.white,
+                                                fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                                value: true,
+                                                onChanged: null,
+                                              ),
+                                            ],
+                                          )
+                                      ) : Container(),
                                     ]
                                 )
                             ),
@@ -1375,7 +1405,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                   height: 50,
                   child: FloatingActionButton.extended(
                     heroTag: "5",
-                    onPressed: () {
+                    onPressed: () async {
                       if (_selectedIndex == 0) {
                         if (formKeyInfo.currentState!.validate()){
                           _tabController!.animateTo(_selectedIndex += 1);
@@ -1410,7 +1440,26 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                             errorClientsSelected = true;
                           });
                         } else {
-                          widget.eventId == null ? _addEventFunction() : _updateEventFunction();
+                          if (widget.eventId == null) {
+                            _addEventFunction();
+                          } else {
+                            if (event.eventGroupId == null) {
+                              _updateEventFunction();
+                            } else {
+                              var result = await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return EditRecurrentEventDialog();
+                                },
+                              );
+                              if (result != null) {
+                                print(result[0]);
+                                print(result[1]);
+                              }
+
+                            }
+                          }
+
                         }
                       }
                     },
@@ -1419,7 +1468,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                     label: widget.eventId == null ? Text(
                       _selectedIndex == 2 ? AppLocalizations.of(context)!.createEvent : AppLocalizations.of(context)!.next,
                       style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),) : Text(
-                      _selectedIndex == 2 ? AppLocalizations.of(context)!.updateEvent : AppLocalizations.of(context)!.next,
+                      _selectedIndex == 2 ? AppLocalizations.of(context)!.editEvent : AppLocalizations.of(context)!.next,
                       style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),),
                   ),
                 ),
@@ -1494,41 +1543,67 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Event Start Date
     var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
     Timestamp doneAt = Timestamp.fromDate(startDate);
-    // Creating Event Object
-    Event event = Event(
-      title: titleController.text,
-      description: descriptionController.text,
-      doneAt: doneAt,
-      createdAt: Timestamp.now(),
-      year: startDate.year.toString(),
-      month: startDate.month.toString(),
-      day: startDate.day.toString(),
-      hour: startDate.hour.toString(),
-      minute: startDate.minute.toString(),
-      duration: double.parse(duration),
-      locationId: location.id,
-      numClients: brandClientsSelected.length,
-      numTrainers: brandTrainersSelected.length,
-      maxMembers: eventMaxMembers,
-    );
     // Event Members
     List<Usuario> eventMembers = new List.from(brandTrainersSelected);
     eventMembers.addAll(brandClientsSelected);
-    // Add Event
-    String eventId = await _addEventCall(event);
-    // Add Event Members
-    await _addEventMembersCall(eventId, eventMembers);
-    // EVENT IS RECURRENT
-    if (isRecurrent) {
+    if (!isRecurrent) {
+      // Creating Event Object
+      Event event = Event(
+        title: titleController.text,
+        description: descriptionController.text,
+        doneAt: doneAt,
+        createdAt: Timestamp.now(),
+        year: startDate.year.toString(),
+        month: startDate.month.toString(),
+        day: startDate.day.toString(),
+        hour: startDate.hour.toString(),
+        minute: startDate.minute.toString(),
+        duration: double.parse(duration),
+        locationId: location.id,
+        numClients: brandClientsSelected.length,
+        numTrainers: brandTrainersSelected.length,
+        maxMembers: eventMaxMembers,
+      );
+      // Add Event
+      String eventId = await _addEventCall(event);
+      // Add Event Members
+      await _addEventMembersCall(eventId, eventMembers);
+    } else {
+      String eventGroupId = Uuid().v1();
+      // First the First Event
+      Event event = Event(
+        eventGroupId: eventGroupId,
+        title: titleController.text,
+        description: descriptionController.text,
+        doneAt: doneAt,
+        createdAt: Timestamp.now(),
+        year: startDate.year.toString(),
+        month: startDate.month.toString(),
+        day: startDate.day.toString(),
+        hour: startDate.hour.toString(),
+        minute: startDate.minute.toString(),
+        duration: double.parse(duration),
+        locationId: location.id,
+        numClients: brandClientsSelected.length,
+        numTrainers: brandTrainersSelected.length,
+        maxMembers: eventMaxMembers,
+      );
+      // Add Event
+      String eventId = await _addEventCall(event);
+      // Add Event Members
+      await _addEventMembersCall(eventId, eventMembers);
+      // Start Recurrence
+      List<String> groupEventsIds = [eventId];
       var tempDate = startDate.add(Duration(days: 1));
       var tempTimestamp = Timestamp.fromDate(tempDate);
       var weekDay = tempDate.weekday;
       if (_value == 1) {
         // One Week
-        for (var i=0; i<6; i++) {
+        for (var i=0; i<7; i++) {
           if (values[weekDay-1]!) {
             // Event Object
             event = Event(
+              eventGroupId: eventGroupId,
               title: titleController.text,
               description: descriptionController.text,
               doneAt: tempTimestamp,
@@ -1546,6 +1621,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
             );
             // Add Event
             String eventId = await _addEventCall(event);
+            // Add Event to Group Events
+            groupEventsIds.add(eventId);
             // Add Event Members
             await _addEventMembersCall(eventId, eventMembers);
           }
@@ -1555,10 +1632,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         }
       } else if (_value == 2) {
         // Two Weeks
-        for (var i=0; i<13; i++) {
+        for (var i=0; i<14; i++) {
           if (values[weekDay-1]!) {
             // Event Object
             event = Event(
+              eventGroupId: eventGroupId,
               title: titleController.text,
               description: descriptionController.text,
               doneAt: tempTimestamp,
@@ -1576,6 +1654,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
             );
             // Add Event
             String eventId = await _addEventCall(event);
+            // Add Event to Group Events
+            groupEventsIds.add(eventId);
             // Add Event Members
             await _addEventMembersCall(eventId, eventMembers);
           }
@@ -1585,10 +1665,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         }
       } else if (_value == 3) {
         // One Month
-        for (var i=0; i<29; i++) {
+        for (var i=0; i<28; i++) {
           if (values[weekDay-1]!) {
             // Event Object
             event = Event(
+              eventGroupId: eventGroupId,
               title: titleController.text,
               description: descriptionController.text,
               doneAt: tempTimestamp,
@@ -1606,6 +1687,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
             );
             // Add Event
             String eventId = await _addEventCall(event);
+            // Add Event to Group Events
+            groupEventsIds.add(eventId);
             // Add Event Members
             await _addEventMembersCall(eventId, eventMembers);
           }
@@ -1614,6 +1697,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
           weekDay = tempDate.weekday;
         }
       }
+      // Create Entry in /Event Groups
+      await _eventDataService.addRecurrentEventGroup(eventGroupId, groupEventsIds);
     }
     Navigator.pop(context);
   }
@@ -1631,7 +1716,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     for (var i=0; i<eventMembers.length; i++) {
       var user = eventMembers[i];
       // Remove Local Notifications Service
-      _deleteEventLocalNotificationsCall(event.id!, user.id!);
+      await _deleteEventLocalNotificationsCall(event.id!, user.id!);
     }
     // Pop to Last Page
     Navigator.pop(context, false);
