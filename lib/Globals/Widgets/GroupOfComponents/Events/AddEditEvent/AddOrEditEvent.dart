@@ -454,52 +454,69 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
           },
         ),
         actions: [
-          widget.eventId != null ? Row(
-            children: [
-              IconButton(
-                  onPressed: () async {
-                    if (event.eventGroupId == null) {
-                      // DeleteDialog
-                      var result = await showDialog(
-                          context: context,
-                          builder: (_) {
-                            return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteEventConfirmation);
-                          }
-                      );
-                      if (result) {
-                        _deleteEventFunction();
+          widget.eventId != null ? IconButton(
+              onPressed: () async {
+                if (event.eventGroupId == null) {
+                  // DeleteDialog
+                  var result = await showDialog(
+                      context: context,
+                      builder: (_) {
+                        return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteEventConfirmation);
                       }
+                  );
+                  if (result) {
+                    _deleteEventFunction();
+                  }
+                } else {
+                  var result = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return DeleteRecurrentEventDialog();
+                    },
+                  );
+                  if (result != null) {
+                    if (result == 1) {
+                      print("Deleting Only This Event..");
+                      _deleteEventFunction();
                     } else {
-                      var result = await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return DeleteRecurrentEventDialog();
-                        },
-                      );
-                      if (result != null) {
-                        if (result == 1) {
-                          print("Deleting Only This Event..");
-                          _deleteEventFunction();
-                        } else {
-                          print("Delete This Event and the Rest Forward ...");
-                          _deleteRecurrentEventFunction();
-                        }
-                      }
+                      print("Delete This Event and the Rest Forward ...");
+                      _deleteRecurrentEventFunction();
                     }
-                  },
-                  icon: Container(
-                    width: MediaQuery.of(context).size.width*0.15,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,),
-                      ],
-                    ),
-                  )
-              ),
-              SizedBox(width: MediaQuery.of(context).size.width*0.02)
-            ],
-          ) : Container(),
+                  }
+                }
+              },
+              icon: Container(
+                width: MediaQuery.of(context).size.width*0.15,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,),
+                  ],
+                ),
+              )
+          ) : Container(
+            width: MediaQuery.of(context).size.width*0.15,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.groups,
+                  color: Theme.of(context).primaryColor,
+                  size: MediaQuery.of(context).size.width*0.05,
+                ),
+                SizedBox(height: MediaQuery.of(context).size.width*0.01),
+                FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(
+                      AppLocalizations.of(context)!.group,
+                      style: Theme.of(context).textTheme.bodyText2,
+                      textAlign: TextAlign.center
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: MediaQuery.of(context).size.width*0.03)
         ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(0),
@@ -1110,6 +1127,17 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                   ),
                                                 ],
                                               ),
+                                              SizedBox(
+                                                width: MediaQuery.of(context).size.width*0.03,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    "( "+brandTrainersSelected.length.toString()+" )",
+                                                    style: Theme.of(context).textTheme.bodyText2,
+                                                  ),
+                                                ],
+                                              )
                                             ],
                                           )
                                       ),

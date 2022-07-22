@@ -1066,6 +1066,10 @@
   "@noTrainerSelectedError":{
     "description": "noTrainerSelectedError text"
   },
+  "noClientSelectedError": "No hay ningún cliente invitado",
+  "@noClientSelectedError":{
+    "description": "noTrainerSelectedError text"
+  },
   "clientsSelectedError": "Hay más clientes que plazas disponibles",
   "@clientsSelectedError":{
     "description": "noTrainerSelectedError text"
@@ -1340,12 +1344,20 @@
   "@logo": {
     "description": "Wellcome message"
   },
+  "group": "Grupal",
+  "@group": {
+    "description": "Wellcome message"
+  },
   "groupEvent": "Evento Grupal",
   "@groupEvent": {
     "description": "Wellcome message"
   },
   "groupEventDesc": "Define las plazas disponibles",
   "@groupEventDesc": {
+    "description": "Wellcome message"
+  },
+  "private": "Privado",
+  "@private": {
     "description": "Wellcome message"
   },
   "privateEvent": "Evento Privado",

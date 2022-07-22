@@ -7,7 +7,6 @@ import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificatio
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDateAndTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDateDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
@@ -274,22 +273,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     }
   }
 
-  Future selectNumberOfMembers() async {
-    int? pickedMembers =  await showCupertinoModalPopup(
-        context: context,
-        builder: (_) => SelectMembersDialog(
-          title: AppLocalizations.of(context)!.selectMembers,
-          initialMembers: eventMaxMembers-1,
-        )
-    );
-    if (pickedMembers != null) {
-      setState(() {
-        eventMaxMembers = pickedMembers;
-        membersController.text = "${eventMaxMembers.toString()}";
-      });
-    }
-  }
-
   Widget buildAddUserButton(bool isTrainer) {
     if (isTrainer) {
       return GestureDetector(
@@ -369,7 +352,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
               CupertinoPageRoute<List<Usuario>>(
                 builder: (context) => SelectClientsEvent(
                   selectedUsers: brandClientsSelected,
-                  maxClients: eventMaxMembers,
                 ),
               )
           );
@@ -454,52 +436,69 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           },
         ),
         actions: [
-          widget.eventId != null ? Row(
-            children: [
-              IconButton(
-                  onPressed: () async {
-                    if (event.eventGroupId == null) {
-                      // DeleteDialog
-                      var result = await showDialog(
-                          context: context,
-                          builder: (_) {
-                            return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteEventConfirmation);
-                          }
-                      );
-                      if (result) {
-                        _deleteEventFunction();
+          widget.eventId != null ? IconButton(
+              onPressed: () async {
+                if (event.eventGroupId == null) {
+                  // DeleteDialog
+                  var result = await showDialog(
+                      context: context,
+                      builder: (_) {
+                        return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteEventConfirmation);
                       }
+                  );
+                  if (result) {
+                    _deleteEventFunction();
+                  }
+                } else {
+                  var result = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return DeleteRecurrentEventDialog();
+                    },
+                  );
+                  if (result != null) {
+                    if (result == 1) {
+                      print("Deleting Only This Event..");
+                      _deleteEventFunction();
                     } else {
-                      var result = await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return DeleteRecurrentEventDialog();
-                        },
-                      );
-                      if (result != null) {
-                        if (result == 1) {
-                          print("Deleting Only This Event..");
-                          _deleteEventFunction();
-                        } else {
-                          print("Delete This Event and the Rest Forward ...");
-                          _deleteRecurrentEventFunction();
-                        }
-                      }
+                      print("Delete This Event and the Rest Forward ...");
+                      _deleteRecurrentEventFunction();
                     }
-                  },
-                  icon: Container(
-                    width: MediaQuery.of(context).size.width*0.15,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,),
-                      ],
-                    ),
-                  )
-              ),
-              SizedBox(width: MediaQuery.of(context).size.width*0.02)
-            ],
-          ) : Container(),
+                  }
+                }
+              },
+              icon: Container(
+                width: MediaQuery.of(context).size.width*0.15,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,),
+                  ],
+                ),
+              )
+          ) : Container(
+            width: MediaQuery.of(context).size.width*0.15,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.lock_outlined,
+                  color: Theme.of(context).primaryColor,
+                  size: MediaQuery.of(context).size.width*0.05,
+                ),
+                SizedBox(height: MediaQuery.of(context).size.width*0.01),
+                FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(
+                      AppLocalizations.of(context)!.private,
+                      style: Theme.of(context).textTheme.bodyText2,
+                      textAlign: TextAlign.center
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: MediaQuery.of(context).size.width*0.03)
         ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(0),
@@ -1110,6 +1109,17 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                   ),
                                                 ],
                                               ),
+                                              SizedBox(
+                                                width: MediaQuery.of(context).size.width*0.03,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    "( "+brandTrainersSelected.length.toString()+" )",
+                                                    style: Theme.of(context).textTheme.bodyText2,
+                                                  ),
+                                                ],
+                                              )
                                             ],
                                           )
                                       ),
@@ -1204,72 +1214,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           ),
                                         ),
                                       ) : Container(),
-
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                          child: new Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              new Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  new Text(
-                                                    AppLocalizations.of(context)!.maxNumberClients,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            selectNumberOfMembers();
-                                          },
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Icon(Icons.person, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.05,),
-                                              Container(
-                                                padding: EdgeInsets.only(left: 20),
-                                                width: MediaQuery.of(context).size.width*0.11,
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    new Flexible(
-                                                      child: TextFormField(
-                                                        controller: membersController,
-                                                        readOnly: true,
-                                                        enabled: false,
-                                                        style: Theme.of(context).textTheme.bodyText2,
-                                                        decoration: InputDecoration(
-                                                          border: InputBorder.none,
-                                                          focusedBorder: InputBorder.none,
-                                                          enabledBorder: InputBorder.none,
-                                                          errorBorder: InputBorder.none,
-                                                          disabledBorder: InputBorder.none,
-                                                        ),
-                                                        textAlign: TextAlign.start,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Text(
-                                                AppLocalizations.of(context)!.members.toLowerCase(),
-                                                style: Theme.of(context).textTheme.bodyText2,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-
-
                                       Padding(
                                           padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
                                           child: new Row(
@@ -1291,15 +1235,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                               Row(
                                                 children: [
                                                   Text(
-                                                    "( "+brandClientsSelected.length.toString(),
-                                                    style: Theme.of(context).textTheme.bodyText2,
-                                                  ),
-                                                  Text(
-                                                    " / ",
-                                                    style: Theme.of(context).textTheme.bodyText2,
-                                                  ),
-                                                  Text(
-                                                    eventMaxMembers.toString()+" )",
+                                                    "( "+brandClientsSelected.length.toString()+" )",
                                                     style: Theme.of(context).textTheme.bodyText2,
                                                   ),
                                                 ],
@@ -1418,13 +1354,12 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
                                         child: Center(
                                           child: Text(
-                                            AppLocalizations.of(context)!.clientsSelectedError,
+                                            AppLocalizations.of(context)!.noClientSelectedError,
                                             style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                             textAlign: TextAlign.center,
                                           ),
                                         ),
                                       ) : Container(),
-
                                     ]
                                 )
                             ),
@@ -1511,7 +1446,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                           setState(() {
                             errorNoTrainerSelected = true;
                           });
-                        } else if (brandClientsSelected.length > eventMaxMembers) {
+                        } else if (brandClientsSelected.length == 0) {
                           setState(() {
                             errorClientsSelected = true;
                           });
@@ -1627,6 +1562,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     if (!isRecurrent) {
       // Creating Event Object
       Event event = Event(
+        isPrivate: true,
         title: titleController.text,
         description: descriptionController.text,
         doneAt: doneAt,

@@ -12,6 +12,7 @@ class Event {
   String? eventGroupId;
   String? creatorID;
   String? brandID;
+  bool? isPrivate;
   String? title;
   String? description;
   Timestamp? doneAt;
@@ -38,6 +39,7 @@ class Event {
     this.eventGroupId,
     this.creatorID,
     this.brandID,
+    this.isPrivate,
     this.title,
     this.description,
     this.doneAt,
@@ -68,6 +70,9 @@ class Event {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('brandID')) {
       this.brandID = documentSnapshot.get("brandID").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isPrivate')) {
+      this.isPrivate = documentSnapshot.get("isPrivate");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
       this.title = documentSnapshot.get("title").toString();
@@ -121,6 +126,9 @@ class Event {
 
   Event.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isPrivate')) {
+      this.isPrivate = documentSnapshot.get("isPrivate");
+    }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
       this.title = documentSnapshot.get("title").toString();
     }
