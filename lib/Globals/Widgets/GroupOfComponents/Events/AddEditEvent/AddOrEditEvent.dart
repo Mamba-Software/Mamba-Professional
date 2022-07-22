@@ -8,8 +8,10 @@ import 'package:mamba_castelldefels/Globals/NotificationService/NotificationServ
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDateAndTimeDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDateDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
@@ -67,7 +69,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   Location location = Location();
   // Starting Date and Time
   DateTime startDate = DateTime.now();
+  DateTime originalStartDate = DateTime.now();
   TextEditingController startDateController = TextEditingController();
+  TextEditingController startTimeController = TextEditingController();
   bool errorDate = false;
   Timestamp? doneAt;
   // Duration
@@ -110,7 +114,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     }
   }
 
-
   Future<void> initializeEventInfo() async {
     startDate = DateTime(
       startDate.year,
@@ -119,8 +122,10 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       startDate.hour+1,
       0,
     );
-    startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(startDate);
+    // Define Start Date Controller
+    startDateController.text = DateFormat('EEEE d/M/y', widget.locale.languageCode).format(startDate);
     startDateController.text = StringUtils().toCapitalized(startDateController.text);
+    startTimeController.text = DateFormat('HH:mm', widget.locale.languageCode).format(startDate);
     oneWeek = startDate.add(Duration(days: 7));
     twoWeek = startDate.add(Duration(days: 14));
     oneMonth= startDate.add(Duration(days: 28));
@@ -139,6 +144,13 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Get Event Info
     event = await _eventDataService.getSingleEvent(widget.eventId!);
     // Event Date
+    originalStartDate = DateTime(
+      int.parse(event.year!),
+      int.parse(event.month!),
+      int.parse(event.day!),
+      int.parse(event.hour!),
+      int.parse(event.minute!),
+    );
     startDate = DateTime(
       int.parse(event.year!),
       int.parse(event.month!),
@@ -146,12 +158,13 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       int.parse(event.hour!),
       int.parse(event.minute!),
     );
-    doneAt = Timestamp.fromDate(startDate);
-    startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(startDate);
+    startDateController.text = DateFormat('EEEE d/M/y', widget.locale.languageCode).format(startDate);
     startDateController.text = StringUtils().toCapitalized(startDateController.text);
+    startTimeController.text = DateFormat('HH:mm', widget.locale.languageCode).format(startDate);
     oneWeek = startDate.add(Duration(days: 7));
     twoWeek = startDate.add(Duration(days: 14));
     oneMonth= startDate.add(Duration(days: 30));
+    doneAt = Timestamp.fromDate(startDate);
     // Event Title
     titleController.text = event.title!;
     titleString = titleController.text;
@@ -186,19 +199,25 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     });
   }
 
-  Future selectDateAndTime() async {
-    var pickedDateTemp =  await showCupertinoModalPopup(
+  Future selectDate() async {
+    DateTime? pickedDateTemp =  await showCupertinoModalPopup(
         context: context,
-        builder: (_) => SelectDateAndTimeDialog(
-          title: AppLocalizations.of(context)!.selectDayTime,
+        builder: (_) => SelectDateDialog(
+          title: AppLocalizations.of(context)!.selectDay,
           startDate: startDate,
           onlyFuture: true,
         )
     );
     if (pickedDateTemp != null) {
       setState(() {
-        startDate = pickedDateTemp;
-        startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(pickedDateTemp);
+        startDate = DateTime(
+          pickedDateTemp.year,
+          pickedDateTemp.month,
+          pickedDateTemp.day,
+          startDate.hour,
+          startDate.minute,
+        );
+        startDateController.text = DateFormat('EEEE d/M/y', widget.locale.languageCode).format(pickedDateTemp);
         startDateController.text = StringUtils().toCapitalized(startDateController.text);
         oneWeek = pickedDateTemp.add(Duration(days: 7));
         twoWeek = pickedDateTemp.add(Duration(days: 14));
@@ -207,6 +226,32 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
           values = [false, false, false, false, false, false, false];
           values[startDate.weekday-1] = true;
         }
+      });
+    }
+  }
+
+  Future selectTime() async {
+    DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
+        context: context,
+        builder: (_) => SelectTimeDialog(
+          title: AppLocalizations.of(context)!.selectTime,
+          startDate: startDate,
+          onlyFuture: true,
+        )
+    );
+    if (pickedTimeTemp != null) {
+      setState(() {
+        startDate = DateTime(
+          startDate.year,
+          startDate.month,
+          startDate.day,
+          pickedTimeTemp.hour,
+          pickedTimeTemp.minute,
+        );
+        startTimeController.text = DateFormat('HH:mm', widget.locale.languageCode).format(startDate);
+        oneWeek = pickedTimeTemp.add(Duration(days: 7));
+        twoWeek = pickedTimeTemp.add(Duration(days: 14));
+        oneMonth= pickedTimeTemp.add(Duration(days: 28));
       });
     }
   }
@@ -714,39 +759,79 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                             children: [
                                               Row(
                                                 mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: <Widget>[
-                                                  Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,size: MediaQuery.of(context).size.width*0.05,),
-                                                  Container(
-                                                    padding: EdgeInsets.symmetric(horizontal: 20),
-                                                    width: MediaQuery.of(context).size.width*0.70,
-                                                    child: GestureDetector(
-                                                        onTap: () {
-                                                          selectDateAndTime();
-                                                        },
-                                                        child: Row(
-                                                          mainAxisSize: MainAxisSize.max,
-                                                          children: <Widget>[
-                                                            new Flexible(
-                                                              child: TextFormField(
-                                                                controller: startDateController,
-                                                                readOnly: true,
-                                                                enabled: false,
-                                                                style: Theme.of(context).textTheme.bodyText2,
-                                                                decoration: InputDecoration(
-                                                                  border: InputBorder.none,
-                                                                  focusedBorder: InputBorder.none,
-                                                                  enabledBorder: InputBorder.none,
-                                                                  errorBorder: InputBorder.none,
-                                                                  disabledBorder: InputBorder.none,
+                                                  Row(
+                                                    children: [
+                                                      Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,size: MediaQuery.of(context).size.width*0.05,),
+                                                      Container(
+                                                        padding: EdgeInsets.symmetric(horizontal: 20),
+                                                        width: MediaQuery.of(context).size.width*0.45,
+                                                        child: GestureDetector(
+                                                            onTap: () {
+                                                              selectDate();
+                                                            },
+                                                            child: Row(
+                                                              mainAxisSize: MainAxisSize.max,
+                                                              children: <Widget>[
+                                                                new Flexible(
+                                                                  child: TextFormField(
+                                                                    controller: startDateController,
+                                                                    readOnly: true,
+                                                                    enabled: false,
+                                                                    style: Theme.of(context).textTheme.bodyText2,
+                                                                    decoration: InputDecoration(
+                                                                      border: InputBorder.none,
+                                                                      focusedBorder: InputBorder.none,
+                                                                      enabledBorder: InputBorder.none,
+                                                                      errorBorder: InputBorder.none,
+                                                                      disabledBorder: InputBorder.none,
+                                                                    ),
+                                                                    textAlign: TextAlign.start,
+                                                                  ),
                                                                 ),
-                                                                textAlign: TextAlign.start,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
-                                                    ),
+                                                              ],
+                                                            )
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
+                                                  Row(
+                                                    children: [
+                                                      Icon(Icons.schedule, color: Theme.of(context).accentColor,size: MediaQuery.of(context).size.width*0.05,),
+                                                      Container(
+                                                        padding: EdgeInsets.symmetric(horizontal: 20),
+                                                        width: MediaQuery.of(context).size.width*0.25,
+                                                        child: GestureDetector(
+                                                            onTap: () {
+                                                              selectTime();
+                                                            },
+                                                            child: Row(
+                                                              mainAxisSize: MainAxisSize.max,
+                                                              children: <Widget>[
+                                                                new Flexible(
+                                                                  child: TextFormField(
+                                                                    controller: startTimeController,
+                                                                    readOnly: true,
+                                                                    enabled: false,
+                                                                    style: Theme.of(context).textTheme.bodyText2,
+                                                                    decoration: InputDecoration(
+                                                                      border: InputBorder.none,
+                                                                      focusedBorder: InputBorder.none,
+                                                                      enabledBorder: InputBorder.none,
+                                                                      errorBorder: InputBorder.none,
+                                                                      disabledBorder: InputBorder.none,
+                                                                    ),
+                                                                    textAlign: TextAlign.start,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+
                                                 ],
                                               ),
                                               Row(
@@ -1410,7 +1495,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                         setState(() {
                           errorDate = false;
                         });
-                        var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
                         if (validateDateAndTime(startDate, double.parse(duration))) {
                           _tabController!.animateTo(_selectedIndex += 1);
                           setState(() {
@@ -1435,8 +1519,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                           if (widget.eventId == null) {
                             _addEventFunction();
                           } else {
-                            _updateEventFunction();
-                            /*
                             if (event.eventGroupId == null) {
                               _updateEventFunction();
                             } else {
@@ -1456,7 +1538,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                 }
                               }
                             }
-                             */
                           }
                         }
                       }
@@ -1539,7 +1620,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       isLoading = true;
     });
     // Event Start Date
-    var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
     Timestamp doneAt = Timestamp.fromDate(startDate);
     // Event Members
     List<Usuario> eventMembers = new List.from(brandTrainersSelected);
@@ -1739,7 +1819,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       isLoading = true;
     });
     // Event Start Date
-    var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
     Timestamp doneAt = Timestamp.fromDate(startDate);
     // Creating Event Object
     Event event = Event(
@@ -1888,9 +1967,27 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Update All Events After The Index
     for (var i=index; i<eventGroupIdsList.length; i++) {
       String eventId = eventGroupIdsList[i];
+      // Original Event Data
+      Event originalEvent = await _eventDataService.getSingleEvent(eventId);
+      List<Usuario> originalUsers = await _eventDataService.getEventUsers(eventId);
+      List<Usuario> originalTrainers = [];
+      List<Usuario> originalClients = [];
+      for (var u in originalUsers) {
+        if (u.isTrainer!) {
+          originalTrainers.add(u);
+        } else {
+          originalClients.add(u);
+        }
+      }
       // Event Start Date
-      var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
-      Timestamp doneAt = Timestamp.fromDate(startDate);
+      var updatedStartDate = DateTime(
+        int.parse(originalEvent.year!),
+        int.parse(originalEvent.month!),
+        int.parse(originalEvent.day!),
+        startDate.hour,
+        startDate.minute,
+      );
+      Timestamp doneAt = Timestamp.fromDate(updatedStartDate);
       // Creating Event Object
       Event updatedEvent = Event(
         id: eventId,
@@ -1898,11 +1995,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         description: descriptionController.text,
         doneAt: doneAt,
         createdAt: Timestamp.now(),
-        year: startDate.year.toString(),
-        month: startDate.month.toString(),
-        day: startDate.day.toString(),
-        hour: startDate.hour.toString(),
-        minute: startDate.minute.toString(),
+        year: updatedStartDate.year.toString(),
+        month: updatedStartDate.month.toString(),
+        day: updatedStartDate.day.toString(),
+        hour: updatedStartDate.hour.toString(),
+        minute: updatedStartDate.minute.toString(),
         duration: double.parse(duration),
         locationId: location.id,
         numClients: brandClientsSelected.length,
@@ -1912,8 +2009,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       // Update Event
       await _eventDataService.updateEvent(updatedEvent);
       // Update Event Location
-      if (event.locationId! != originalLocationId) {
-        await _eventDataService.updateEventLocation(eventId, event.locationId!, originalLocationId!);
+      if (event.locationId! != originalEvent.locationId!) {
+        await _eventDataService.updateEventLocation(eventId, event.locationId!, originalEvent.locationId!);
       }
       // Event Members
       List<Usuario> eventTrainers = new List.from(brandTrainersSelected);

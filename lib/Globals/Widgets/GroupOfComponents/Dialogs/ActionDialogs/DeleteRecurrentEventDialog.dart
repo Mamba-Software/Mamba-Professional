@@ -111,7 +111,7 @@ class _DeleteRecurrentEventDialogState extends State<DeleteRecurrentEventDialog>
                       OutlinedButton.icon(
                         style: OutlinedButton.styleFrom(
                           elevation: 4.0,
-                          backgroundColor: _value == 0 ? Colors.red.withOpacity(0.3) : Colors.red,
+                          backgroundColor: _value == 0 ? Colors.red.withOpacity(0.5) : Colors.red,
                           fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(

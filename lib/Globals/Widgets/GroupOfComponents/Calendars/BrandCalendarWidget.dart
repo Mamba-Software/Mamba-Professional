@@ -10,6 +10,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -138,6 +139,17 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     );
   }
 
+  void _addPrivateEvent() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<String>(
+          builder: (context) => AddOrEditPrivateEvent(
+            locale: Localizations.localeOf(context),
+          ),
+        )
+    );
+  }
+
   Widget _buildTitleFromDate(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
     return Text(
       StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
@@ -238,7 +250,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                     ],
                   ),
                 ),
-              )
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03)
             ],
           ),
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -564,6 +577,38 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           children: [
             SpeedDialChild(
               child: Icon(
+                Icons.groups,
+              ),
+              elevation: 10,
+              backgroundColor: Theme.of(context).backgroundColor,
+              labelWidget: Container(
+                color: Colors.transparent,
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                height: MediaQuery.of(context).size.height*0.1,
+                width: MediaQuery.of(context).size.width*0.6,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                        AppLocalizations.of(context)!.groupEvent,
+                        style: Theme.of(context).textTheme.headline3,
+                        textAlign: TextAlign.right
+                    ),
+                    Text(
+                        AppLocalizations.of(context)!.groupEventDesc,
+                        style: Theme.of(context).textTheme.caption,
+                        textAlign: TextAlign.right
+                    ),
+                  ],
+                ),
+              ),
+              onTap: () {
+                _addEvent();
+              }
+            ),
+            SpeedDialChild(
+              child: Icon(
                 Icons.lock_outlined,
               ),
               elevation: 10,
@@ -573,74 +618,29 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
                 height: MediaQuery.of(context).size.height*0.1,
                 width: MediaQuery.of(context).size.width*0.6,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                          AppLocalizations.of(context)!.privateEvent,
-                          style: Theme.of(context).textTheme.bodyText2,
-                          textAlign: TextAlign.right
-                      ),
-                      Text(
-                          "Solo se puede acceder por invitación",
-                          style: Theme.of(context).textTheme.caption,
-                          textAlign: TextAlign.right
-                      ),
-                    ],
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                        AppLocalizations.of(context)!.privateEvent,
+                        style: Theme.of(context).textTheme.headline3,
+                        textAlign: TextAlign.right
+                    ),
+                    Text(
+                        AppLocalizations.of(context)!.privateEventDesc,
+                        style: Theme.of(context).textTheme.caption,
+                        textAlign: TextAlign.right
+                    ),
+                  ],
                 ),
               ),
+              onTap: () {
+                _addPrivateEvent();
+              }
             ),
-            SpeedDialChild(
-                child: Icon(
-                  Icons.lock_open,
-                ),
-              elevation: 10,
-              backgroundColor: Theme.of(context).backgroundColor,
-              labelWidget: Container(
-                color: Colors.transparent,
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
-                height: MediaQuery.of(context).size.height*0.1,
-                width: MediaQuery.of(context).size.width*0.6,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                          AppLocalizations.of(context)!.eventoGrupal,
-                          style: Theme.of(context).textTheme.bodyText2,
-                          textAlign: TextAlign.right
-                      ),
-                      Text(
-                          "Disponible para todos los clientes",
-                          style: Theme.of(context).textTheme.caption,
-                          textAlign: TextAlign.right
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
           ],
         ),
-        /*
-        FloatingActionButton(
-          heroTag: "3",
-          onPressed: () {
-            _addEvent();
-          },
-          backgroundColor: Theme.of(context).accentColor,
-          child: Icon(
-            Icons.more_time,
-            size: MediaQuery.of(context).size.width*0.06,
-            color: AppColors.white,
-          ),
-        ),
-         */
       ),
     ) : Container();
   }

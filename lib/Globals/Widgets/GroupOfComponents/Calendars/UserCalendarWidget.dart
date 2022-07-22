@@ -255,7 +255,8 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                     ],
                   ),
                 ),
-              )
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03)
             ],
           ),
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,

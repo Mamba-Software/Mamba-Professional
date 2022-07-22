@@ -47,8 +47,18 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
               children: <Widget>[
                 Flexible(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 10, left: 10),
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 0, right: 10, left: 10),
                     child: Text(AppLocalizations.of(context)!.saveRecurrentEvent, style: Theme.of(context).textTheme.bodyText1?.copyWith(height: 1.5),textAlign: TextAlign.center,),
+                  ),
+                ),
+                Flexible(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 4.0, bottom: 4.0, right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
+                    child: Text(
+                      AppLocalizations.of(context)!.saveRecurrentEventDetails,
+                      style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
                 Padding(
@@ -111,7 +121,7 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                       OutlinedButton.icon(
                         style: OutlinedButton.styleFrom(
                           elevation: 4.0,
-                          backgroundColor: _value == 0 ? Colors.green.withOpacity(0.3) : Colors.green,
+                          backgroundColor: _value == 0 ? Colors.green.withOpacity(0.5) : Colors.green,
                           fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(

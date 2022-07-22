@@ -965,6 +965,10 @@
   "@selectDayTime":{
     "description": "tuesdarLetter text"
   },
+  "selectDay": "Día",
+  "@selectDay":{
+    "description": "tuesdarLetter text"
+  },
   "selectDuration": "Duración",
   "@selectDuration":{
     "description": "tuesdarLetter text"
@@ -1336,12 +1340,20 @@
   "@logo": {
     "description": "Wellcome message"
   },
-  "eventoGrupal": "Evento Grupal",
-  "@eventoGrupal": {
+  "groupEvent": "Evento Grupal",
+  "@groupEvent": {
+    "description": "Wellcome message"
+  },
+  "groupEventDesc": "Define las plazas disponibles",
+  "@groupEventDesc": {
     "description": "Wellcome message"
   },
   "privateEvent": "Evento Privado",
   "@privateEvent": {
+    "description": "Wellcome message"
+  },
+  "privateEventDesc": "Accesible solo por invitación",
+  "@privateEventDesc": {
     "description": "Wellcome message"
   },
   "noEventsToday": "Nada previsto para hoy ...",
@@ -1846,6 +1858,10 @@
   },
   "saveRecurrentEvent": "¿Cómo quieres editar este evento recurrente?",
   "@saveRecurrentEvent": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "saveRecurrentEventDetails": "En caso de modificar más de un evento, el día del evento no serà modificado.",
+  "@saveRecurrentEventDetails": {
     "description": "beforeEventBodyNotification message"
   },
   "thisEvent": "Solo este evento",
