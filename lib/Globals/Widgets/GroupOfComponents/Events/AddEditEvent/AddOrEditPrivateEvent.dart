@@ -8,8 +8,10 @@ import 'package:mamba_castelldefels/Globals/NotificationService/NotificationServ
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDateAndTimeDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDateDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
@@ -29,10 +31,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddOrEditPrivateEvent extends StatefulWidget {
   Locale locale;
-  DateTime? initialDateTime;
   String? eventId;
 
-  AddOrEditPrivateEvent({Key? key, required this.locale, this.initialDateTime, this.eventId}) : super(key: key);
+  AddOrEditPrivateEvent({Key? key, required this.locale, this.eventId}) : super(key: key);
 
   @override
   _AddOrEditPrivateEventState createState() => _AddOrEditPrivateEventState();
@@ -68,7 +69,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   Location location = Location();
   // Starting Date and Time
   DateTime startDate = DateTime.now();
+  DateTime originalStartDate = DateTime.now();
   TextEditingController startDateController = TextEditingController();
+  TextEditingController startTimeController = TextEditingController();
   bool errorDate = false;
   Timestamp? doneAt;
   // Duration
@@ -111,31 +114,22 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     }
   }
 
-
   Future<void> initializeEventInfo() async {
-    if (widget.initialDateTime != null) {
-      startDate = widget.initialDateTime!;
-      startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(widget.initialDateTime!);
-      startDateController.text = StringUtils().toCapitalized(startDateController.text);
-      oneWeek = widget.initialDateTime!.add(Duration(days: 7));
-      twoWeek = widget.initialDateTime!.add(Duration(days: 14));
-      oneMonth= widget.initialDateTime!.add(Duration(days: 28));
-      doneAt = Timestamp.fromDate(widget.initialDateTime!);
-    } else {
-      startDate = DateTime(
-        startDate.year,
-        startDate.month,
-        startDate.day,
-        startDate.hour+1,
-        0,
-      );
-      startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(startDate);
-      startDateController.text = StringUtils().toCapitalized(startDateController.text);
-      oneWeek = startDate.add(Duration(days: 7));
-      twoWeek = startDate.add(Duration(days: 14));
-      oneMonth= startDate.add(Duration(days: 28));
-      doneAt = Timestamp.fromDate(startDate);
-    }
+    startDate = DateTime(
+      startDate.year,
+      startDate.month,
+      startDate.day,
+      startDate.hour+1,
+      0,
+    );
+    // Define Start Date Controller
+    startDateController.text = DateFormat('EEEE d/M/y', widget.locale.languageCode).format(startDate);
+    startDateController.text = StringUtils().toCapitalized(startDateController.text);
+    startTimeController.text = DateFormat('HH:mm', widget.locale.languageCode).format(startDate);
+    oneWeek = startDate.add(Duration(days: 7));
+    twoWeek = startDate.add(Duration(days: 14));
+    oneMonth= startDate.add(Duration(days: 28));
+    doneAt = Timestamp.fromDate(startDate);
     titleController.text = "${currentBrand.name!.replaceAll(RegExp(r"\s+"), "")}";
     titleString = titleController.text;
     var hour = duration.split(".")[0];
@@ -150,6 +144,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     // Get Event Info
     event = await _eventDataService.getSingleEvent(widget.eventId!);
     // Event Date
+    originalStartDate = DateTime(
+      int.parse(event.year!),
+      int.parse(event.month!),
+      int.parse(event.day!),
+      int.parse(event.hour!),
+      int.parse(event.minute!),
+    );
     startDate = DateTime(
       int.parse(event.year!),
       int.parse(event.month!),
@@ -157,12 +158,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       int.parse(event.hour!),
       int.parse(event.minute!),
     );
-    doneAt = Timestamp.fromDate(startDate);
-    startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(startDate);
+    startDateController.text = DateFormat('EEEE d/M/y', widget.locale.languageCode).format(startDate);
     startDateController.text = StringUtils().toCapitalized(startDateController.text);
+    startTimeController.text = DateFormat('HH:mm', widget.locale.languageCode).format(startDate);
     oneWeek = startDate.add(Duration(days: 7));
     twoWeek = startDate.add(Duration(days: 14));
     oneMonth= startDate.add(Duration(days: 30));
+    doneAt = Timestamp.fromDate(startDate);
     // Event Title
     titleController.text = event.title!;
     titleString = titleController.text;
@@ -197,19 +199,25 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     });
   }
 
-  Future selectDateAndTime() async {
-    var pickedDateTemp =  await showCupertinoModalPopup(
+  Future selectDate() async {
+    DateTime? pickedDateTemp =  await showCupertinoModalPopup(
         context: context,
-        builder: (_) => SelectDateAndTimeDialog(
-          title: AppLocalizations.of(context)!.selectDayTime,
+        builder: (_) => SelectDateDialog(
+          title: AppLocalizations.of(context)!.selectDay,
           startDate: startDate,
           onlyFuture: true,
         )
     );
     if (pickedDateTemp != null) {
       setState(() {
-        startDate = pickedDateTemp;
-        startDateController.text = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).format(pickedDateTemp);
+        startDate = DateTime(
+          pickedDateTemp.year,
+          pickedDateTemp.month,
+          pickedDateTemp.day,
+          startDate.hour,
+          startDate.minute,
+        );
+        startDateController.text = DateFormat('EEEE d/M/y', widget.locale.languageCode).format(pickedDateTemp);
         startDateController.text = StringUtils().toCapitalized(startDateController.text);
         oneWeek = pickedDateTemp.add(Duration(days: 7));
         twoWeek = pickedDateTemp.add(Duration(days: 14));
@@ -218,6 +226,32 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           values = [false, false, false, false, false, false, false];
           values[startDate.weekday-1] = true;
         }
+      });
+    }
+  }
+
+  Future selectTime() async {
+    DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
+        context: context,
+        builder: (_) => SelectTimeDialog(
+          title: AppLocalizations.of(context)!.selectTime,
+          startDate: startDate,
+          onlyFuture: true,
+        )
+    );
+    if (pickedTimeTemp != null) {
+      setState(() {
+        startDate = DateTime(
+          startDate.year,
+          startDate.month,
+          startDate.day,
+          pickedTimeTemp.hour,
+          pickedTimeTemp.minute,
+        );
+        startTimeController.text = DateFormat('HH:mm', widget.locale.languageCode).format(startDate);
+        oneWeek = pickedTimeTemp.add(Duration(days: 7));
+        twoWeek = pickedTimeTemp.add(Duration(days: 14));
+        oneMonth= pickedTimeTemp.add(Duration(days: 28));
       });
     }
   }
@@ -725,39 +759,79 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                             children: [
                                               Row(
                                                 mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: <Widget>[
-                                                  Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,size: MediaQuery.of(context).size.width*0.05,),
-                                                  Container(
-                                                    padding: EdgeInsets.symmetric(horizontal: 20),
-                                                    width: MediaQuery.of(context).size.width*0.70,
-                                                    child: GestureDetector(
-                                                        onTap: () {
-                                                          selectDateAndTime();
-                                                        },
-                                                        child: Row(
-                                                          mainAxisSize: MainAxisSize.max,
-                                                          children: <Widget>[
-                                                            new Flexible(
-                                                              child: TextFormField(
-                                                                controller: startDateController,
-                                                                readOnly: true,
-                                                                enabled: false,
-                                                                style: Theme.of(context).textTheme.bodyText2,
-                                                                decoration: InputDecoration(
-                                                                  border: InputBorder.none,
-                                                                  focusedBorder: InputBorder.none,
-                                                                  enabledBorder: InputBorder.none,
-                                                                  errorBorder: InputBorder.none,
-                                                                  disabledBorder: InputBorder.none,
+                                                  Row(
+                                                    children: [
+                                                      Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,size: MediaQuery.of(context).size.width*0.05,),
+                                                      Container(
+                                                        padding: EdgeInsets.symmetric(horizontal: 20),
+                                                        width: MediaQuery.of(context).size.width*0.45,
+                                                        child: GestureDetector(
+                                                            onTap: () {
+                                                              selectDate();
+                                                            },
+                                                            child: Row(
+                                                              mainAxisSize: MainAxisSize.max,
+                                                              children: <Widget>[
+                                                                new Flexible(
+                                                                  child: TextFormField(
+                                                                    controller: startDateController,
+                                                                    readOnly: true,
+                                                                    enabled: false,
+                                                                    style: Theme.of(context).textTheme.bodyText2,
+                                                                    decoration: InputDecoration(
+                                                                      border: InputBorder.none,
+                                                                      focusedBorder: InputBorder.none,
+                                                                      enabledBorder: InputBorder.none,
+                                                                      errorBorder: InputBorder.none,
+                                                                      disabledBorder: InputBorder.none,
+                                                                    ),
+                                                                    textAlign: TextAlign.start,
+                                                                  ),
                                                                 ),
-                                                                textAlign: TextAlign.start,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
-                                                    ),
+                                                              ],
+                                                            )
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
+                                                  Row(
+                                                    children: [
+                                                      Icon(Icons.schedule, color: Theme.of(context).accentColor,size: MediaQuery.of(context).size.width*0.05,),
+                                                      Container(
+                                                        padding: EdgeInsets.symmetric(horizontal: 20),
+                                                        width: MediaQuery.of(context).size.width*0.25,
+                                                        child: GestureDetector(
+                                                            onTap: () {
+                                                              selectTime();
+                                                            },
+                                                            child: Row(
+                                                              mainAxisSize: MainAxisSize.max,
+                                                              children: <Widget>[
+                                                                new Flexible(
+                                                                  child: TextFormField(
+                                                                    controller: startTimeController,
+                                                                    readOnly: true,
+                                                                    enabled: false,
+                                                                    style: Theme.of(context).textTheme.bodyText2,
+                                                                    decoration: InputDecoration(
+                                                                      border: InputBorder.none,
+                                                                      focusedBorder: InputBorder.none,
+                                                                      enabledBorder: InputBorder.none,
+                                                                      errorBorder: InputBorder.none,
+                                                                      disabledBorder: InputBorder.none,
+                                                                    ),
+                                                                    textAlign: TextAlign.start,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+
                                                 ],
                                               ),
                                               Row(
@@ -1421,7 +1495,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                         setState(() {
                           errorDate = false;
                         });
-                        var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
                         if (validateDateAndTime(startDate, double.parse(duration))) {
                           _tabController!.animateTo(_selectedIndex += 1);
                           setState(() {
@@ -1446,8 +1519,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                           if (widget.eventId == null) {
                             _addEventFunction();
                           } else {
-                            _updateEventFunction();
-                            /*
                             if (event.eventGroupId == null) {
                               _updateEventFunction();
                             } else {
@@ -1467,7 +1538,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                 }
                               }
                             }
-                             */
                           }
                         }
                       }
@@ -1550,7 +1620,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       isLoading = true;
     });
     // Event Start Date
-    var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
     Timestamp doneAt = Timestamp.fromDate(startDate);
     // Event Members
     List<Usuario> eventMembers = new List.from(brandTrainersSelected);
@@ -1750,7 +1819,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       isLoading = true;
     });
     // Event Start Date
-    var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
     Timestamp doneAt = Timestamp.fromDate(startDate);
     // Creating Event Object
     Event event = Event(
@@ -1793,6 +1861,12 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         eventTrainersAdded.removeWhere((element) => element.id == user.id);
         originalTrainers.removeWhere((element) => element.id == user.id);
         print("Trainer Matched "+user.id.toString());
+        if (originalStartDate != startDate) {
+          // Remove Old Local Notification
+          await _deleteEventLocalNotificationsCall(event.id!, user.id!);
+          // Add updated ones now
+          await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
+        }
       }
     }
     /// Handle Trainers Not Matched
@@ -1826,6 +1900,12 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         eventClientsAdded.removeWhere((element) => element.id == user.id);
         originalClients.removeWhere((element) => element.id == user.id);
         print("Client Matched "+user.id.toString());
+        if (originalStartDate != startDate) {
+          // Remove Old Local Notification
+          await _deleteEventLocalNotificationsCall(event.id!, user.id!);
+          // Add updated ones now
+          await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
+        }
       }
     }
     // Handle Clients Not Matched
@@ -1899,9 +1979,34 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     // Update All Events After The Index
     for (var i=index; i<eventGroupIdsList.length; i++) {
       String eventId = eventGroupIdsList[i];
+      // Original Event Data
+      Event originalEvent = await _eventDataService.getSingleEvent(eventId);
+      List<Usuario> originalUsers = await _eventDataService.getEventUsers(eventId);
+      List<Usuario> originalTrainers = [];
+      List<Usuario> originalClients = [];
+      for (var u in originalUsers) {
+        if (u.isTrainer!) {
+          originalTrainers.add(u);
+        } else {
+          originalClients.add(u);
+        }
+      }
       // Event Start Date
-      var startDate = DateFormat('EEEE d/M/y - HH:mm', widget.locale.languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
-      Timestamp doneAt = Timestamp.fromDate(startDate);
+      var originalStartDate = DateTime(
+        int.parse(originalEvent.year!),
+        int.parse(originalEvent.month!),
+        int.parse(originalEvent.day!),
+        int.parse(originalEvent.hour!),
+        int.parse(originalEvent.minute!),
+      );
+      var updatedStartDate = DateTime(
+        int.parse(originalEvent.year!),
+        int.parse(originalEvent.month!),
+        int.parse(originalEvent.day!),
+        startDate.hour,
+        startDate.minute,
+      );
+      Timestamp doneAt = Timestamp.fromDate(updatedStartDate);
       // Creating Event Object
       Event updatedEvent = Event(
         id: eventId,
@@ -1909,11 +2014,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         description: descriptionController.text,
         doneAt: doneAt,
         createdAt: Timestamp.now(),
-        year: startDate.year.toString(),
-        month: startDate.month.toString(),
-        day: startDate.day.toString(),
-        hour: startDate.hour.toString(),
-        minute: startDate.minute.toString(),
+        year: updatedStartDate.year.toString(),
+        month: updatedStartDate.month.toString(),
+        day: updatedStartDate.day.toString(),
+        hour: updatedStartDate.hour.toString(),
+        minute: updatedStartDate.minute.toString(),
         duration: double.parse(duration),
         locationId: location.id,
         numClients: brandClientsSelected.length,
@@ -1923,8 +2028,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       // Update Event
       await _eventDataService.updateEvent(updatedEvent);
       // Update Event Location
-      if (event.locationId! != originalLocationId) {
-        await _eventDataService.updateEventLocation(eventId, event.locationId!, originalLocationId!);
+      if (event.locationId! != originalEvent.locationId!) {
+        await _eventDataService.updateEventLocation(eventId, event.locationId!, originalEvent.locationId!);
       }
       // Event Members
       List<Usuario> eventTrainers = new List.from(brandTrainersSelected);
@@ -1943,6 +2048,12 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           eventTrainersAdded.removeWhere((element) => element.id == user.id);
           originalTrainers.removeWhere((element) => element.id == user.id);
           print("Trainer Matched "+user.id.toString());
+          if (originalStartDate != updatedStartDate) {
+            // Remove Old Local Notification
+            await _deleteEventLocalNotificationsCall(event.id!, user.id!);
+            // Add updated ones now
+            await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
+          }
         }
       }
       /// Handle Trainers Not Matched
@@ -1976,6 +2087,12 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           eventClientsAdded.removeWhere((element) => element.id == user.id);
           originalClients.removeWhere((element) => element.id == user.id);
           print("Client Matched "+user.id.toString());
+          if (originalStartDate != updatedStartDate) {
+            // Remove Old Local Notification
+            await _deleteEventLocalNotificationsCall(event.id!, user.id!);
+            // Add updated ones now
+            await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
+          }
         }
       }
       // Handle Clients Not Matched

@@ -241,6 +241,14 @@ class LocalNotificationService {
         firebaseNotificationsTemp.remove(notif);
         _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
         print("Removing Fired Notification "+notif.id.toString());
+      } else {
+        bool eventExists = await _eventDataService.checkIfEventExists(notif.eventId!);
+        if (eventExists == false) {
+          // Find index in Local Notifications
+          firebaseNotificationsTemp.remove(notif);
+          _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
+          print("Removing False Notification "+notif.id.toString());
+        }
       }
     }
     print(firebaseNotificationsTemp.length.toString()+ " Firebase notifications left...");

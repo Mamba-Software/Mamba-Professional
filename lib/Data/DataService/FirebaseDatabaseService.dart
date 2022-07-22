@@ -1191,6 +1191,18 @@ class FirebaseDatabaseService {
       }
     }
 
+    // Get Single Event
+    Future<bool> checkIfEventExists(String eid) async {
+      DocumentSnapshot documentSnapshot = await _firestore.collection(events)
+          .doc(eid)
+          .get();
+      if (documentSnapshot.exists) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+
     // Get All Events for Client
     Future<List<Event>> getAllEventsWithLocationId(String locationId) async {
       List<Event> eventsList = [];

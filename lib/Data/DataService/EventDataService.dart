@@ -19,6 +19,7 @@ class EventDataService {
   final _firebase = FirebaseDatabaseService();
 
   // Check Data
+  Future<bool> checkIfEventExists(String eventId) => _firebase.checkIfEventExists(eventId);
 
   // Get Data
   Future<Event> getSingleEvent(String eventId) => _firebase.getSingleEvent(eventId);

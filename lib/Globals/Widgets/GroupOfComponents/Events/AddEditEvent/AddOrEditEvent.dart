@@ -1861,6 +1861,12 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         eventTrainersAdded.removeWhere((element) => element.id == user.id);
         originalTrainers.removeWhere((element) => element.id == user.id);
         print("Trainer Matched "+user.id.toString());
+        if (originalStartDate != startDate) {
+          // Remove Old Local Notification
+          await _deleteEventLocalNotificationsCall(event.id!, user.id!);
+          // Add updated ones now
+          await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
+        }
       }
     }
     /// Handle Trainers Not Matched
@@ -1894,6 +1900,12 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         eventClientsAdded.removeWhere((element) => element.id == user.id);
         originalClients.removeWhere((element) => element.id == user.id);
         print("Client Matched "+user.id.toString());
+        if (originalStartDate != startDate) {
+          // Remove Old Local Notification
+          await _deleteEventLocalNotificationsCall(event.id!, user.id!);
+          // Add updated ones now
+          await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
+        }
       }
     }
     // Handle Clients Not Matched
@@ -1980,6 +1992,13 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         }
       }
       // Event Start Date
+      var originalStartDate = DateTime(
+        int.parse(originalEvent.year!),
+        int.parse(originalEvent.month!),
+        int.parse(originalEvent.day!),
+        int.parse(originalEvent.hour!),
+        int.parse(originalEvent.minute!),
+      );
       var updatedStartDate = DateTime(
         int.parse(originalEvent.year!),
         int.parse(originalEvent.month!),
@@ -2029,6 +2048,12 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
           eventTrainersAdded.removeWhere((element) => element.id == user.id);
           originalTrainers.removeWhere((element) => element.id == user.id);
           print("Trainer Matched "+user.id.toString());
+          if (originalStartDate != updatedStartDate) {
+            // Remove Old Local Notification
+            await _deleteEventLocalNotificationsCall(event.id!, user.id!);
+            // Add updated ones now
+            await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
+          }
         }
       }
       /// Handle Trainers Not Matched
@@ -2062,6 +2087,12 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
           eventClientsAdded.removeWhere((element) => element.id == user.id);
           originalClients.removeWhere((element) => element.id == user.id);
           print("Client Matched "+user.id.toString());
+          if (originalStartDate != updatedStartDate) {
+            // Remove Old Local Notification
+            await _deleteEventLocalNotificationsCall(event.id!, user.id!);
+            // Add updated ones now
+            await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
+          }
         }
       }
       // Handle Clients Not Matched
