@@ -137,6 +137,7 @@ class LocalNotificationService {
     final location = tz.getLocation(timeZoneName!);
     final scheduledDate = tz.TZDateTime.from(notification.firesAt!, location);    
     // Get Event
+    print(notification.eventId!);
     Event event = await _eventDataService.getSingleEvent(notification.eventId!);
     String eventTimeTime = StringUtils().hourMinutesToString(int.parse(event.hour!), int.parse(event.minute!));
     // Check with Type of Notification
@@ -241,14 +242,13 @@ class LocalNotificationService {
         firebaseNotificationsTemp.remove(notif);
         _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
         print("Removing Fired Notification "+notif.id.toString());
-      } else {
-        bool eventExists = await _eventDataService.checkIfEventExists(notif.eventId!);
-        if (eventExists == false) {
-          // Find index in Local Notifications
-          firebaseNotificationsTemp.remove(notif);
-          _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
-          print("Removing False Notification "+notif.id.toString());
-        }
+      }
+      bool eventExists = await _eventDataService.checkIfEventExists(notif.eventId!);
+      if (eventExists == false) {
+        // Find index in Local Notifications
+        firebaseNotificationsTemp.remove(notif);
+        _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
+        print("Removing False Notification "+notif.id.toString());
       }
     }
     print(firebaseNotificationsTemp.length.toString()+ " Firebase notifications left...");

@@ -1246,9 +1246,9 @@ class FirebaseDatabaseService {
           .doc(eid)
           .get();
       if (documentSnapshot.exists) {
-        return false;
-      } else {
         return true;
+      } else {
+        return false;
       }
     }
 

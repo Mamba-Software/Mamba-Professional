@@ -1271,7 +1271,7 @@ exports.userAddsEvent = functions
         });
         // If Event Private
         // Add to Locations/Events/Private Events/PrivateEvents
-        if (eventDoc.isPrivate) {
+        if (eventDoc.isPrivate == true) {
            await db
           .collection("Locations")
           .doc(id)
@@ -1366,7 +1366,7 @@ exports.userDeletesEvent = functions
         .delete();
         // If Event Private
         // Delete from Locations/Events/Private Events/PrivateEvents Subcollection
-        if (eventDoc.isPrivate) {
+        if (eventDoc.isPrivate  == true) {
            await db
           .collection("Locations")
           .doc(eventLocationsSnapshot.docs[i].id)
@@ -2988,7 +2988,7 @@ exports.zzzzUserAddsEvent = functions
         });
         // If Event Private
         // Add to Locations/Events/Private Events/PrivateEvents
-        if (eventDoc.isPrivate) {
+        if (eventDoc.isPrivate == true) {
            await db
           .collection("7777 Locations")
           .doc(id)
@@ -3084,7 +3084,7 @@ exports.zzzzUserDeletesEvent = functions
         .delete();
         // If Event Private
         // Delete from Locations/Events/Private Events/PrivateEvents Subcollection
-        if (eventDoc.isPrivate) {
+        if (eventDoc.isPrivate == true) {
            await db
           .collection("7777 Locations")
           .doc(eventLocationsSnapshot.docs[i].id)
