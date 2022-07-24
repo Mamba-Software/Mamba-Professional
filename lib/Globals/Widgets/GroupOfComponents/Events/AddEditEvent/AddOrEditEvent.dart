@@ -1655,6 +1655,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     if (!isRecurrent) {
       // Creating Event Object
       Event event = Event(
+        isPrivate: false,
         title: titleController.text,
         description: descriptionController.text,
         doneAt: doneAt,

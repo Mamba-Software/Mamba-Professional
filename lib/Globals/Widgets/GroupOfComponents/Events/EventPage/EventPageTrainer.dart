@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
@@ -980,8 +981,8 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                             ),
                           ),
                           isEditing ? Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold)) : Text(datetitle, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold)),
-                          !canEdit ? Padding(
-                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.06, left: MediaQuery.of(context).size.width*0.06),
+                          (!canEdit || event!.isPrivate!) ? Padding(
+                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.08, left: MediaQuery.of(context).size.width*0.08),
                             child: Container(),
                           ) :
                           Padding(
@@ -1025,6 +1026,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                               child: Column(
                                 children: [
                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       isEditing ? new Expanded(
                                         child: new TextFormField(
@@ -1072,6 +1074,42 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                             disabledBorder: InputBorder.none,
                                           ),
                                           textAlign: TextAlign.left,
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          color: Theme.of(context).backgroundColor,
+                                        ),
+                                        child: event!.isPrivate! ? Row(
+                                          children: [
+                                            Text(
+                                                AppLocalizations.of(context)!.private,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                                textAlign: TextAlign.right
+                                            ),
+                                            SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                            Icon(
+                                              Icons.lock_outlined,
+                                              color: Theme.of(context).primaryColor,
+                                              size: MediaQuery.of(context).size.width*0.05,
+                                            ),
+                                          ],
+                                        ) : Row(
+                                          children: [
+                                            Text(
+                                                AppLocalizations.of(context)!.group,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                                textAlign: TextAlign.right
+                                            ),
+                                            SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                            Icon(
+                                              Icons.groups,
+                                              color: Theme.of(context).primaryColor,
+                                              size: MediaQuery.of(context).size.width*0.05,
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
@@ -1763,15 +1801,28 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
             child: FloatingActionButton.extended(
               heroTag: "9",
               onPressed: () async {
-                bool? result = await Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (context) => AddOrEditEvent(
-                        locale: Localizations.localeOf(context),
-                        eventId: event!.id!,
-                      ),
-                    )
-                );
+                bool? result;
+                if (event!.isPrivate!) {
+                  result = await Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (context) => AddOrEditPrivateEvent(
+                          locale: Localizations.localeOf(context),
+                          eventId: event!.id!,
+                        ),
+                      )
+                  );
+                } else {
+                  result = await Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (context) => AddOrEditEvent(
+                          locale: Localizations.localeOf(context),
+                          eventId: event!.id!,
+                        ),
+                      )
+                  );
+                }
                 if (result != null && result) {
                   setState(() {
                     isLoading = true;

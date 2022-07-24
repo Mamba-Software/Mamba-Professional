@@ -73,6 +73,8 @@ class Event {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isPrivate')) {
       this.isPrivate = documentSnapshot.get("isPrivate");
+    } else {
+      this.isPrivate = false;
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
       this.title = documentSnapshot.get("title").toString();
@@ -128,6 +130,8 @@ class Event {
     this.id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isPrivate')) {
       this.isPrivate = documentSnapshot.get("isPrivate");
+    } else {
+      this.isPrivate = false;
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
       this.title = documentSnapshot.get("title").toString();

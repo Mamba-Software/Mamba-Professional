@@ -140,26 +140,6 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
       StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
       style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
     );
-    // Deprecated
-    if (_controller.view == CalendarView.month) {
-      return Text(
-        StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
-        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
-      );
-    } else {
-      // Day of the First Date
-      String dateTitleStart = DateFormat('dd MMMM yy', Localizations.localeOf(context).languageCode).format(dateTimeStart);
-      String dateStartDay = StringUtils().splitByChar(dateTitleStart, " ")[0];
-      // Day Month Year of the Last Date
-      String dateTitleEnd = DateFormat('dd MMMM yyyy', Localizations.localeOf(context).languageCode).format(dateTimeEnd);
-      // Format  the results
-      String dateTitle = dateStartDay + " - " + dateTitleEnd;
-      // Return the Title
-      return Text(
-          StringUtils().capitalizedAllWords(dateTitle),
-          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600)
-      );
-    }
   }
 
   @override

@@ -1586,6 +1586,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       String eventGroupId = Uuid().v1();
       // First the First Event
       Event event = Event(
+        isPrivate: true,
         eventGroupId: eventGroupId,
         title: titleController.text,
         description: descriptionController.text,
@@ -1617,6 +1618,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           if (values[weekDay-1]!) {
             // Event Object
             event = Event(
+              isPrivate: true,
               eventGroupId: eventGroupId,
               title: titleController.text,
               description: descriptionController.text,
@@ -1650,6 +1652,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           if (values[weekDay-1]!) {
             // Event Object
             event = Event(
+              isPrivate: true,
               eventGroupId: eventGroupId,
               title: titleController.text,
               description: descriptionController.text,
@@ -1683,6 +1686,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           if (values[weekDay-1]!) {
             // Event Object
             event = Event(
+              isPrivate: true,
               eventGroupId: eventGroupId,
               title: titleController.text,
               description: descriptionController.text,
@@ -1722,7 +1726,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       isLoading = true;
     });
     // Delete Event Call
-    await _eventDataService.deleteEvent(widget.eventId!);
+    await _eventDataService.deleteEvent(widget.eventId!, true);
     // Event Members
     List<Usuario> eventMembers = new List.from(brandTrainersSelected);
     eventMembers.addAll(brandClientsSelected);
@@ -1889,7 +1893,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     for (var i=index; i<eventGroupIdsList.length; i++) {
       String eventId = eventGroupIdsList[i];
       // Delete Event Call
-      await _eventDataService.deleteEvent(eventId);
+      await _eventDataService.deleteEvent(eventId, true);
       // Delete Event Members
       List<Usuario> eventMembers = await _eventDataService.getEventUsers(eventId);
       // Delete Event Local Notifications

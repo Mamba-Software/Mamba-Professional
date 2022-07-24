@@ -54,7 +54,7 @@ class EventDataService {
   Future<void> updateEventLocation(String eid, String locationId, String previousLocation) => _firebase.updateEventLocation(eid, locationId, previousLocation);
 
   // Delete Data
-  Future<void> deleteEvent(String id) => _firebase.deleteEvent(id);
+  Future<void> deleteEvent(String id, [bool isPrivate = false]) => _firebase.deleteEvent(id, isPrivate);
   Future<void> deleteUserFromEvent(String eid, String uid,) => _firebase.deleteUserFromEvent(eid, uid);
   Future<void> deleteUserFromUpcomingEvents(String uid, bool isTrainer) => _firebase.deleteUserFromUpcomingEvents(uid, isTrainer);
   Future<void> deleteRecurrentEventGroup(String eventGroupId) => _firebase.deleteRecurrentEventGroup(eventGroupId);

@@ -364,7 +364,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                       width: details.bounds.width,
                                       padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
                                       decoration: BoxDecoration(
-                                        color: appointment.color.withOpacity(0.15),
+                                        color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(5),
                                         ),
@@ -375,12 +375,17 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                         children: [
                                           Row(
                                             children: [
+                                              Icon(
+                                                event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                                color: AppColors.white,
+                                                size: details.bounds.width*0.05,
+                                              ),
+                                              SizedBox(width: details.bounds.width*0.02,),
                                               Text(
                                                 event.title!,
                                                 style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
                                                 textAlign: TextAlign.start,
                                               ),
-
                                             ],
                                           ),
                                           Row(
@@ -422,7 +427,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                       width: details.bounds.width,
                                       padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
                                       decoration: BoxDecoration(
-                                        color: appointment.color,
+                                        color: event.isPrivate! ?  AppColors.black : appointment.color,
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(5),
                                         ),
@@ -431,10 +436,20 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            event.title!,
-                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
-                                            textAlign: TextAlign.start,
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                                color: AppColors.white,
+                                                size: details.bounds.width*0.05,
+                                              ),
+                                              SizedBox(width: details.bounds.width*0.02,),
+                                              Text(
+                                                event.title!,
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ],
                                           ),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -477,13 +492,13 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                       height: details.bounds.height,
                                       padding: EdgeInsets.all(details.bounds.width*0.1),
                                       decoration: BoxDecoration(
-                                        color: appointment.color.withOpacity(0.2),
+                                        color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(5),
                                         ),
                                       ),
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
                                           AutoSizeText(
                                             event.title!,
@@ -492,6 +507,16 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                             wrapWords: false,
                                             minFontSize: 1,
                                             maxFontSize: 16,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                                color: AppColors.white,
+                                                size: details.bounds.width*0.2,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -517,7 +542,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                       height: details.bounds.height,
                                       padding: EdgeInsets.all(details.bounds.height*0.1),
                                       decoration: BoxDecoration(
-                                        color: appointment.color,
+                                        color: event.isPrivate! ? AppColors.black : appointment.color,
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(5),
                                         ),
@@ -533,16 +558,26 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                             minFontSize: 1,
                                             maxFontSize: 16,
                                           ),
-                                          SizedBox(
-                                            width: details.bounds.width*0.4,
-                                            child: AutoSizeText(
-                                              appointment.subject,
-                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                                              textAlign: TextAlign.center,
-                                              wrapWords: false,
-                                              minFontSize: 1,
-                                              maxFontSize: 8,
-                                            ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                                color: AppColors.white,
+                                                size: details.bounds.width*0.2,
+                                              ),
+                                              SizedBox(
+                                                width: details.bounds.width*0.4,
+                                                child: AutoSizeText(
+                                                  appointment.subject,
+                                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                                  textAlign: TextAlign.center,
+                                                  wrapWords: false,
+                                                  minFontSize: 1,
+                                                  maxFontSize: 8,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -710,7 +745,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       var min = event.duration!.toStringAsFixed(2).split(".")[1];
       var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
       // Subject
-      var subject = "${event.numClients}/${event.maxMembers}";
+      var subject;
+      if (event.isPrivate!) {
+        subject = "${event.numClients}";
+      } else {
+        subject = "${event.numClients}/${event.maxMembers}";
+      }
       // Colors
       var color;
       double numClients = double.parse(event.numClients.toString());
@@ -740,7 +780,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   List<Event> documentsToEvents(List<DocumentSnapshot> documents) {
     List<Event> events = [];
     for(int i = 0; i < documents.length; i++) {
-      events.add(Event.fromObjectOnlyCoverData(documents[i].id, documents[i]));
+      Event evt = Event.fromObjectOnlyCoverData(documents[i].id, documents[i]);
+      if (currentUser.isTrainer!) {
+        events.add(evt);
+      } else {
+        if (!evt.isPrivate!) {
+          events.add(evt);
+        }
+      }
     }
     return events;
   }

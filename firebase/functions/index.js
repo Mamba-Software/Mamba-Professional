@@ -1256,6 +1256,7 @@ exports.userAddsEvent = functions
         .doc(id)
         .collection("Events")
         .doc(eventId).set({
+          "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
@@ -1268,6 +1269,30 @@ exports.userAddsEvent = functions
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
         });
+        // If Event Private
+        // Add to Locations/Events/Private Events/PrivateEvents
+        if (eventDoc.isPrivate) {
+           await db
+          .collection("Locations")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId).set({
+            "isPrivate": eventDoc.isPrivate,
+            "title": eventDoc.title,
+            "doneAt": eventDoc.doneAt,
+            "year": eventDoc.year,
+            "month": eventDoc.month,
+            "day": eventDoc.day,
+            "hour": eventDoc.hour,
+            "minute": eventDoc.minute,
+            "duration": eventDoc.duration,
+            "numTrainers": numTrainers,
+            "numClients": numClients,
+            "maxMembers": eventDoc.maxMembers,
+          });
+        }    
       }
       return null;
     });
@@ -1339,6 +1364,18 @@ exports.userDeletesEvent = functions
         .collection("Events")
         .doc(eventId)
         .delete();
+        // If Event Private
+        // Delete from Locations/Events/Private Events/PrivateEvents Subcollection
+        if (eventDoc.isPrivate) {
+           await db
+          .collection("Locations")
+          .doc(eventLocationsSnapshot.docs[i].id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .delete();
+        }
         // Delete Locations in Event
         await db
         .collection("Events")
@@ -2936,6 +2973,7 @@ exports.zzzzUserAddsEvent = functions
         .doc(id)
         .collection("Events")
         .doc(eventId).set({
+          "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
@@ -2948,6 +2986,30 @@ exports.zzzzUserAddsEvent = functions
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
         });
+        // If Event Private
+        // Add to Locations/Events/Private Events/PrivateEvents
+        if (eventDoc.isPrivate) {
+           await db
+          .collection("7777 Locations")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId).set({
+            "isPrivate": eventDoc.isPrivate,
+            "title": eventDoc.title,
+            "doneAt": eventDoc.doneAt,
+            "year": eventDoc.year,
+            "month": eventDoc.month,
+            "day": eventDoc.day,
+            "hour": eventDoc.hour,
+            "minute": eventDoc.minute,
+            "duration": eventDoc.duration,
+            "numTrainers": numTrainers,
+            "numClients": numClients,
+            "maxMembers": eventDoc.maxMembers,
+          });
+        }       
       }
       return null;
     });
@@ -3020,6 +3082,18 @@ exports.zzzzUserDeletesEvent = functions
         .collection("Events")
         .doc(eventId)
         .delete();
+        // If Event Private
+        // Delete from Locations/Events/Private Events/PrivateEvents Subcollection
+        if (eventDoc.isPrivate) {
+           await db
+          .collection("7777 Locations")
+          .doc(eventLocationsSnapshot.docs[i].id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .delete();
+        }
         // Delete Locations in Event
         await db
         .collection("7777 Events")

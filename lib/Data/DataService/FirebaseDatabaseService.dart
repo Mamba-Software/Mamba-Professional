@@ -1086,6 +1086,7 @@ class FirebaseDatabaseService {
       try {
         // Create Document in "\Events"
         await _firestore.collection(events).doc(eventID).set({
+          "isPrivate": event.isPrivate,
           "eventGroupId": event.eventGroupId,
           "brandID": currentBrand.id,
           "creatorID": currentUser!.uid,
@@ -1104,6 +1105,29 @@ class FirebaseDatabaseService {
           "numTrainers": event.numTrainers,
           "maxMembers": event.maxMembers,
         });
+        // If Event is Private
+        // Add to Events/Private Events/PrivateEvents for Reporting Purposes
+        if (event.isPrivate!) {
+          await _firestore
+          .collection(events)
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventID).
+          set({
+            "isPrivate": event.isPrivate,
+            "title": event.title,
+            "doneAt": event.doneAt,
+            "year": event.year,
+            "month": event.month,
+            "day": event.day,
+            "hour": event.hour,
+            "minute": event.minute,
+            "duration": event.duration,
+            "numTrainers": event.numTrainers,
+            "numClients": event.numClients,
+            "maxMembers": event.maxMembers,
+          });
+        }
         // Set the Brand Document in "\Events\Brands"
         await _firestore.collection(events).doc(eventID)
             .collection("Brands")
@@ -1122,7 +1146,6 @@ class FirebaseDatabaseService {
               "longitude": location.longitude,
               "latitude": location.latitude,
             });
-
         // Add Event To Brands/Events Subcollection To Avoid Cloud Function Doing It :D
         // We do it like this to avoid Cold Start and make the User wait.
         await _firestore
@@ -1131,6 +1154,7 @@ class FirebaseDatabaseService {
             .collection("Events")
             .doc(eventID).
             set({
+              "isPrivate": event.isPrivate,
               "title": event.title,
               "doneAt": event.doneAt,
               "year": event.year,
@@ -1143,6 +1167,31 @@ class FirebaseDatabaseService {
               "numClients": event.numClients,
               "maxMembers": event.maxMembers,
             });
+        // If Event is Private
+        // Add to Brands/Events/Private Events/PrivateEvents for Reporting Purposes
+        if (event.isPrivate!) {
+          await _firestore
+            .collection(brands)
+            .doc(currentBrand.id!)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventID).
+            set({
+              "isPrivate": event.isPrivate,
+              "title": event.title,
+              "doneAt": event.doneAt,
+              "year": event.year,
+              "month": event.month,
+              "day": event.day,
+              "hour": event.hour,
+              "minute": event.minute,
+              "duration": event.duration,
+              "numTrainers": event.numTrainers,
+              "numClients": event.numClients,
+              "maxMembers": event.maxMembers,
+            });
+        }
         return eventID;
       } catch (e) {
         print(e.toString());
@@ -1491,10 +1540,20 @@ class FirebaseDatabaseService {
     }
 
     // Delete Event
-    Future<void> deleteEvent(String id) async {
+    Future<void> deleteEvent(String id, [bool isPrivate = false]) async {
       try {
         // Delete Event From \Events Collection
         await _firestore.collection(events).doc(id).delete();
+        // If isPrivate Delete From \Events\Private Events\Private Events Subcollection
+        if (isPrivate) {
+          print("hola1");
+          await _firestore
+              .collection(events)
+              .doc("Private Events")
+              .collection("Private Events")
+              .doc(id)
+              .delete();
+        }
         // Delete Event To Brands/Events Subcollection To Avoid Cloud Function Doing It :D
         // We do it like this to avoid Cold Start and make the User wait.
         await _firestore
@@ -1510,6 +1569,18 @@ class FirebaseDatabaseService {
             .collection("Brands")
             .doc(currentBrand.id!)
             .delete();
+        // If isPrivate Delete From Brands\Events\Private Events\Private Events Subcollection
+        if (isPrivate) {
+          print("hola brands");
+          await _firestore
+              .collection(brands)
+              .doc(currentBrand.id!)
+              .collection("Events")
+              .doc("Private Events")
+              .collection("Private Events")
+              .doc(id)
+              .delete();
+        }
       } catch (e) {
         print(e.toString());
       }
