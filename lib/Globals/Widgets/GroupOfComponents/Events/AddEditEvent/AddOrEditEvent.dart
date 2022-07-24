@@ -1679,6 +1679,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       String eventGroupId = Uuid().v1();
       // First the First Event
       Event event = Event(
+        isPrivate: false,
         eventGroupId: eventGroupId,
         title: titleController.text,
         description: descriptionController.text,
@@ -1710,6 +1711,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
           if (values[weekDay-1]!) {
             // Event Object
             event = Event(
+              isPrivate: false,
               eventGroupId: eventGroupId,
               title: titleController.text,
               description: descriptionController.text,
@@ -1743,6 +1745,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
           if (values[weekDay-1]!) {
             // Event Object
             event = Event(
+              isPrivate: false,
               eventGroupId: eventGroupId,
               title: titleController.text,
               description: descriptionController.text,
@@ -1776,6 +1779,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
           if (values[weekDay-1]!) {
             // Event Object
             event = Event(
+              //isPrivate: false,
               eventGroupId: eventGroupId,
               title: titleController.text,
               description: descriptionController.text,
