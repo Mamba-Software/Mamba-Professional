@@ -1763,6 +1763,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     // Creating Event Object
     Event event = Event(
       id: widget.eventId!,
+      isPrivate: true,
       title: titleController.text,
       description: descriptionController.text,
       doneAt: doneAt,

@@ -1115,16 +1115,22 @@ class FirebaseDatabaseService {
           .doc(eventID).
           set({
             "isPrivate": event.isPrivate,
+            "eventGroupId": event.eventGroupId,
+            "brandID": currentBrand.id,
+            "creatorID": currentUser.uid,
             "title": event.title,
+            "description": event.description,
             "doneAt": event.doneAt,
+            "createdAt": event.createdAt,
             "year": event.year,
             "month": event.month,
             "day": event.day,
             "hour": event.hour,
             "minute": event.minute,
             "duration": event.duration,
-            "numTrainers": event.numTrainers,
+            "locationId": event.locationId,
             "numClients": event.numClients,
+            "numTrainers": event.numTrainers,
             "maxMembers": event.maxMembers,
           });
         }
@@ -1853,6 +1859,31 @@ class FirebaseDatabaseService {
           "numTrainers": event.numTrainers,
           "maxMembers": event.maxMembers,
         });
+        // If Event is Private
+        // Update to Events/Private Events/PrivateEvents for Reporting Purposes
+        if (event.isPrivate!) {
+          await _firestore
+          .collection(events)
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(event.id!)
+          .update({
+            "title": event.title,
+            "description": event.description,
+            "doneAt": event.doneAt,
+            "createdAt": event.createdAt,
+            "year": event.year,
+            "month": event.month,
+            "day": event.day,
+            "hour": event.hour,
+            "minute": event.minute,
+            "duration": event.duration,
+            "locationId": event.locationId,
+            "numClients": event.numClients,
+            "numTrainers": event.numTrainers,
+            "maxMembers": event.maxMembers,
+          });
+        }
       } catch (e) {
         print(e.toString());
       }
