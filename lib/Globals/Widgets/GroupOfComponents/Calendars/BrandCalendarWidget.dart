@@ -746,22 +746,23 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
       // Subject
       var subject;
+      var color;
       if (event.isPrivate!) {
         subject = "${event.numClients}";
+        color = Colors.black;
       } else {
         subject = "${event.numClients}/${event.maxMembers}";
+        // Colors
+        double numClients = double.parse(event.numClients.toString());
+        double maxMembers = double.parse(event.maxMembers.toString());
+        double bookedCapacity = numClients/maxMembers;
+        if(bookedCapacity <= 0.20) color = Colors.green;
+        else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = Color(0xFFA8C76C);
+        else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = Color(0xFFECE014);
+        else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) color = Colors.orangeAccent;
+        else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
+        else if(bookedCapacity == 1) color = Colors.red;
       }
-      // Colors
-      var color;
-      double numClients = double.parse(event.numClients.toString());
-      double maxMembers = double.parse(event.maxMembers.toString());
-      double bookedCapacity = numClients/maxMembers;
-      if(bookedCapacity <= 0.20) color = Colors.green;
-      else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = Color(0xFFA8C76C);
-      else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = Color(0xFFECE014);
-      else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) color = Colors.orangeAccent;
-      else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
-      else if(bookedCapacity == 1) color = Colors.red;
       // Afegir percentatges de members al Event.
       tempAllAppointments.add(Appointment(
         id: event.id,

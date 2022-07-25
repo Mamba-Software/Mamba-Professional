@@ -434,6 +434,17 @@ exports.eventUpdatesCoverData = functions
           "Add Event To Location",
           after.locationId,
         );
+        // Update Private Event
+        if (after.isPrivate == true) {                 
+           await db
+          .collection("Locations")
+          .doc(before.locationId)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .delete();
+        }
         // Add Event to New Location
         await db
         .collection("Locations")
@@ -450,7 +461,29 @@ exports.eventUpdatesCoverData = functions
           "numTrainers": numTrainers,
           "numClients": numClients,
           "maxMembers": after.maxMembers,
-        });
+        });        
+        // Update Private Event
+        if (after.isPrivate == true) {                 
+           await db
+          .collection("Locations")
+          .doc(after.locationId)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .set({
+            "title": after.title,
+            "year": after.year,
+            "month": after.month,
+            "day": after.day,
+            "hour": after.hour,
+            "minute": after.minute,
+            "duration": after.duration,
+            "numTrainers": numTrainers,
+            "numClients": numClients,
+            "maxMembers": after.maxMembers,
+          });
+        }
         functions.logger.log(
           "DONE",
         );
@@ -501,7 +534,27 @@ exports.eventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
-          });
+          });          
+          // Update Private Event
+          if (after.isPrivate == true) {                 
+             await db
+            .collection("Users")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "title": after.title,
+              "year": after.year,
+              "month": after.month,
+              "day": after.day,
+              "hour": after.hour,
+              "minute": after.minute,
+              "duration": after.duration,
+              "maxMembers": after.maxMembers,
+            });
+          }
         }
         // Update the Event Subcollection in Brands
         const eventBrandsSnapshot = await db.collection("Events").doc(eventId).collection("Brands").get();
@@ -525,7 +578,27 @@ exports.eventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
-          });
+          });                    
+          // Update Private Event
+          if (after.isPrivate == true) {                 
+             await db
+            .collection("Brands")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "title": after.title,
+              "year": after.year,
+              "month": after.month,
+              "day": after.day,
+              "hour": after.hour,
+              "minute": after.minute,
+              "duration": after.duration,
+              "maxMembers": after.maxMembers,
+            });
+          }
         }
         // Update the Event Subcollection in Locations
         const eventLocationsSnapshot = await db.collection("Events").doc(eventId).collection("Locations").get();
@@ -550,6 +623,26 @@ exports.eventUpdatesCoverData = functions
             "duration": after.duration,
             "maxMembers": after.maxMembers,
           });
+          // Update Private Event
+          if (after.isPrivate == true) {                 
+             await db
+            .collection("Locations")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "title": after.title,
+              "year": after.year,
+              "month": after.month,
+              "day": after.day,
+              "hour": after.hour,
+              "minute": after.minute,
+              "duration": after.duration,
+              "maxMembers": after.maxMembers,
+            });
+          }
         }
       }
       return null;
@@ -1365,7 +1458,7 @@ exports.userDeletesEvent = functions
         .doc(eventId)
         .delete();
         // If Event Private
-        // Delete from Locations/Events/Private Events/PrivateEvents Subcollection
+        // Delete from Locations/Events/Private Events/Private Events Subcollection
         if (eventDoc.isPrivate  == true) {
            await db
           .collection("Locations")
@@ -1396,9 +1489,13 @@ exports.userJoinsEvent = functions
       // Get the value of the context triggers.
       const eventId = context.params.eventId;
       const userId = context.params.userId;
-      // Get Event Data
+      // Get Event Data      
       const eventSnapshot = await db.collection("Events").doc(eventId).get();
       const eventDoc = eventSnapshot.data();
+      functions.logger.log(
+          "eventDoc",
+          eventDoc,
+      );
       // Get User Data
       const userSnapshot = await db.collection("Users").doc(userId).get();
       const userDoc = userSnapshot.data();
@@ -1447,6 +1544,30 @@ exports.userJoinsEvent = functions
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
       });
+      // If Event Private
+      // Add to Users/Events/Private Events/PrivateEvents
+      if (eventDoc.isPrivate == true) {
+         await db
+        .collection("Users")
+        .doc(userId)
+        .collection("Events")
+        .doc("Private Events")
+        .collection("Private Events")
+        .doc(eventId).set({
+          "isPrivate": eventDoc.isPrivate,
+          "title": eventDoc.title,
+          "doneAt": eventDoc.doneAt,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": numTrainers,
+          "numClients": numClients,
+          "maxMembers": eventDoc.maxMembers,
+        });
+      }
       // Update Number of Client and Trainers on Each of Event Subcollection
       // User´s Event First
       for (var i in eventUsersSnapshot.docs) {
@@ -1459,7 +1580,22 @@ exports.userJoinsEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
-        });
+        });        
+        // If Event Private
+        // Update Cover Data Also
+        if (eventDoc.isPrivate == true) {
+          await db
+          .collection("Users")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+        }
       }
       // Brand´s Event Second
       for (var i in eventBrandsSnapshot.docs) {
@@ -1473,6 +1609,21 @@ exports.userJoinsEvent = functions
           "numClients": numClients,
           "numTrainers": numTrainers,
         });
+        // If Event Private
+        // Update Cover Data Also
+        if (eventDoc.isPrivate == true) {
+          await db
+          .collection("Brands")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+        }
       }
       // Location´s Event Third
       for (var i in eventLocationsSnapshot.docs) {
@@ -1486,9 +1637,26 @@ exports.userJoinsEvent = functions
             "numClients": numClients,
             "numTrainers": numTrainers,
           });
+          // If Event Private
+          // Update Cover Data Also
+          if (eventDoc.isPrivate == true) {
+            await db
+            .collection("Locations")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "numClients": numClients,
+              "numTrainers": numTrainers,
+            });
+          }
       }
       // Send Notifications
       if (userDoc.isTrainer == false) {
+        // Don´t Send Full Notification When it is a Private Event
+        if (eventDoc.isPrivate != true) {            
           // Send Notification to Trainers if booked capacity == 100% or > 50%, only when Clients Join
           if (eventDoc.maxMembers == numClients) {
               // Event is full
@@ -1620,64 +1788,65 @@ exports.userJoinsEvent = functions
               }
             }
           }
-          // Send Notification to Client if added directly
-          if (eventUserDoc.invitedDirectly == true) {
-              // Invited to Event
-              functions.logger.log(
-                  "NOTIFICATION CLIENT INVITED DIRECTLY TO EVENT",
-              );
-              functions.logger.log(
-                  "userDoc",
-                  userDoc,
-              );
-              var payload = 0;
-              let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
-              if (userDoc.idioma == "es") {
-               // Date To String
-               let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
-               // Hour and Minutes to String
-               let eventTimeTime = eventDoc.hour+":";
-               let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-               eventTimeTime += minutes;
-               // Send Payload               
-               payload = {
-                 notification: {
-                   title: "Nuevo evento programado ⁉️ 🏋️‍♂️",
-                   body: "Te han añadido al evento "+eventDoc.title+". Se realizará el "+dateString+" a las "+eventTimeTime,
-                 },
-                 data: {
-                   route: eventId,
-                 },
-               };               
-             } else {
-               // Date To String
-               let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
-               // Hour and Minutes to String
-               let eventTimeTime = eventDoc.hour+":";
-               let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-               eventTimeTime += minutes;
-               // Send Payload
-               payload = {
-                 notification: {
-                   title: "Nou esdeveniment programat ⁉️ 🏋️‍♂️",
-                   body: "T'han afegit a l'esdeveniment "+eventDoc.title+". Es realitzarà el "+dateString+" a les "+eventTimeTime,
-                 },
-                 data: {
-                   route: eventId,
-                 },
-               };
-              }
-              functions.logger.log(
-                "Payload",
-                payload
-              );
-              response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-              functions.logger.log(
-                "Response",
-                response
-              );
-          }
         }
+        // Send Notification to Client if added directly
+        if (eventUserDoc.invitedDirectly == true) {
+            // Invited to Event
+            functions.logger.log(
+                "NOTIFICATION CLIENT INVITED DIRECTLY TO EVENT",
+            );
+            functions.logger.log(
+                "userDoc",
+                userDoc,
+            );
+            var payload = 0;
+            let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+            if (userDoc.idioma == "es") {
+             // Date To String
+             let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+             // Hour and Minutes to String
+             let eventTimeTime = eventDoc.hour+":";
+             let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+             eventTimeTime += minutes;
+             // Send Payload               
+             payload = {
+               notification: {
+                 title: "Nuevo evento programado ⁉️ 🏋️‍♂️",
+                 body: "Te han añadido al evento "+eventDoc.title+". Se realizará el "+dateString+" a las "+eventTimeTime,
+               },
+               data: {
+                 route: eventId,
+               },
+             };               
+           } else {
+             // Date To String
+             let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+             // Hour and Minutes to String
+             let eventTimeTime = eventDoc.hour+":";
+             let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+             eventTimeTime += minutes;
+             // Send Payload
+             payload = {
+               notification: {
+                 title: "Nou esdeveniment programat ⁉️ 🏋️‍♂️",
+                 body: "T'han afegit a l'esdeveniment "+eventDoc.title+". Es realitzarà el "+dateString+" a les "+eventTimeTime,
+               },
+               data: {
+                 route: eventId,
+               },
+             };
+            }
+            functions.logger.log(
+              "Payload",
+              payload
+            );
+            response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+            functions.logger.log(
+              "Response",
+              response
+            );
+        }
+      }
       return null;
     });
 
@@ -1690,6 +1859,13 @@ exports.userLeavesEvent = functions
       // Get the value of the context triggers.
       const eventId = context.params.eventId;
       const userId = context.params.userId;
+      // Get Event Data
+      const eventSnapshot = await db.collection("Events").doc(eventId).get();
+      const eventDoc = eventSnapshot.data();
+      functions.logger.log(
+          "eventDoc",
+          eventDoc,
+      );
       // Get Event Brands Data
       const eventBrandsSnapshot = await db.collection("Events").doc(eventId).collection("Brands").get();
       // Count the Number of Clients and Trainers
@@ -1717,6 +1893,18 @@ exports.userLeavesEvent = functions
       .collection("Events")
       .doc(eventId)
       .delete();
+      // If Event Private
+      // Delete to Users/Events/Private Events/PrivateEvents
+      if (eventDoc == undefined || eventDoc.isPrivate == true) {
+         await db
+        .collection("Users")
+        .doc(userId)
+        .collection("Events")
+        .doc("Private Events")
+        .collection("Private Events")
+        .doc(eventId)
+        .delete();
+      }
       /* Update Event Assisting Members
       await db
       .collection("Events")
@@ -1738,6 +1926,21 @@ exports.userLeavesEvent = functions
             "numClients": numClients,
             "numTrainers": numTrainers,
           });
+          // If Event Private
+          // Update Cover Data Also
+          if (eventDoc == undefined || eventDoc.isPrivate == true) {
+            await db
+            .collection("Users")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "numClients": numClients,
+              "numTrainers": numTrainers,
+            });
+          }
       }
       // Brand´s Event Second
       for (var i in eventBrandsSnapshot.docs) {
@@ -1751,6 +1954,21 @@ exports.userLeavesEvent = functions
             "numClients": numClients,
             "numTrainers": numTrainers,
           });
+          // If Event Private
+          // Update Cover Data Also
+          if (eventDoc == undefined || eventDoc.isPrivate == true) {
+            await db
+            .collection("Brands")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "numClients": numClients,
+              "numTrainers": numTrainers,
+            });
+          }
       }
       // Location´s Event Third
       for (var i in eventLocationsSnapshot.docs) {
@@ -1764,6 +1982,21 @@ exports.userLeavesEvent = functions
           "numClients": numClients,
           "numTrainers": numTrainers,
         });
+        // If Event Private
+        // Update Cover Data Also
+        if (eventDoc == undefined || eventDoc.isPrivate == true) {
+          await db
+          .collection("Locations")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+        }
       }
       return null;
     });
@@ -2146,6 +2379,17 @@ exports.zzzzEventUpdatesCoverData = functions
         .collection("Events")
         .doc(eventId)
         .delete();
+        // Update Private Event
+        if (after.isPrivate == true) {                 
+           await db
+          .collection("7777 Locations")
+          .doc(before.locationId)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .delete();
+        }
         // Add Event To New Location
         functions.logger.log(
           "Add Event To Location",
@@ -2168,6 +2412,28 @@ exports.zzzzEventUpdatesCoverData = functions
           "numClients": numClients,
           "maxMembers": after.maxMembers,
         });
+        // Update Private Event
+        if (after.isPrivate == true) {                 
+           await db
+          .collection("7777 Locations")
+          .doc(after.locationId)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .set({
+            "title": after.title,
+            "year": after.year,
+            "month": after.month,
+            "day": after.day,
+            "hour": after.hour,
+            "minute": after.minute,
+            "duration": after.duration,
+            "numTrainers": numTrainers,
+            "numClients": numClients,
+            "maxMembers": after.maxMembers,
+          });
+        }
         functions.logger.log(
           "DONE",
         );
@@ -2200,7 +2466,7 @@ exports.zzzzEventUpdatesCoverData = functions
         functions.logger.log(
             "Event Users Num =",
             eventUsersSnapshot.size,
-          );
+          );        
         // Update the Event Subcollection in Users
         for (var i in eventUsersSnapshot.docs) {
           const id = eventUsersSnapshot.docs[i].id;
@@ -2219,6 +2485,26 @@ exports.zzzzEventUpdatesCoverData = functions
             "duration": after.duration,
             "maxMembers": after.maxMembers,
           });
+          // Update Private Event
+          if (after.isPrivate == true) {                 
+             await db
+            .collection("7777 Users")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "title": after.title,
+              "year": after.year,
+              "month": after.month,
+              "day": after.day,
+              "hour": after.hour,
+              "minute": after.minute,
+              "duration": after.duration,
+              "maxMembers": after.maxMembers,
+            });
+          }
         }
         // Update the Event Subcollection in Brands
         const eventBrandsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Brands").get();
@@ -2243,6 +2529,26 @@ exports.zzzzEventUpdatesCoverData = functions
             "duration": after.duration,
             "maxMembers": after.maxMembers,
           });
+          // Update Private Event
+          if (after.isPrivate == true) {                 
+             await db
+            .collection("7777 Brands")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "title": after.title,
+              "year": after.year,
+              "month": after.month,
+              "day": after.day,
+              "hour": after.hour,
+              "minute": after.minute,
+              "duration": after.duration,
+              "maxMembers": after.maxMembers,
+            });
+          }
         }
         // Update the Event Subcollection in Locations
         const eventLocationsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Locations").get();
@@ -2267,6 +2573,26 @@ exports.zzzzEventUpdatesCoverData = functions
             "duration": after.duration,
             "maxMembers": after.maxMembers,
           });
+          // Update Private Event
+          if (after.isPrivate == true) {                 
+             await db
+            .collection("7777 Locations")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "title": after.title,
+              "year": after.year,
+              "month": after.month,
+              "day": after.day,
+              "hour": after.hour,
+              "minute": after.minute,
+              "duration": after.duration,
+              "maxMembers": after.maxMembers,
+            });
+          }
         }
       }
       return null;
@@ -3117,6 +3443,10 @@ exports.zzzzUserJoinsEvent = functions
       // Get Event Data
       const eventSnapshot = await db.collection("7777 Events").doc(eventId).get();
       const eventDoc = eventSnapshot.data();
+      functions.logger.log(
+          "eventDoc",
+          eventDoc,
+      );
       // Get User Data
       const userSnapshot = await db.collection("7777 Users").doc(userId).get();
       const userDoc = userSnapshot.data();
@@ -3153,6 +3483,7 @@ exports.zzzzUserJoinsEvent = functions
         .doc(userId)
         .collection("Events")
         .doc(eventId).set({
+          "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
@@ -3165,6 +3496,30 @@ exports.zzzzUserJoinsEvent = functions
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
       });
+      // If Event Private
+      // Add to Users/Events/Private Events/PrivateEvents
+      if (eventDoc.isPrivate == true) {
+         await db
+        .collection("7777 Users")
+        .doc(userId)
+        .collection("Events")
+        .doc("Private Events")
+        .collection("Private Events")
+        .doc(eventId).set({
+          "isPrivate": eventDoc.isPrivate,
+          "title": eventDoc.title,
+          "doneAt": eventDoc.doneAt,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": numTrainers,
+          "numClients": numClients,
+          "maxMembers": eventDoc.maxMembers,
+        });
+      }
       // Update Number of Client and Trainers on Each of Event Subcollection
       // User´s Event First
       for (var i in eventUsersSnapshot.docs) {
@@ -3178,6 +3533,21 @@ exports.zzzzUserJoinsEvent = functions
           "numClients": numClients,
           "numTrainers": numTrainers,
         });
+        // If Event Private
+        // Update Cover Data Also
+        if (eventDoc.isPrivate == true) {
+          await db
+          .collection("7777 Users")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+        }
       }
       // Brand´s Event Second
       for (var i in eventBrandsSnapshot.docs) {
@@ -3191,6 +3561,21 @@ exports.zzzzUserJoinsEvent = functions
           "numClients": numClients,
           "numTrainers": numTrainers,
         });
+        // If Event Private
+        // Update Cover Data Also
+        if (eventDoc.isPrivate == true) {
+          await db
+          .collection("7777 Brands")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+        }
       }
       // Location´s Event Third
       for (var i in eventLocationsSnapshot.docs) {
@@ -3204,84 +3589,36 @@ exports.zzzzUserJoinsEvent = functions
             "numClients": numClients,
             "numTrainers": numTrainers,
           });
+          // If Event Private
+          // Update Cover Data Also
+          if (eventDoc.isPrivate == true) {
+            await db
+            .collection("7777 Locations")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "numClients": numClients,
+              "numTrainers": numTrainers,
+            });
+          }
       }
       // Send Notifications
       if (userDoc.isTrainer == false) {
-        // Send Notification to Trainers if booked capacity == 100% or > 50%, only when Clients Join
-        if (eventDoc.maxMembers == numClients) {
-            // Event is full
-            functions.logger.log(
-              "NOTIFICATION IS FULL",
-            );
-            for (var i in eventUsersSnapshot.docs) {
-              const id = eventUsersSnapshot.docs[i].id;
-              const eventUsersDoc = eventUsersSnapshot.docs[i].data();
-              if (eventUsersDoc.isTrainer) {
-                const trainerSnapshot = await db.collection("7777 Users").doc(id).get();
-                const trainerDoc = trainerSnapshot.data();
-                functions.logger.log(
-                    "trainerDoc",
-                    trainerDoc,
-                  );
-                var payload = 0;
-                let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
-                if (trainerDoc.idioma == "es") {
-                  // Date To String
-                  let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
-                  // Hour and Minutes to String
-                  let eventTimeTime = eventDoc.hour+":";
-                  let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-                  eventTimeTime += minutes;
-                  // Send Payload
-                  payload = {
-                    notification: {
-                      title: "Evento totalmente reservado 💯",
-                      body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
-                    },
-                    data: {
-                      route: eventId,
-                    },
-                  };
-                } else {
-                  // Date To String
-                  let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
-                  // Hour and Minutes to String
-                  let eventTimeTime = eventDoc.hour+":";
-                  let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-                  eventTimeTime += minutes;
-                  // Send Payload
-                  payload = {
-                    notification: {
-                      title: "Esdeveniment totalment reservat 💯",
-                      body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,            
-                    },
-                    data: {
-                      route: eventId,
-                    },
-                  };
-                }
-                functions.logger.log(
-                  "Payload",
-                  payload
-                );
-                response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
-                functions.logger.log(
-                  "Response",
-                  response
-                );
-              }
-            }
-        } else {
-          // First one to go over 50%
-          if (numClients / eventDoc.maxMembers > 0.49 && (numClients - 1) / eventDoc.maxMembers < 0.50) {
-            // Send Over 50% Notification to All Event Trainers
-            functions.logger.log(
-              "NOTIFICATION OVER 50%",
-            );
-            for (var i in eventUsersSnapshot.docs) {
-              const id = eventUsersSnapshot.docs[i].id;
-              const eventUsersDoc = eventUsersSnapshot.docs[i].data();
-              if (eventUsersDoc.isTrainer) {
+        // Don´t Send Full Notification When it is a Private Event
+        if (eventDoc.isPrivate != true) {
+          // Send Notification to Trainers if booked capacity == 100% or > 50%, only when Clients Join
+          if (eventDoc.maxMembers == numClients) {
+              // Event is full
+              functions.logger.log(
+                "NOTIFICATION IS FULL",
+              );
+              for (var i in eventUsersSnapshot.docs) {
+                const id = eventUsersSnapshot.docs[i].id;
+                const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+                if (eventUsersDoc.isTrainer) {
                   const trainerSnapshot = await db.collection("7777 Users").doc(id).get();
                   const trainerDoc = trainerSnapshot.data();
                   functions.logger.log(
@@ -3300,8 +3637,8 @@ exports.zzzzUserJoinsEvent = functions
                     // Send Payload
                     payload = {
                       notification: {
-                        title: "Cada vez quedan menos plazas ⏱️",
-                        body: "El evento "+eventDoc.title+" ya tiene un 50% de las plazas reservadas",
+                        title: "Evento totalmente reservado 💯",
+                        body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
                       },
                       data: {
                         route: eventId,
@@ -3317,8 +3654,8 @@ exports.zzzzUserJoinsEvent = functions
                     // Send Payload
                     payload = {
                       notification: {
-                        title: "Cada cop queden menys places ⏱️",
-                        body: "L'esdeveniment "+eventDoc.title+" ja té un 50% de les places reservades",
+                        title: "Esdeveniment totalment reservat 💯",
+                        body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,            
                       },
                       data: {
                         route: eventId,
@@ -3335,9 +3672,75 @@ exports.zzzzUserJoinsEvent = functions
                     response
                   );
                 }
+              }
+          } else {
+            // First one to go over 50%
+            if (numClients / eventDoc.maxMembers > 0.49 && (numClients - 1) / eventDoc.maxMembers < 0.50) {
+              // Send Over 50% Notification to All Event Trainers
+              functions.logger.log(
+                "NOTIFICATION OVER 50%",
+              );
+              for (var i in eventUsersSnapshot.docs) {
+                const id = eventUsersSnapshot.docs[i].id;
+                const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+                if (eventUsersDoc.isTrainer) {
+                    const trainerSnapshot = await db.collection("7777 Users").doc(id).get();
+                    const trainerDoc = trainerSnapshot.data();
+                    functions.logger.log(
+                        "trainerDoc",
+                        trainerDoc,
+                      );
+                    var payload = 0;
+                    let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+                    if (trainerDoc.idioma == "es") {
+                      // Date To String
+                      let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+                      // Hour and Minutes to String
+                      let eventTimeTime = eventDoc.hour+":";
+                      let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+                      eventTimeTime += minutes;
+                      // Send Payload
+                      payload = {
+                        notification: {
+                          title: "Cada vez quedan menos plazas ⏱️",
+                          body: "El evento "+eventDoc.title+" ya tiene un 50% de las plazas reservadas",
+                        },
+                        data: {
+                          route: eventId,
+                        },
+                      };
+                    } else {
+                      // Date To String
+                      let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+                      // Hour and Minutes to String
+                      let eventTimeTime = eventDoc.hour+":";
+                      let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+                      eventTimeTime += minutes;
+                      // Send Payload
+                      payload = {
+                        notification: {
+                          title: "Cada cop queden menys places ⏱️",
+                          body: "L'esdeveniment "+eventDoc.title+" ja té un 50% de les places reservades",
+                        },
+                        data: {
+                          route: eventId,
+                        },
+                      };
+                    }
+                    functions.logger.log(
+                      "Payload",
+                      payload
+                    );
+                    response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+                    functions.logger.log(
+                      "Response",
+                      response
+                    );
+                  }
+              }
             }
           }
-        }
+        }        
         // Send Notification to Client if added directly
         if (eventUserDoc.invitedDirectly == true) {
             // Invited to Event
@@ -3408,6 +3811,13 @@ exports.zzzzUserLeavesEvent = functions
       // Get the value of the context triggers.
       const eventId = context.params.eventId;
       const userId = context.params.userId;
+      // Get Event Data
+      const eventSnapshot = await db.collection("7777 Events").doc(eventId).get();
+      const eventDoc = eventSnapshot.data();
+      functions.logger.log(
+          "eventDoc",
+          eventDoc,
+      );
       // Get Event Brands Data
       const eventBrandsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Brands").get();
       // Count the Number of Clients and Trainers
@@ -3435,6 +3845,18 @@ exports.zzzzUserLeavesEvent = functions
       .collection("Events")
       .doc(eventId)
       .delete();
+      // If Event Private
+      // Delete to Users/Events/Private Events/PrivateEvents
+      if (eventDoc == undefined || eventDoc.isPrivate == true) {
+         await db
+        .collection("7777 Users")
+        .doc(userId)
+        .collection("Events")
+        .doc("Private Events")
+        .collection("Private Events")
+        .doc(eventId)
+        .delete();
+      }
       /* Update Event Assisting Members
       await db
       .collection("7777 Events")
@@ -3456,6 +3878,21 @@ exports.zzzzUserLeavesEvent = functions
             "numClients": numClients,
             "numTrainers": numTrainers,
           });
+          // If Event Private
+          // Update Cover Data Also
+          if (eventDoc == undefined || eventDoc.isPrivate == true) {
+            await db
+            .collection("7777 Users")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "numClients": numClients,
+              "numTrainers": numTrainers,
+            });
+          }
       }
       // Brand´s Event Second
       for (var i in eventBrandsSnapshot.docs) {
@@ -3469,6 +3906,21 @@ exports.zzzzUserLeavesEvent = functions
             "numClients": numClients,
             "numTrainers": numTrainers,
           });
+          // If Event Private
+          // Update Cover Data Also
+          if (eventDoc == undefined || eventDoc.isPrivate == true) {
+            await db
+            .collection("7777 Brands")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "numClients": numClients,
+              "numTrainers": numTrainers,
+            });
+          }
       }
       // Location´s Event Third
       for (var i in eventLocationsSnapshot.docs) {
@@ -3482,6 +3934,21 @@ exports.zzzzUserLeavesEvent = functions
           "numClients": numClients,
           "numTrainers": numTrainers,
         });
+        // If Event Private
+        // Update Cover Data Also
+        if (eventDoc == undefined || eventDoc.isPrivate == true) {
+          await db
+          .collection("7777 Locations")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+        }
       }
       return null;
     });

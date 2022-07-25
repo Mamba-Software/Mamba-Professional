@@ -1621,7 +1621,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                     style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(width: 16),
-                                  !isEditing ? Row(
+                                  (event!.isPrivate! == false) ? Row(
                                     children: [
                                       Text(
                                         "( "+event!.numClients.toString(),
@@ -1636,7 +1636,14 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                         style: Theme.of(context).textTheme.bodyText2,
                                       ),
                                     ],
-                                  ) : Container(),
+                                  ) : Row(
+                                    children: [
+                                      Text(
+                                        "( "+event!.numClients.toString()+" )",
+                                        style: Theme.of(context).textTheme.bodyText2,
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),

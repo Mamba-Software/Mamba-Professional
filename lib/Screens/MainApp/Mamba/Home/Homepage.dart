@@ -578,23 +578,66 @@ class _HomepageState extends State<Homepage> {
                   Container(
                     width: width*0.8,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Flexible(
-                          child: Text(event.title!,
-                              style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white, fontWeight: FontWeight.w600), textAlign: TextAlign.left),
+                        Container(
+                          width: width*0.4,
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: Text(event.title!,
+                                    style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white, fontWeight: FontWeight.w600), textAlign: TextAlign.left),
+                              ),
+                            ],
+                          ),
                         ),
-                        SizedBox(width: width*0.05),
-                        badge,
+                        Row(
+                          children: [
+                            badge,
+                            SizedBox(width: width*0.02),
+                            Container(
+                              child: event.isPrivate! ? Row(
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)!.private,
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                      textAlign: TextAlign.right
+                                  ),
+                                  SizedBox(width: width*0.01),
+                                  Icon(
+                                    Icons.lock_outlined,
+                                    color: AppColors.white,
+                                    size: width*0.05,
+                                  ),
+                                ],
+                              ) : Row(
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)!.group,
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                      textAlign: TextAlign.right
+                                  ),
+                                  SizedBox(width: width*0.01),
+                                  Icon(
+                                    Icons.groups,
+                                    color: AppColors.white,
+                                    size: width*0.05,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
                   SizedBox(height: height*0.05),
                   Container(
-                    width: width*0.7,
+                    width: width*0.8,
                     child: FittedBox(
                       fit: BoxFit.fitWidth,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Icon(
                             Icons.schedule,
@@ -700,11 +743,13 @@ class _HomepageState extends State<Homepage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  /*
                   Flexible(
                     child: Text(AppLocalizations.of(context)!.toDo,
                         style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 10), textAlign: TextAlign.left),
                   ),
                   SizedBox(width: safeAreaWidth*0.01,),
+                   */
                   Icon(
                     Icons.update_outlined,
                     color: Colors.white,
@@ -738,11 +783,13 @@ class _HomepageState extends State<Homepage> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  /*
                   Flexible(
                     child: Text(AppLocalizations.of(context)!.doing,
                         style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 10), textAlign: TextAlign.left),
                   ),
                   SizedBox(width: safeAreaWidth*0.01,),
+                   */
                   Icon(
                     Icons.hourglass_top_outlined,
                     color: Colors.white,
@@ -776,9 +823,11 @@ class _HomepageState extends State<Homepage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  /*
                   Text(AppLocalizations.of(context)!.finished,
                       style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 10), textAlign: TextAlign.left),
                   SizedBox(width: safeAreaWidth*0.01,),
+                   */
                   Icon(
                     Icons.done_outline_outlined,
                     color: Colors.white,
