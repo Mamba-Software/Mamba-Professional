@@ -418,5 +418,9 @@
   "saveRecurrentEvent": "Com vols editar aquest esdeveniment recurrent?",
   "saveRecurrentEventDetails": "El dia de l'esdeveniment no serà modificat",
   "thisEvent": "Només aquest esdeveniment",
-  "thisEventAndRest": "Aquest i els esdeveniments següents"
+  "thisEventAndRest": "Aquest i els esdeveniments següents",
+  "trainersOnboarding": "TOT en UN!",
+  "trainersOnboardingDesc": "Centralitza el teu negoci en una sola plataforma. Professionalitza el teu servei per a fidelitzar als teus clients, millorant la gestió, organització i comunicació de la teva marca fitness.",
+  "clientsOnboarding": "Troba el teu professional",
+  "clientsOnboardingDesc": "Cerca, compara i decideix quina és la marca fitness que millor s'adapta a tu. Uneix-te a ella per a poder gaudir del seu servei i d'un seguiment personalitzat."
 }

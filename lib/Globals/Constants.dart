@@ -19,6 +19,7 @@ class Constants {
   static String onboardingApp = "assets/images/OnboardingApp.png";
   static String onboardingFindBrand = "assets/images/OnboardingFindBrand.png";
   static String onboardingExercise = "assets/images/OnboardingExercise.png";
+  static String clientOnboardingImage = "assets/images/clientOnboardingImage.png";
 
   // Create Brand Infro
   static String portadaCreateBrandIntro = "assets/images/PortadaCreateBrandInfo.png";

@@ -226,7 +226,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center                      ,
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         SizedBox(height: MediaQuery.of(context).size.height*0.17),
@@ -235,20 +235,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           children: <Widget>[
                             Center(
                               child: Image(
-                                image: AssetImage(Constants.onboardingApp),
+                                image: AssetImage(Constants.logoExtended),
                                 width: MediaQuery.of(context).size.width,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height*0.05),
                             Text(
-                              AppLocalizations.of(context)!.thankyouDownload,
-                              style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
-                            ),
-                            SizedBox(height: 15.0),
-                            Text(
                               AppLocalizations.of(context)!.wellcomeMessage,
                               style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                             ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.1),
                           ],
                         ),
                       ],
@@ -377,18 +373,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           children: <Widget>[
                             Center(
                               child: Image(
-                                image: AssetImage(Constants.onboardingApp),
+                                image: AssetImage(Constants.themeSystemImage),
                                 width: MediaQuery.of(context).size.width,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height*0.05),
                             Text(
-                              AppLocalizations.of(context)!.trainers,
+                              AppLocalizations.of(context)!.trainersOnboarding,
                               style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
                             ),
                             SizedBox(height: 15.0),
                             Text(
-                              AppLocalizations.of(context)!.trainerDescription,
+                              AppLocalizations.of(context)!.trainersOnboardingDesc,
                               style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                             ),
                           ],
@@ -408,18 +404,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           children: <Widget>[
                             Center(
                               child: Image(
-                                image: AssetImage(Constants.onboardingApp),
+                                image: AssetImage(Constants.clientOnboardingImage),
                                 width: MediaQuery.of(context).size.width,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height*0.05),
                             Text(
-                              AppLocalizations.of(context)!.clients,
+                              AppLocalizations.of(context)!.clientsOnboarding,
                               style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
                             ),
                             SizedBox(height: 15.0),
                             Text(
-                              AppLocalizations.of(context)!.clientDescription,
+                              AppLocalizations.of(context)!.clientsOnboardingDesc,
                               style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                             ),
                           ],

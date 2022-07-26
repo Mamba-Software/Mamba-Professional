@@ -1883,5 +1883,21 @@
   "thisEventAndRest": "Este y los eventos siguientes",
   "@thisEventAndRest": {
     "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboarding": "¡TODO en UNO!",
+  "@trainersOnboarding": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingDesc": "Centraliza tu negocio en una sola plataforma. Profesionaliza tu servicio para fidelizar a tus clientes, mejorando la gestión, organización y comunicación de tu marca fitness.",
+  "@trainersOnboardingDesc": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "clientsOnboarding": "Encuentra tu profesional",
+  "@clientsOnboarding": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "clientsOnboardingDesc": "Busca, compara y decide cuál es la marca fitness que mejor se adapta a ti. Únete a ella para poder disfrutar de su servicio y de un seguimiento personalizado.",
+  "@clientsOnboardingDesc": {
+    "description": "beforeEventBodyNotification message"
   }
 }
