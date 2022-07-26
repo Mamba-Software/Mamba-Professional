@@ -18,6 +18,7 @@ import 'package:mamba_castelldefels/Screens/MainApp/FirstTime.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
 import 'package:provider/provider.dart';
 
+import '../../Data/DataService/LibraryDataService.dart';
 import '../../Globals/Widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
 import '../MainApp/Mamba/Mamba.dart';
 
@@ -41,12 +42,18 @@ class _SplashScreenState extends State<SplashScreen> {
   // Data Base Access
   var _userDataService = new UserDataService();
   var _brandDataService = new BrandDataService();
+  var _libraryDataService = new LibraryDataService();
 
   @override
   initState() {
     super.initState();
     checkAndGetUserDetails();
+    initColorsList();
     //initDynamicLinks();
+  }
+
+  Future<void> initColorsList() async {
+    currentColors =  await _libraryDataService.getColors();
   }
 
   Future<void> initDynamicLinks() async {

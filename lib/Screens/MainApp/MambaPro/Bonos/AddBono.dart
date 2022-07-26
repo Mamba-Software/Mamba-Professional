@@ -8,13 +8,19 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Utils/MediaQuery/MediaQuery.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
+import '../../../../Data/LibraryModels/lColor.dart';
 import '../../../../Data/Models/Bono.dart';
+import '../../../../Data/Models/Condition.dart';
+import '../../../../Globals/Widgets/TopSnackBar/TopSnackBar.dart';
 
 class AddBono extends StatefulWidget {
+
   String brandId;
+
 
   AddBono({Key? key, required this.brandId}) : super(key: key);
 
@@ -26,8 +32,19 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
   // Acceso a Base de Datos
   var _brandDataService = new BrandDataService();
 
+  //Utils MediaQuery
+  var umq = new MediaQueryUtils();
+
+  //TopSnackBar
+  var _topsnackbar = new TopSnackBar();
+
+  var _lColor = new lColor();
+
   // Boolean Loading
   bool isLoading = false;
+
+  // Boolean days bono selected
+  List<bool> isSelectedDays = [true,false,false,false];
 
   // Boolean isUpdated
   bool isUpdated = false;
@@ -43,6 +60,13 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
   var titleController = TextEditingController();
   String? titleString;
 
+  var clasesController = TextEditingController();
+  var priceController = TextEditingController();
+  var expirationController = TextEditingController();
+  var weeklyController = TextEditingController();
+  var monthlyController = TextEditingController();
+  var daysSelectorController = TextEditingController();
+
   // Description Controller
   String? descriptionString;
   final formKeyInfo = GlobalKey<FormState>();
@@ -52,10 +76,17 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
 
   final values = <bool?>[false, false, false, false, false, false, false];
   int _value = 1;
+  String colorBono = " ";
+
 
   Bono bono = new Bono(
-    expiration: DateTime.now().add(const Duration(days: 3)),
-    color: Colors.transparent,
+    color:  "1",
+    isActive: true,
+    classes: 0,
+  );
+
+  Condition condition = new Condition(
+    expirationTime: 30,
   );
 
   String _selectedDate = '';
@@ -70,7 +101,7 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
     isLoading = false;
     var color;
     for (int i = 0; i < currentColors.length; ++i) {
-      color = Color(currentColors[i]);
+      color = Color(int.parse(currentColors[i].hexa!));
       colors.add(color);
     }
     _tabController = TabController(length: 3, vsync: this);
@@ -376,7 +407,7 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
                         icon: Container(),
                         label: Text(
                           _selectedIndex == 2
-                              ? AppLocalizations.of(context)!.bonos
+                              ? 'Crear bono'
                               : AppLocalizations.of(context)!.next,
                           style: Theme.of(context)
                               .textTheme
@@ -513,51 +544,81 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
                           ],
                         )),
                     Padding(
-                        padding: EdgeInsets.only(top: 0.0),
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.01),
+                        child: new Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            new Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                new Text(
+                                  'Bono actiu',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            new Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                new Checkbox(value: bono.isActive, onChanged:  setBonoActivation, checkColor: Theme.of(context).primaryColor, activeColor: Styles.mainColor,)
+                              ],
+                            ),
+                          ],
+                        )),
+                    Padding(
+                        padding: EdgeInsets.only(top: umq.height(context, 0.05)),
                         child: new Row(
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
                             new Flexible(
-                              child: GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Text('Escull un color'),
-                                          content: SingleChildScrollView(
-                                            child: BlockPicker(
-                                              availableColors: colors,
-                                              pickerColor: bono.color,
-                                              //default color
-                                              onColorChanged: (Color color) {
-                                                //on color picked
-                                                setState(() {
-                                                  bono.color = color;
-                                                  print(bono.color);
-                                                });
-                                              },
+                              child: Container(
+                                height: MediaQuery.of(context).size.width * 0.1,
+                                width: MediaQuery.of(context).size.width * 0.30,
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                child: new ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Color(int.parse(_lColor.getlColor(bono.color!).hexa!))),
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('Escull un color'),
+                                            content: SingleChildScrollView(
+                                              child: BlockPicker(
+                                                availableColors: colors,
+                                                pickerColor: Color(int.parse(_lColor.getlColor(bono.color!).hexa!)),
+                                                //default color
+                                                onColorChanged: (Color color) {
+                                                  //on color picked
+
+                                                  colorBono = getColorFromColorCode(color.toString());
+                                                },
+                                              ),
                                             ),
-                                          ),
-                                          actions: <Widget>[
-                                            ElevatedButton(
-                                              child: const Text('Fet'),
-                                              onPressed: () {
-                                                Navigator.of(context)
-                                                    .pop(); //dismiss the color picker
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      });
-                                },
-                                child: Container(
-                                  height: MediaQuery.of(context).size.width * 0.1,
-                                  width: MediaQuery.of(context).size.width * 0.30,
-                                  decoration: BoxDecoration(
-                                    color: bono.color,
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(10))),
+                                            actions: <Widget>[
+                                              ElevatedButton(
+                                                child: const Text('Fet'),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    bono.color = _lColor.getIdFromHexa(colorBono.toUpperCase());
+                                                  });
+                                                  Navigator.of(context)
+                                                      .pop(); //dismiss the color picker
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  },
                                   child: Text("Escull un color"),
                                 ),
                               ),
@@ -690,7 +751,126 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
     return Scaffold(
       body: SingleChildScrollView(
           child: Column(
-        children: [Text('Seleccionador de fecha')],
+        children: [
+          Form(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.05),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.03),
+                        child: new Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            new Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                new Text(
+                                  AppLocalizations.of(context)!.sessions,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )),
+                    Padding(
+                        padding: EdgeInsets.only(top: 0),
+                        child: new Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            new Flexible(
+                              child: new TextFormField(
+                                controller: clasesController,
+                                keyboardType: TextInputType.number,
+                                validator: (val) => val!.isEmpty
+                                    ? AppLocalizations.of(context)!.titleError
+                                    : null,
+                                onChanged: (val) {
+                                  setState(() {
+                                    bono.classes = int.parse(val);
+                                  });
+                                },
+                                style: Theme.of(context).textTheme.bodyText2,
+                                decoration: InputDecoration(
+                                  hintStyle:
+                                  Theme.of(context).textTheme.caption,
+                                  hintText:
+                                  AppLocalizations.of(context)!.titleHint,
+                                  border: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                ),
+                                enabled: true,
+                              ),
+                            ),
+                          ],
+                        )),
+                    Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.03),
+                        child: new Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            new Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                new Text(
+                                  'Precio',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )),
+                    Padding(
+                        padding: EdgeInsets.only(top: 0),
+                        child: new Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            new Flexible(
+                              child: new TextFormField(
+                                controller: priceController,
+                                keyboardType: TextInputType.number,
+                                onChanged: (val) {
+                                  setState(() {
+                                    bono.price = double.parse(val);
+                                  });
+                                },
+                                style: Theme.of(context).textTheme.bodyText2,
+                                decoration: InputDecoration(
+                                  hintStyle:
+                                  Theme.of(context).textTheme.caption,
+                                  hintText:
+                                  AppLocalizations.of(context)!.titleHint,
+                                  border: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                ),
+                                enabled: true,
+                              ),
+                            ),
+                          ],
+                        )),
+                  ]),
+            ),
+          ),
+          ],
       )),
       resizeToAvoidBottomInset: true,
     );
@@ -701,7 +881,161 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
       body: SingleChildScrollView(
           child: Column(
         children: [
-          Text('Aqui campos others'),
+          Form(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.05),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.03),
+                        child: new Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            new Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                new Text(
+                                  'Dias para expirar',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )),
+                    Padding(
+                        padding: EdgeInsets.only(top: umq.height(context, 0.02)),
+                        child: new Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            daysSelectoWidget(0, '30', false),
+                            SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                            daysSelectoWidget(1, '60', false),
+                            SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                            daysSelectoWidget(2, '90', false),
+                            SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                            daysSelectoWidget(3, '30', true),
+                          ],
+                        )),
+                    Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.03),
+                        child: new Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            new Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                new Text(
+                                  'Maximo numero de sesiones por semana',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )),
+                    Padding(
+                        padding: EdgeInsets.only(top: 0),
+                        child: new Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            new Flexible(
+                              child: new TextFormField(
+                                //controller: weeklyController,
+                                keyboardType: TextInputType.number,
+                                initialValue: bono.classes!.toString(),
+                                validator: (val) => val!.isEmpty
+                                    ? AppLocalizations.of(context)!.titleError
+                                    : null,
+                                onChanged: (val) {
+                                  setState(() {
+                                    condition.weeklySessions = int.parse(val);
+                                  });
+                                },
+                                style: Theme.of(context).textTheme.bodyText2,
+                                decoration: InputDecoration(
+                                  hintStyle:
+                                  Theme.of(context).textTheme.caption,
+                                  hintText:
+                                  AppLocalizations.of(context)!.titleHint,
+                                  border: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                ),
+                                enabled: true,
+                              ),
+                            ),
+                          ],
+                        )),
+                    Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.03),
+                        child: new Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            new Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                new Text(
+                                  'Maximo numero de classes por mes',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )),
+                    Padding(
+                        padding: EdgeInsets.only(top: 0),
+                        child: new Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            new Flexible(
+                              child: new TextFormField(
+                                //controller: monthlyController,
+                                keyboardType: TextInputType.number,
+                                initialValue: bono.classes.toString(),
+                                onChanged: (val) {
+                                  setState(() {
+                                    condition.monthlySessions = int.parse(val);
+                                  });
+                                },
+                                style: Theme.of(context).textTheme.bodyText2,
+                                decoration: InputDecoration(
+                                  hintStyle:
+                                  Theme.of(context).textTheme.caption,
+                                  hintText:
+                                  AppLocalizations.of(context)!.titleHint,
+                                  border: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                ),
+                                enabled: true,
+                              ),
+                            ),
+                          ],
+                        )),
+                  ]),
+            ),
+          ),
         ],
       )),
       resizeToAvoidBottomInset: true,
@@ -767,6 +1101,10 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
     }
   }
 
+  String getColorFromColorCode(String code){
+    return code.substring(6, 16);
+  }
+
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     /// The argument value will return the changed date as [DateTime] when the
     /// widget [SfDateRangeSelectionMode] set as single.
@@ -780,23 +1118,95 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
     /// The argument value will return the changed ranges as
     /// [List<PickerDateRange] when the widget [SfDateRangeSelectionMode] set as
     /// multi range.
-    setState(() {
-      if (args.value is PickerDateRange) {
-        //bono.activation = args.value.startDate;
-        bono.expiration = args.value.endDate ?? args.value.startDate;
-        // bono.expiration = DateFormat('dd/MM/yyyy').format(args.value.startDate) as DateTime?;
-        _range = '${DateFormat('dd/MM/yyyy').format(args.value.startDate)} -'
-            // ignore: lines_longer_than_80_chars
-            ' ${DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
-      }
-    });
   }
 
-  Future<void> _addBono() async {
+  void setBonoActivation(bool? activation) {
     setState(() {
-      isLoading = true;
+      bono.isActive = activation;
     });
-    _brandDataService.addBonoToBrand(widget.brandId, bono);
-    Navigator.pop(context);
+
+}
+
+Widget daysSelectoWidget(int index, String numberDays, bool customized)
+{
+  return GestureDetector(
+    onTap: () {
+      setState(() {
+        condition.expirationTime = int.parse(numberDays);
+        isSelectedDays[0] = false;
+        isSelectedDays[1] = false;
+        isSelectedDays[2] = false;
+        isSelectedDays[3] = false;
+        isSelectedDays[index] = true;
+      });
+    },
+      child: Container(
+        height: MediaQuery.of(context).size.width * 0.15,
+        width: MediaQuery.of(context).size.width * 0.2,
+        decoration: BoxDecoration(
+            border: Border.all(
+              color: isSelectedDays[index] == true? Styles.mainColor : Theme.of(context).primaryColor,
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        child: Align(
+          alignment: Alignment.center,
+          //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
+          child: customized? new TextFormField(
+            controller: daysSelectorController,
+            keyboardType: TextInputType.number,
+            textAlign: TextAlign.center,
+            onTap: () {
+              setState(() {
+                isSelectedDays[0] = false;
+                isSelectedDays[1] = false;
+                isSelectedDays[2] = false;
+                isSelectedDays[3] = false;
+                isSelectedDays[index] = true;
+              });
+            },
+            style: Theme.of(context).textTheme.bodyText2,
+            decoration: InputDecoration(
+              hintStyle:
+              Theme.of(context).textTheme.caption,
+              hintText:
+              'Personaliza',
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+            ),
+            enabled: true,
+          ) : Text(
+            numberDays,
+            style: Theme.of(context).textTheme.button,
+          ),
+        ),
+      ),
+  );
+}
+
+  Future<void> _addBono() async {
+    if(isSelectedDays[3] == true)
+    {
+      if(daysSelectorController.text.isNotEmpty) {
+        condition.expirationTime = int.parse(daysSelectorController.text);
+        setState(() {
+          isLoading = true;
+        });
+        _brandDataService.addBonoToBrand(widget.brandId, bono, condition);
+        Navigator.pop(context);
+      }
+      else {
+        _topsnackbar.topsnackbar(context, 'Los dias para expirar deben tener un valor', Colors.red);
+      }
+    }
+    else {
+      setState(() {
+        isLoading = true;
+      });
+      _brandDataService.addBonoToBrand(widget.brandId, bono, condition);
+      Navigator.pop(context);
+    }
   }
 }

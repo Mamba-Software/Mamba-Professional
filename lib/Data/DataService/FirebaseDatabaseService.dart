@@ -20,10 +20,12 @@ import 'package:mamba_castelldefels/Data/Models/Deprecated/Message.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Question.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:uuid/uuid.dart';
 
 import '../Models/Bono.dart';
+import '../Models/Condition.dart';
 
 // Firebase Service Class. All calls to Firebase are in this class.
 class FirebaseDatabaseService {
@@ -48,6 +50,7 @@ class FirebaseDatabaseService {
   String requests = isProduction ? 'Requests' : '7777 Requests';
   String notifications = isProduction ? 'Notifications' : '7777 Notifications';
   String rooms = isProduction ? 'Rooms' : '7777 Rooms';
+  String library = isProduction ? 'Library' : '7777 Library';
 
 
   Map<String, dynamic> toMapisMessageRead(String? id, bool? isMessageRead) {
@@ -2006,7 +2009,7 @@ class FirebaseDatabaseService {
   }
 
   //Add bono to brand
-  Future<void> addBonoToBrand(String brandId, Bono bono) async {
+  Future<void> addBonoToBrand(String brandId, Bono bono, Condition condition) async {
     var uid = Uuid().v4();
     await _firestore
         .collection(brands)
@@ -2015,17 +2018,28 @@ class FirebaseDatabaseService {
         .doc(uid)
         .set({
       "title": bono.title!,
-      "description": bono.description!,
+      "description": bono.description,
       "price": bono.price!,
       "sessions": bono.classes,
       "isActive": bono.isActive,
       "color": bono.color,
-      "expiration": bono.expiration,
-      "maxSessionPerWeek": bono.maxSessions,
       "compras": 0,
     }).catchError((err) {
       print(err);
     });
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(uid).collection('Conditions').doc('Conditions')
+        .set({
+      "expirationTime": condition.expirationTime,
+      "weeklySessions": condition.weeklySessions,
+      "monthlySessions": condition.monthlySessions,
+    }).catchError((err) {
+      print(err);
+    });
+
   }
 
   //Add bono request to brand
@@ -2097,6 +2111,27 @@ class FirebaseDatabaseService {
     await _firestore.collection(brands).doc(brandID).collection("Users").doc(userId).update({
       "favourites": favourites,
     });
+  }
+
+  //Colors
+
+  Future<List<lColor>> getColors() async {
+    List<lColor> colors = [];
+    try {
+      await _firestore.collection(library).doc('Colors')
+          .collection("Colors")
+          .get()
+          .then((snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          colors.add(lColor.fromObjectAllData(doc.id, doc));
+
+        }
+      });
+      return colors;
+    } catch (e) {
+      print(e.toString());
+      return colors;
+    }
   }
 
   Future<List<int>> getUserFavourites(String brandId, String userId) async {

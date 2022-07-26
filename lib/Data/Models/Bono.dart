@@ -13,10 +13,7 @@ class Bono {
   int? classes;
   bool? isActive;
   int? compras;
-  var color;
-  bool? bonoExpire;
-  DateTime? expiration;
-  int? maxSessions;
+  String? color;
 
 
   Bono({
@@ -28,9 +25,6 @@ class Bono {
     this.isActive,
     this.compras,
     this.color,
-    this.expiration,
-    this.maxSessions,
-    this.bonoExpire,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -46,8 +40,8 @@ class Bono {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('price')) {
       this.price = documentSnapshot.get("price");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('classes')) {
-      this.classes = documentSnapshot.get("classes");
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
+      this.classes = documentSnapshot.get("sessions");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isActive')) {
       this.isActive = documentSnapshot.get("isActive");
@@ -57,15 +51,6 @@ class Bono {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('color')) {
       this.color = documentSnapshot.get("color");
-    }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('expiration')) {
-      this.expiration = documentSnapshot.get("expiration");
-    }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('maxSessions')) {
-      this.maxSessions = documentSnapshot.get("maxSessions");
-    }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bonoExpire')) {
-      this.bonoExpire = documentSnapshot.get("bonoExpire");
     }
   }
 
@@ -81,8 +66,5 @@ class Bono {
     this.isActive = bono.isActive;
     this.compras = bono.compras;
     this.color = bono.color;
-    this.expiration = bono.expiration;
-    this.maxSessions = bono.maxSessions;
-    this.bonoExpire = bono.bonoExpire;
   }
 }

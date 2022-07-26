@@ -15,6 +15,7 @@ import '../../../../../../Globals/GlobalVars.dart';
 import '../../../../../../Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import '../../../../../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import '../../../../Data/DataService/UserDataService.dart';
+import '../../../../Data/LibraryModels/lColor.dart';
 import '../../../../Data/Models/BonoRequest.dart';
 import '../../../../Data/Models/Brand.dart';
 import '../../../../Data/Models/Usuario.dart';
@@ -41,6 +42,8 @@ class _BonosProState extends State<BonosPro> {
 
   //Mamba Coin
   MambaCoin _mambaCoin = new MambaCoin();
+
+  var _lColor = new lColor();
 
   // Bonos list
   List<Bono> bonosList = [];
@@ -173,7 +176,7 @@ class _BonosProState extends State<BonosPro> {
                 child: CircularImage(
                   size: MediaQuery.of(context).size.width * 0.15,
                   image: brand.logoUrl,
-                  color: Colors.green.shade200,
+                  color: Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
                   borderWidth: 1.0,
                 ),
               ),
