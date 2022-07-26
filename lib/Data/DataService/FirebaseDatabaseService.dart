@@ -1552,7 +1552,6 @@ class FirebaseDatabaseService {
         await _firestore.collection(events).doc(id).delete();
         // If isPrivate Delete From \Events\Private Events\Private Events Subcollection
         if (isPrivate) {
-          print("hola1");
           await _firestore
               .collection(events)
               .doc("Private Events")
@@ -1577,7 +1576,6 @@ class FirebaseDatabaseService {
             .delete();
         // If isPrivate Delete From Brands\Events\Private Events\Private Events Subcollection
         if (isPrivate) {
-          print("hola brands");
           await _firestore
               .collection(brands)
               .doc(currentBrand.id!)

@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 
 class SelectDateDialog extends StatefulWidget {
 
@@ -54,27 +58,47 @@ class _SelectDateDialogState extends State<SelectDateDialog> {
               ],
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.01),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
-                child: CupertinoTheme(
-                  data: CupertinoThemeData(
-                      textTheme: CupertinoTextThemeData(
-                        dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
-                      )
+            Container(
+              height: MediaQuery.of(context).size.height*0.24,
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width*0.15,
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
+                    child: Text(
+                        StringUtils().toCapitalized(DateFormat('EE', Localizations.localeOf(context).languageCode).format(pickedDate)),
+                        style: Theme.of(context).textTheme.bodyText1,
+                        textAlign: TextAlign.right
+                    ),
                   ),
-                  child: CupertinoDatePicker(
-                      mode: CupertinoDatePickerMode.date,
-                      initialDateTime: DateTime(widget.startDate.year, widget.startDate.month, widget.startDate.day, widget.startDate.hour, widget.startDate.minute),
-                      minimumDate: widget.onlyFuture ? (DateTime.now()).subtract(Duration(minutes: 1)): widget.startDate.subtract(Duration(days: 365*80)),
-                      maximumDate: widget.onlyFuture ? (DateTime.now()).add(Duration(days: 365*1)): DateTime(widget.startDate.year, 12, 31, 0, 0),
-                      maximumYear: DateTime.now().year+1,
-                      use24hFormat: true,
-                      onDateTimeChanged: (val) {
-                        pickedDate = val;
-                      }
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02, horizontal: MediaQuery.of(context).size.width*0.02),
+                      child: CupertinoTheme(
+                        data: CupertinoThemeData(
+                            textTheme: CupertinoTextThemeData(
+                              dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
+                            )
+                        ),
+                        child: CupertinoDatePicker(
+                            mode: CupertinoDatePickerMode.date,
+                            initialDateTime: DateTime(widget.startDate.year, widget.startDate.month, widget.startDate.day, widget.startDate.hour, widget.startDate.minute),
+                            minimumDate: widget.onlyFuture ? (DateTime.now()).subtract(Duration(minutes: 1)): widget.startDate.subtract(Duration(days: 365*80)),
+                            maximumDate: widget.onlyFuture ? (DateTime.now()).add(Duration(days: 365*1)): DateTime(widget.startDate.year, 12, 31, 0, 0),
+                            maximumYear: DateTime.now().year+1,
+                            use24hFormat: true,
+                            onDateTimeChanged: (val) {
+                              setState(() {
+                                pickedDate = val;
+                              });
+                            }
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
             Row(

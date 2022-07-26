@@ -1874,6 +1874,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     Navigator.pop(context, true);
   }
 
+  // Recurrent Events
+
   Future<void> _deleteRecurrentEventFunction() async {
     setState(() {
       isLoading = true;
