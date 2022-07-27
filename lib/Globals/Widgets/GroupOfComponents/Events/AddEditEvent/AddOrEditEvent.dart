@@ -206,6 +206,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
           title: AppLocalizations.of(context)!.selectDay,
           startDate: startDate,
           onlyFuture: true,
+          dateOfWeek: true,
         )
     );
     if (pickedDateTemp != null) {

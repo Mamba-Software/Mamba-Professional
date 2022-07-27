@@ -11,7 +11,8 @@ class SelectDateDialog extends StatefulWidget {
   String title;
   DateTime startDate;
   bool onlyFuture;
-  SelectDateDialog({Key? key, required this.title, required this.startDate, required this.onlyFuture}) : super(key: key);
+  bool dateOfWeek;
+  SelectDateDialog({Key? key, required this.title, required this.startDate, required this.onlyFuture, required this.dateOfWeek}) : super(key: key);
 
   @override
   _SelectDateDialogState createState() => _SelectDateDialogState();
@@ -58,7 +59,7 @@ class _SelectDateDialogState extends State<SelectDateDialog> {
               ],
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.01),
-            Container(
+            widget.dateOfWeek == true ? Container(
               height: MediaQuery.of(context).size.height*0.24,
               width: MediaQuery.of(context).size.width,
               child: Row(
@@ -87,7 +88,7 @@ class _SelectDateDialogState extends State<SelectDateDialog> {
                             initialDateTime: DateTime(widget.startDate.year, widget.startDate.month, widget.startDate.day, widget.startDate.hour, widget.startDate.minute),
                             minimumDate: widget.onlyFuture ? (DateTime.now()).subtract(Duration(minutes: 1)): widget.startDate.subtract(Duration(days: 365*80)),
                             maximumDate: widget.onlyFuture ? (DateTime.now()).add(Duration(days: 365*1)): DateTime(widget.startDate.year, 12, 31, 0, 0),
-                            maximumYear: DateTime.now().year+1,
+                            maximumYear:  widget.onlyFuture ? DateTime.now().year+1 : DateTime.now().year,
                             use24hFormat: true,
                             onDateTimeChanged: (val) {
                               setState(() {
@@ -99,6 +100,30 @@ class _SelectDateDialogState extends State<SelectDateDialog> {
                     ),
                   ),
                 ],
+              ),
+            ) : Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02, horizontal: MediaQuery.of(context).size.width*0.02),
+                child: CupertinoTheme(
+                  data: CupertinoThemeData(
+                      textTheme: CupertinoTextThemeData(
+                        dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
+                      )
+                  ),
+                  child: CupertinoDatePicker(
+                      mode: CupertinoDatePickerMode.date,
+                      initialDateTime: DateTime(widget.startDate.year, widget.startDate.month, widget.startDate.day, widget.startDate.hour, widget.startDate.minute),
+                      minimumDate: widget.onlyFuture ? (DateTime.now()).subtract(Duration(minutes: 1)): widget.startDate.subtract(Duration(days: 365*80)),
+                      maximumDate: widget.onlyFuture ? (DateTime.now()).add(Duration(days: 365*1)): DateTime(widget.startDate.year, 12, 31, 0, 0),
+                      maximumYear:  widget.onlyFuture ? DateTime.now().year+1 : DateTime.now().year,
+                      use24hFormat: true,
+                      onDateTimeChanged: (val) {
+                        setState(() {
+                          pickedDate = val;
+                        });
+                      }
+                  ),
+                ),
               ),
             ),
             Row(

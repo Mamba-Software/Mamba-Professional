@@ -97,6 +97,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           title: AppLocalizations.of(context)!.selectDateOfBirth,
           startDate: startDate,
           onlyFuture: false,
+          dateOfWeek: false,
         )
     );
     if (pickedDateTemp != null) {

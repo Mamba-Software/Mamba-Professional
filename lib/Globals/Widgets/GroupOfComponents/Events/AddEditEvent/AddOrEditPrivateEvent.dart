@@ -205,6 +205,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           title: AppLocalizations.of(context)!.selectDay,
           startDate: startDate,
           onlyFuture: true,
+          dateOfWeek: true,
         )
     );
     if (pickedDateTemp != null) {
