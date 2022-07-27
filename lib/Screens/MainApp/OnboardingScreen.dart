@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/DateTime/SelectDateTimeDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDateDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import '../../Data/DataService/BrandDataService.dart';
@@ -68,6 +68,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   bool nickOkay = false;
   bool nickUsed = false;
   // Date Of Birth
+  DateTime startDate = DateTime.now();
   TextEditingController startDateController = TextEditingController();
   String nullDate = "";
   bool errorDate = false;
@@ -89,15 +90,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     //isLoading = true;
   }
 
-  Future getDate() async {
+  Future selectDate() async {
     var pickedDateTemp =  await showCupertinoModalPopup(
         context: context,
-        builder: (_) => SelectDateTimeDialog(
-            title: AppLocalizations.of(context)!.selectDateOfBirth,
+        builder: (_) => SelectDateDialog(
+          title: AppLocalizations.of(context)!.selectDateOfBirth,
+          startDate: startDate,
+          onlyFuture: false,
+          dateOfWeek: false,
         )
     );
     if (pickedDateTemp != null) {
       setState(() {
+        startDate = pickedDateTemp;
         startDateController.text = DateTimeUtils().formatDateTimeToStringDDMMYYYY(pickedDateTemp, Localizations.localeOf(context).languageCode);
       });
     }
@@ -222,7 +227,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center                      ,
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         SizedBox(height: MediaQuery.of(context).size.height*0.17),
@@ -231,20 +236,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           children: <Widget>[
                             Center(
                               child: Image(
-                                image: AssetImage(Constants.onboardingApp),
+                                image: AssetImage(Constants.logoExtended),
                                 width: MediaQuery.of(context).size.width,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height*0.05),
                             Text(
-                              AppLocalizations.of(context)!.thankyouDownload,
-                              style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
-                            ),
-                            SizedBox(height: 15.0),
-                            Text(
                               AppLocalizations.of(context)!.wellcomeMessage,
                               style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                             ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.1),
                           ],
                         ),
                       ],
@@ -373,18 +374,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           children: <Widget>[
                             Center(
                               child: Image(
-                                image: AssetImage(Constants.onboardingApp),
+                                image: AssetImage(Constants.themeSystemImage),
                                 width: MediaQuery.of(context).size.width,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height*0.05),
                             Text(
-                              AppLocalizations.of(context)!.trainers,
+                              AppLocalizations.of(context)!.trainersOnboarding,
                               style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
                             ),
                             SizedBox(height: 15.0),
                             Text(
-                              AppLocalizations.of(context)!.trainerDescription,
+                              AppLocalizations.of(context)!.trainersOnboardingDesc,
                               style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                             ),
                           ],
@@ -404,18 +405,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           children: <Widget>[
                             Center(
                               child: Image(
-                                image: AssetImage(Constants.onboardingApp),
+                                image: AssetImage(Constants.clientOnboardingImage),
                                 width: MediaQuery.of(context).size.width,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height*0.05),
                             Text(
-                              AppLocalizations.of(context)!.clients,
+                              AppLocalizations.of(context)!.clientsOnboarding,
                               style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
                             ),
                             SizedBox(height: 15.0),
                             Text(
-                              AppLocalizations.of(context)!.clientDescription,
+                              AppLocalizations.of(context)!.clientsOnboardingDesc,
                               style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                             ),
                           ],
@@ -678,7 +679,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               if (!currentFocus.hasPrimaryFocus) {
                                                 currentFocus.unfocus();
                                               }
-                                              getDate();
+                                              selectDate();
                                             },
                                             child: Row(
                                               mainAxisSize: MainAxisSize.max,

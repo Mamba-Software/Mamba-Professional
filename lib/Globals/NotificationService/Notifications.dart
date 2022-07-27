@@ -11,7 +11,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandCalendarWidget.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
@@ -992,7 +992,7 @@ class _NotificationsState extends State<Notifications> {
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Text(
-                  AppLocalizations.of(context)!.userLeavesEventBrandSubtitle(event.joinedMembers.length.toString(), event.maxMembers.toString() ),
+                  AppLocalizations.of(context)!.userLeavesEventBrandSubtitle(event.numClients.toString(), event.maxMembers.toString() ),
                   style: Theme.of(context).textTheme.caption,
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),

@@ -11,9 +11,9 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
 class SelectClientsEvent extends StatefulWidget {
   List<Usuario> selectedUsers = [];
-  int maxClients = 0;
+  int? maxClients;
 
-  SelectClientsEvent({Key? key, required this.selectedUsers, required this.maxClients}) : super(key: key);
+  SelectClientsEvent({Key? key, required this.selectedUsers, this.maxClients}) : super(key: key);
 
   @override
   _SelectClientsEventState createState() => _SelectClientsEventState();
@@ -28,8 +28,6 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
   // Search Controller
   bool searchClicked = false;
   var searchController = TextEditingController();
-  // Selected Clients
-  var selectedClientsController = TextEditingController();
   // Members Page
   List<Usuario> allClients = [];
   List<Usuario> filteredClients = [];
@@ -167,7 +165,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                             }
                         ),
                       ),
-                      Container(
+                      widget.maxClients != null ? Container(
                         width: MediaQuery.of(context).size.width*0.09,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -182,6 +180,17 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                             ),
                             Text(
                               widget.maxClients.toString()+" )",
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 8),
+                            ),
+                          ],
+                        ),
+                      ) : Container(
+                        width: MediaQuery.of(context).size.width*0.09,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              "( "+selectedClients.length.toString()+" )",
                               style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 8),
                             ),
                           ],
@@ -253,7 +262,14 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                     selectedClients = selectedUsers;
                                   });
                                 } else {
-                                  if (selectedClients.length < widget.maxClients) {
+                                  if (widget.maxClients != null) {
+                                    if (selectedClients.length < widget.maxClients!) {
+                                      selectedUsers.add(user);
+                                      setState(() {
+                                        selectedClients = selectedUsers;
+                                      });
+                                    }
+                                  } else {
                                     selectedUsers.add(user);
                                     setState(() {
                                       selectedClients = selectedUsers;

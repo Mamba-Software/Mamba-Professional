@@ -764,8 +764,8 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                             ),
                           ),
                           isEditing ? Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold)) : Text(datetitle, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold)),
-                          !canJoin ? Padding(
-                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.06, left: MediaQuery.of(context).size.width*0.06),
+                          (!canJoin || event!.isPrivate!) ? Padding(
+                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.08, left: MediaQuery.of(context).size.width*0.08),
                             child: Container(),
                           ) :
                           Padding(
@@ -809,6 +809,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                               child: Column(
                                 children: [
                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Expanded(
                                         child: new TextField(
@@ -825,6 +826,42 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                             disabledBorder: InputBorder.none,
                                           ),
                                           textAlign: TextAlign.left,
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          color: Theme.of(context).backgroundColor,
+                                        ),
+                                        child: event!.isPrivate! ? Row(
+                                          children: [
+                                            Text(
+                                                AppLocalizations.of(context)!.private,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                                textAlign: TextAlign.right
+                                            ),
+                                            SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                            Icon(
+                                              Icons.lock_outlined,
+                                              color: Theme.of(context).primaryColor,
+                                              size: MediaQuery.of(context).size.width*0.05,
+                                            ),
+                                          ],
+                                        ) : Row(
+                                          children: [
+                                            Text(
+                                                AppLocalizations.of(context)!.group,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                                textAlign: TextAlign.right
+                                            ),
+                                            SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                            Icon(
+                                              Icons.groups,
+                                              color: Theme.of(context).primaryColor,
+                                              size: MediaQuery.of(context).size.width*0.05,
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
@@ -1139,7 +1176,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                     style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(width: 16),
-                                  !isEditing ? Row(
+                                  (event!.isPrivate! == false) ? Row(
                                     children: [
                                       Text(
                                         "( "+event!.numClients.toString(),
@@ -1154,7 +1191,14 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                         style: Theme.of(context).textTheme.bodyText2,
                                       ),
                                     ],
-                                  ) : Container(),
+                                  ) : Row(
+                                    children: [
+                                      Text(
+                                        "( "+event!.numClients.toString()+" )",
+                                        style: Theme.of(context).textTheme.bodyText2,
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),
@@ -1438,8 +1482,11 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                               localNotificationService.addEventLocalNotifications(context, event!.id!, false);
                               // Add To Data Base
                               await _eventDataService.addUserToEvent(event!.id!, currentUser.id!);
+                              // Update Events collection, so that Cloud Functions does not have to do it
+                              await _eventDataService.updateEventNumberMembers(event!.id!,(eventClients.length+1), eventTrainers.length);
+                              // Send Notification Service
                               _notificationService.userJoinEvent(currentUser.id!, event!.brandID!, event!.id!);
-                              await Future.delayed(const Duration(milliseconds: 3000));
+                              // Get New Event Info
                               await getEventInfo();
                               setState(() {
                                 isJoined = true;
@@ -1490,8 +1537,11 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                               localNotificationService.deleteEventLocalNotifications(event!.id!);
                               // Base de Dades
                               await _eventDataService.deleteUserFromEvent(event!.id!, currentUser.id!);
+                              // Update Events collection, so that Cloud Functions does not have to do it
+                              await _eventDataService.updateEventNumberMembers(event!.id!,(eventClients.length-1), eventTrainers.length);
+                              // Send Local Notifications
                               _notificationService.userLeaveEvent(currentUser.id!, event!.brandID!, event!.id!);
-                              await Future.delayed(const Duration(milliseconds: 3000));
+                              // Get New Event Info
                               await getEventInfo();
                               setState(() {
                                 isJoined = false;

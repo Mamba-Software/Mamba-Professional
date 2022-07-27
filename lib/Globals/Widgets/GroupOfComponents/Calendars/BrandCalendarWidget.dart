@@ -2,14 +2,16 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEvent.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
@@ -27,7 +29,7 @@ class BrandCalendarWidget extends StatefulWidget {
   _BrandCalendarWidgetState createState() => _BrandCalendarWidgetState();
 }
 
-class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
+class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   // Acceso a Base de Datos
   var _brandDataService = new BrandDataService();
   var _eventDataService = new EventDataService();
@@ -126,24 +128,26 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
     return Event();
   }
 
-  void _addEvent({DateTime? dateTimeClicked}) {
+  void _addEvent() {
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
-          builder: (context) => AddEvent(
+          builder: (context) => AddOrEditEvent(
             locale: Localizations.localeOf(context),
-            initialDateTime: dateTimeClicked ?? null,
           ),
         )
     );
   }
 
-  durationToString(double duration) {
-    String temp = "";
-    temp = duration.toStringAsFixed(2);
-    var hour = temp.split(".")[0];
-    var min = temp.split(".")[1];
-    return "${hour}h ${min}m ";
+  void _addPrivateEvent() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<String>(
+          builder: (context) => AddOrEditPrivateEvent(
+            locale: Localizations.localeOf(context),
+          ),
+        )
+    );
   }
 
   Widget _buildTitleFromDate(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
@@ -151,26 +155,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
       StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
       style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
     );
-    // Deprecated
-    if (_controller.view == CalendarView.month) {
-      return Text(
-        StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
-        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
-      );
-    } else {
-      // Day of the First Date
-      String dateTitleStart = DateFormat('dd MMMM yy', Localizations.localeOf(context).languageCode).format(dateTimeStart);
-      String dateStartDay = StringUtils().splitByChar(dateTitleStart, " ")[0];
-      // Day Month Year of the Last Date
-      String dateTitleEnd = DateFormat('dd MMMM yyyy', Localizations.localeOf(context).languageCode).format(dateTimeEnd);
-      // Format  the results
-      String dateTitle = dateStartDay + " - " + dateTitleEnd;
-      // Return the Title
-      return Text(
-          StringUtils().capitalizedAllWords(dateTitle),
-          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600)
-      );
-    }
   }
 
   @override
@@ -266,7 +250,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                     ],
                   ),
                 ),
-              )
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03)
             ],
           ),
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -344,13 +329,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                             leadingDatesTextStyle: Theme.of(context).textTheme.caption,
                           ),
                         ),
-                        onLongPress: (details) {
-                          if (canEdit) {
-                            if(details.date!.isAfter(DateTime.now())) {
-                              _addEvent(dateTimeClicked: details.date);
-                            }
-                          }
-                        },
                         onViewChanged: (ViewChangedDetails viewChangedDetails) {
                           Future.delayed(Duration.zero, () async {
                             setState(() {
@@ -386,7 +364,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                       width: details.bounds.width,
                                       padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
                                       decoration: BoxDecoration(
-                                        color: appointment.color.withOpacity(0.15),
+                                        color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(5),
                                         ),
@@ -397,18 +375,33 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                         children: [
                                           Row(
                                             children: [
+                                              Icon(
+                                                event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                                color: AppColors.white,
+                                                size: details.bounds.width*0.05,
+                                              ),
+                                              SizedBox(width: details.bounds.width*0.02,),
                                               Text(
                                                 event.title!,
-                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
                                                 textAlign: TextAlign.start,
                                               ),
-
                                             ],
                                           ),
-                                          Text(
-                                            DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                                            textAlign: TextAlign.start,
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                              Text(
+                                                "("+appointment.subject+")",
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -434,7 +427,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                       width: details.bounds.width,
                                       padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
                                       decoration: BoxDecoration(
-                                        color: appointment.color,
+                                        color: event.isPrivate! ?  AppColors.black : appointment.color,
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(5),
                                         ),
@@ -443,10 +436,20 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            event.title!,
-                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
-                                            textAlign: TextAlign.start,
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                                color: AppColors.white,
+                                                size: details.bounds.width*0.05,
+                                              ),
+                                              SizedBox(width: details.bounds.width*0.02,),
+                                              Text(
+                                                event.title!,
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ],
                                           ),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -489,13 +492,13 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                       height: details.bounds.height,
                                       padding: EdgeInsets.all(details.bounds.width*0.1),
                                       decoration: BoxDecoration(
-                                        color: appointment.color.withOpacity(0.2),
+                                        color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(5),
                                         ),
                                       ),
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
                                           AutoSizeText(
                                             event.title!,
@@ -504,6 +507,16 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                             wrapWords: false,
                                             minFontSize: 1,
                                             maxFontSize: 16,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                                color: AppColors.white,
+                                                size: details.bounds.width*0.2,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -527,9 +540,9 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                     child: Container(
                                       width: details.bounds.width,
                                       height: details.bounds.height,
-                                      padding: EdgeInsets.all(details.bounds.width*0.1),
+                                      padding: EdgeInsets.all(details.bounds.height*0.1),
                                       decoration: BoxDecoration(
-                                        color: appointment.color,
+                                        color: event.isPrivate! ? AppColors.black : appointment.color,
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(5),
                                         ),
@@ -545,16 +558,26 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                                             minFontSize: 1,
                                             maxFontSize: 16,
                                           ),
-                                          SizedBox(
-                                            width: details.bounds.width*0.4,
-                                            child: AutoSizeText(
-                                              appointment.subject,
-                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                                              textAlign: TextAlign.center,
-                                              wrapWords: false,
-                                              minFontSize: 1,
-                                              maxFontSize: 8,
-                                            ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                                color: AppColors.white,
+                                                size: details.bounds.width*0.2,
+                                              ),
+                                              SizedBox(
+                                                width: details.bounds.width*0.4,
+                                                child: AutoSizeText(
+                                                  appointment.subject,
+                                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                                  textAlign: TextAlign.center,
+                                                  wrapWords: false,
+                                                  minFontSize: 1,
+                                                  maxFontSize: 8,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -570,26 +593,91 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                 }
               }
           ) : LoadingViewPurple(),
-          floatingActionButton: canEdit ? Padding(
-            padding: EdgeInsets.all(20),
-            child: Container(
-              height: MediaQuery.of(context).size.width*0.15,
-              width: MediaQuery.of(context).size.width*0.15,
-              child: FloatingActionButton(
-                heroTag: "3",
-                onPressed: () {
-                  _addEvent();
-                },
-                backgroundColor: Theme.of(context).accentColor,
-                child: Icon(
-                  Icons.more_time,
-                  size: MediaQuery.of(context).size.width*0.06,
-                  color: AppColors.white,
+          floatingActionButton: whichFloatingActionButton(),
+      );
+  }
+
+  Widget whichFloatingActionButton() {
+    return canEdit ? Padding(
+      padding: EdgeInsets.all(20),
+      child: Container(
+        height: MediaQuery.of(context).size.width*0.15,
+        width: MediaQuery.of(context).size.width*0.15,
+        child: SpeedDial(
+          animatedIcon: AnimatedIcons.add_event,
+          foregroundColor: AppColors.white,
+          overlayColor: Theme.of(context).scaffoldBackgroundColor,
+          spacing: MediaQuery.of(context).size.height*0.02,
+          spaceBetweenChildren: MediaQuery.of(context).size.height*0.02,
+          children: [
+            SpeedDialChild(
+              child: Icon(
+                Icons.groups,
+              ),
+              elevation: 10,
+              backgroundColor: Theme.of(context).backgroundColor,
+              labelWidget: Container(
+                color: Colors.transparent,
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                height: MediaQuery.of(context).size.height*0.1,
+                width: MediaQuery.of(context).size.width*0.6,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                        AppLocalizations.of(context)!.groupEvent,
+                        style: Theme.of(context).textTheme.headline3,
+                        textAlign: TextAlign.right
+                    ),
+                    Text(
+                        AppLocalizations.of(context)!.groupEventDesc,
+                        style: Theme.of(context).textTheme.caption,
+                        textAlign: TextAlign.right
+                    ),
+                  ],
                 ),
               ),
+              onTap: () {
+                _addEvent();
+              }
             ),
-          ) : Container(), /// This trailing comma makes auto-formatting nicer for build methods.
-      );
+            SpeedDialChild(
+              child: Icon(
+                Icons.lock_outlined,
+              ),
+              elevation: 10,
+              backgroundColor: Theme.of(context).backgroundColor,
+              labelWidget: Container(
+                color: Colors.transparent,
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                height: MediaQuery.of(context).size.height*0.1,
+                width: MediaQuery.of(context).size.width*0.6,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                        AppLocalizations.of(context)!.privateEvent,
+                        style: Theme.of(context).textTheme.headline3,
+                        textAlign: TextAlign.right
+                    ),
+                    Text(
+                        AppLocalizations.of(context)!.privateEventDesc,
+                        style: Theme.of(context).textTheme.caption,
+                        textAlign: TextAlign.right
+                    ),
+                  ],
+                ),
+              ),
+              onTap: () {
+                _addPrivateEvent();
+              }
+            ),
+          ],
+        ),
+      ),
+    ) : Container();
   }
 
   List<TimeRegion> _getTimeRegions() {
@@ -657,18 +745,24 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
       var min = event.duration!.toStringAsFixed(2).split(".")[1];
       var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
       // Subject
-      var subject = "${event.numClients}/${event.maxMembers}";
-      // Colors
+      var subject;
       var color;
-      double numClients = double.parse(event.numClients.toString());
-      double maxMembers = double.parse(event.maxMembers.toString());
-      double bookedCapacity = numClients/maxMembers;
-      if(bookedCapacity <= 0.20) color = Colors.green;
-      else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = Color(0xFFA8C76C);
-      else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = Color(0xFFECE014);
-      else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) color = Colors.orangeAccent;
-      else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
-      else if(bookedCapacity == 1) color = Colors.red;
+      if (event.isPrivate!) {
+        subject = "${event.numClients}";
+        color = Colors.black;
+      } else {
+        subject = "${event.numClients}/${event.maxMembers}";
+        // Colors
+        double numClients = double.parse(event.numClients.toString());
+        double maxMembers = double.parse(event.maxMembers.toString());
+        double bookedCapacity = numClients/maxMembers;
+        if(bookedCapacity <= 0.20) color = Colors.green;
+        else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = Color(0xFFA8C76C);
+        else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = Color(0xFFECE014);
+        else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) color = Colors.orangeAccent;
+        else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
+        else if(bookedCapacity == 1) color = Colors.red;
+      }
       // Afegir percentatges de members al Event.
       tempAllAppointments.add(Appointment(
         id: event.id,
@@ -687,7 +781,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
   List<Event> documentsToEvents(List<DocumentSnapshot> documents) {
     List<Event> events = [];
     for(int i = 0; i < documents.length; i++) {
-      events.add(Event.fromObjectOnlyCoverData(documents[i].id, documents[i]));
+      Event evt = Event.fromObjectOnlyCoverData(documents[i].id, documents[i]);
+      if (currentUser.isTrainer!) {
+        events.add(evt);
+      } else {
+        if (!evt.isPrivate!) {
+          events.add(evt);
+        }
+      }
     }
     return events;
   }

@@ -1080,71 +1080,157 @@ class FirebaseDatabaseService {
 
     // Events Sesions
     // Add Event
-    Future<String> addEvent(String? brandID, String? title, String? description, Timestamp doneAt,
-        String? year, String? month, String? day, String? hour, String? minute,
-        double? duration, String? locationId, int? maxMembers,
-        var selectedTrainers) async {
+    Future<String> addEvent(Event event) async {
       var eventID = Uuid().v1();
       User? currentUser = await getCurrentUser();
-      Timestamp createdAt = Timestamp.fromDate(DateTime.now());
       try {
+        // Create Document in "\Events"
         await _firestore.collection(events).doc(eventID).set({
+          "isPrivate": event.isPrivate,
+          "eventGroupId": event.eventGroupId,
           "brandID": currentBrand.id,
           "creatorID": currentUser!.uid,
-          "title": title,
-          "description": description,
-          "doneAt": doneAt,
-          "createdAt": createdAt,
-          "year": year,
-          "month": month,
-          "day": day,
-          "hour": hour,
-          "minute": minute,
-          "duration": duration,
-          "locationId": locationId,
-          "numClients": 0,
-          "numTrainers": selectedTrainers.length,
-          "maxMembers": maxMembers,
-          "joinedMembers": [],
-          "selectedTrainers": selectedTrainers,
+          "title": event.title,
+          "description": event.description,
+          "doneAt": event.doneAt,
+          "createdAt": event.createdAt,
+          "year": event.year,
+          "month": event.month,
+          "day": event.day,
+          "hour": event.hour,
+          "minute": event.minute,
+          "duration": event.duration,
+          "locationId": event.locationId,
+          "numClients": event.numClients,
+          "numTrainers": event.numTrainers,
+          "maxMembers": event.maxMembers,
         });
+        // If Event is Private
+        // Add to Events/Private Events/PrivateEvents for Reporting Purposes
+        if (event.isPrivate!) {
+          await _firestore
+          .collection(events)
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventID).
+          set({
+            "isPrivate": event.isPrivate,
+            "eventGroupId": event.eventGroupId,
+            "brandID": currentBrand.id,
+            "creatorID": currentUser.uid,
+            "title": event.title,
+            "description": event.description,
+            "doneAt": event.doneAt,
+            "createdAt": event.createdAt,
+            "year": event.year,
+            "month": event.month,
+            "day": event.day,
+            "hour": event.hour,
+            "minute": event.minute,
+            "duration": event.duration,
+            "locationId": event.locationId,
+            "numClients": event.numClients,
+            "numTrainers": event.numTrainers,
+            "maxMembers": event.maxMembers,
+          });
+        }
+        // Set the Brand Document in "\Events\Brands"
         await _firestore.collection(events).doc(eventID)
             .collection("Brands")
             .doc(currentBrand.id)
             .set({
-          "name": currentBrand.name,
-          "logoUrl": currentBrand.logoUrl,
-        });
-        Location location = await this.getSingleLocation(locationId!);
+              "name": currentBrand.name,
+              "logoUrl": currentBrand.logoUrl,
+            });
+        // Set the Location Document in "\Events\Location"
+        Location location = await this.getSingleLocation(event.locationId!);
         await _firestore.collection(events).doc(eventID)
             .collection("Locations")
-            .doc(locationId)
+            .doc(event.locationId!)
             .set({
-          "description": location.description,
-          "longitude": location.longitude,
-          "latitude": location.latitude,
-        });
-        for (var i = 0; i < selectedTrainers.length; i++) {
-          Usuario user = await this.getUserDetails(selectedTrainers[i]);
-          await _firestore.collection(events).doc(eventID)
-              .collection("Users")
-              .doc(user.id)
-              .set({
-            "name": user.name,
-            "firstName": user.firstName,
-            "lastName": user.lastName,
-            "imageUrl": user.imageUrl,
-            "noImageUrl": user.noImageUrl,
-            "isTrainer": user.isTrainer,
-            "isPrivate": user.isPrivate,
-            "notificationToken": user.notificationToken,
-            "joinedAt": createdAt,
-          });
+              "description": location.description,
+              "longitude": location.longitude,
+              "latitude": location.latitude,
+            });
+        // Add Event To Brands/Events Subcollection To Avoid Cloud Function Doing It :D
+        // We do it like this to avoid Cold Start and make the User wait.
+        await _firestore
+            .collection(brands)
+            .doc(currentBrand.id!)
+            .collection("Events")
+            .doc(eventID).
+            set({
+              "isPrivate": event.isPrivate,
+              "title": event.title,
+              "doneAt": event.doneAt,
+              "year": event.year,
+              "month": event.month,
+              "day": event.day,
+              "hour": event.hour,
+              "minute": event.minute,
+              "duration": event.duration,
+              "numTrainers": event.numTrainers,
+              "numClients": event.numClients,
+              "maxMembers": event.maxMembers,
+            });
+        // If Event is Private
+        // Add to Brands/Events/Private Events/PrivateEvents for Reporting Purposes
+        if (event.isPrivate!) {
+          await _firestore
+            .collection(brands)
+            .doc(currentBrand.id!)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventID).
+            set({
+              "isPrivate": event.isPrivate,
+              "title": event.title,
+              "doneAt": event.doneAt,
+              "year": event.year,
+              "month": event.month,
+              "day": event.day,
+              "hour": event.hour,
+              "minute": event.minute,
+              "duration": event.duration,
+              "numTrainers": event.numTrainers,
+              "numClients": event.numClients,
+              "maxMembers": event.maxMembers,
+            });
         }
         return eventID;
       } catch (e) {
         print(e.toString());
         return "Error";
+      }
+    }
+
+    // Add Event
+    Future<dynamic> getRecurrentEventGroup(String eventGroupId) async {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      await _firestore
+          .collection(events)
+          .doc("Recurrent Events")
+          .collection("Recurrent Events")
+          .doc(eventGroupId)
+          .get();
+      return _documentSnapshot.get("groupEvents");
+    }
+
+    // Add Event
+    Future<void> addRecurrentEventGroups(String eventGroupId, List<String> eventIds) async {
+      try {
+        // Create Document in "\Event Groups"
+        await _firestore
+            .collection(events)
+            .doc("Recurrent Events")
+            .collection("Recurrent Events")
+            .doc(eventGroupId)
+            .set({
+              "groupEvents": eventIds
+            });
+      } catch (e) {
+        print(e.toString());
       }
     }
 
@@ -1157,6 +1243,18 @@ class FirebaseDatabaseService {
       } catch (e) {
         print(e);
         return Event();
+      }
+    }
+
+    // Get Single Event
+    Future<bool> checkIfEventExists(String eid) async {
+      DocumentSnapshot documentSnapshot = await _firestore.collection(events)
+          .doc(eid)
+          .get();
+      if (documentSnapshot.exists) {
+        return true;
+      } else {
+        return false;
       }
     }
 
@@ -1448,9 +1546,45 @@ class FirebaseDatabaseService {
     }
 
     // Delete Event
-    Future<void> deleteEvent(String id) async {
+    Future<void> deleteEvent(String id, [bool isPrivate = false]) async {
       try {
+        // Delete Event From \Events Collection
         await _firestore.collection(events).doc(id).delete();
+        // If isPrivate Delete From \Events\Private Events\Private Events Subcollection
+        if (isPrivate) {
+          await _firestore
+              .collection(events)
+              .doc("Private Events")
+              .collection("Private Events")
+              .doc(id)
+              .delete();
+        }
+        // Delete Event To Brands/Events Subcollection To Avoid Cloud Function Doing It :D
+        // We do it like this to avoid Cold Start and make the User wait.
+        await _firestore
+            .collection(brands)
+            .doc(currentBrand.id!)
+            .collection("Events")
+            .doc(id)
+            .delete();
+        // Delete Event To Events/Brand Subcollection To Avoid Cloud Function Doing It :D
+        await _firestore
+            .collection(events)
+            .doc(id)
+            .collection("Brands")
+            .doc(currentBrand.id!)
+            .delete();
+        // If isPrivate Delete From Brands\Events\Private Events\Private Events Subcollection
+        if (isPrivate) {
+          await _firestore
+              .collection(brands)
+              .doc(currentBrand.id!)
+              .collection("Events")
+              .doc("Private Events")
+              .collection("Private Events")
+              .doc(id)
+              .delete();
+        }
       } catch (e) {
         print(e.toString());
       }
@@ -1705,37 +1839,101 @@ class FirebaseDatabaseService {
     }
 
     // Update Event
-    Future<void> updateEvent(String? id,
-        String? title,
-        String? description,
-        String? year,
-        String? month,
-        String? day,
-        String? hour,
-        String? minute,
-        double? duration,
-        String? locationId,
-        int? maxMembers,
-        var selectedTrainers) async {
+    Future<void> updateEvent(Event event) async {
       try {
-        await _firestore.collection(events).doc(id).update({
-          "title": title,
-          "description": description,
-          "year": year,
-          "month": month,
-          "day": day,
-          "hour": hour,
-          "minute": minute,
-          "duration": duration,
-          "locationId": locationId,
-          "maxMembers": maxMembers,
-          "selectedTrainers": selectedTrainers,
+        await _firestore.collection(events).doc(event.id).update({
+          "title": event.title,
+          "description": event.description,
+          "doneAt": event.doneAt,
+          "createdAt": event.createdAt,
+          "year": event.year,
+          "month": event.month,
+          "day": event.day,
+          "hour": event.hour,
+          "minute": event.minute,
+          "duration": event.duration,
+          "locationId": event.locationId,
+          "numClients": event.numClients,
+          "numTrainers": event.numTrainers,
+          "maxMembers": event.maxMembers,
         });
+        // If Event is Private
+        // Update to Events/Private Events/PrivateEvents for Reporting Purposes
+        if (event.isPrivate!) {
+          await _firestore
+          .collection(events)
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(event.id!)
+          .update({
+            "title": event.title,
+            "description": event.description,
+            "doneAt": event.doneAt,
+            "createdAt": event.createdAt,
+            "year": event.year,
+            "month": event.month,
+            "day": event.day,
+            "hour": event.hour,
+            "minute": event.minute,
+            "duration": event.duration,
+            "locationId": event.locationId,
+            "numClients": event.numClients,
+            "numTrainers": event.numTrainers,
+            "maxMembers": event.maxMembers,
+          });
+        }
       } catch (e) {
         print(e.toString());
       }
     }
 
+    // Update Event Location
+    Future<void> updateEventNumberMembers(String eventId, int numberClients, int numberTrainers) async {
+      try {
+        // Delete Previous Location
+        await _firestore
+            .collection(events)
+            .doc(eventId)
+            .update({
+              "numClients": numberClients,
+              "numTrainers": numberTrainers,
+            });
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+
+    // Update Event Location
+    Future<void> updateRecurrentEventGroup(String eventGroupId, var eventIds) async {
+      try {
+        // Create Document in "\Event Groups"
+        await _firestore
+            .collection(events)
+            .doc("Recurrent Events")
+            .collection("Recurrent Events")
+            .doc(eventGroupId)
+            .update({
+              "groupEvents": eventIds
+            });
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+
+    // Update Event Location
+    Future<void> deleteRecurrentEventGroup(String eventGroupId) async {
+      try {
+        // Create Document in "\Event Groups"
+        await _firestore
+            .collection(events)
+            .doc("Recurrent Events")
+            .collection("Recurrent Events")
+            .doc(eventGroupId)
+            .delete();
+      } catch (e) {
+        print(e.toString());
+      }
+    }
 
     // Update Event Location
     Future<void> updateEventLocation(String eventId, String locationId, String previousLocation) async {

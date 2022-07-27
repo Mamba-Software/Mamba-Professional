@@ -965,6 +965,10 @@
   "@selectDayTime":{
     "description": "tuesdarLetter text"
   },
+  "selectDay": "Día",
+  "@selectDay":{
+    "description": "tuesdarLetter text"
+  },
   "selectDuration": "Duración",
   "@selectDuration":{
     "description": "tuesdarLetter text"
@@ -993,7 +997,7 @@
   "@nextTwoWeek":{
     "description": "Días text"
   },
-  "wholeMonth": "Todo el mes",
+  "wholeMonth": "Cuatro semanas",
   "@wholeMonth":{
     "description": "Días text"
   },
@@ -1054,12 +1058,16 @@
   "@designatedTrainers":{
     "description": "addEvent text"
   },
-  "addDesignatedClients": "Añadir clientes manualmente",
+  "addDesignatedClients": "Invitar clientes",
   "@addDesignatedClients":{
     "description": "addEvent text"
   },
   "noTrainerSelectedError": "No hay ningún entrenador asignado",
   "@noTrainerSelectedError":{
+    "description": "noTrainerSelectedError text"
+  },
+  "noClientSelectedError": "No hay ningún cliente invitado",
+  "@noClientSelectedError":{
     "description": "noTrainerSelectedError text"
   },
   "clientsSelectedError": "Hay más clientes que plazas disponibles",
@@ -1334,6 +1342,30 @@
   },
   "logo": "Logo",
   "@logo": {
+    "description": "Wellcome message"
+  },
+  "group": "Grupal",
+  "@group": {
+    "description": "Wellcome message"
+  },
+  "groupEvent": "Evento Grupal",
+  "@groupEvent": {
+    "description": "Wellcome message"
+  },
+  "groupEventDesc": "Define las plazas disponibles",
+  "@groupEventDesc": {
+    "description": "Wellcome message"
+  },
+  "private": "Privado",
+  "@private": {
+    "description": "Wellcome message"
+  },
+  "privateEvent": "Evento Privado",
+  "@privateEvent": {
+    "description": "Wellcome message"
+  },
+  "privateEventDesc": "Accesible solo por invitación",
+  "@privateEventDesc": {
     "description": "Wellcome message"
   },
   "noEventsToday": "Nada previsto para hoy ...",
@@ -1830,6 +1862,42 @@
   },
   "afterEventBodyNotification": "¿Qué te ha parecido? ¿Demasiado intensa? Comunica tu nivel de esfuerzo a tu entrenador",
   "@afterEventBodyNotification": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "deleteRecurrentEvent": "¿Cómo quieres quieres eliminar este evento recurrente?",
+  "@deleteRecurrentEvent": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "saveRecurrentEvent": "¿Cómo quieres editar este evento recurrente?",
+  "@saveRecurrentEvent": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "saveRecurrentEventDetails": "En caso de modificar más de un evento, el día del evento no serà modificado.",
+  "@saveRecurrentEventDetails": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "thisEvent": "Solo este evento",
+  "@thisEvent": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "thisEventAndRest": "Este y los eventos siguientes",
+  "@thisEventAndRest": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboarding": "¡TODO en UNO!",
+  "@trainersOnboarding": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingDesc": "Centraliza tu negocio en una sola plataforma. Profesionaliza tu servicio para fidelizar a tus clientes, mejorando la gestión, organización y comunicación de tu marca fitness.",
+  "@trainersOnboardingDesc": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "clientsOnboarding": "Encuentra tu profesional",
+  "@clientsOnboarding": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "clientsOnboardingDesc": "Busca, compara y decide cuál es la marca fitness que mejor se adapta a ti. Únete a ella para poder disfrutar de su servicio y de un seguimiento personalizado.",
+  "@clientsOnboardingDesc": {
     "description": "beforeEventBodyNotification message"
   }
 }

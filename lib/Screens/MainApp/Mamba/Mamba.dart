@@ -63,8 +63,6 @@ class _MambaState extends State<Mamba> {
     // If App in Foreground.
     FirebaseMessaging.onMessage.listen((message) {
       print("App in Foreground Notification Trigger HomePage");
-      print("route ... ");
-      print(message.data["route"]);
       ReceivedNotification notif = ReceivedNotification(
         id: DateTime.now().millisecondsSinceEpoch ~/1000,
         title: message.notification!.title,
@@ -197,34 +195,6 @@ class _MambaState extends State<Mamba> {
     localNotificationService.onNotifications.stream.listen(
         (payload) => localNotificationService.onClickedNotification(context, payload!)
     );
-  }
-
-  void handleNotificationOnClick(BuildContext context, String? payload) {
-    print("NOTIFICATION CLICKED BY USER");
-    if (payload != null) {
-      if (payload == "SplashScreen1") {
-        String routeFromMessage = payload.substring(0, payload.length - 1);;
-        currentIndex = int.parse(payload[payload.length-1]);
-        Navigator.of(context).pushNamedAndRemoveUntil(routeFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
-      } else {
-        if (ModalRoute.of(context)!.isCurrent) {
-          print("Top Page, Moving to Notifications Page");
-          currentIndex = int.parse(payload[payload.length-1]);
-          if (currentIndex == 2) {
-            Navigator.of(context).pushNamedAndRemoveUntil("Notifications", (Route<dynamic> route) => false, arguments: currentIndex);
-          } else if (currentIndex == 3) {
-            Navigator.of(context).pushNamedAndRemoveUntil("Chat", (Route<dynamic> route) => false, arguments: currentIndex);
-          } else {
-            pageController.jumpToPage(currentIndex);
-          }
-        } else {
-          print("Not in Home Page, Moving to Splash Screen");
-          String payloadFromMessage = payload.substring(0, payload.length - 1);;
-          currentIndex = int.parse(payload[payload.length-1]);
-          Navigator.of(context).pushNamedAndRemoveUntil(payloadFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
-        }
-      }
-    }
   }
 
   @override

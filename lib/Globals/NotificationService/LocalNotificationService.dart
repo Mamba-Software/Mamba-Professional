@@ -133,10 +133,11 @@ class LocalNotificationService {
         android: getAndroidNotificationDetails(),
         iOS: getIOSNotificationDetails()
     );
-    // Getting DateTimeTZ from DateTime scheduleNotifTime
+    // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
     final location = tz.getLocation(timeZoneName!);
     final scheduledDate = tz.TZDateTime.from(notification.firesAt!, location);    
     // Get Event
+    print(notification.eventId!);
     Event event = await _eventDataService.getSingleEvent(notification.eventId!);
     String eventTimeTime = StringUtils().hourMinutesToString(int.parse(event.hour!), int.parse(event.minute!));
     // Check with Type of Notification
@@ -175,12 +176,16 @@ class LocalNotificationService {
     // Two types of Notifications:
     //      LocalNotifications only send String payload
     //      Remote Firebase Notifications we send the whole Notification with Arguments
-    print("onClickedNotification. Paylod....");
+    print("onClickedNotification. Payload....");
     print(payload);
     switch (payload) {
       case "SplashScreen":
-        currentIndex = 0;
-        await Navigator.of(context).pushNamedAndRemoveUntil("SplashScreen", (Route<dynamic> route) => false, arguments: currentIndex);
+        if (ModalRoute.of(context)?.settings.name == "Mamba") {
+          pageController.jumpToPage(0);
+        } else {
+          currentIndex = 0;
+          await Navigator.of(context).pushNamedAndRemoveUntil("SplashScreen", (Route<dynamic> route) => false, arguments: currentIndex);
+        }
         break;
       case "Notifications":
         await Navigator.of(context).pushNamed("Notifications", arguments: 0);
@@ -238,6 +243,13 @@ class LocalNotificationService {
         _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
         print("Removing Fired Notification "+notif.id.toString());
       }
+      bool eventExists = await _eventDataService.checkIfEventExists(notif.eventId!);
+      if (eventExists == false) {
+        // Find index in Local Notifications
+        firebaseNotificationsTemp.remove(notif);
+        _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
+        print("Removing False Notification "+notif.id.toString());
+      }
     }
     print(firebaseNotificationsTemp.length.toString()+ " Firebase notifications left...");
     // Compare the ones left to fire with Local Device Notifications
@@ -292,7 +304,7 @@ class LocalNotificationService {
         android: getAndroidNotificationDetails(),
         iOS: getIOSNotificationDetails()
     );
-    // Getting DateTimeTZ from DateTime scheduleNotifTime
+    // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
     final location = tz.getLocation(timeZoneName!);
     final scheduledDate = tz.TZDateTime.from(notification.firesAt!, location);
     // Add Notification Firebase
@@ -309,6 +321,8 @@ class LocalNotificationService {
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
     );
   }
+
+  // Local Notification Current User
 
   Future<void> addEventLocalNotifications(BuildContext context, String eventId, bool? isTrainer) async {
     // Defining Platform Channel Specifics
@@ -339,7 +353,7 @@ class LocalNotificationService {
         createdAt: Timestamp.now(),
         firesAt: afterDate,
       );
-      // Getting DateTimeTZ from DateTime scheduleNotifTime
+      // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
       final location = tz.getLocation(timeZoneName!);
       final scheduledDate = tz.TZDateTime.from(notificationAfter.firesAt!, location);
       // Add Notification Firebase
@@ -371,7 +385,7 @@ class LocalNotificationService {
       createdAt: Timestamp.now(),
       firesAt: beforeDate,
     );
-    // Getting DateTimeTZ from DateTime scheduleNotifTime
+    // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
     final location = tz.getLocation(timeZoneName!);
     final scheduledDate = tz.TZDateTime.from(notificationBefore.firesAt!, location);
     // Add Notification Firebase
@@ -401,6 +415,63 @@ class LocalNotificationService {
     }
   }
 
+  // Local Notification Other User. Do it Remotely, aka Firebase
 
+  Future<void> addRemoteEventLocalNotifications(BuildContext context, String eventId, String userId, bool isTrainer) async {
+    // Getting Event Data
+    Event event = await _eventDataService.getSingleEvent(eventId);
+    DateTime startDate = DateTime(
+      int.parse(event.year!),
+      int.parse(event.month!),
+      int.parse(event.day!),
+      int.parse(event.hour!),
+      int.parse(event.minute!),
+    );
+    // Send Feedback Notification To Clients
+    if (isTrainer == false) {
+      // Schedule Before Notification
+      DateTime afterDate = startDate.add(Duration(minutes: 1));
+      // Notification 1 minute after
+      ReceivedNotification notificationAfter = ReceivedNotification(
+        id: DateTime.now().millisecondsSinceEpoch ~/1000,
+        title: AppLocalizations.of(context)!.afterEventTitleNotification,
+        body: AppLocalizations.of(context)!.afterEventBodyNotification,
+        payload: "F-"+event.id!,
+        createdAt: Timestamp.now(),
+        firesAt: afterDate,
+      );
+      // Add Notification Firebase
+      _userDataService.addLocalNotification(userId, notificationAfter);
+      // To make sure not the same Timestamp
+      await Future.delayed(Duration(seconds: 1));
+      print("Feedback Event Notification Added");
+    }
+
+    // Schedule Before Notification
+    DateTime beforeDate = startDate.subtract(Duration(hours: 1));
+    String eventTimeTime = StringUtils().hourMinutesToString(startDate.hour, startDate.minute);
+    // Notification one hour before
+    ReceivedNotification notificationBefore = ReceivedNotification(
+      id: DateTime.now().millisecondsSinceEpoch ~/1000,
+      title: AppLocalizations.of(context)!.beforeEventTitleNotification(event.title!, eventTimeTime),
+      body: AppLocalizations.of(context)!.beforeEventBodyNotification,
+      payload: event.id!,
+      createdAt: Timestamp.now(),
+      firesAt: beforeDate,
+    );
+    // Add Notification Firebase
+    _userDataService.addLocalNotification(userId, notificationBefore);
+    print("Reminder Event Notification Added");
+  }
+
+  Future<void> deleteRemoteEventLocalNotifications(String eventId, String userId) async {
+    // Find Notifications under this Event Id.
+    List<ReceivedNotification> eventNotifications = await _userDataService.findEventLocalNotification(userId, eventId);
+    // Delete the ones that have been fired
+    for (int i = 0; i < eventNotifications.length; i++) {
+      ReceivedNotification notif = eventNotifications[i];
+      _userDataService.deleteLocalNotification(userId, notif.id!.toString());
+    }
+  }
 
 }

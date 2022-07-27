@@ -27,7 +27,7 @@ import 'package:resize/resize.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
 import 'Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
-import 'Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
+import 'Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 
 // Declaring Instance of AppThemes();
 AppThemes _appThemes = AppThemes();

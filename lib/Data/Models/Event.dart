@@ -9,10 +9,13 @@ import 'Usuario.dart';
 
 class Event {
   String? id;
+  String? eventGroupId;
   String? creatorID;
   String? brandID;
+  bool? isPrivate;
   String? title;
   String? description;
+  Timestamp? doneAt;
   Timestamp? createdAt;
   String? year;
   String? month;
@@ -33,10 +36,13 @@ class Event {
 
   Event({
     this.id,
+    this.eventGroupId,
     this.creatorID,
     this.brandID,
+    this.isPrivate,
     this.title,
     this.description,
+    this.doneAt,
     this.createdAt,
     this.year,
     this.month,
@@ -56,17 +62,28 @@ class Event {
 
   Event.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('eventGroupId')) {
+      this.eventGroupId = documentSnapshot.get("eventGroupId");
+    }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('creatorID')) {
       this.creatorID = documentSnapshot.get("creatorID").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('brandID')) {
       this.brandID = documentSnapshot.get("brandID").toString();
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isPrivate')) {
+      this.isPrivate = documentSnapshot.get("isPrivate");
+    } else {
+      this.isPrivate = false;
+    }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
       this.title = documentSnapshot.get("title").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('description')) {
       this.description = documentSnapshot.get("description").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('doneAt')) {
+      this.doneAt = documentSnapshot.get("doneAt");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('createdAt')) {
       this.createdAt = documentSnapshot.get("createdAt");
@@ -111,8 +128,16 @@ class Event {
 
   Event.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
     this.id = documentId;
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isPrivate')) {
+      this.isPrivate = documentSnapshot.get("isPrivate");
+    } else {
+      this.isPrivate = false;
+    }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
       this.title = documentSnapshot.get("title").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('doneAt')) {
+      this.doneAt = documentSnapshot.get("doneAt");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('createdAt')) {
       this.createdAt = documentSnapshot.get("createdAt");
