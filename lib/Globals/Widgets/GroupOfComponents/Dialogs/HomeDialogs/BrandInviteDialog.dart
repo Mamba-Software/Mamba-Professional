@@ -142,7 +142,7 @@ class _BrandInviteDialogState extends State<BrandInviteDialog> {
                       icon: !isBodyLoading ? Icon(Icons.check_circle_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,) : Center(
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width * 0.05,
-                          height: MediaQuery.of(context).size.height * 0.03,
+                          height: MediaQuery.of(context).size.width * 0.05,
                           child: CircularProgressIndicator(
                             color: AppColors.white,
                             strokeWidth: 2.5,
