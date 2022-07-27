@@ -58,7 +58,7 @@ class AppUpdateDialog extends StatelessWidget {
                               SizedBox(width: MediaQuery.of(context).size.width*0.01),
                               Text(
                                 AppLocalizations.of(context)!.mandatoryUpdate,
-                                style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5, color: AppColors.white),
                                 textAlign: TextAlign.center,
                               ),
                             ],

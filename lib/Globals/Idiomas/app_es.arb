@@ -1736,7 +1736,7 @@
   "@findBrandTrainerText": {
     "description": "membersOfBrand message"
   },
-  "updateAppTitle": "!Nueva versión de MAMBA disponible!",
+  "updateAppTitle": "!Nueva versión disponible!",
   "@updateAppTitle": {
     "description": "membersOfBrand message"
   },
