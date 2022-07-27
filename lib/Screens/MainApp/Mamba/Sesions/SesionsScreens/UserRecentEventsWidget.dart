@@ -227,13 +227,13 @@ class _UserRecentEventsWidgetState extends State<UserRecentEventsWidget> {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
+        SizedBox(height: MediaQuery.of(context).size.height*0.01),
         Container(
             width: MediaQuery.of(context).size.width*0.25,
             child: Image.asset(Constants.emptyCalendar)
         ),
         SizedBox(height: MediaQuery.of(context).size.height*0.005),
         Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
-        SizedBox(height: MediaQuery.of(context).size.height*0.12),
       ],
     );
   }

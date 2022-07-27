@@ -14,9 +14,9 @@ class SendRequestConfirmationDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.all(20),
+      insetPadding: EdgeInsets.all(MediaQuery.of(context).size.height*0.02),
       child: Container(
-        padding: EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.05, bottom: MediaQuery.of(context).size.height*0.02, left: MediaQuery.of(context).size.height*0.01, right: MediaQuery.of(context).size.height*0.01),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -30,7 +30,7 @@ class SendRequestConfirmationDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 24.0, right: 10, left: 10),
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.09, right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -41,7 +41,7 @@ class SendRequestConfirmationDialog extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -93,7 +93,7 @@ class SendRequestConfirmationDialog extends StatelessWidget {
             ),
             Positioned(
                 bottom: 0,
-                top: -150,
+                top: -MediaQuery.of(context).size.height*0.12,
                 child: Column(
                   children: <Widget>[
                     CircularImage(

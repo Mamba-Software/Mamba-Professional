@@ -5,10 +5,10 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
 // IS PRODUCTION?
-bool isProduction = true;
+bool isProduction = false;
 
 // App Version
-var appVersion = "MAMBA v0.0.8";
+var appVersion = "MAMBA v0.0.9";
 
 // App
 var androidGooglePlayUrl = "https://play.google.com/store/apps/details?id=com.mamba.mambastyleapp";
@@ -45,7 +45,7 @@ int currentIndex = 0;
 PageController pageController = PageController(initialPage: currentIndex);
 
 // Dynamic Links Path
-var brandPath;
+var dynamicLinkBrandId;
 
 
 

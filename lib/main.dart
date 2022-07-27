@@ -1,20 +1,22 @@
 import 'dart:async';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Providers/FirebaseAnalyticsProvider.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppThemes/AppThemes.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/ChatCore.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
+import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventFeedback.dart';
 import 'package:provider/provider.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
@@ -24,8 +26,16 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:resize/resize.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
+import 'Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
+import 'Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
+
 // Declaring Instance of AppThemes();
 AppThemes _appThemes = AppThemes();
+
+// Initialize the [FlutterLocalNotificationsPlugin] package.
+late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+// Create a [AndroidNotificationChannel] for heads up notifications
+late AndroidNotificationChannel channel;
 
 // BackGroundNotificationHandler
 Future<void> _backgroundMessageHandler(RemoteMessage message) async {
@@ -34,7 +44,7 @@ Future<void> _backgroundMessageHandler(RemoteMessage message) async {
 
 // Starting app function. After initialization, we define the global providers:
 // - Language Provider: To change the Language of the App.
-void main() async {
+Future<void> main() async {
   await runZonedGuarded(() async {
     // Initialize App
     WidgetsFlutterBinding.ensureInitialized();
@@ -43,20 +53,10 @@ void main() async {
     timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
     // Firebase Messaging Back Ground Message Handler
     FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
-    //Get dynamic links on open app
-    PendingDynamicLinkData? initialLink;
-    try {
-      initialLink = await FirebaseDynamicLinks.instance.getInitialLink();
-      if(initialLink != null) brandPath = initialLink.link;
-    } catch (e) {
-      initialLink = null;
-    }
+    // Firebase Dynamic Links
+    DynamicLinkUtils().retrieveDynamicLink();
+    // Firebase Crashlytics
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-    /* Configurint Google Maps Widget
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
-    }
-     */
     // Run App
     runApp(
       MultiProvider(
@@ -80,19 +80,44 @@ void main() async {
 
 }
 
-Future<void> _testAsyncErrorOnInit() async {
-  Future<void>.delayed(const Duration(seconds: 2), () async {
-    try {
-      final List<int> list = <int>[];
-      print(list[100]);
-    } catch (error, stackTrace) {
-      await FirebaseCrashlytics.instance.recordError(error, stackTrace, reason: 'as an example of non-fatal error');
-    }
-  });
+class Mamba extends StatefulWidget {
+  const Mamba({Key? key}) : super(key: key);
+
+  @override
+  _MambaState createState() => _MambaState();
 }
 
-// Launching the Splash Screen
-class Mamba extends StatelessWidget {
+class _MambaState extends State<Mamba> with WidgetsBindingObserver {
+
+  var _dynamicLinkUtils = new DynamicLinkUtils();
+  Timer? _timerLink;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _timerLink = new Timer(
+        const Duration(milliseconds: 1000), () {
+            _dynamicLinkUtils.retrieveDynamicLink();
+        },
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
+    if (_timerLink != null) {
+      _timerLink?.cancel();
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer3 <LanguageProvider, ThemeProvider, FirebaseAnalyticsProvider> (
@@ -123,10 +148,41 @@ class Mamba extends StatelessWidget {
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 home: SplashScreen(),
-                routes: {
-                  "SplashScreen": (_) => SplashScreen(),
-                  "Notifications": (_) => Notifications(),
-                  "Chat": (_) => ChatCore(),
+                onGenerateRoute: (RouteSettings settings) {
+                  final args = settings.arguments;
+                  switch (settings.name) {
+                    case 'SplashScreen':
+                      return CupertinoPageRoute(
+                          builder: (_) => SplashScreen(),
+                          settings: RouteSettings(name: 'SplashScreen'),
+                      );
+                    case 'Notifications':
+                      return CupertinoPageRoute(
+                          builder: (_) => Notifications(),
+                          settings: RouteSettings(name: 'Notifications'),
+                      );
+                    case 'Chat':
+                      return CupertinoPageRoute(
+                          builder: (_) => ChatCore(),
+                          settings: RouteSettings(name: 'ChatCore'),
+                      );
+                    case 'EventPage':
+                      String eventId = args as String;
+                      return CupertinoPageRoute(
+                          builder: (_) => EventPage(
+                            eventId: eventId,
+                          ),
+                          settings: RouteSettings(name: 'EventPage'),
+                      );
+                    case 'EventFeedbackPage':
+                      String eventId = args as String;
+                      return CupertinoPageRoute(
+                          builder: (_) => EventFeedback(
+                            eventId: eventId,
+                          ),
+                          settings: RouteSettings(name: 'EventFeedback'),
+                      );
+                  }
                 },
               );
             },

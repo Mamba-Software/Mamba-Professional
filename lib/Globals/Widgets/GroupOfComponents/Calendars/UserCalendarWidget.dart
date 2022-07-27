@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
@@ -43,10 +43,9 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
   // Dies de la semana que el entrenador no treballa
   List<int> nonWorkDays = [];
   // Horari
-  double? _startHour;
-  double? _endHour;
-  // Descansos
-  DateTime dateJoined = DateTime.now();
+  double _startHour = 8;
+  double _endHour = 22;
+  DateTime dateJoined = DateFormat('dd-MM-yyyy').parse(currentUser.dateJoined!).subtract(Duration(days: 365));
   // Events From Brand
   List<Event> eventsList = [];
   List<Appointment> allAppointments = <Appointment>[];
@@ -108,9 +107,11 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
       displayDateTimeStart = dateTime.subtract(Duration(days: currentDay - 1));
       displayDateTimeEnd = displayDateTimeStart.add(Duration(days: 6));
     }
-    dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
-    _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
-    _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
+    if (_brand.id != null) {
+      dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
+      _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
+      _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
+    }
     Future.delayed(const Duration(milliseconds: 1000), () {
       setState(() {
         isLoading = false;
@@ -139,26 +140,6 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
       StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
       style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
     );
-    // Deprecated
-    if (_controller.view == CalendarView.month) {
-      return Text(
-        StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
-        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
-      );
-    } else {
-      // Day of the First Date
-      String dateTitleStart = DateFormat('dd MMMM yy', Localizations.localeOf(context).languageCode).format(dateTimeStart);
-      String dateStartDay = StringUtils().splitByChar(dateTitleStart, " ")[0];
-      // Day Month Year of the Last Date
-      String dateTitleEnd = DateFormat('dd MMMM yyyy', Localizations.localeOf(context).languageCode).format(dateTimeEnd);
-      // Format  the results
-      String dateTitle = dateStartDay + " - " + dateTitleEnd;
-      // Return the Title
-      return Text(
-          StringUtils().capitalizedAllWords(dateTitle),
-          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600)
-      );
-    }
   }
 
   @override
@@ -254,7 +235,8 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                     ],
                   ),
                 ),
-              )
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03)
             ],
           ),
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -305,8 +287,8 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                           timelineAppointmentHeight: -1,
                           timeIntervalHeight: -1,
                           timeIntervalWidth: 55,
-                          startHour: _startHour!-1,
-                          endHour:  _endHour!+1,
+                          startHour: _startHour-1,
+                          endHour:  _endHour+1,
                           timeFormat: 'HH',
                           dayFormat: 'E',
                           dateFormat: 'd',
@@ -367,7 +349,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                       width: details.bounds.width,
                                       padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
                                       decoration: BoxDecoration(
-                                        color: appointment.color.withOpacity(0.15),
+                                        color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(5),
                                         ),
@@ -378,18 +360,33 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                         children: [
                                           Row(
                                             children: [
+                                              Icon(
+                                                event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                                color: AppColors.white,
+                                                size: details.bounds.width*0.05,
+                                              ),
+                                              SizedBox(width: details.bounds.width*0.02,),
                                               Text(
                                                 event.title!,
-                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
                                                 textAlign: TextAlign.start,
                                               ),
-
                                             ],
                                           ),
-                                          Text(
-                                            DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                                            textAlign: TextAlign.start,
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                              Text(
+                                                "("+appointment.subject+")",
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -415,7 +412,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                       width: details.bounds.width,
                                       padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
                                       decoration: BoxDecoration(
-                                        color: appointment.color,
+                                        color: event.isPrivate! ?  AppColors.black : appointment.color,
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(5),
                                         ),
@@ -424,15 +421,35 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            event.title!,
-                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
-                                            textAlign: TextAlign.start,
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                                color: AppColors.white,
+                                                size: details.bounds.width*0.05,
+                                              ),
+                                              SizedBox(width: details.bounds.width*0.02,),
+                                              Text(
+                                                event.title!,
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ],
                                           ),
-                                          Text(
-                                            DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                                            textAlign: TextAlign.start,
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                              Text(
+                                                "("+appointment.subject+")",
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -460,13 +477,13 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                       height: details.bounds.height,
                                       padding: EdgeInsets.all(details.bounds.width*0.1),
                                       decoration: BoxDecoration(
-                                        color: appointment.color.withOpacity(0.2),
+                                        color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(5),
                                         ),
                                       ),
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
                                           AutoSizeText(
                                             event.title!,
@@ -475,6 +492,16 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                             wrapWords: false,
                                             minFontSize: 1,
                                             maxFontSize: 16,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                                color: AppColors.white,
+                                                size: details.bounds.width*0.2,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -500,7 +527,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                       height: details.bounds.height,
                                       padding: EdgeInsets.all(details.bounds.width*0.1),
                                       decoration: BoxDecoration(
-                                        color: appointment.color,
+                                        color: event.isPrivate! ? AppColors.black : appointment.color,
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(5),
                                         ),
@@ -516,16 +543,26 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                             minFontSize: 1,
                                             maxFontSize: 16,
                                           ),
-                                          SizedBox(
-                                            width: details.bounds.width*0.4,
-                                            child: AutoSizeText(
-                                              appointment.subject,
-                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                                              textAlign: TextAlign.center,
-                                              wrapWords: false,
-                                              minFontSize: 1,
-                                              maxFontSize: 8,
-                                            ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                                color: AppColors.white,
+                                                size: details.bounds.width*0.2,
+                                              ),
+                                              SizedBox(
+                                                width: details.bounds.width*0.4,
+                                                child: AutoSizeText(
+                                                  appointment.subject,
+                                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                                  textAlign: TextAlign.center,
+                                                  wrapWords: false,
+                                                  minFontSize: 1,
+                                                  maxFontSize: 8,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -546,44 +583,67 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
 
   List<TimeRegion> _getTimeRegions() {
     final List<TimeRegion> regions = <TimeRegion>[];
-    // Breaks
-    for (var i=2; i < _brand.workShift.length ; i+=2) {
-      var start = _brand.workShift[i];
-      var startHour = int.parse(start.toStringAsFixed(2).split(".")[0]);
-      var startMin = int.parse(start.toStringAsFixed(2).split(".")[1]);
-      var end = _brand.workShift[i+1];
-      var endHour = int.parse(end.toStringAsFixed(2).split(".")[0]);
-      var endMin = int.parse(end.toStringAsFixed(2).split(".")[1]);
-      DateTime inActiveHoursStart = DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHour, startMin, 0);
-      DateTime inActiveHoursEnd = DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHour, endMin, 0);
+    if (_brand.id != null) {
+      // Breaks
+      for (var i=2; i < _brand.workShift.length ; i+=2) {
+        var start = _brand.workShift[i];
+        var startHour = int.parse(start.toStringAsFixed(2).split(".")[0]);
+        var startMin = int.parse(start.toStringAsFixed(2).split(".")[1]);
+        var end = _brand.workShift[i+1];
+        var endHour = int.parse(end.toStringAsFixed(2).split(".")[0]);
+        var endMin = int.parse(end.toStringAsFixed(2).split(".")[1]);
+        DateTime inActiveHoursStart = DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHour, startMin, 0);
+        DateTime inActiveHoursEnd = DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHour, endMin, 0);
+        regions.add(TimeRegion(
+          enablePointerInteraction: false,
+          startTime: inActiveHoursStart,
+          endTime: inActiveHoursEnd,
+          color: Colors.grey.withOpacity(0.3),
+          recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+        ));
+      }
+      // Hora Inactiva Matí
+      var startHourWS = int.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
+      var startMinWS = int.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[1]);
       regions.add(TimeRegion(
         enablePointerInteraction: false,
-        startTime: inActiveHoursStart,
-        endTime: inActiveHoursEnd,
+        startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS-1, 0, 0),
+        endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS, startMinWS, 0),
+        color: Colors.grey.withOpacity(0.3),
+        recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+      ));
+      // Hora Inactiva Nit
+      var endHourWS = int.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
+      var endMinWS = int.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[1]);
+      regions.add(TimeRegion(
+        enablePointerInteraction: false,
+        startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS, endMinWS, 0),
+        endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS+1, 0, 0),
+        color: Colors.grey.withOpacity(0.3),
+        recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+      ));
+    } else {
+      // Hora Inactiva Matí
+      var startHourWS = int.parse(_startHour.toStringAsFixed(2).split(".")[0]);
+      var startMinWS = int.parse(_startHour.toStringAsFixed(2).split(".")[1]);
+      regions.add(TimeRegion(
+        enablePointerInteraction: false,
+        startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS-1, 0, 0),
+        endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS, startMinWS, 0),
+        color: Colors.grey.withOpacity(0.3),
+        recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
+      ));
+      // Hora Inactiva Nit
+      var endHourWS = int.parse(_endHour.toStringAsFixed(2).split(".")[0]);
+      var endMinWS = int.parse(_endHour.toStringAsFixed(2).split(".")[1]);
+      regions.add(TimeRegion(
+        enablePointerInteraction: false,
+        startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS, endMinWS, 0),
+        endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS+1, 0, 0),
         color: Colors.grey.withOpacity(0.3),
         recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
       ));
     }
-    // Hora Inactiva Matí
-    var startHourWS = int.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
-    var startMinWS = int.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[1]);
-    regions.add(TimeRegion(
-      enablePointerInteraction: false,
-      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS-1, 0, 0),
-      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, startHourWS, startMinWS, 0),
-      color: Colors.grey.withOpacity(0.3),
-      recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
-    ));
-    // Hora Inactiva Nit
-    var endHourWS = int.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
-    var endMinWS = int.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[1]);
-    regions.add(TimeRegion(
-      enablePointerInteraction: false,
-      startTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS, endMinWS, 0),
-      endTime: DateTime(dateJoined.year, dateJoined.month, dateJoined.day-7, endHourWS+1, 0, 0),
-      color: Colors.grey.withOpacity(0.3),
-      recurrenceRule: 'FREQ=DAILY;INTERVAL=1',
-    ));
     return regions;
   }
 
@@ -609,18 +669,24 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
       var min = event.duration!.toStringAsFixed(2).split(".")[1];
       var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
       // Subject
-      var subject = "${event.numClients}/${event.maxMembers}";
-      // Colors
+      var subject;
       var color;
-      double numClients = double.parse(event.numClients.toString());
-      double maxMembers = double.parse(event.maxMembers.toString());
-      double bookedCapacity = numClients/maxMembers;
-      if(bookedCapacity <= 0.20) color = Colors.green;
-      else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = Color(0xFFA8C76C);
-      else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = Color(0xFFECE014);
-      else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) color = Colors.orangeAccent;
-      else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
-      else if(bookedCapacity == 1) color = Colors.red;
+      if (event.isPrivate!) {
+        subject = "${event.numClients}";
+        color = Colors.black;
+      } else {
+        subject = "${event.numClients}/${event.maxMembers}";
+        // Colors
+        double numClients = double.parse(event.numClients.toString());
+        double maxMembers = double.parse(event.maxMembers.toString());
+        double bookedCapacity = numClients/maxMembers;
+        if(bookedCapacity <= 0.20) color = Colors.green;
+        else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = Color(0xFFA8C76C);
+        else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = Color(0xFFECE014);
+        else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) color = Colors.orangeAccent;
+        else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
+        else if(bookedCapacity == 1) color = Colors.red;
+      }
       // Afegir percentatges de members al Event.
       tempAllAppointments.add(Appointment(
         id: event.id,

@@ -70,7 +70,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
                       color: Theme.of(context).accentColor
                   ),
                   onRatingUpdate: (rating) {
-                    userHasAnsweredFeedback(rating.toInt());
+                    userHasAnsweredFeedback(rating);
                   }
               ),
             ),
@@ -199,12 +199,12 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
     );
   }
 
-  void userHasAnsweredFeedback(int value) {
+  void userHasAnsweredFeedback(double value) {
     var limitDateToAnswer = eventDate.add(Duration(days: 7));
     print(widget.event.id!);
     if (DateTime.now().isBefore(limitDateToAnswer)) {
       // Database
-      _eventDataService.updateEventFeedback(widget.event.id!, currentUser.id!, value);
+      //_eventDataService.updateEventFeedback(widget.event.id!, currentUser.id!, value);
       print(widget.event.id!);
       // Send Analytics
       if (currentUser.testGroup == "A") {
@@ -235,7 +235,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
     eventHourString = DateFormat('Hm', Localizations.localeOf(context).languageCode).format(eventDate);
     return Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.all(20),
+        insetPadding: EdgeInsets.all(MediaQuery.of(context).size.height*0.02),
         child: Container(
           height: MediaQuery.of(context).size.height*0.47,
           width: MediaQuery.of(context).size.width*0.9,

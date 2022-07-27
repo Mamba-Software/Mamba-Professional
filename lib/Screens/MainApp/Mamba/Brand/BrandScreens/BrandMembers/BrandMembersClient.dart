@@ -13,7 +13,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileVie
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/Chat.dart';
+import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:shimmer/shimmer.dart';
 

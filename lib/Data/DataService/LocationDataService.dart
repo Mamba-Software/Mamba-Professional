@@ -7,7 +7,7 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Message.dart';
-import 'package:mamba_castelldefels/Data/Models/NotificationEvent.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Question.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';

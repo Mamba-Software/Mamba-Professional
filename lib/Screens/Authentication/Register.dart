@@ -214,7 +214,7 @@ class _RegisterState extends State<Register> {
                                 width: MediaQuery.of(context).size.width * 0.06,
                                 height: MediaQuery.of(context).size.height * 0.03,
                                 child: CircularProgressIndicator(
-                                  color: Theme.of(context).primaryColor,
+                                  color: AppColors.black,
                                   strokeWidth: 2.5,
                                 ),
                               ),

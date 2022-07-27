@@ -8,8 +8,6 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Admin/AdminTool.dart';
 import 'package:mamba_castelldefels/Screens/Admin/AdminFeedBack.dart';
 
-import '../MainApp/Home/Perfil/PerfilModals/UserFeedBack.dart';
-
 
 class Admin extends StatefulWidget {
   const Admin({Key? key}) : super(key: key);
@@ -121,8 +119,8 @@ class EachList extends StatelessWidget{
         );
         break;
       case 3:
-        //var result = await _script.migrateEventsDataMarch24th();
-        //print("RESULT: "+result.toString());
+        var result = await _script.getStatistics();
+        print("RESULT: "+result.toString());
         break;
 
     }

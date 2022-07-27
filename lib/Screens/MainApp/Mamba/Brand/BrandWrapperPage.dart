@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPageClient.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPageTrainer.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/CalendarView/Events/ViewEventClient.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandPage.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/NoBrandPage.dart';
 
