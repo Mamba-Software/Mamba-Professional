@@ -1840,7 +1840,7 @@
   "@beforeMovingOn": {
     "description": "beforeMovingOn message"
   },
-  "beforeEventTitleNotification": "⚠️ \uD83C\uDFCB️\u200D♀ {event} a las {horas} \uD83C\uDFCB️\u200D♀ ⚠️ ",
+  "beforeEventTitleNotification": "⚠️ \uD83C\uDFCB️\u200D {event} a las {horas} \uD83C\uDFCB️\u200D ⚠️ ",
   "@beforeEventTitleNotification": {
     "description": "beforeEventBodyNotification message",
     "placeholders": {
