@@ -27,7 +27,6 @@ class Constants {
   static String locationCreateBrandIntro = "assets/images/LocationCreateBrandIntro.png";
   static String horarioCreateBrandIntro = "assets/images/HorarioCreateBrandIntro.png";
 
-
   // Event Background Pictures
   static String eventBackground = "assets/images/Eventbackground.jpg";
   static String eventBackground1 = "assets/images/Eventbackground1.jpg";
