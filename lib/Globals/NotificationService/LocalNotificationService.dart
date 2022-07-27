@@ -339,11 +339,15 @@ class LocalNotificationService {
       int.parse(event.hour!),
       int.parse(event.minute!),
     );
-
     // Send Feedback Notification To Clients
     if (isTrainer == false) {
+      var temp  = event.duration!.toStringAsFixed(2);
+      var hour = temp.split(".")[0];
+      var min = temp.split(".")[1];
+      int hourNumber = int.parse(hour);
+      int minNumber = int.parse(min) + 1;
       // Schedule Before Notification
-      DateTime afterDate = startDate.add(Duration(minutes: 1));
+      DateTime afterDate = startDate.add(Duration(hours: hourNumber, minutes: minNumber));
       // Notification 1 minute after
       ReceivedNotification notificationAfter = ReceivedNotification(
         id: DateTime.now().millisecondsSinceEpoch ~/1000,
@@ -429,8 +433,13 @@ class LocalNotificationService {
     );
     // Send Feedback Notification To Clients
     if (isTrainer == false) {
-      // Schedule Before Notification
-      DateTime afterDate = startDate.add(Duration(minutes: 1));
+      var temp  = event.duration!.toStringAsFixed(2);
+      var hour = temp.split(".")[0];
+      var min = temp.split(".")[1];
+      int hourNumber = int.parse(hour);
+      int minNumber = int.parse(min) + 1;
+      // Schedule After Notification
+      DateTime afterDate = startDate.add(Duration(hours: hourNumber, minutes: minNumber));
       // Notification 1 minute after
       ReceivedNotification notificationAfter = ReceivedNotification(
         id: DateTime.now().millisecondsSinceEpoch ~/1000,
