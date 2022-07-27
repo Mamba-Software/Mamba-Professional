@@ -88,7 +88,6 @@ class _HomepageState extends State<Homepage> {
       await getUserPendingRequests();
     }
     if (mounted) {
-      await Future.delayed(Duration(milliseconds: 500));
       setState(() {
         isLoading = false;
       });

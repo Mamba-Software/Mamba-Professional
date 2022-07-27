@@ -42,12 +42,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _currentPage = 0;
   final int _numPages = 4;
   final PageController _pageController = PageController(initialPage: 0);
-  final ScrollController _scrollController = ScrollController();
-  bool getStarted = false;
-  // Onboarding Process
-  int _currentPageOnboarding = 0;
-  final int _numPagesOnboarding = 3;
-  final PageController _pageControllerOnboarding = PageController(initialPage: 0);
   // Page 1: OnBoarding
   // Form Key
   final _formKey = GlobalKey<FormState>();
@@ -111,11 +105,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
     File? temp = await ImageUtils().pickImage();
-    _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: Duration(seconds: 1),
-        curve: Curves.easeIn
-    );
     setState(() {
       _image = temp;
     });
