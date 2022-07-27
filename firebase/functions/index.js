@@ -2067,7 +2067,7 @@ exports.changeMessageStatus = functions
                       body: authorUserDoc.firstName + ' ' + authorUserDoc.lastName + ': ' + message.text,
                   },
                   data: {
-                    route: "SplashScreen3",
+                    route: "Chat",
                   },
                 };
              } else {
@@ -2077,7 +2077,7 @@ exports.changeMessageStatus = functions
                      body: message.text,
                    },
                    data: {
-                     route: "SplashScreen3",
+                     route: "Chat",
                    },
                 };
              }
@@ -4019,7 +4019,7 @@ exports.zzzzChangeMessageStatus = functions
                       body: authorUserDoc.firstName + ' ' + authorUserDoc.lastName + ': ' + message.text,
                   },
                   data: {
-                    route: "SplashScreen3",
+                    route: "Chat",
                   },
                 };
              } else {
@@ -4029,7 +4029,7 @@ exports.zzzzChangeMessageStatus = functions
                      body: message.text,
                    },
                    data: {
-                     route: "SplashScreen3",
+                     route: "Chat",
                    },
                 };
              }
