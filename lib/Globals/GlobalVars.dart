@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 bool isProduction = true;
 
 // App Version
-var appVersion = "MAMBA v0.0.9";
+var appVersion = "MAMBA v0.0.10";
 
 // App
 var androidGooglePlayUrl = "https://play.google.com/store/apps/details?id=com.mamba.mambastyleapp";
