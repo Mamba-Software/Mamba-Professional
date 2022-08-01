@@ -52,12 +52,8 @@
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Need to access your camera to capture a photo add and update profile picture.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open and in the background.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app needs access to location when in the background.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open.</string>
+	<string>This app needs access to location when open to be able to recommend the closest fitness brand to the user.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need to access your photo library to select a photo add and update profile picture</string>
 	<key>UIBackgroundModes</key>
@@ -87,10 +83,8 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>FirebaseDynamicLinksCustomDomains</key>
-    <array>
-        <string>https://mambastyleapp.page.link/brand</string>
-    </array>
-    <key>FirebaseDeepLinkPasteboardRetrievalEnabled</key>
-    <string>NO</string>
+	<array>
+		<string>https://mambastyleapp.page.link/brand</string>
+	</array>
 </dict>
 </plist>
