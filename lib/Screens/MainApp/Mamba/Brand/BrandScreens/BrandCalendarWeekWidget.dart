@@ -44,6 +44,8 @@ class _BrandCalendarWeekWidgetState extends State<BrandCalendarWeekWidget> {
       for (var e in eventListTemp) {
         if (e.isPrivate == false) eventsList.add(e);
       }
+    } else {
+      eventsList = eventListTemp;
     }
     setState(() {
       isLoading = false;
