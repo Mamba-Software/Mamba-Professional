@@ -1532,6 +1532,7 @@ exports.userJoinsEvent = functions
         .doc(userId)
         .collection("Events")
         .doc(eventId).set({
+          "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,

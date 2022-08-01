@@ -161,7 +161,7 @@ class LocalNotificationService {
       _notificationsPlugin.zonedSchedule(
           notification.id!,
           AppLocalizations.of(context)!.beforeEventTitleNotification(event.title!, eventTimeTime),
-          AppLocalizations.of(context)!.afterEventBodyNotification,
+          AppLocalizations.of(context)!.beforeEventBodyNotification,
           scheduledDate,
           platformChannelSpecifics,
           payload: notification.payload,
