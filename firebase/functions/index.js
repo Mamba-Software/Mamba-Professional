@@ -12,7 +12,7 @@ const db = admin.firestore();
 
 // Daily Notification For Events
 exports.scheduledDailyFunction = functions
-   .region("europe-west1")
+   .region("europe-west1")  
    .pubsub
    .schedule('every day 7:00')
    .timeZone('Europe/Madrid')
@@ -76,7 +76,7 @@ exports.scheduledDailyFunction = functions
                             body: "⏰ Hoy tienes 1 sesión prevista. Empiezas a las "+firstEventDoc.hour+":"+minutes,
                           },
                           data: {
-                            route: "SplashScreen0",
+                            route: "SplashScreen",
                           },
                         };
                     } else {
@@ -86,7 +86,7 @@ exports.scheduledDailyFunction = functions
                             body: "⏰ Avui tens 1 sessió prevista. Comences a les "+firstEventDoc.hour+":"+minutes,
                           },
                           data: {
-                            route: "SplashScreen0",
+                            route: "SplashScreen",
                           },
                         };
                     }
@@ -190,6 +190,7 @@ exports.newUserAddsTestGroup = functions
       if (numberUsers % 2 == 0) {
         testGroup = "B"
       }
+      // Update Firebase
       await db
        .collection("Users")
        .doc(userId)
@@ -268,7 +269,7 @@ exports.userUpdatesCoverData = functions
             "notificationToken": after.notificationToken,
           });
         }
-        // Update the Users Subcollection in Brands
+        // Update the Users Subcollection in Events
         const userEventsSnapshot = await db.collection("Users").doc(userId).collection("Events").get();
         functions.logger.log(
             "User Events Num =",
@@ -433,6 +434,18 @@ exports.eventUpdatesCoverData = functions
           "Add Event To Location",
           after.locationId,
         );
+        // Update Private Event
+        if (after.isPrivate == true) {                 
+           await db
+          .collection("Locations")
+          .doc(before.locationId)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .delete();
+        }
+        // Add Event to New Location
         await db
         .collection("Locations")
         .doc(after.locationId)
@@ -448,7 +461,29 @@ exports.eventUpdatesCoverData = functions
           "numTrainers": numTrainers,
           "numClients": numClients,
           "maxMembers": after.maxMembers,
-        });
+        });        
+        // Update Private Event
+        if (after.isPrivate == true) {                 
+           await db
+          .collection("Locations")
+          .doc(after.locationId)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .set({
+            "title": after.title,
+            "year": after.year,
+            "month": after.month,
+            "day": after.day,
+            "hour": after.hour,
+            "minute": after.minute,
+            "duration": after.duration,
+            "numTrainers": numTrainers,
+            "numClients": numClients,
+            "maxMembers": after.maxMembers,
+          });
+        }
         functions.logger.log(
           "DONE",
         );
@@ -482,6 +517,7 @@ exports.eventUpdatesCoverData = functions
             "Event Users Num =",
             eventUsersSnapshot.size,
           );
+        // Update the Event Subcollection in Users
         for (var i in eventUsersSnapshot.docs) {
           const id = eventUsersSnapshot.docs[i].id;
           await db
@@ -498,7 +534,27 @@ exports.eventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
-          });
+          });          
+          // Update Private Event
+          if (after.isPrivate == true) {                 
+             await db
+            .collection("Users")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "title": after.title,
+              "year": after.year,
+              "month": after.month,
+              "day": after.day,
+              "hour": after.hour,
+              "minute": after.minute,
+              "duration": after.duration,
+              "maxMembers": after.maxMembers,
+            });
+          }
         }
         // Update the Event Subcollection in Brands
         const eventBrandsSnapshot = await db.collection("Events").doc(eventId).collection("Brands").get();
@@ -522,7 +578,27 @@ exports.eventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
-          });
+          });                    
+          // Update Private Event
+          if (after.isPrivate == true) {                 
+             await db
+            .collection("Brands")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "title": after.title,
+              "year": after.year,
+              "month": after.month,
+              "day": after.day,
+              "hour": after.hour,
+              "minute": after.minute,
+              "duration": after.duration,
+              "maxMembers": after.maxMembers,
+            });
+          }
         }
         // Update the Event Subcollection in Locations
         const eventLocationsSnapshot = await db.collection("Events").doc(eventId).collection("Locations").get();
@@ -547,6 +623,26 @@ exports.eventUpdatesCoverData = functions
             "duration": after.duration,
             "maxMembers": after.maxMembers,
           });
+          // Update Private Event
+          if (after.isPrivate == true) {                 
+             await db
+            .collection("Locations")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "title": after.title,
+              "year": after.year,
+              "month": after.month,
+              "day": after.day,
+              "hour": after.hour,
+              "minute": after.minute,
+              "duration": after.duration,
+              "maxMembers": after.maxMembers,
+            });
+          }
         }
       }
       return null;
@@ -620,7 +716,6 @@ exports.locationUpdatesCoverData = functions
       return null;
     });
 
-
 // User Joins Brand
 exports.userJoinsBrand = functions
     .region("europe-west1")
@@ -655,7 +750,7 @@ exports.userJoinsBrand = functions
           brandDoc,
         );
 
-      // Get Data of the Room
+      // Get Data of the Brand Room
       const roomSnapshot = await db.collection("Rooms").doc(brandDoc.roomId).get();
       const roomDoc = roomSnapshot.data();
 
@@ -668,15 +763,18 @@ exports.userJoinsBrand = functions
        );
       roomDoc.userIds.push(userId);
 
+      // Get Data of the Brand Room
       if (roomDoc.lastMessages != undefined) {
         metadataMessage = roomDoc.lastMessages[0].metadata;
         metadataMessage[userId] = "delivered";
+        // Updates all messages so that they are delivered for new user.
         await db.doc("Rooms" + "/" + brandDoc.roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
           metadata: metadataMessage,
           status: "delivered",
         })
       }
 
+      // Creates metadata for new user and adds it.  
       metadataRoom = roomDoc.metadata;
       metadataRoom["trainer" + userId] = userDoc.isTrainer;
       metadataRoom["active" + userId] = false;
@@ -685,7 +783,7 @@ exports.userJoinsBrand = functions
             userIds: roomDoc.userIds,
       })
 
-      // Add the User Cover Data to Users in Brands Collection
+      // Add the Brand Cover Data to Users/Brands Collection
       let date = new Date();
       let day = date.getDate();
       let month = date.getMonth() + 1;
@@ -711,21 +809,21 @@ exports.userJoinsBrand = functions
         if (userDoc.idioma == "es") {
         payload = {
                 notification: {
-                  title: "Has creado tu marca "+brandDoc.name,
-                  body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece MAMBA",
+                  title: "Has creado tu marca "+brandDoc.name+" ✅",
+                  body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece Mamba",
                 },
                 data: {
-                  route: "SplashScreen1",
+                  route: "BrandPage",
                 },
               };
         } else {
           payload = {
                 notification: {
-                  title: "Has creat la teva marca "+brandDoc.name,
-                  body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece MAMBA",
+                  title: "Has creat la teva marca "+brandDoc.name+" ✅",
+                  body: "Ara podràs usar totes les funcionalitats de calendarització, control i gestió que ofereix Mamba",
                 },
                 data: {
-                  route: "SplashScreen1",
+                  route: "BrandPage",
                 },
           }
         }
@@ -745,21 +843,21 @@ exports.userJoinsBrand = functions
         if (userDoc.idioma == "es") {
           payload = {
               notification: {
-                title: "Te has unido a "+brandDoc.name,
+                title: "Te has unido a "+brandDoc.name+" ✅",
                 body: "Consulta el calendario para participar en tu primera sesión",
               },
               data: {
-                route: "SplashScreen1",
+                route: "BrandPage",
               },
             };
         } else {
           payload = {
               notification: {
-                title: "T'has unit a "+brandDoc.name,
+                title: "T'has unit a "+brandDoc.name+" ✅",
                 body: "Consulta el calendari per participar en la teva primera sessió",
               },
               data: {
-                route: "SplashScreen1",
+                route: "BrandPage",
               },
             };
         }
@@ -792,22 +890,22 @@ exports.userJoinsBrand = functions
         );
         if (adminDoc.idioma == "es") {
           payload = {
-                notification: {
-                  title: userDoc.name+" se ha unido a "+brandDoc.name,
-                  body: "Ya sois un total de "+numberMembers.toString()+" miembros",
-                },
-                data: {
-                  route: "SplashScreen2",
-                },
-              };
+              notification: {
+                title: "Nuevo miembro en "+brandDoc.name+" ➕1️⃣ ",
+                body: userDoc.name+" se ha unido. Ya sois un total de "+numberMembers.toString()+" miembros",
+              },
+              data: {
+                route: "Notifications",
+              },
+            };
         } else {
           payload = {
                 notification: {
-                  title: userDoc.name+" s'ha unit a "+brandDoc.name,
-                  body: "Ja sou un total de "+numberMembers.toString()+" membres",
+                  title: "Nou membre a "+brandDoc.name+" ➕1️⃣ ",
+                  body: userDoc.name+" s'ha unit. Ja sou un total de "+numberMembers.toString()+" membres",
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",
                 },
           }
         }
@@ -906,22 +1004,22 @@ exports.userLeavesBrand = functions
           );
         if (brandOwnersDoc.idioma == "es") {
             payload = {
-              notification: {
-                title: userDoc.firstName+" "+userDoc.lastName+" ha abandonado a "+brandDoc.name,
-                body: "Ahora sois un total de "+numberMembers.toString()+" miembros",
+              notification: {               
+                title: "Miembro ha abandonado "+brandDoc.name+" ➖1️⃣ ",
+                body: userDoc.firstName+" "+userDoc.lastName+" se ha ido, ahora sois un total de "+numberMembers.toString()+" miembros",
               },
               data: {
-                route: "SplashScreen2",
+                route: "Notifications",
               },
             };
           } else {
             payload = {
               notification: {
-                title: userDoc.firstName+" "+userDoc.lastName+" ha abandonat a "+brandDoc.name,
-                body: "Ara sou un total de "+numberMembers.toString()+" membres",
+                title: "Membre ha abandonat "+brandDoc.name+" ➖1️⃣ ",
+                body: userDoc.firstName+" "+userDoc.lastName+" ha marxat, ara sou un total "+numberMembers.toString()+" membres",
               },
               data: {
-                route: "SplashScreen2",
+                route: "Notifications",
               },
             }
           }
@@ -1118,21 +1216,21 @@ exports.userSendsRequest = functions
           if (brandOwnersDoc.idioma == "es") {
               payload = {
                 notification: {
-                  title: requestDoc.name+" ha enviado una solicitud de afiliación",
-                  body: "Enviada el "+requestDoc.dateSent,
+                  title: "Nueva solicitud de afiliación ⁉️",
+                  body: requestDoc.name+" quiere formar parte de tu marca "+ brandDoc.name,
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",                
                 },
               };
           } else {
               payload = {
                 notification: {
-                  title: requestDoc.name+" ha enviat una sol·licitud d'afiliació",
-                  body: "Enviada el "+requestDoc.dateSent,
+                  title: "Nova sol·licitud d'afiliació ⁉️",
+                  body: requestDoc.name+" vol formar part de la teva marca "+ brandDoc.name,
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",                  
                 },
               }
           }
@@ -1221,7 +1319,7 @@ exports.userAddsEvent = functions
         "numTrainers",
         numTrainers,
       );
-      // Add Event to Brands Event Subcollection
+      /* Add Event to Brands Event Subcollection
       for (var i in eventBrandSnapshot.docs) {
         const id = eventBrandSnapshot.docs[i].id;
         await db
@@ -1242,6 +1340,7 @@ exports.userAddsEvent = functions
           "maxMembers": eventDoc.maxMembers,
         });
       }
+      */
       // Add Event to Locations Event Subcollection
       for (var i in eventLocationsSnapshot.docs) {
         const id = eventLocationsSnapshot.docs[i].id;
@@ -1250,6 +1349,7 @@ exports.userAddsEvent = functions
         .doc(id)
         .collection("Events")
         .doc(eventId).set({
+          "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
@@ -1262,6 +1362,30 @@ exports.userAddsEvent = functions
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
         });
+        // If Event Private
+        // Add to Locations/Events/Private Events/PrivateEvents
+        if (eventDoc.isPrivate == true) {
+           await db
+          .collection("Locations")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId).set({
+            "isPrivate": eventDoc.isPrivate,
+            "title": eventDoc.title,
+            "doneAt": eventDoc.doneAt,
+            "year": eventDoc.year,
+            "month": eventDoc.month,
+            "day": eventDoc.day,
+            "hour": eventDoc.hour,
+            "minute": eventDoc.minute,
+            "duration": eventDoc.duration,
+            "numTrainers": numTrainers,
+            "numClients": numClients,
+            "maxMembers": eventDoc.maxMembers,
+          });
+        }    
       }
       return null;
     });
@@ -1309,7 +1433,7 @@ exports.userDeletesEvent = functions
           .doc(eventUsersSnapshot.docs[i].id)
           .delete();
       }
-      // Delete Event in Brands Subcollection
+      /* Delete Event in Brands Subcollection
       for (var i in eventBrandSnapshot.docs) {
         await db
         .collection("Brands")
@@ -1324,7 +1448,7 @@ exports.userDeletesEvent = functions
         .collection("Brands")
         .doc(eventBrandSnapshot.docs[i].id)
         .delete();
-      }
+      }*/
       // Delete Event in Locations Subcollection
       for (var i in eventLocationsSnapshot.docs) {
         await db
@@ -1333,6 +1457,18 @@ exports.userDeletesEvent = functions
         .collection("Events")
         .doc(eventId)
         .delete();
+        // If Event Private
+        // Delete from Locations/Events/Private Events/Private Events Subcollection
+        if (eventDoc.isPrivate  == true) {
+           await db
+          .collection("Locations")
+          .doc(eventLocationsSnapshot.docs[i].id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .delete();
+        }
         // Delete Locations in Event
         await db
         .collection("Events")
@@ -1353,9 +1489,13 @@ exports.userJoinsEvent = functions
       // Get the value of the context triggers.
       const eventId = context.params.eventId;
       const userId = context.params.userId;
-      // Get Event Data
+      // Get Event Data      
       const eventSnapshot = await db.collection("Events").doc(eventId).get();
       const eventDoc = eventSnapshot.data();
+      functions.logger.log(
+          "eventDoc",
+          eventDoc,
+      );
       // Get User Data
       const userSnapshot = await db.collection("Users").doc(userId).get();
       const userDoc = userSnapshot.data();
@@ -1378,20 +1518,25 @@ exports.userJoinsEvent = functions
           numClients += 1;
         }
       }
-      // Update Event Assisting Members
+      /* Update Event Assisting Members
       await db
       .collection("Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });
+      });*/
+      var isPrivate = false;
+      if (eventDoc.isPrivate != undefined) {
+        isPrivate == eventDoc.isPrivate;
+      }
       // Add Event To Users Event Subcollection
       await db
         .collection("Users")
         .doc(userId)
         .collection("Events")
         .doc(eventId).set({
+          "isPrivate": isPrivate,
           "title": eventDoc.title,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
@@ -1404,6 +1549,30 @@ exports.userJoinsEvent = functions
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
       });
+      // If Event Private
+      // Add to Users/Events/Private Events/PrivateEvents
+      if (eventDoc.isPrivate == true) {
+         await db
+        .collection("Users")
+        .doc(userId)
+        .collection("Events")
+        .doc("Private Events")
+        .collection("Private Events")
+        .doc(eventId).set({
+          "isPrivate": eventDoc.isPrivate,
+          "title": eventDoc.title,
+          "doneAt": eventDoc.doneAt,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": numTrainers,
+          "numClients": numClients,
+          "maxMembers": eventDoc.maxMembers,
+        });
+      }
       // Update Number of Client and Trainers on Each of Event Subcollection
       // User´s Event First
       for (var i in eventUsersSnapshot.docs) {
@@ -1416,7 +1585,22 @@ exports.userJoinsEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
-        });
+        });        
+        // If Event Private
+        // Update Cover Data Also
+        if (eventDoc.isPrivate == true) {
+          await db
+          .collection("Users")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+        }
       }
       // Brand´s Event Second
       for (var i in eventBrandsSnapshot.docs) {
@@ -1430,6 +1614,21 @@ exports.userJoinsEvent = functions
           "numClients": numClients,
           "numTrainers": numTrainers,
         });
+        // If Event Private
+        // Update Cover Data Also
+        if (eventDoc.isPrivate == true) {
+          await db
+          .collection("Brands")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+        }
       }
       // Location´s Event Third
       for (var i in eventLocationsSnapshot.docs) {
@@ -1443,9 +1642,26 @@ exports.userJoinsEvent = functions
             "numClients": numClients,
             "numTrainers": numTrainers,
           });
+          // If Event Private
+          // Update Cover Data Also
+          if (eventDoc.isPrivate == true) {
+            await db
+            .collection("Locations")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "numClients": numClients,
+              "numTrainers": numTrainers,
+            });
+          }
       }
       // Send Notifications
       if (userDoc.isTrainer == false) {
+        // Don´t Send Full Notification When it is a Private Event
+        if (eventDoc.isPrivate != true) {            
           // Send Notification to Trainers if booked capacity == 100% or > 50%, only when Clients Join
           if (eventDoc.maxMembers == numClients) {
               // Event is full
@@ -1474,11 +1690,11 @@ exports.userJoinsEvent = functions
                     // Send Payload
                     payload = {
                       notification: {
-                        title: "El evento "+eventDoc.title+" está totalmente reservado",
-                        body: "Se realizará el "+dateString+" a las "+eventTimeTime,
+                        title: "Evento totalmente reservado 💯",
+                        body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
                       },
                       data: {
-                        route: "SplashScreen2",
+                        route: eventId,
                       },
                     };
                   } else {
@@ -1491,11 +1707,11 @@ exports.userJoinsEvent = functions
                     // Send Payload
                     payload = {
                       notification: {
-                        title: "L'esdeveniment "+eventDoc.title+" està totalment reservat",
-                        body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
+                        title: "Esdeveniment totalment reservat 💯",
+                        body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,            
                       },
                       data: {
-                        route: "SplashScreen2",
+                        route: eventId,
                       },
                     };
                   }
@@ -1539,11 +1755,11 @@ exports.userJoinsEvent = functions
                       // Send Payload
                       payload = {
                         notification: {
-                          title: "El evento "+eventDoc.title+" ya tiene un 50% de las plazas reservadas",
-                          body: "Se realizará el "+dateString+" a las "+eventTimeTime,
+                          title: "Cada vez quedan menos plazas ⏱️",
+                          body: "El evento "+eventDoc.title+" ya tiene un 50% de las plazas reservadas",
                         },
                         data: {
-                          route: "SplashScreen2",
+                          route: eventId,
                         },
                       };
                     } else {
@@ -1556,11 +1772,11 @@ exports.userJoinsEvent = functions
                       // Send Payload
                       payload = {
                         notification: {
-                          title: "L'esdeveniment "+eventDoc.title+" ja té un 50% de les places reservades",
-                          body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
+                          title: "Cada cop queden menys places ⏱️",
+                          body: "L'esdeveniment "+eventDoc.title+" ja té un 50% de les places reservades",
                         },
                         data: {
-                          route: "SplashScreen2",
+                          route: eventId,
                         },
                       };
                     }
@@ -1577,64 +1793,65 @@ exports.userJoinsEvent = functions
               }
             }
           }
-          // Send Notification to Client if added directly
-          if (eventUserDoc.invitedDirectly == true) {
-              // Invited to Event
-              functions.logger.log(
-                  "NOTIFICATION CLIENT INVITED DIRECTLY TO EVENT",
-              );
-              functions.logger.log(
-                  "userDoc",
-                  userDoc,
-              );
-              var payload = 0;
-              let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
-              if (userDoc.idioma == "es") {
-               // Date To String
-               let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
-               // Hour and Minutes to String
-               let eventTimeTime = eventDoc.hour+":";
-               let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-               eventTimeTime += minutes;
-               // Send Payload
-               payload = {
-                 notification: {
-                   title: "Te han añadido al evento "+eventDoc.title,
-                   body: "Se realizará el "+dateString+" a las "+eventTimeTime,
-                 },
-                 data: {
-                   route: "SplashScreen2",
-                 },
-               };
-             } else {
-               // Date To String
-               let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
-               // Hour and Minutes to String
-               let eventTimeTime = eventDoc.hour+":";
-               let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-               eventTimeTime += minutes;
-               // Send Payload
-               payload = {
-                 notification: {
-                   title: "T'han afegit a l'esdeveniment "+eventDoc.title,
-                   body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
-                 },
-                 data: {
-                   route: "SplashScreen2",
-                 },
-               };
-              }
-              functions.logger.log(
-                "Payload",
-                payload
-              );
-              response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-              functions.logger.log(
-                "Response",
-                response
-              );
-          }
         }
+        // Send Notification to Client if added directly
+        if (eventUserDoc.invitedDirectly == true) {
+            // Invited to Event
+            functions.logger.log(
+                "NOTIFICATION CLIENT INVITED DIRECTLY TO EVENT",
+            );
+            functions.logger.log(
+                "userDoc",
+                userDoc,
+            );
+            var payload = 0;
+            let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+            if (userDoc.idioma == "es") {
+             // Date To String
+             let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+             // Hour and Minutes to String
+             let eventTimeTime = eventDoc.hour+":";
+             let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+             eventTimeTime += minutes;
+             // Send Payload               
+             payload = {
+               notification: {
+                 title: "Nuevo evento programado ⁉️ 🏋️‍♂️",
+                 body: "Te han añadido al evento "+eventDoc.title+". Se realizará el "+dateString+" a las "+eventTimeTime,
+               },
+               data: {
+                 route: eventId,
+               },
+             };               
+           } else {
+             // Date To String
+             let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+             // Hour and Minutes to String
+             let eventTimeTime = eventDoc.hour+":";
+             let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+             eventTimeTime += minutes;
+             // Send Payload
+             payload = {
+               notification: {
+                 title: "Nou esdeveniment programat ⁉️ 🏋️‍♂️",
+                 body: "T'han afegit a l'esdeveniment "+eventDoc.title+". Es realitzarà el "+dateString+" a les "+eventTimeTime,
+               },
+               data: {
+                 route: eventId,
+               },
+             };
+            }
+            functions.logger.log(
+              "Payload",
+              payload
+            );
+            response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+            functions.logger.log(
+              "Response",
+              response
+            );
+        }
+      }
       return null;
     });
 
@@ -1647,6 +1864,13 @@ exports.userLeavesEvent = functions
       // Get the value of the context triggers.
       const eventId = context.params.eventId;
       const userId = context.params.userId;
+      // Get Event Data
+      const eventSnapshot = await db.collection("Events").doc(eventId).get();
+      const eventDoc = eventSnapshot.data();
+      functions.logger.log(
+          "eventDoc",
+          eventDoc,
+      );
       // Get Event Brands Data
       const eventBrandsSnapshot = await db.collection("Events").doc(eventId).collection("Brands").get();
       // Count the Number of Clients and Trainers
@@ -1674,14 +1898,26 @@ exports.userLeavesEvent = functions
       .collection("Events")
       .doc(eventId)
       .delete();
-      // Update Event Assisting Members
+      // If Event Private
+      // Delete to Users/Events/Private Events/PrivateEvents
+      if (eventDoc == undefined || eventDoc.isPrivate == true) {
+         await db
+        .collection("Users")
+        .doc(userId)
+        .collection("Events")
+        .doc("Private Events")
+        .collection("Private Events")
+        .doc(eventId)
+        .delete();
+      }
+      /* Update Event Assisting Members
       await db
       .collection("Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });
+      });*/
       // Update Number of Client and Trainers on Each of Event Subcollection
       // User´s Event First
       for (var i in eventUsersSnapshot.docs) {
@@ -1695,6 +1931,21 @@ exports.userLeavesEvent = functions
             "numClients": numClients,
             "numTrainers": numTrainers,
           });
+          // If Event Private
+          // Update Cover Data Also
+          if (eventDoc == undefined || eventDoc.isPrivate == true) {
+            await db
+            .collection("Users")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "numClients": numClients,
+              "numTrainers": numTrainers,
+            });
+          }
       }
       // Brand´s Event Second
       for (var i in eventBrandsSnapshot.docs) {
@@ -1708,6 +1959,21 @@ exports.userLeavesEvent = functions
             "numClients": numClients,
             "numTrainers": numTrainers,
           });
+          // If Event Private
+          // Update Cover Data Also
+          if (eventDoc == undefined || eventDoc.isPrivate == true) {
+            await db
+            .collection("Brands")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "numClients": numClients,
+              "numTrainers": numTrainers,
+            });
+          }
       }
       // Location´s Event Third
       for (var i in eventLocationsSnapshot.docs) {
@@ -1721,6 +1987,21 @@ exports.userLeavesEvent = functions
           "numClients": numClients,
           "numTrainers": numTrainers,
         });
+        // If Event Private
+        // Update Cover Data Also
+        if (eventDoc == undefined || eventDoc.isPrivate == true) {
+          await db
+          .collection("Locations")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+        }
       }
       return null;
     });
@@ -1791,7 +2072,7 @@ exports.changeMessageStatus = functions
                       body: authorUserDoc.firstName + ' ' + authorUserDoc.lastName + ': ' + message.text,
                   },
                   data: {
-                    route: "SplashScreen3",
+                    route: "Chat",
                   },
                 };
              } else {
@@ -1801,7 +2082,7 @@ exports.changeMessageStatus = functions
                      body: message.text,
                    },
                    data: {
-                     route: "SplashScreen3",
+                     route: "Chat",
                    },
                 };
              }
@@ -1864,6 +2145,7 @@ exports.zzzzNewUserAddsTestGroup = functions
       if (numberUsers % 2 == 0) {
         testGroup = "B"
       }
+      // Update Firebase
       await db
        .collection("7777 Users")
        .doc(userId)
@@ -1942,7 +2224,7 @@ exports.zzzzUserUpdatesCoverData = functions
             "notificationToken": after.notificationToken,
           });
         }
-        // Update the Users Subcollection in Brands
+        // Update the Users Subcollection in Events
         const userEventsSnapshot = await db.collection("7777 Users").doc(userId).collection("Events").get();
         functions.logger.log(
             "User Events Num =",
@@ -2102,11 +2384,23 @@ exports.zzzzEventUpdatesCoverData = functions
         .collection("Events")
         .doc(eventId)
         .delete();
+        // Update Private Event
+        if (after.isPrivate == true) {                 
+           await db
+          .collection("7777 Locations")
+          .doc(before.locationId)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .delete();
+        }
         // Add Event To New Location
         functions.logger.log(
           "Add Event To Location",
           after.locationId,
         );
+        // Add Event to New Location
         await db
         .collection("7777 Locations")
         .doc(after.locationId)
@@ -2123,6 +2417,28 @@ exports.zzzzEventUpdatesCoverData = functions
           "numClients": numClients,
           "maxMembers": after.maxMembers,
         });
+        // Update Private Event
+        if (after.isPrivate == true) {                 
+           await db
+          .collection("7777 Locations")
+          .doc(after.locationId)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .set({
+            "title": after.title,
+            "year": after.year,
+            "month": after.month,
+            "day": after.day,
+            "hour": after.hour,
+            "minute": after.minute,
+            "duration": after.duration,
+            "numTrainers": numTrainers,
+            "numClients": numClients,
+            "maxMembers": after.maxMembers,
+          });
+        }
         functions.logger.log(
           "DONE",
         );
@@ -2155,7 +2471,8 @@ exports.zzzzEventUpdatesCoverData = functions
         functions.logger.log(
             "Event Users Num =",
             eventUsersSnapshot.size,
-          );
+          );        
+        // Update the Event Subcollection in Users
         for (var i in eventUsersSnapshot.docs) {
           const id = eventUsersSnapshot.docs[i].id;
           await db
@@ -2173,6 +2490,26 @@ exports.zzzzEventUpdatesCoverData = functions
             "duration": after.duration,
             "maxMembers": after.maxMembers,
           });
+          // Update Private Event
+          if (after.isPrivate == true) {                 
+             await db
+            .collection("7777 Users")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "title": after.title,
+              "year": after.year,
+              "month": after.month,
+              "day": after.day,
+              "hour": after.hour,
+              "minute": after.minute,
+              "duration": after.duration,
+              "maxMembers": after.maxMembers,
+            });
+          }
         }
         // Update the Event Subcollection in Brands
         const eventBrandsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Brands").get();
@@ -2197,6 +2534,26 @@ exports.zzzzEventUpdatesCoverData = functions
             "duration": after.duration,
             "maxMembers": after.maxMembers,
           });
+          // Update Private Event
+          if (after.isPrivate == true) {                 
+             await db
+            .collection("7777 Brands")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "title": after.title,
+              "year": after.year,
+              "month": after.month,
+              "day": after.day,
+              "hour": after.hour,
+              "minute": after.minute,
+              "duration": after.duration,
+              "maxMembers": after.maxMembers,
+            });
+          }
         }
         // Update the Event Subcollection in Locations
         const eventLocationsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Locations").get();
@@ -2221,6 +2578,26 @@ exports.zzzzEventUpdatesCoverData = functions
             "duration": after.duration,
             "maxMembers": after.maxMembers,
           });
+          // Update Private Event
+          if (after.isPrivate == true) {                 
+             await db
+            .collection("7777 Locations")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "title": after.title,
+              "year": after.year,
+              "month": after.month,
+              "day": after.day,
+              "hour": after.hour,
+              "minute": after.minute,
+              "duration": after.duration,
+              "maxMembers": after.maxMembers,
+            });
+          }
         }
       }
       return null;
@@ -2328,7 +2705,7 @@ exports.zzzzUserJoinsBrand = functions
           brandDoc,
         );
 
-      // Get Data of the Room
+      // Get Data of the Brand Room
       const roomSnapshot = await db.collection("7777 Rooms").doc(brandDoc.roomId).get();
       const roomDoc = roomSnapshot.data();
 
@@ -2344,12 +2721,14 @@ exports.zzzzUserJoinsBrand = functions
       if (roomDoc.lastMessages != undefined) {
         metadataMessage = roomDoc.lastMessages[0].metadata;
         metadataMessage[userId] = "delivered";
+        // Updates all messages so that they are delivered for new user.
         await db.doc("7777 Rooms" + "/" + brandDoc.roomId + "/messages/" + roomDoc.lastMessages[0].remoteId).update({
           metadata: metadataMessage,
           status: "delivered",
         })
       }
 
+      // Creates metadata for new user and adds it.
       metadataRoom = roomDoc.metadata;
       metadataRoom["trainer" + userId] = userDoc.isTrainer;
       metadataRoom["active" + userId] = false;
@@ -2358,7 +2737,7 @@ exports.zzzzUserJoinsBrand = functions
             userIds: roomDoc.userIds,
       })
 
-      // Add the User Cover Data to Users in Brands Collection
+      // Add the Brand Cover Data to Users/Brands Collection
       let date = new Date();
       let day = date.getDate();
       let month = date.getMonth() + 1;
@@ -2376,30 +2755,30 @@ exports.zzzzUserJoinsBrand = functions
         "myTotalSessions": 0,
       });
       functions.logger.log(
-                "userId",
-                userId,
-              );
+        "userId",
+        userId,
+      );
       // Brand Was Just Created By Admin
       if (brandDoc.adminID == userId) {
         if (userDoc.idioma == "es") {
-        payload = {
-                notification: {
-                  title: "Has creado tu marca "+brandDoc.name,
-                  body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece MAMBA",
-                },
-                data: {
-                  route: "SplashScreen1",
-                },
-              };
+          payload = {
+            notification: {
+              title: "Has creado tu marca "+brandDoc.name+" ✅",
+              body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece Mamba",
+            },
+            data: {
+              route: "BrandPage",
+            },
+          };
         } else {
           payload = {
-                notification: {
-                  title: "Has creat la teva marca "+brandDoc.name,
-                  body: "Ahora podrás usar todas las funcionalidades de calendarización, control y gestión que ofrece MAMBA",
-                },
-                data: {
-                  route: "SplashScreen1",
-                },
+            notification: {
+              title: "Has creat la teva marca "+brandDoc.name+" ✅",
+              body: "Ara podràs usar totes les funcionalitats de calendarización, control i gestió que ofereix Mamba",
+            },
+            data: {
+              route: "BrandPage",
+            },
           }
         }
         functions.logger.log(
@@ -2418,21 +2797,21 @@ exports.zzzzUserJoinsBrand = functions
         if (userDoc.idioma == "es") {
           payload = {
               notification: {
-                title: "Te has unido a "+brandDoc.name,
+                title: "Te has unido a "+brandDoc.name+" ✅",
                 body: "Consulta el calendario para participar en tu primera sesión",
               },
               data: {
-                route: "SplashScreen1",
+                route: "BrandPage",
               },
             };
         } else {
           payload = {
               notification: {
-                title: "T'has unit a "+brandDoc.name,
+                title: "T'has unit a "+brandDoc.name+" ✅",
                 body: "Consulta el calendari per participar en la teva primera sessió",
               },
               data: {
-                route: "SplashScreen1",
+                route: "BrandPage",
               },
             };
         }
@@ -2464,23 +2843,23 @@ exports.zzzzUserJoinsBrand = functions
           numberMembers,
         );
         if (adminDoc.idioma == "es") {
-          payload = {
-                notification: {
-                  title: userDoc.name+" se ha unido a "+brandDoc.name,
-                  body: "Ya sois un total de "+numberMembers.toString()+" miembros",
-                },
-                data: {
-                  route: "SplashScreen2",
-                },
-              };
+           payload = {
+              notification: {
+                title: "Nuevo miembro en "+brandDoc.name+" ➕1️⃣ ",
+                body: userDoc.name+" se ha unido. Ya sois un total de "+numberMembers.toString()+" miembros",
+              },
+              data: {
+                route: "Notifications",
+              },
+            };
         } else {
           payload = {
                 notification: {
-                  title: userDoc.name+" s'ha unit a "+brandDoc.name,
-                  body: "Ja sou un total de "+numberMembers.toString()+" membres",
+                  title: "Nou membre a "+brandDoc.name+" ➕1️⃣ ",
+                  body: userDoc.name+" s'ha unit. Ja sou un total de "+numberMembers.toString()+" membres",
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",
                 },
           }
         }
@@ -2579,22 +2958,22 @@ exports.zzzzUserLeavesBrand = functions
           );
         if (brandOwnersDoc.idioma == "es") {
             payload = {
-              notification: {
-                title: userDoc.firstName+" "+userDoc.lastName+" ha abandonado a "+brandDoc.name,
-                body: "Ahora sois un total de "+numberMembers.toString()+" miembros",
+              notification: {               
+                title: "Miembro ha abandonado "+brandDoc.name+" ➖1️⃣ ",
+                body: userDoc.firstName+" "+userDoc.lastName+" se ha ido, ahora sois un total de "+numberMembers.toString()+" miembros",
               },
               data: {
-                route: "SplashScreen2",
+                route: "Notifications",
               },
             };
           } else {
             payload = {
               notification: {
-                title: userDoc.firstName+" "+userDoc.lastName+" ha abandonat a "+brandDoc.name,
-                body: "Ara sou un total de "+numberMembers.toString()+" membres",
+                title: "Membre ha abandonat "+brandDoc.name+" ➖1️⃣ ",
+                body: userDoc.firstName+" "+userDoc.lastName+" ha marxat, ara sou un total "+numberMembers.toString()+" membres",
               },
               data: {
-                route: "SplashScreen2",
+                route: "Notifications",
               },
             }
           }
@@ -2791,21 +3170,21 @@ exports.zzzzUserSendsRequest = functions
           if (brandOwnersDoc.idioma == "es") {
               payload = {
                 notification: {
-                  title: requestDoc.name+" ha enviado una solicitud de afiliación",
-                  body: "Enviada el "+requestDoc.dateSent,
+                  title: "Nueva solicitud de afiliación ⁉️",
+                  body: requestDoc.name+" quiere formar parte de tu marca "+ brandDoc.name,
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",                
                 },
               };
           } else {
               payload = {
                 notification: {
-                  title: requestDoc.name+" ha enviat una sol·licitud d'afiliació",
-                  body: "Enviada el "+requestDoc.dateSent,
+                  title: "Nova sol·licitud d'afiliació ⁉️",
+                  body: requestDoc.name+" vol formar part de la teva marca "+ brandDoc.name,
                 },
                 data: {
-                  route: "SplashScreen2",
+                  route: "Notifications",                  
                 },
               }
           }
@@ -2895,7 +3274,7 @@ exports.zzzzUserAddsEvent = functions
         numTrainers,
       );
       let now = new Date();
-      // Add Event to Brands Event Subcollection
+      /* Add Event to Brands Event Subcollection
       for (var i in eventBrandSnapshot.docs) {
         const id = eventBrandSnapshot.docs[i].id;
         await db
@@ -2916,6 +3295,7 @@ exports.zzzzUserAddsEvent = functions
           "maxMembers": eventDoc.maxMembers,
         });
       }
+      */
       // Add Event to Locations Event Subcollection
       for (var i in eventLocationsSnapshot.docs) {
         const id = eventLocationsSnapshot.docs[i].id;
@@ -2924,6 +3304,7 @@ exports.zzzzUserAddsEvent = functions
         .doc(id)
         .collection("Events")
         .doc(eventId).set({
+          "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
@@ -2936,6 +3317,30 @@ exports.zzzzUserAddsEvent = functions
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
         });
+        // If Event Private
+        // Add to Locations/Events/Private Events/PrivateEvents
+        if (eventDoc.isPrivate == true) {
+           await db
+          .collection("7777 Locations")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId).set({
+            "isPrivate": eventDoc.isPrivate,
+            "title": eventDoc.title,
+            "doneAt": eventDoc.doneAt,
+            "year": eventDoc.year,
+            "month": eventDoc.month,
+            "day": eventDoc.day,
+            "hour": eventDoc.hour,
+            "minute": eventDoc.minute,
+            "duration": eventDoc.duration,
+            "numTrainers": numTrainers,
+            "numClients": numClients,
+            "maxMembers": eventDoc.maxMembers,
+          });
+        }       
       }
       return null;
     });
@@ -2983,7 +3388,7 @@ exports.zzzzUserDeletesEvent = functions
           .doc(eventUsersSnapshot.docs[i].id)
           .delete();
       }
-      // Delete Event in Brands Subcollection
+      /* Delete Event in Brands Subcollection
       for (var i in eventBrandSnapshot.docs) {
         await db
         .collection("7777 Brands")
@@ -2999,6 +3404,7 @@ exports.zzzzUserDeletesEvent = functions
         .doc(eventBrandSnapshot.docs[i].id)
         .delete();
       }
+      */
       // Delete Event in Locations Subcollection
       for (var i in eventLocationsSnapshot.docs) {
         await db
@@ -3007,6 +3413,18 @@ exports.zzzzUserDeletesEvent = functions
         .collection("Events")
         .doc(eventId)
         .delete();
+        // If Event Private
+        // Delete from Locations/Events/Private Events/PrivateEvents Subcollection
+        if (eventDoc.isPrivate == true) {
+           await db
+          .collection("7777 Locations")
+          .doc(eventLocationsSnapshot.docs[i].id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .delete();
+        }
         // Delete Locations in Event
         await db
         .collection("7777 Events")
@@ -3030,6 +3448,10 @@ exports.zzzzUserJoinsEvent = functions
       // Get Event Data
       const eventSnapshot = await db.collection("7777 Events").doc(eventId).get();
       const eventDoc = eventSnapshot.data();
+      functions.logger.log(
+          "eventDoc",
+          eventDoc,
+      );
       // Get User Data
       const userSnapshot = await db.collection("7777 Users").doc(userId).get();
       const userDoc = userSnapshot.data();
@@ -3052,20 +3474,21 @@ exports.zzzzUserJoinsEvent = functions
           numClients += 1;
         }
       }
-      // Update Event Assisting Members
+      /* Update Event Assisting Members
       await db
       .collection("7777 Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });
+      });*/
       // Add Event To Users Event Subcollection
       await db
         .collection("7777 Users")
         .doc(userId)
         .collection("Events")
         .doc(eventId).set({
+          "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
@@ -3078,6 +3501,30 @@ exports.zzzzUserJoinsEvent = functions
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
       });
+      // If Event Private
+      // Add to Users/Events/Private Events/PrivateEvents
+      if (eventDoc.isPrivate == true) {
+         await db
+        .collection("7777 Users")
+        .doc(userId)
+        .collection("Events")
+        .doc("Private Events")
+        .collection("Private Events")
+        .doc(eventId).set({
+          "isPrivate": eventDoc.isPrivate,
+          "title": eventDoc.title,
+          "doneAt": eventDoc.doneAt,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": numTrainers,
+          "numClients": numClients,
+          "maxMembers": eventDoc.maxMembers,
+        });
+      }
       // Update Number of Client and Trainers on Each of Event Subcollection
       // User´s Event First
       for (var i in eventUsersSnapshot.docs) {
@@ -3091,6 +3538,21 @@ exports.zzzzUserJoinsEvent = functions
           "numClients": numClients,
           "numTrainers": numTrainers,
         });
+        // If Event Private
+        // Update Cover Data Also
+        if (eventDoc.isPrivate == true) {
+          await db
+          .collection("7777 Users")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+        }
       }
       // Brand´s Event Second
       for (var i in eventBrandsSnapshot.docs) {
@@ -3104,6 +3566,21 @@ exports.zzzzUserJoinsEvent = functions
           "numClients": numClients,
           "numTrainers": numTrainers,
         });
+        // If Event Private
+        // Update Cover Data Also
+        if (eventDoc.isPrivate == true) {
+          await db
+          .collection("7777 Brands")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+        }
       }
       // Location´s Event Third
       for (var i in eventLocationsSnapshot.docs) {
@@ -3117,84 +3594,36 @@ exports.zzzzUserJoinsEvent = functions
             "numClients": numClients,
             "numTrainers": numTrainers,
           });
+          // If Event Private
+          // Update Cover Data Also
+          if (eventDoc.isPrivate == true) {
+            await db
+            .collection("7777 Locations")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "numClients": numClients,
+              "numTrainers": numTrainers,
+            });
+          }
       }
       // Send Notifications
       if (userDoc.isTrainer == false) {
-        // Send Notification to Trainers if booked capacity == 100% or > 50%, only when Clients Join
-        if (eventDoc.maxMembers == numClients) {
-            // Event is full
-            functions.logger.log(
-              "NOTIFICATION IS FULL",
-            );
-            for (var i in eventUsersSnapshot.docs) {
-              const id = eventUsersSnapshot.docs[i].id;
-              const eventUsersDoc = eventUsersSnapshot.docs[i].data();
-              if (eventUsersDoc.isTrainer) {
-                const trainerSnapshot = await db.collection("7777 Users").doc(id).get();
-                const trainerDoc = trainerSnapshot.data();
-                functions.logger.log(
-                    "trainerDoc",
-                    trainerDoc,
-                  );
-                var payload = 0;
-                let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
-                if (trainerDoc.idioma == "es") {
-                  // Date To String
-                  let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
-                  // Hour and Minutes to String
-                  let eventTimeTime = eventDoc.hour+":";
-                  let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-                  eventTimeTime += minutes;
-                  // Send Payload
-                  payload = {
-                    notification: {
-                      title: "El evento "+eventDoc.title+" está totalmente reservado",
-                      body: "Se realizará el "+dateString+" a las "+eventTimeTime,
-                    },
-                    data: {
-                      route: "SplashScreen2",
-                    },
-                  };
-                } else {
-                  // Date To String
-                  let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
-                  // Hour and Minutes to String
-                  let eventTimeTime = eventDoc.hour+":";
-                  let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-                  eventTimeTime += minutes;
-                  // Send Payload
-                  payload = {
-                    notification: {
-                      title: "L'esdeveniment "+eventDoc.title+" està totalment reservat",
-                      body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
-                    },
-                    data: {
-                      route: "SplashScreen2",
-                    },
-                  };
-                }
-                functions.logger.log(
-                  "Payload",
-                  payload
-                );
-                response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
-                functions.logger.log(
-                  "Response",
-                  response
-                );
-              }
-            }
-        } else {
-          // First one to go over 50%
-          if (numClients / eventDoc.maxMembers > 0.49 && (numClients - 1) / eventDoc.maxMembers < 0.50) {
-            // Send Over 50% Notification to All Event Trainers
-            functions.logger.log(
-              "NOTIFICATION OVER 50%",
-            );
-            for (var i in eventUsersSnapshot.docs) {
-              const id = eventUsersSnapshot.docs[i].id;
-              const eventUsersDoc = eventUsersSnapshot.docs[i].data();
-              if (eventUsersDoc.isTrainer) {
+        // Don´t Send Full Notification When it is a Private Event
+        if (eventDoc.isPrivate != true) {
+          // Send Notification to Trainers if booked capacity == 100% or > 50%, only when Clients Join
+          if (eventDoc.maxMembers == numClients) {
+              // Event is full
+              functions.logger.log(
+                "NOTIFICATION IS FULL",
+              );
+              for (var i in eventUsersSnapshot.docs) {
+                const id = eventUsersSnapshot.docs[i].id;
+                const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+                if (eventUsersDoc.isTrainer) {
                   const trainerSnapshot = await db.collection("7777 Users").doc(id).get();
                   const trainerDoc = trainerSnapshot.data();
                   functions.logger.log(
@@ -3213,11 +3642,11 @@ exports.zzzzUserJoinsEvent = functions
                     // Send Payload
                     payload = {
                       notification: {
-                        title: "El evento "+eventDoc.title+" ya tiene un 50% de las plazas reservadas",
-                        body: "Se realizará el "+dateString+" a las "+eventTimeTime,
+                        title: "Evento totalmente reservado 💯",
+                        body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
                       },
                       data: {
-                        route: "SplashScreen2",
+                        route: eventId,
                       },
                     };
                   } else {
@@ -3230,11 +3659,11 @@ exports.zzzzUserJoinsEvent = functions
                     // Send Payload
                     payload = {
                       notification: {
-                        title: "L'esdeveniment "+eventDoc.title+" ja té un 50% de les places reservades",
-                        body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
+                        title: "Esdeveniment totalment reservat 💯",
+                        body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,            
                       },
                       data: {
-                        route: "SplashScreen2",
+                        route: eventId,
                       },
                     };
                   }
@@ -3248,9 +3677,75 @@ exports.zzzzUserJoinsEvent = functions
                     response
                   );
                 }
+              }
+          } else {
+            // First one to go over 50%
+            if (numClients / eventDoc.maxMembers > 0.49 && (numClients - 1) / eventDoc.maxMembers < 0.50) {
+              // Send Over 50% Notification to All Event Trainers
+              functions.logger.log(
+                "NOTIFICATION OVER 50%",
+              );
+              for (var i in eventUsersSnapshot.docs) {
+                const id = eventUsersSnapshot.docs[i].id;
+                const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+                if (eventUsersDoc.isTrainer) {
+                    const trainerSnapshot = await db.collection("7777 Users").doc(id).get();
+                    const trainerDoc = trainerSnapshot.data();
+                    functions.logger.log(
+                        "trainerDoc",
+                        trainerDoc,
+                      );
+                    var payload = 0;
+                    let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+                    if (trainerDoc.idioma == "es") {
+                      // Date To String
+                      let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+                      // Hour and Minutes to String
+                      let eventTimeTime = eventDoc.hour+":";
+                      let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+                      eventTimeTime += minutes;
+                      // Send Payload
+                      payload = {
+                        notification: {
+                          title: "Cada vez quedan menos plazas ⏱️",
+                          body: "El evento "+eventDoc.title+" ya tiene un 50% de las plazas reservadas",
+                        },
+                        data: {
+                          route: eventId,
+                        },
+                      };
+                    } else {
+                      // Date To String
+                      let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+                      // Hour and Minutes to String
+                      let eventTimeTime = eventDoc.hour+":";
+                      let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+                      eventTimeTime += minutes;
+                      // Send Payload
+                      payload = {
+                        notification: {
+                          title: "Cada cop queden menys places ⏱️",
+                          body: "L'esdeveniment "+eventDoc.title+" ja té un 50% de les places reservades",
+                        },
+                        data: {
+                          route: eventId,
+                        },
+                      };
+                    }
+                    functions.logger.log(
+                      "Payload",
+                      payload
+                    );
+                    response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+                    functions.logger.log(
+                      "Response",
+                      response
+                    );
+                  }
+              }
             }
           }
-        }
+        }        
         // Send Notification to Client if added directly
         if (eventUserDoc.invitedDirectly == true) {
             // Invited to Event
@@ -3273,11 +3768,11 @@ exports.zzzzUserJoinsEvent = functions
              // Send Payload
              payload = {
                notification: {
-                 title: "Te han añadido al evento "+eventDoc.title,
-                 body: "Se realizará el "+dateString+" a las "+eventTimeTime,
+                 title: "Nuevo evento programado ⁉️ 🏋️‍♂️",
+                 body: "Te han añadido al evento "+eventDoc.title+". Se realizará el "+dateString+" a las "+eventTimeTime,
                },
                data: {
-                 route: "SplashScreen2",
+                 route: eventId,
                },
              };
            } else {
@@ -3290,11 +3785,11 @@ exports.zzzzUserJoinsEvent = functions
              // Send Payload
              payload = {
                notification: {
-                 title: "T'han afegit a l'esdeveniment "+eventDoc.title,
-                 body: "Es realitzarà el "+dateString+" a les "+eventTimeTime,
+                 title: "Nou esdeveniment programat ⁉️ 🏋️‍♂️",
+                 body: "T'han afegit a l'esdeveniment "+eventDoc.title+". Es realitzarà el "+dateString+" a les "+eventTimeTime,
                },
                data: {
-                 route: "SplashScreen2",
+                 route: eventId,
                },
              };
             }
@@ -3321,6 +3816,13 @@ exports.zzzzUserLeavesEvent = functions
       // Get the value of the context triggers.
       const eventId = context.params.eventId;
       const userId = context.params.userId;
+      // Get Event Data
+      const eventSnapshot = await db.collection("7777 Events").doc(eventId).get();
+      const eventDoc = eventSnapshot.data();
+      functions.logger.log(
+          "eventDoc",
+          eventDoc,
+      );
       // Get Event Brands Data
       const eventBrandsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Brands").get();
       // Count the Number of Clients and Trainers
@@ -3348,14 +3850,26 @@ exports.zzzzUserLeavesEvent = functions
       .collection("Events")
       .doc(eventId)
       .delete();
-      // Update Event Assisting Members
+      // If Event Private
+      // Delete to Users/Events/Private Events/PrivateEvents
+      if (eventDoc == undefined || eventDoc.isPrivate == true) {
+         await db
+        .collection("7777 Users")
+        .doc(userId)
+        .collection("Events")
+        .doc("Private Events")
+        .collection("Private Events")
+        .doc(eventId)
+        .delete();
+      }
+      /* Update Event Assisting Members
       await db
       .collection("7777 Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });
+      });*/
       // Update Number of Client and Trainers on Each of Event Subcollection
       // User´s Event First
       for (var i in eventUsersSnapshot.docs) {
@@ -3369,6 +3883,21 @@ exports.zzzzUserLeavesEvent = functions
             "numClients": numClients,
             "numTrainers": numTrainers,
           });
+          // If Event Private
+          // Update Cover Data Also
+          if (eventDoc == undefined || eventDoc.isPrivate == true) {
+            await db
+            .collection("7777 Users")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "numClients": numClients,
+              "numTrainers": numTrainers,
+            });
+          }
       }
       // Brand´s Event Second
       for (var i in eventBrandsSnapshot.docs) {
@@ -3382,6 +3911,21 @@ exports.zzzzUserLeavesEvent = functions
             "numClients": numClients,
             "numTrainers": numTrainers,
           });
+          // If Event Private
+          // Update Cover Data Also
+          if (eventDoc == undefined || eventDoc.isPrivate == true) {
+            await db
+            .collection("7777 Brands")
+            .doc(id)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventId)
+            .update({
+              "numClients": numClients,
+              "numTrainers": numTrainers,
+            });
+          }
       }
       // Location´s Event Third
       for (var i in eventLocationsSnapshot.docs) {
@@ -3395,6 +3939,21 @@ exports.zzzzUserLeavesEvent = functions
           "numClients": numClients,
           "numTrainers": numTrainers,
         });
+        // If Event Private
+        // Update Cover Data Also
+        if (eventDoc == undefined || eventDoc.isPrivate == true) {
+          await db
+          .collection("7777 Locations")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
+        }
       }
       return null;
     });
@@ -3465,7 +4024,7 @@ exports.zzzzChangeMessageStatus = functions
                       body: authorUserDoc.firstName + ' ' + authorUserDoc.lastName + ': ' + message.text,
                   },
                   data: {
-                    route: "SplashScreen3",
+                    route: "Chat",
                   },
                 };
              } else {
@@ -3475,7 +4034,7 @@ exports.zzzzChangeMessageStatus = functions
                      body: message.text,
                    },
                    data: {
-                     route: "SplashScreen3",
+                     route: "Chat",
                    },
                 };
              }

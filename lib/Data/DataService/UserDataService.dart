@@ -1,9 +1,8 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
-import 'package:mamba_castelldefels/Data/Models/NotificationEvent.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'FirebaseDatabaseService.dart';
@@ -34,9 +33,14 @@ class UserDataService {
   Future<String> getBonoRequest(String userId, String brandId) => _firebase.getBonoRequest(userId, brandId);
   Future<String> getBonoUser(String userId, String brandId) => _firebase.getBonoUser(userId, brandId);
   Future<List<int>> getUserFavourites(String brandId, String userId) => _firebase.getUserFavourites(brandId, userId);
+  Future<List<ReceivedNotification>> getLocalNotifications(String userId) => _firebase.getLocalNotifications(userId);
+  Future<ReceivedNotification?> getIndividualLocalNotification(String userId, String notificationId) => _firebase.getIndividualLocalNotification(userId, notificationId);
+  Future<List<ReceivedNotification>> findEventLocalNotification(String userId, String eventId) => _firebase.findEventLocalNotification(userId, eventId);
+
   // Add Data
   Future<int> addUser(String email, String password, String idioma) => _firebase.addUser(email, password, idioma);
   Future<void> addUserNickname(String userId, String nickname) => _firebase.addUserNickname(userId, nickname);
+  Future<void> addLocalNotification(String userId, ReceivedNotification notification) => _firebase.addLocalNotification(userId, notification);
   Future<void> sendNotificationToUser(String userId, String type, var parameters) => _firebase.sendNotificationToUser(userId, type, parameters);
   Future<void> sendRequestToBrand(String brandId, String name, bool isTrainer) => _firebase.sendRequestToBrand(brandId, name, isTrainer);
   Future<void> addBonoRequestToUser(String brandId, String userId, String bonoId) => _firebase.addBonoRequestToUser(brandId, userId, bonoId);
@@ -59,6 +63,7 @@ class UserDataService {
   Future<void> deleteUserNickname(String nickname) => _firebase.deleteUserNickname(nickname);
   Future<void> deleteUserBonoRequest(String userId, String brandId, String bonoId) => _firebase.deleteUserBonoRequest(userId,brandId ,bonoId);
 
+  Future<void> deleteLocalNotification(String userId, String notificationId) => _firebase.deleteLocalNotification(userId, notificationId);
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // STREAMS

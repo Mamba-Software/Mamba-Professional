@@ -7,7 +7,7 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Message.dart';
-import 'package:mamba_castelldefels/Data/Models/NotificationEvent.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Question.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
@@ -19,6 +19,7 @@ class EventDataService {
   final _firebase = FirebaseDatabaseService();
 
   // Check Data
+  Future<bool> checkIfEventExists(String eventId) => _firebase.checkIfEventExists(eventId);
 
   // Get Data
   Future<Event> getSingleEvent(String eventId) => _firebase.getSingleEvent(eventId);
@@ -38,20 +39,28 @@ class EventDataService {
   Future<int?> getEventUserFeedback(String eventId, String userId) => _firebase.getEventUserFeedback(eventId, userId);
   Future<List<Event>> getBrandFirstCompletedEventsLimit(String brandId, int limit) => _firebase.getBrandFirstCompletedEventsLimit(brandId, limit);
   Future<List<Event>> getBrandMoreCompletedEventsLimit(String brandId, String eventId, int limit) => _firebase.getBrandMoreCompletedEventsLimit(brandId, eventId, limit);
+  Future<List<Brand>> getEventBrands(String eventId) => _firebase.getEventBrands(eventId);
+  Future<double?> getEventUserFeedback(String eventId, String userId) => _firebase.getEventUserFeedback(eventId, userId);
+
+  Future<dynamic> getRecurrentEventGroup(String eventGroupId) => _firebase.getRecurrentEventGroup(eventGroupId);
 
   // Add Data
-  Future<String> addEvent(String? brandID, String? title, String? description, Timestamp doneAt, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.addEvent(brandID, title, description, doneAt, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);
+  Future<String> addEvent(Event event) => _firebase.addEvent(event);
+  Future<void> addRecurrentEventGroup(String eventGroupId, List<String> eventIds) => _firebase.addRecurrentEventGroups(eventGroupId, eventIds);
   Future<void> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) => _firebase.addUserToEvent(eid, uid, invitedDirectly);
+  Future<void> addEventFeedback(String eid, String uid, double intensityScore) => _firebase.addEventFeedback(eid, uid, intensityScore);
 
   // Update Data
-  Future<void> updateEvent(String id, String? title, String? description, String? year, String? month, String? day, String? hour, String? minute, double? duration, String? locationId, int? maxMembers, var selectedTrainers) => _firebase.updateEvent(id, title, description, year, month, day, hour, minute, duration, locationId, maxMembers, selectedTrainers);
+  Future<void> updateEvent(Event event) => _firebase.updateEvent(event);
+  Future<void> updateEventNumberMembers(String eventId, int numberClients, int numberTrainers) => _firebase.updateEventNumberMembers(eventId, numberClients, numberTrainers);
+  Future<void> updateRecurrentEventGroup(String eventGroupId, var eventIds) => _firebase.updateRecurrentEventGroup(eventGroupId, eventIds);
   Future<void> updateEventLocation(String eid, String locationId, String previousLocation) => _firebase.updateEventLocation(eid, locationId, previousLocation);
-  Future<void> updateEventFeedback(String eid, String uid, int score) => _firebase.updateEventFeedback(eid, uid, score);
 
   // Delete Data
-  Future<void> deleteEvent(String id) => _firebase.deleteEvent(id);
+  Future<void> deleteEvent(String id, [bool isPrivate = false]) => _firebase.deleteEvent(id, isPrivate);
   Future<void> deleteUserFromEvent(String eid, String uid,) => _firebase.deleteUserFromEvent(eid, uid);
   Future<void> deleteUserFromUpcomingEvents(String uid, bool isTrainer) => _firebase.deleteUserFromUpcomingEvents(uid, isTrainer);
+  Future<void> deleteRecurrentEventGroup(String eventGroupId) => _firebase.deleteRecurrentEventGroup(eventGroupId);
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams

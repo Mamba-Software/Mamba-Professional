@@ -3,14 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-
 import '../Data/LibraryModels/lColor.dart';
 
-// IS PRODUCTION?
+// IS PRODUCTION ?
 bool isProduction = false;
 
 // App Version
-var appVersion = "MAMBA v0.0.8";
+var appVersion = "MAMBA v0.0.11";
 
 List<lColor> currentColors = []; //0x00000000, 0xFFE53935, 0xFF43A047, 0xFF1E88E5, 0xFF8E24AA, 0xFFFB8C00, 0xFFFDD835
 
@@ -49,7 +48,7 @@ int currentIndex = 0;
 PageController pageController = PageController(initialPage: currentIndex);
 
 // Dynamic Links Path
-var brandPath;
+var dynamicLinkBrandId;
 
 //Mamba professional
 bool mambaProfessional = false;

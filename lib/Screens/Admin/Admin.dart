@@ -8,8 +8,6 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/Admin/AdminTool.dart';
 import 'package:mamba_castelldefels/Screens/Admin/AdminFeedBack.dart';
 
-import '../MainApp/Home/Perfil/PerfilModals/UserFeedBack.dart';
-
 
 class Admin extends StatefulWidget {
   const Admin({Key? key}) : super(key: key);

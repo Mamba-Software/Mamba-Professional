@@ -183,11 +183,11 @@
   "@nicknameError":{
     "description": "LogIn Text "
   },
-  "nicknameAvailable": "Este nombre de usuario está disponible",
+  "nicknameAvailable": "Disponible",
   "@nicknameAvailable":{
     "description": "LogIn Text "
   },
-  "nicknameOcuppied": "Este nombre de usuario ya está cogido",
+  "nicknameOcuppied": "Cogido",
   "@nicknameOcuppied":{
     "description": "LogIn Text "
   },
@@ -231,11 +231,11 @@
   "@wellcome": {
     "description": "Wellcome message"
   },
-  "thankyouDownload": "¡Gracias por descargar MAMBA!",
+  "thankyouDownload": "¡Bienvenido/a a Mamba!",
   "@thankyouDownload": {
     "description": "Wellcome message"
   },
-  "wellcomeMessage": "Antes de empezar a usar nuestra plataforma, por favor complete la siguiente información para configurar su perfil.",
+  "wellcomeMessage": "La primera interfaz que conecta a los apasionados del deporte con las marcas de entrenamiento fitness.",
   "@wellcomeMessage": {
     "description": "Wellcome message"
   },
@@ -345,6 +345,10 @@
   },
   "eventFeedbackText": "¿Qué te ha parecido la sesión?",
   "@eventFeedbackText": {
+    "description": "Member Since message"
+  },
+  "eventFeedbackIntesityText": "\nIndica tu nivel de esfuerzo a lo largo de esta sesión",
+  "@eventFeedbackIntesityText": {
     "description": "Member Since message"
   },
   "memberSince": "Creada el {dateJoined}",
@@ -533,15 +537,15 @@
   "@createBrandTitle":{
     "description": "createBrand Text"
   },
-  "createBrandPortada": "Añade el nombre y el logo",
+  "createBrandPortada": "Empieza creando la portada de tu marca. Escoge tu logo y tu nombre, tu escaparate a todos los otros usuarios.",
   "@createBrandPortada":{
     "description": "createBrand Text"
   },
-  "createBrandInfo": "Introduce una descripción",
+  "createBrandInfo": "Añade la información más importante. Introduce una descripción general y define tus especialidades.",
   "@createBrandInfo":{
     "description": "createBrand Text"
   },
-  "createBrandLocation": "Situa tu marca en el mapa",
+  "createBrandLocation": "Sitúa tu marca en el mapa. Define tu ubicación principal para que tus clientes sepan dónde estás y como llegar hasta ti.",
   "@createBrandLocation":{
     "description": "createBrand Text"
   },
@@ -751,6 +755,14 @@
   "@next":{
     "description": "Siguiente text"
   },
+  "skip": "Omitir",
+  "@skip":{
+    "description": "Siguiente text"
+  },
+  "start": "Empezar",
+  "@start":{
+    "description": "Siguiente text"
+  },
   "finish": "Finalizar",
   "@finish":{
     "description": "Siguiente text"
@@ -953,6 +965,10 @@
   "@selectDayTime":{
     "description": "tuesdarLetter text"
   },
+  "selectDay": "Día",
+  "@selectDay":{
+    "description": "tuesdarLetter text"
+  },
   "selectDuration": "Duración",
   "@selectDuration":{
     "description": "tuesdarLetter text"
@@ -981,7 +997,7 @@
   "@nextTwoWeek":{
     "description": "Días text"
   },
-  "wholeMonth": "Todo el mes",
+  "wholeMonth": "Cuatro semanas",
   "@wholeMonth":{
     "description": "Días text"
   },
@@ -1042,12 +1058,16 @@
   "@designatedTrainers":{
     "description": "addEvent text"
   },
-  "addDesignatedClients": "Añadir clientes manualmente",
+  "addDesignatedClients": "Invitar clientes",
   "@addDesignatedClients":{
     "description": "addEvent text"
   },
   "noTrainerSelectedError": "No hay ningún entrenador asignado",
   "@noTrainerSelectedError":{
+    "description": "noTrainerSelectedError text"
+  },
+  "noClientSelectedError": "No hay ningún cliente invitado",
+  "@noClientSelectedError":{
     "description": "noTrainerSelectedError text"
   },
   "clientsSelectedError": "Hay más clientes que plazas disponibles",
@@ -1322,6 +1342,30 @@
   },
   "logo": "Logo",
   "@logo": {
+    "description": "Wellcome message"
+  },
+  "group": "Grupal",
+  "@group": {
+    "description": "Wellcome message"
+  },
+  "groupEvent": "Evento Grupal",
+  "@groupEvent": {
+    "description": "Wellcome message"
+  },
+  "groupEventDesc": "Define las plazas disponibles",
+  "@groupEventDesc": {
+    "description": "Wellcome message"
+  },
+  "private": "Privado",
+  "@private": {
+    "description": "Wellcome message"
+  },
+  "privateEvent": "Evento Privado",
+  "@privateEvent": {
+    "description": "Wellcome message"
+  },
+  "privateEventDesc": "Accesible solo por invitación",
+  "@privateEventDesc": {
     "description": "Wellcome message"
   },
   "noEventsToday": "Nada previsto para hoy ...",
@@ -1692,12 +1736,16 @@
   "@findBrandTrainerText": {
     "description": "membersOfBrand message"
   },
-  "updateAppTitle": "!Nueva versión de MAMBA disponible!",
+  "updateAppTitle": "!Nueva versión disponible!",
   "@updateAppTitle": {
     "description": "membersOfBrand message"
   },
   "updateAppText": "Actualiza la app para no perderte ninguna novedad y evitar posibles errores.",
   "@updateAppText": {
+    "description": "membersOfBrand message"
+  },
+  "mandatoryUpdate": "Actualización obligatoria",
+  "@mandatoryUpdate": {
     "description": "membersOfBrand message"
   },
   "shareAppTitle": "Invitar amigos",
@@ -1820,9 +1868,85 @@
   "@tiredFeedbackLabel": {
     "description": "membersOfBrand message"
   },
-  "exhaustedFeedbackLabel": "Intenso",
+  "veryTiredFeedbackLabel": "Intenso",
+  "@veryTiredFeedbackLabel": {
+    "description": "membersOfBrand message"
+  },
+  "exhaustedFeedbackLabel": "Exhaustivo",
   "@exhaustedFeedbackLabel": {
     "description": "membersOfBrand message"
+  },
+  "brandInviteDialog": "Has accedido a Mamba con un link de invitación a esta marca. Por favor confirma esta acción para unirte a ellos y poder disfrutar de su servicio.",
+  "@brandInviteDialog": {
+    "description": "brandInviteDialog message"
+  },
+  "selectTypeProfile": "Selecciona tu perfil",
+  "@selectTypeProfile": {
+    "description": "selectTypeProfile message"
+  },
+  "beforeMovingOn": "Ya casi estamos...",
+  "@beforeMovingOn": {
+    "description": "beforeMovingOn message"
+  },
+  "beforeEventTitleNotification": "⚠️ \uD83C\uDFCB️\u200D {event} a las {horas} \uD83C\uDFCB️\u200D ⚠️ ",
+  "@beforeEventTitleNotification": {
+    "description": "beforeEventBodyNotification message",
+    "placeholders": {
+      "event": {
+        "type": "String"
+      },
+      "horas": {
+        "type": "String"
+      }
+    }
+  },
+  "beforeEventBodyNotification": "Esta sesión está a punto de empezar. Haz clic para consultar todos los detalles",
+  "@beforeEventBodyNotification": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "afterEventTitleNotification": "\uD83D\uDCAA ✅️ Sesión completada ✅️ \uD83D\uDCAA",
+  "@afterEventTitleNotification": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "afterEventBodyNotification": "¿Qué te ha parecido? ¿Demasiado intensa? Comunica tu nivel de esfuerzo a tu entrenador",
+  "@afterEventBodyNotification": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "deleteRecurrentEvent": "¿Cómo quieres quieres eliminar este evento recurrente?",
+  "@deleteRecurrentEvent": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "saveRecurrentEvent": "¿Cómo quieres editar este evento recurrente?",
+  "@saveRecurrentEvent": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "saveRecurrentEventDetails": "En caso de modificar más de un evento, el día del evento no serà modificado.",
+  "@saveRecurrentEventDetails": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "thisEvent": "Solo este evento",
+  "@thisEvent": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "thisEventAndRest": "Este y los eventos siguientes",
+  "@thisEventAndRest": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboarding": "¡TODO en UNO!",
+  "@trainersOnboarding": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingDesc": "Centraliza tu negocio en una sola plataforma. Profesionaliza tu servicio para fidelizar a tus clientes, mejorando la gestión, organización y comunicación de tu marca fitness.",
+  "@trainersOnboardingDesc": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "clientsOnboarding": "Encuentra tu profesional",
+  "@clientsOnboarding": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "clientsOnboardingDesc": "Busca, compara y decide cuál es la marca fitness que mejor se adapta a ti. Únete a ella para poder disfrutar de su servicio y de un seguimiento personalizado.",
+  "@clientsOnboardingDesc": {
+    "description": "beforeEventBodyNotification message"
   },
   "yourBrands": "Tus marcas",
   "@yourBrands": {

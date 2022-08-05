@@ -10,17 +10,15 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Screens/Admin/Admin.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/FirstTime.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/HomePage.dart';
 import 'package:provider/provider.dart';
 
 import '../../Data/DataService/LibraryDataService.dart';
 import '../../Globals/Widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
 import '../MainApp/Mamba/Mamba.dart';
+import '../MainApp/OnboardingScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen({Key? key}) : super(key: key);
@@ -42,7 +40,6 @@ class _SplashScreenState extends State<SplashScreen> {
   // Data Base Access
   var _userDataService = new UserDataService();
   var _brandDataService = new BrandDataService();
-  var _libraryDataService = new LibraryDataService();
 
   @override
   initState() {
@@ -78,11 +75,13 @@ class _SplashScreenState extends State<SplashScreen> {
         if (firebaseUser.emailVerified) {
           // 3.1.1 Email has been verified
           // 4. Define Prod Config for FirebaseChatCore
-          FirebaseChatCore.instance.setConfig(FirebaseChatCoreConfig(
-            'mamba-style',
-            'Rooms',
-            'Users',
-          ));
+          FirebaseChatCore.instance.setConfig(
+            FirebaseChatCoreConfig(
+                null,
+              'Rooms',
+              'Users',
+            )
+          );
           // 5. Load Users Data
           await getUserData(firebaseUser.uid);
           // 6. Get Token for FirebaseMessaging
@@ -107,8 +106,8 @@ class _SplashScreenState extends State<SplashScreen> {
               Navigator.pushReplacement(
                   context,
                   CupertinoPageRoute<Null>(
-                    builder: (context) => MambaClient(),
-                    settings: RouteSettings(name: 'HomePage'),
+                    builder: (context) => Mamba(),
+                    settings: RouteSettings(name: 'Mamba'),
                   )
               );
             } else {
@@ -116,10 +115,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   context,
                   CupertinoPageRoute<Null>(
                     builder: (context) =>
-                        FirstTime(
-                          locale: Localizations.localeOf(context),
-                        ),
-                    settings: RouteSettings(name: 'FirstTimeWrapper'),
+                    OnboardingScreen(),
+                    settings: RouteSettings(name: 'OnboardingScreen'),
                   )
               );
             }
@@ -138,11 +135,13 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {
         // 3.2 We are in DEVELOPMENT
         // 4. Define Development Config for FirebaseCore
-        FirebaseChatCore.instance.setConfig(FirebaseChatCoreConfig(
-          'mamba-style',
-          '7777 Rooms',
-          '7777 Users',
-        ));
+        FirebaseChatCore.instance.setConfig(
+            FirebaseChatCoreConfig(
+              null,
+              '7777 Rooms',
+              '7777 Users',
+            )
+        );
         // 5. Load Users Data
         await getUserData(firebaseUser.uid);
         // 6. Get Token for FirebaseMessaging
@@ -167,19 +166,16 @@ class _SplashScreenState extends State<SplashScreen> {
             Navigator.pushReplacement(
                 context,
                 CupertinoPageRoute<Null>(
-                  builder: (context) => MambaClient(),
-                  settings: RouteSettings(name: 'HomePage'),
+                  builder: (context) => Mamba(),
+                  settings: RouteSettings(name: 'Mamba'),
                 )
             );
           } else {
             Navigator.pushReplacement(
                 context,
                 CupertinoPageRoute<Null>(
-                  builder: (context) =>
-                      FirstTime(
-                        locale: Localizations.localeOf(context),
-                      ),
-                  settings: RouteSettings(name: 'FirstTimeWrapper'),
+                  builder: (context) => OnboardingScreen(),
+                  settings: RouteSettings(name: 'OnboardingScreen'),
                 )
             );
           }

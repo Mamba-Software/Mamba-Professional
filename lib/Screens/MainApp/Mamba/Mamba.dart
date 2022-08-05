@@ -1,3 +1,4 @@
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -5,11 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandWrapperPage.dart';
@@ -41,14 +45,14 @@ import 'Sesions/SesionsScreens/UserCalendarMonthWidget.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
-class MambaClient extends StatefulWidget {
-  const MambaClient({Key? key}) : super(key: key);
+class Mamba extends StatefulWidget {
+  const Mamba({Key? key}) : super(key: key);
 
   @override
-  _MambaClientState createState() => _MambaClientState();
+  _MambaState createState() => _MambaState();
 }
 
-class _MambaClientState extends State<MambaClient> {
+class _MambaState extends State<Mamba> {
 
   // Screen Dimensions
   var safeAreaHeight;
@@ -63,6 +67,9 @@ class _MambaClientState extends State<MambaClient> {
   bool isLoading = false;
   // Boolean hasSeenStartUpDialog
   bool hasSeenStartUpDialog = false;
+  // Notifications
+  LocalNotificationService localNotificationService = LocalNotificationService();
+  FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
   CalendarController _controller = CalendarController();
 
@@ -99,61 +106,69 @@ class _MambaClientState extends State<MambaClient> {
       getFavourites();
     }
     isLoading = true;
-    // Init LocalNotificationsService
-    LocalNotificationService.initialize(context);
-    /// Message on which User has tapped from Terminated State
+    // Handle LocalNotificationsService
+    localNotificationService.initialize();
+    handleAndlistenNotifications(context);
+    // Firebase Cloud Messaging Notifications
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
         print("App in Terminated State Notification Trigger HomePage");
-        final route = message.data["route"];
-        currentIndex = int.parse(route[route.length-1]);
-        pageController.jumpToPage(currentIndex);
+        String route = message.data["route"];
+        // Handling OnClickNotification Firebase Messaging Notification
+        localNotificationService.onClickedNotification(context, route);
       }
     });
     // If App in Foreground.
     FirebaseMessaging.onMessage.listen((message) {
       print("App in Foreground Notification Trigger HomePage");
-      LocalNotificationService.display(message);
+      ReceivedNotification notif = ReceivedNotification(
+        id: DateTime.now().millisecondsSinceEpoch ~/1000,
+        title: message.notification!.title,
+        body: message.notification!.body,
+        payload: message.data["route"],
+      );
+      localNotificationService.showNotification(notif);
     });
     // If App in Background, Tap on Notification to be Opened
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       print("App in Background Notification Trigger HomePage");
-      final route = message.data["route"];
-      if (route == "SplashScreen1") {
-        String routeFromMessage = route.substring(0, route.length - 1);;
-        currentIndex = int.parse(route[route.length-1]);
-        Navigator.of(context).pushNamedAndRemoveUntil(routeFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
-      } else {
-        if (ModalRoute.of(context)!.isCurrent) {
-          print("Top Page, Moving to Notifications Page");
-          currentIndex = int.parse(route[route.length-1]);
-          if (currentIndex == 2) {
-            Navigator.of(context).pushNamedAndRemoveUntil("Notifications", (Route<dynamic> route) => false, arguments: currentIndex);
-          } else if (currentIndex == 3) {
-            Navigator.of(context).pushNamedAndRemoveUntil("Chat", (Route<dynamic> route) => false, arguments: currentIndex);
-          } else {
-            pageController.jumpToPage(currentIndex);
-          }
-        } else {
-          print("Not in Home Page, Moving to Splash Screen");
-          String routeFromMessage = route.substring(0, route.length - 1);;
-          currentIndex = int.parse(route[route.length-1]);
-          if (currentIndex == 2) {
-            Navigator.of(context).pushNamedAndRemoveUntil("Notifications", (Route<dynamic> route) => false, arguments: currentIndex);
-          } else if (currentIndex == 3) {
-            Navigator.of(context).pushNamedAndRemoveUntil("Chat", (Route<dynamic> route) => false, arguments: currentIndex);
-          } else {
-            Navigator.of(context).pushNamedAndRemoveUntil(routeFromMessage, (Route<dynamic> route) => false, arguments: currentIndex);
-          }
-        }
-      }
+      String route = message.data["route"];
+      // Handling OnClickNotification Firebase Messaging Notification
+      localNotificationService.onClickedNotification(context, route);
+    });
+    // Listen Dynamic Link Foreground / Background State
+    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
+      dynamicLinkBrandId = dynamicLinkData.link.queryParameters['id'];
+      checkBrandInvite();
+    }).onError((error) {
+      print(error.toString());
     });
     // Defining the Page Controller
     pageController = PageController(initialPage: currentIndex);
-    // Check if User minimum version
-    checkMinimumAppVersion();
     // Getting User Information
     getUserAndBrand();
+    // On StartUp Dialogs
+    launchOnStartUpDialogs();
+  }
+
+  // On StartUp Dialogs
+  Future<void> launchOnStartUpDialogs() async {
+    // First check if minimum version
+    print("Checking Minimum App Version...");
+    checkMinimumAppVersion();
+    print("Checking if invited into Brand...");
+    // Check if invited into Brand
+    checkBrandInvite();
+    print("Checking Notification Permissions...");
+    // Check Notification Permissions
+    var notificationString = await PermisionsService().checkUserNotificationsPermision();
+    if (notificationString == "Provisional" || notificationString == "Unknown") {
+      await PermisionsService().askUserNotificationsPermision();
+    }
+    print("Checking Location Permissions...");
+    // Check Location Permissions
+    await PermisionsService().getUserLocation();
+
   }
 
   // Init Device Sizes
@@ -167,14 +182,51 @@ class _MambaClientState extends State<MambaClient> {
   // Check version and Update App Dialog
   void checkMinimumAppVersion() async {
     // Check version
-    bool result = await _settingsDataService.checkIfMinimumAppVersion(appVersion);
-    if (result == false) {
+    List<bool> result = await _settingsDataService.checkIfMinimumAppVersion(appVersion);
+    print(result[0]);
+    print(result[1]);
+    if (result[0] == false) {
+      if (result[1]) {
+        Future.delayed(Duration.zero, () {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return WillPopScope(
+                onWillPop: () async => false,
+                child: AppUpdateDialog(
+                  isMandatory: true,
+                ),
+              );
+            },
+          );
+        });
+      } else {
+        Future.delayed(Duration.zero, () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AppUpdateDialog(
+                isMandatory: false,
+              );
+            },
+          );
+        });
+      }
+    }
+  }
+
+  // Check invited by Brand
+  void checkBrandInvite() async {
+    if (dynamicLinkBrandId != null && currentUser.brandsList.isEmpty) {
       // Start up Dialog
       Future.delayed(Duration.zero, () {
         return showDialog(
             context: context,
             builder: (_) {
-              return AppUpdateDialog();
+              return BrandInviteDialog(
+                  brandId: dynamicLinkBrandId,
+              );
             }
         );
       });
@@ -248,6 +300,18 @@ class _MambaClientState extends State<MambaClient> {
     setState(() {
       isLoading = false;
     });
+  }
+
+  // listenNotifications if User Taps on Notifications
+  Future<void> handleAndlistenNotifications(BuildContext context) async {
+    // Did Launch the App
+    await localNotificationService.didNotificationLaunch(context);
+    // Handle Local Notifications
+    await localNotificationService.handleLocalNotifications(context);
+    // Listen to the Notifications Stream
+    localNotificationService.onNotifications.stream.listen(
+        (payload) => localNotificationService.onClickedNotification(context, payload!)
+    );
   }
 
   @override
@@ -693,6 +757,7 @@ class _MambaClientState extends State<MambaClient> {
       currentIndex = value;
     });
     pageController.jumpToPage(value);
+    print(ModalRoute.of(context)?.settings.name);
   }
 }
 

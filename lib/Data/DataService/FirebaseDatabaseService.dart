@@ -2,21 +2,17 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Deprecated/ChatUsers.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Data/Models/NotificationEvent.dart';
-import 'package:mamba_castelldefels/Data/Models/Deprecated/Message.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Question.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
@@ -162,16 +158,18 @@ class FirebaseDatabaseService {
       return false;
   }
 
-  Future<bool> checkIfMinimumAppVersion(String clientAppVersion) async {
+  Future<List<bool>> checkIfMinimumAppVersion(String clientAppVersion) async {
     // Get Minimum Version from Settings Collection
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Settings").doc("MinimumAppVersion").get();
     String minimumAppVersion = _documentSnapshot.get("version");
-    print(minimumAppVersion);
-    print(clientAppVersion);
+    bool isMandatory = _documentSnapshot.get("isMandatory");
+    List<bool> result = [isMandatory];
     if (clientAppVersion == minimumAppVersion) {
-      return true;
+      result.insert(0, true);
+      return result;
     } else {
-      return false;
+      result.insert(0, false);
+      return result;
     }
   }
 
@@ -208,8 +206,45 @@ class FirebaseDatabaseService {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
-    UserCredential? authResult =
-    await _auth
+    UserCredential? authResult;
+
+    try {
+      authResult = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((userCredential) async {
+        if (userCredential != null && userCredential.user != null) {
+          await _firestore.collection(users).doc(userCredential.user!.uid).set({
+            "name": null,
+            "firstName": null,
+            "lastName": null,
+            "nick": null,
+            "notificationToken": null,
+            "email": email,
+            "imageUrl": null,
+            "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
+            "isFirst": true,
+            "isTrainer": null,
+            "isPrivate": true,
+            "gender": null,
+            "dateJoined": formatted,
+            "dateOfBirth": null,
+            "idioma": idioma,
+            "brandID": null,
+            "isAdmin": false,
+          }).catchError((err) {
+            print(err);
+            firestoreError = true;
+          });
+          await userCredential.user!.sendEmailVerification();
+        }
+        return userCredential;
+      });
+    } catch (e) {
+      authError = true;
+    }
+
+    /*
+    UserCredential? authResult = await _auth
         .createUserWithEmailAndPassword(email: email, password: password)
         .then((userCredential) async {
       if (userCredential != null && userCredential.user != null) {
@@ -239,14 +274,14 @@ class FirebaseDatabaseService {
       }
       return userCredential;
     }).catchError((err) {
-      print(err);
       authError = true;
     });
+     */
 
     if (authResult != null && authResult.user != null) {
-      if (authError)
+      if (authError) {
         return -1;
-      else if (firestoreError)
+      } else if (firestoreError)
         return -2;
       else
         return 0;
@@ -847,6 +882,24 @@ class FirebaseDatabaseService {
       return users;
     }
 
+    Future<List<Brand>> getEventBrands(String eventId) async {
+      List<Brand> brands = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(events)
+          .doc(eventId)
+          .collection("Brands")
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        brands.add(
+          Brand.fromObjectOnlyCoverData(
+            querySnapshot.docs[i].id,
+            querySnapshot.docs[i]
+          )
+        );
+      }
+      return brands;
+    }
+
     Future<Location> getEventLocation(String eventId) async {
       QuerySnapshot querySnapshot = await _firestore
           .collection(events)
@@ -859,7 +912,7 @@ class FirebaseDatabaseService {
       return Location();
     }
 
-    Future<int?> getEventUserFeedback(String eventId, String userId) async {
+    Future<double?> getEventUserFeedback(String eventId, String userId) async {
       try {
         DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
           await _firestore
@@ -868,7 +921,7 @@ class FirebaseDatabaseService {
             .collection("Users")
             .doc(userId)
             .get();
-        int feedbackScore = _documentSnapshot.get("feedbackScore");
+        double feedbackScore = _documentSnapshot.get("intensityScore");
         return feedbackScore;
       } catch (e) {
         return null;
@@ -924,7 +977,6 @@ class FirebaseDatabaseService {
       List<int> result = [eventsList.length, eventsMonth.length];
       return result;
     }
-
 
     Future<Brand> getBrandDetails(String brandID) async {
       DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
@@ -1085,71 +1137,157 @@ class FirebaseDatabaseService {
 
     // Events Sesions
     // Add Event
-    Future<String> addEvent(String? brandID, String? title, String? description, Timestamp doneAt,
-        String? year, String? month, String? day, String? hour, String? minute,
-        double? duration, String? locationId, int? maxMembers,
-        var selectedTrainers) async {
+    Future<String> addEvent(Event event) async {
       var eventID = Uuid().v1();
       User? currentUser = await getCurrentUser();
-      Timestamp createdAt = Timestamp.fromDate(DateTime.now());
       try {
+        // Create Document in "\Events"
         await _firestore.collection(events).doc(eventID).set({
+          "isPrivate": event.isPrivate,
+          "eventGroupId": event.eventGroupId,
           "brandID": currentBrand.id,
           "creatorID": currentUser!.uid,
-          "title": title,
-          "description": description,
-          "doneAt": doneAt,
-          "createdAt": createdAt,
-          "year": year,
-          "month": month,
-          "day": day,
-          "hour": hour,
-          "minute": minute,
-          "duration": duration,
-          "locationId": locationId,
-          "numClients": 0,
-          "numTrainers": selectedTrainers.length,
-          "maxMembers": maxMembers,
-          "joinedMembers": [],
-          "selectedTrainers": selectedTrainers,
+          "title": event.title,
+          "description": event.description,
+          "doneAt": event.doneAt,
+          "createdAt": event.createdAt,
+          "year": event.year,
+          "month": event.month,
+          "day": event.day,
+          "hour": event.hour,
+          "minute": event.minute,
+          "duration": event.duration,
+          "locationId": event.locationId,
+          "numClients": event.numClients,
+          "numTrainers": event.numTrainers,
+          "maxMembers": event.maxMembers,
         });
+        // If Event is Private
+        // Add to Events/Private Events/PrivateEvents for Reporting Purposes
+        if (event.isPrivate!) {
+          await _firestore
+          .collection(events)
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventID).
+          set({
+            "isPrivate": event.isPrivate,
+            "eventGroupId": event.eventGroupId,
+            "brandID": currentBrand.id,
+            "creatorID": currentUser.uid,
+            "title": event.title,
+            "description": event.description,
+            "doneAt": event.doneAt,
+            "createdAt": event.createdAt,
+            "year": event.year,
+            "month": event.month,
+            "day": event.day,
+            "hour": event.hour,
+            "minute": event.minute,
+            "duration": event.duration,
+            "locationId": event.locationId,
+            "numClients": event.numClients,
+            "numTrainers": event.numTrainers,
+            "maxMembers": event.maxMembers,
+          });
+        }
+        // Set the Brand Document in "\Events\Brands"
         await _firestore.collection(events).doc(eventID)
             .collection("Brands")
             .doc(currentBrand.id)
             .set({
-          "name": currentBrand.name,
-          "logoUrl": currentBrand.logoUrl,
-        });
-        Location location = await this.getSingleLocation(locationId!);
+              "name": currentBrand.name,
+              "logoUrl": currentBrand.logoUrl,
+            });
+        // Set the Location Document in "\Events\Location"
+        Location location = await this.getSingleLocation(event.locationId!);
         await _firestore.collection(events).doc(eventID)
             .collection("Locations")
-            .doc(locationId)
+            .doc(event.locationId!)
             .set({
-          "description": location.description,
-          "longitude": location.longitude,
-          "latitude": location.latitude,
-        });
-        for (var i = 0; i < selectedTrainers.length; i++) {
-          Usuario user = await this.getUserDetails(selectedTrainers[i]);
-          await _firestore.collection(events).doc(eventID)
-              .collection("Users")
-              .doc(user.id)
-              .set({
-            "name": user.name,
-            "firstName": user.firstName,
-            "lastName": user.lastName,
-            "imageUrl": user.imageUrl,
-            "noImageUrl": user.noImageUrl,
-            "isTrainer": user.isTrainer,
-            "isPrivate": user.isPrivate,
-            "notificationToken": user.notificationToken,
-            "joinedAt": createdAt,
-          });
+              "description": location.description,
+              "longitude": location.longitude,
+              "latitude": location.latitude,
+            });
+        // Add Event To Brands/Events Subcollection To Avoid Cloud Function Doing It :D
+        // We do it like this to avoid Cold Start and make the User wait.
+        await _firestore
+            .collection(brands)
+            .doc(currentBrand.id!)
+            .collection("Events")
+            .doc(eventID).
+            set({
+              "isPrivate": event.isPrivate,
+              "title": event.title,
+              "doneAt": event.doneAt,
+              "year": event.year,
+              "month": event.month,
+              "day": event.day,
+              "hour": event.hour,
+              "minute": event.minute,
+              "duration": event.duration,
+              "numTrainers": event.numTrainers,
+              "numClients": event.numClients,
+              "maxMembers": event.maxMembers,
+            });
+        // If Event is Private
+        // Add to Brands/Events/Private Events/PrivateEvents for Reporting Purposes
+        if (event.isPrivate!) {
+          await _firestore
+            .collection(brands)
+            .doc(currentBrand.id!)
+            .collection("Events")
+            .doc("Private Events")
+            .collection("Private Events")
+            .doc(eventID).
+            set({
+              "isPrivate": event.isPrivate,
+              "title": event.title,
+              "doneAt": event.doneAt,
+              "year": event.year,
+              "month": event.month,
+              "day": event.day,
+              "hour": event.hour,
+              "minute": event.minute,
+              "duration": event.duration,
+              "numTrainers": event.numTrainers,
+              "numClients": event.numClients,
+              "maxMembers": event.maxMembers,
+            });
         }
         return eventID;
       } catch (e) {
         print(e.toString());
         return "Error";
+      }
+    }
+
+    // Add Event
+    Future<dynamic> getRecurrentEventGroup(String eventGroupId) async {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      await _firestore
+          .collection(events)
+          .doc("Recurrent Events")
+          .collection("Recurrent Events")
+          .doc(eventGroupId)
+          .get();
+      return _documentSnapshot.get("groupEvents");
+    }
+
+    // Add Event
+    Future<void> addRecurrentEventGroups(String eventGroupId, List<String> eventIds) async {
+      try {
+        // Create Document in "\Event Groups"
+        await _firestore
+            .collection(events)
+            .doc("Recurrent Events")
+            .collection("Recurrent Events")
+            .doc(eventGroupId)
+            .set({
+              "groupEvents": eventIds
+            });
+      } catch (e) {
+        print(e.toString());
       }
     }
 
@@ -1162,6 +1300,18 @@ class FirebaseDatabaseService {
       } catch (e) {
         print(e);
         return Event();
+      }
+    }
+
+    // Get Single Event
+    Future<bool> checkIfEventExists(String eid) async {
+      DocumentSnapshot documentSnapshot = await _firestore.collection(events)
+          .doc(eid)
+          .get();
+      if (documentSnapshot.exists) {
+        return true;
+      } else {
+        return false;
       }
     }
 
@@ -1453,9 +1603,45 @@ class FirebaseDatabaseService {
     }
 
     // Delete Event
-    Future<void> deleteEvent(String id) async {
+    Future<void> deleteEvent(String id, [bool isPrivate = false]) async {
       try {
+        // Delete Event From \Events Collection
         await _firestore.collection(events).doc(id).delete();
+        // If isPrivate Delete From \Events\Private Events\Private Events Subcollection
+        if (isPrivate) {
+          await _firestore
+              .collection(events)
+              .doc("Private Events")
+              .collection("Private Events")
+              .doc(id)
+              .delete();
+        }
+        // Delete Event To Brands/Events Subcollection To Avoid Cloud Function Doing It :D
+        // We do it like this to avoid Cold Start and make the User wait.
+        await _firestore
+            .collection(brands)
+            .doc(currentBrand.id!)
+            .collection("Events")
+            .doc(id)
+            .delete();
+        // Delete Event To Events/Brand Subcollection To Avoid Cloud Function Doing It :D
+        await _firestore
+            .collection(events)
+            .doc(id)
+            .collection("Brands")
+            .doc(currentBrand.id!)
+            .delete();
+        // If isPrivate Delete From Brands\Events\Private Events\Private Events Subcollection
+        if (isPrivate) {
+          await _firestore
+              .collection(brands)
+              .doc(currentBrand.id!)
+              .collection("Events")
+              .doc("Private Events")
+              .collection("Private Events")
+              .doc(id)
+              .delete();
+        }
       } catch (e) {
         print(e.toString());
       }
@@ -1710,37 +1896,101 @@ class FirebaseDatabaseService {
     }
 
     // Update Event
-    Future<void> updateEvent(String? id,
-        String? title,
-        String? description,
-        String? year,
-        String? month,
-        String? day,
-        String? hour,
-        String? minute,
-        double? duration,
-        String? locationId,
-        int? maxMembers,
-        var selectedTrainers) async {
+    Future<void> updateEvent(Event event) async {
       try {
-        await _firestore.collection(events).doc(id).update({
-          "title": title,
-          "description": description,
-          "year": year,
-          "month": month,
-          "day": day,
-          "hour": hour,
-          "minute": minute,
-          "duration": duration,
-          "locationId": locationId,
-          "maxMembers": maxMembers,
-          "selectedTrainers": selectedTrainers,
+        await _firestore.collection(events).doc(event.id).update({
+          "title": event.title,
+          "description": event.description,
+          "doneAt": event.doneAt,
+          "createdAt": event.createdAt,
+          "year": event.year,
+          "month": event.month,
+          "day": event.day,
+          "hour": event.hour,
+          "minute": event.minute,
+          "duration": event.duration,
+          "locationId": event.locationId,
+          "numClients": event.numClients,
+          "numTrainers": event.numTrainers,
+          "maxMembers": event.maxMembers,
         });
+        // If Event is Private
+        // Update to Events/Private Events/PrivateEvents for Reporting Purposes
+        if (event.isPrivate!) {
+          await _firestore
+          .collection(events)
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(event.id!)
+          .update({
+            "title": event.title,
+            "description": event.description,
+            "doneAt": event.doneAt,
+            "createdAt": event.createdAt,
+            "year": event.year,
+            "month": event.month,
+            "day": event.day,
+            "hour": event.hour,
+            "minute": event.minute,
+            "duration": event.duration,
+            "locationId": event.locationId,
+            "numClients": event.numClients,
+            "numTrainers": event.numTrainers,
+            "maxMembers": event.maxMembers,
+          });
+        }
       } catch (e) {
         print(e.toString());
       }
     }
 
+    // Update Event Location
+    Future<void> updateEventNumberMembers(String eventId, int numberClients, int numberTrainers) async {
+      try {
+        // Delete Previous Location
+        await _firestore
+            .collection(events)
+            .doc(eventId)
+            .update({
+              "numClients": numberClients,
+              "numTrainers": numberTrainers,
+            });
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+
+    // Update Event Location
+    Future<void> updateRecurrentEventGroup(String eventGroupId, var eventIds) async {
+      try {
+        // Create Document in "\Event Groups"
+        await _firestore
+            .collection(events)
+            .doc("Recurrent Events")
+            .collection("Recurrent Events")
+            .doc(eventGroupId)
+            .update({
+              "groupEvents": eventIds
+            });
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+
+    // Update Event Location
+    Future<void> deleteRecurrentEventGroup(String eventGroupId) async {
+      try {
+        // Create Document in "\Event Groups"
+        await _firestore
+            .collection(events)
+            .doc("Recurrent Events")
+            .collection("Recurrent Events")
+            .doc(eventGroupId)
+            .delete();
+      } catch (e) {
+        print(e.toString());
+      }
+    }
 
     // Update Event Location
     Future<void> updateEventLocation(String eventId, String locationId, String previousLocation) async {
@@ -1770,16 +2020,29 @@ class FirebaseDatabaseService {
     }
 
     // Update Event User Feedback
-    Future<void> updateEventFeedback(String eventId, String userId, int score) async {
+    Future<void> addEventFeedback(String eventId, String userId, double intensityScore) async {
       try {
         Timestamp feedbackAt = Timestamp.fromDate(DateTime.now());
+        // Add Feedback to Events Collection
         await _firestore
             .collection(events)
             .doc(eventId)
             .collection("Users")
             .doc(userId)
             .update({
-              "feedbackScore": score,
+              "intensityScore": intensityScore,
+              "feedbackAt": feedbackAt,
+            }).catchError((err) {
+              print(err);
+            });
+        // Add Feedback to Users Events Collection
+        await _firestore
+            .collection(users)
+            .doc(userId)
+            .collection("Events")
+            .doc(userId)
+            .update({
+              "intensityScore": intensityScore,
               "feedbackAt": feedbackAt,
             }).catchError((err) {
               print(err);
@@ -2252,6 +2515,87 @@ class FirebaseDatabaseService {
     }
 
     // Notifications
+
+    // Get First Notifications
+    Future<void> addLocalNotification(String userId, ReceivedNotification notification) async {
+        String id = notification.id!.toString();
+        Timestamp now = Timestamp.now();
+        // Event Id
+        String payloadFeedback = notification.payload!.substring(0,2);
+        String payloadSubString = notification.payload!.substring(2);
+        bool isFeedback = payloadFeedback == "F-";
+        String eventId = isFeedback ? payloadSubString : notification.payload!;
+        // Firebase Query
+        await _firestore
+            .collection(users)
+            .doc(userId)
+            .collection("Local Notifications")
+            .doc(id)
+            .set({
+                "eventId": eventId,
+                "payload": notification.payload!,
+                "createdAt": now,
+                "firesAt": notification.firesAt!,
+            });
+    }
+
+    // Get First Notifications
+    Future<void> deleteLocalNotification(String userId, String notificationId) async {
+        await _firestore
+            .collection(users)
+            .doc(userId)
+            .collection("Local Notifications")
+            .doc(notificationId)
+            .delete();
+      }
+
+    // Get First Notifications
+    Future<List<ReceivedNotification>> getLocalNotifications(String userId) async {
+      List<ReceivedNotification> notis = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Local Notifications")
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        notis.add(
+            ReceivedNotification.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i])
+        );
+      }
+      return notis;
+    }
+
+    // Get First Notifications
+    Future<ReceivedNotification?> getIndividualLocalNotification(String userId, String notificationId) async {
+      try {
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+        await _firestore.collection(users)
+            .doc(userId)
+            .collection("Local Notifications")
+            .doc(notificationId)
+            .get();
+        return ReceivedNotification.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Get First Notifications
+    Future<List<ReceivedNotification>> findEventLocalNotification(String userId, String eventId) async {
+      List<ReceivedNotification> notis = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Local Notifications")
+          .where("eventId", isEqualTo: eventId)
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        notis.add(
+            ReceivedNotification.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i])
+        );
+      }
+      return notis;
+    }
 
     // Get First Notifications
     Future <List<NotificationEvent>> getUserFirstNotificationsLimit10(String userId) async {

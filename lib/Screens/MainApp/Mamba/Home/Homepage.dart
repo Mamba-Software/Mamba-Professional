@@ -1,15 +1,18 @@
 import 'dart:math';
-
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
@@ -20,12 +23,12 @@ import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/CancelRequestConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Chat/ChatCore/ChatCore.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Marca/Trainer/SinMarca/RegistrarMarca.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Home/Notifications/Notifications.dart';
+import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/NoBrandScreens/RegistrarMarca.dart';
 import 'package:shimmer/shimmer.dart';
+import '../Brand/NoBrandScreens/BrandIntroScreen.dart';
 
 import '../../../../Globals/Widgets/GroupOfComponents/YourBrands/YourBrandsListTile.dart';
 
@@ -93,7 +96,6 @@ class _HomepageState extends State<Homepage> {
       //brandlist = await _brandDataService.getAllBrands();
     }
     if (mounted) {
-      await Future.delayed(Duration(milliseconds: 500));
       setState(() {
         isLoading = false;
       });
@@ -163,6 +165,13 @@ class _HomepageState extends State<Homepage> {
           child: buildEventContainer(item, safeAreaHeight*0.20, safeAreaWidth, buildRandomImage(imagesEventsNum)!, buildBadge(todayEvents.indexOf(item)))
         ))
         .toList();
+    setState(() {
+      todayEvents = todayEvents;
+      todayEventsLabels = todayEventsLabels;
+      _current = _current;
+      imagesEvents = imagesEvents;
+      eventSliders = eventSliders;
+    });
   }
 
   // Get user pending requests
@@ -189,11 +198,11 @@ class _HomepageState extends State<Homepage> {
         CupertinoPageRoute<Null>(
           builder: (context) => Notifications(),
         )
-    ).whenComplete(() {
+    ).whenComplete(() async {
+      var temp = await _userDataService.getUnreadNotifications(currentUser.id!);
       setState(() {
-        isLoading = true;
+        unreadNotifications = temp;
       });
-      initProfileHome();
     });
   }
 
@@ -204,11 +213,11 @@ class _HomepageState extends State<Homepage> {
         CupertinoPageRoute<Null>(
           builder: (context) => ChatCore(),
         )
-    ).whenComplete(() {
+    ).whenComplete(() async {
+      var temp = await _userDataService.getUnreadConversations(currentUser.id!);
       setState(() {
-        isLoading = true;
+        unreadChats = temp;
       });
-      initProfileHome();
     });
   }
 
@@ -222,11 +231,9 @@ class _HomepageState extends State<Homepage> {
             eventId: eventId,
           ),
         )
-    ).whenComplete(() {
-      setState(() {
-        isLoading = true;
-      });
-      initProfileHome();
+    ).whenComplete(() async {
+      print("hola");
+      await getUserEventsToday();
     });
   }
 
@@ -239,11 +246,8 @@ class _HomepageState extends State<Homepage> {
               brandId: currentBrand.id!,
             )
         )
-    ).whenComplete(() {
-      setState(() {
-        isLoading = true;
-      });
-      initProfileHome();
+    ).whenComplete(() async {
+      await getUserEventsToday();
     });
   }
 
@@ -581,23 +585,66 @@ class _HomepageState extends State<Homepage> {
                   Container(
                     width: width*0.8,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Flexible(
-                          child: Text(event.title!,
-                              style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white, fontWeight: FontWeight.w600), textAlign: TextAlign.left),
+                        Container(
+                          width: width*0.4,
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: Text(event.title!,
+                                    style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white, fontWeight: FontWeight.w600), textAlign: TextAlign.left),
+                              ),
+                            ],
+                          ),
                         ),
-                        SizedBox(width: width*0.05),
-                        badge,
+                        Row(
+                          children: [
+                            badge,
+                            SizedBox(width: width*0.02),
+                            Container(
+                              child: event.isPrivate! ? Row(
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)!.private,
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                      textAlign: TextAlign.right
+                                  ),
+                                  SizedBox(width: width*0.01),
+                                  Icon(
+                                    Icons.lock_outlined,
+                                    color: AppColors.white,
+                                    size: width*0.05,
+                                  ),
+                                ],
+                              ) : Row(
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)!.group,
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                      textAlign: TextAlign.right
+                                  ),
+                                  SizedBox(width: width*0.01),
+                                  Icon(
+                                    Icons.groups,
+                                    color: AppColors.white,
+                                    size: width*0.05,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
                   SizedBox(height: height*0.05),
                   Container(
-                    width: width*0.7,
+                    width: width*0.8,
                     child: FittedBox(
                       fit: BoxFit.fitWidth,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Icon(
                             Icons.schedule,
@@ -703,11 +750,13 @@ class _HomepageState extends State<Homepage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  /*
                   Flexible(
                     child: Text(AppLocalizations.of(context)!.toDo,
                         style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 10), textAlign: TextAlign.left),
                   ),
                   SizedBox(width: safeAreaWidth*0.01,),
+                   */
                   Icon(
                     Icons.update_outlined,
                     color: Colors.white,
@@ -741,11 +790,13 @@ class _HomepageState extends State<Homepage> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  /*
                   Flexible(
                     child: Text(AppLocalizations.of(context)!.doing,
                         style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 10), textAlign: TextAlign.left),
                   ),
                   SizedBox(width: safeAreaWidth*0.01,),
+                   */
                   Icon(
                     Icons.hourglass_top_outlined,
                     color: Colors.white,
@@ -779,9 +830,11 @@ class _HomepageState extends State<Homepage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  /*
                   Text(AppLocalizations.of(context)!.finished,
                       style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 10), textAlign: TextAlign.left),
                   SizedBox(width: safeAreaWidth*0.01,),
+                   */
                   Icon(
                     Icons.done_outline_outlined,
                     color: Colors.white,
@@ -965,16 +1018,24 @@ class _HomepageState extends State<Homepage> {
               padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
               child: FloatingActionButton.extended(
                 heroTag: "46",
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  bool? result = await Navigator.push(
                       context,
-                      CupertinoPageRoute<Null>(
-                        builder: (context) => RegistrarMarca(
-                          locale: Localizations.localeOf(context),
-                        ),
-                        settings: RouteSettings(name: 'RegistrarMarca'),
+                      CupertinoPageRoute<bool>(
+                        builder: (context) => BrandIntroScreen(),
                       )
                   );
+                  if (result != null && result) {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute<Null>(
+                          builder: (context) => RegistrarMarca(
+                            locale: Localizations.localeOf(context),
+                          ),
+                          settings: RouteSettings(name: 'RegistrarMarca'),
+                        )
+                    );
+                  }
                 },
                 icon: Icon(Icons.add_circle_outline, size: MediaQuery.of(context).size.height*0.04, color: Colors.white,),
                 label: Text(AppLocalizations.of(context)!.createBrand, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),),

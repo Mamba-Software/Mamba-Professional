@@ -1,0 +1,288 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+
+class SelectTrainersEvent extends StatefulWidget {
+  List<Usuario> selectedTrainers = [];  
+
+  SelectTrainersEvent({Key? key, required this.selectedTrainers}) : super(key: key);
+
+  @override
+  _SelectTrainersEventState createState() => _SelectTrainersEventState();
+}
+
+class _SelectTrainersEventState extends State<SelectTrainersEvent> {
+
+  // Brand Data Service
+  var _brandDataService = BrandDataService();
+  // Boolean Loading
+  bool isLoading = false;
+  // Search Controller
+  bool searchClicked = false;
+  var searchController = TextEditingController();
+  // Members Page
+  List<Usuario> allTrainers = [];
+  List<Usuario> filteredTrainers = [];
+  List<Usuario> selectedTrainers = [];
+
+  Future<void> getAllTrainers() async {
+    allTrainers = await _brandDataService.getBrandTrainers(currentBrand.id!);
+    // Sort Clients
+    allTrainers.sort((a, b) {
+      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+    });
+    filteredTrainers = allTrainers;
+    // Selected Clients
+    for (var user in widget.selectedTrainers) {
+      String id = user.id!;
+      var index = filteredTrainers.indexWhere((element) => element.id! == id);
+      selectedTrainers.add(filteredTrainers[index]);
+    }
+    // Return Future Delayed
+    await Future.delayed(const Duration(milliseconds: 500));
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  void filterSearchResults(String query) {
+    List<Usuario> usersFiltered = [];
+    if (query.isNotEmpty || query != "") {
+      for (var item in allTrainers) {
+        if (item.name!.toLowerCase().startsWith(query)) {
+          usersFiltered.add(item);
+        }
+      }
+      setState(() {
+        filteredTrainers = usersFiltered;
+      });
+    } else {
+      setState(() {
+        filteredTrainers = allTrainers;
+      });
+    }
+  }
+
+  String getUsersFullName(Usuario user) {
+    return "${user.firstName} ${user.lastName}";
+  }
+
+  Color getColor(Set<MaterialState> states) {
+    if (states.contains(MaterialState.selected)) {
+      return Theme.of(context).accentColor;
+    } else {
+      return Colors.transparent;
+    }
+  }
+
+  @override
+  initState() {
+    isLoading = true;
+    getAllTrainers();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: null,
+      body:  isLoading ?
+      Center(child: LoadingViewPurple())
+          :
+      DefaultTabController(
+        length: 2,
+        initialIndex: 0,
+        child: Scaffold(
+          appBar: AppBar(
+            title: TextField(
+              controller: searchController,
+              onChanged: (value) {
+                filterSearchResults(value);
+              },
+              style: Theme.of(context).textTheme.bodyText2,
+              textAlign: TextAlign.left,
+              decoration: InputDecoration(
+                hintStyle: Theme.of(context).textTheme.caption,
+                hintText: AppLocalizations.of(context)!.search,
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                contentPadding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.0),
+              ),
+            ),
+            centerTitle: true,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+              onPressed: () {
+                Navigator.pop(context, null);
+                selectedTrainers = [];
+              },
+            ),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  searchController.clear();
+                  filterSearchResults("");
+                },
+                icon: Icon(Icons.clear, color: AppColors.grey,),
+              ),
+            ],
+          ),
+          resizeToAvoidBottomInset: true,
+          backgroundColor: Colors.transparent,
+          body: Column(
+              children: [
+                selectedTrainers.length > 0 ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05,),
+                  color: Theme.of(context).backgroundColor,
+                  height: MediaQuery.of(context).size.height*0.04,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Container(
+                        width: MediaQuery.of(context).size.width*0.80,
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: selectedTrainers.length,
+                            itemBuilder: (context, index) {
+                              Usuario user = selectedTrainers[index];
+                              return Center(
+                                child: Text(
+                                  index == 0 && selectedTrainers.length == 1 || index == selectedTrainers.length-1 ? user.name! : user.name! + ", ",
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                ),
+                              );
+                            }
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width*0.09,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              "( "+selectedTrainers.length.toString()+" )",
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 8),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ) : SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                Expanded(
+                  child: Container(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: filteredTrainers.length,
+                        itemBuilder: (context, index) {
+                          Usuario user = filteredTrainers[index];
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 0),
+                            child: ListTile(
+                              tileColor: selectedTrainers.contains(user) ? Theme.of(context).backgroundColor.withOpacity(0.5) : Theme.of(context).scaffoldBackgroundColor,
+                              leading: Stack(
+                                alignment: Alignment.bottomRight,
+                                children: [
+                                  CircularImage(
+                                    size: MediaQuery.of(context).size.width*0.15,
+                                    image: user.imageUrl,
+                                    color: Theme.of(context).primaryColor,
+                                    borderWidth: 1.0,
+                                  ),
+                                  Positioned(
+                                    top: MediaQuery.of(context).size.width*0.07,
+                                    left: MediaQuery.of(context).size.width*0.07,
+                                    child: Theme(
+                                        data: ThemeData(unselectedWidgetColor: Colors.transparent),
+                                        child: Checkbox(
+                                          checkColor: Colors.white,
+                                          tristate: false,
+                                          fillColor: MaterialStateProperty.resolveWith(getColor),
+                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          value: selectedTrainers.contains(user),
+                                          shape: CircleBorder(
+                                              side: BorderSide.none
+                                          ),
+                                          onChanged: (bool? value) {},
+                                        ),
+                                    ),
+                                  ),
+                                ]
+                              ),
+                              title: Text(
+                                getUsersFullName(user),
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.left,
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "@${user.nick!}",
+                                    style: Theme.of(context).textTheme.caption,
+                                  ),
+                                ],
+                              ),
+                              onTap: () {
+                                var selectedUsers = selectedTrainers;
+                                if (selectedUsers.contains(user)) {
+                                  selectedUsers.remove(user);
+                                  setState(() {
+                                    selectedTrainers = selectedUsers;
+                                  });
+                                } else {
+                                  selectedUsers.add(user);
+                                  setState(() {
+                                    selectedTrainers = selectedUsers;
+                                  });
+                                }
+                              },
+                            ),
+                          );
+                        }
+                    ),
+                  ),
+                ),
+              ],
+          ),
+          floatingActionButton: Padding(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+            child: Container(
+              height: MediaQuery.of(context).size.width*0.17,
+              width: MediaQuery.of(context).size.width*0.17,
+              child: FloatingActionButton(
+                heroTag: "84",
+                onPressed: () {
+                  Navigator.pop(context, selectedTrainers);
+                },
+                backgroundColor: Theme.of(context).accentColor,
+                child: Icon(
+                  Icons.person_add,
+                  size: MediaQuery.of(context).size.width*0.07,
+                  color: AppColors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+}

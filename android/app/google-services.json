@@ -7,20 +7,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:331547241606:android:b352fbacbdd2666a7d3507",
+        "mobilesdk_app_id": "1:331547241606:android:3ae9fe3e0861fd0c7d3507",
         "android_client_info": {
-          "package_name": "com.mamba.castelldefels.mamba_castelldefels"
+          "package_name": "com.mamba.mambaprofessionalapp"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "331547241606-5f7i5mof6lbat2t1q6unmlmclppgtm04.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.mamba.castelldefels.mamba_castelldefels",
-            "certificate_hash": "f77b9eee859fd793718801327336b80f7a57f7ff"
-          }
-        },
         {
           "client_id": "331547241606-kan54dkiql9kp2cgk41fata2nubl239s.apps.googleusercontent.com",
           "client_type": 3
@@ -57,6 +49,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "331547241606-a3sl6m287a306tlvtooc02v9dot8a545.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mamba.mambastyleapp",
+            "certificate_hash": "3dc288cc70d7b86e5f28b56beebae121b0e981c9"
+          }
+        },
         {
           "client_id": "331547241606-kan54dkiql9kp2cgk41fata2nubl239s.apps.googleusercontent.com",
           "client_type": 3

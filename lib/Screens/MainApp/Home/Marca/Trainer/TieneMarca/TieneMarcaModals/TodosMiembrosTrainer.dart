@@ -647,7 +647,6 @@ class _TodosMiembrosTrainerState extends State<TodosMiembrosTrainer> with Ticker
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
