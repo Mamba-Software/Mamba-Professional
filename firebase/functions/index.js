@@ -1526,13 +1526,17 @@ exports.userJoinsEvent = functions
         "numClients": numClients,
         "numTrainers": numTrainers,
       });*/
+      var isPrivate = false;
+      if (eventDoc.isPrivate != undefined) {
+        isPrivate == eventDoc.isPrivate;
+      }
       // Add Event To Users Event Subcollection
       await db
         .collection("Users")
         .doc(userId)
         .collection("Events")
         .doc(eventId).set({
-          "isPrivate": eventDoc.isPrivate,
+          "isPrivate": isPrivate,
           "title": eventDoc.title,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
