@@ -1,12 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mamba.mambastyleapp">
+    package="com.mamba.mambaprofessionalapp">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.VIBRATE" />
     <application
-        android:label="Mamba"
+        android:label="Mamba Pro"
         android:icon="@mipmap/ic_launcher">
        <!-- Required to fetch data from the internet. -->
        <activity
@@ -50,13 +50,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <receiver android:name="com.mamba.mambastyleapp.ScheduledNotificationBootReceiver">
+        <receiver android:name="com.mamba.mambaprofessionalapp.ScheduledNotificationBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
             </intent-filter>
         </receiver>
-        <receiver android:name="com.mamba.mambastyleapp.ScheduledNotificationReceiver" />
+        <receiver android:name="com.mamba.mambaprofessionalapp.ScheduledNotificationReceiver" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
