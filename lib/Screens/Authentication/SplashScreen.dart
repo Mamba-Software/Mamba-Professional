@@ -40,6 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
   // Data Base Access
   var _userDataService = new UserDataService();
   var _brandDataService = new BrandDataService();
+  var _libraryDataService = new LibraryDataService();
 
   @override
   initState() {
@@ -51,15 +52,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> initColorsList() async {
     currentColors =  await _libraryDataService.getColors();
-  }
-
-  Future<void> initDynamicLinks() async {
-    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
-      brandPath = dynamicLinkData.link;
-    }).onError((error) {
-      print('onLink error');
-      print(error.message);
-    });
   }
 
   void checkAndGetUserDetails() async {
