@@ -1,4 +1,4 @@
-import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -13,7 +13,7 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
-import '../DataService/BrandDataService.dart';
+import '../DataService/Brand/BrandDataService.dart';
 
 class ScriptsDatabaseService {
   // Firebase Instances

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
-import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -10,7 +10,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../../../../Data/Models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../../../Data/DataService/BrandDataService.dart';
+import '../../../../../Data/DataService/Brand/BrandDataService.dart';
 import '../../../../../Data/Models/Brand.dart';
 
 class BrandEventHistoryPage extends StatefulWidget {

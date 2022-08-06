@@ -4,8 +4,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
@@ -16,7 +16,7 @@ import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/Mamba.dart';
 import 'package:provider/provider.dart';
 
-import '../../Data/DataService/LibraryDataService.dart';
+import '../../Data/DataService/Library/LibraryDataService.dart';
 import '../../Globals/Widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
 import 'OnboardingScreen.dart';
 
@@ -199,7 +199,6 @@ class _SplashScreenState extends State<SplashScreen> {
     print("This user has the System Theme On");
     // Get Current User Unread Notifications and Chats
     unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
-    unreadChats = await _userDataService.getUnreadConversations(currentUser.id!);
     // Get Current User Brand, if any.
     // WAIT TO AVOID PROBLEMS DUE TO CLOUD FUNCTIONS NOT BEING INSTANTANEOUS.
     await Future.delayed(const Duration(seconds: 3));

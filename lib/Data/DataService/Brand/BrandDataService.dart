@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandFirebaseCalls.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'dart:io';
-import '../Models/Bono.dart';
-import '../Models/Condition.dart';
-import 'FirebaseDatabaseService.dart';
+import '../../Models/Bono.dart';
+import '../../Models/Condition.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class BrandDataService {
 
-  final _firebase = FirebaseDatabaseService();
+  final _firebase = BrandFirebaseCalls();
 
   // Check Data
   Future<bool> checkIfBrandExists(String brandId) => _firebase.checkIfBrandExists(brandId);

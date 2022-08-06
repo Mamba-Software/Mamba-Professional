@@ -1,16 +1,16 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserFirebaseCalls.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'FirebaseDatabaseService.dart';
 
 // This class gives access to all of the Firebase Backend of the User Object.
 class UserDataService {
 
-  final _firebase = FirebaseDatabaseService();
+  final _firebase = UserFirebaseCalls();
 
   // Authentication
   Future<User?> getCurrentUser() => _firebase.getCurrentUser();
@@ -29,7 +29,6 @@ class UserDataService {
   Future<List<NotificationEvent>> getUserFirstNotificationsLimit10(String userId) => _firebase.getUserFirstNotificationsLimit10(userId);
   Future<List<NotificationEvent>> getUserMoreNotificationsLimit10(String userId, String notifId) => _firebase.getUserMoreNotificationsLimit10(userId, notifId);
   Future<int> getUnreadNotifications(String userId) => _firebase.getUnreadNotifications(userId);
-  Future<int> getUnreadConversations(String userId) => _firebase.getUnreadConversations(userId);
   Future<String> getBonoRequest(String userId, String brandId) => _firebase.getBonoRequest(userId, brandId);
   Future<String> getBonoUser(String userId, String brandId) => _firebase.getBonoUser(userId, brandId);
   Future<List<int>> getUserFavourites(String brandId, String userId) => _firebase.getUserFavourites(brandId, userId);

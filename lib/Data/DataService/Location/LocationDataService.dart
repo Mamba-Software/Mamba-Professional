@@ -11,7 +11,7 @@ import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Question.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'FirebaseDatabaseService.dart';
+import '../FirebaseDatabaseService.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class LocationDataService {
