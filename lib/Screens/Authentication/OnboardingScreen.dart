@@ -19,7 +19,7 @@ import '../../Globals/Utils/Images/ImageUtils.dart';
 import '../../Globals/Widgets/Components/Gender/GenderWidget.dart';
 import '../../Globals/Widgets/Components/Images/CircularImage.dart';
 import '../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewWhite.dart';
-import '../Authentication/SplashScreen.dart';
+import 'SplashScreen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   @override

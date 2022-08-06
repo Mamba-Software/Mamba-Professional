@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 import '../../Data/DataService/LibraryDataService.dart';
 import '../../Globals/Widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
 import '../MainApp/Mamba/Mamba.dart';
-import '../MainApp/OnboardingScreen.dart';
+import 'OnboardingScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen({Key? key}) : super(key: key);
