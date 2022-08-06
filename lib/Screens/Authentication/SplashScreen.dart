@@ -13,11 +13,11 @@ import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Screens/Admin/Admin.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/Mamba.dart';
 import 'package:provider/provider.dart';
 
 import '../../Data/DataService/LibraryDataService.dart';
 import '../../Globals/Widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
-import '../MainApp/Mamba/Mamba.dart';
 import 'OnboardingScreen.dart';
 
 class SplashScreen extends StatefulWidget {

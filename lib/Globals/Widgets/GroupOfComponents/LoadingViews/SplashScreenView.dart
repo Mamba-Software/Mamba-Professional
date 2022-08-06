@@ -59,7 +59,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
       body: Center(
         child: Stack(
           children: [
-            mambaProfessional ? Center(
+            Center(
               child: Container(
                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.45),
                 width: MediaQuery.of(context).size.width*0.6,
@@ -73,22 +73,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
                   ),
                 ),
               ),
-            ) : Center(
-              child: Container(
-                padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.45),
-                width: MediaQuery.of(context).size.width*0.6,
-                child: AnimatedAlign(
-                  alignment: _alignment,
-                  duration: Duration(seconds: 3),
-                  child: Image.asset(
-                    Constants.runningFemale,
-                    width: MediaQuery.of(context).size.width*0.18,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
             ),
-
             Center(
               child: Container(
                   width: MediaQuery.of(context).size.width*0.50,

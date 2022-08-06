@@ -2,24 +2,19 @@
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/Bonos/Bonos.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/MembershipRequestsPro.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/000-Home/HomePro.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/01-Qui/001-Trainers/Trainers.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/01-Qui/002-Clients/Clients.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/02-Que/004-Categories/Categories.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/02-Que/005-Bonos/Bonos.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/02-Que/008-Information/BrandInfo.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/02-Que/012-Logo/Logo.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/03-Com/007-Contenido/Content.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/05-On/011-Locations/Locations.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-
-
-import '../../../Screens/MainApp/MambaPro/BrandEventHistoryPage.dart';
-import '../../../Screens/MainApp/MambaPro/BrandInfo.dart';
-import '../../../Screens/MainApp/MambaPro/BrandPageView.dart';
-import '../../../Screens/MainApp/MambaPro/Categories.dart';
-import '../../../Screens/MainApp/MambaPro/Content.dart';
-import '../../../Screens/MainApp/MambaPro/HomePro.dart';
-import '../../../Screens/MainApp/MambaPro/Locations.dart';
-import '../../../Screens/MainApp/MambaPro/Logo.dart';
-import '../../../Screens/MainApp/MambaPro/Trainers.dart';
-import '../../../Screens/MainApp/MambaPro/Clients.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/04-Quan/014-Historial/BrandEventHistoryPage.dart';
 import '../../Widgets/GroupOfComponents/Calendars/BrandCalendarWidgetPro.dart';
-import '../../Widgets/GroupOfComponents/Calendars/UserCalendarWidget.dart';
 import '../Strings/StringUtils.dart';
 
 class MambaProUtils {
@@ -113,7 +108,6 @@ class MambaProUtils {
     if(pageIndex == 11) return Locations(brandId:brandId);
     if(pageIndex == 14) return BrandEventHistoryPage(brandId: brandId);
     if(pageIndex == 15) return MembershipRequestsPro(brandId: brandId);
-    if(pageIndex == 16) return BrandPageView(brandId: brandId);
     return Container();
   }
 }

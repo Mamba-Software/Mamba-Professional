@@ -95,7 +95,6 @@ class _YourBrandsListTileState extends State<YourBrandsListTile> {
               ),
               onTap: () {
                 setState(() {
-                  mambaProfessional = !mambaProfessional;
                   currentBrand = brand;
                   Navigator.pushReplacement(
                       context,
