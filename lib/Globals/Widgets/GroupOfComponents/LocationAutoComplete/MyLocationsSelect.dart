@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
@@ -184,7 +184,6 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                   }
                 }
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
           ],
         ),
       ),

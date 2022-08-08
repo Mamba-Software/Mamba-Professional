@@ -4075,3 +4075,24 @@ exports.zzzzChangeMessageStatus = functions
       return null
     }
   })
+
+  // User Sends Request
+  exports.zzzzUserBonoCreate = functions
+      .region("europe-west1")
+      .firestore
+      .document("/7777 Users/{userId}/Brands/{brandId}/Bonos/{bonoId}")
+      .onCreate( async (snap, context) => {
+        // Get the value of the context triggers.
+        const brandId = context.params.brandId;
+        const userId = context.params.userId;
+        const bonoId = context.params.bonoId;
+        // Get Data of the Request
+        const requestSnapshot = await db.collection("7777 Users").doc(userId).collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
+        const requestDoc = requestSnapshot.data();
+
+        await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId)
+        .update({
+            "sessions": requestDoc.sessions,
+         });
+        return null;
+      });

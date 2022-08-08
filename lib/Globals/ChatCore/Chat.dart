@@ -9,13 +9,13 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:mamba_castelldefels/Data/DataService/RoomDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandMembers/BrandMembersClient.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandMembers/BrandMembersTrainer.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/01-Qui/001-Trainers/Trainers.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/01-Qui/002-Clients/Clients.dart';
 import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -433,10 +433,10 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                             userID: userId.id!, viewOnly: true))) : currentUser.isTrainer == true ?  Navigator.push(
                     context,
                     CupertinoPageRoute<Null>(
-                        builder: (context) => BrandMembersTrainer())) : Navigator.push(
+                        builder: (context) => Trainers(brandId: currentBrand.id!, numTrainers: currentBrand.numTrainers! ))) : Navigator.push(
                     context,
                     CupertinoPageRoute<Null>(
-                        builder: (context) => BrandMembersClient(viewOnly: true, brandID: currentBrand.id!, brandAdmin: currentBrand.adminID!)));
+                        builder: (context) => Clients(brandId: currentBrand.id!, numClients: currentBrand.numClients!)));
               },
             ),
             SizedBox(

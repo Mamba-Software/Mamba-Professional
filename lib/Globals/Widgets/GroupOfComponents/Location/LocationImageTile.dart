@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:maps_launcher/maps_launcher.dart';

@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -17,8 +17,9 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandSettings/MembershipRequests.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../../Screens/MainApp/MambaPro/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 
 class Notifications extends StatefulWidget {
   const Notifications({Key? key}) : super(key: key);
@@ -1101,7 +1102,7 @@ class _NotificationsState extends State<Notifications> {
           Navigator.push(
               context,
               CupertinoPageRoute<Null>(
-                                  builder: (context) => MembershipRequests(
+                                  builder: (context) => MembershipRequestsPro(
                     brandId: brand.id!,
                   )
               )

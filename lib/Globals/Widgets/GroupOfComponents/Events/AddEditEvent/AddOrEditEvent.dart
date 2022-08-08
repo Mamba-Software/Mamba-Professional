@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';

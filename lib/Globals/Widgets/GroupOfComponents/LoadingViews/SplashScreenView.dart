@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
+import '../../../GlobalVars.dart';
+
 // Loading View Widget which displays a Circular Progress indicator with the Mamba "M" inside.
 class SplashScreenView extends StatefulWidget {
   const SplashScreenView({Key? key}) : super(key: key);
@@ -63,10 +65,10 @@ class _SplashScreenViewState extends State<SplashScreenView> {
                 width: MediaQuery.of(context).size.width*0.6,
                 child: AnimatedAlign(
                   alignment: _alignment,
-                  duration: Duration(seconds: 3),
+                  duration: Duration(seconds: 50),
                   child: Image.asset(
-                    Constants.runningFemale,
-                    width: MediaQuery.of(context).size.width*0.18,
+                    Constants.mambaProfesionalGif,
+                    //width: MediaQuery.of(context).size.width*2,
                     fit: BoxFit.contain,
                   ),
                 ),

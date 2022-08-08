@@ -28,6 +28,7 @@ class Usuario {
   String? testGroup;
   String? idioma;
   String? brandID;
+  String? sessions;
 
   List<RequestToBrand> requestsList = [];
   List<Brand> brandsList = [];
@@ -54,6 +55,7 @@ class Usuario {
     this.testGroup,
     this.idioma,
     this.brandID,
+    this.sessions,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -117,6 +119,9 @@ class Usuario {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('brandID')) {
       this.brandID = documentSnapshot.get("brandID").toString();
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
+      this.sessions = documentSnapshot.get("sessions").toString();
+    }
   }
 
   Usuario.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
@@ -148,6 +153,9 @@ class Usuario {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('notificationToken')) {
       this.notificationToken = documentSnapshot.get("notificationToken").toString();
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
+      this.sessions = documentSnapshot.get("sessions").toString();
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -173,6 +181,7 @@ class Usuario {
     this.testGroup = user.testGroup;
     this.idioma = user.idioma;
     this.brandID = user.brandID;
+    this.sessions = user.sessions;
   }
 
   // Requests

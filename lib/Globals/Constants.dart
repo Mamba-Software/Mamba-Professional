@@ -71,6 +71,7 @@ class Constants {
 
   // Animations
   static String runningFemale = "assets/animations/runningFemale.gif";
+  static String mambaProfesionalGif = "assets/animations/graph.gif";
 
   // Emojis
   static String relaxedEmojiImage = "assets/images/relaxedEmojiImage.png";

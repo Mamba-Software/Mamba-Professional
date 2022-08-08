@@ -1812,6 +1812,54 @@
   "@goodNightGreeting": {
     "description": "membersOfBrand message"
   },
+  "mambaProActivated": "Desactivar Mamba pro",
+  "@mambaProActivated":{
+    "description": "Mamba pro actived text"
+  },
+  "mambaProDesactivated": "Activar Mamba pro",
+  "@mambaProDesactivated":{
+    "description": "Mamba pro descativated text"
+  },
+  "categories": "Categorias",
+  "@categories":{
+    "description": "Categories text"
+  },
+  "bonos": "Bonos",
+  "@bonos":{
+    "bonos": "Bonos text"
+  },
+  "yourBonos": "Tus bonos",
+  "@yourBonos":{
+    "yourBonos": "Tus bonos text"
+  },
+  "solicitudesBonos": "Solicitudes",
+  "@solicitudesBonos":{
+    "solicitudesBonos": "Bonos request text"
+  },
+  "bonosClient": "Bonos de clientes",
+  "@bonosClient":{
+    "bonosClient": "Bonos client text"
+  },
+  "information": "Información",
+  "@information":{
+    "information": "Information text"
+  },
+  "stats": "Estadísticas",
+  "@stats":{
+    "stats": "Stats text"
+  },
+  "content": "Contenido",
+  "@content":{
+    "content": "Content text"
+  },
+  "opinions": "Opiniones",
+  "@opinions":{
+    "opinions": "opinions text"
+  },
+  "locations": "Ubicaciones",
+  "@locations":{
+    "locations": "locations text"
+  },
   "relaxedFeedbackLabel": "Leve",
   "@relaxedFeedbackLabel": {
     "description": "membersOfBrand message"
@@ -1899,5 +1947,33 @@
   "clientsOnboardingDesc": "Busca, compara y decide cuál es la marca fitness que mejor se adapta a ti. Únete a ella para poder disfrutar de su servicio y de un seguimiento personalizado.",
   "@clientsOnboardingDesc": {
     "description": "beforeEventBodyNotification message"
+  },
+  "yourBrands": "Tus marcas",
+  "@yourBrands": {
+    "description": "YourBrands message"
+  },
+  "howTheySeeMe": "Como me ven",
+  "@howTheySeeMe": {
+    "description": "howTheySeeMe message"
+  },
+  "quien": "Quien",
+  "@quien": {
+    "description": "Quien message"
+  },
+  "que": "Que",
+  "@que": {
+    "description": "Que message"
+  },
+  "como": "Como",
+  "@como": {
+    "description": "Como message"
+  },
+  "cuando": "Cuando",
+  "@cuando": {
+    "description": "Cuando message"
+  },
+  "donde": "Donde",
+  "@donde": {
+    "description": "Donde message"
   }
 }
