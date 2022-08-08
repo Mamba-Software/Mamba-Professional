@@ -1,3 +1,5 @@
+import 'package:external_app_launcher/external_app_launcher.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -244,13 +246,23 @@ class _LoginState extends State<Login> {
   void signIn() async {
       int result = await _userDataService.signIn(email.trim(), password);
       if (result == 0) {
-        Navigator.pushReplacement(
-            context,
-            CupertinoPageRoute<Null>(
-              builder: (context) => SplashScreen(),
-              settings: RouteSettings(name: 'SplashScreen'),
-            )
-        );
+        User? user = await _userDataService.getCurrentUser();
+        bool isTrainer = await _userDataService.checkIfUserIsTrainer(user!.uid);
+        if (isTrainer == false) {
+          await _userDataService.signOut();
+          setState(() {
+            isLoading = false;
+          });
+          showInSnackBar(AppLocalizations.of(context)!.wrongAppUser, AppLocalizations.of(context)!.wrongAppUserBody, true);
+        } else {
+          Navigator.pushReplacement(
+              context,
+              CupertinoPageRoute<void>(
+                builder: (context) => SplashScreen(),
+                settings: const RouteSettings(name: 'SplashScreen'),
+              )
+          );
+        }
       } else if (result == -1) {
         setState(() {
           isLoading = false;
@@ -277,22 +289,54 @@ class _LoginState extends State<Login> {
     signIn();
   }
 
-  void showInSnackBar(String value) {
-    final snackbar = new SnackBar(
-      content: new Text(
-        value,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontFamily: "Helvetica",
-          color: Colors.black,
-          fontSize: 16.0,
-          //fontWeight: FontWeight.w800,
+  void showInSnackBar(String value, [String valueBody = "", bool isClickable = false]) {
+    Widget snackbar;
+    if (isClickable ) {
+      snackbar = SnackBar(
+        content: GestureDetector(
+          onTap: () async {
+            await LaunchApp.openApp(
+                androidPackageName: 'com.mamba.mambastyleapp',
+                iosUrlScheme: "mamba-style",
+                appStoreLink: "https://apps.apple.com/app/mamba-style/id1601684650"
+              // openStore: false
+            );
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Text(
+                    value,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black)
+                ),
+              ),
+              Flexible(
+                child: Text(
+                  valueBody,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black, decoration: TextDecoration.underline),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      backgroundColor: Colors.white,
-      duration: Duration(seconds: 5),
-    );
-    scaffoldMessengerKey.currentState!.showSnackBar(snackbar);
+        backgroundColor: Colors.white,
+        duration: const Duration(seconds: 10),
+      );
+    } else {
+      snackbar = SnackBar(
+        content: Text(
+            value,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black)
+        ),
+        backgroundColor: Colors.white,
+        duration: const Duration(seconds: 5),
+      );
+    }
+    scaffoldMessengerKey.currentState!.showSnackBar(snackbar as SnackBar);
   }
 
 }

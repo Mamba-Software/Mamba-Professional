@@ -5,6 +5,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.VIBRATE" />
+    <queries>
+        <package android:name="com.mamba.mambastyleapp"/>
+    </queries>
     <application
         android:label="Mamba Pro"
         android:icon="@mipmap/ic_launcher">
@@ -39,6 +42,7 @@
               />
            <intent-filter>
                <action android:name="android.intent.action.VIEW"/>
+               <category android:name="android.intent.category.HOME"/>
                <category android:name="android.intent.category.DEFAULT"/>
                <category android:name="android.intent.category.BROWSABLE"/>
                <data

@@ -21,6 +21,7 @@ class UserDataService {
 
   // Check Data
   Future<bool> checkIfNicknameExists(String nickname) => _firebase.checkIfNicknameExists(nickname);
+  Future<bool> checkIfUserIsTrainer(String userId) => _firebase.checkIfUserIsTrainer(userId);
 
   // Get Data
   Future<Usuario> getUserDetails(String userId) => _firebase.getUserDetails(userId);

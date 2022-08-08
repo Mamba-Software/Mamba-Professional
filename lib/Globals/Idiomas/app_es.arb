@@ -143,6 +143,14 @@
   "@alreadyUser":{
     "description": "Already user Text "
   },
+  "wrongAppUser": "Hemos detectado que tienes una cuenta de tipo Cliente.",
+  "@wrongAppUser":{
+    "description": "Already user Text "
+  },
+  "wrongAppUserBody": "Inicia sesión en Mamba",
+  "@wrongAppUserBody":{
+    "description": "Already user Text "
+  },
   "createAccount": "Crea tu cuenta",
   "@createAccount":{
     "createAccount": "Cambiar Text"

@@ -75,6 +75,7 @@ dependencies:
   notification_permissions: ^0.6.1
   rxdart: ^0.27.4
   flutter_speed_dial: ^6.0.0
+  external_app_launcher: ^3.1.0
 
 
   # The following adds the Cupertino Icons font to your application.

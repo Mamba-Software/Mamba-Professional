@@ -118,6 +118,14 @@ class UserFirebaseCalls {
     }
   }
 
+  // Check If User is Trainer
+  Future<bool> checkIfUserIsTrainer(String userId) async {
+    DocumentSnapshot documentSnapshot = await _firestore.collection(users)
+        .doc(userId)
+        .get();
+    return documentSnapshot.get("isTrainer");
+  }
+
   //Getters
 
   Future<Usuario> getUserDetails(String uid) async {

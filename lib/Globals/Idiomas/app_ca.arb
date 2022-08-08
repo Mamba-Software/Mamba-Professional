@@ -35,6 +35,8 @@
   "validateEmail": "Email no vàlid",
   "newUser": "No estàs registrat? Crea un compte",
   "alreadyUser": "Tens un compte? Inicia Sessió",
+  "wrongAppUser": "Hem detectat que tens un compte de tipus Client.",
+  "wrongAppUserBody": "Inicia sessió a Mamba",
   "createAccount": "Crea el teu compte",
   "gender": "Sexe",
   "male": "Home",
