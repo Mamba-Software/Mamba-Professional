@@ -463,8 +463,10 @@ class _ProfileState extends State<Profile> {
     }
     return Scaffold (
       appBar: AppBar(
-        toolbarHeight: 0,
+        title: Text(AppLocalizations.of(context)!.profileBottomNav, style: Theme.of(context).appBarTheme.titleTextStyle,),
         elevation: 0,
+        centerTitle: true,
+        automaticallyImplyLeading: true,
       ),
       body: SafeArea(
         right: false,

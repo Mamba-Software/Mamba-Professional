@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/04-Quan/010-Calendar/BrandCalendarWeekWidget.dart';
-import '../../../../Data/DataService/Brand/BrandDataService.dart';
-import '../../../../Data/DataService/User/UserDataService.dart';
-import '../../../../Data/Models/Bono.dart';
-import '../../../../Data/Models/Usuario.dart';
-import '../../../../Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWeekWidget.dart';
 
 class HomePro extends StatefulWidget {
   String brandId;
@@ -25,9 +25,9 @@ class HomePro extends StatefulWidget {
 class _HomePro extends State<HomePro> {
 
   // Brand Data Service
-  var _brandDataService = BrandDataService();
+  final _brandDataService = BrandDataService();
   // User Data Service
-  var _userDataService =  UserDataService();
+  final _userDataService = UserDataService();
 
   // Boolean Loading
   bool graphClients = false;

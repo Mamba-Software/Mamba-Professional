@@ -6,14 +6,13 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:shimmer/shimmer.dart';
-
-import '../../../../../Globals/Styles/AppColors/AppColors.dart';
 
 class Trainers extends StatefulWidget {
   String brandId;
@@ -120,13 +119,13 @@ class _Trainers extends State<Trainers> {
                               decoration: InputDecoration(
                                 hintStyle: Theme.of(context).textTheme.caption,
                                 hintText: AppLocalizations.of(context)!.search,
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                    borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                focusedBorder: const OutlineInputBorder(
+                                    borderSide: const BorderSide(color: Colors.grey),
+                                    borderRadius: const BorderRadius.all(const Radius.circular(10.0))
                                 ),
-                                border: OutlineInputBorder(
+                                border: const OutlineInputBorder(
                                     borderSide: BorderSide(color: Colors.grey),
-                                    borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                    borderRadius: const BorderRadius.all(const Radius.circular(10.0))
                                 ),
                                 prefixIcon: Icon(
                                   Icons.search,
@@ -138,9 +137,9 @@ class _Trainers extends State<Trainers> {
                                     searchController.clear();
                                     filterSearchResults("");
                                   },
-                                  icon: Icon(Icons.delete_outline, color: Colors.grey,),
+                                  icon: const Icon(Icons.delete_outline, color: Colors.grey,),
                                 ),
-                                contentPadding: EdgeInsets.all(0),
+                                contentPadding: const EdgeInsets.all(0),
                               ),
                             )
                         ),
@@ -150,7 +149,7 @@ class _Trainers extends State<Trainers> {
                   Expanded(
                     child: Container(
                       child: ListView.builder(
-                            physics: BouncingScrollPhysics(),
+                            physics: const BouncingScrollPhysics(),
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
                             itemCount: widget.numTrainers,
@@ -165,7 +164,7 @@ class _Trainers extends State<Trainers> {
                                     child: Container(
                                       height: MediaQuery.of(context).size.height*0.08,
                                       width: MediaQuery.of(context).size.height*0.08,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         color: AppColors.grey,
                                         shape: BoxShape.circle,
                                       ),
@@ -235,7 +234,7 @@ class _Trainers extends State<Trainers> {
                           itemBuilder: (context, index) {
                             Usuario user = filteredMembers[index];
                             return Padding(
-                              padding: EdgeInsets.symmetric(vertical: 0),
+                              padding: const EdgeInsets.symmetric(vertical: 0),
                               child: ListTile(
                                 leading: CircularImage(
                                   size: MediaQuery.of(context).size.width*0.15,
@@ -260,13 +259,13 @@ class _Trainers extends State<Trainers> {
                                 trailing: user.id! == currentUser.id ? IconButton(
                                   icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
                                   alignment: Alignment.centerRight,
-                                  padding: EdgeInsets.all(0),
+                                  padding: const EdgeInsets.all(0),
                                   onPressed: false ? () {
                                   } : null,
                                 ) : IconButton(
                                   icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
                                   alignment: Alignment.centerRight,
-                                  padding: EdgeInsets.all(0),
+                                  padding: const EdgeInsets.all(0),
                                   onPressed: () async {
                                     types.User otherUser = types.User(
                                       firstName: user.firstName,

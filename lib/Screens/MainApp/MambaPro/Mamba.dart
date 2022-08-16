@@ -23,6 +23,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ho
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/NoBrandScreens/BrandIntroScreen.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/NoBrandScreens/RegistrarMarca.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/Profile/Profile.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../../Globals/Utils/MambaProSelector/MambaProUtils.dart';
@@ -294,11 +295,11 @@ class _MambaState extends State<Mamba> {
   }
 
   // Navigate to Notifications Screen
-  void navigateToSettingsScreen() {
+  void navigateToProfileScreen() {
     Navigator.push(
         context,
         CupertinoPageRoute<void>(
-          builder: (context) => const Settings(),
+          builder: (context) => const Profile(),
         )
     ).whenComplete(() {
       getFavourites();
@@ -337,7 +338,7 @@ class _MambaState extends State<Mamba> {
 
   Widget buildHeader() {
     return Container(
-      height: safeAreaHeight*0.34,
+      height: safeAreaHeight*0.31,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).backgroundColor,
@@ -354,35 +355,41 @@ class _MambaState extends State<Mamba> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircularImage(
-                      size: safeAreaHeight * 0.1,
-                      image: currentUser.imageUrl,
-                      color: Theme.of(context).backgroundColor,
-                      borderWidth: 2,
+                    GestureDetector(
+                      onTap: navigateToProfileScreen,
+                      child: CircularImage(
+                        size: safeAreaHeight * 0.1,
+                        image: currentUser.imageUrl,
+                        color: Theme.of(context).primaryColor,
+                        borderWidth: 1,
+                      ),
                     ),
                     Row(
                       children: [
                         CounterBadgeIcon(
                           counter: unreadNotifications,
                           child: IconButton(
-                            icon: Icon(Icons.notifications, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
+                            icon: Icon(Icons.notifications, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.07),
                             alignment: Alignment.centerRight,
                             onPressed: navigateToNotificationsScreen,
                           ),
                         ),
+                        SizedBox(width: safeAreaWidth * 0.03),
                         CounterBadgeIcon(
                           counter: unreadChats,
                           child: IconButton(
-                            icon: Icon(Icons.chat, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
+                            icon: Icon(Icons.chat, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.07),
                             alignment: Alignment.centerRight,
                             onPressed: navigateToChatScreen,
                           ),
                         ),
+                        /*
                         IconButton(
                           icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
                           alignment: Alignment.centerRight,
                           onPressed: navigateToSettingsScreen,
                         ),
+                         */
                       ],
                     ),
                   ],
@@ -394,9 +401,16 @@ class _MambaState extends State<Mamba> {
                     style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.normal)
                 ),
                 SizedBox(height: safeAreaHeight * 0.02),
+                Text(
+                    currentUser.email!,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyText2,
+                ),
+                SizedBox(height: safeAreaHeight * 0.02),
               ],
             ),
           ),
+          /*
           ListTile(
               leading: Icon(
                 Icons.mobile_screen_share,
@@ -410,6 +424,7 @@ class _MambaState extends State<Mamba> {
                 _sharePlusUtils.shareMambaLink(currentUser.firstName!);
               }
           ),
+           */
         ],
       ),
     );

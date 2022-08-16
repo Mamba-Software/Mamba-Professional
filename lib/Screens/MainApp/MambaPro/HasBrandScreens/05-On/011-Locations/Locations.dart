@@ -1,21 +1,16 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAutoComplete/AddressSearch.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAutoComplete/LocationPlacesSearch.dart';
 import 'package:uuid/uuid.dart';
-
-import '../../../../../Globals/Widgets/GroupOfComponents/LocationAutoComplete/AddressSearch.dart';
-import '../../../../../Globals/Widgets/GroupOfComponents/LocationAutoComplete/LocationPlacesSearch.dart';
-//import 'AddressSearch.dart';
-//import 'LocationPlacesSearch.dart';
 
 class Locations extends StatefulWidget {
   String brandId;

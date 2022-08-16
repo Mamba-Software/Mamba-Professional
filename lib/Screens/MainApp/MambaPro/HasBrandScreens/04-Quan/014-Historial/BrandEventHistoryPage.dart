@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventListTile.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../../../../Data/Models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../../../../../Data/DataService/Brand/BrandDataService.dart';
-import '../../../../../Data/Models/Brand.dart';
 
 class BrandEventHistoryPage extends StatefulWidget {
   String brandId;
@@ -31,8 +28,8 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
   bool isLoading = true;
   bool isFirstBuild = true;
   // Acceso a Base de Datos
-  var _brandDataService = new BrandDataService();
-  var _eventDataService = new EventDataService();
+  final _brandDataService = BrandDataService();
+  final _eventDataService = EventDataService();
   // Brand
   Brand brand = Brand();
   // AlL Events From Brand
@@ -126,7 +123,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                                 Container(
                                   height: (safeAreaWidth*0.9)*0.20,
                                   width: (safeAreaWidth*0.9)*0.20,
-                                  decoration: new BoxDecoration(
+                                  decoration: BoxDecoration(
                                     color: AppColors.grey,
                                     borderRadius: BorderRadius.circular(5.0),
                                   ),
@@ -146,7 +143,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                                     Container(
                                       height: safeAreaHeight*0.03,
                                       width: (safeAreaWidth*0.9)*0.20,
-                                      decoration: new BoxDecoration(
+                                      decoration: BoxDecoration(
                                         color: AppColors.grey,
                                         borderRadius: BorderRadius.circular(5.0),
                                       ),
@@ -155,7 +152,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                                     Container(
                                       height: safeAreaHeight*0.02,
                                       width: (safeAreaWidth*0.9)*0.35,
-                                      decoration: new BoxDecoration(
+                                      decoration: BoxDecoration(
                                         color: AppColors.grey,
                                         borderRadius: BorderRadius.circular(5.0),
                                       ),
@@ -164,7 +161,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                                     Container(
                                       height: safeAreaHeight*0.02,
                                       width: (safeAreaWidth*0.9)*0.5,
-                                      decoration: new BoxDecoration(
+                                      decoration: BoxDecoration(
                                         color: AppColors.grey,
                                         borderRadius: BorderRadius.circular(5.0),
                                       ),
@@ -173,7 +170,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                                     Container(
                                       height: safeAreaHeight*0.02,
                                       width: (safeAreaWidth*0.9)*0.5,
-                                      decoration: new BoxDecoration(
+                                      decoration: BoxDecoration(
                                         color: AppColors.grey,
                                         borderRadius: BorderRadius.circular(5.0),
                                       ),
@@ -182,7 +179,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                                     Container(
                                       height: safeAreaHeight*0.02,
                                       width: (safeAreaWidth*0.9)*0.5,
-                                      decoration: new BoxDecoration(
+                                      decoration: BoxDecoration(
                                         color: AppColors.grey,
                                         borderRadius: BorderRadius.circular(5.0),
                                       ),
@@ -198,7 +195,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                                   child: Container(
                                     height: safeAreaHeight*0.05,
                                     width: safeAreaHeight*0.05,
-                                    decoration: new BoxDecoration(
+                                    decoration: BoxDecoration(
                                       color: AppColors.grey,
                                       borderRadius: BorderRadius.circular(5.0),
                                     ),
