@@ -455,6 +455,8 @@ class BrandFirebaseCalls {
     await _firestore
         .collection(brands)
         .doc(brandId)
+        .collection("Bonos")
+        .doc("Bonos Requests")
         .collection("Bonos Requests")
         .doc(uid)
         .set({
@@ -610,10 +612,16 @@ class BrandFirebaseCalls {
   }
 
   Future<void> deleteBrandBonoRequest(String brandId, String bonoId) async {
-    QuerySnapshot querySnapshot = await _firestore.collection(brands).doc(brandId).collection(
-        "Bonos Requests").where("bonoId", isEqualTo: bonoId).get();
-    await _firestore.collection(brands).doc(brandId).collection(
-        "Bonos Requests").doc(querySnapshot.docs[0].id).delete();
+    QuerySnapshot querySnapshot = await _firestore.collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc("Bonos Requests")
+        .collection("Bonos Requests").where("bonoId", isEqualTo: bonoId).get();
+    await _firestore.collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc("Bonos Requests")
+        .collection("Bonos Requests").doc(querySnapshot.docs[0].id).delete();
   }
 
   //STREAMS
@@ -646,6 +654,8 @@ class BrandFirebaseCalls {
     return _firestore
         .collection(brands)
         .doc(brandId)
+        .collection("Bonos")
+        .doc("Bonos Requests")
         .collection("Bonos Requests")
         .snapshots();
   }

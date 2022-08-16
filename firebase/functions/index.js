@@ -4076,23 +4076,88 @@ exports.zzzzChangeMessageStatus = functions
     }
   })
 
-  // User Sends Request
-  exports.zzzzUserBonoCreate = functions
+  // User Sends Bono Request
+  exports.userSendsBonoRequest = functions
       .region("europe-west1")
       .firestore
-      .document("/7777 Users/{userId}/Brands/{brandId}/Bonos/{bonoId}")
+      .document("/7777 Brands/{brandId}/Bonos/Bonos Requests/Bonos Requests/{bonoRequestId}")
       .onCreate( async (snap, context) => {
         // Get the value of the context triggers.
         const brandId = context.params.brandId;
-        const userId = context.params.userId;
-        const bonoId = context.params.bonoId;
+        const bonoRequestId = context.params.bonoRequestId;
+
+        db.settings({ ignoreUndefinedProperties: true });
+
         // Get Data of the Request
-        const requestSnapshot = await db.collection("7777 Users").doc(userId).collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
+        const requestSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc("Bonos Requests").collection("Bonos Requests").doc(bonoRequestId).get();
         const requestDoc = requestSnapshot.data();
 
-        await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId)
-        .update({
+        await db.collection("7777 Users").doc(requestDoc.userId).collection("Bonos").doc("Bonos Requests").collection("Bonos Requests").doc(bonoRequestId)
+        .set({
             "sessions": requestDoc.sessions,
+            "brandId": brandId,
+             "title": requestDoc.title,
+             "price": requestDoc.price,
+             "bonoId": requestDoc.bonoId,
+             "timeRequested": requestDoc.timeRequested,
          });
+
+         // Get Data of the Brand
+                 const brandSnapshot = await db.collection("7777 Brands").doc(brandId).get();
+                 const brandDoc = brandSnapshot.data();
+
+                 const userSnapshot = await db.collection("7777 Users").doc(brandDoc.adminId).get();
+                                  const userDoc = userSnapshot.data();
+
+         if (userDoc.idioma == "es") {
+                                 payload = {
+                                   notification: {
+                                     title: "Nueva solicitud de bono ☀️",
+                                     body: "Te han solicitado un bono",
+                                   },
+                                   data: {
+                                     route: "SplashScreen0",
+                                   },
+                                 };
+                             } else {
+                               payload = {
+                                                                  notification: {
+                                                                    title: "Nueva solicitud de bono ☀️",
+                                                                    body: "Te han solicitado un bono",
+                                                                  },
+                                                                  data: {
+                                                                    route: "SplashScreen0",
+                                                                  },
+                                                                };
+                             }
+                             functions.logger.log(
+                               "Payload",
+                               payload
+                             );
+                             var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+
+
+        return null;
+      });
+
+  // User Deletes Bono Request
+  exports.userDeletesBonoRequest = functions
+      .region("europe-west1")
+      .firestore
+      .document("/7777 Brands/{brandId}/Bonos/Bonos Requests/Bonos Requests/{bonoRequestId}")
+      .onDelete( async (snap, context) => {
+        // Get the value of the context triggers.
+        const brandId = context.params.brandId;
+        const bonoRequestId = context.params.bonoRequestId;
+
+        db.settings({ ignoreUndefinedProperties: true });
+
+
+         // Get Data of the Request
+                const requestSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc("Bonos Requests").collection("Bonos Requests").doc(bonoRequestId).get();
+                const requestDoc = requestSnapshot.data();
+
+       await db.collection("7777 Users").doc(requestDoc.userId).collection("Bonos").doc("Bonos Requests").collection("Bonos Requests").doc(bonoRequestId).delete();
+
         return null;
       });
