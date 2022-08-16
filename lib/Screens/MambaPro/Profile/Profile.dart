@@ -463,7 +463,7 @@ class _ProfileState extends State<Profile> {
     }
     return Scaffold (
       appBar: AppBar(
-        title: Text(currentUser.name!, style: Theme.of(context).appBarTheme.titleTextStyle,),
+        title: Text("", style: Theme.of(context).appBarTheme.titleTextStyle,),
         elevation: 0,
         centerTitle: true,
         automaticallyImplyLeading: true,
@@ -493,13 +493,11 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
             ),
-            /*
             Container(
               height: safeAreaHeight*0.06,
               width: double.infinity,
               child: buildUserTitle(),
             ),
-             */
             Container(
               height: safeAreaHeight*0.30,
               width: double.infinity,

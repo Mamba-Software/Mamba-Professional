@@ -88,7 +88,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
               } else if (_startValue == 2) {
                 themeProvider.toggleTheme(true);
               } else if (_startValue == 3) {
-                final brightness = SchedulerBinding.instance?.window.platformBrightness;
+                final brightness = SchedulerBinding.instance.window.platformBrightness;
                 if (brightness == Brightness.dark) {
                   themeProvider.toggleTheme(true);
                 } else {
@@ -236,7 +236,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                       setState(() {
                         _value = int.parse(value.toString());
                       });
-                      final brightness = SchedulerBinding.instance?.window.platformBrightness;
+                      final brightness = SchedulerBinding.instance.window.platformBrightness;
                       if (brightness == Brightness.dark) {
                         themeProvider.toggleTheme(true);
                       } else {

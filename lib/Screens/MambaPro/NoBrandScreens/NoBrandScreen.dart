@@ -23,6 +23,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBad
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/QRCode/QRScanner.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/BrandIntroScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/RegistrarMarca.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
@@ -439,7 +440,14 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
       )
         :
       GestureDetector(
-        onTap: null,
+        onTap: () async {
+          Navigator.push(
+              context,
+              CupertinoPageRoute<void>(
+                builder: (context) => const QRScanner(),
+              )
+          );
+        },
         child: Material(
           elevation: 4,
           shape: const RoundedRectangleBorder(

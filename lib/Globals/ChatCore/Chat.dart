@@ -529,7 +529,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                       ),
                       dateDividerTextStyle: Theme.of(context).textTheme.caption!.copyWith(fontSize: 10),
                     ),
-                    sendButtonVisibilityMode: SendButtonVisibilityMode.always,
+                    //sendButtonVisibilityMode: SendButtonVisibilityMode.always,
                     customDateHeaderText: _customDateHeaderText,
                     dateHeaderThreshold:  60000,
                     groupMessagesThreshold: 300000,
