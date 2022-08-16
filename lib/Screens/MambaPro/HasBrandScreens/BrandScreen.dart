@@ -15,29 +15,28 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/MambaProSelector/MambaProUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/NoBrandScreens/BrandIntroScreen.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/NoBrandScreens/RegistrarMarca.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/Profile/Profile.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/BrandIntroScreen.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/RegistrarMarca.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import '../../../Globals/Utils/MambaProSelector/MambaProUtils.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
-class Mamba extends StatefulWidget {
-  const Mamba({Key? key}) : super(key: key);
+class BrandScreen extends StatefulWidget {
+  const BrandScreen({Key? key}) : super(key: key);
 
   @override
-  _MambaState createState() => _MambaState();
+  _BrandScreenState createState() => _BrandScreenState();
 }
 
-class _MambaState extends State<Mamba> {
+class _BrandScreenState extends State<BrandScreen> {
 
   // Screen Dimensions
   double safeAreaHeight = 0;
@@ -249,6 +248,8 @@ class _MambaState extends State<Mamba> {
     );
   }
 
+  /// /////----------------------------
+
   //Function to get the favourites of the user
   void getFavourites() async{
     favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
@@ -304,21 +305,6 @@ class _MambaState extends State<Mamba> {
     ).whenComplete(() {
       getFavourites();
     });
-  }
-
-  //Return the ListTile of each screen of Mamba Pro
-  Widget listTileUser(int _pageIndex) {
-    return ListTile(
-        leading: _mambaProUtils.iconSelector(_pageIndex),
-        title:  _mambaProUtils.titlePageSelectorListView(context, _pageIndex),
-        onTap: () =>  {
-          Navigator.pop(context),
-          setState(() {
-            pageIndex = _pageIndex;
-            setFavourites();
-          }),
-        }
-    );
   }
 
   //Return the ListTile of each screen of Mamba Pro

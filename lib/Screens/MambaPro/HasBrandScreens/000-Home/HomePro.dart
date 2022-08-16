@@ -7,7 +7,7 @@ import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWeekWidget.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWeekWidget.dart';
 
 class HomePro extends StatefulWidget {
   String brandId;

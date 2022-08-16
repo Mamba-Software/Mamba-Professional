@@ -359,7 +359,8 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                     children: [
                       RectangularImage(
                         image: _brand.logoUrl!,
-                        size: widget.width*0.2,
+                        height: widget.width*0.2,
+                        width: widget.width*0.2,
                         borderRadius: 5,
                       ),
                     ],

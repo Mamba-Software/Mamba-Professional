@@ -6,7 +6,7 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/Profile/ProfileScreens/Feedback/UserFeedBack.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/UserFeedBack.dart';
 import 'ReportBug.dart';
 
 // Feedback Widget.

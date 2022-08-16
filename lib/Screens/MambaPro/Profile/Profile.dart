@@ -10,8 +10,8 @@ import 'package:mamba_castelldefels/Globals/Utils/SharePlus/SharePlusUtils.dart'
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadline1.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/Profile/ProfileScreens/Feedback/FeedBack.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/FeedBack.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -463,7 +463,7 @@ class _ProfileState extends State<Profile> {
     }
     return Scaffold (
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.profileBottomNav, style: Theme.of(context).appBarTheme.titleTextStyle,),
+        title: Text(currentUser.name!, style: Theme.of(context).appBarTheme.titleTextStyle,),
         elevation: 0,
         centerTitle: true,
         automaticallyImplyLeading: true,
@@ -493,11 +493,13 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
             ),
+            /*
             Container(
               height: safeAreaHeight*0.06,
               width: double.infinity,
               child: buildUserTitle(),
             ),
+             */
             Container(
               height: safeAreaHeight*0.30,
               width: double.infinity,

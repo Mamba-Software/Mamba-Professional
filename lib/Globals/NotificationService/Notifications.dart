@@ -17,7 +17,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 import 'package:shimmer/shimmer.dart';
 
 class Notifications extends StatefulWidget {

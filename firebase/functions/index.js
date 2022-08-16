@@ -102,7 +102,7 @@ exports.scheduledDailyFunction = functions
                               body: "⚠️ ¡Recuerda! Hoy a las "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
                             },
                             data: {
-                              route: "SplashScreen0",
+                              route: "SplashScreen",
                             },
                           };
                       } else {
@@ -112,7 +112,7 @@ exports.scheduledDailyFunction = functions
                               body: "⚠️ Recorda! Avui a les "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
                             },
                             data: {
-                              route: "SplashScreen0",
+                              route: "SplashScreen",
                             },
                           };
                       }

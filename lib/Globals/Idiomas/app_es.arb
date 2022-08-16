@@ -537,11 +537,19 @@
   "@deletedEvent":{
     "description": "createBrand Text"
   },
+  "joinBrand": "Únete a una marca",
+  "@joinBrand":{
+    "description": "createBrand Text"
+  },
+  "joinBrandTitle": "Puedes unirte a través de un link o escaneado el código QR de la marca",
+  "@joinBrandTitle":{
+    "description": "createBrand Text"
+  },
   "createBrand": "Crea tu marca",
   "@createBrand":{
     "description": "createBrand Text"
   },
-  "createBrandTitle": "Aquí puedes crear tu propia marca en cuatro simples pasos:",
+  "createBrandTitle": "Aquí puedes crear tu propia marca en cuatro simples pasos...",
   "@createBrandTitle":{
     "description": "createBrand Text"
   },
