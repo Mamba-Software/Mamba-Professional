@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
@@ -23,6 +24,7 @@ class UserFirebaseCalls {
   String users = isProduction ? 'Users' : '7777 Users';
   String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
   String brands = isProduction ? 'Brands' : '7777 Brands';
+  String conversations = isProduction ? 'Conversations' : '7777 Conversations';
 
 
 
@@ -119,7 +121,7 @@ class UserFirebaseCalls {
   }
 
   // Check If User is Trainer
-  Future<bool> checkIfUserIsTrainer(String userId) async {
+  Future<bool?> checkIfUserIsTrainer(String userId) async {
     DocumentSnapshot documentSnapshot = await _firestore.collection(users)
         .doc(userId)
         .get();
@@ -223,6 +225,29 @@ class UserFirebaseCalls {
         .get();
     return querySnapshot.docs.length;
   }
+
+  // Number Unread Conversations
+  Future<int> getUnreadConversations(String userId) async {
+    List<Conversation> conv = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(conversations)
+        .where(
+        "messagesRead", arrayContains: toMapisMessageRead(userId, true))
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      conv.add(Conversation.fromObject(
+          querySnapshot.docs[i], querySnapshot.docs[i].id));
+    }
+    return conv.length;
+  }
+
+  Map<String, dynamic> toMapisMessageRead(String? id, bool? isMessageRead) {
+    return {
+      'uid': id,
+      'isMessageRead': isMessageRead,
+    };
+  }
+
 
   Future<String> getBonoRequest(String userId, String brandId) async {
     QuerySnapshot querySnapshot = await _firestore

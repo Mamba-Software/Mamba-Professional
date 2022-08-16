@@ -1983,5 +1983,9 @@
   "donde": "Donde",
   "@donde": {
     "description": "Donde message"
+  },
+  "scanQRCode": "Escanea código QR",
+  "@scanQRCode": {
+    "description": "Donde message"
   }
 }

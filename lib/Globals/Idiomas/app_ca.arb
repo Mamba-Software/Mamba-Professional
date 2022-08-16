@@ -443,5 +443,6 @@
   "que": "Que",
   "como": "Com",
   "cuando": "Quan",
-  "donde": "On"
+  "donde": "On",
+  "scanQRCode": "Escaneja codi QR"
 }

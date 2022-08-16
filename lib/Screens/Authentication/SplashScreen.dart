@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,13 +14,12 @@ import 'package:mamba_castelldefels/Screens/Admin/Admin.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/Mamba.dart';
 import 'package:provider/provider.dart';
-
 import '../../Data/DataService/Library/LibraryDataService.dart';
 import '../../Globals/Widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
 import 'OnboardingScreen.dart';
 
 class SplashScreen extends StatefulWidget {
-  SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -38,9 +36,9 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
 
   // Data Base Access
-  var _userDataService = new UserDataService();
-  var _brandDataService = new BrandDataService();
-  var _libraryDataService = new LibraryDataService();
+  final _userDataService = UserDataService();
+  final _brandDataService = BrandDataService();
+  final _libraryDataService = LibraryDataService();
 
   @override
   initState() {
@@ -68,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
           // 3.1.1 Email has been verified
           // 4. Define Prod Config for FirebaseChatCore
           FirebaseChatCore.instance.setConfig(
-            FirebaseChatCoreConfig(
+            const FirebaseChatCoreConfig(
                 null,
               'Rooms',
               'Users',
@@ -88,27 +86,27 @@ class _SplashScreenState extends State<SplashScreen> {
           if (currentUser.isAdmin!) {
             Navigator.pushReplacement(
                 context,
-                CupertinoPageRoute<Null>(
-                  builder: (context) => Admin(),
-                  settings: RouteSettings(name: 'Admin'),
+                CupertinoPageRoute<void>(
+                  builder: (context) => const Admin(),
+                  settings: const RouteSettings(name: 'Admin'),
                 )
             );
           } else {
             if (!(currentUser.isFirst!)) {
               Navigator.pushReplacement(
                   context,
-                  CupertinoPageRoute<Null>(
-                    builder: (context) => Mamba(),
-                    settings: RouteSettings(name: 'Mamba'),
+                  CupertinoPageRoute<void>(
+                    builder: (context) => const Mamba(),
+                    settings: const RouteSettings(name: 'Mamba'),
                   )
               );
             } else {
               Navigator.pushReplacement(
                   context,
-                  CupertinoPageRoute<Null>(
+                  CupertinoPageRoute<void>(
                     builder: (context) =>
-                    OnboardingScreen(),
-                    settings: RouteSettings(name: 'OnboardingScreen'),
+                    const OnboardingScreen(),
+                    settings: const RouteSettings(name: 'OnboardingScreen'),
                   )
               );
             }
@@ -117,9 +115,9 @@ class _SplashScreenState extends State<SplashScreen> {
           // 3.1.2 Email has NOT been verified. Go back to Login.
           Navigator.pushAndRemoveUntil(
             context,
-            CupertinoPageRoute<Null>(
+            CupertinoPageRoute<void>(
               builder: (context) => Login(),
-              settings: RouteSettings(name: 'Login'),
+              settings: const RouteSettings(name: 'Login'),
             ),
                 (_) => false,
           );
@@ -128,7 +126,7 @@ class _SplashScreenState extends State<SplashScreen> {
         // 3.2 We are in DEVELOPMENT
         // 4. Define Development Config for FirebaseCore
         FirebaseChatCore.instance.setConfig(
-            FirebaseChatCoreConfig(
+            const FirebaseChatCoreConfig(
               null,
               '7777 Rooms',
               '7777 Users',
@@ -148,26 +146,27 @@ class _SplashScreenState extends State<SplashScreen> {
         if (currentUser.isAdmin!) {
           Navigator.pushReplacement(
               context,
-              CupertinoPageRoute<Null>(
-                builder: (context) => Admin(),
-                settings: RouteSettings(name: 'Admin'),
+              CupertinoPageRoute<void>(
+                builder: (context) => const Admin(),
+                settings: const RouteSettings(name: 'Admin'),
               )
           );
         } else {
           if (!(currentUser.isFirst!)) {
+            print("hola");
             Navigator.pushReplacement(
                 context,
-                CupertinoPageRoute<Null>(
-                  builder: (context) => Mamba(),
-                  settings: RouteSettings(name: 'Mamba'),
+                CupertinoPageRoute<void>(
+                  builder: (context) => const Mamba(),
+                  settings: const RouteSettings(name: 'Mamba'),
                 )
             );
           } else {
             Navigator.pushReplacement(
                 context,
-                CupertinoPageRoute<Null>(
-                  builder: (context) => OnboardingScreen(),
-                  settings: RouteSettings(name: 'OnboardingScreen'),
+                CupertinoPageRoute<void>(
+                  builder: (context) => const OnboardingScreen(),
+                  settings: const RouteSettings(name: 'OnboardingScreen'),
                 )
             );
           }
@@ -177,9 +176,9 @@ class _SplashScreenState extends State<SplashScreen> {
       // 2.2 User is logged NOT in. We travel to the Login
       Navigator.pushAndRemoveUntil(
         context,
-        CupertinoPageRoute<Null>(
+        CupertinoPageRoute<void>(
           builder: (context) => Login(),
-          settings: RouteSettings(name: 'Login'),
+          settings: const RouteSettings(name: 'Login'),
         ),
             (_) => false,
       );
@@ -221,7 +220,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       appBar: null,
       body: SplashScreenView(),
     );

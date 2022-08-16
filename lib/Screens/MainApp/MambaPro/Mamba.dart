@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,12 +15,16 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/SharePlus/SharePlusUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/NoBrandScreens/BrandIntroScreen.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/NoBrandScreens/RegistrarMarca.dart';
+import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import '../../../Globals/Styles/Styles.dart';
 import '../../../Globals/Utils/MambaProSelector/MambaProUtils.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
@@ -33,26 +39,28 @@ class Mamba extends StatefulWidget {
 class _MambaState extends State<Mamba> {
 
   // Screen Dimensions
-  var safeAreaHeight;
-  var safeAreaWidth;
+  double safeAreaHeight = 0;
+  double safeAreaWidth = 0;
 
   // Acceso a Base de Datos
-  var _userDataService = new UserDataService();
-  var _brandDataService = new BrandDataService();
-  var _settingsDataService = new SettingsDataService();
-  var _mambaProUtils = new MambaProUtils();
+  final _userDataService = UserDataService();
+  final _brandDataService = BrandDataService();
+  final _settingsDataService = SettingsDataService();
+  final _mambaProUtils = MambaProUtils();
+  final SharePlusUtils _sharePlusUtils = SharePlusUtils();
   // Boolean Loading
   bool isLoading = false;
+  bool hasBrand = false;
   // Boolean hasSeenStartUpDialog
   bool hasSeenStartUpDialog = false;
   // Notifications
   LocalNotificationService localNotificationService = LocalNotificationService();
   FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
-  CalendarController _controller = CalendarController();
+  final CalendarController _controller = CalendarController();
 
   //Icon to know if it's on favourites
-  bool IconStar = false;
+  bool iconStar = false;
   bool isFirstBuild = true;
 
   //Bools to controll show for drop down
@@ -64,12 +72,12 @@ class _MambaState extends State<Mamba> {
   bool seeNextWhere = false;
 
   //Icons for drop down
-  var IconFavourites = Icons.keyboard_arrow_down;
-  var IconWho = Icons.keyboard_arrow_down;
-  var IconWhat = Icons.keyboard_arrow_down;
-  var IconHow = Icons.keyboard_arrow_down;
-  var IconWhen = Icons.keyboard_arrow_down;
-  var IconWhere = Icons.keyboard_arrow_down;
+  var iconFavourites = Icons.keyboard_arrow_down;
+  var iconWho = Icons.keyboard_arrow_down;
+  var iconWhat = Icons.keyboard_arrow_down;
+  var iconHow = Icons.keyboard_arrow_down;
+  var iconWhen = Icons.keyboard_arrow_down;
+  var iconWhere = Icons.keyboard_arrow_down;
 
   //Index to know which page to load
   int pageIndex = 0;
@@ -209,57 +217,6 @@ class _MambaState extends State<Mamba> {
     }
   }
 
-  //Function to get the favourites of the user
-  void getFavourites() async{
-    favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
-    if(favourites.contains(pageIndex)) IconStar = true;
-  }
-
-  void setFavourites() {
-    if(favourites.length != 0 && favourites.contains(pageIndex)) IconStar = true;
-    else IconStar = false;
-  }
-
-  // Navigate to Notifications Screen
-  void navigateToNotificationsScreen() {
-    Navigator.push(
-        context,
-        CupertinoPageRoute<Null>(
-          builder: (context) => Notifications(),
-        )
-    ).whenComplete(() {
-      getFavourites();
-    });
-  }
-
-  // Navigate to Notifications Screen
-  void navigateToChatScreen() {
-    Navigator.push(
-        context,
-        CupertinoPageRoute<Null>(
-          builder: (context) => ChatCore(),
-        )
-    ).whenComplete(() {
-      getFavourites();
-    });
-  }
-
-  //Return the ListTile of each screen of Mamba Pro
-  Widget ListTilePro(int _pageIndex)
-  {
-    return ListTile(
-        leading: _mambaProUtils.iconSelector(_pageIndex),
-        title:  _mambaProUtils.titlePageSelectorListView(context, _pageIndex),
-        onTap: () =>  {
-          Navigator.pop(context),
-          setState(() {
-            pageIndex = _pageIndex;
-            setFavourites();
-          }),
-        }
-    );
-  }
-//
   // Gets the user info from firebase.
   void getUserAndBrand() async {
     // Get User Main Data
@@ -269,6 +226,7 @@ class _MambaState extends State<Mamba> {
     currentUser.setBrandList = brands;
     if (currentUser.brandsList.isNotEmpty) {
       // Setting the Brand to the User
+      hasBrand = true;
       Brand brand = currentUser.brandsList[0];
       currentBrand.setBasicData = await _brandDataService.getBrandDetails(brand.id!);
       currentBrand.setUserList = await _brandDataService.getBrandUsers(brand.id!);
@@ -286,9 +244,359 @@ class _MambaState extends State<Mamba> {
     await localNotificationService.handleLocalNotifications(context);
     // Listen to the Notifications Stream
     localNotificationService.onNotifications.stream.listen(
-        (payload) => localNotificationService.onClickedNotification(context, payload!)
+            (payload) => localNotificationService.onClickedNotification(context, payload!)
     );
   }
+
+  //Function to get the favourites of the user
+  void getFavourites() async{
+    favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
+    if(favourites.contains(pageIndex)) iconStar = true;
+  }
+
+  //Function to set the favourites of the user
+  void setFavourites() {
+    if(favourites.isNotEmpty && favourites.contains(pageIndex)) {
+      iconStar = true;
+    } else {
+      iconStar = false;
+    }
+  }
+
+  // Navigate to Notifications Screen
+  void navigateToNotificationsScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<void>(
+          builder: (context) => const Notifications(),
+        )
+    ).whenComplete(() async {
+      var temp = await _userDataService.getUnreadNotifications(currentUser.id!);
+      setState(() {
+        unreadNotifications = temp;
+      });
+    });
+  }
+
+  // Navigate to Notifications Screen
+  void navigateToChatScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<void>(
+          builder: (context) => const ChatCore(),
+        )
+    ).whenComplete(() async {
+      var temp = await _userDataService.getUnreadConversations(currentUser.id!);
+      setState(() {
+        unreadChats = temp;
+      });
+    });
+  }
+
+  // Navigate to Notifications Screen
+  void navigateToSettingsScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<void>(
+          builder: (context) => const Settings(),
+        )
+    ).whenComplete(() {
+      getFavourites();
+    });
+  }
+
+  //Return the ListTile of each screen of Mamba Pro
+  Widget listTileUser(int _pageIndex) {
+    return ListTile(
+        leading: _mambaProUtils.iconSelector(_pageIndex),
+        title:  _mambaProUtils.titlePageSelectorListView(context, _pageIndex),
+        onTap: () =>  {
+          Navigator.pop(context),
+          setState(() {
+            pageIndex = _pageIndex;
+            setFavourites();
+          }),
+        }
+    );
+  }
+
+  //Return the ListTile of each screen of Mamba Pro
+  Widget listTilePro(int _pageIndex) {
+    return ListTile(
+        leading: _mambaProUtils.iconSelector(_pageIndex),
+        title:  _mambaProUtils.titlePageSelectorListView(context, _pageIndex),
+        onTap: () =>  {
+          Navigator.pop(context),
+          setState(() {
+            pageIndex = _pageIndex;
+            setFavourites();
+          }),
+        }
+    );
+  }
+
+  Widget buildHeader() {
+    return Container(
+      height: safeAreaHeight*0.34,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Theme.of(context).backgroundColor,
+      ),
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: safeAreaHeight * 0.06),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CircularImage(
+                      size: safeAreaHeight * 0.1,
+                      image: currentUser.imageUrl,
+                      color: Theme.of(context).backgroundColor,
+                      borderWidth: 2,
+                    ),
+                    Row(
+                      children: [
+                        CounterBadgeIcon(
+                          counter: unreadNotifications,
+                          child: IconButton(
+                            icon: Icon(Icons.notifications, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
+                            alignment: Alignment.centerRight,
+                            onPressed: navigateToNotificationsScreen,
+                          ),
+                        ),
+                        CounterBadgeIcon(
+                          counter: unreadChats,
+                          child: IconButton(
+                            icon: Icon(Icons.chat, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
+                            alignment: Alignment.centerRight,
+                            onPressed: navigateToChatScreen,
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
+                          alignment: Alignment.centerRight,
+                          onPressed: navigateToSettingsScreen,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: safeAreaHeight * 0.03),
+                Text(
+                    currentUser.firstName! + ' ' + currentUser.lastName!,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.normal)
+                ),
+                SizedBox(height: safeAreaHeight * 0.02),
+              ],
+            ),
+          ),
+          ListTile(
+              leading: Icon(
+                Icons.mobile_screen_share,
+                color: Theme.of(context).primaryColor,
+              ),
+              title: Text(
+                  AppLocalizations.of(context)!.shareAppTitle,
+                  style: Theme.of(context).textTheme.bodyText1
+              ),
+              onTap: () {
+                _sharePlusUtils.shareMambaLink(currentUser.firstName!);
+              }
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildBrandListOptions() {
+    return Container(
+        child: Column(
+          children: [
+            listTilePro(0),
+            ListView.builder(
+                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.003),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: favourites.length,
+                itemBuilder: (context, index) {
+                  int favourite =  favourites[index];
+                  return listTilePro(favourite);
+                }
+            ),
+
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(iconWho,
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                  Text(AppLocalizations.of(context)!.quien),
+                ],
+              ),
+              onTap: () => setState(() {
+                seeNextWho = !seeNextWho;
+                if(iconWho == Icons.keyboard_arrow_up) {
+                  iconWho = Icons.keyboard_arrow_down;
+                } else {
+                  iconWho = Icons.keyboard_arrow_up;
+                }
+              }),
+            ),
+            seeNextWho ?
+            listTilePro(1) : Container(),
+            seeNextWho ? listTilePro(2) : Container(),
+            seeNextWho ? listTilePro(15) : Container(),
+
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(iconWhat),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                  Text(AppLocalizations.of(context)!.que),
+                ],
+              ),
+              onTap: () => setState(() {
+                seeNextWhat = !seeNextWhat;
+                if(iconWhat == Icons.keyboard_arrow_up) {
+                  iconWhat = Icons.keyboard_arrow_down;
+                } else {
+                  iconWhat = Icons.keyboard_arrow_up;
+                }
+              }),
+            ),
+            seeNextWhat ?
+            listTilePro(8) : Container(),
+            seeNextWhat ? listTilePro(12) : Container(),
+            seeNextWhat ? listTilePro(4) : Container(),
+            seeNextWhat ? listTilePro(5) : Container(),
+
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(iconHow),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                  Text(AppLocalizations.of(context)!.como),
+                ],
+              ),
+              onTap: () => setState(() {
+                seeNextHow = !seeNextHow;
+                if(iconHow == Icons.keyboard_arrow_up) {
+                  iconHow = Icons.keyboard_arrow_down;
+                } else {
+                  iconHow = Icons.keyboard_arrow_up;
+                }
+              }),
+            ),
+            seeNextHow ?
+            listTilePro(9) : Container(),
+            seeNextHow ? listTilePro(7) : Container(),
+            seeNextHow ? listTilePro(6) : Container(),
+            seeNextHow ? listTilePro(13) : Container(),
+            seeNextHow ? listTilePro(16) : Container(),
+
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(iconWhen),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                  Text(AppLocalizations.of(context)!.cuando),
+                ],
+              ),
+              onTap: () => setState(() {
+                seeNextWhen = !seeNextWhen;
+                if(iconWhen == Icons.keyboard_arrow_up) {
+                  iconWhen = Icons.keyboard_arrow_down;
+                } else {
+                  iconWhen = Icons.keyboard_arrow_up;
+                }
+              }),
+            ),
+            seeNextWhen ? listTilePro(10) : Container(),
+            seeNextWhen ? listTilePro(14) : Container(),
+
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(iconWhere),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                  Text(AppLocalizations.of(context)!.donde),
+                ],
+              ),
+              onTap: () => setState(() {
+                seeNextWhere = !seeNextWhere;
+                if(iconWhere == Icons.keyboard_arrow_up) {
+                  iconWhere = Icons.keyboard_arrow_down;
+                } else {
+                  iconWhere = Icons.keyboard_arrow_up;
+                }
+              }),
+            ),
+            seeNextWhere ?
+            listTilePro(11) : Container(),
+          ],
+        ),
+      );
+  }
+
+  Widget buildNoBrandOptions() {
+    return Container(
+      child: Column(
+        children: [
+          ListTile(
+              leading: Icon(
+                Icons.add_circle_outline,
+                color: Theme.of(context).primaryColor,
+              ),
+              title: Text(
+                  AppLocalizations.of(context)!.createBrand,
+                  style: Theme.of(context).textTheme.bodyText1
+              ),
+              onTap: () async {
+                bool? result = await Navigator.push(
+                    context,
+                    CupertinoPageRoute<bool>(
+                      builder: (context) => BrandIntroScreen(),
+                    )
+                );
+                if (result != null && result) {
+                  Navigator.push(
+                      context,
+                      CupertinoPageRoute<Null>(
+                        builder: (context) => RegistrarMarca(
+                          locale: Localizations.localeOf(context),
+                        ),
+                        settings: const RouteSettings(name: 'RegistrarMarca'),
+                      )
+                  );
+                }
+              }
+          ),
+          ListTile(
+              leading: Icon(
+                Icons.qr_code,
+                color: Theme.of(context).primaryColor,
+              ),
+              title: Text(
+                  AppLocalizations.of(context)!.scanQRCode,
+                  style: Theme.of(context).textTheme.bodyText1
+              ),
+              onTap: () {
+                _sharePlusUtils.shareMambaLink(currentUser.firstName!);
+              }
+          ),
+        ],
+      ),
+    );
+  }
+
+
 
   @override
   void dispose() {
@@ -309,208 +617,62 @@ class _MambaState extends State<Mamba> {
           // Remove padding
           padding: EdgeInsets.zero,
           children: [
-            Stack(
-              alignment: Alignment.topRight,
-              children: [
-                UserAccountsDrawerHeader(
-                  //onDetailsPressed: () {print('test');},
-                  arrowColor: Colors.red,
-                  //currentAccountPictureSize: Size(MediaQuery.of(context).size.height*0.10,MediaQuery.of(context).size.height*0.3),
-                  accountName: Text(currentUser.firstName! + ' ' + currentUser.lastName!,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 13,fontWeight: FontWeight.bold, background: Paint()
-                        ..color = Theme.of(context).primaryColorDark
-                        ..strokeWidth = 20
-                        ..strokeJoin = StrokeJoin.round
-                        ..strokeCap = StrokeCap.round
-                        ..style = PaintingStyle.stroke)),
-                  accountEmail: Text(''),
-                  currentAccountPicture: CircleAvatar(
-                    child: ClipOval(
-                      child: Image.network(
-                        currentUser.imageUrl!,
-                        fit: BoxFit.cover,
-                        width: MediaQuery.of(context).size.height*0.10,
-                        height: MediaQuery.of(context).size.height*0.3,
-                      ),
-                    ),
-                  ),
-
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColorDark,
-                    image: DecorationImage(
-                        opacity: 1,
-                        fit: BoxFit.fill,
-                        image: NetworkImage(
-                            currentBrand.logoUrl!)),
-                  ),
-
-
-                ),
-              ],
-            ),
-            ListTile(
-                title: Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-                      child: Text('Administrador'),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
-                      child: IconButton(
-                        icon: Icon(Icons.notifications, size: MediaQuery.of(context).size.width*0.06,),
-                        onPressed: navigateToNotificationsScreen,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
-                      child: IconButton(
-                        icon: Icon(Icons.chat, size: MediaQuery.of(context).size.width*0.06,),
-                        onPressed: navigateToChatScreen,
-                      ),
-                    ),
-                  ],
-                ),
-            ),
-            ListTilePro(0),
-            ListView.builder(
-                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.003),
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: favourites.length,
-                itemBuilder: (context, index) {
-                  int favourite =  favourites[index];
-                  return ListTilePro(favourite);
-                }
-            ),
-
-            ListTile(
-              title: Row(
-                children: [
-                  Icon(IconWho,
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                  Text(AppLocalizations.of(context)!.quien),
-                ],
-              ),
-              onTap: () => setState(() {
-                seeNextWho = !seeNextWho;
-                if(IconWho == Icons.keyboard_arrow_up) IconWho = Icons.keyboard_arrow_down;
-                else IconWho = Icons.keyboard_arrow_up;
-              }),
-            ),
-            seeNextWho ?
-            ListTilePro(1) : Container(),
-            seeNextWho ? ListTilePro(2) : Container(),
-            seeNextWho ? ListTilePro(15) : Container(),
-
-            ListTile(
-              title: Row(
-                children: [
-                  Icon(IconWhat),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                  Text(AppLocalizations.of(context)!.que),
-                ],
-              ),
-              onTap: () => setState(() {
-                seeNextWhat = !seeNextWhat;
-                if(IconWhat == Icons.keyboard_arrow_up) IconWhat = Icons.keyboard_arrow_down;
-                else IconWhat = Icons.keyboard_arrow_up;
-              }),
-            ),
-            seeNextWhat ?
-            ListTilePro(8) : Container(),
-            seeNextWhat ? ListTilePro(12) : Container(),
-            seeNextWhat ? ListTilePro(4) : Container(),
-            seeNextWhat ? ListTilePro(5) : Container(),
-
-            ListTile(
-              title: Row(
-                children: [
-                  Icon(IconHow),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                  Text(AppLocalizations.of(context)!.como),
-                ],
-              ),
-              onTap: () => setState(() {
-                seeNextHow = !seeNextHow;
-                if(IconHow == Icons.keyboard_arrow_up) IconHow = Icons.keyboard_arrow_down;
-                else IconHow = Icons.keyboard_arrow_up;
-              }),
-            ),
-            seeNextHow ?
-            ListTilePro(9) : Container(),
-            seeNextHow ? ListTilePro(7) : Container(),
-            seeNextHow ? ListTilePro(6) : Container(),
-            seeNextHow ? ListTilePro(13) : Container(),
-            seeNextHow ? ListTilePro(16) : Container(),
-
-            ListTile(
-              title: Row(
-                children: [
-                  Icon(IconWhen),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                  Text(AppLocalizations.of(context)!.cuando),
-                ],
-              ),
-              onTap: () => setState(() {
-                seeNextWhen = !seeNextWhen;
-                if(IconWhen == Icons.keyboard_arrow_up) IconWhen = Icons.keyboard_arrow_down;
-                else IconWhen = Icons.keyboard_arrow_up;
-              }),
-            ),
-            seeNextWhen ?
-            ListTilePro(10) : Container(),
-            seeNextWhen ?
-            ListTilePro(14) : Container(),
-
-            ListTile(
-              title: Row(
-                children: [
-                  Icon(IconWhere),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                  Text(AppLocalizations.of(context)!.donde),
-                ],
-              ),
-              onTap: () => setState(() {
-                seeNextWhere = !seeNextWhere;
-                if(IconWhere == Icons.keyboard_arrow_up) IconWhere = Icons.keyboard_arrow_down;
-                else IconWhere = Icons.keyboard_arrow_up;
-              }),
-            ),
-            seeNextWhere ?
-            ListTilePro(11) : Container(),
-
-            //exit
             /*
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
+            UserAccountsDrawerHeader(
+              onDetailsPressed: () {print('test');},
 
-                    Padding(
-                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.05),
-                      child: Column(
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.exit_to_app, size: MediaQuery.of(context).size.width*0.06, color: Colors.red),
-                            onPressed:() => {
-                              setState(() {
-                                mambaProfessional = false;
-                              }),
-                            },
-                          ),
-                          Text('Exit'),
-                        ],
-                      ),
-                    ),
-                  ],
+              accountName: Text(
+                  currentUser.firstName! + ' ' + currentUser.lastName!,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 13,fontWeight: FontWeight.bold, background: Paint()
+                    ..color = Theme.of(context).primaryColorDark
+                    ..strokeWidth = 20
+                    ..strokeJoin = StrokeJoin.round
+                    ..strokeCap = StrokeCap.round
+                    ..style = PaintingStyle.stroke)
+              ),
+              accountEmail: const Text(''),
+
+              currentAccountPicture: CircleAvatar(
+                child: ClipOval(
+                  child: Image.network(
+                    currentUser.imageUrl!,
+                    fit: BoxFit.fill,
+                    width: MediaQuery.of(context).size.height*0.10,
+                    height: MediaQuery.of(context).size.height*0.3,
+                  ),
                 ),
-            ),
+              ),
+              //currentAccountPictureSize: Size(MediaQuery.of(context).size.width*0.3,MediaQuery.of(context).size.width*0.3),
 
+              otherAccountsPictures: const [
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  backgroundImage: NetworkImage(
+                      "https://randomuser.me/api/portraits/women/74.jpg"),
+                ),
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  backgroundImage: NetworkImage(
+                      "https://randomuser.me/api/portraits/men/47.jpg"),
+                ),
+              ]
+
+
+
+
+            ),
              */
+
+            // Header
+            buildHeader(),
+            Divider(color: Theme.of(context).primaryColor, thickness: 0,height: 1,),
+            SizedBox(height: safeAreaHeight * 0.02),
+
+            // Build Options
+            hasBrand == false ? buildNoBrandOptions() : Container(),
+            hasBrand == true ? buildBrandListOptions() : Container(),
+
 
           ],
         ),
@@ -532,7 +694,7 @@ class _MambaState extends State<Mamba> {
                 });
               }
             },
-            icon: _controller.view == CalendarView.month ? Container(
+            icon: _controller.view == CalendarView.month ? SizedBox(
               width: safeAreaWidth*0.15,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -552,7 +714,7 @@ class _MambaState extends State<Mamba> {
                   ),
                 ],
               ),
-            ) : Container(
+            ) : SizedBox(
               width: safeAreaWidth*0.15,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -577,11 +739,11 @@ class _MambaState extends State<Mamba> {
           Padding(
             padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
             child: IconButton(
-              icon: pageIndex == 0? Container() : Icon(IconStar? Icons.star : Icons.star_border, size: MediaQuery.of(context).size.width*0.06,),
+              icon: pageIndex == 0? Container() : Icon(iconStar? Icons.star : Icons.star_border, size: MediaQuery.of(context).size.width*0.06,),
               onPressed: () {
                 setState(() {
-                  IconStar = !IconStar;
-                  if (IconStar == true) {
+                  iconStar = !iconStar;
+                  if (iconStar == true) {
                     favourites.add(pageIndex);
                   }
                   else {
@@ -597,16 +759,9 @@ class _MambaState extends State<Mamba> {
           )
         ],
       ),
-      body: _mambaProUtils.pageSelector(context,pageIndex, currentBrand.id!, currentBrand.numTrainers!, currentBrand.numClients!, _controller,safeAreaWidth, safeAreaHeight),
+      body: Container(),
+      //_mambaProUtils.pageSelector(context,pageIndex, currentBrand.id!, currentBrand.numTrainers!, currentBrand.numClients!, _controller,safeAreaWidth, safeAreaHeight),
     );
-  }
-
-  Future<void> _onTappedBar(int value) async {
-    setState(() {
-      currentIndex = value;
-    });
-    pageController.jumpToPage(value);
-    print(ModalRoute.of(context)?.settings.name);
   }
 }
 

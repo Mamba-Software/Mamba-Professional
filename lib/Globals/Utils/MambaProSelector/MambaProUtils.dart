@@ -70,22 +70,22 @@ class MambaProUtils {
   //Function to select the icon to load
   Widget iconSelector(int pageIndexView)
   {
-    if(pageIndexView == 0) return Icon(Icons.home_filled);
-    if(pageIndexView == 1) return Icon(Icons.record_voice_over);
-    if(pageIndexView == 2) return Icon(Icons.group);
-    if(pageIndexView == 8) return Icon(Icons.feed);;
-    if(pageIndexView == 13) return Icon(Icons.question_mark);
-    if(pageIndexView == 4) return Icon(Icons.category);
-    if(pageIndexView == 5) return Icon(Icons.shopping_bag);
-    if(pageIndexView == 12) return Icon(Icons.run_circle);
-    if(pageIndexView == 7) return Icon(Icons.collections);
-    if(pageIndexView == 10) return Icon(Icons.calendar_month);
-    if(pageIndexView == 11) return Icon(Icons.location_on);
-    if(pageIndexView == 6) return Icon(Icons.chat_bubble_outline);
-    if(pageIndexView == 9) return Icon(Icons.query_stats);
-    if(pageIndexView == 14) return Icon(Icons.history);
-    if(pageIndexView == 15) return Icon(Icons.group_add);
-    if(pageIndexView == 16) return Icon(Icons.preview);
+    if(pageIndexView == 0) return const Icon(Icons.home_filled);
+    if(pageIndexView == 1) return const Icon(Icons.record_voice_over);
+    if(pageIndexView == 2) return const Icon(Icons.group);
+    if(pageIndexView == 8) return const Icon(Icons.feed);;
+    if(pageIndexView == 13) return const Icon(Icons.question_mark);
+    if(pageIndexView == 4) return const Icon(Icons.category);
+    if(pageIndexView == 5) return const Icon(Icons.shopping_bag);
+    if(pageIndexView == 12) return const Icon(Icons.run_circle);
+    if(pageIndexView == 7) return const Icon(Icons.collections);
+    if(pageIndexView == 10) return const Icon(Icons.calendar_month);
+    if(pageIndexView == 11) return const Icon(Icons.location_on);
+    if(pageIndexView == 6) return const Icon(Icons.chat_bubble_outline);
+    if(pageIndexView == 9) return const Icon(Icons.query_stats);
+    if(pageIndexView == 14) return const Icon(Icons.history);
+    if(pageIndexView == 15) return const Icon(Icons.group_add);
+    if(pageIndexView == 16) return const Icon(Icons.preview);
     return Container();
   }
 
@@ -100,11 +100,13 @@ class MambaProUtils {
     if(pageIndex == 7) return Content(brandId:brandId);
     if(pageIndex == 8) return BrandInfo(locale: Localizations.localeOf(context), brandId:brandId);
     if(pageIndex == 12) return Logo(brandId:brandId);
-    if(pageIndex == 10) return BrandCalendarWidgetPro(
-      brandId: brandId,
-      dateTime: middleMonthDate,
-      controller: _controller,
-    );
+    if(pageIndex == 10) {
+      return BrandCalendarWidgetPro(
+        brandId: brandId,
+        dateTime: middleMonthDate,
+        controller: _controller,
+      );
+    }
     if(pageIndex == 11) return Locations(brandId:brandId);
     if(pageIndex == 14) return BrandEventHistoryPage(brandId: brandId);
     if(pageIndex == 15) return MembershipRequestsPro(brandId: brandId);

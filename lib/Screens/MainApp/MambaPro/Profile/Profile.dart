@@ -29,8 +29,8 @@ class _ProfileState extends State<Profile> {
   var safeAreaHeight;
   var safeAreaWidth;
   // Acceso a Base de Datos
-  var _userDataService = new UserDataService();
-  var _eventDataService = new EventDataService();
+  var _userDataService = UserDataService();
+  var _eventDataService = EventDataService();
   // Boolean Loading
   bool isLoading = true;
   bool isFirstBuild = true;
@@ -42,7 +42,7 @@ class _ProfileState extends State<Profile> {
   final CarouselController _controller = CarouselController();
   List<Widget> buildProfileCarousel = [];
   //Share Plus Utils
-  SharePlusUtils _sharePlusUtils = new SharePlusUtils();
+  final SharePlusUtils _sharePlusUtils = SharePlusUtils();
 
   @override
   void initState() {
@@ -210,7 +210,7 @@ class _ProfileState extends State<Profile> {
         child: Container(
           width: safeAreaWidth * 0.81,
           height: safeAreaHeight * 0.10,
-          decoration: new BoxDecoration(
+          decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
           ),
           child: Row(
@@ -271,7 +271,7 @@ class _ProfileState extends State<Profile> {
       child: Container(
         width: safeAreaWidth * 0.70,
         height: safeAreaHeight * 0.08,
-        decoration: new BoxDecoration(
+        decoration: BoxDecoration(
           color: AppColors.grey,
           borderRadius: BorderRadius.circular(10)
         ),
@@ -508,7 +508,7 @@ class _ProfileState extends State<Profile> {
                 children: [
                   Container(
                     height: safeAreaHeight * 0.15,
-                    decoration: new BoxDecoration(
+                    decoration: BoxDecoration(
                       color: Theme.of(context).backgroundColor,
                     ),
                   ),
@@ -520,7 +520,7 @@ class _ProfileState extends State<Profile> {
                     ),
                     child: Container(
                       height: safeAreaHeight * 0.13,
-                      decoration: new BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Theme.of(context).scaffoldBackgroundColor,
                         borderRadius: BorderRadius.vertical(
                             bottom: Radius.elliptical(safeAreaWidth, safeAreaHeight * 0.10)

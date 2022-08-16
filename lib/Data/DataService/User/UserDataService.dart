@@ -21,7 +21,7 @@ class UserDataService {
 
   // Check Data
   Future<bool> checkIfNicknameExists(String nickname) => _firebase.checkIfNicknameExists(nickname);
-  Future<bool> checkIfUserIsTrainer(String userId) => _firebase.checkIfUserIsTrainer(userId);
+  Future<bool?> checkIfUserIsTrainer(String userId) => _firebase.checkIfUserIsTrainer(userId);
 
   // Get Data
   Future<Usuario> getUserDetails(String userId) => _firebase.getUserDetails(userId);
@@ -30,6 +30,7 @@ class UserDataService {
   Future<List<NotificationEvent>> getUserFirstNotificationsLimit10(String userId) => _firebase.getUserFirstNotificationsLimit10(userId);
   Future<List<NotificationEvent>> getUserMoreNotificationsLimit10(String userId, String notifId) => _firebase.getUserMoreNotificationsLimit10(userId, notifId);
   Future<int> getUnreadNotifications(String userId) => _firebase.getUnreadNotifications(userId);
+  Future<int> getUnreadConversations(String userId) => _firebase.getUnreadConversations(userId);
   Future<String> getBonoRequest(String userId, String brandId) => _firebase.getBonoRequest(userId, brandId);
   Future<String> getBonoUser(String userId, String brandId) => _firebase.getBonoUser(userId, brandId);
   Future<List<int>> getUserFavourites(String brandId, String userId) => _firebase.getUserFavourites(brandId, userId);
