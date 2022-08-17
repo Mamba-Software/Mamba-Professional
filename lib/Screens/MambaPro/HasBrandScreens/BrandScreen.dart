@@ -760,8 +760,7 @@ class _BrandScreenState extends State<BrandScreen> {
           )
         ],
       ),
-      body: Container(),
-      //_mambaProUtils.pageSelector(context,pageIndex, currentBrand.id!, currentBrand.numTrainers!, currentBrand.numClients!, _controller,safeAreaWidth, safeAreaHeight),
+      body: _mambaProUtils.pageSelector(context,pageIndex, currentBrand.id!, currentBrand.numTrainers!, currentBrand.numClients!, _controller,safeAreaWidth, safeAreaHeight),
     );
   }
 }

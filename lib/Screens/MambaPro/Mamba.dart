@@ -163,6 +163,7 @@ class _MambaState extends State<Mamba> {
 
   // Check invited by Brand
   void checkBrandInvite() async {
+    print(dynamicLinkBrandId);
     if (dynamicLinkBrandId != null && currentUser.brandsList.isEmpty) {
       // Start up Dialog
       Future.delayed(Duration.zero, () {

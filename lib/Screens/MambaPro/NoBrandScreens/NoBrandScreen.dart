@@ -441,11 +441,21 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
         :
       GestureDetector(
         onTap: () async {
-          Navigator.push(
-              context,
-              CupertinoPageRoute<void>(
-                builder: (context) => const QRScanner(),
-              )
+          showModalBottomSheet<void>(
+            context: context,
+            isScrollControlled: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
+            ),
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            builder: (BuildContext context) {
+              return const FractionallySizedBox(
+                heightFactor: 0.8,
+                child: QRScanner(),
+              );
+            },
           );
         },
         child: Material(
