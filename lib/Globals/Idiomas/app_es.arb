@@ -1995,5 +1995,13 @@
   "scanQRCode": "Escanea código QR",
   "@scanQRCode": {
     "description": "Donde message"
+  },
+  "shareBrandTitle": "",
+  "@shareAppTitle": {
+    "description": "membersOfBrand message"
+  },
+  "shareAppText": "Comparte la app con tus amigos y familiares",
+  "@shareAppText": {
+    "description": "membersOfBrand message"
   }
 }

@@ -452,7 +452,7 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
             clipBehavior: Clip.antiAliasWithSaveLayer,
             builder: (BuildContext context) {
               return const FractionallySizedBox(
-                heightFactor: 0.8,
+                heightFactor: 0.9,
                 child: QRScanner(),
               );
             },

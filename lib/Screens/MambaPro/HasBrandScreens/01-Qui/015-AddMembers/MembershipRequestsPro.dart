@@ -12,6 +12,7 @@ import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/RequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -70,8 +71,27 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                   padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02),
                   child: ListTile(
                     onTap: () async {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                        ),
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        builder: (BuildContext context) {
+                          return const FractionallySizedBox(
+                            heightFactor: 0.9,
+                            child: ShareBrandLink(),
+                          );
+                        },
+                      );
+                      /*
                       final Uri uri = await _dynamicLinkUtils.createDynamicLinkWithId(currentBrand.id!, currentBrand.logoUrl!, currentBrand.name!);
                       await Share.share(uri.toString(), subject: currentBrand.logoUrl!);
+                       */
+
                     },
                     leading: Icon(
                       Icons.share,
