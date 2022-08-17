@@ -61,7 +61,7 @@ dependencies:
   carousel_slider: ^4.0.0
   flutter_image_compress: ^1.1.0
   firebase_dynamic_links: ^4.0.6
-  share_plus: ^3.1.0
+  share_plus: ^4.0.10+1
   store_redirect: ^2.0.1
   firebase_crashlytics: ^2.5.3
   firebase_analytics: ^9.1.2
