@@ -36,8 +36,8 @@ class BonoRequest {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('price')) {
       this.price = documentSnapshot.get("price");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('classes')) {
-      this.classes = documentSnapshot.get("classes");
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
+      this.classes = documentSnapshot.get("sessions");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bonoId')) {
       this.bonoId = documentSnapshot.get("bonoId");

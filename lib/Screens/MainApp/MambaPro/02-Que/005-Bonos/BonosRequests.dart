@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Payments/PaymentDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
@@ -23,6 +24,8 @@ import '../../../../../../Globals/Utils/Bonos/BonosUtils.dart';
 import '../../../../../../Globals/Widgets/Components/Images/CircularImage.dart';
 import '../../../../../../Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/RequestConfirmationDialog.dart';
 import '../../../../../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import '../../../../../Data/Models/Purchase.dart';
+import '../../../../../Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/RequestBonoConfirmationDialog.dart';
 
 
 class BonosRequests extends StatefulWidget {
@@ -38,6 +41,7 @@ class _BonosRequestsState extends State<BonosRequests> {
   // Acceso a Base de Datos
   var _brandDataService = new BrandDataService();
   var _userDataService = new UserDataService();
+  var _paymentDataService = new PaymentDataService();
 
   // Bonos list
   List<BonoRequest> bonosRequestsList = [];
@@ -81,21 +85,37 @@ class _BonosRequestsState extends State<BonosRequests> {
         ],
       ),
       onTap: () async {
-        var result = await showDialog(
+        Purchase purchase = new Purchase();
+        int? paymentMethod = await showDialog(
             context: context,
             builder: (_) {
-              return RequestConfirmationDialog(
+              return RequestBonoConfirmationDialog(
                 text: 'Si aceptas se le otorgaran ' + _bonoRequest.classes! + ' sesiones',
                 userId: _user.id!,
               );
             }
         );
-        if (result) {
-          await _brandDataService.addUserToBrand( _bonoRequest.userId!, widget.brandId, 0);
-          _userDataService.addBonoToUser(widget.brandId, _bonoRequest.userId!, _bonoRequest.bonoId!, int.parse(_bonoRequest.classes!), Timestamp.now());
-          _userDataService.deleteUserBonoRequest(_bonoRequest.userId!, widget.brandId, _bonoRequest.bonoId!);
-          _brandDataService.deleteBrandBonoRequest( widget.brandId, _bonoRequest.bonoId!);
-          _brandDataService.updateBonoCompras(widget.brandId, _bonoRequest.bonoId!);
+
+        if(paymentMethod != null) {
+          if (paymentMethod >= 0) {
+            print('create');
+            purchase.purchasedAt = Timestamp.now();
+            purchase.brandId = widget.brandId;
+            purchase.bonoId = _bonoRequest.bonoId;
+            purchase.price = double.parse(_bonoRequest.price!);
+            purchase.userId = _bonoRequest.userId!;
+            purchase.paymentMethod = paymentMethod;
+
+            _paymentDataService.addPurchaseToPayments(purchase);
+            //await _brandDataService.addUserToBrand( _bonoRequest.userId!, widget.brandId, 0);
+            //_userDataService.addBonoToUser(widget.brandId, _bonoRequest.userId!, _bonoRequest.bonoId!, int.parse(_bonoRequest.classes!), Timestamp.now());
+            //_userDataService.deleteUserBonoRequest(_bonoRequest.userId!, widget.brandId, _bonoRequest.bonoId!);
+            _brandDataService.deleteBrandBonoRequest( widget.brandId, _bonoRequest.bonoId!);
+            _brandDataService.updateBonoCompras(widget.brandId, _bonoRequest.bonoId!);
+          }
+          else if (paymentMethod == -1) {
+            _brandDataService.deleteBrandBonoRequest( widget.brandId, _bonoRequest.bonoId!);
+          }
         }
       }
     );

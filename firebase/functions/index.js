@@ -10,6 +10,10 @@ const uuidv4 = require("uuid")
 // Firebase DataBase
 const db = admin.firestore();
 
+
+
+
+
 // Daily Notification For Events
 exports.scheduledDailyFunction = functions
    .region("europe-west1")  
@@ -4086,11 +4090,10 @@ exports.zzzzChangeMessageStatus = functions
         const brandId = context.params.brandId;
         const bonoRequestId = context.params.bonoRequestId;
 
-        db.settings({ ignoreUndefinedProperties: true });
 
         // Get Data of the Request
-        const requestSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc("Bonos Requests").collection("Bonos Requests").doc(bonoRequestId).get();
-        const requestDoc = requestSnapshot.data();
+        //const requestSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc("Bonos Requests").collection("Bonos Requests").doc(bonoRequestId).get();
+        const requestDoc = snap.data();
 
         await db.collection("7777 Users").doc(requestDoc.userId).collection("Bonos").doc("Bonos Requests").collection("Bonos Requests").doc(bonoRequestId)
         .set({
@@ -4102,21 +4105,28 @@ exports.zzzzChangeMessageStatus = functions
              "timeRequested": requestDoc.timeRequested,
          });
 
+
+
          // Get Data of the Brand
                  const brandSnapshot = await db.collection("7777 Brands").doc(brandId).get();
                  const brandDoc = brandSnapshot.data();
 
-                 const userSnapshot = await db.collection("7777 Users").doc(brandDoc.adminId).get();
+                 functions.logger.log(
+                                                "test",
+                                                brandDoc.adminID
+                                              );
+
+                 const userSnapshot = await db.collection("7777 Users").doc(brandDoc.adminID).get();
                                   const userDoc = userSnapshot.data();
 
          if (userDoc.idioma == "es") {
                                  payload = {
                                    notification: {
-                                     title: "Nueva solicitud de bono ☀️",
+                                     title: "Nueva solicitud de bono ",
                                      body: "Te han solicitado un bono",
                                    },
                                    data: {
-                                     route: "SplashScreen0",
+                                     route: "BonosRequests",
                                    },
                                  };
                              } else {
@@ -4126,7 +4136,7 @@ exports.zzzzChangeMessageStatus = functions
                                                                     body: "Te han solicitado un bono",
                                                                   },
                                                                   data: {
-                                                                    route: "SplashScreen0",
+                                                                    route: "BonosRequests",
                                                                   },
                                                                 };
                              }
@@ -4149,13 +4159,12 @@ exports.zzzzChangeMessageStatus = functions
         // Get the value of the context triggers.
         const brandId = context.params.brandId;
         const bonoRequestId = context.params.bonoRequestId;
+       // snap.data();
 
-        db.settings({ ignoreUndefinedProperties: true });
 
 
          // Get Data of the Request
-                const requestSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc("Bonos Requests").collection("Bonos Requests").doc(bonoRequestId).get();
-                const requestDoc = requestSnapshot.data();
+            const requestDoc = snap.data();
 
        await db.collection("7777 Users").doc(requestDoc.userId).collection("Bonos").doc("Bonos Requests").collection("Bonos Requests").doc(bonoRequestId).delete();
 

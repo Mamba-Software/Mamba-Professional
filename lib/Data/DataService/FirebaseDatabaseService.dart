@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -2396,6 +2397,25 @@ class FirebaseDatabaseService {
       return colors;
     }
   }
+  Future<List<lPaymentMethod>> getPaymentMethods() async {
+    List<lPaymentMethod> paymentMethods = [];
+    try {
+      await _firestore.collection(library).doc('PaymentMethods')
+          .collection("PaymentMethods")
+          .get()
+          .then((snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          paymentMethods.add(lPaymentMethod.fromObjectAllData(doc.id, doc));
+
+        }
+      });
+      return paymentMethods;
+    } catch (e) {
+      print(e.toString());
+      return paymentMethods;
+    }
+  }
+
 
   Future<List<int>> getUserFavourites(String brandId, String userId) async {
     var favourites;

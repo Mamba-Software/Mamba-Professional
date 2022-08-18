@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
+import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
@@ -21,6 +22,8 @@ class LibraryDataService {
 
   // Colors Data
   Future<List<lColor>> getColors() => _firebase.getColors();
+  // Payment Methods Data
+  Future<List<lPaymentMethod>> getPaymentMethods() => _firebase.getPaymentMethods();
 
 
 }
