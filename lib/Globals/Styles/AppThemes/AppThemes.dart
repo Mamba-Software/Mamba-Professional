@@ -12,6 +12,7 @@ class AppThemes {
       // Primary Colors
       primaryColor: AppColors.black,
       primaryColorDark: AppColors.white,
+      primaryColorLight: Colors.grey,
       accentColor:  AppColors.mainColor,
       // BackGround Colors
       backgroundColor: AppColors.lightGrey,
@@ -30,17 +31,16 @@ class AppThemes {
         bodyText2: _textStyles.blackBodyText2Style(),
         caption: _textStyles.greyBodyTextStyle()
       ),
-      fontFamily: "Helvetica",
       appBarTheme: AppBarTheme(
         elevation: 4.0,
         backgroundColor: AppColors.white,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
             color: Colors.black
         ),
         brightness: Brightness.dark,
         titleTextStyle: _textStyles.blackHeadline2TextStyle(),
       ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         elevation: 40,
         type: BottomNavigationBarType.fixed,
         backgroundColor:  AppColors.white,
@@ -74,11 +74,10 @@ class AppThemes {
         bodyText2: _textStyles.whiteBodyText2Style(),
         caption: _textStyles.greyBodyTextStyle()
       ),
-      fontFamily: "Helvetica",
       appBarTheme: AppBarTheme(
         elevation: 4.0,
         backgroundColor: AppColors.darkerGrey,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
             color: AppColors.white,
         ),
         titleTextStyle: _textStyles.whiteHeadline2TextStyle(),

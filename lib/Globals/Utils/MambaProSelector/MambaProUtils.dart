@@ -48,8 +48,8 @@ class MambaProUtils {
   //Function to know the title on listview
   Widget titlePageSelectorListView(var context, int pageIndex)
   {
-    if(pageIndex == 0)return Text(AppLocalizations.of(context)!.homeBottomNav);
-    if(pageIndex == 1)return Text(AppLocalizations.of(context)!.staff);
+    if(pageIndex == 0) return Text(AppLocalizations.of(context)!.homeBottomNav, style: Theme.of(context).textTheme.bodyText1,);
+    if(pageIndex == 1)return Text(AppLocalizations.of(context)!.staff, style: Theme.of(context).textTheme.bodyText1,);
     if(pageIndex == 2)return Text(AppLocalizations.of(context)!.clients);
     if(pageIndex == 4)return Text(AppLocalizations.of(context)!.categories);
     if(pageIndex == 5)return Text(AppLocalizations.of(context)!.bonos);
@@ -68,23 +68,23 @@ class MambaProUtils {
   }
 
   //Function to select the icon to load
-  Widget iconSelector(int pageIndexView)
+  Widget iconSelector(var context, int pageIndexView)
   {
-    if(pageIndexView == 1) return const Icon(Icons.record_voice_over);
-    if(pageIndexView == 2) return const Icon(Icons.group);
-    if(pageIndexView == 8) return const Icon(Icons.feed);
-    if(pageIndexView == 13) return const Icon(Icons.question_mark);
-    if(pageIndexView == 4) return const Icon(Icons.category);
-    if(pageIndexView == 5) return const Icon(Icons.shopping_bag);
-    if(pageIndexView == 12) return const Icon(Icons.run_circle);
-    if(pageIndexView == 7) return const Icon(Icons.collections);
-    if(pageIndexView == 10) return const Icon(Icons.calendar_month);
-    if(pageIndexView == 11) return const Icon(Icons.pin_drop);
-    if(pageIndexView == 6) return const Icon(Icons.chat_bubble_outline);
-    if(pageIndexView == 9) return const Icon(Icons.query_stats);
-    if(pageIndexView == 14) return const Icon(Icons.history);
-    if(pageIndexView == 15) return const Icon(Icons.group_add);
-    if(pageIndexView == 16) return const Icon(Icons.preview);
+    if(pageIndexView == 1) return Icon(Icons.record_voice_over, color: Theme.of(context).primaryColor,);
+    if(pageIndexView == 2) return Icon(Icons.group, color: Theme.of(context).primaryColor,);
+    if(pageIndexView == 8) return Icon(Icons.feed, color: Theme.of(context).primaryColor,);
+    if(pageIndexView == 13) return Icon(Icons.question_mark, color: Theme.of(context).primaryColor,);
+    if(pageIndexView == 4) return Icon(Icons.category, color: Theme.of(context).primaryColor,);
+    if(pageIndexView == 5) return Icon(Icons.shopping_bag, color: Theme.of(context).primaryColor,);
+    if(pageIndexView == 12) return Icon(Icons.run_circle, color: Theme.of(context).primaryColor,);
+    if(pageIndexView == 7) return Icon(Icons.collections, color: Theme.of(context).primaryColor,);
+    if(pageIndexView == 10) return Icon(Icons.calendar_month, color: Theme.of(context).primaryColor,);
+    if(pageIndexView == 11) return Icon(Icons.pin_drop, color: Theme.of(context).primaryColor,);
+    if(pageIndexView == 6) return Icon(Icons.chat_bubble_outline, color: Theme.of(context).primaryColor,);
+    if(pageIndexView == 9) return Icon(Icons.query_stats, color: Theme.of(context).primaryColor,);
+    if(pageIndexView == 14) return Icon(Icons.history, color: Theme.of(context).primaryColor,);
+    if(pageIndexView == 15) return Icon(Icons.group_add, color: Theme.of(context).primaryColor,);
+    if(pageIndexView == 16) return Icon(Icons.preview, color: Theme.of(context).primaryColor,);
     return Container();
   }
 

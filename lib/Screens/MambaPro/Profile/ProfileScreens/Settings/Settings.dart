@@ -7,16 +7,19 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/FeedBack.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'SettingsEditPhotoPage.dart';
 import 'SettingsPrivacy.dart';
@@ -32,8 +35,10 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
 
   // Acceso a Base de Datos
-  var _userDataService = new UserDataService();
-  var _brandDataService = new BrandDataService();
+  final _userDataService = UserDataService();
+  final _brandDataService = BrandDataService();
+  //Share Plus Utils
+  final SharePlusUtils _sharePlusUtils = SharePlusUtils();
   // Boolean Loading
   bool isLoading = false;
   bool firstBuild = true;
@@ -54,7 +59,7 @@ class _SettingsState extends State<Settings> {
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
-          builder: (context) => SettingsYourData(),
+          builder: (context) => const SettingsYourData(),
         )
     );
   }
@@ -74,7 +79,7 @@ class _SettingsState extends State<Settings> {
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
-          builder: (context) => SettingsPrivacy(),
+          builder: (context) => const SettingsPrivacy(),
         )
     );
   }
@@ -84,7 +89,16 @@ class _SettingsState extends State<Settings> {
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
-          builder: (context) => SettingsTheme(),
+          builder: (context) => const SettingsTheme(),
+        )
+    );
+  }
+  // Navigate to Theme Screen
+  void navigateToFeedbackScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<String>(
+          builder: (context) => const FeedBack(),
         )
     );
   }
@@ -138,7 +152,7 @@ class _SettingsState extends State<Settings> {
           ),
         ),
         body: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
               child: Column(
@@ -161,7 +175,7 @@ class _SettingsState extends State<Settings> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Icon(Icons.edit_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.editYourInfo,
                               style: Theme.of(context).textTheme.bodyText1,
@@ -175,7 +189,7 @@ class _SettingsState extends State<Settings> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Icon(Icons.face_retouching_natural, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.editYourPhoto,
                               style: Theme.of(context).textTheme.bodyText1,
@@ -189,7 +203,7 @@ class _SettingsState extends State<Settings> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Icon(Icons.visibility_outlined, color: Theme.of(context).primaryColor),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.editYourPrivacy,
                               style: Theme.of(context).textTheme.bodyText1,
@@ -215,7 +229,7 @@ class _SettingsState extends State<Settings> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Icon(Icons.dark_mode_outlined, color: Theme.of(context).primaryColor),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Text(
                               AppLocalizations.of(context)!.editYourTheme,
                               style: Theme.of(context).textTheme.bodyText1,
@@ -245,6 +259,50 @@ class _SettingsState extends State<Settings> {
                     ],
                   ),
                   TextButton(
+                    onPressed: navigateToFeedbackScreen,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.help_outline_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
+                        const SizedBox(width: 10),
+                        Text(
+                          AppLocalizations.of(context)!.giveFeedbackTitle,
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      _sharePlusUtils.shareMambaLink(currentUser.firstName!);
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.send_to_mobile_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
+                        const SizedBox(width: 10),
+                        Text(
+                          AppLocalizations.of(context)!.shareAppTitle,
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: launchEmail,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.email_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
+                        const SizedBox(width: 10),
+                        Text(
+                          AppLocalizations.of(context)!.getInTouch,
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextButton(
                     onPressed: () async {
                       if (Localizations.localeOf(context).languageCode == 'es') {
                         if (!await launch(termsAndConditionsES)) throw 'Could not launch $termsAndConditionsES';
@@ -258,7 +316,7 @@ class _SettingsState extends State<Settings> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(Icons.policy_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text(
                           AppLocalizations.of(context)!.termsAndConditions,
                           style: Theme.of(context).textTheme.bodyText1,
@@ -279,13 +337,13 @@ class _SettingsState extends State<Settings> {
                           isLoading = true;
                           currentIndex = 0;
                         });
-                        Future.delayed(Duration(seconds: 1), () async {
+                        Future.delayed(const Duration(seconds: 1), () async {
                           _userDataService.signOut().then((value) =>
                               Navigator.pushAndRemoveUntil(
                                 context,
                                 CupertinoPageRoute<Null>(
-                                  builder: (context) => Login(),
-                                  settings: RouteSettings(name: 'Login'),
+                                  builder: (context) => const Login(),
+                                  settings: const RouteSettings(name: 'Login'),
                                 ),
                                     (_) => false,
                               )
@@ -298,7 +356,7 @@ class _SettingsState extends State<Settings> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(Icons.logout_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text(
                           AppLocalizations.of(context)!.closeSession,
                           style: Theme.of(context).textTheme.bodyText1,
@@ -311,7 +369,7 @@ class _SettingsState extends State<Settings> {
                       showDialog(
                           context: context,
                           builder: (_) {
-                            return DeleteDialog();
+                            return const DeleteDialog();
                           }
                       );
                     },
@@ -319,7 +377,7 @@ class _SettingsState extends State<Settings> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(Icons.delete_outline, color: Colors.red, size: MediaQuery.of(context).size.width*0.05,),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text(
                           AppLocalizations.of(context)!.deleteAccount,
                           style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.red),
@@ -338,7 +396,7 @@ class _SettingsState extends State<Settings> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(Icons.system_security_update_good_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text(
                           appVersion,
                           style: Theme.of(context).textTheme.bodyText2,
@@ -352,6 +410,14 @@ class _SettingsState extends State<Settings> {
           ),
       );
   }
+
+  Future<void> launchEmail() async {
+    const url = 'mailto:mambastylecastelldefels@gmail.com';
+    if (await canLaunchUrlString(url)) {
+      await launchUrlString(url);
+    }
+  }
+
 }
 
 // Delete Account Dialog
@@ -365,9 +431,9 @@ class DeleteDialog extends StatefulWidget {
 class _DeleteDialogState extends State<DeleteDialog> {
 
   // Acceso a Base de Datos
-  var _userDataService = new UserDataService();
-  var _brandDataService = new BrandDataService();
-  var _eventDataService = new EventDataService();
+  final _userDataService = UserDataService();
+  final _brandDataService = BrandDataService();
+  final _eventDataService = EventDataService();
   // Delete Alert
   bool isLoading = false;
   bool firstBuild = true;
@@ -386,9 +452,9 @@ class _DeleteDialogState extends State<DeleteDialog> {
     }
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.all(20),
+      insetPadding: const EdgeInsets.all(20),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -413,8 +479,8 @@ class _DeleteDialogState extends State<DeleteDialog> {
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
-                      new Flexible(
-                        child: new TextFormField(
+                      Flexible(
+                        child: TextFormField(
                           obscureText: !_passwordVisible,
                           controller: deleteController,
                           onChanged: (val) {
@@ -436,15 +502,15 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             hintText: AppLocalizations.of(context)!.passworRepeat,
                             hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.red),
                             enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red, width: 1),
+                              borderSide: const BorderSide(color: Colors.red, width: 1),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red, width: 1),
+                              borderSide: const BorderSide(color: Colors.red, width: 1),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             suffixIcon: Padding(
-                                padding: EdgeInsets.all(0.0),
+                                padding: const EdgeInsets.all(0.0),
                                 child: IconButton(
                                     icon: Icon(
                                       // Based on passwordVisible state choose the icon
@@ -526,8 +592,8 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             Navigator.pushAndRemoveUntil(
                               context,
                               CupertinoPageRoute<Null>(
-                                builder: (context) => Login(),
-                                settings: RouteSettings(name: 'Login'),
+                                builder: (context) => const Login(),
+                                settings: const RouteSettings(name: 'Login'),
                               ),
                                   (_) => false,
                             );
@@ -555,7 +621,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox.fromSize(
-                      size: Size(80, 80), // button width and height
+                      size: const Size(80, 80), // button width and height
                       child: ClipOval(
                         child: Material(
                           color: Colors.red, // button color
@@ -563,7 +629,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             onTap: () async {
                               setState(() {});
                             },
-                            child: Icon(Icons.delete_outline, color: Colors.white, size: 45,), // icon
+                            child: const Icon(Icons.delete_outline, color: Colors.white, size: 45,), // icon
                           ),
                         ),
                       ),

@@ -26,6 +26,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/BrandIntroScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/RegistrarMarca.dart';
@@ -48,22 +49,14 @@ class _BrandScreenState extends State<BrandScreen> {
   double safeAreaHeight = 0;
   double safeAreaWidth = 0;
 
+  bool isLoading = true;
+
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
   final _eventDataService = EventDataService();
   final _roomDataService=  RoomDataService();
   final _brandDataService = BrandDataService();
-  final _settingsDataService = SettingsDataService();
   final _mambaProUtils = MambaProUtils();
-  final SharePlusUtils _sharePlusUtils = SharePlusUtils();
-  // Boolean Loading
-  bool isLoading = false;
-  bool hasBrand = false;
-  // Boolean hasSeenStartUpDialog
-  bool hasSeenStartUpDialog = false;
-  // Notifications
-  LocalNotificationService localNotificationService = LocalNotificationService();
-  FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
   final CalendarController _controller = CalendarController();
 
@@ -71,16 +64,14 @@ class _BrandScreenState extends State<BrandScreen> {
   bool iconStar = false;
   bool isFirstBuild = true;
 
-  //Bools to controll show for drop down
-  bool seeNextFavourites = false;
+  // Bools to control show for drop down
   bool seeNextWho = true;
   bool seeNextWhat = true;
   bool seeNextHow = true;
   bool seeNextWhen = true;
   bool seeNextWhere = true;
 
-  //Icons for drop down
-  var iconFavourites = Icons.keyboard_arrow_down;
+  // Icons for drop down
   var iconWho = Icons.keyboard_arrow_down;
   var iconWhat = Icons.keyboard_arrow_down;
   var iconHow = Icons.keyboard_arrow_down;
@@ -97,7 +88,6 @@ class _BrandScreenState extends State<BrandScreen> {
   void initState() {
     super.initState();
     getFavourites();
-    isLoading = true;
   }
 
   // Init Device Sizes
@@ -108,12 +98,20 @@ class _BrandScreenState extends State<BrandScreen> {
     print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
   }
 
-  /// /////----------------------------
-
-  //Function to get the favourites of the user
-  void getFavourites() async{
+  // Function to get the favourites of the user
+  void getFavourites() async {
     favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
-    if(favourites.contains(pageIndex)) iconStar = true;
+    if (favourites.contains(pageIndex)) iconStar = true;
+    if (isLoading && favourites.isNotEmpty) {
+      setState(() {
+        seeNextWho = false;
+        seeNextWhat = false;
+        seeNextHow = false;
+        seeNextWhen = false;
+        seeNextWhere = false;
+        isLoading = false;
+      });
+    }
   }
 
   //Function to set the favourites of the user
@@ -175,7 +173,10 @@ class _BrandScreenState extends State<BrandScreen> {
             size: MediaQuery.of(context).size.width*0.1,
             image: currentBrand.logoUrl,
           ),
-          title: Text(currentBrand.name!),
+          title: Text(
+            currentBrand.name!,
+            style: Theme.of(context).textTheme.bodyText1,
+          ),
           onTap: () =>  {
             Navigator.pop(context),
             setState(() {
@@ -186,7 +187,7 @@ class _BrandScreenState extends State<BrandScreen> {
       );
     } else {
       return ListTile(
-          leading: _mambaProUtils.iconSelector(_pageIndex),
+          leading: _mambaProUtils.iconSelector(context, _pageIndex),
           title:  _mambaProUtils.titlePageSelectorListView(context, _pageIndex),
           trailing: isFavourite ? SizedBox(
             width: safeAreaWidth*0.15,
@@ -292,12 +293,11 @@ class _BrandScreenState extends State<BrandScreen> {
               ],
             ),
           ),
-          SizedBox(height: safeAreaHeight * 0.025),
-          GestureDetector(
-            onTap: navigateToSettingsScreen,
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+          SizedBox(height: safeAreaHeight * 0.01),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
+            child: TextButton(
+              onPressed: navigateToSettingsScreen,
               child: Row(
                 children: [
                   Icon(
@@ -313,7 +313,6 @@ class _BrandScreenState extends State<BrandScreen> {
               ),
             ),
           ),
-          SizedBox(height: safeAreaHeight * 0.02),
         ],
       ),
     );
@@ -334,7 +333,7 @@ class _BrandScreenState extends State<BrandScreen> {
             }
         ),
 
-        Divider(color: Theme.of(context).backgroundColor, thickness: 1),
+        Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
         ListTile(
           title: Row(
             children: [
@@ -473,11 +472,10 @@ class _BrandScreenState extends State<BrandScreen> {
           }),
         ),
         seeNextWhere ? listTilePro(11) : Container(),
-        Divider(color: Theme.of(context).backgroundColor, thickness: 1),
+        Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
       ],
     );
   }
-
 
   Widget buildBrandLeaveOption() {
     return currentUser.id != currentBrand.adminID ?
@@ -524,9 +522,6 @@ class _BrandScreenState extends State<BrandScreen> {
               }
           );
           if (result) {
-            setState(() {
-              isLoading = true;
-            });
             // New DataBase
             await _brandDataService.deleteBrand(currentBrand.id!);
             await _roomDataService.deleteRoom(currentBrand.roomId!);
@@ -567,7 +562,7 @@ class _BrandScreenState extends State<BrandScreen> {
           children: [
             // Header
             buildHeader(),
-            Divider(color: Theme.of(context).primaryColor, thickness: 0,height: 1,),
+            Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1,),
             SizedBox(height: safeAreaHeight * 0.02),
             // Brand Options
             // TODO: Passer Rol en aquesta funció
@@ -664,7 +659,8 @@ class _BrandScreenState extends State<BrandScreen> {
           )
         ],
       ),
-      body: _mambaProUtils.pageSelector(context,pageIndex, currentBrand.id!, currentBrand.numTrainers!, currentBrand.numClients!, _controller,safeAreaWidth, safeAreaHeight),
+      body: isLoading ? LoadingView() :
+      _mambaProUtils.pageSelector(context,pageIndex, currentBrand.id!, currentBrand.numTrainers!, currentBrand.numClients!, _controller,safeAreaWidth, safeAreaHeight),
     );
   }
 }
