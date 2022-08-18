@@ -224,7 +224,7 @@ class _BrandScreenState extends State<BrandScreen> {
 
   Widget buildHeader() {
     return Container(
-      height: safeAreaHeight*0.35,
+      height: safeAreaHeight*0.36,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).backgroundColor,
@@ -237,7 +237,7 @@ class _BrandScreenState extends State<BrandScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: safeAreaHeight * 0.06),
+                SizedBox(height: safeAreaHeight * 0.07),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -320,164 +320,162 @@ class _BrandScreenState extends State<BrandScreen> {
   }
 
   Widget buildBrandListOptions() {
-    return Container(
-        child: Column(
-          children: [
-            listTilePro(0),
-            ListView.builder(
-                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.003),
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: favourites.length,
-                itemBuilder: (context, index) {
-                  int favourite =  favourites[index];
-                  return listTilePro(favourite, true);
-                }
-            ),
-
-            Divider(color: Theme.of(context).backgroundColor, thickness: 1),
-            ListTile(
-              title: Row(
-                children: [
-                  Icon(
-                    iconWho,
-                    color: Theme.of(context).primaryColorLight,
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
-                  Text(
-                    AppLocalizations.of(context)!.quien,
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
-                  ),
-                ],
-              ),
-              onTap: () => setState(() {
-                seeNextWho = !seeNextWho;
-                if(iconWho == Icons.keyboard_arrow_up) {
-                  iconWho = Icons.keyboard_arrow_down;
-                } else {
-                  iconWho = Icons.keyboard_arrow_up;
-                }
-              }),
-            ),
-            seeNextWho ? listTilePro(2) : Container(),
-            seeNextWho ? listTilePro(1) : Container(),
-            seeNextWho ? listTilePro(15) : Container(),
-
-            //Divider(color: Theme.of(context).backgroundColor, thickness: 1, indent: MediaQuery.of(context).size.width*0.03, endIndent: MediaQuery.of(context).size.width*0.03),
-            ListTile(
-              title: Row(
-                children: [
-                  Icon(
-                    iconWhat,
-                    color: Theme.of(context).primaryColorLight,
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
-                  Text(
-                    AppLocalizations.of(context)!.que,
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
-                  ),
-                ],
-              ),
-              onTap: () => setState(() {
-                seeNextWhat = !seeNextWhat;
-                if(iconWhat == Icons.keyboard_arrow_up) {
-                  iconWhat = Icons.keyboard_arrow_down;
-                } else {
-                  iconWhat = Icons.keyboard_arrow_up;
-                }
-              }),
-            ),
-            seeNextWhat ? listTilePro(8) : Container(),
-            seeNextWhat ? listTilePro(12) : Container(),
-            //seeNextWhat ? listTilePro(4) : Container(),
-            seeNextWhat ? listTilePro(5) : Container(),
-
-            //Divider(color: Theme.of(context).backgroundColor, thickness: 1, indent: MediaQuery.of(context).size.width*0.03, endIndent: MediaQuery.of(context).size.width*0.03),
-            ListTile(
-              title:  Row(
-                children: [
-                  Icon(
-                    iconWhen,
-                    color: Theme.of(context).primaryColorLight,
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
-                  Text(
-                    AppLocalizations.of(context)!.cuando,
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
-                  ),
-                ],
-              ),
-              onTap: () => setState(() {
-                seeNextWhen = !seeNextWhen;
-                if(iconWhen == Icons.keyboard_arrow_up) {
-                  iconWhen = Icons.keyboard_arrow_down;
-                } else {
-                  iconWhen = Icons.keyboard_arrow_up;
-                }
-              }),
-            ),
-            seeNextWhen ? listTilePro(10) : Container(),
-            seeNextWhen ? listTilePro(14) : Container(),
-
-
-            ListTile(
-              title: Row(
-                children: [
-                  Icon(
-                    iconHow,
-                    color: Theme.of(context).primaryColorLight,
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
-                  Text(
-                    AppLocalizations.of(context)!.como,
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
-                  ),
-                ],
-              ),
-              onTap: () => setState(() {
-                seeNextHow = !seeNextHow;
-                if(iconHow == Icons.keyboard_arrow_up) {
-                  iconHow = Icons.keyboard_arrow_down;
-                } else {
-                  iconHow = Icons.keyboard_arrow_up;
-                }
-              }),
-            ),
-            //seeNextHow ? listTilePro(9) : Container(),
-            seeNextHow ? listTilePro(7) : Container(),
-            //seeNextHow ? listTilePro(6) : Container(),
-            seeNextHow ? listTilePro(13) : Container(),
-            //seeNextHow ? listTilePro(16) : Container(),
-
-
-            ListTile(
-              title: Row(
-                children: [
-                  Icon(
-                    iconWhere,
-                    color: Theme.of(context).primaryColorLight,
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
-                  Text(
-                    AppLocalizations.of(context)!.donde,
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
-                  ),
-                ],
-              ),
-              onTap: () => setState(() {
-                seeNextWhere = !seeNextWhere;
-                if(iconWhere == Icons.keyboard_arrow_up) {
-                  iconWhere = Icons.keyboard_arrow_down;
-                } else {
-                  iconWhere = Icons.keyboard_arrow_up;
-                }
-              }),
-            ),
-            seeNextWhere ? listTilePro(11) : Container(),
-            Divider(color: Theme.of(context).backgroundColor, thickness: 1),
-          ],
+    return Column(
+      children: [
+        listTilePro(0),
+        ListView.builder(
+            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.003),
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: favourites.length,
+            itemBuilder: (context, index) {
+              int favourite =  favourites[index];
+              return listTilePro(favourite, true);
+            }
         ),
-      );
+
+        Divider(color: Theme.of(context).backgroundColor, thickness: 1),
+        ListTile(
+          title: Row(
+            children: [
+              Icon(
+                iconWho,
+                color: Theme.of(context).primaryColorLight,
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03),
+              Text(
+                AppLocalizations.of(context)!.quien,
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+          onTap: () => setState(() {
+            seeNextWho = !seeNextWho;
+            if(iconWho == Icons.keyboard_arrow_up) {
+              iconWho = Icons.keyboard_arrow_down;
+            } else {
+              iconWho = Icons.keyboard_arrow_up;
+            }
+          }),
+        ),
+        seeNextWho ? listTilePro(2) : Container(),
+        seeNextWho ? listTilePro(1) : Container(),
+        seeNextWho ? listTilePro(15) : Container(),
+
+        //Divider(color: Theme.of(context).backgroundColor, thickness: 1, indent: MediaQuery.of(context).size.width*0.03, endIndent: MediaQuery.of(context).size.width*0.03),
+        ListTile(
+          title: Row(
+            children: [
+              Icon(
+                iconWhat,
+                color: Theme.of(context).primaryColorLight,
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03),
+              Text(
+                AppLocalizations.of(context)!.que,
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+          onTap: () => setState(() {
+            seeNextWhat = !seeNextWhat;
+            if(iconWhat == Icons.keyboard_arrow_up) {
+              iconWhat = Icons.keyboard_arrow_down;
+            } else {
+              iconWhat = Icons.keyboard_arrow_up;
+            }
+          }),
+        ),
+        seeNextWhat ? listTilePro(8) : Container(),
+        seeNextWhat ? listTilePro(12) : Container(),
+        //seeNextWhat ? listTilePro(4) : Container(),
+        seeNextWhat ? listTilePro(5) : Container(),
+
+        //Divider(color: Theme.of(context).backgroundColor, thickness: 1, indent: MediaQuery.of(context).size.width*0.03, endIndent: MediaQuery.of(context).size.width*0.03),
+        ListTile(
+          title:  Row(
+            children: [
+              Icon(
+                iconWhen,
+                color: Theme.of(context).primaryColorLight,
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03),
+              Text(
+                AppLocalizations.of(context)!.cuando,
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+          onTap: () => setState(() {
+            seeNextWhen = !seeNextWhen;
+            if(iconWhen == Icons.keyboard_arrow_up) {
+              iconWhen = Icons.keyboard_arrow_down;
+            } else {
+              iconWhen = Icons.keyboard_arrow_up;
+            }
+          }),
+        ),
+        seeNextWhen ? listTilePro(10) : Container(),
+        seeNextWhen ? listTilePro(14) : Container(),
+
+
+        ListTile(
+          title: Row(
+            children: [
+              Icon(
+                iconHow,
+                color: Theme.of(context).primaryColorLight,
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03),
+              Text(
+                AppLocalizations.of(context)!.como,
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+          onTap: () => setState(() {
+            seeNextHow = !seeNextHow;
+            if(iconHow == Icons.keyboard_arrow_up) {
+              iconHow = Icons.keyboard_arrow_down;
+            } else {
+              iconHow = Icons.keyboard_arrow_up;
+            }
+          }),
+        ),
+        //seeNextHow ? listTilePro(9) : Container(),
+        seeNextHow ? listTilePro(7) : Container(),
+        //seeNextHow ? listTilePro(6) : Container(),
+        seeNextHow ? listTilePro(13) : Container(),
+        //seeNextHow ? listTilePro(16) : Container(),
+
+
+        ListTile(
+          title: Row(
+            children: [
+              Icon(
+                iconWhere,
+                color: Theme.of(context).primaryColorLight,
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03),
+              Text(
+                AppLocalizations.of(context)!.donde,
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+          onTap: () => setState(() {
+            seeNextWhere = !seeNextWhere;
+            if(iconWhere == Icons.keyboard_arrow_up) {
+              iconWhere = Icons.keyboard_arrow_down;
+            } else {
+              iconWhere = Icons.keyboard_arrow_up;
+            }
+          }),
+        ),
+        seeNextWhere ? listTilePro(11) : Container(),
+        Divider(color: Theme.of(context).backgroundColor, thickness: 1),
+      ],
+    );
   }
 
 
@@ -576,6 +574,7 @@ class _BrandScreenState extends State<BrandScreen> {
             buildBrandListOptions(),
             // Leave/Delete Brand
             buildBrandLeaveOption(),
+            SizedBox(height: safeAreaHeight * 0.05),
           ],
         ),
       ),
