@@ -30,6 +30,7 @@ import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/BrandIntroScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/RegistrarMarca.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
@@ -72,11 +73,11 @@ class _BrandScreenState extends State<BrandScreen> {
 
   //Bools to controll show for drop down
   bool seeNextFavourites = false;
-  bool seeNextWho = false;
-  bool seeNextWhat = false;
-  bool seeNextHow = false;
-  bool seeNextWhen = false;
-  bool seeNextWhere = false;
+  bool seeNextWho = true;
+  bool seeNextWhat = true;
+  bool seeNextHow = true;
+  bool seeNextWhen = true;
+  bool seeNextWhere = true;
 
   //Icons for drop down
   var iconFavourites = Icons.keyboard_arrow_down;
@@ -97,69 +98,6 @@ class _BrandScreenState extends State<BrandScreen> {
     super.initState();
     getFavourites();
     isLoading = true;
-    // Handle LocalNotificationsService
-    localNotificationService.initialize();
-    handleAndlistenNotifications(context);
-    // Firebase Cloud Messaging Notifications
-    FirebaseMessaging.instance.getInitialMessage().then((message) {
-      if (message != null) {
-        print("App in Terminated State Notification Trigger HomePage");
-        String route = message.data["route"];
-        // Handling OnClickNotification Firebase Messaging Notification
-        localNotificationService.onClickedNotification(context, route);
-      }
-    });
-    // If App in Foreground.
-    FirebaseMessaging.onMessage.listen((message) {
-      print("App in Foreground Notification Trigger HomePage");
-      ReceivedNotification notif = ReceivedNotification(
-        id: DateTime.now().millisecondsSinceEpoch ~/1000,
-        title: message.notification!.title,
-        body: message.notification!.body,
-        payload: message.data["route"],
-      );
-      localNotificationService.showNotification(notif);
-    });
-    // If App in Background, Tap on Notification to be Opened
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print("App in Background Notification Trigger HomePage");
-      String route = message.data["route"];
-      // Handling OnClickNotification Firebase Messaging Notification
-      localNotificationService.onClickedNotification(context, route);
-    });
-    // Listen Dynamic Link Foreground / Background State
-    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
-      dynamicLinkBrandId = dynamicLinkData.link.queryParameters['id'];
-      checkBrandInvite();
-    }).onError((error) {
-      print(error.toString());
-    });
-    // Defining the Page Controller
-    pageController = PageController(initialPage: currentIndex);
-    // Getting User Information
-    getUserAndBrand();
-    // On StartUp Dialogs
-    launchOnStartUpDialogs();
-  }
-
-  // On StartUp Dialogs
-  Future<void> launchOnStartUpDialogs() async {
-    // First check if minimum version
-    print("Checking Minimum App Version...");
-    checkMinimumAppVersion();
-    print("Checking if invited into Brand...");
-    // Check if invited into Brand
-    checkBrandInvite();
-    print("Checking Notification Permissions...");
-    // Check Notification Permissions
-    var notificationString = await PermisionsService().checkUserNotificationsPermision();
-    if (notificationString == "Provisional" || notificationString == "Unknown") {
-      await PermisionsService().askUserNotificationsPermision();
-    }
-    print("Checking Location Permissions...");
-    // Check Location Permissions
-    await PermisionsService().getUserLocation();
-
   }
 
   // Init Device Sizes
@@ -168,91 +106,6 @@ class _BrandScreenState extends State<BrandScreen> {
     safeAreaWidth = MediaQuery.of(context).size.width;
     print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
     print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
-  }
-
-  // Check version and Update App Dialog
-  void checkMinimumAppVersion() async {
-    // Check version
-    List<bool> result = await _settingsDataService.checkIfMinimumAppVersion(appVersion);
-    print(result[0]);
-    print(result[1]);
-    if (result[0] == false) {
-      if (result[1]) {
-        Future.delayed(Duration.zero, () {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return WillPopScope(
-                onWillPop: () async => false,
-                child: AppUpdateDialog(
-                  isMandatory: true,
-                ),
-              );
-            },
-          );
-        });
-      } else {
-        Future.delayed(Duration.zero, () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AppUpdateDialog(
-                isMandatory: false,
-              );
-            },
-          );
-        });
-      }
-    }
-  }
-
-  // Check invited by Brand
-  void checkBrandInvite() async {
-    if (dynamicLinkBrandId != null && currentUser.brandsList.isEmpty) {
-      // Start up Dialog
-      Future.delayed(Duration.zero, () {
-        return showDialog(
-            context: context,
-            builder: (_) {
-              return BrandInviteDialog(
-                  brandId: dynamicLinkBrandId,
-              );
-            }
-        );
-      });
-    }
-  }
-
-  // Gets the user info from firebase.
-  void getUserAndBrand() async {
-    // Get User Main Data
-    currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
-    // Get User Brand
-    List<Brand> brands = await _brandDataService.getAllBrandsFromUser(currentUser.id!);
-    currentUser.setBrandList = brands;
-    if (currentUser.brandsList.isNotEmpty) {
-      // Setting the Brand to the User
-      hasBrand = true;
-      Brand brand = currentUser.brandsList[0];
-      currentBrand.setBasicData = await _brandDataService.getBrandDetails(brand.id!);
-      currentBrand.setUserList = await _brandDataService.getBrandUsers(brand.id!);
-    }
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  // listenNotifications if User Taps on Notifications
-  Future<void> handleAndlistenNotifications(BuildContext context) async {
-    // Did Launch the App
-    await localNotificationService.didNotificationLaunch(context);
-    // Handle Local Notifications
-    await localNotificationService.handleLocalNotifications(context);
-    // Listen to the Notifications Stream
-    localNotificationService.onNotifications.stream.listen(
-            (payload) => localNotificationService.onClickedNotification(context, payload!)
-    );
   }
 
   /// /////----------------------------
@@ -303,11 +156,11 @@ class _BrandScreenState extends State<BrandScreen> {
   }
 
   // Navigate to Notifications Screen
-  void navigateToProfileScreen() {
+  void navigateToSettingsScreen() {
     Navigator.push(
         context,
         CupertinoPageRoute<void>(
-          builder: (context) => const Profile(),
+          builder: (context) => const Settings(),
         )
     ).whenComplete(() {
       getFavourites();
@@ -315,7 +168,7 @@ class _BrandScreenState extends State<BrandScreen> {
   }
 
   //Return the ListTile of each screen of Mamba Pro
-  Widget listTilePro(int _pageIndex) {
+  Widget listTilePro(int _pageIndex, [bool isFavourite = false]) {
     if (_pageIndex == 0) {
       return ListTile(
           leading: CircularImage(
@@ -335,6 +188,29 @@ class _BrandScreenState extends State<BrandScreen> {
       return ListTile(
           leading: _mambaProUtils.iconSelector(_pageIndex),
           title:  _mambaProUtils.titlePageSelectorListView(context, _pageIndex),
+          trailing: isFavourite ? SizedBox(
+            width: safeAreaWidth*0.15,
+            child: IconButton(
+                onPressed: () {
+                  setState(() {
+                    if (pageIndex == _pageIndex) {
+                      iconStar = false;
+                    }
+                    favourites.remove(_pageIndex);
+                    favourites.sort();
+                    _userDataService.addFavouriteToUser(currentBrand.id!, currentUser.id!, favourites);
+                  }
+                  );
+                },
+                icon: Icon(
+                  Icons.push_pin,
+                  color: AppColors.red,
+                  size: MediaQuery.of(context).size.width*0.06,
+                )
+            ),
+          ) : SizedBox(
+            width: safeAreaWidth*0.15,
+          ),
           onTap: () =>  {
             Navigator.pop(context),
             setState(() {
@@ -348,7 +224,7 @@ class _BrandScreenState extends State<BrandScreen> {
 
   Widget buildHeader() {
     return Container(
-      height: safeAreaHeight*0.31,
+      height: safeAreaHeight*0.35,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).backgroundColor,
@@ -365,14 +241,11 @@ class _BrandScreenState extends State<BrandScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    GestureDetector(
-                      onTap: navigateToProfileScreen,
-                      child: CircularImage(
-                        size: safeAreaHeight * 0.1,
-                        image: currentUser.imageUrl,
-                        color: Theme.of(context).primaryColor,
-                        borderWidth: 1,
-                      ),
+                    CircularImage(
+                      size: safeAreaHeight * 0.1,
+                      image: currentUser.imageUrl,
+                      color: Theme.of(context).primaryColor,
+                      borderWidth: 1,
                     ),
                     Row(
                       children: [
@@ -416,25 +289,31 @@ class _BrandScreenState extends State<BrandScreen> {
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyText2,
                 ),
-                SizedBox(height: safeAreaHeight * 0.02),
               ],
             ),
           ),
-          /*
-          ListTile(
-              leading: Icon(
-                Icons.mobile_screen_share,
-                color: Theme.of(context).primaryColor,
+          SizedBox(height: safeAreaHeight * 0.025),
+          GestureDetector(
+            onTap: navigateToSettingsScreen,
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.settings,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  SizedBox(width: safeAreaWidth * 0.025),
+                  Text(
+                      AppLocalizations.of(context)!.settings,
+                      style: Theme.of(context).textTheme.bodyText2
+                  ),
+                ],
               ),
-              title: Text(
-                  AppLocalizations.of(context)!.shareAppTitle,
-                  style: Theme.of(context).textTheme.bodyText1
-              ),
-              onTap: () {
-                _sharePlusUtils.shareMambaLink(currentUser.firstName!);
-              }
+            ),
           ),
-           */
+          SizedBox(height: safeAreaHeight * 0.02),
         ],
       ),
     );
@@ -452,10 +331,11 @@ class _BrandScreenState extends State<BrandScreen> {
                 itemCount: favourites.length,
                 itemBuilder: (context, index) {
                   int favourite =  favourites[index];
-                  return listTilePro(favourite);
+                  return listTilePro(favourite, true);
                 }
             ),
 
+            Divider(color: Theme.of(context).backgroundColor, thickness: 1),
             ListTile(
               title: Row(
                 children: [
@@ -479,11 +359,11 @@ class _BrandScreenState extends State<BrandScreen> {
                 }
               }),
             ),
-            seeNextWho ?
-            listTilePro(1) : Container(),
             seeNextWho ? listTilePro(2) : Container(),
+            seeNextWho ? listTilePro(1) : Container(),
             seeNextWho ? listTilePro(15) : Container(),
 
+            //Divider(color: Theme.of(context).backgroundColor, thickness: 1, indent: MediaQuery.of(context).size.width*0.03, endIndent: MediaQuery.of(context).size.width*0.03),
             ListTile(
               title: Row(
                 children: [
@@ -507,42 +387,12 @@ class _BrandScreenState extends State<BrandScreen> {
                 }
               }),
             ),
-            seeNextWhat ?
-            listTilePro(8) : Container(),
+            seeNextWhat ? listTilePro(8) : Container(),
             seeNextWhat ? listTilePro(12) : Container(),
-            seeNextWhat ? listTilePro(4) : Container(),
+            //seeNextWhat ? listTilePro(4) : Container(),
             seeNextWhat ? listTilePro(5) : Container(),
 
-            ListTile(
-              title: Row(
-                children: [
-                  Icon(
-                    iconHow,
-                    color: Theme.of(context).primaryColorLight,
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
-                  Text(
-                    AppLocalizations.of(context)!.como,
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
-                  ),
-                ],
-              ),
-              onTap: () => setState(() {
-                seeNextHow = !seeNextHow;
-                if(iconHow == Icons.keyboard_arrow_up) {
-                  iconHow = Icons.keyboard_arrow_down;
-                } else {
-                  iconHow = Icons.keyboard_arrow_up;
-                }
-              }),
-            ),
-            seeNextHow ?
-            listTilePro(9) : Container(),
-            seeNextHow ? listTilePro(7) : Container(),
-            seeNextHow ? listTilePro(6) : Container(),
-            seeNextHow ? listTilePro(13) : Container(),
-            seeNextHow ? listTilePro(16) : Container(),
-
+            //Divider(color: Theme.of(context).backgroundColor, thickness: 1, indent: MediaQuery.of(context).size.width*0.03, endIndent: MediaQuery.of(context).size.width*0.03),
             ListTile(
               title:  Row(
                 children: [
@@ -569,6 +419,37 @@ class _BrandScreenState extends State<BrandScreen> {
             seeNextWhen ? listTilePro(10) : Container(),
             seeNextWhen ? listTilePro(14) : Container(),
 
+
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(
+                    iconHow,
+                    color: Theme.of(context).primaryColorLight,
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                  Text(
+                    AppLocalizations.of(context)!.como,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
+                  ),
+                ],
+              ),
+              onTap: () => setState(() {
+                seeNextHow = !seeNextHow;
+                if(iconHow == Icons.keyboard_arrow_up) {
+                  iconHow = Icons.keyboard_arrow_down;
+                } else {
+                  iconHow = Icons.keyboard_arrow_up;
+                }
+              }),
+            ),
+            //seeNextHow ? listTilePro(9) : Container(),
+            seeNextHow ? listTilePro(7) : Container(),
+            //seeNextHow ? listTilePro(6) : Container(),
+            seeNextHow ? listTilePro(13) : Container(),
+            //seeNextHow ? listTilePro(16) : Container(),
+
+
             ListTile(
               title: Row(
                 children: [
@@ -592,8 +473,8 @@ class _BrandScreenState extends State<BrandScreen> {
                 }
               }),
             ),
-            seeNextWhere ?
-            listTilePro(11) : Container(),
+            seeNextWhere ? listTilePro(11) : Container(),
+            Divider(color: Theme.of(context).backgroundColor, thickness: 1),
           ],
         ),
       );
@@ -698,11 +579,11 @@ class _BrandScreenState extends State<BrandScreen> {
           ],
         ),
       ),
-      appBar:  AppBar(
+      appBar: AppBar(
         title: _mambaProUtils.titlePageSelector(context, pageIndex),
         centerTitle: true,
         actions: [
-          pageIndex == 10? IconButton(
+          pageIndex == 10 ? IconButton(
             onPressed: () {
               if (_controller.view == CalendarView.month) {
                 setState(() {
@@ -760,7 +641,12 @@ class _BrandScreenState extends State<BrandScreen> {
           Padding(
             padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
             child: IconButton(
-              icon: pageIndex == 0? Container() : Icon(iconStar? Icons.star : Icons.star_border, size: MediaQuery.of(context).size.width*0.06,),
+              icon: pageIndex == 0 ? Container() :
+              Icon(
+                iconStar ? Icons.push_pin : Icons.push_pin_outlined,
+                color: iconStar ? AppColors.red : Theme.of(context).primaryColor.withOpacity(0.5),
+                size: MediaQuery.of(context).size.width*0.06,
+              ),
               onPressed: () {
                 setState(() {
                   iconStar = !iconStar;
@@ -771,8 +657,7 @@ class _BrandScreenState extends State<BrandScreen> {
                     favourites.remove(pageIndex);
                   }
                   favourites.sort();
-                  _userDataService.addFavouriteToUser(
-                      currentBrand.id!, currentUser.id!, favourites);
+                  _userDataService.addFavouriteToUser(currentBrand.id!, currentUser.id!, favourites);
                 }
                 );
               },

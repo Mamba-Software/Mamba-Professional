@@ -1995,5 +1995,9 @@
   "scanQRCode": "Escanea código QR",
   "@scanQRCode": {
     "description": "Donde message"
+  },
+  "staff": "Staff",
+  "@staff": {
+    "description": "Donde message"
   }
 }

@@ -74,7 +74,6 @@
   "sessions": "Sessions",
   "sessionsDone": "Sessions realitzades",
   "sessionsToDo": "Sessions previstes",
-  "stats": "Control i Anàlisi",
   "statsBrandText": "Gestiona tota la teva marca des de un mateix lloc",
   "feedback": "Feedback",
   "noFeedback": "No hi ha noves preguntes per contestar.\n\nGràcies per voler ajudar-nos!",
@@ -436,9 +435,7 @@
   "bonosClient": "Bonos de clients",
   "information": "Informació",
   "stats": "Estadístiques",
-  "content": "Contingut",
   "opinions": "Opinions",
-  "locations": "Ubicacions",
   "yourBrands": "Les teves marques",
   "howTheySeeMe": "Com em veuen",
   "quien": "Qui",
@@ -446,5 +443,6 @@
   "como": "Com",
   "cuando": "Quan",
   "donde": "On",
-  "scanQRCode": "Escaneja codi QR"
+  "scanQRCode": "Escaneja codi QR",
+  "staff": "Staff"
 }
