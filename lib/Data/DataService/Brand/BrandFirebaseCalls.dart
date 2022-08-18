@@ -315,7 +315,6 @@ class BrandFirebaseCalls {
           .then((snapshot) {
         for (DocumentSnapshot doc in snapshot.docs) {
           bonos.add(Bono.fromObjectAllData(doc.id, doc));
-
         }
       });
       return bonos;
@@ -323,6 +322,12 @@ class BrandFirebaseCalls {
       print(e.toString());
       return bonos;
     }
+  }
+
+  Future<Bono> getBonoInfo(String brandId, String bonoId) async {
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(bonoId).get();
+    return Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
   }
 
   //Add

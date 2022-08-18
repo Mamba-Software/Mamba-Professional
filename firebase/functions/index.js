@@ -4170,3 +4170,70 @@ exports.zzzzChangeMessageStatus = functions
 
         return null;
       });
+
+  // User Purchases Bono
+   exports.userPurchasesBono = functions
+       .region("europe-west1")
+       .firestore
+       .document("/7777 Payments/Purchases/Purchases/{purchaseId}")
+       .onCreate( async (snap, context) => {
+
+       const purchaseId = context.params.purchaseId;
+       const purchaseDoc = snap.data();
+
+       const userId = purchaseDoc.userId;
+       const bonoId = purchaseDoc.bonoId;
+       const brandId =  purchaseDoc.brandId;
+
+       //Get data of the bono
+
+       const bonoSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
+       const bonoDoc = bonoSnapshot.data();
+
+       //Add purchases
+
+        await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set({
+       "purchasedAt": purchaseDoc.purchasedAt,
+       "userId": purchaseDoc.userId,
+        "price": purchaseDoc.price,
+        "paymentMethod": purchaseDoc.paymentMethod,
+    });
+
+    await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
+           "purchasedAt": purchaseDoc.purchasedAt,
+           "bonoId": purchaseDoc.bonoId,
+            "price": purchaseDoc.price,
+            "paymentMethod": purchaseDoc.paymentMethod,
+        });
+
+        await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).set({
+                   "purchasedAt": purchaseDoc.purchasedAt,
+                   "bonoId": purchaseDoc.bonoId,
+                    "price": purchaseDoc.price,
+                    "paymentMethod": purchaseDoc.paymentMethod,
+                    "brandId": purchaseDoc.brandId,
+                });
+
+                 await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).set({
+                                   "title": bonoDoc.title,
+                                   "sessions": bonoDoc.sessions,
+                                    "price": purchaseDoc.price,
+                                    "purchaseId": purchaseId,
+                                    "brandId": purchaseDoc.brandId,
+                                });
+
+                 await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).set({
+                                                    "title": bonoDoc.title,
+                                                    "sessions": bonoDoc.sessions,
+                                                     "price": purchaseDoc.price,
+                                                     "purchaseId": purchaseId,
+                                                 });
+
+            await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).set({
+                                                                "title": bonoDoc.title,
+                                                                "sessions": bonoDoc.sessions,
+                                                                 "price": purchaseDoc.price,
+                                                             });
+
+         return null;
+       });

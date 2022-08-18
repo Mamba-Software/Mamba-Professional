@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
@@ -29,6 +30,8 @@ import 'package:uuid/uuid.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../../../Data/Models/Bono.dart';
+
 class AddOrEditEvent extends StatefulWidget {
   Locale locale;
   String? eventId;
@@ -43,6 +46,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   // Acceso a Base de Datos
   var _eventDataService = new EventDataService();
   var _locationDataService = new LocationDataService();
+  var _brandDataService = new BrandDataService();
   // Notification Services
   NotificationService _notificationService = NotificationService();
   LocalNotificationService _localNotificationService = LocalNotificationService();
@@ -103,6 +107,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   final formKeyTime = GlobalKey<FormState>();
   final formKeyMembers = GlobalKey<FormState>();
 
+  List<Bono> bonos = [];
+  List<String> bonosSelected = [];
+
   @override
   initState() {
     isLoading = true;
@@ -138,11 +145,20 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     membersController.text = "${eventMaxMembers.toString()}";
     brandTrainersSelected.add(currentUser);
     getLocation(currentBrand.baseLocation!);
+    getBonos();
   }
 
+  Future<void> getBonos() async {
+    bonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+  }
   Future<void> getEventInfo() async {
     // Get Event Info
     event = await _eventDataService.getSingleEvent(widget.eventId!);
+    getBonos();
+    for(int i = 0; i < event.bonos.length; ++i)
+      {
+        bonosSelected.add(event.bonos[i].toString());
+      }
     // Event Date
     originalStartDate = DateTime(
       int.parse(event.year!),
@@ -741,6 +757,106 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                               });
                                             }
                                           },
+                                        ),
+                                      ),
+                                      Padding(
+                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                                          child: new Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: <Widget>[
+                                              new Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  new Text(
+                                                    'Bonos',
+                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          )
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005),
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width,
+                                          child: SingleChildScrollView(
+                                            physics: BouncingScrollPhysics(),
+                                            scrollDirection: Axis.horizontal,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  height: MediaQuery.of(context).size.height*0.15,
+                                                  child: ListView.builder(
+                                                      shrinkWrap: true,
+                                                      physics: NeverScrollableScrollPhysics(),
+                                                      scrollDirection: Axis.horizontal,
+                                                      itemCount: bonos.length,
+                                                      itemBuilder: (context, int index) {
+                                                        var bono = bonos[index];
+                                                        return GestureDetector(
+                                                          onTap: () {
+                                                            if(bonosSelected.contains(bono.id)) {
+                                                              bonosSelected.remove(bono.id);
+                                                            }
+                                                            else bonosSelected.add(bono.id!);
+
+                                                            setState(() {
+
+                                                            });
+                                                          },
+                                                          child: Padding(
+                                                            padding:EdgeInsets.only(right: MediaQuery.of(context).size.width*0.02, left: 1.0),
+                                                            child: Column(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: [
+                                                                Stack(
+                                                                  alignment: Alignment.topRight,
+                                                                  children: [
+                                                                    IconButton(onPressed: () {
+                                                                      if(bonosSelected.contains(bono.id)) {
+                                                                        bonosSelected.remove(bono.id);
+                                                                      }
+                                                                      else bonosSelected.add(bono.id!);
+
+                                                                      setState(() {
+
+                                                                      });
+                                                                    }, icon: Icon(
+                                                                      Icons.confirmation_number,
+                                                                    ),
+                                                                      color: bonosSelected.contains(bono.id)? Color(int.parse(currentColors[int.parse(bono.color!)].hexa!)) : Colors.white30,
+                                                                      ),
+                                                                  ],
+                                                                ),
+                                                                SizedBox(
+                                                                  height: MediaQuery.of(context).size.width*0.02,
+                                                                ),
+                                                                Container(
+                                                                  width: MediaQuery.of(context).size.width*0.2,
+                                                                  child: Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [
+                                                                      Text(
+                                                                        bono.title!,
+                                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                                        textAlign: TextAlign.center,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ]
@@ -1671,6 +1787,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         numClients: brandClientsSelected.length,
         numTrainers: brandTrainersSelected.length,
         maxMembers: eventMaxMembers,
+        bonos: bonosSelected,
       );
       // Add Event
       String eventId = await _addEventCall(event);
@@ -1696,6 +1813,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         numClients: brandClientsSelected.length,
         numTrainers: brandTrainersSelected.length,
         maxMembers: eventMaxMembers,
+        bonos: bonosSelected,
       );
       // Add Event
       String eventId = await _addEventCall(event);
@@ -1728,6 +1846,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
               numClients: brandClientsSelected.length,
               numTrainers: brandTrainersSelected.length,
               maxMembers: eventMaxMembers,
+              bonos: bonosSelected,
             );
             // Add Event
             String eventId = await _addEventCall(event);
@@ -1762,6 +1881,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
               numClients: brandClientsSelected.length,
               numTrainers: brandTrainersSelected.length,
               maxMembers: eventMaxMembers,
+              bonos: bonosSelected,
             );
             // Add Event
             String eventId = await _addEventCall(event);
@@ -1796,6 +1916,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
               numClients: brandClientsSelected.length,
               numTrainers: brandTrainersSelected.length,
               maxMembers: eventMaxMembers,
+              bonos: bonosSelected,
             );
             // Add Event
             String eventId = await _addEventCall(event);
@@ -1855,6 +1976,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Event Start Date
     Timestamp doneAt = Timestamp.fromDate(startDate);
     // Creating Event Object
+
     Event event = Event(
       id: widget.eventId!,
       title: titleController.text,
@@ -1871,6 +1993,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       numClients: brandClientsSelected.length,
       numTrainers: brandTrainersSelected.length,
       maxMembers: eventMaxMembers,
+      bonos: bonosSelected,
     );
     // Event Members
     List<Usuario> eventTrainers = new List.from(brandTrainersSelected);
@@ -2005,6 +2128,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     setState(() {
       isLoading = true;
     });
+
     // Get Recurrent Group Ids ..
     var eventGroupIds = await _eventDataService.getRecurrentEventGroup(event.eventGroupId!);
     List<String> eventGroupIdsList = eventGroupIds.cast<String>();
@@ -2058,6 +2182,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         numClients: brandClientsSelected.length,
         numTrainers: brandTrainersSelected.length,
         maxMembers: eventMaxMembers,
+        bonos: bonosSelected,
       );
       // Update Event
       await _eventDataService.updateEvent(updatedEvent);

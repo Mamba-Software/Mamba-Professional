@@ -29,6 +29,7 @@ class Event {
   int? maxMembers;
   var joinedMembers;
   var selectedTrainers;
+  var bonos;
 
   List<Usuario> usersList = [];
   List<Brand> brandsList = [];
@@ -56,6 +57,7 @@ class Event {
     this.maxMembers,
     this.joinedMembers,
     this.selectedTrainers,
+    this.bonos,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -124,6 +126,9 @@ class Event {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('selectedTrainers')) {
       this.selectedTrainers = documentSnapshot.get("selectedTrainers");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bonos')) {
+      this.bonos = documentSnapshot.get("bonos");
+    }
   }
 
   Event.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
@@ -191,6 +196,7 @@ class Event {
     this.maxMembers = event.maxMembers;
     this.joinedMembers = event.joinedMembers;
     this.selectedTrainers = event.selectedTrainers;
+    this.bonos = event.bonos;
   }
 
   // Users

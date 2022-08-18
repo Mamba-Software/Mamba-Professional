@@ -1162,6 +1162,7 @@ class FirebaseDatabaseService {
           "numClients": event.numClients,
           "numTrainers": event.numTrainers,
           "maxMembers": event.maxMembers,
+          "bonos": event.bonos,
         });
         // If Event is Private
         // Add to Events/Private Events/PrivateEvents for Reporting Purposes
@@ -1190,6 +1191,7 @@ class FirebaseDatabaseService {
             "numClients": event.numClients,
             "numTrainers": event.numTrainers,
             "maxMembers": event.maxMembers,
+            "bonos": event.bonos,
           });
         }
         // Set the Brand Document in "\Events\Brands"
@@ -1230,6 +1232,7 @@ class FirebaseDatabaseService {
               "numTrainers": event.numTrainers,
               "numClients": event.numClients,
               "maxMembers": event.maxMembers,
+              "bonos": event.bonos,
             });
         // If Event is Private
         // Add to Brands/Events/Private Events/PrivateEvents for Reporting Purposes
@@ -1254,6 +1257,7 @@ class FirebaseDatabaseService {
               "numTrainers": event.numTrainers,
               "numClients": event.numClients,
               "maxMembers": event.maxMembers,
+              "bonos": event.bonos,
             });
         }
         return eventID;
@@ -1914,6 +1918,7 @@ class FirebaseDatabaseService {
           "numClients": event.numClients,
           "numTrainers": event.numTrainers,
           "maxMembers": event.maxMembers,
+          "bonos": event.bonos,
         });
         // If Event is Private
         // Update to Events/Private Events/PrivateEvents for Reporting Purposes
@@ -1938,6 +1943,7 @@ class FirebaseDatabaseService {
             "numClients": event.numClients,
             "numTrainers": event.numTrainers,
             "maxMembers": event.maxMembers,
+            "bonos": event.bonos,
           });
         }
       } catch (e) {
