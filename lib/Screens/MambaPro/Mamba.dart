@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
 import 'package:mamba_castelldefels/Globals/Utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/BrandScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/NoBrandScreen.dart';
 import '../../../Globals/Utils/MambaProSelector/MambaProUtils.dart';
@@ -218,7 +219,11 @@ class _MambaState extends State<Mamba> {
 
   @override
   Widget build(BuildContext context) {
-    return hasBrand ? const BrandScreen() : const NoBrandScreen();
+
+    return isLoading ? Scaffold(
+      body: LoadingView(),
+    ) :
+      hasBrand ? const BrandScreen() : const NoBrandScreen();
   }
 }
 

@@ -917,7 +917,7 @@
   "@inviteCodeOptional":{
     "description": "inviteCode text"
   },
-  "copyCodeMessage": "Comparte tu código de invitación",
+  "copyCodeMessage": "Comparte tu enlace de invitación",
   "@copyCodeMessage":{
     "description": "inviteCode text"
   },
@@ -1995,13 +1995,5 @@
   "scanQRCode": "Escanea código QR",
   "@scanQRCode": {
     "description": "Donde message"
-  },
-  "shareBrandTitle": "",
-  "@shareAppTitle": {
-    "description": "membersOfBrand message"
-  },
-  "shareAppText": "Comparte la app con tus amigos y familiares",
-  "@shareAppText": {
-    "description": "membersOfBrand message"
   }
 }

@@ -28,10 +28,8 @@ class MembershipRequestsPro extends StatefulWidget {
 class _MembershipRequestsProState extends State<MembershipRequestsPro> {
 
   // Acceso a Base de Datos
-  var _brandDataService = new BrandDataService();
-  var _userDataService = new UserDataService();
-
-  var _dynamicLinkUtils = new DynamicLinkUtils();
+  final _brandDataService = BrandDataService();
+  final _userDataService = UserDataService();
   String? brandId = '';
 
   // Boolean Loading
@@ -67,64 +65,79 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
         Scaffold(
           body: Column(
             children: [
-              Padding(
-                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02),
-                  child: ListTile(
-                    onTap: () async {
-                      showModalBottomSheet<void>(
-                        context: context,
-                        isScrollControlled: true,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(20),
-                          ),
-                        ),
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        builder: (BuildContext context) {
-                          return const FractionallySizedBox(
-                            heightFactor: 0.9,
-                            child: ShareBrandLink(),
-                          );
-                        },
+              SizedBox(height: MediaQuery.of(context).size.height*0.03),
+              GestureDetector(
+                onTap: () async {
+                  showModalBottomSheet<void>(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
+                    ),
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    builder: (BuildContext context) {
+                      return const FractionallySizedBox(
+                        heightFactor: 0.7,
+                        child: ShareBrandLink(),
                       );
-                      /*
-                      final Uri uri = await _dynamicLinkUtils.createDynamicLinkWithId(currentBrand.id!, currentBrand.logoUrl!, currentBrand.name!);
-                      await Share.share(uri.toString(), subject: currentBrand.logoUrl!);
-                       */
-
                     },
-                    leading: Icon(
-                      Icons.share,
-                      color: Theme.of(context).accentColor,
-                      size: MediaQuery.of(context).size.width*0.06,
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+                  height: MediaQuery.of(context).size.height*0.15,
+                  width: MediaQuery.of(context).size.width*0.9,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(10),
                     ),
-                    title: Text(
-                      AppLocalizations.of(context)!.copyCodeMessage,
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).accentColor),
-                    ),
-                    trailing: Icon(Icons.send_outlined, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,),
+                    border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
                   ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(
+                        Icons.qr_code,
+                        color: Theme.of(context).colorScheme.secondary,
+                        size: MediaQuery.of(context).size.width*0.10,
+                      ),
+                      SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                      Flexible(
+                        child: Text(
+                          AppLocalizations.of(context)!.scanQRCode + " o " + AppLocalizations.of(context)!.copyCodeMessage.toLowerCase(),
+                          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                      Icon(Icons.mobile_screen_share, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.1,)
+                    ],
+                  ),
+                ),
               ),
-              Container(
-                height: 1,
-                color: Theme.of(context).accentColor,
-              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               StreamBuilder<QuerySnapshot>(
                   stream: _brandDataService.getBrandRequestsStream(widget.brandId),
                   builder: (context, snapshot) {
                     if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
-                      return Container(
-                          height: MediaQuery.of(context).size.height*0.65,
-                          child: Center(
-                              child: LoadingViewPurple()
-                          )
+                      return Expanded(
+                        child: SizedBox(
+                            height: MediaQuery.of(context).size.height*0.65,
+                            child: Center(
+                                child: LoadingViewPurple()
+                            )
+                        ),
                       );
                     } else {
                       requestList = documentsToRequests(snapshot.data!.docs);
-                      if (requestList.length != 0) {
+                      if (requestList.isNotEmpty) {
                         return ListView.builder(
-                            physics: BouncingScrollPhysics(),
+                            physics: const BouncingScrollPhysics(),
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
                             itemCount: requestList.length,

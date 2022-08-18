@@ -1,10 +1,9 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/InformationDialogs/ErrorDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -17,13 +16,17 @@ class QRScanner extends StatefulWidget {
 }
 
 class _QRScannerState extends State<QRScanner> {
-  // Variables
+
+  // QR Variables
   Barcode? result;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   //  Booleans
   bool isLoading = false;
+
+  // Acceso a Base de Datos
+  final _brandDataService = BrandDataService();
 
 
   // In order to get hot reload to work we need to pause the camera if the platform
@@ -88,7 +91,7 @@ class _QRScannerState extends State<QRScanner> {
                     decoration: BoxDecoration(
                       color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7),
                     ),
-                    child: LoadingView(),
+                    child: Container(),
                   ) : Container(),
                 ],
               )
@@ -128,15 +131,13 @@ class _QRScannerState extends State<QRScanner> {
     });
   }
 
-  void _onScannedQR() {
+  Future<void> _onScannedQR() async {
     controller?.pauseCamera();
     setState(() {
       isLoading = true;
     });
-    if (result != null) {
-      print("Brand ID");
-      print(result!.code!);
-      // Start up Dialog
+    bool existsBrand = await _brandDataService.checkIfBrandExists(result!.code!);
+    if (existsBrand) {
       Future.delayed(Duration.zero, () {
         return showDialog(
             context: context,
@@ -146,6 +147,27 @@ class _QRScannerState extends State<QRScanner> {
               );
             }
         );
+      }).whenComplete(() {
+        controller?.resumeCamera();
+        setState(() {
+          isLoading = false;
+        });
+      });
+    } else {
+      await Future.delayed(Duration.zero, () {
+        return showDialog(
+            context: context,
+            builder: (_) {
+              return ErrorDialog(
+                text: AppLocalizations.of(context)!.brandNotFound,
+              );
+            }
+        );
+      }).whenComplete(() {
+        controller?.resumeCamera();
+        setState(() {
+          isLoading = false;
+        });
       });
     }
   }
