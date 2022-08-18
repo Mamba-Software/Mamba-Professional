@@ -27,6 +27,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/QRCode/QRS
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/BrandIntroScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/RegistrarMarca.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -101,11 +102,11 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
   }
 
   // Navigate to Notifications Screen
-  void navigateToProfileScreen() {
+  void navigateToSettingsScreen() {
     Navigator.push(
         context,
         CupertinoPageRoute<void>(
-          builder: (context) => const Profile(),
+          builder: (context) => const Settings(),
         )
     );
   }
@@ -237,7 +238,7 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
   Widget buildUserPicture() {
     return !isLoading ? Center(
       child: GestureDetector(
-        onTap: navigateToProfileScreen,
+        onTap: navigateToSettingsScreen,
         child: SizedBox(
           height: safeAreaHeight * 0.1,
           child: Center(

@@ -2,17 +2,15 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:google_place/google_place.dart' as googlePlace;
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
 
 // Tus Datos Widget.
 class BrandInfo extends StatefulWidget {
@@ -27,13 +25,14 @@ class BrandInfo extends StatefulWidget {
 class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMixin {
 
   // DataBase Access
-  var _brandDataService = new BrandDataService();
+  final _brandDataService = BrandDataService();
   // Boolean isLoading
   bool isLoading = false;
   bool isUpdated = false;
   // Form To Validate
   final formKeyInfo = GlobalKey<FormState>();
   // Name Brand Controller
+  // Logo Image
   var nameBrandController = TextEditingController();
   String nameBrandControllerTemp = "";
   // Description Controller
@@ -45,175 +44,55 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   int membersMax = 30;
   bool errorMembers = false;
   // Time Picker Horari de Trabajo
+  DateTime startTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 8, 0);
+  DateTime endTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 22, 0);
   TextEditingController startTimeController = TextEditingController();
   TextEditingController endTimeController = TextEditingController();
-  List<double> _workShift = [];
+  final List<double> _workShift = [];
   int? errorTime;
   // Descansos
+  DateTime breakStartTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 0);
+  DateTime breakEndTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0);
+  TimeOfDay _breakStartTime = const TimeOfDay(hour: 13, minute: 00);
+  TimeOfDay _breakEndTime = const TimeOfDay(hour: 14, minute: 00);
   TextEditingController breakStartTimeController = TextEditingController();
   TextEditingController breakEndTimeController = TextEditingController();
-  TimeOfDay _breakStartTime = TimeOfDay(hour: 13, minute: 00);
-  TimeOfDay _breakEndTime = TimeOfDay(hour: 14, minute: 00);
-  List<TimeOfDay> _breakList = [];
+  final List<TimeOfDay> _breakList = [];
   List<int> removedIndex = [];
   int breakLimit = 2;
   bool errorBreakTime = false;
   List<int> startBreaks = [];
 
-  // Cupertino Picker
-  Future<void> selectSlot(ctx, type, bool? isStart) {
-    // Initial Vars
-    var startDate = DateTime.now();
-    var title;
-    var initialDuration = 1;
-    var initialMembers = 1;
-    var widgetPicker;
-    // Init for differnt types
-    if (type == 0) {
-
-    } else if (type == 1) {
-
-    } else if (type == 2) {
-      initialMembers = members-1;
-    } else if (type == 3) {
-      // No changes needed at the moment
-    }
-    Widget workdayTimePicker = CupertinoTheme(
-      data: CupertinoThemeData(
-          textTheme: CupertinoTextThemeData(
-            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
-          )
-      ),
-      child: CupertinoDatePicker(
-          mode: CupertinoDatePickerMode.time,
-          initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-          minimumDate: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
-          maximumDate: DateTime(startDate.year, startDate.month, startDate.day, 23, 0),
-          use24hFormat: true,
-          minuteInterval: 30,
-          onDateTimeChanged: (val) {
-            if (isStart!) {
-              setState(() {
-                startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
-              });
-            } else {
-              setState(() {
-                endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
-              });
-            }
-          }
-      ),
-    );
-    Widget breakTimePicker = CupertinoTheme(
-      data: CupertinoThemeData(
-          textTheme: CupertinoTextThemeData(
-            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
-          )
-      ),
-      child: CupertinoDatePicker(
-          mode: CupertinoDatePickerMode.time,
-          initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-          minimumDate: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
-          maximumDate: DateTime(startDate.year, startDate.month, startDate.day, 23, 0),
-          use24hFormat: true,
-          minuteInterval: 30,
-          onDateTimeChanged: (val) {
-            if (isStart!) {
-              setState(() {
-                breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
-              });
-            } else {
-              setState(() {
-                breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
-              });
-            }
-          }
-      ),
-    );
-
-    if (type == 3) {
-      title = AppLocalizations.of(context)!.selectTime;
-      widgetPicker = workdayTimePicker;
-    } else if (type == 4) {
-      title = AppLocalizations.of(context)!.selectTime;
-      widgetPicker = breakTimePicker;
-    }
-    showCupertinoModalPopup(
-        context: ctx,
-        builder: (_) => Material(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
-          ),
-          child: Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height*0.40,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(
-                        child: Text(title,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,)
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
-                    child: widgetPicker,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 0),
-                      child: TextButton(
-                          child: Text(AppLocalizations.of(context)!.entendido,
-                              style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
-                          onPressed: () {
-                            Navigator.of(ctx).pop();
-                          }
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-              ],
-            ),
-          ),
-        )
-    );
-    return Future.value("");
-  }
-
   // Gets the user info from firebase.
   Future<void> getBrand() async {
-    currentBrand.setBasicData = await _brandDataService.getBrandDetails(widget.brandId);
-    currentBrand.setUserList = await _brandDataService.getBrandUsers(widget.brandId);
+    var basicData = await _brandDataService.getBrandDetails(widget.brandId);
+    var userList = await _brandDataService.getBrandUsers(widget.brandId);
+    setState(() {
+      currentBrand.setBasicData = basicData;
+      currentBrand.setUserList = userList;
+      isLoading = false;
+    });
   }
 
   @override
   void initState() {
+    // Name Description
     nameBrandController.text = currentBrand.name!;
     descriptionController.text = currentBrand.description!;
+    // Members Deprecated
     members = currentBrand.maxMembers!;
     membersController.text = currentBrand.maxMembers.toString();
+    // Start Time
     var startHourWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
     var startMinWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[1]);
+    startTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startHourWS, startMinWS);
     startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startHourWS, startMinWS,));
+    // End Time
     var endHourWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
     var endMinWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
+    endTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endHourWS, endMinWS);
     endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endHourWS, endMinWS,));
+    // Break Time
     for (var i=2; i < currentBrand.workShift.length ; i+=2) {
       var start = currentBrand.workShift[i];
       int s = start.toInt();
@@ -225,8 +104,11 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
       startBreaks.add(e);
       var endHour = int.parse(end.toStringAsFixed(2).split(".")[0]);
       var endMin = int.parse(end.toStringAsFixed(2).split(".")[1]);
+      breakStartTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startHour, startMin);
       _breakStartTime = TimeOfDay(hour: startHour, minute: startMin);
+      breakEndTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endHour, endMin);
       _breakEndTime = TimeOfDay(hour: endHour, minute: endMin);
+      // Array of Breaks
       _breakList.add(_breakStartTime);
       _breakList.add(_breakEndTime);
     }
@@ -237,6 +119,8 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
 
   bool checkIfBreakTimeChanged() {
     if (_breakList.length - removedIndex.length != (currentBrand.workShift.length-2)) {
+      print(_breakList.length - removedIndex.length);
+      print(currentBrand.workShift.length-2);
       return true;
     } else {
       List<int> endBreaks = [];
@@ -253,6 +137,19 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
      }
     }
     return false;
+  }
+
+  Future<void> navigateToEditLogoScreen() async {
+    await Navigator.push(
+        context,
+        CupertinoPageRoute<void>(
+          builder: (context) => Logo(
+              brandId: currentBrand.id!
+          ),
+        )
+    ).whenComplete(() async {
+      await getBrand();
+    });
   }
 
   @override
@@ -274,7 +171,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
         isUpdated = false;
       }
     }
-//
+
     return isLoading ?
     Scaffold(
       body: LoadingViewPurple(),
@@ -284,7 +181,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Padding(
             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
             child: Form(
@@ -295,11 +192,34 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
+                    AppLocalizations.of(context)!.logo,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.28,
+                    width: MediaQuery.of(context).size.width,
+                    child: Center(
+                      child: GestureDetector(
+                        onTap: navigateToEditLogoScreen,
+                        child: CircularImage(
+                          size: MediaQuery.of(context).size.height * 0.25,
+                          image: currentBrand.logoUrl!,
+                          borderWidth: 1,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+
+                  Text(
                     AppLocalizations.of(context)!.nameBrand,
                     style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                   ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   Flexible(
-                    child: new TextFormField(
+                    child: TextFormField(
                       keyboardType: TextInputType.text,
                       controller: nameBrandController,
                       onChanged: (value) {
@@ -308,7 +228,8 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                         });
                       },
                       validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameBrandError : null,
-                      style: Theme.of(context).textTheme.bodyText2,
+                      style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.normal),
+                      textAlign: TextAlign.center,
                       textCapitalization: TextCapitalization.words,
                       decoration: InputDecoration(
                         hintStyle: Theme.of(context).textTheme.caption,
@@ -341,7 +262,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   Flexible(
-                    child: new TextFormField(
+                    child: TextFormField(
                       keyboardType: TextInputType.text,
                       controller: descriptionController,
                       onChanged: (value) {
@@ -444,12 +365,25 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                     children: <Widget>[
                       TextButton(
                         onPressed: () async {
-                          selectSlot(context, 3, true);
+                          DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
+                              context: context,
+                              builder: (_) => SelectTimeDialog(
+                                title: AppLocalizations.of(context)!.selectTime,
+                                startDate: startTime,
+                                onlyFuture: false,
+                              )
+                          );
+                          if (pickedTimeTemp != null) {
+                            setState(() {
+                              startTime = pickedTimeTemp;
+                              startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startTime.hour, startTime.minute,));
+                            });
+                          }
                         },
                         child: Container(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            borderRadius: const BorderRadius.all(Radius.circular(5)),
                             border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
                             color: Colors.transparent,
                           ),
@@ -463,12 +397,25 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                           style: Theme.of(context).textTheme.headline3),
                       TextButton(
                         onPressed: () async {
-                          selectSlot(context, 3, false);
+                          DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
+                              context: context,
+                              builder: (_) => SelectTimeDialog(
+                                title: AppLocalizations.of(context)!.selectTime,
+                                startDate: endTime,
+                                onlyFuture: false,
+                              )
+                          );
+                          if (pickedTimeTemp != null) {
+                            setState(() {
+                              endTime = pickedTimeTemp;
+                              endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endTime.hour, endTime.minute,));
+                            });
+                          }
                         },
                         child: Container(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            borderRadius: const BorderRadius.all(const Radius.circular(5)),
                             border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
                             color: Colors.transparent,
                           ),
@@ -481,13 +428,13 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                     ],
                   ),
                   errorTime != null ? Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
+                    padding: const EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
                     child: Text(
                       errorTime == 1 ? AppLocalizations.of(context)!.workingHoursError : AppLocalizations.of(context)!.workingHoursError1,
                       style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                       textAlign: TextAlign.center,
                     ),
-                  ) : new Container(),
+                  ) : Container(),
                   SizedBox(height: MediaQuery.of(context).size.height*0.04),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -517,13 +464,26 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             TextButton(
-                              onPressed: _breakList.length < breakLimit ? () {
-                                selectSlot(context, 4, true);
+                              onPressed: _breakList.length < breakLimit ? () async {
+                                DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
+                                    context: context,
+                                    builder: (_) => SelectTimeDialog(
+                                      title: AppLocalizations.of(context)!.selectTime,
+                                      startDate: breakStartTime,
+                                      onlyFuture: false,
+                                    )
+                                );
+                                if (pickedTimeTemp != null) {
+                                  setState(() {
+                                    breakStartTime = pickedTimeTemp;
+                                    breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, breakStartTime.hour, breakStartTime.minute,));
+                                  });
+                                }
                               } : null,
                               child: Container(
-                                padding: EdgeInsets.all(8),
+                                padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                                  borderRadius: const BorderRadius.all(const Radius.circular(5)),
                                   border: Border.all(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey, width: 1.0),
                                   color: Colors.transparent,
                                 ),
@@ -535,13 +495,26 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                             ),
                             Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),),
                             TextButton(
-                              onPressed: _breakList.length < breakLimit ? () {
-                                selectSlot(context, 4, false);
+                              onPressed: _breakList.length < breakLimit ? () async {
+                                DateTime? pickedTimeTemp = await showCupertinoModalPopup(
+                                    context: context,
+                                    builder: (_) => SelectTimeDialog(
+                                      title: AppLocalizations.of(context)!.selectTime,
+                                      startDate: breakEndTime,
+                                      onlyFuture: false,
+                                    )
+                                );
+                                if (pickedTimeTemp != null) {
+                                  setState(() {
+                                    breakEndTime = pickedTimeTemp;
+                                    breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, breakEndTime.hour, breakEndTime.minute,));
+                                  });
+                                }
                               } : null,
                               child: Container(
-                                padding: EdgeInsets.all(8),
+                                padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                                  borderRadius: const BorderRadius.all(const Radius.circular(5)),
                                   border: Border.all(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey, width: 1.0),
                                   color: Colors.transparent,
                                 ),
@@ -579,30 +552,30 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon( Icons.add, color: Colors.white, size: 30,),
+                              const Icon( Icons.add, color: Colors.white, size: 30,),
                             ],
                           ),
                           style: OutlinedButton.styleFrom(
                             backgroundColor: Colors.green,
                             elevation: 3,
-                            shape: CircleBorder(),
-                            padding: EdgeInsets.all(5),
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(5),
                           ),
                         ),
                       ) : Container(),
                     ],
                   ),
                   errorBreakTime ? Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
+                    padding: const EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
                     child: Text(
                       AppLocalizations.of(context)!.workingHoursError1,
                       style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                       textAlign: TextAlign.center,
                     ),
-                  ) : new Container(),
+                  ) : Container(),
                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: _breakList.length,
                     itemBuilder: (context, int index) {
                       if(index.isEven && !removedIndex.contains(index)) {
@@ -620,9 +593,9 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
 
                                     } : null,
                                     child: Container(
-                                      padding: EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                                        borderRadius: const BorderRadius.all(const Radius.circular(5)),
                                         border: Border.all(color: Colors.green, width: 1.0),
                                         color: Colors.transparent,
                                       ),
@@ -638,9 +611,9 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
 
                                     } : null,
                                     child: Container(
-                                      padding: EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                                        borderRadius: const BorderRadius.all(const Radius.circular(5)),
                                         border: Border.all(color: Colors.green, width: 1.0),
                                         color: Colors.transparent,
                                       ),
@@ -667,14 +640,14 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon( Icons.remove, color: Colors.white, size: 30,),
+                                    const Icon( Icons.remove, color: Colors.white, size: 30,),
                                   ],
                                 ),
                                 style: OutlinedButton.styleFrom(
                                   backgroundColor: Colors.red,
                                   elevation: 3,
-                                  shape: CircleBorder(),
-                                  padding: EdgeInsets.all(5),
+                                  shape: const CircleBorder(),
+                                  padding: const EdgeInsets.all(5),
                                 ),
                               ),
                             ),
@@ -715,6 +688,8 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
           onPressed: () async {
             if (validateInfo()) {
               setState(() {
+                errorTime == null;
+                errorBreakTime == false;
                 isLoading = true;
               });
               DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(startTimeController.text);
@@ -729,12 +704,8 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                   _workShift.add(toDouble2(_breakList[i+1]));
                 }
               }
-              setState(() {
-                isLoading = true;
-              });
               await _brandDataService.updateBrandInfo(widget.brandId, nameBrandController.text, descriptionController.text, members, _workShift);
               await getBrand();
-              Navigator.pop(context);
             }
           },
           backgroundColor: Colors.green,
@@ -758,7 +729,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
       });
       return false;
     }
-    if (TimeOfDay(hour: start.hour, minute: start.minute) == TimeOfDay(hour: 0, minute: 00) && TimeOfDay(hour: end.hour, minute: end.minute) == TimeOfDay(hour: 23, minute: 00)) {
+    if (TimeOfDay(hour: start.hour, minute: start.minute) == const TimeOfDay(hour: 0, minute: 00) && TimeOfDay(hour: end.hour, minute: end.minute) == const TimeOfDay(hour: 23, minute: 00)) {
       setState(() {
         errorTime = 1;
       });

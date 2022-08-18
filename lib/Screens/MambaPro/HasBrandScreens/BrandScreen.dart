@@ -89,13 +89,8 @@ class _BrandScreenState extends State<BrandScreen> {
   void getFavourites() async {
     favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
     if (favourites.contains(pageIndex)) iconStar = true;
-    if (isLoading && favourites.isNotEmpty) {
+    if (isLoading) {
       setState(() {
-        seeNextWho = false;
-        seeNextWhat = false;
-        seeNextHow = false;
-        seeNextWhen = false;
-        seeNextWhere = false;
         isLoading = false;
       });
     }
@@ -319,8 +314,10 @@ class _BrandScreenState extends State<BrandScreen> {
               return listTilePro(favourite, true);
             }
         ),
+        SizedBox(height: safeAreaHeight * 0.01),
+        Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 2),
+        SizedBox(height: safeAreaHeight * 0.01),
 
-        Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
         ListTile(
           title: Row(
             children: [
@@ -373,7 +370,7 @@ class _BrandScreenState extends State<BrandScreen> {
           }),
         ),
         seeNextWhat ? listTilePro(8) : Container(),
-        seeNextWhat ? listTilePro(12) : Container(),
+        //seeNextWhat ? listTilePro(12) : Container(),
         //seeNextWhat ? listTilePro(4) : Container(),
         seeNextWhat ? listTilePro(5) : Container(),
 
@@ -459,7 +456,7 @@ class _BrandScreenState extends State<BrandScreen> {
           }),
         ),
         seeNextWhere ? listTilePro(11) : Container(),
-        Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
+
       ],
     );
   }
@@ -481,6 +478,9 @@ class _BrandScreenState extends State<BrandScreen> {
               }
           );
           if (result) {
+            setState(() {
+              isLoading = true;
+            });
             NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
             await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
             await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
@@ -509,6 +509,9 @@ class _BrandScreenState extends State<BrandScreen> {
               }
           );
           if (result) {
+            setState(() {
+              isLoading = true;
+            });
             // New DataBase
             await _brandDataService.deleteBrand(currentBrand.id!);
             await _roomDataService.deleteRoom(currentBrand.roomId!);
@@ -554,7 +557,10 @@ class _BrandScreenState extends State<BrandScreen> {
             // Brand Options
             // TODO: Passer Rol en aquesta funció
             buildBrandListOptions(),
+            SizedBox(height: safeAreaHeight * 0.02),
+            Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
             // Leave/Delete Brand
+            SizedBox(height: safeAreaHeight * 0.02),
             buildBrandLeaveOption(),
             SizedBox(height: safeAreaHeight * 0.05),
           ],

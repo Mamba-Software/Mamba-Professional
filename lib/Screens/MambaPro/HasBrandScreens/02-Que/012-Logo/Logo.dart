@@ -70,6 +70,10 @@ class _LogoState extends State<Logo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.uploadPhoto, style: Theme.of(context).appBarTheme.titleTextStyle,),
+        centerTitle: true,
+      ),
       body: isLoading ?
         Center(
             child: LoadingViewPurple()

@@ -2,6 +2,7 @@
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandCalendarWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomePro.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/002-Clients/Clients.dart';
@@ -207,10 +208,9 @@ class MambaProUtils {
     if(pageIndex == 8) return BrandInfo(locale: Localizations.localeOf(context), brandId:brandId);
     if(pageIndex == 12) return Logo(brandId:brandId);
     if(pageIndex == 10) {
-      return BrandCalendarWidgetPro(
+      return BrandCalendarWidget(
         brandId: brandId,
         dateTime: middleMonthDate,
-        controller: _controller,
       );
     }
     if(pageIndex == 11) return Locations(brandId:brandId);
