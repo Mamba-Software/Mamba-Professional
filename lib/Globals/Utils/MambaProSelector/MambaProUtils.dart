@@ -70,7 +70,6 @@ class MambaProUtils {
   //Function to select the icon to load
   Widget iconSelector(int pageIndexView)
   {
-    if(pageIndexView == 0) return const Icon(Icons.home_filled);
     if(pageIndexView == 1) return const Icon(Icons.record_voice_over);
     if(pageIndexView == 2) return const Icon(Icons.group);
     if(pageIndexView == 8) return const Icon(Icons.feed);;

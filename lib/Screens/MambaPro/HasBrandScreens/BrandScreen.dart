@@ -6,12 +6,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -19,9 +22,11 @@ import 'package:mamba_castelldefels/Globals/Utils/MambaProSelector/MambaProUtils
 import 'package:mamba_castelldefels/Globals/Utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/BrandIntroScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/RegistrarMarca.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
@@ -44,6 +49,8 @@ class _BrandScreenState extends State<BrandScreen> {
 
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
+  final _eventDataService = EventDataService();
+  final _roomDataService=  RoomDataService();
   final _brandDataService = BrandDataService();
   final _settingsDataService = SettingsDataService();
   final _mambaProUtils = MambaProUtils();
@@ -309,17 +316,34 @@ class _BrandScreenState extends State<BrandScreen> {
 
   //Return the ListTile of each screen of Mamba Pro
   Widget listTilePro(int _pageIndex) {
-    return ListTile(
-        leading: _mambaProUtils.iconSelector(_pageIndex),
-        title:  _mambaProUtils.titlePageSelectorListView(context, _pageIndex),
-        onTap: () =>  {
-          Navigator.pop(context),
-          setState(() {
-            pageIndex = _pageIndex;
-            setFavourites();
-          }),
-        }
-    );
+    if (_pageIndex == 0) {
+      return ListTile(
+          leading: CircularImage(
+            size: MediaQuery.of(context).size.width*0.1,
+            image: currentBrand.logoUrl,
+          ),
+          title: Text(currentBrand.name!),
+          onTap: () =>  {
+            Navigator.pop(context),
+            setState(() {
+              pageIndex = _pageIndex;
+              setFavourites();
+            }),
+          }
+      );
+    } else {
+      return ListTile(
+          leading: _mambaProUtils.iconSelector(_pageIndex),
+          title:  _mambaProUtils.titlePageSelectorListView(context, _pageIndex),
+          onTap: () =>  {
+            Navigator.pop(context),
+            setState(() {
+              pageIndex = _pageIndex;
+              setFavourites();
+            }),
+          }
+      );
+    }
   }
 
   Widget buildHeader() {
@@ -435,10 +459,15 @@ class _BrandScreenState extends State<BrandScreen> {
             ListTile(
               title: Row(
                 children: [
-                  Icon(iconWho,
+                  Icon(
+                    iconWho,
+                    color: Theme.of(context).primaryColorLight,
                   ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                  Text(AppLocalizations.of(context)!.quien),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                  Text(
+                    AppLocalizations.of(context)!.quien,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
+                  ),
                 ],
               ),
               onTap: () => setState(() {
@@ -458,9 +487,15 @@ class _BrandScreenState extends State<BrandScreen> {
             ListTile(
               title: Row(
                 children: [
-                  Icon(iconWhat),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                  Text(AppLocalizations.of(context)!.que),
+                  Icon(
+                    iconWhat,
+                    color: Theme.of(context).primaryColorLight,
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                  Text(
+                    AppLocalizations.of(context)!.que,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
+                  ),
                 ],
               ),
               onTap: () => setState(() {
@@ -481,9 +516,15 @@ class _BrandScreenState extends State<BrandScreen> {
             ListTile(
               title: Row(
                 children: [
-                  Icon(iconHow),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                  Text(AppLocalizations.of(context)!.como),
+                  Icon(
+                    iconHow,
+                    color: Theme.of(context).primaryColorLight,
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                  Text(
+                    AppLocalizations.of(context)!.como,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
+                  ),
                 ],
               ),
               onTap: () => setState(() {
@@ -503,11 +544,17 @@ class _BrandScreenState extends State<BrandScreen> {
             seeNextHow ? listTilePro(16) : Container(),
 
             ListTile(
-              title: Row(
+              title:  Row(
                 children: [
-                  Icon(iconWhen),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                  Text(AppLocalizations.of(context)!.cuando),
+                  Icon(
+                    iconWhen,
+                    color: Theme.of(context).primaryColorLight,
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                  Text(
+                    AppLocalizations.of(context)!.cuando,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
+                  ),
                 ],
               ),
               onTap: () => setState(() {
@@ -525,9 +572,15 @@ class _BrandScreenState extends State<BrandScreen> {
             ListTile(
               title: Row(
                 children: [
-                  Icon(iconWhere),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                  Text(AppLocalizations.of(context)!.donde),
+                  Icon(
+                    iconWhere,
+                    color: Theme.of(context).primaryColorLight,
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                  Text(
+                    AppLocalizations.of(context)!.donde,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w700),
+                  ),
                 ],
               ),
               onTap: () => setState(() {
@@ -546,58 +599,73 @@ class _BrandScreenState extends State<BrandScreen> {
       );
   }
 
-  Widget buildNoBrandOptions() {
-    return Container(
-      child: Column(
-        children: [
-          ListTile(
-              leading: Icon(
-                Icons.add_circle_outline,
-                color: Theme.of(context).primaryColor,
-              ),
-              title: Text(
-                  AppLocalizations.of(context)!.createBrand,
-                  style: Theme.of(context).textTheme.bodyText1
-              ),
-              onTap: () async {
-                bool? result = await Navigator.push(
-                    context,
-                    CupertinoPageRoute<bool>(
-                      builder: (context) => BrandIntroScreen(),
-                    )
-                );
-                if (result != null && result) {
-                  Navigator.push(
-                      context,
-                      CupertinoPageRoute<Null>(
-                        builder: (context) => RegistrarMarca(
-                          locale: Localizations.localeOf(context),
-                        ),
-                        settings: const RouteSettings(name: 'RegistrarMarca'),
-                      )
-                  );
-                }
+
+  Widget buildBrandLeaveOption() {
+    return currentUser.id != currentBrand.adminID ?
+    ListTile(
+        leading: Icon(Icons.logout, color: Colors.red, size: MediaQuery.of(context).size.width*0.07),
+        title: Text(
+          AppLocalizations.of(context)!.exitBrand,
+          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.red),
+        ),
+        onTap: () async {
+          // Leaves Brand
+          var result = await showDialog(
+              context: context,
+              builder: (_) {
+                return ConfirmationDialog(text: AppLocalizations.of(context)!.exitBrandConfirm);
               }
-          ),
-          ListTile(
-              leading: Icon(
-                Icons.qr_code,
-                color: Theme.of(context).primaryColor,
-              ),
-              title: Text(
-                  AppLocalizations.of(context)!.scanQRCode,
-                  style: Theme.of(context).textTheme.bodyText1
-              ),
-              onTap: () {
-                _sharePlusUtils.shareMambaLink(currentUser.firstName!);
+          );
+          if (result) {
+            NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
+            await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
+            await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<void>(
+                  builder: (context) => const SplashScreen(),
+                  settings: const RouteSettings(name: 'SplashScreen'),
+                )
+            );
+          }
+        }
+    )
+        :
+    ListTile(
+        leading: Icon(Icons.delete_outline, color: Colors.red, size: MediaQuery.of(context).size.width*0.07),
+        title: Text(
+          AppLocalizations.of(context)!.deleteBrand,
+          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.red),
+        ),
+        onTap: () async {
+          var result = await showDialog(
+              context: context,
+              builder: (_) {
+                return const DeleteBrandDialog();
               }
-          ),
-        ],
-      ),
+          );
+          if (result) {
+            setState(() {
+              isLoading = true;
+            });
+            // New DataBase
+            await _brandDataService.deleteBrand(currentBrand.id!);
+            await _roomDataService.deleteRoom(currentBrand.roomId!);
+            currentUser.setBrandList = [];
+            await Future.delayed(const Duration(seconds: 4));
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<void>(
+                  builder: (context) =>
+                  const SplashScreen(),
+                  settings: const RouteSettings(
+                      name: 'SplashScreen'),
+                )
+            );
+          }
+        }
     );
   }
-
-
 
   @override
   void dispose() {
@@ -618,63 +686,15 @@ class _BrandScreenState extends State<BrandScreen> {
           // Remove padding
           padding: EdgeInsets.zero,
           children: [
-            /*
-            UserAccountsDrawerHeader(
-              onDetailsPressed: () {print('test');},
-
-              accountName: Text(
-                  currentUser.firstName! + ' ' + currentUser.lastName!,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 13,fontWeight: FontWeight.bold, background: Paint()
-                    ..color = Theme.of(context).primaryColorDark
-                    ..strokeWidth = 20
-                    ..strokeJoin = StrokeJoin.round
-                    ..strokeCap = StrokeCap.round
-                    ..style = PaintingStyle.stroke)
-              ),
-              accountEmail: const Text(''),
-
-              currentAccountPicture: CircleAvatar(
-                child: ClipOval(
-                  child: Image.network(
-                    currentUser.imageUrl!,
-                    fit: BoxFit.fill,
-                    width: MediaQuery.of(context).size.height*0.10,
-                    height: MediaQuery.of(context).size.height*0.3,
-                  ),
-                ),
-              ),
-              //currentAccountPictureSize: Size(MediaQuery.of(context).size.width*0.3,MediaQuery.of(context).size.width*0.3),
-
-              otherAccountsPictures: const [
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  backgroundImage: NetworkImage(
-                      "https://randomuser.me/api/portraits/women/74.jpg"),
-                ),
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  backgroundImage: NetworkImage(
-                      "https://randomuser.me/api/portraits/men/47.jpg"),
-                ),
-              ]
-
-
-
-
-            ),
-             */
-
             // Header
             buildHeader(),
             Divider(color: Theme.of(context).primaryColor, thickness: 0,height: 1,),
             SizedBox(height: safeAreaHeight * 0.02),
-
-            // Build Options
-            hasBrand == false ? buildNoBrandOptions() : Container(),
-            hasBrand == true ? buildBrandListOptions() : Container(),
-
-
+            // Brand Options
+            // TODO: Passer Rol en aquesta funció
+            buildBrandListOptions(),
+            // Leave/Delete Brand
+            buildBrandLeaveOption(),
           ],
         ),
       ),
@@ -762,6 +782,160 @@ class _BrandScreenState extends State<BrandScreen> {
       ),
       body: _mambaProUtils.pageSelector(context,pageIndex, currentBrand.id!, currentBrand.numTrainers!, currentBrand.numClients!, _controller,safeAreaWidth, safeAreaHeight),
     );
+  }
+}
+
+class DeleteBrandDialog extends StatefulWidget {
+  const DeleteBrandDialog({Key? key}) : super(key: key);
+
+  @override
+  _DeleteDialogState createState() => _DeleteDialogState();
+}
+
+class _DeleteDialogState extends State<DeleteBrandDialog> {
+
+  // Delete Alert
+  bool firstBuild = true;
+  bool canDelete = false;
+  bool wrongPassword = false;
+  String deleteTemp = "";
+  var deleteController;
+
+  @override
+  Widget build(BuildContext context) {
+    if(firstBuild) {
+      deleteTemp = "";
+      firstBuild = false;
+    }
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.all(20),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: Theme.of(context).scaffoldBackgroundColor
+        ),
+        child: Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.center,
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 25, bottom: 10.0),
+                  child: Text(AppLocalizations.of(context)!.deleteBrandConfirmation, style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.red, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                ),
+                Flexible(
+                  child: Text("${AppLocalizations.of(context)!.writeDeleteBrand} ", style: Theme.of(context).textTheme.bodyText2, textAlign: TextAlign.center,),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+                Flexible(
+                  child: Text(currentBrand.name!, style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, left: 15, right: 15),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Flexible(
+                        child: TextFormField(
+                          controller: deleteController,
+                          onChanged: (val) {
+                            setState(() => {
+                              deleteTemp = val
+                            });
+                            if (deleteTemp != currentBrand.name) {
+                              setState(() => {
+                                canDelete = false
+                              });
+                            } else {
+                              setState(() => {
+                                canDelete = true
+                              });
+                            }
+                          },
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.red),
+                          decoration: InputDecoration(
+                            hintText: currentBrand.name,
+                            hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.red.withOpacity(0.5)),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.red, width: 1),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.red, width: 1),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      FloatingActionButton.extended(
+                        heroTag: "32",
+                        label: Text(AppLocalizations.of(context)!.delete, style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),),
+                        icon: Icon(Icons.delete_outline, size: MediaQuery.of(context).size.width*0.06,),
+                        backgroundColor: canDelete ? Colors.red : Colors.red[200],
+                        foregroundColor: AppColors.white,
+                        onPressed: canDelete ? () async  {
+                          Navigator.pop(context, true);
+                        } : null,
+                      ),
+                      FloatingActionButton.extended(
+                        heroTag: "33",
+                        icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06,),
+                        label: Text(AppLocalizations.of(context)!.cancel, style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),),
+                        backgroundColor: Theme.of(context).primaryColor,
+                        foregroundColor: Theme.of(context).primaryColorDark,
+                        onPressed: () {
+                          Navigator.pop(context, false);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Positioned(
+                top: -90,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox.fromSize(
+                      size: const Size(100, 100), // button width and height
+                      child: ClipOval(
+                        child: Material(
+                          color: Colors.red, // button color
+                          child: InkWell(
+                            onTap: () async {
+                              setState(() {});
+                            },
+                            child: const Icon(Icons.delete_outline_outlined, color: Colors.white, size: 60,), // icon
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  String splitCommonName(String name) {
+    List<String> aux = name.split(" ");
+    return aux[0];
   }
 }
 
